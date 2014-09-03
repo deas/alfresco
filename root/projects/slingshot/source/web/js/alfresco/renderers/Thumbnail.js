@@ -125,12 +125,22 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * The name of the folder image to use. Valid options are: "folder-32.png", "folder-48.png", "folder-64.png"
+       * and "folder-256.png". The default is "folder-64.png".
+       *
+       * @instance
+       * @type {string}
+       * @default "folder-64.png"
+       */
+      folderImage: "folder-64.png",
+
+      /**
        * Returns a URL to the image to use when rendering a folder
        * 
        * @instance
        */
       getFolderImage: function alfresco_renderers_Thumbnail__getDefaultFolderImage() {
-         return AlfConstants.URL_RESCONTEXT + "components/documentlibrary/images/folder-64.png";
+         return require.toUrl("alfresco/renderers") + "/css/images/" + this.folderImage;
       },
       
       /**

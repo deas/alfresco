@@ -27,8 +27,9 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/AlfFilmStripView.html",
         "alfresco/documentlibrary/AlfDocument",
         "alfresco/preview/AlfDocumentPreview",
-        "alfresco/documentlibrary/views/layouts/Carousel"], 
-        function(declare, AlfDocumentListView, template, AlfDocument, AlfDocumentPreview, Carousel) {
+        "alfresco/documentlibrary/views/layouts/Carousel",
+        "dojo/_base/lang"], 
+        function(declare, AlfDocumentListView, template, AlfDocument, AlfDocumentPreview, Carousel, lang) {
    
    return declare([AlfDocumentListView], {
       
@@ -69,17 +70,17 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_views_AlfFilmStripView__postCreate() {
-         this.currentItemView = new AlfDocument({
-            id: this.id + "_CURRENT_ITEM",
-            widgets: [
-               {
-                  name: "alfresco/preview/AlfDocumentPreview"
-               }
-            ],
-            pubSubScope: this.pubSubScope,
-            parentPubSubScope: this.parentPubSubScope
-         });
-         this.currentItemView.placeAt(this.previewNode, "last");
+         // this.currentItemView = new AlfDocument({
+         //    id: this.id + "_CURRENT_ITEM",
+         //    widgets: [
+         //       {
+         //          name: "alfresco/preview/AlfDocumentPreview"
+         //       }
+         //    ],
+         //    pubSubScope: this.pubSubScope,
+         //    parentPubSubScope: this.parentPubSubScope
+         // });
+         // this.currentItemView.placeAt(this.previewNode, "last");
 
          // Carry on with the usual setup...
          this.inherited(arguments);
@@ -95,14 +96,18 @@ define(["dojo/_base/declare",
        * @instance
        * @param {boolean} preserveCurrentData
        */
-      renderView: function alfresco_documentlibrary_views_AlfDocumentListView__renderView(preserveCurrentData) {
+      renderView: function alfresco_documentlibrary_views_AlfFilmStripView__renderView(preserveCurrentData) {
          this.inherited(arguments);
+
          if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
          {
-            this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", {
-               nodeRef: this.currentData.items[0].nodeRef,
-               alfResponseTopic: this.pubSubScope + "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST"
-            }, true);
+            if (this.contentCarousel)
+            {
+               this.contentCarousel.renderData();
+            }
+            this.alfPublish("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + this.currentData.items[0].nodeRef, {
+               nodeRef: this.currentData.items[0].nodeRef
+            });
          }
       },
 
@@ -115,16 +120,51 @@ define(["dojo/_base/declare",
        * @instance
        * @returns {object} A new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
        */
-      createDocumentListRenderer: function alfresco_documentlibrary_views_AlfDocumentListView__createDocumentListRenderer() {
+      createDocumentListRenderer: function alfresco_documentlibrary_views_AlfFilmStripView__createDocumentListRenderer() {
+         this.contentCarousel = new Carousel({
+            widgets: lang.clone(this.widgetsForContent),
+            currentData: this.currentData,
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope
+         });
+         this.contentCarousel.placeAt(this.previewNode, "last");
+
          var dlr = new Carousel({
             id: this.id + "_ITEMS",
-            widgets: this.widgets,
+            widgets: lang.clone(this.widgets),
             currentData: this.currentData,
             pubSubScope: this.pubSubScope,
             parentPubSubScope: this.parentPubSubScope
          });
          return dlr;
       },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#clearOldView}
+       * to destroy the content carousel.
+       *
+       * @instance
+       */
+      clearOldView: function alfresco_documentlibrary_views_AlfFilmStripView__clearOldView() {
+         if (this.contentCarousel)
+         {
+            this.contentCarousel.destroy();
+         }
+         this.inherited(arguments);
+      },
+
+      /**
+       * The definition of how a single item is represented the preview.
+       * 
+       * @instance
+       * @type {object[]}
+       */
+      widgetsForContent: [
+         {
+            name: "alfresco/documentlibrary/views/layouts/AlfFilmStripViewDocument"
+         }
+      ],
+
       /**
        * The definition of how a single item is represented in the view. 
        * 
