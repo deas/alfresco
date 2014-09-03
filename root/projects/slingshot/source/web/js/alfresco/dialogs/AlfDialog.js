@@ -35,6 +35,7 @@ define(["dojo/_base/declare",
         "dijit/Dialog",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
+        "alfresco/core/ResizeMixin",
         "dojo/_base/lang",
         "dojo/sniff",
         "dojo/_base/array",
@@ -44,9 +45,9 @@ define(["dojo/_base/declare",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, CoreWidgetProcessing, lang, sniff, array, domConstruct, domClass, domStyle, html, aspect, registry) {
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, lang, sniff, array, domConstruct, domClass, domStyle, html, aspect, registry) {
    
-   return declare([Dialog, AlfCore, CoreWidgetProcessing], {
+   return declare([Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -156,6 +157,12 @@ define(["dojo/_base/declare",
          }
       },
       
+      show: function alfresco_dialogs_AlfDialog__show() {
+         var promise = this.inherited(arguments);
+         this.alfPublishResizeEvent(this.domNode);
+         return promise;
+      },
+
       /**
        * Calls the resize() function
        *

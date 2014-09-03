@@ -53,6 +53,7 @@
 define(["alfresco/core/ProcessWidgets",
         "dojo/_base/declare",
         "dojo/text!./templates/HorizontalWidgets.html",
+        "alfresco/core/ResizeMixin",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-construct",
@@ -60,9 +61,9 @@ define(["alfresco/core/ProcessWidgets",
         "dojo/dom-geometry",
         "dojo/on",
         "alfresco/core/ObjectTypeUtils"], 
-        function(ProcessWidgets, declare, template, lang, array, domConstruct, domStyle, domGeom, on, ObjectTypeUtils) {
+        function(ProcessWidgets, declare, template, ResizeMixin, lang, array, domConstruct, domStyle, domGeom, on, ObjectTypeUtils) {
    
-   return declare([ProcessWidgets], {
+   return declare([ProcessWidgets, ResizeMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -127,7 +128,9 @@ define(["alfresco/core/ProcessWidgets",
          // We should update this to allow for specific widget width requests...
          this.doWidthProcessing(this.widgets);
          this.inherited(arguments);
-         on(window, "resize", lang.hitch(this, "onResize"));
+
+         // Update the grid as the window changes...
+         this.alfSetupResizeSubscriptions(this.onResize, this);
       },
       
       /**
@@ -140,13 +143,15 @@ define(["alfresco/core/ProcessWidgets",
        * @param {array} widgets The widgets or widget configurations to process the widths for
        */
       doWidthProcessing: function alfresco_layout_HorizontalWidgets__doWidthProcessing(widgets) {
-         if (widgets != null)
+         if (widgets != null && this.domNode != null)
          {
             // Get the dimensions of the current DOM node...
             var computedStyle = domStyle.getComputedStyle(this.domNode);
             var output = domGeom.getMarginBox(this.domNode, computedStyle);
             var overallwidth = output.w;
+            overallwidth -= widgets.length;
 
+            
             // Subtract the margins from the overall width
             var leftMarginsSize = 0,
                 rightMarginsSize = 0;

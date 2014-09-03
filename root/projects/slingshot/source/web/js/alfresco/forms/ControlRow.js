@@ -37,6 +37,24 @@ define(["alfresco/layout/HorizontalWidgets",
    return declare([HorizontalWidgets], {
       
       /**
+       * This is the size of margin (in pixels) that will appear to the left of every widget added. 
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      widgetMarginLeft: 0,
+
+      /**
+       * This is the size of margin (in pixels) that will appear to the right of every widget added. 
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      widgetMarginRight: 30,
+
+      /**
        * Iterates over the array of processed widgets and adds the value of each to the supplied object
        *
        * @instance
@@ -79,7 +97,7 @@ define(["alfresco/layout/HorizontalWidgets",
       updateChildFormControlValue: function alfresco_forms_ControlRow__updateChildFormControlValue(values, widget, index) {
          if (typeof widget.addFormControlValue === "function")
          {
-            widget.addFormControlValue(values);
+            widget.updateFormControlValue(values);
          }
       },
 
@@ -101,7 +119,7 @@ define(["alfresco/layout/HorizontalWidgets",
       validateChildFormControlValue: function alfresco_forms_ControlRow__validateChildFormControlValue(widget, index) {
          if (typeof widget.validateChildFormControlValue === "function")
          {
-            widget.validateChildFormControlValue(values);
+            widget.validateFormControl(values);
          }
       }
    });

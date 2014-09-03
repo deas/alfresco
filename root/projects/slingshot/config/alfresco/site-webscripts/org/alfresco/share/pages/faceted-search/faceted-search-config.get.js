@@ -29,28 +29,52 @@ var formWidgets = [
       }
    },
    {
-      name: "alfresco/forms/controls/DojoValidationTextBox",
+      name: "alfresco/forms/ControlRow",
       config: {
-         fieldId: "FILTER_ID",
-         name: "filterID",
-         value: "",
-         label: "faceted-search-config.filterId.label",
-         description: "faceted-search-config.filterId.description",
-         visibilityConfig: {
-            initialValue: true
-         },
-         requirementConfig: {
-            initialValue: true
-         },
-         disablementConfig: {
-            initialValue: false,
-            rules: [
-               {
-                  targetId: "IS_DEFAULT",
-                  is: [true]
+         widgets: [
+            {
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  fieldId: "FILTER_ID",
+                  name: "filterID",
+                  value: "",
+                  label: "faceted-search-config.filterId.label",
+                  description: "faceted-search-config.filterId.description",
+                  visibilityConfig: {
+                     initialValue: true
+                  },
+                  requirementConfig: {
+                     initialValue: true
+                  },
+                  disablementConfig: {
+                     initialValue: false,
+                     rules: [
+                        {
+                           targetId: "IS_DEFAULT",
+                           is: [true]
+                        }
+                     ]
+                  }
                }
-            ]
-         }
+            },
+            {
+               name: "alfresco/forms/controls/DojoValidationTextBox",
+               config: {
+                  fieldId: "DISPLAY_NAME",
+                  name: "displayName",
+                  value: "",
+                  label: "faceted-search-config.displayName.label",
+                  placeHolder: "faceted-search-config.displayName.placeHolder",
+                  description: "faceted-search-config.displayName.description",
+                  visibilityConfig: {
+                     initialValue: true
+                  },
+                  requirementConfig: {
+                     initialValue: true
+                  }
+               }
+            }
+         ]
       }
    },
    {
@@ -85,155 +109,159 @@ var formWidgets = [
       }
    },
    {
-      name: "alfresco/forms/controls/DojoSelect",
+      name: "alfresco/forms/ControlRow",
       config: {
-         fieldId: "FACET_QNAME",
-         name: "facetQName",
-         value: "",
-         label: "faceted-search-config.facetQName.label",
-         description: "faceted-search-config.facetQName.description",
-         requirementConfig: {
-            initialValue: true
-         },
-         optionsConfig: {
-            // TODO: Currently using hard-coded values - these need to be retrieved from the available properties
-            fixed: [
-               {
-                  label: "MIME Type",
-                  value: "{http://www.alfresco.org/model/content/1.0}content.mimetype"
-               },
-               {
-                  label: "Description",
-                  value: "{http://www.alfresco.org/model/content/1.0}description.__"
-               },
-               {
-                  label: "Creator",
-                  value: "{http://www.alfresco.org/model/content/1.0}creator.__"
-               },
-               {
-                  label: "Modifier",
-                  value: "{http://www.alfresco.org/model/content/1.0}modifier.__"
-               },
-               {
-                  label: "Created",
-                  value: "{http://www.alfresco.org/model/content/1.0}created"
-               },
-               {
-                  label: "Modified",
-                  value: "{http://www.alfresco.org/model/content/1.0}modified"
-               },
-               {
-                  label: "Size",
-                  value: "{http://www.alfresco.org/model/content/1.0}content.size"
+         widgets: [
+            {
+               name: "alfresco/forms/controls/DojoSelect",
+               config: {
+                  fieldId: "FACET_QNAME",
+                  name: "facetQName",
+                  value: "",
+                  label: "faceted-search-config.facetQName.label",
+                  description: "faceted-search-config.facetQName.description",
+                  requirementConfig: {
+                     initialValue: true
+                  },
+                  optionsConfig: {
+                     // TODO: Currently using hard-coded values - these need to be retrieved from the available properties
+                     fixed: [
+                        {
+                           label: "MIME Type",
+                           value: "{http://www.alfresco.org/model/content/1.0}content.mimetype"
+                        },
+                        {
+                           label: "Description",
+                           value: "{http://www.alfresco.org/model/content/1.0}description.__"
+                        },
+                        {
+                           label: "Creator",
+                           value: "{http://www.alfresco.org/model/content/1.0}creator.__.u"
+                        },
+                        {
+                           label: "Modifier",
+                           value: "{http://www.alfresco.org/model/content/1.0}modifier.__.u"
+                        },
+                        {
+                           label: "Created",
+                           value: "{http://www.alfresco.org/model/content/1.0}created"
+                        },
+                        {
+                           label: "Modified",
+                           value: "{http://www.alfresco.org/model/content/1.0}modified"
+                        },
+                        {
+                           label: "Size",
+                           value: "{http://www.alfresco.org/model/content/1.0}content.size"
+                        }
+                     ]
+                  }
                }
-            ]
-         }
-      }
-   },
-   {
-      name: "alfresco/forms/controls/DojoSelect",
-      config: {
-         fieldId: "DISPLAY_CONTROL",
-         name: "displayControl",
-         value: "alfresco/search/FacetFilters",
-         label: "faceted-search-config.displayControl.label",
-         description: "faceted-search-config.displayControl.description",
-         optionsConfig: {
-            fixed: [
-               {
-                  label: "faceted-search-config.displayControl.basic.label",
-                  value: "alfresco/search/FacetFilters"
+            },
+            {
+               name: "alfresco/forms/controls/DojoSelect",
+               config: {
+                  fieldId: "DISPLAY_CONTROL",
+                  name: "displayControl",
+                  value: "alfresco/search/FacetFilters",
+                  label: "faceted-search-config.displayControl.label",
+                  description: "faceted-search-config.displayControl.description",
+                  optionsConfig: {
+                     fixed: [
+                        {
+                           label: "faceted-search-config.displayControl.basic.label",
+                           value: "alfresco/search/FacetFilters"
+                        }
+                     ]
+                  }
                }
-            ]
-         }
+            }
+         ]
       }
    },
    {
-      name: "alfresco/forms/controls/DojoValidationTextBox",
+      name: "alfresco/forms/ControlRow",
       config: {
-         fieldId: "DISPLAY_NAME",
-         name: "displayName",
-         value: "",
-         label: "faceted-search-config.displayName.label",
-         placeHolder: "faceted-search-config.displayName.placeHolder",
-         description: "faceted-search-config.displayName.description",
-         visibilityConfig: {
-            initialValue: true
-         },
-         requirementConfig: {
-            initialValue: true
-         }
-      }
-   },
-   {
-      name: "alfresco/forms/controls/DojoSelect",
-      config: {
-         fieldId: "SORTBY",
-         name: "sortBy",
-         value: "ALPHABETICALLY",
-         label: "faceted-search-config.sortBy.label",
-         description: "faceted-search-config.sortBy.description",
-         optionsConfig: {
-            fixed: [
-               {
-                  label: "faceted-search-config.sortBy.AtoZ.label",
-                  value: "ALPHABETICALLY"
-               },
-               {
-                  label: "faceted-search-config.sortBy.highToLow.label",
-                  value: "ASCENDING"
-               },
-               {
-                  label: "faceted-search-config.sortBy.lowToHigh.label",
-                  value: "DESCENDING"
+         widgets: [
+            {
+               name: "alfresco/forms/controls/DojoSelect",
+               config: {
+                  fieldId: "SORTBY",
+                  name: "sortBy",
+                  value: "ALPHABETICALLY",
+                  label: "faceted-search-config.sortBy.label",
+                  description: "faceted-search-config.sortBy.description",
+                  optionsConfig: {
+                     fixed: [
+                        {
+                           label: "faceted-search-config.sortBy.AtoZ.label",
+                           value: "ALPHABETICALLY"
+                        },
+                        {
+                           label: "faceted-search-config.sortBy.highToLow.label",
+                           value: "ASCENDING"
+                        },
+                        {
+                           label: "faceted-search-config.sortBy.lowToHigh.label",
+                           value: "DESCENDING"
+                        }
+                     ]
+                  }
                }
-            ]
-         }
+            },
+            {
+               name: "alfresco/forms/controls/NumberSpinner",
+               config: {
+                  fieldId: "MAXFILTERS",
+                  name: "maxFilters",
+                  value: "10",
+                  label: "faceted-search-config.maxFilters.label",
+                  description: "faceted-search-config.maxFilters.description",
+                  min: 1,
+                  max: 20,
+                  validationConfig: {
+                     regex: "^[0-9]+$"
+                  }
+               }
+            }
+         ]
       }
    },
    {
-      name: "alfresco/forms/controls/NumberSpinner",
+      name: "alfresco/forms/ControlRow",
       config: {
-         fieldId: "MAXFILTERS",
-         name: "maxFilters",
-         value: "10",
-         label: "faceted-search-config.maxFilters.label",
-         description: "faceted-search-config.maxFilters.description",
-         min: 1,
-         max: 20,
-         validationConfig: {
-            regex: "^[0-9]+$"
-         }
-      }
-   },
-   {
-      name: "alfresco/forms/controls/NumberSpinner",
-      config: {
-         fieldId: "MIN_FILTER_VALUE_LENGTH",
-         name: "minFilterValueLength",
-         value: "10",
-         label: "faceted-search-config.minFilterValueLength.label",
-         description: "faceted-search-config.minFilterValueLength.description",
-         min: 1,
-         max: 20,
-         validationConfig: {
-            regex: "^[0-9]+$"
-         }
-      }
-   },
-   {
-      name: "alfresco/forms/controls/NumberSpinner",
-      config: {
-         fieldId: "HIT_THRESHOLD",
-         name: "hitThreshold",
-         value: "1",
-         label: "faceted-search-config.hitThreshold.label",
-         description: "faceted-search-config.hitThreshold.description",
-         min: 1,
-         max: 20,
-         validationConfig: {
-            regex: "^[0-9]+$"
-         }
+         widgets: [
+            {
+               name: "alfresco/forms/controls/NumberSpinner",
+               config: {
+                  fieldId: "MIN_FILTER_VALUE_LENGTH",
+                  name: "minFilterValueLength",
+                  value: "10",
+                  label: "faceted-search-config.minFilterValueLength.label",
+                  description: "faceted-search-config.minFilterValueLength.description",
+                  min: 1,
+                  max: 20,
+                  validationConfig: {
+                     regex: "^[0-9]+$"
+                  }
+               }
+            },
+            {
+               name: "alfresco/forms/controls/NumberSpinner",
+               config: {
+                  fieldId: "HIT_THRESHOLD",
+                  name: "hitThreshold",
+                  value: "1",
+                  label: "faceted-search-config.hitThreshold.label",
+                  description: "faceted-search-config.hitThreshold.description",
+                  min: 1,
+                  max: 20,
+                  validationConfig: {
+                     regex: "^[0-9]+$"
+                  }
+               }
+            }
+         ]
       }
    },
    {
@@ -488,6 +516,27 @@ var main = {
                                                       {
                                                          name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                                          config: {
+                                                            label: msg.get("faceted-search-config.displayName.label"),
+                                                            sortable: false
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: msg.get("faceted-search-config.facetQName.label"),
+                                                            sortable: false
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: msg.get("faceted-search-config.displayControl.label"),
+                                                            sortable: false
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
                                                             label: msg.get("faceted-search-config.isEnabled.label")
                                                          }
                                                       },
@@ -536,6 +585,51 @@ var main = {
                                                                         {
                                                                            name: "alfresco/renderers/PropertyLink",
                                                                            config: facetClickConfig
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     additionalCssClasses: "mediumpad",
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Property",
+                                                                           config: {
+                                                                              propertyToRender: "displayName"
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     additionalCssClasses: "mediumpad",
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Property",
+                                                                           config: {
+                                                                              propertyToRender: "facetQName"
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     additionalCssClasses: "mediumpad",
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Property",
+                                                                           config: {
+                                                                              propertyToRender: "displayControl"
+                                                                           }
                                                                         }
                                                                      ]
                                                                   }
