@@ -29,6 +29,7 @@ public class FacetedSearchResult implements SearchResult
     private String site;
     private ActionsSet actions;
     private WebElement imageLink;
+    private final boolean isFolder;
 
     /**
      * Instantiates a new faceted search result - some items may be null.
@@ -64,9 +65,25 @@ public class FacetedSearchResult implements SearchResult
         {
         	imageLink = result.findElement(IMAGE);        	
              
-        }        
+        }   
+        isFolder = checkFolder(result);
+
         actions = new ActionsSet(drone, result.findElement(ACTIONS));
         
+    }
+    
+    private boolean checkFolder(WebElement row)
+    {
+        try
+        {
+            String source = row.findElement(By.tagName("img")).getAttribute("src");
+            if(source != null && source.endsWith("folder.png"))
+            {
+                return true;
+            }
+        }
+        catch(Exception e){}
+        return false;
     }
 
     /**
@@ -204,4 +221,10 @@ public class FacetedSearchResult implements SearchResult
         return new PreViewPopUpPage(drone);
     }  
     
+
+    @Override
+    public boolean isFolder()
+    {
+        return isFolder;
+    }
 }

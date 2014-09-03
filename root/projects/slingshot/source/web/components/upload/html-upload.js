@@ -373,7 +373,7 @@
        * 
        * @method hide
        */
-      hide: function FlashUpload_hide()
+      hide: function HtmlUpload_hide()
       {
          this.onCancelButtonClick();
       },

@@ -46,6 +46,7 @@ import org.testng.annotations.Test;
 @Listeners(FailedTestListener.class)
 public class FacetedSearchResultsPageTest extends AbstractTest
 {
+    private static final String SEARCH_TERM = "ipsum";
     private DashBoardPage dashBoard;
     
     @BeforeClass(groups={"alfresco-one"})
@@ -67,16 +68,41 @@ public class FacetedSearchResultsPageTest extends AbstractTest
         SearchBox search = dashBoard.getSearch();
         FacetedSearchPage resultPage = search.search("y@z").render();
         Assert.assertNotNull(resultPage);
-        Assert.assertFalse(resultPage.getResults().size()>0);
+        Assert.assertFalse(resultPage.hasResults());
+        
     }   
         
     @Test(groups = {"Enterprise-only"},dependsOnMethods="searchEmptyResult")
     public void selectNthSearchResult() throws Exception
     {
         SearchBox search = dashBoard.getSearch();
-        FacetedSearchPage resultPage = search.search("ipsum").render();
+        FacetedSearchPage resultPage = search.search(SEARCH_TERM).render();
+        Assert.assertTrue(resultPage.hasResults());
+        String name = resultPage.getResults().get(2).getName();
+        Assert.assertNotNull(name);
+        DocumentDetailsPage itemPage = resultPage.selectItem(2).render();
+        Assert.assertTrue(name.equalsIgnoreCase(itemPage.getDocumentTitle()));
+    }
+    
+    @Test(groups = {"Enterprise-only"},dependsOnMethods="searchEmptyResult")
+    public void selectSearchResultByName() throws Exception
+    {
+        SearchBox search = dashBoard.getSearch();
+        FacetedSearchPage resultPage = search.search(SEARCH_TERM).render();
+        Assert.assertTrue(resultPage.hasResults());
+        String name = resultPage.getResults().get(2).getName();
+        Assert.assertNotNull(name);
+        DocumentDetailsPage itemPage = resultPage.selectItem(name).render();
+        Assert.assertTrue(name.equalsIgnoreCase(itemPage.getDocumentTitle()));
+    }
+    
+    @Test(groups = {"Enterprise-only"},dependsOnMethods="searchEmptyResult")
+    public void selectFirstSearchResult() throws Exception
+    {
+        SearchBox search = dashBoard.getSearch();
+        FacetedSearchPage resultPage = search.search(SEARCH_TERM).render();
         Assert.assertNotNull(resultPage);
-
+        
         DocumentDetailsPage itemPage = resultPage.getResults().get(0).clickLink().render();
         Assert.assertTrue(itemPage.getTitle().contains("Document Details"));
     }
@@ -114,7 +140,7 @@ public class FacetedSearchResultsPageTest extends AbstractTest
         Assert.assertTrue(itemPage.getTitle().contains("Project Lists"));
     }
     
-    @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeDataList")
+    @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeWiki")
     public void pagination() throws Exception
     {
         int expectedResultLength = 10;
@@ -155,7 +181,7 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     {
         String selectedSort;
         SearchBox search = dashBoard.getSearch();
-        FacetedSearchPage facetedSearchPage = search.search("ipsum").render();
+        FacetedSearchPage facetedSearchPage = search.search(SEARCH_TERM).render();
         Assert.assertNotNull(facetedSearchPage);
         facetedSearchPage.getSort().sortByLabel("Name");
         selectedSort = facetedSearchPage.getSort().getCurrentSelection();       
@@ -177,21 +203,28 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     {
         FacetedSearchPage resultPage;
         SearchBox search = dashBoard.getSearch();
-        resultPage = search.search("ipsum").render();
+        resultPage = search.search(SEARCH_TERM).render();
         Assert.assertNotNull(resultPage);
         resultPage = resultPage.getSort().sortByLabel("NAME").render();
-        List<FacetedSearchResult> facetedSearchResult = resultPage.getResults();
+        List<SearchResult> facetedSearchResult = resultPage.getResults();
         if (facetedSearchResult.isEmpty() || facetedSearchResult == null)
         {
             Assert.fail("serach results is empty");
-        }        
+        }
         Assert.assertTrue(facetedSearchResult.get(0).getName().contains("Meeting"),"The results are sorted by name");
+        for (SearchResult results : facetedSearchResult)
+        {
+            if (results.getTitle().contains("Meeting"))
+            {
+                Assert.assertTrue(true, "Test passed");
+            }
+        }
     }
 
     /**
      * This test is validate the sort with invalid data and to verify the sort order is set to default.
      * To toggle the sort order and verify there are some search results 
-     * in sort filter list      
+     * in sort filter list     * 
      * @author Charu
      * 
      */
@@ -200,8 +233,9 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     {
         String selectedSort;
         SearchBox search = dashBoard.getSearch();
-        FacetedSearchPage facetedSearchPage = search.search("ipsum").render();
-        Assert.assertNotNull(facetedSearchPage);        
+        FacetedSearchPage facetedSearchPage = search.search(SEARCH_TERM).render();
+        Assert.assertNotNull(facetedSearchPage);
+        facetedSearchPage.getSort().sortByLabel("N");
         selectedSort = facetedSearchPage.getSort().getCurrentSelection();       
         Assert.assertEquals(selectedSort,"Relevance", "sort description is not matching");        
         facetedSearchPage.getSort().sortByLabel("Title");
@@ -210,5 +244,22 @@ public class FacetedSearchResultsPageTest extends AbstractTest
         facetedSearchPage.getSort().toggleSortOrder().render();
         Assert.assertNotNull(facetedSearchPage);
      }
+    
+    @Test(groups = { "Enterprise-only"})
+    public void getResultCount()
+    {
+        SearchBox search = dashBoard.getSearch();
+        FacetedSearchPage facetedSearchPage = search.search(SEARCH_TERM).render();
+        Assert.assertEquals(facetedSearchPage.getResultCount(),6);
+        facetedSearchPage = facetedSearchPage.getSearch().search("yyyxxxxz").render();
+        Assert.assertEquals(facetedSearchPage.getResultCount(),0);
+    }
+    public void selectFacet()
+    {
+        SearchBox search = dashBoard.getSearch();
+        FacetedSearchPage facetedSearchPage = search.search(SEARCH_TERM).render();
+        FacetedSearchPage filteredResults = facetedSearchPage.selectFacet("Microsoft Word").render();
+        Assert.assertEquals(filteredResults.getResultCount(), 3);
+    }
     
 }
