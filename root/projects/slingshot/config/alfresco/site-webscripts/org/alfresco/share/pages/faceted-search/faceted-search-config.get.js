@@ -666,6 +666,14 @@ var main = {
                                                                            name: "alfresco/renderers/InlineEditSelect",
                                                                            config: {
                                                                               propertyToRender: "displayControl",
+                                                                              publishTopic: "ALF_CRUD_UPDATE",
+                                                                              publishPayloadType: "PROCESS",
+                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}",
+                                                                                 noRefresh: true
+                                                                              },
                                                                               optionsConfig: {
                                                                                  publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
                                                                                  publishPayload: {
@@ -688,9 +696,39 @@ var main = {
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
-                                                                           name: "alfresco/renderers/Boolean",
+                                                                           name: "alfresco/renderers/InlineEditSelect",
                                                                            config: {
-                                                                              propertyToRender: "isEnabled"
+                                                                              propertyToRender: "isEnabled",
+                                                                              publishTopic: "ALF_CRUD_UPDATE",
+                                                                              publishPayloadType: "PROCESS",
+                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              publishPayloadItemMixin: true,
+                                                                              publishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}",
+                                                                                 noRefresh: true
+                                                                              },
+                                                                              optionsConfig: {
+                                                                                 fixed: [
+                                                                                    {
+                                                                                       label: msg.get("faceted-search-config.isEnabled.yes"),
+                                                                                       value: true
+                                                                                    },
+                                                                                    {
+                                                                                       label: msg.get("faceted-search-config.isEnabled.no"),
+                                                                                       value: false
+                                                                                    }
+                                                                                 ]
+                                                                              },
+                                                                              valueDisplayMap: [
+                                                                                 {
+                                                                                    label: msg.get("faceted-search-config.isEnabled.yes"),
+                                                                                    value: true
+                                                                                 },
+                                                                                 {
+                                                                                    label: msg.get("faceted-search-config.isEnabled.no"),
+                                                                                    value: false
+                                                                                 }
+                                                                              ]
                                                                            }
                                                                         }
                                                                      ]
