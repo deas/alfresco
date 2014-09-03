@@ -34,7 +34,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('hideExistingCoverageReports');
       grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('start-node-coverage-server');
-      grunt.task.run('intern:local');
+      grunt.task.run('intern:local_coverage');
       grunt.task.run('merge-reports');
       grunt.task.run('clean-reports');
       grunt.task.run('showExistingCoverageReports');
@@ -52,7 +52,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('hideExistingCoverageReports');
       grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('start-node-coverage-server');
-      grunt.task.run('intern:dev');
+      grunt.task.run('intern:dev_coverage');
       grunt.task.run('merge-reports');
       grunt.task.run('clean-reports');
       grunt.task.run('showExistingCoverageReports');

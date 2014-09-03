@@ -37,15 +37,6 @@ define({
    },
 
    /**
-    * Should this process run the coverage report submission?
-    *
-    * @instance
-    * @type {boolean}
-    * @default false
-    */
-   doCoverageReport: false,
-
-   /**
     * A selection of timeouts
     *
     * @instance

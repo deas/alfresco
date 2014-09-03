@@ -24,8 +24,9 @@
  */
 define(["intern/dojo/node!fs",
         "config/Config",
-        "intern/dojo/node!leadfoot/helpers/pollUntil"], 
-       function(fs, Config, pollUntil) {
+        "intern/dojo/node!leadfoot/helpers/pollUntil",
+        "intern/lib/args"], 
+       function(fs, Config, pollUntil, args) {
    return {
 
       /**
@@ -470,7 +471,7 @@ define(["intern/dojo/node!fs",
        * @param {object} browser This should be set to a reference to "this.remote" from the unit test
        */
       postCoverageResults: function(browser) {
-         if(Config.doCoverageReport)
+         if(args.doCoverage === "true")
          {
             browser.end()
 

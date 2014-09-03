@@ -59,25 +59,43 @@ module.exports = function (grunt, alf) {
          dev: {
             options: {
                runType: 'runner',
-               config: 'tests/intern'
+               config: 'tests/intern',
+               doCoverage: false
+            }
+         },
+         dev_coverage: {
+            options: {
+               runType: 'runner',
+               config: 'tests/intern',
+               doCoverage: true
             }
          },
          local: {
             options: {
                runType: 'runner',
-               config: 'tests/intern_local'
+               config: 'tests/intern_local',
+               doCoverage: false
+            }
+         },
+         local_coverage: {
+            options: {
+               runType: 'runner',
+               config: 'tests/intern_local',
+               doCoverage: true
             }
          },
          sl: {
             options: {
                runType: 'runner',
-               config: 'tests/intern_sl'
+               config: 'tests/intern_sl',
+               doCoverage: false
             }
          },
          grid: {
             options: {
                runType: 'runner',
-               config: 'tests/intern_grid'
+               config: 'tests/intern_grid',
+               doCoverage: false
             }
          }
       }
