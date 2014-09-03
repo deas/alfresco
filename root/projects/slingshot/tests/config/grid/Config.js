@@ -52,9 +52,10 @@ define({
     * @type {object}
     */
    timeout: {
-      implicitWait: 1000,
+      base: 10000,
+      find: 1000,
       pageLoad: 10000,
-      asyncScript: 10000
+      executeAsync: 1000
    }
 
 });

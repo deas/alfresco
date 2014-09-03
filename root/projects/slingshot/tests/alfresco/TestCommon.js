@@ -23,8 +23,9 @@
  * @author Dave Draper
  */
 define(["intern/dojo/node!fs",
-        "config/Config"], 
-       function(fs, Config) {
+        "config/Config",
+        "intern/dojo/node!leadfoot/helpers/pollUntil"], 
+       function(fs, Config, pollUntil) {
    return {
 
       /**
@@ -122,28 +123,26 @@ define(["intern/dojo/node!fs",
             console.log(e);
          }
 
-         return browser.get(this.bootstrapUrl())
+         return browser
 
-         .setFindTimeout(Infinity)
-         .findByCssSelector('.alfresco-core-Page.allWidgetsProcessed')
-         .setFindTimeout(Config.timeout.implicitWait)
-         .execute("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
+         .get(this.bootstrapUrl())
+         .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
+         .then(function (element) {}, function (error) {})
          .end()
 
-         // It's necessary to type an additional space into the text area to ensure that the 
-         // text area field validates and populates the form model with the data to be published...
-         .findByCssSelector('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
+         .execute("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
+         .findByCssSelector('#UNIT_TEST_MODEL_FIELD TEXTAREA')
          .type(" ")
          .end()
 
-         // Find and click on the test button to load the test page...
-         .findByCssSelector("#LOAD_TEST_BUTTON")
+         .findById("LOAD_TEST_BUTTON")
          .click()
          .end()
 
-         .setFindTimeout(Infinity)
-         .findByCssSelector('.alfresco-core-Page.allWidgetsProcessed')
-         .setFindTimeout(Config.timeout.implicitWait)
+         .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
+         .then(function (element) {}, function (error) {})
+         .end()
+
       },
 
       /**
@@ -236,10 +235,11 @@ define(["intern/dojo/node!fs",
        * @param {browser}
        */
       _applyTimeouts: function(browser) {
-         browser.setTimeout(Config.timeout.pageLoad);
-         browser.setFindTimeout(Config.timeout.implicitWait);
+         browser.setTimeout("script", Config.timeout.base);
+         browser.setTimeout("implicit", Config.timeout.base);
+         browser.setFindTimeout(Config.timeout.find);
          browser.setPageLoadTimeout(Config.timeout.pageLoad);
-         browser.setExecuteAsyncTimeout(Config.timeout.asyncScript);
+         browser.setExecuteAsyncTimeout(Config.timeout.executeAsync);
       },
 
       /**
@@ -441,7 +441,7 @@ define(["intern/dojo/node!fs",
          // console.log("Topic selector: " + selector);
          return selector;
       },
-      
+
       /**
        * This generates an xpath selector that matches the supplied value in the console log.
        *
@@ -449,7 +449,7 @@ define(["intern/dojo/node!fs",
        * @param {string} value The value to search for
        * @returns {string} The XPATH selector
        */
-      consoleXpathSelector: function(value) {         
+      consoleXpathSelector: function(value) {
          return "//table[@class=\"log\"]/tbody/tr[@class=\"cl-row\"]/td[contains(.,'" + value + "')]";
       },
 
