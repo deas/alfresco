@@ -18,7 +18,7 @@ define(["./config/Suites"],
       // Note that the `build` capability will be filled in with the current commit ID from the Travis CI environment
       // automatically
       capabilities: {
-         'selenium-version': '2.39.0'
+         'selenium-version': '2.41.0'
       },
 
       // Browsers to run integration testing against. Note that version numbers must be strings if used with Sauce
@@ -33,8 +33,10 @@ define(["./config/Suites"],
       // Maximum number of simultaneous integration tests that should be executed on the remote WebDriver service
       maxConcurrency: 1,
 
+      // Dig Dug tunnel handler
       tunnel: 'NullTunnel',
 
+      // Dig Dug tunnel options
       tunnelOptions: {
          hostname: 'localhost',
          port: 4444

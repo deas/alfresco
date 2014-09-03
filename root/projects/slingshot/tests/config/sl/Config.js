@@ -32,8 +32,8 @@ define({
     * @type {object}
     */
    urls: {
-      bootstrapBaseUrl: "http://local.alfresco.test:8081",
-      moduleDeploymentBaseUrl: "http://admin:admin@local.alfresco.test:8081"
+      bootstrapBaseUrl: "http://localhost:8081",
+      moduleDeploymentBaseUrl: "http://admin:admin@localhost:8081"
    },
 
    /**

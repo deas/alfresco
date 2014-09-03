@@ -235,6 +235,7 @@ define(["intern/dojo/node!fs",
        * @param {browser}
        */
       _applyTimeouts: function(browser) {
+         browser.setTimeout(Config.timeout.pageLoad);
          browser.setFindTimeout(Config.timeout.implicitWait);
          browser.setPageLoadTimeout(Config.timeout.pageLoad);
          browser.setExecuteAsyncTimeout(Config.timeout.asyncScript);
