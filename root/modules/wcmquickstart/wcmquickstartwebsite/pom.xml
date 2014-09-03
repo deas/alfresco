@@ -10,6 +10,10 @@
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <highest.basedir>../../..</highest.basedir>
+    </properties>
+
     <build>
         <finalName>wcmqs</finalName>
     </build>
@@ -34,6 +38,15 @@
             <groupId>org.springframework.extensions.surf</groupId>
             <artifactId>spring-surf</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
