@@ -487,7 +487,7 @@ define(["dojo/_base/declare",
             {
                // Check that the widget passes all the filter checks...
                var renderFilterMethod = lang.getObject("config.renderFilterMethod", false, widgetConfig);
-               if (renderFilterMethod == null || renderFilterMethod.trim() == "ALL")
+               if (renderFilterMethod == null || lang.trim(renderFilterMethod) == "ALL")
                {
                   // Handle AND logic (all filters must pass)
                   shouldRender = array.every(renderFilterConfig, lang.hitch(this, this.processFilterConfig));

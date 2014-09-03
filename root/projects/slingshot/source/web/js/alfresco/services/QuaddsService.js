@@ -247,7 +247,7 @@ define(["dojo/_base/declare",
       onDeleteQuaddsItem: function alfresco_services_QuaddsService__onDeleteQuaddsItem(payload) {
          var quadds = lang.getObject("quadds", false, payload);
          var name = lang.getObject("name", false, payload);
-         if (quadds == null || quadds == "")
+         if (quadds == null || lang.trim(quadds) == "")
          {
             this.alfLog("warn", "A request was made to delete a data item from a QuADDS but no QuADDS was provided", payload, this);
          }
