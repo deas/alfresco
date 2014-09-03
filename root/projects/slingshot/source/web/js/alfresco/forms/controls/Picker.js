@@ -18,6 +18,15 @@
  */
 
 /**
+ * <p>This is the root widget that should be extended for all "picker" controls. By default it will effectively
+ * render a [Document Picker]{@link module:alfresco/forms/controls/DocumentPicker} (as this was the original
+ * picker module that the code was abstracted from) but extending pickers (such as the 
+ * [Container Picker]{@link module:alfresco/forms/controls/ContainerPicker} and the [Property Picker]{@link module:alfresco/forms/controls/PropertyPicker})
+ * can change the display of picked items and the behaviour of the picker itself by overriding the 
+ * [configForPickedItems]{@link module:alfresco/forms/controls/Picker#configForPickedItems} and
+ * [configForPicker]{@link module:alfresco/forms/controls/Picker#configForPicker} respectively.
+ * Pickers are designed to be used in forms to allow the user to select multiple "complex items".</p>
+ * 
  * @module alfresco/forms/controls/Picker
  * @extends module:alfresco/forms/controls/BaseFormControl
  * @mixes module:alfresco/core/CoreWidgetProcessing
@@ -31,6 +40,14 @@ define(["alfresco/forms/controls/BaseFormControl",
         function(BaseFormControl, CoreWidgetProcessing, declare, lang, array) {
    
    return declare([BaseFormControl, CoreWidgetProcessing], {
+      
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {Array}
+       */
+      i18nRequirements: [{i18nFile: "./i18n/Picker.properties"}],
       
       /**
        * The value to use as a key for each item. Each picked item should have an attribute with the name defined.
@@ -54,15 +71,26 @@ define(["alfresco/forms/controls/BaseFormControl",
       },
       
       /**
+       * Overrides the [inherited function]{@link module:alfresco/forms/controls/BaseFormControl#createFormControl}
+       * to create the picked items display and the picker itself. This should not need to be overridden by extending
+       * pickers.
+       * 
        * @instance
+       * @param {object} config The configuration object for instantiating the picker form control
        */
-      createFormControl: function alfresco_forms_controls_Picker__createFormControl(config, domNode) {
+      createFormControl: function alfresco_forms_controls_Picker__createFormControl(config) {
          this.alfSubscribe("ALF_ITEMS_SELECTED", lang.hitch(this, "onItemsSelected"));
          
          // Update the model to set the main picked items display and the overall picker config
          var clonedWidgetsForControl = lang.clone(this.widgetsForControl);
-         this.setModelPickedItemsConfig(lang.clone(this.configForPickedItems), config.value, clonedWidgetsForControl);
-         this.setModelPickerConfig(lang.clone(this.configForPicker), clonedWidgetsForControl);
+         if (this.configForPickedItems != null)
+         {
+            this.setModelPickedItemsConfig(lang.clone(this.configForPickedItems), config.value, clonedWidgetsForControl);
+         }
+         if (this.configForPicker != null)
+         {
+            this.setModelPickerConfig(lang.clone(this.configForPicker), clonedWidgetsForControl);
+         }
          
          // Set the value...
          this.setModelPickerWidgetValue(config.value, clonedWidgetsForControl);
@@ -260,10 +288,10 @@ define(["alfresco/forms/controls/BaseFormControl",
                      name: "alfresco/buttons/AlfButton",
                      assignTo: "formDialogButton",
                      config: {
-                        label: "Add",
+                        label: "picker.add.label",
                         publishTopic: "ALF_CREATE_DIALOG_REQUEST",
                         publishPayload: {
-                           dialogTitle: "Select...",
+                           dialogTitle: "picker.select.title",
                            handleOverflow: false,
                            widgetsContent: [
                               {
@@ -275,14 +303,14 @@ define(["alfresco/forms/controls/BaseFormControl",
                               {
                                  name: "alfresco/buttons/AlfButton",
                                  config: {
-                                    label: "OK",
+                                    label: "picker.ok.label",
                                     publishTopic: "ALF_ITEMS_SELECTED"
                                  }
                               },
                               {
                                  name: "alfresco/buttons/AlfButton",
                                  config: {
-                                    label: "Cancel",
+                                    label: "picker.cancel.label",
                                     publishTopic: "NO_OP"
                                  }
                               }
@@ -293,7 +321,7 @@ define(["alfresco/forms/controls/BaseFormControl",
                   {
                      name: "alfresco/buttons/AlfButton",
                      config: {
-                        label: "Remove All",
+                        label: "picker.removeAll.label",
                         additionalCssClasses: "cancelButton",
                         publishTopic: "ALF_ITEMS_SELECTED",
                         publishPayload: {

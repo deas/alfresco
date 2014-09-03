@@ -18,7 +18,11 @@
  */
 
 /**
- * @module alfresco/forms/controls/ContainerPicker
+ * <p>Extends the standard [picker form control]{@link module:alfresco/forms/controls/Picker} to allow the user to select containers
+ * (essentially folders) from the Alfresco repository.</p>
+ * 
+ * <p>TODO: Update so that this is configurable for only selecting containers the user has write permission on</p>
+ * 
  * @extends module:alfresco/forms/controls/Picker
  * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
@@ -53,7 +57,7 @@ define(["alfresco/forms/controls/Picker",
                      {
                         name: "alfresco/menus/AlfMenuBarItem",
                         config: {
-                           label: "My Files",
+                           label: "picker.myFiles.label",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
@@ -70,7 +74,7 @@ define(["alfresco/forms/controls/Picker",
                      {
                         name: "alfresco/menus/AlfMenuBarItem",
                         config: {
-                           label: "Shared Files",
+                           label: "picker.sharedFiles.label",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
@@ -89,7 +93,7 @@ define(["alfresco/forms/controls/Picker",
                      {
                         name: "alfresco/menus/AlfMenuBarItem",
                         config: {
-                           label: "Repository",
+                           label: "picker.repository.label",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
@@ -106,7 +110,7 @@ define(["alfresco/forms/controls/Picker",
                      {
                         name: "alfresco/menus/AlfMenuBarItem",
                         config: {
-                           label: "Recent Sites",
+                           label: "picker.recentSites.label",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
@@ -124,7 +128,7 @@ define(["alfresco/forms/controls/Picker",
                      {
                         name: "alfresco/menus/AlfMenuBarItem",
                         config: {
-                           label: "Favorite Sites",
+                           label: "picker.favouriteSites.label",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,

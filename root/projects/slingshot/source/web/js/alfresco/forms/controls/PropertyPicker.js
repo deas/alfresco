@@ -18,6 +18,10 @@
  */
 
 /**
+ * <p>Extends the standard [picker form control]{@link module:alfresco/forms/controls/Picker} to allow the user to select 
+ * properties defined in the Alfresco model. It allows the user to select from all defined properties or to scope properties
+ * by specific aspects or types.</p>
+ *
  * @module alfresco/forms/controls/PropertyPicker
  * @extends module:alfresco/forms/controls/Picker
  * @author Dave Draper

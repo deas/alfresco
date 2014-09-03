@@ -18,20 +18,24 @@
  */
 
 /**
+ * <p>A form control for allowing the user to select documents from the Alfresco repository. It extends the 
+ * standard [picker form control]{@link module:alfresco/forms/controls/Picker} to show the document 
+ * picked item display along with the standard document pickers.</p>
+ * 
  * @module alfresco/forms/controls/DocumentPicker
  * @extends module:alfresco/forms/controls/Picker
  * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/Picker",
-        "alfresco/core/CoreWidgetProcessing",
-        "dojo/_base/declare",
-        "dojo/_base/lang"], 
-        function(BaseFormControl, CoreWidgetProcessing, declare, lang) {
+        "dojo/_base/declare"], 
+        function(Picker, declare) {
    
-   return declare([BaseFormControl, CoreWidgetProcessing], {
+   return declare([Picker], {
       
       /**
+       * Current defines exactly the same default widget model as the standard [picker form control]{@link module:alfresco/forms/controls/Picker}
+       * so this could be removed, but has been left in case the default picker model should ever change.
        * 
        * @instance
        * @type {object}
@@ -51,10 +55,10 @@ define(["alfresco/forms/controls/Picker",
                      name: "alfresco/buttons/AlfButton",
                      assignTo: "formDialogButton",
                      config: {
-                        label: "Add",
+                        label: "picker.add.label",
                         publishTopic: "ALF_CREATE_DIALOG_REQUEST",
                         publishPayload: {
-                           dialogTitle: "Select...",
+                           dialogTitle: "picker.select.title",
                            handleOverflow: false,
                            widgetsContent: [
                               {
@@ -65,14 +69,14 @@ define(["alfresco/forms/controls/Picker",
                               {
                                  name: "alfresco/buttons/AlfButton",
                                  config: {
-                                    label: "OK",
+                                    label: "picker.ok.label",
                                     publishTopic: "ALF_ITEMS_SELECTED"
                                  }
                               },
                               {
                                  name: "alfresco/buttons/AlfButton",
                                  config: {
-                                    label: "Cancel",
+                                    label: "picker.cancel.label",
                                     publishTopic: "NO_OP"
                                  }
                               }
@@ -83,7 +87,7 @@ define(["alfresco/forms/controls/Picker",
                   {
                      name: "alfresco/buttons/AlfButton",
                      config: {
-                        label: "Remove All",
+                        label: "picker.removeAll.label",
                         additionalCssClasses: "cancelButton",
                         publishTopic: "ALF_ITEMS_SELECTED",
                         publishPayload: {

@@ -18,6 +18,11 @@
  */
 
 /**
+ * <p>The default picker widget for use in [picker form controls]{@link module:alfresco/forms/controls/Picker} and can be
+ * extended as necessary to customize the initial set of "root pickers" by overriding the [widgetsForRootPicker attribute]
+ * {@link module:alfresco/pickers/Picker#widgetsForRootPicker}. The picked items display can also be customized by 
+ * overriding the [widgetsForPickedItems attribute]{@link module:alfresco/pickers/Picker#widgetsForPickedItems}.</p>
+ * 
  * @module alfresco/pickers/Picker
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
@@ -103,11 +108,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_pickers_Picker__postCreate() {
-
          this.pubSubScope = this.generateUuid() + "_";
-
          this.currentPickers = [];
-
          this.alfSubscribe("ALF_ADD_PICKER", lang.hitch(this, this.addPicker));
 
          // If requested, show picked items...
@@ -242,7 +244,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "My Files",
+                        label: "picker.myFiles.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
@@ -259,7 +261,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "Shared Files",
+                        label: "picker.sharedFiles.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
@@ -278,7 +280,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "Repository",
+                        label: "picker.repository.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
@@ -295,7 +297,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "Recent Sites",
+                        label: "picker.recentSites.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
@@ -312,7 +314,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "Favorite Sites",
+                        label: "picker.favouriteSites.labe",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
