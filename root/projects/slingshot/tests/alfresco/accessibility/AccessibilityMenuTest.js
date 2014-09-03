@@ -92,8 +92,8 @@ define(["intern!object",
          .pressKeys([keys.ALT, keys.SHIFT, "s"])
          .pressKeys([keys.ALT, keys.SHIFT])
 //       Can't do this because of a conflict in FF on Windows that calls up a dialogue
-//         .pressKeys([specialKeys["Control"], specialKeys["Command"], "s"])
-//         .pressKeys([specialKeys["Control"], specialKeys["Command"]])
+//         .pressKeys([keys["Control"], keys["Command"], "s"])
+//         .pressKeys([keys["Control"], keys["Command"]])
          .url()
          .then(function (page) {
             // Only check the test if this isn't a Mac because of key combo conflicts.

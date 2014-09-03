@@ -30,7 +30,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, expect, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, expect, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfDocumentListWithHeaderView',
@@ -43,7 +43,7 @@ define(["intern!object",
             // .end()
 
             // Sort on the first column header...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
             .getVisibleText()
@@ -51,7 +51,7 @@ define(["intern!object",
                TestCommon.log(testname,51,"Check tab focus on column header 1");
                expect(resultText).to.equal("Column 1", "The text is incorrect");
             })
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
             .then(function(result) {
                TestCommon.log(testname,57,"Check sort on column header 1");
@@ -60,9 +60,9 @@ define(["intern!object",
             .end()
 
             // Sort on the second column header...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
                TestCommon.log(testname,68,"Check tab focus on column header 2");
@@ -71,9 +71,9 @@ define(["intern!object",
             .end()
 
             // Check that sort request doesn't occur for third column...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "col2"))
             .then(function(result) {
                TestCommon.log(testname,79,"Check sort on column header 2");
@@ -82,7 +82,7 @@ define(["intern!object",
             .end()
 
             // // Go back to the previous header cell and sort in the opposite direction...
-            .pressKeys([specialKeys.Shift,specialKeys.Tab])
+            .pressKeys([keys.SHIFT,keys.TAB])
             .sleep(alfPause)
 
             // Check it is currently sorted ascendinging...
@@ -92,7 +92,7 @@ define(["intern!object",
                assert(result == true, "The initial sort direction is not ascending");
             })
             // Now change the sort direction...
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
             .then(function(result) {
                TestCommon.log(testname,98,"Check reversed sort direction on column header 2");
@@ -100,15 +100,15 @@ define(["intern!object",
             })
 
             // Now go to the table itself...
-            .pressKeys(specialKeys.Shift) // Need to remove shift...
+            .pressKeys(keys.SHIFT) // Need to remove shift...
             .sleep(alfPause)
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
 
             // Should now be on the first row, tab to focus on the first cell...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
 
             .getActiveElement()
@@ -119,11 +119,11 @@ define(["intern!object",
             })
 
             // Use the cursor keys to go to the next line...
-            .pressKeys(specialKeys['Down arrow'])
+            .pressKeys(keys['Down arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
             .getVisibleText()
@@ -134,15 +134,15 @@ define(["intern!object",
             .end()
 
             // Use the cursor keys to wrap back to the first row...
-            .pressKeys(specialKeys['Down arrow'])
+            .pressKeys(keys['Down arrow'])
             .sleep(alfPause)
-            .pressKeys(specialKeys['Down arrow'])
+            .pressKeys(keys['Down arrow'])
             .sleep(alfPause)
-            .pressKeys(specialKeys['Down arrow'])
+            .pressKeys(keys['Down arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
             .getVisibleText()
@@ -153,11 +153,11 @@ define(["intern!object",
             .end()
 
             // Use the up cursor to wrap back to the last element...
-            .pressKeys(specialKeys['Up arrow'])
+            .pressKeys(keys['Up arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
             .getVisibleText()
@@ -168,11 +168,11 @@ define(["intern!object",
             .end()
 
             // Use the up cursor to go to the third row
-            .pressKeys(specialKeys['Up arrow'])
+            .pressKeys(keys['Up arrow'])
             .sleep(alfPause)
 
             // Select the first element...
-            .pressKeys(specialKeys.Tab)
+            .pressKeys(keys.TAB)
             .sleep(alfPause)
             .getActiveElement()
             .getVisibleText()

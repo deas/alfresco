@@ -27,7 +27,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfCheckableMenuItem Test',
@@ -172,10 +172,10 @@ define(["intern!object",
             // Test #13
             // Use keyboard navigation to drive the checkable menu items...
             .end()
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.topicSelector("CHECKABLE_2", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #13 - Keyboard selection of CHECKABLE_2 didn't publish correctly");
@@ -195,12 +195,12 @@ define(["intern!object",
             // Test #14
             // Use keyboard navigation to drive the grouped checkable menu items...
             .end()
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.topicSelector("ALF_CHECKABLE_MENU_ITEM__CHECKABLE_GROUP", "publish"))
             .then(function(result) {
                assert(result == true, "Test #14 - Keyboard selection of grouped item didn't publish to group");

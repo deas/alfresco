@@ -26,7 +26,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'SearchResultPropertyLink Test',
@@ -46,8 +46,8 @@ define(["intern!object",
             .end()
 
          // 2. Use the keyboard to click each in turn
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
             .then(function(elements) {
                TestCommon.log(testname,53,"Check that 'SHARE_PAGE_RELATIVE' is set as the type");
@@ -67,8 +67,8 @@ define(["intern!object",
             })
             .end()
 
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "site/site1/documentlibrary?path=/folder1/folder2/folder3"))
             .then(function(elements) {
                TestCommon.log(testname,74,"Check that url is correct for site folder");
@@ -76,8 +76,8 @@ define(["intern!object",
             })
             .end()
 
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "document-details?nodeRef=workspace://SpacesStore/some-fake-uuid"))
             .then(function(elements) {
                TestCommon.log(testname,83,"Check that url is correct for repo document");
@@ -85,8 +85,8 @@ define(["intern!object",
             })
             .end()
 
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "repository?path=/folder1/folder2/folder3"))
             .then(function(elements) {
                TestCommon.log(testname,92,"Check that url is correct for repo document");

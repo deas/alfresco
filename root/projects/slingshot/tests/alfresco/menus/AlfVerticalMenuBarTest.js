@@ -27,7 +27,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfVerticalMenuBar Test',

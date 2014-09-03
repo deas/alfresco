@@ -27,7 +27,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfMenuItemWrapper Test',
@@ -39,18 +39,18 @@ define(["intern!object",
             // Test #1
             // Check that keyboard navigation works
             .end()
-            .pressKeys(specialKeys["Tab"])
-            .pressKeys(specialKeys["Down arrow"]) // Opens the drop-down
-            .pressKeys(specialKeys["Down arrow"]) // Skips over log to 2nd button
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.ARROW_DOWN) // Opens the drop-down
+            .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #1a - The wrapped menu item without focus was not skipped on downward keyboard navigation");
             })
-            .pressKeys(specialKeys["Up arrow"]) // Skips over log to 2nd button
+            .pressKeys(keys.ARROW_UP) // Skips over log to 2nd button
             .sleep(1000)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #1b - The wrapped menu item without focus was not skipped on upwards keyboard navigation");
@@ -60,16 +60,16 @@ define(["intern!object",
             // .findByCssSelector(".alfresco-logo-large")
             //    .click()
             //    .end()
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #1c - The wrapped menu item without focus was not navigated away from successfully");
             })
-            .pressKeys(specialKeys["Down arrow"]) // Skips over log to 2nd button
+            .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #1d - The empty wrapped menu item was not skipped on keyboard navigation");

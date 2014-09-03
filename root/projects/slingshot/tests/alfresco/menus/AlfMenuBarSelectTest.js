@@ -27,7 +27,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfMenuBarSelect Test',
@@ -83,10 +83,10 @@ define(["intern!object",
 
             // Test #3
             // Use the keyboard to test label set (using label)...
-            .pressKeys(specialKeys["Tab"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #3 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");
@@ -108,9 +108,9 @@ define(["intern!object",
 
             // Test #4
             // Use the keyboard to test label set (using value)...
-            .pressKeys(specialKeys["Right arrow"])
+            .pressKeys(keys.ARROW_RIGHT)
             .sleep(1000)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_VALUE", "publish", "last"))
             .then(function(result) {
                assert(result == true, "Test #4 - Keyboard selection of 'Option 1' didn't publish correctly (missing topic)");

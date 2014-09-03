@@ -29,7 +29,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfMenuBarToggle Test',
@@ -171,8 +171,8 @@ define(["intern!object",
 
          .end()
 
-         .pressKeys(specialKeys.Tab)
-         .pressKeys(specialKeys["Space"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.SPACE)
          .end()
 
          .hasElementByCss(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
@@ -190,8 +190,8 @@ define(["intern!object",
          })
          .end()
 
-         .pressKeys(specialKeys["Right arrow"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.ARROW_RIGHT)
+         .pressKeys(keys.RETURN)
          .end()
 
          .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
@@ -223,8 +223,8 @@ define(["intern!object",
          })
          .end()
 
-         .pressKeys(specialKeys["Right arrow"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.ARROW_RIGHT)
+         .pressKeys(keys.RETURN)
 
          .hasElementByCss(TestCommon.topicSelector("CLICK", "publish", "last"))
          .then(function(result) {

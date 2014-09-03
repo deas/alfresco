@@ -27,7 +27,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'Basic Menus Test',
@@ -40,10 +40,10 @@ define(["intern!object",
          
             // Test #1 
             // Open the drop-down menu and select the FIRST menut item using the space bar...
-            .pressKeys(specialKeys.Tab)
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 after Test #1");
@@ -52,10 +52,10 @@ define(["intern!object",
 
             // Test #2
             // Open the drop-down menu and select the SECOND menu item using the return key...
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #2");
@@ -64,11 +64,11 @@ define(["intern!object",
 
             // Test #3
             // Open the menu and select the first item in the SECOND group (tests cross-group navigation)...
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_3"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_3 in Test #3");
@@ -77,12 +77,12 @@ define(["intern!object",
 
             // Test #4
             // Test cross group navigation both up and down groups...
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Up arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_UP)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #4");
@@ -91,10 +91,10 @@ define(["intern!object",
 
             // Test #5
             // Test going from first item in first group to last item in last group...
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Up arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_UP)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_6"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_6 in Test #5");
@@ -103,11 +103,11 @@ define(["intern!object",
 
             // Test #6
             // Test going from the last item in the last group to the first item in the first group...
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Up arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_UP)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_1 in Test #6");
@@ -116,9 +116,9 @@ define(["intern!object",
 
             // Test #7
             // Test going along the menu bar (the menu bar should already have focus)...
-            .pressKeys(specialKeys["Right arrow"])
+            .pressKeys(keys.ARROW_RIGHT)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "MENU_BAR_ITEM_1"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_BAR_ITEM_1 in Test #7");
@@ -128,21 +128,21 @@ define(["intern!object",
             // Test #8
             // Test navigating between UNGROUPED menu items in a drop down menu...
             // (Moving to the menu will open it and have the first item selected)
-            .pressKeys(specialKeys["Right arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_RIGHT)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "MENU_ITEM_8"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_8 in Test #8");
             })
             .end()
 
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Up arrow"])
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_UP)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "url", "MENU_ITEM_7"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_7 in Test #8");
@@ -151,13 +151,13 @@ define(["intern!object",
 
             // Test #9
             // Test cascade menu keyboard navigation (opening and closing cascades)...
-            .pressKeys(specialKeys["Right arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"]) // Go past and back to cascade
-            .pressKeys(specialKeys["Up arrow"])
-            .pressKeys(specialKeys["Right arrow"]) // Open the cascade
+            .pressKeys(keys.ARROW_RIGHT)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN) // Go past and back to cascade
+            .pressKeys(keys.ARROW_UP)
+            .pressKeys(keys.ARROW_RIGHT) // Open the cascade
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_11"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_11 in Test #9");
@@ -166,13 +166,13 @@ define(["intern!object",
 
             // Test #10
             // Test opening cascades within cascades...
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Right arrow"]) // Open the FIRST cascade
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Right arrow"]) // Open the SECOND cascade
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_RIGHT) // Open the FIRST cascade
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_RIGHT) // Open the SECOND cascade
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_13"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_13 in Test #10");
@@ -181,13 +181,13 @@ define(["intern!object",
 
             // Test #11
             // Test closing cascades
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Right arrow"]) // Open the cascade
-            .pressKeys(specialKeys["Left arrow"])  // Close the cascade 
-            .pressKeys(specialKeys["Down arrow"])  // Select the next menu item
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_RIGHT) // Open the cascade
+            .pressKeys(keys.ARROW_LEFT)  // Close the cascade 
+            .pressKeys(keys.ARROW_DOWN)  // Select the next menu item
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_14"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_14 in Test #11");
@@ -196,10 +196,10 @@ define(["intern!object",
 
             // Test #12
             // Test menu item wrapper navigation (e.g. that you can navigate over non-menu items)
-            .pressKeys(specialKeys["Right arrow"])
-            .pressKeys(specialKeys["Down arrow"]) // This should jump over the logo widget inserted into the menu
+            .pressKeys(keys.ARROW_RIGHT)
+            .pressKeys(keys.ARROW_DOWN) // This should jump over the logo widget inserted into the menu
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_10"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_10 in Test #12");
@@ -208,11 +208,11 @@ define(["intern!object",
 
             // Test #13
             // Test menu item wrapper navigation (e.g. that you can navigate back up over non-menu items)
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Down arrow"]) // This should jump over the logo widget inserted into the menu
-            .pressKeys(specialKeys["Up arrow"]) // This should jump over the logo widget inserted into the menu
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_DOWN) // This should jump over the logo widget inserted into the menu
+            .pressKeys(keys.ARROW_UP) // This should jump over the logo widget inserted into the menu
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_9"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_9 in Test #13");
@@ -221,10 +221,10 @@ define(["intern!object",
 
             // Test #14
             // Test right cursor wrapping on menu...
-            .pressKeys(specialKeys["Right arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_RIGHT)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_2 in Test #14");
@@ -233,10 +233,10 @@ define(["intern!object",
 
             // Test #15
             // Test left cursor wrapping on menu...
-            .pressKeys(specialKeys["Left arrow"])
-            .pressKeys(specialKeys["Down arrow"])
+            .pressKeys(keys.ARROW_LEFT)
+            .pressKeys(keys.ARROW_DOWN)
             .sleep(1000)
-            .pressKeys(specialKeys["Space"])
+            .pressKeys(keys.SPACE)
             .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_10"))
             .then(function(result) {
                assert(result == true, "Could not find MENU_ITEM_10 in Test #15");

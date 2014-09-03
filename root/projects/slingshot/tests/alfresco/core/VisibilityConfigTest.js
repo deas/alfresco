@@ -26,7 +26,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'VisibilityConfig Test',

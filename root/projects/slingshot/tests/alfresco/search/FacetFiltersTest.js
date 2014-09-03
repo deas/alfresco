@@ -29,7 +29,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, require, TestCommon, keys) {
 
    registerSuite({
       name: 'FacetFilters Test',
@@ -267,8 +267,8 @@ define(["intern!object",
          .end()
 
          // 'click' the first button
-         .pressKeys(specialKeys.Tab)
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .end()
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -279,10 +279,10 @@ define(["intern!object",
          .end()
 
          // Move to the facet menu label and 'click' it
-         .pressKeys(specialKeys.Tab)
-         .pressKeys(specialKeys.Tab)
-         .pressKeys(specialKeys.Tab)
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .end()
 
          .findByCssSelector("#FACET1 > ul.filters")
@@ -294,7 +294,7 @@ define(["intern!object",
          .end()
 
          // 'Click' the menu label again to re-show the menu
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.RETURN)
          .end()
 
          .findByCssSelector("#FACET1 > ul.filters")
@@ -306,8 +306,8 @@ define(["intern!object",
          .end()
 
          // Tab onto the first facet in the menu and 'click' it - it should select
-         .pressKeys(specialKeys.Tab)
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.RETURN)
          .end()
 
          .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
@@ -326,7 +326,7 @@ define(["intern!object",
          .end()
 
          // 'Click' the first facet menu item again - it should de-select
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.RETURN)
          .end()
 
          .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")

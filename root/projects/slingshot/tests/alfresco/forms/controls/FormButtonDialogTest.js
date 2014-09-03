@@ -25,7 +25,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, require, TestCommon, keys) {
 
    registerSuite({
       name: 'FormButtonDialog Test',

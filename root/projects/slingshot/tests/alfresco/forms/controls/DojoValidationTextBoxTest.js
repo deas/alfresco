@@ -26,7 +26,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'Validation Text Box Test',
@@ -111,7 +111,7 @@ define(["intern!object",
 
             // When Field1 is updated the field should become visible...
             .findByCssSelector("#INITIAL_VALUE1 .dijitInputContainer input")
-               .type(specialKeys["Back space"])
+               .type(keys.BACKSPACE)
                .end()
             .findByCssSelector("#SINGLE_POSITIVE_RULES")
                .getComputedStyle("display")
@@ -127,7 +127,7 @@ define(["intern!object",
 
             // When Field2 is updated the field should become required...
             .findByCssSelector("#INITIAL_VALUE2 .dijitInputContainer input")
-               .type(specialKeys["Back space"])
+               .type(keys.BACKSPACE)
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES span.requirementIndicator")
                .getComputedStyle("display")
@@ -144,7 +144,7 @@ define(["intern!object",
 
             // When Field3 is updated the field should become disabled...
             .findByCssSelector("#INITIAL_VALUE3 .dijitInputContainer input")
-               .type(specialKeys["Back space"])
+               .type(keys.BACKSPACE)
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES .dijitInputContainer input")
                .getAttribute("disabled")
@@ -238,7 +238,7 @@ define(["intern!object",
 
             // Make it visible again...
             .findByCssSelector("#INITIAL_VALUE1 .dijitInputContainer input")
-               .type(specialKeys["Back space"])
+               .type(keys.BACKSPACE)
                .end()
             // Requirement should be ON
             .findByCssSelector("#MULTIPLE_MIXED_RULES span.requirementIndicator")
@@ -301,7 +301,7 @@ define(["intern!object",
                .end()
             // Remove the non-numeric and enter some numbers...
             .findByCssSelector("#HAS_VALIDATION_CONFIG .dijitInputContainer input")
-               .type(specialKeys["Back space"])
+               .type(keys.BACKSPACE)
                .type("1234")
                .end()
             .findByCssSelector("#HAS_VALIDATION_CONFIG span.validation")

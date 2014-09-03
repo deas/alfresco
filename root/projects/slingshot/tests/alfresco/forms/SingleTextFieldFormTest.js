@@ -26,7 +26,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'SingleTextFieldFormTest',
@@ -39,7 +39,7 @@ define(["intern!object",
 
          // 1. Test that enter won't submit without any data in the field...
          .findByCssSelector("#STFF1 .dijitInputContainer input")
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .findAllByCssSelector(TestCommon.topicSelector("TEST_PUBLISH", "publish", "any"))
                .then(function(elements) {
                   TestCommon.log(testname,45,"Check enter key cannot be used to submit data if field is empty");
@@ -50,7 +50,7 @@ define(["intern!object",
          // 2. Test entering some text and hitting enter (rather than the OK button)...
          .findByCssSelector("#STFF1 .dijitInputContainer input")
             .type("test")
-            .pressKeys(specialKeys["Return"])
+            .pressKeys(keys.RETURN)
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "search", "test"))
             .then(function(elements) {

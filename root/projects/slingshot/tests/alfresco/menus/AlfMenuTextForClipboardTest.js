@@ -31,7 +31,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AlfMenuTextForClipboard Test',
@@ -42,45 +42,45 @@ define(["intern!object",
 
             // Test #1
             // Check the initial labels...
-            .pressKeys(specialKeys["Tab"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Right arrow"])
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_RIGHT)
             // .findByCssSelector("#TEXT1 span.label")
             //    .getVisibleText()
             //    .then(function(resultText) {
             //       assert(resultText == "", "Test #1a - The inital label of TEXT1 has been set incorrectly: " + resultText);
             //    })
             //    .end()
-            .pressKeys(specialKeys["Left arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Right arrow"])
+            .pressKeys(keys.ARROW_LEFT)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_RIGHT)
             // .findByCssSelector("#TEXT2 span.label")
             //    .getVisibleText()
             //    .then(function(resultText) {
             //       assert(resultText == "", "Test #1b - The inital label of TEXT2 has been set incorrectly: " + resultText);
             //    })
             // .end()
-            .pressKeys(specialKeys["Left arrow"])
-            .pressKeys(specialKeys["Down arrow"])
-            .pressKeys(specialKeys["Right arrow"])
+            .pressKeys(keys.ARROW_LEFT)
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.ARROW_RIGHT)
 
             // .findByCssSelector("#TEXT3 span.text")
             // .addValue(['Control','x','NULL'],function(err) {
             //             expect(err).to.be.null;
             //         })
             // .sleep(2000)
-            // .type([specialKeys["Control"],"c"])
+            // .type([keys["Control"],"c"])
 
 
-            .pressKeys(specialKeys["Tab"])
-            .pressKeys(specialKeys["Tab"])
-            // .pressKeys(specialKeys["Tab"])
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.TAB)
+            // .pressKeys(keys.TAB)
             // .findByCssSelector("#TEXTAREA textarea")
             //    .click()
             //    // .type("hello")
             //    // .sleep(1000)
             // .sleep(2000)
-            // .type([specialKeys["Control"],"v"])
+            // .type([keys["Control"],"v"])
                // .end()
                // .sleep(2000)
 

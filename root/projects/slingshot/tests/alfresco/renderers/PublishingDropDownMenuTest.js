@@ -26,7 +26,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, assert, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'PublishingDropDownMenu Test',
@@ -119,12 +119,12 @@ define(["intern!object",
          .end()
 
          // // Open another menu with key functions - check it is visible
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Tab"])
-         .pressKeys(specialKeys["Down arrow"])
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.TAB)
+         .pressKeys(keys.ARROW_DOWN)
          .sleep(500)
          .findByCssSelector(".dijitMenuPopup")
          .isDisplayed()
@@ -135,8 +135,8 @@ define(["intern!object",
          .end()
 
          // Select another item in the menu - check the menu disappears
-         .pressKeys(specialKeys["Down arrow"])
-         .pressKeys(specialKeys["Return"])
+         .pressKeys(keys.ARROW_DOWN)
+         .pressKeys(keys.RETURN)
          .sleep(500)
          .findByCssSelector(".dijitMenuPopup")
          .isDisplayed()
