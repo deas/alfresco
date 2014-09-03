@@ -117,7 +117,7 @@ define(["dojo/_base/declare",
             var response = JSON.parse(this.cleanupJSONResponse(response));
          }
          
-         // Display a success message...
+         // Display a failure message...
          this.displayMessage(this.message("message.status.failure"));
          
          this.alfPublish("ALF_USER_STATUS_UPDATE_FAILURE", response);

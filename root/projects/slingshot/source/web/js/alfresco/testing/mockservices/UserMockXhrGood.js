@@ -19,14 +19,14 @@
 
 /**
  *
- * @module alfresco/testing/SearchMockXhr
+ * @module alfresco/testing/UserMockXhr
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
         "alfresco/testing/MockXhr",
-        "dojo/text!./responseTemplates/SearchTest/XhrSearchResponse.json"], 
-        function(declare, MockXhr, xhrSearchResponse) {
-   
+        "dojo/text!./responseTemplates/UserTest/XhrUserStatusResponseGood.json"], 
+        function(declare, MockXhr, xhrUserStatusResponseGood) {
+
    return declare([MockXhr], {
 
       /**
@@ -37,9 +37,10 @@ define(["dojo/_base/declare",
       setupServer: function alfresco_testing_MockXhr__setupServer() {
          try
          {
-            var templateToUse = xhrSearchResponse;
-            this.server.respondWith("GET",
-                                    /\/share\/proxy\/alfresco\/slingshot\/search/,
+            var templateToUse = xhrUserStatusResponseGood;
+            templateToUse = templateToUse.replace("{0}",(new Date()).toISOString());
+            this.server.respondWith("POST",
+                                    /\/share\/service\/components\/profile\/userstatus/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      templateToUse]);
