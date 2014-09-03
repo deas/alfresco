@@ -130,7 +130,7 @@ public class HierarchicalResourceLoader extends DefaultResourceLoader implements
             dialectClassStr = System.getProperty(prop, dialectClass);
         }
 
-        Class dialectBaseClazz;
+        Class<?> dialectBaseClazz;
         try
         {
             dialectBaseClazz = Class.forName(dialectBaseClassStr);
@@ -139,7 +139,7 @@ public class HierarchicalResourceLoader extends DefaultResourceLoader implements
         {
             throw new RuntimeException("Dialect base class not found: " + dialectBaseClassStr);
         }
-        Class dialectClazz;
+        Class<?> dialectClazz;
         try
         {
             dialectClazz = Class.forName(dialectClassStr);
