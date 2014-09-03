@@ -68,7 +68,7 @@ define(["dojo/_base/declare",
             var url = this.errorReportingUrl;
             if (url == null)
             {
-               url = AlfConstants.PROXY_URI + "aikau/error-report"
+               url = AlfConstants.URL_SERVICECONTEXT + "aikau/error-report"
             }
             var config = {
                callerName: (payload.callerName) ? payload.callerName : "unknown-caller",
