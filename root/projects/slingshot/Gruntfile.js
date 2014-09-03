@@ -54,13 +54,16 @@ module.exports = function(grunt) {
       'shell:jsdoc'
    ]);
 
+   // TODO: Switch from Dev Env commands (which community don't have) to mvn targets if DevEnv isn't present.
+
    // TODO: Rationalise these once we've got a workflow sorted.
    //   Grunt Work Flow:
    //
-   //      g cup: performs a clean update from SVN, full build & starts both servers.
-   //      g s: exploded reploy and server restart
-   //      g si: incremental build, exploded delopy
-
+   //      grunt d: start existing repo, start share (s -e), brings up vagrant & runs watch server.
+   //      grunt cup: performs a clean update from SVN, full build & starts both servers.
+   //      grunt d-cup: combines both above. (Clean & Update, Full Builds, Vagrant & Watch)
+   //      grunt s: exploded redeploy and server restart
+   //      grunt si: incremental build, exploded deploy
 
    // Dev
    grunt.registerTask('d', [
@@ -103,7 +106,7 @@ module.exports = function(grunt) {
    grunt.registerTask('clean', [
       'shell:antClean',
       'shell:mvnClean'
-   ])
+   ]);
 
    // Build & start after a Clean & UPdate
    grunt.registerTask('cup', [

@@ -24,11 +24,123 @@
  */
 
 module.exports = function (grunt, alf) {
-   // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
-   return {
-      // Shell Commands run by grunt
-      // @see: https://github.com/sindresorhus/grunt-shell
-      shell: {
+
+   var _ = require('lodash'), // Add the lodash util library
+      extend = _.extend;
+
+   // Shell Commands run by grunt
+   // @see: https://github.com/sindresorhus/grunt-shell
+   // Community Config to support the community who don't have access to our Dev Env.
+   // Alfresco Config makes use of Dev Env commands that allow us to build Enterprise as well
+
+   var communityConfig = {
+         // Reset Share's Caches:
+         resetCaches: {
+            command: 'curl -s -d "reset=on" --header "Accept-Charset:ISO-8859-1,utf-8" --header "Accept-Language:en" -u admin:admin http://localhost:8081/share/service/index ;  curl -s "http://localhost:8081/share/page/caches/dependency/clear" -H "Content-Type: application/x-www-form-urlencoded" --data "submit=Clear+Dependency+Caches" -u admin:admin',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+
+         // start share & alfresco
+         // Assumes script called "start-tomcat" and "start-app-tomcat" exist.
+         startRepo: {
+            command: 'mvn install -pl projects/web-client,projects/solr -Psolr-http -DskipTests && start-tomcat',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startRepoExistingBuild: {
+            command: 'start-tomcat',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         se: {
+            command: 'mvn prepare-package -pl projects/slingshot -DskipTests -Dmaven.yuicompressor.skip',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startShare: {
+            command: 'mvn prepare-package -pl projects/slingshot -DskipTests -Dmaven.yuicompressor.skip && start-app-tomcat',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startShareInc: {
+            command: 'mvn install -pl projects/slingshot -DskipTests && start-app-tomcat',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         }
+      },
+      alfrescoConfig = {
+         // Reset Share's Caches:
+         resetCaches: {
+            command: 'ws -s; ds -s',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+
+         // start share & alfresco
+         startRepo: {
+            command: 'm r -ie && m r -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startRepoExistingBuild: {
+            command: 'm r -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         se: {
+            command: 'm s -e',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startShare: {
+            command: 'm s -e && m s -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         },
+         startShareInc: {
+            command: 'm s -ie && m s -t',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true
+            }
+         }
+      },
+      sharedConfig = {
          antClean: {
             command: 'ant clean',
             options: {
@@ -76,16 +188,6 @@ module.exports = function (grunt, alf) {
             }
          },
 
-         // Reset Share's Caches:
-         resetCaches: {
-            command: 'ws -s; ds -s',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true
-            }
-         },
-
          // selenium
          seleniumUp: {
             command: 'java -jar selenium*.jar',
@@ -100,47 +202,7 @@ module.exports = function (grunt, alf) {
             }
          },
 
-         // start share & alfresco
-         startRepo: {
-            command: 'r -ie && r -t',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true
-            }
-         },
-         startRepoExistingBuild: {
-            command: 'r -t',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true
-            }
-         },
-         se: {
-            command: 's -e',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true
-            }
-         },
-         startShare: {
-            command: 's -e && s -t',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true
-            }
-         },
-         startShareInc: {
-            command: 's -ie && s -t',
-            options: {
-               stdout: true,
-               stderr: true,
-               failOnError: true
-            }
-         },
+         // Stop running servers (I don't know of a more friendly but equally effective than this).
          killRepo: {
             command: 'kill `lsof -t -i :8080 -sTCP:LISTEN`',
             options: {
@@ -183,7 +245,7 @@ module.exports = function (grunt, alf) {
                }
             }
          },
-         // Reset the vagrant VM 
+         // Reset the vagrant VM
          vagrantDestroy: {
             command: 'vagrant destroy -f',
             options: {
@@ -221,6 +283,12 @@ module.exports = function (grunt, alf) {
                }
             }
          }
-      }
+      },
+      configToMerge = (process.env.CURRENT_PROJECT)? alfrescoConfig : communityConfig,
+      shellConfig = extend(sharedConfig, configToMerge);
+
+   // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
+   return {
+      shell: shellConfig
    };
 };
