@@ -33,23 +33,26 @@ define(["intern!object",
       'AlfSearchListTest': function () {
          var browser = this.remote,
              testname = "AlfSearchListTest",
-             document,
-             countResults = function(expected) {
-                /* TODO: Mock Search service doesn't work, so no results are returned.
-                TestCommon.log(testname, "Checking that result count is correct");
-                // Get all result rows from DOM
-                browser.findAllByCssSelector(".alfresco-search-AlfSearchResult")
-                   .then(function(elements) {
-                      assert(elements.length === expected, "Counting Result, expected: " + expected + ", found: " + elements.length);
-                   })
-                   .end();
-                */
-             },
+
+            countResults = function(expected) {
+               /* TODO: Mock Search service doesn't work, so no results are returned.
+               TestCommon.log(testname, "Checking that result count is correct");
+               // Get all result rows from DOM
+               browser.findAllByCssSelector(".alfresco-search-AlfSearchResult")
+                  .then(function(elements) {
+                     assert(elements.length === expected, "Counting Result, expected: " + expected + ", found: " + elements.length);
+                  })
+                  .end(); */
+            },
             scrollToBottom = function() {
                browser.execute("return window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight))")
+               .sleep(250)
+               .end();
             },
             scrollToTop = function() {
-               browser.execute("return window.scrollTo(0,0)");
+               browser.execute("return window.scrollTo(0,0)")
+               .sleep(250)
+               .end();
             };
 
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/SearchListScroll_TestPage.json", testname)
@@ -104,7 +107,6 @@ define(["intern!object",
             .then(function(){
                countResults(50);
             })
-
 
             // Scroll Again.
             .then(function(){

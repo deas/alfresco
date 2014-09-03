@@ -115,9 +115,8 @@ define(["dojo/_base/declare",
                   var message = Array.prototype.slice.apply(arguments).join(' ');
                   original(message);
                }
-            }
+            };
          }
-
          var methods = ['log', 'warn', 'error'];
          for (var i = 0; i < methods.length; i++)
          {
