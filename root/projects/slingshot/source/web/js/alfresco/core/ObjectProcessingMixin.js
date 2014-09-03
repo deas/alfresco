@@ -64,18 +64,28 @@ define(["dojo/_base/declare",
        */
       processCurrentItemTokens: function alfresco_core_ObjectProcessingMixin__processCurrentItemTokens(v) {
          // Only replace a value if it actually exists, otherwise leave the token exactly as is.
-         var u = lang.replace(v, function(tokenIncudingBraces, tokenWithoutBraces) {
-            var existingValue = lang.getObject(tokenWithoutBraces, false, this.currentItem);
-            if (existingValue == null)
-            {
-               return tokenIncudingBraces;
-            }
-            else
-            {
-               return existingValue;
-            }
-          });
+         var u = lang.replace(v, lang.hitch(this, this.safeReplace));
          return u;
+      },
+
+      /**
+       * This replace funtcion is called from [processCurrentItemTokens]{@link module:alfresco/core/ObjectProcessingMixin#processCurrentItemTokens}
+       * and updates the default Dojo replace function to only replace tokens if the token is a key in the currentItem
+       *
+       * @param {string} tokenIncudingBraces The token including braces (e.g. "{token}")
+       * @param {string} tokenWithoutBraces The token without braces (e.g. "token")
+       * @return {string} The replacement value
+       */
+      safeReplace: function alfresco_code_ObjectProcessingMixin__safeReplace(tokenIncudingBraces, tokenWithoutBraces) {
+         var existingValue = lang.getObject(tokenWithoutBraces, false, this.currentItem);
+         if (existingValue == null)
+         {
+            return tokenIncudingBraces;
+         }
+         else
+         {
+            return existingValue;
+         }  
       },
 
       /**
