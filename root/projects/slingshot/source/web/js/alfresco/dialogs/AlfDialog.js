@@ -185,9 +185,13 @@ define(["dojo/_base/declare",
          var computedStyle = domStyle.getComputedStyle(this.containerNode);
          var output = domGeom.getMarginBox(this.containerNode, computedStyle);
 
-         if (this.widgetsButtons != null || this.widgetsButtons.length > 0)
+         if (this.widgetsButtons != null && this.widgetsButtons.length > 0)
          {
             domStyle.set(this.bodyNode, "height", (output.h - 56) + "px");
+         }
+         else
+         {
+            domStyle.set(this.bodyNode, "height", "100%");
          }
          
          if (this.handleOverflow === true)
