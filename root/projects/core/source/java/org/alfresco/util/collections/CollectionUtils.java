@@ -532,4 +532,24 @@ public abstract class CollectionUtils
         }
         return orderedMap;
     }
+    
+    /**
+     * This method offers convenient conversion from value-based comparators to entry-based comparators
+     * for use with {@link #sortMapByValue(Map, Comparator)} above.
+     * <p/>
+     * Call it like so: {@code CollectionUtils.<String, Integer>toEntryComparator(valueComparator);}
+     * 
+     * @param entryComparator a comparator which compares the value types from a Map.
+     * @return a comparator which takes Map.Entry objects from that Map and compares their values.
+     */
+    public static <K, V> Comparator<Entry<K, V>> toEntryComparator(final Comparator<V> valueComparator)
+    {
+        return new Comparator<Entry<K, V>>()
+        {
+            @Override public int compare(Entry<K, V> e1, Entry<K, V> e2)
+            {
+                return valueComparator.compare(e1.getValue(), e2.getValue());
+            }
+        };
+    }
 }

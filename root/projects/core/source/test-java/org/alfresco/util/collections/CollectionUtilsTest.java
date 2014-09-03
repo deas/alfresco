@@ -18,14 +18,17 @@
  */
 package org.alfresco.util.collections;
 
-import static org.alfresco.util.collections.CollectionUtils.nullSafeMerge;
+import static org.alfresco.util.collections.CollectionUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Before;
@@ -43,6 +46,7 @@ public class CollectionUtilsTest
     private static Map<String, Integer> primes;
     private static Map<String, Integer> squares;
     private static Map<String, Integer> nullMap;
+    private static Map<String, Integer> nerdsBirthdays;
     
     @Before public void initData()
     {
@@ -60,6 +64,15 @@ public class CollectionUtilsTest
         squares.put("one", 1);
         squares.put("two", 4);
         squares.put("three", 9);
+        
+        nerdsBirthdays = new HashMap<>();
+        nerdsBirthdays.put("Alan Turing",           1912);
+        nerdsBirthdays.put("Charles Babbage",       1791);
+        nerdsBirthdays.put("Matthew Smith",         1966);
+        nerdsBirthdays.put("Paul Dirac",            1902);
+        nerdsBirthdays.put("Robert Boyle",          1627);
+        nerdsBirthdays.put("Robert Hooke",          1635);
+        nerdsBirthdays.put("J. Robert Oppenheimer", 1904);
     }
     
     @Test public void varArgsAsSet()
@@ -84,15 +97,6 @@ public class CollectionUtilsTest
     
     @Test public void collectionFiltering() throws Exception
     {
-        Map<String, Integer> nerdsBirthdays = new HashMap<String, Integer>();
-        nerdsBirthdays.put("Alan Turing",           1912);
-        nerdsBirthdays.put("Charles Babbage",       1791);
-        nerdsBirthdays.put("Matthew Smith",         1966);
-        nerdsBirthdays.put("Paul Dirac",            1902);
-        nerdsBirthdays.put("Robert Boyle",          1627);
-        nerdsBirthdays.put("Robert Hooke",          1635);
-        nerdsBirthdays.put("J. Robert Oppenheimer", 1904);
-        
         Function<String, Boolean> johnFilter = new KeySubstringFilter("John");
         assertEquals(0, CollectionUtils.filterKeys(nerdsBirthdays, johnFilter).size());
         
@@ -108,5 +112,54 @@ public class CollectionUtilsTest
         {
             return value.contains(substring);
         }
+    }
+    
+    @Test public void sortMapsByEntry() throws Exception
+    {
+        final Map<String, Integer> expectedSorting = getNerdsSortedByBirthDate();
+        
+        Comparator<Entry<String, Integer>> entryComparator = new Comparator<Entry<String, Integer>>()
+                {
+                    @Override public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2)
+                    {
+                        return e1.getValue().intValue() - e2.getValue().intValue();
+                    }
+                };
+        
+        final Map<String, Integer> actualSorting = CollectionUtils.sortMapByValue(nerdsBirthdays, entryComparator);
+        
+        assertEquals(expectedSorting, actualSorting);
+    }
+    
+    @Test public void sortMapsByValue() throws Exception
+    {
+        final Map<String, Integer> expectedSorting = getNerdsSortedByBirthDate();
+        
+        Comparator<Integer> valueComparator = new Comparator<Integer>()
+                {
+                    @Override public int compare(Integer i1, Integer i2)
+                    {
+                        return i1.intValue() - i2.intValue();
+                    }
+                };
+        
+        Comparator<Entry<String, Integer>> entryComparator = CollectionUtils.<String, Integer>toEntryComparator(valueComparator);
+        
+        final Map<String, Integer> actualSorting = CollectionUtils.sortMapByValue(nerdsBirthdays, entryComparator);
+        
+        assertEquals(expectedSorting, actualSorting);
+    }
+    
+    private Map<String, Integer> getNerdsSortedByBirthDate()
+    {
+        final Map<String, Integer> result = new LinkedHashMap<>(); // maintains insertion order
+        result.put("Robert Boyle",          1627);
+        result.put("Robert Hooke",          1635);
+        result.put("Charles Babbage",       1791);
+        result.put("Paul Dirac",            1902);
+        result.put("J. Robert Oppenheimer", 1904);
+        result.put("Alan Turing",           1912);
+        result.put("Matthew Smith",         1966);
+        return result;
     }
 }
