@@ -11,6 +11,11 @@
    position: absolute;
 }
 
+.alfresco-renderers-Thumbnail span.link.hidden
+{
+   display: none;
+}
+
 .alfresco-renderers-Thumbnail span.droppable
 {
    background: url(./images/drop-arrow-left-large.png) no-repeat;

@@ -56,6 +56,7 @@ define({
       'tests/alfresco/documentlibrary/SearchListTest',
       'tests/alfresco/documentlibrary/SearchListScrollTest', // PASSING - TODO: NEEDS IMPLEMENTING PROPERLY,
       'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
+      'tests/alfresco/documentlibrary/views/GalleryViewTest',
 
       'tests/alfresco/footer/FooterTest',
 
@@ -114,7 +115,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: [], //['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests

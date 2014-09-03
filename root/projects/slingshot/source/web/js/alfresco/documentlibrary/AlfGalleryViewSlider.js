@@ -87,6 +87,7 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_documentlibrary_AlfGalleryViewSlider__postCreate() {
          this.inherited(arguments);
          domClass.add(this.domNode, "alfresco-documentlibrary-AlfGalleryViewSlider");
+         this.set("value", this.getSliderValueFromColumns(this.columns));
          this.alfPublish(this.getPreferenceTopic, {
             preference: "org.alfresco.share.documentList.galleryColumns",
             callback: this.setColumns,
@@ -94,6 +95,15 @@ define(["dojo/_base/declare",
          });
       },
       
+      /**
+       * The number of columns to be represented by the slider.
+       *
+       * @instance
+       * @type {number}
+       * @default 4
+       */
+      columns: 4,
+
       /**
        * @instance
        * @param {number} value The number of columns to set.
