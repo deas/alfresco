@@ -107,7 +107,7 @@ define(["dojo/_base/declare",
        * @instance
        * @returns {string} The currentItem being renderered.
        */ 
-      getPublishPayload: function alfresco_renderers_PropertyLink__getPublishTopic() {
+      getPublishPayload: function alfresco_renderers_PropertyLink__getPublishPayload() {
          if (this.useCurrentItemAsPayload == true)
          {
             return this.currentItem;

@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
       templateString: template,
       
       /**
-       * The size of the image. By default this will be "large" but can be set to "small" or "medium". The default widet has 3 image
+       * The size of the image. By default this will be "large" but can be set to "small" or "medium". The default widget has 3 image
        * sizes: 16px, 32px and 48px and changing the size will change the size of image that is used.
        * 
        * @instance
@@ -120,14 +120,14 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfLog("warn", "The current item eiter is not defined, has no 'fileName' attribute or the 'fileName' attribute contains no '.' characters", this);
+            this.alfLog("warn", "The current item either is not defined, has no 'fileName' attribute or the 'fileName' attribute contains no '.' characters", this);
          }
          return extn;
       },
 
       /**
        * This returns a String that represents the prefix for the <img> element src based on the file name of the current item. For example if a filename ends
-       * in ".jpg " then this is likley to return a prefix of "image".
+       * in ".jpg " then this is likely to return a prefix of "image".
        *
        * @instance
        * @returns {string} A string representation of the image prefix.
@@ -144,7 +144,7 @@ define(["dojo/_base/declare",
 
       /**
        * Returns a String that represents the size of the image. This string will be including in the "src" attribute of the
-       * <img> elment used to display the file type. By default "large" maps to "48", "medium" to "32" and "small" to "16".
+       * <img> element used to display the file type. By default "large" maps to "48", "medium" to "32" and "small" to "16".
        *
        * @instance
        * @return {string} The string that represents the correct image size to use in the "src" attribute for the image.
