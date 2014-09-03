@@ -26,10 +26,11 @@
  */
 define(["intern!object",
         "intern/chai!expect",
+        "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, require, TestCommon, keys) {
+        function (registerSuite, expect, assert, require, TestCommon, keys) {
 
    registerSuite({
       name: 'FacetFilters Test',
@@ -209,10 +210,11 @@ define(["intern!object",
          })
          .end()
 
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
-         .then(function(published) {
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
+         .then(function (){
             TestCommon.log(testname,214,"Clicking a facet should publish");
-            expect(published).to.equal(true, "The facet did not publish on 'ALF_APPLY_FACET_FILTER'");
+         }, function() {
+            fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER'");
          })
          .end()
 
@@ -229,10 +231,11 @@ define(["intern!object",
          })
          .end()
 
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
-         .then(function(published) {
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
+         .then(function() {
             TestCommon.log(testname,234,"Clicking a facet to deselect should publish");
-            expect(published).to.equal(true, "The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");
+         }, function() {
+            fail("The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");
          })
          .end()
 
@@ -318,10 +321,11 @@ define(["intern!object",
          })
          .end()
 
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
-         .then(function(published) {
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
+         .then(function() {
             TestCommon.log(testname,323,"Clicking a facet with the keyboard should publish");
-            expect(published).to.equal(true, "The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");
+         }, function() {
+            fail("The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");
          })
          .end()
 
@@ -337,10 +341,11 @@ define(["intern!object",
          })
          .end()
 
-         .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
-         .then(function(published) {
+         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
+         .then(function (){
             TestCommon.log(testname,342,"Clicking a facet using the keyboard to deselect should publish");
-            expect(published).to.equal(true, "The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");
+         },function() {
+            fail("The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");
          })
          .end()
 
@@ -375,7 +380,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .url()
+         .getCurrentUrl()
          .then(function (url) {
             TestCommon.log(testname,380,"Click the first item in the facet menu");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
@@ -388,7 +393,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .url()
+         .getCurrentUrl()
          .then(function (url) {
             TestCommon.log(testname,393,"Click the second item in the facet menu");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
@@ -402,7 +407,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .url()
+         .getCurrentUrl()
          .then(function (url) {
             TestCommon.log(testname,407,"Click the first item in the facet menu again");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
@@ -415,7 +420,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .url()
+         .getCurrentUrl()
          .then(function (url) {
             TestCommon.log(testname,420,"Click the second item in the facet menu again");
             expect(url).to.not.contain("FACET2QNAME", "The url hash should not now contain 'FACET2QNAME'")
