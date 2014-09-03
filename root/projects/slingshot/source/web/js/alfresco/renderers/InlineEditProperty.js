@@ -54,6 +54,15 @@ define(["dojo/_base/declare",
    return declare([Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin, _ItemLinkMixin], {
       
       /**
+       * The array of file(s) containing internationalised strings.
+       *
+       * @instance
+       * @type {object}
+       * @default [{i18nFile: "./i18n/InlineEditProperty.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/InlineEditProperty.properties"}],
+
+      /**
        * An array of the CSS files to use with this widget.
        * 
        * @instance
@@ -77,6 +86,33 @@ define(["dojo/_base/declare",
        */
       postParam: null,
       
+       /**
+       * This is the message or message key that will be used for save link text.
+       *
+       * @instance
+       * @type {string}
+       * @default "inline-edit.save.label"
+       */
+      saveLabel: "inline-edit.save.label",
+
+       /**
+       * This is the message or message key that will be used for the cancel link text.
+       *
+       * @instance
+       * @type {string}
+       * @default "inline-edit.cancel.label"
+       */
+      cancelLabel: "inline-edit.cancel.label",
+
+      /**
+       * This is the message or message key that will be used for the alt text attribute on the edit icon
+       *
+       * @instance
+       * @type {string}
+       * @default "inline-edit.edit.altText"
+       */
+      editAltText: "inline-edit.edit.altText",
+
       /**
        * This extends the inherited function to set the [postParam]{@link module:alfresco/renderers/InlineEditProperty#postParam]
        * attribute based on the [propertyToRender]{@link module:alfresco/renderers/InlineEditProperty#propertyToRender] if 
@@ -101,26 +137,19 @@ define(["dojo/_base/declare",
             this.alfLog("warn", "Property to render attribute has not been set", this);
          }
 
-         // TODO: This needs to be changed to use proper link generation...
-         this.generateFileFolderLink();
+         if (this.editIconImageSrc == null || this.editIconImageSrc == "")
+         {
+            this.editIconImageSrc = require.toUrl("alfresco/renderers") + "/css/images/edit-16.png";
+         }
+
+         // Localize the labels and alt-text...
+         this.saveLabel = this.message(this.saveLabel);
+         this.cancelLabel = this.message(this.cancelLabel);
+         this.editAltText = this.message(this.editAltText, {
+            0: this.renderedValue
+         });
       },
 
-      /**
-       * Handles the property being clicked. This stops the click event from propogating
-       * further through the DOM (to prevent any wrapping anchor elements from triggering
-       * browser navigation) and then publishes the configured topic and payload.
-       *
-       * @instance
-       * @param {object} evt The details of the click event
-       */
-      onLinkClick: function alfresco_renderers_InlineEditProperty__onLinkClick(evt) {
-         event.stop(evt);
-         var publishTopic = this.linkClickTopic;
-         var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
-         var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
-         this.alfPublish(publishTopic, this.publishPayload, publishGlobal, publishToParent);
-      },
-      
       /**
        * Emits a custom event to notify any containers that use keyboard navigation that handling
        * keyboard events needs to be suppressed whilst editing is taking place. If the argument

@@ -347,13 +347,21 @@ define(["intern/dojo/node!fs",
        */
       pubSubDataCssSelector: function(expectedRow, key, value) {
 
-         var row = "last-child"
-         if (expectedRow != "last")
+         var row = ""
+         if (expectedRow == "any")
          {
-            row = "nth-child(" + expectedRow + ")"
+            // Don't specify a row
+         }
+         else if (expectedRow == "last")
+         {
+            row = ":last-child"
+         }
+         else if (expectedRow != "last")
+         {
+            row = ":nth-child(" + expectedRow + ")"
          };
 
-         var selector = ".alfresco-testing-SubscriptionLog tr.sl-row:" + row +
+         var selector = ".alfresco-testing-SubscriptionLog tr.sl-row" + row +
             " td[data-pubsub-object-key=" + 
             key + 
             "]+td[data-pubsub-object-value='" + 

@@ -7,8 +7,6 @@
 }
 
 .alfresco_renderers_InlineEditProperty .editIcon {
-   background: url("./images/edit-16.png");
-   background-repeat: no-repeat;
    height: 16px;
    width: 16px;
    display: inline-block;

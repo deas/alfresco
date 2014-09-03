@@ -8,7 +8,8 @@
                "all": true
             }
          }
-      }
+      },
+      "alfresco/testing/mockservices/MockCrudService"
    ],
    "widgets":[
       {
@@ -63,7 +64,8 @@
                                        "publishPayloadModifiers": ["processCurrentItemTokens"],
                                        "publishPayloadItemMixin": true,
                                        "publishPayload": {
-                                          "url": "api/solr/facet-config/{name}"
+                                          "url": "api/solr/facet-config/{name}",
+                                          "succeed": false
                                        },
                                        "optionsConfig": {
                                           "fixed": [

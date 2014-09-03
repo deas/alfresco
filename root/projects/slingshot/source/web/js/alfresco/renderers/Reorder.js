@@ -69,12 +69,12 @@ define(["dojo/_base/declare",
    return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, _PublishPayloadMixin], {
       
       /**
-      * The array of file(s) containing internationalised strings.
-      *
-      * @instance
-      * @type {object}
-      * @default [{i18nFile: "./i18n/Reorder.properties"}]
-      */
+       * The array of file(s) containing internationalised strings.
+       *
+       * @instance
+       * @type {object}
+       * @default [{i18nFile: "./i18n/Reorder.properties"}]
+       */
       i18nRequirements: [{i18nFile: "./i18n/Reorder.properties"}],
 
       /**
