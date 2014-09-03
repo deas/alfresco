@@ -322,10 +322,10 @@ define(["dojo/_base/declare",
             {
                // The requested item is currently displayed, no action necessary...
             }
-            else if (payload.index > this.firstDisplayedIndex)
+            else if (payload.index > this.lastDisplayedIndex)
             {
                // Start navigating back to find the item
-               while(payload.index > this.firstDisplayedIndex)
+               while(payload.index > this.lastDisplayedIndex)
                {
                   this.onNextClick();
                }
@@ -333,7 +333,7 @@ define(["dojo/_base/declare",
             else
             {
                // Start navigating forward to find the item
-               while(payload.index < this.lastDisplayedIndex)
+               while(payload.index < this.firstDisplayedIndex)
                {
                   this.onPrevClick();
                }

@@ -23,10 +23,10 @@
  * to get the frame working
  */
 .alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol {
-   transition: left 1.0s ease;
-   width: 20000px;
    padding: 0;
    position: relative;
+   transition: left 1s ease 0.1s; /* NOTE THAT YUICOMPRESSOR STRIPS UNITS FROM 0 VALUES, BUT FIREFOX IGNORES TRANSITION RULES WITHOUT UNITS ON 0 VALUES!! */
+   width: 20000px;
 }
 
 .alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol > li {
