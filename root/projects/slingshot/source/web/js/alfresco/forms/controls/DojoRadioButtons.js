@@ -126,22 +126,9 @@ define(["alfresco/forms/controls/BaseFormControl",
          option.name = this.name; // Add the name to create the radio button "group" (TODO: Is this necessary for our purpose?)
          var rb = new RadioButton(option);
          rb.placeAt(this.containerNode);
-         // this.options.push(option);
+         this.options.push(option);
          this.optionToWidget[option.value] = rb;
-         
-         var _this = this; 
-         var watchHandle = rb._radioButton.on("change", function(isChecked) {
-            if (isChecked)
-            {
-               _this.currentValue = this.value;
-               _this.control.formControlValueChange(name, _this.lastValue, _this.currentValue);
-               _this.control.validate();
-            }
-            else
-            {
-               _this.lastValue = this.value;
-            }
-         }, true);
+         rb._radioButton.on("change", lang.hitch(this, this.onButtonChange));
       },
 
       /**
@@ -152,7 +139,7 @@ define(["alfresco/forms/controls/BaseFormControl",
          if (isChecked)
          {
             this.currentValue = this.value;
-            this.control.formControlValueChange(name, _this.lastValue, _this.currentValue);
+            this.control.formControlValueChange(name, this.lastValue, this.currentValue);
             this.control.validate();
          }
          else
