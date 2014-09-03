@@ -615,6 +615,52 @@ public class FacetedSearchPageTest extends AbstractUtils
 
         trace("precisionSearchAndSortTest complete");
     }
+    
+    //This test is to select the view option and verify the results are displayed as per the selected view option 
+    /**
+    * selectViewOptionAndVerifyResults
+    *
+    * Should not be cloud only.
+    *
+    * @throws Exception
+    */
+
+    
+    @Test(groups = "Alfresco-One")
+    public void ALF_3159() throws Exception
+    {
+        trace("Starting selectViewOptionAndVerifyResults");
+
+        // Login as test user
+        userLogin();
+        
+        // Do a search for the obscureSearchWord
+        doretrySearch("test");
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for '" + obscureSearchWord + "' there should be some search results");
+
+        // Verify the results are in Simple View
+        Assert.assertTrue(facetedSearchPage.getView().isSimpleViewResultsDisplayed(),"Results not dispalyed in SimpleView");
+        
+        //Select the Gallery View option
+        facetedSearchPage.getView().selectViewByLabel("Gallery View");
+
+        // Reload the page objects
+        facetedSearchPage.render();
+        
+        //Verify the results are displayed as Gallery View
+        Assert.assertTrue(facetedSearchPage.getView().isGalleryViewResultsDisplayed(), "gallery view not displayed");
+        
+        //Select the Gallery View optionS
+        facetedSearchPage.getView().selectViewByLabel("Simple View");
+       
+        // Logout
+        ShareUser.logout(drone);
+
+        trace("selectViewOptionAndVerifyResults complete");
+    }
+
 
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#tearDown()

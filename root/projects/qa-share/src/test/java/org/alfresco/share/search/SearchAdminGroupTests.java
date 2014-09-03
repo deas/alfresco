@@ -29,6 +29,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage.Action;
+import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -271,7 +272,7 @@ public class SearchAdminGroupTests extends AbstractUtils
         ShareUser.createEnterpriseUserWithGroup(drone, ADMIN_USERNAME, fName, lName, uName, DEFAULT_PASSWORD, groupName);
         
         //Login as RepoAdmin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);                      
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
         
         //Navigate to Groups page
         ShareUserAdmin.navigateToGroup(drone);
@@ -294,12 +295,16 @@ public class SearchAdminGroupTests extends AbstractUtils
         //Verify created user is present in siteAdmin group
         Assert.assertFalse(ShareUserAdmin.isUserGroupMember(drone,fName,uName, groupName));
         
-        // Navigate to the faceted search page
+        ShareUser.login(drone,fName,DEFAULT_PASSWORD);
+        
+        //Navigate to the faceted search page
         dashBoardPage = ShareUser.openUserDashboard(drone);
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
         
         //Verify Configure search link is displayed in faceted search results page
         Assert.assertFalse(facetedSearchPage.isConfigureSearchDisplayed(drone), "Configure search link is displayed"); 
+
+              
                      
     }   
     

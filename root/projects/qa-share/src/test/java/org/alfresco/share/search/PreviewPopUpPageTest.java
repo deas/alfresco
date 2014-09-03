@@ -57,29 +57,21 @@ public class PreviewPopUpPageTest extends AbstractUtils
         String siteName = getSiteName(testName);
         
         // Files
-        String[] fileName = new String[21];
+        String[] fileName = new String[14];
         fileName[0] = getFileName(testName + "." + "xlsx");
-        fileName[1] = getFileName(testName + "." + "txt");
-        fileName[2] = getFileName(testName + "." + "msg");
-        fileName[3] = getFileName(testName + "." + "pdf");
-        fileName[4] = getFileName(testName + "." + "xml");
-        fileName[5] = getFileName(testName + "." + "html");
-        fileName[6] = getFileName(testName + "." + "eml");
-        fileName[7] = getFileName(testName + "." + "opd");
-        fileName[8] = getFileName(testName + "." + "ods");
-        fileName[9] = getFileName(testName + "." + "odt");
-        fileName[10] = getFileName(testName + "." + "xls");
-        fileName[11] = getFileName(testName + "." + "xsl");
-        fileName[12] = getFileName(testName + "." + "doc");
-        fileName[13] = getFileName(testName + "." + "docx");
-        fileName[14] = getFileName(testName + "." + "pptx");
-        fileName[15] = getFileName(testName + "." + "pot");
-        fileName[16] = getFileName(testName + "." + "xsd");
-        fileName[17] = getFileName(testName + "." + "js");
-        fileName[18] = getFileName(testName + "." + "java");
-        fileName[19] = getFileName(testName + "." + "css");
-        fileName[20] = getFileName(testName + "." + "rtf");
-
+		fileName[1] = getFileName(testName + "." + "xml");    		
+		fileName[2] = getFileName(testName + "." + "xml");
+		fileName[3] = getFileName(testName + "." + "html");    		
+		fileName[4] = getFileName(testName + "." + "ods");
+		fileName[5] = getFileName(testName + "." + "odt");
+		fileName[6] = getFileName(testName + "." + "xls");
+		fileName[7] = getFileName(testName + "." + "xsl");
+		fileName[8] = getFileName(testName + "." + "doc");
+		fileName[9] = getFileName(testName + "." + "docx");
+		fileName[10] = getFileName(testName + "." + "pptx");
+		fileName[11] = getFileName(testName + "." + "pot");
+		fileName[12] = getFileName(testName + "." + "xsd");    		
+		fileName[13] = getFileName(testName + "." + "rtf");
         Integer fileTypes = fileName.length - 1;
 
         // User
@@ -171,17 +163,13 @@ public class PreviewPopUpPageTest extends AbstractUtils
     		ShareUser.openSiteDashboard(drone, siteName);
 
     		//Search
-    		ShareUserSearchPage.basicSearch(drone, searchTerm, false);    		
-
-    		//Check each result contains the search term: apart from xlsx
-    		//Assert.assertFalse(ShareUser.isSearchItemAvailable(drone, fileName[0]),"FTS for xlsx not supported: Found; " + fileName);
+    		ShareUserSearchPage.basicSearch(drone, searchTerm, false); 		
+    		
             FacetedSearchPage facetedSearchPage = drone.getCurrentPage().render();
     		
     		for (int index=0; index <= fileTypes; index++)
-    		{                    
-    			
-    			//PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResults().get(index).clickImageLink().render();    			
-    		    PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();	
+    		{          
+    	        PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();	
     			Assert.assertTrue(preViewPopUpPage.isTitlePresent(fileName[index]),"Title is displayed");
     			Assert.assertTrue(preViewPopUpPage.isPreViewDisplayed(),"Preview image is displayed successfully");
     			facetedSearchPage = preViewPopUpPage.selectClose().render();    			
@@ -208,29 +196,22 @@ public class PreviewPopUpPageTest extends AbstractUtils
     		/**Test Data Setup*/
     		String testUser = getUserNameFreeDomain(testName);
     		String siteName = getSiteName(testName);
-    		String[] fileName = new String[21];
+    		String[] fileName = new String[14];
 
     		fileName[0] = getFileName(testName + "." + "xlsx");
-    		fileName[1] = getFileName(testName + "." + "xml");
-    		fileName[2] = getFileName(testName + "." + "msg");
-    		fileName[3] = getFileName(testName + "." + "pdf");
-    		fileName[4] = getFileName(testName + "." + "xml");
-    		fileName[5] = getFileName(testName + "." + "html");
-    		fileName[6] = getFileName(testName + "." + "eml");
-    		fileName[7] = getFileName(testName + "." + "opd");
-    		fileName[8] = getFileName(testName + "." + "ods");
-    		fileName[9] = getFileName(testName + "." + "odt");
-    		fileName[10] = getFileName(testName + "." + "xls");
-    		fileName[11] = getFileName(testName + "." + "xsl");
-    		fileName[12] = getFileName(testName + "." + "doc");
-    		fileName[13] = getFileName(testName + "." + "docx");
-    		fileName[14] = getFileName(testName + "." + "pptx");
-    		fileName[15] = getFileName(testName + "." + "pot");
-    		fileName[16] = getFileName(testName + "." + "xsd");
-    		fileName[17] = getFileName(testName + "." + "js");
-    		fileName[18] = getFileName(testName + "." + "java");
-    		fileName[19] = getFileName(testName + "." + "css");
-    		fileName[20] = getFileName(testName + "." + "rtf");
+    		fileName[1] = getFileName(testName + "." + "xml");    		
+    		fileName[2] = getFileName(testName + "." + "xml");
+    		fileName[3] = getFileName(testName + "." + "html");    		
+    		fileName[4] = getFileName(testName + "." + "ods");
+    		fileName[5] = getFileName(testName + "." + "odt");
+    		fileName[6] = getFileName(testName + "." + "xls");
+    		fileName[7] = getFileName(testName + "." + "xsl");
+    		fileName[8] = getFileName(testName + "." + "doc");
+    		fileName[9] = getFileName(testName + "." + "docx");
+    		fileName[10] = getFileName(testName + "." + "pptx");
+    		fileName[11] = getFileName(testName + "." + "pot");
+    		fileName[12] = getFileName(testName + "." + "xsd");    		
+    		fileName[13] = getFileName(testName + "." + "rtf");
 
     		String searchTerm = testName;
 
@@ -249,12 +230,11 @@ public class PreviewPopUpPageTest extends AbstractUtils
     		FacetedSearchPage facetedSearchPage = drone.getCurrentPage().render();
     		
     		for (int index=1; index <= fileTypes; index++)
-    		{                 
-    			    			   			
-    			//PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResults().get(0).clickImageLink().render();
-    		    PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();	
+    		{         
+    			   			
+    			PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();	
     			Assert.assertTrue(preViewPopUpPage.isTitlePresent(fileName[index]),"Title is displaed");
-    			Assert.assertFalse(preViewPopUpPage.isPreViewTextDisplayed(),"Preview text is displayed successfully");
+    			Assert.assertTrue(preViewPopUpPage.isPreViewTextDisplayed(),"Preview text is displayed successfully");
     			facetedSearchPage = preViewPopUpPage.selectClose().render();
     			Assert.assertTrue(facetedSearchPage.isTitlePresent("Search"));
     			
