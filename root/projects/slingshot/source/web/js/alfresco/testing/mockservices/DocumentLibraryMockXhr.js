@@ -37,39 +37,39 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      loadBinaryData: function alfresco_testing_mockservices_DocumentLibraryMockXhr__loadBinaryData() {
-         var oReq = new XMLHttpRequest();
-         oReq.open("GET", "http://localhost:8081/share/res/js/alfresco/testing/mockservices/responseTemplates/DocumentLibrary/imgpreview.png", true);
-         oReq.responseType = "arraybuffer";
+      // loadBinaryData: function alfresco_testing_mockservices_DocumentLibraryMockXhr__loadBinaryData() {
+      //    var oReq = new XMLHttpRequest();
+      //    oReq.open("GET", "http://localhost:8081/share/res/js/alfresco/testing/mockservices/responseTemplates/DocumentLibrary/imgpreview.png", true);
+      //    oReq.responseType = "arraybuffer";
 
-         var _this = this;
-         oReq.onload = function (oEvent) {
-            _this.alfLog("log", "Binary data received");
-            var arrayBuffer = oReq.response;
-            if (arrayBuffer) {
-               _this.imageByteArray = new Uint8Array(arrayBuffer);
-               _this.waitForServer();
+      //    var _this = this;
+      //    oReq.onload = function (oEvent) {
+      //       _this.alfLog("log", "Binary data received");
+      //       var arrayBuffer = oReq.response;
+      //       if (arrayBuffer) {
+      //          _this.imageByteArray = new Uint8Array(arrayBuffer);
+      //          _this.waitForServer();
                
-            }
-         };
-         oReq.send(null);
-      },
+      //       }
+      //    };
+      //    oReq.send(null);
+      // },
 
       /**
        * Sets up the Sinon server to return the JPEG image when it is asked for a specific nodeRef
        *
        * @instance
        */
-      setupServerWithBinaryData: function alfresco_testing_mockservices_DocumentLibraryMockXhr__setupServerWithBinaryData() {
+      // setupServerWithBinaryData: function alfresco_testing_mockservices_DocumentLibraryMockXhr__setupServerWithBinaryData() {
 
-         this.alfLog("log", "Setting up server with binary data");
-         this.server.respondWith("GET", 
-                                 /\/share\/proxy\/alfresco\/api\/node\/workspace\/SpacesStore\/(.*)\/content\/thumbnails\/imgpreview\?(.*)/,
-                                 [200,
-                                 {"Content-Type":"image/jpeg"},
-                                 this.imageByteArray]);
-         this.alfPublish("ALF_MOCK_XHR_SERVICE_READY", {});
-      },
+      //    this.alfLog("log", "Setting up server with binary data");
+      //    this.server.respondWith("GET", 
+      //                            /\/share\/proxy\/alfresco\/api\/node\/workspace\/SpacesStore\/(.*)\/content\/thumbnails\/imgpreview\?(.*)/,
+      //                            [200,
+      //                            {"Content-Type":"image/jpeg"},
+      //                            this.imageByteArray]);
+      //    this.alfPublish("ALF_MOCK_XHR_SERVICE_READY", {});
+      // },
 
       /**
        * This sets up the fake server with all the responses it should provide.
