@@ -20,30 +20,26 @@
 'use strict';
 
 /**
- * Grunt task config for the clean plugin.
- * 
+ * Search tasks
  */
 
 module.exports = function (grunt, alf) {
+   // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
    return {
-      // Clean tasks
-      clean: {
-         // Used to delete json files in the coverage reports directory
-         coverageReports: [
-            "code-coverage-reports/*.json"
-         ],
-         // Used to delete json files in the coverage reports temp directory
-         coverageReportsTemp: [
-            "code-coverage-reports/temp"
-         ],
-         // Used to delete the instrumented code directory
-         instrumentedCode: [
-            "source/web/js/alfrescoInst"
-         ],
-         // Used to delete the widget listing file generated for RequireEverything re-creation
-         requireEverythingWidgetsList: [
-            alf.testResourcesDir + "/" + alf.alfWidgetsList
-         ]
+      // @see: https://github.com/roughcoder/grunt-folder-list
+      folder_list: {
+         alf_widgets: {
+            options: {
+               files: true,
+               folder: true
+            },
+            files: [
+               {
+                  src: [alf.jsFiles],
+                  dest: alf.testResourcesDir + '/' + alf.alfWidgetsList
+               }
+            ]
+         }
       }
    };
 };

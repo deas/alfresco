@@ -4,19 +4,27 @@
 
    // Keep all paths in one place
    var alf = {
-         cssFiles: 'source/web/**/*.css',
-         jsdocFiles: 'source/web/js/alfresco',
-         jsInstFiles: 'source/web/js/alfrescoInst',
-         jsFiles: ['source/web/js/alfresco/**/*.js'],
-         testFiles: ['tests/alfresco/**'],
-         xmlFiles: ['/**/*.xml'],
-         testResourcesDir: 'source/test-resources',
-         nodeBinDir: 'node_modules/.bin/',
-         coverageDirectory: "code-coverage-reports",
-         rootDir: '../../',
-         codeDir: '../../../',
-         docsDir: 'docs'
-      };
+      cssFiles: 'source/web/**/*.css',
+      jsdocFiles: 'source/web/js/alfresco',
+      jsInstFiles: 'source/web/js/alfrescoInst',
+      jsFiles: ['source/web/js/alfresco/**/*.js'],
+      testFiles: ['tests/alfresco/**'],
+      xmlFiles: ['/**/*.xml'],
+      testResourcesDir: 'source/test-resources',
+      nodeBinDir: 'node_modules/.bin/',
+      coverageDirectory: "code-coverage-reports",
+      rootDir: '../../',
+      codeDir: '../../../',
+      docsDir: 'docs',
+      alfWidgetsList: 'alfresco_widgets.json',
+      requireEverythingTemplate: 'RequireEverything.template.js',
+      requireEverythingWidget: 'source/web/js/alfresco/testing/RequireEverything.js',
+      requireEverythingWidgetsPrefix: 'source/web/js/',
+      requireEverythingWidgetsSuffix: '.js',
+      requireEverythingExclusions: [
+         'alfresco/forms/controls/AceEditor'
+      ]
+   };
 
    module.exports = function(grunt) {
 
@@ -24,6 +32,7 @@
       // @see: https://github.com/sindresorhus/load-grunt-tasks
       require('load-grunt-tasks')(grunt);
       grunt.loadNpmTasks('grunt-notify');
+      grunt.loadNpmTasks('grunt-folder-list');
 
       var _ = require('lodash'), // Add the lodash util library
          extend = _.extend,
