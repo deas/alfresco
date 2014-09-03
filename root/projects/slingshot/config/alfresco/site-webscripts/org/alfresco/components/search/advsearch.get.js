@@ -59,7 +59,9 @@ function main()
    model.searchRepo = (repoconfig != "none");
    model.siteId = siteId;
    model.searchForms = searchForms;
-   
+   model.searchPath = "{site}dp/ws/faceted-search#searchTerm={terms}&query={query}&repo={repo}";
+   // ###old version of this path### model.searchPath = "{site}search?t={terms}&q={query}&r={repo}";
+
    // Widget instantiation metadata...
    var advancedSearch = {
       id : "AdvancedSearch", 
@@ -68,7 +70,8 @@ function main()
          siteId : model.siteId,
          savedQuery : (page.url.args.sq != null) ? page.url.args.sq : "",
          searchRepo : model.searchRepo,
-         searchForms : model.searchForms
+         searchForms : model.searchForms,
+         searchPath : model.searchPath
       }
    };
    model.widgets = [advancedSearch];
