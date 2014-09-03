@@ -1531,7 +1531,7 @@ Alfresco.util.relativeTime = function(from, to)
          minutes_ago = Math.floor(seconds_ago / 60),
          fnTime = function relativeTime_fnTime()
          {
-            return '<span title="' + Alfresco.util.formatDate(from) + '">' + $msg.apply(this, arguments) + '</span>';
+            return "<span title='" + Alfresco.util.formatDate(from) + "'>" + $msg.apply(this, arguments) + "</span>";
          };
 
    if (minutes_ago <= 0)
