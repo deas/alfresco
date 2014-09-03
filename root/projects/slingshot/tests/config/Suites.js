@@ -56,6 +56,7 @@ define({
       'tests/alfresco/creation/WidgetConfigTest',
 
       'tests/alfresco/documentlibrary/BreadcrumbTrailTest',
+      'tests/alfresco/documentlibrary/CreateContentTest',
       'tests/alfresco/documentlibrary/DocumentListTest',
       'tests/alfresco/documentlibrary/DocumentSelectorTest',
       'tests/alfresco/documentlibrary/SearchListTest',

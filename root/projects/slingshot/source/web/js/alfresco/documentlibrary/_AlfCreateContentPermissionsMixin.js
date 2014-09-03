@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -124,7 +124,8 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the selected files.
        */
       onFilterChange: function alfresco_documentlibrary__AlfCreateContentPermissionsMixin__onFilterChange(payload) {
-         this.set('disabled', (payload && payload.filterId != "path"));
+         var path = lang.getObject("filter.path", false, payload);
+         this.set('disabled', (path == null));
       } 
    });
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -55,7 +55,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfCreateContentMenuBarPopup__postCreate() {
-         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
+         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onFilterChange));
+         this.alfSubscribe(this.userAccessChangeTopic, lang.hitch(this, this.onUserAcess));
          this.inherited(arguments);
       },
    
@@ -67,7 +68,7 @@ define(["dojo/_base/declare",
        * @instance filter
        * @param {object} payload The payload published on the filter topic
        */
-      filter: function alfresco_menus_AlfCreateContentMenuItem__filter(payload) {
+      filter: function alfresco_documentlibrary_AlfCreateContentMenuItem__filter(payload) {
          this.alfLog("log", "Filtering request received: ", payload);
          
          // Hide the menu item if necessary 

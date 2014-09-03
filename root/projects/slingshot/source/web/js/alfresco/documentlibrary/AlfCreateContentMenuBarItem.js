@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -47,8 +47,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfCreateContentMenuBarItem__postCreate() {
-         this.alfSubscribe(this.userAccessChangeTopic, lang.hitch(this, "onUserAcess"));
-         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
+         this.alfSubscribe(this.userAccessChangeTopic, lang.hitch(this, this.onUserAcess));
+         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onFilterChange));
          this.inherited(arguments);
       }
    });

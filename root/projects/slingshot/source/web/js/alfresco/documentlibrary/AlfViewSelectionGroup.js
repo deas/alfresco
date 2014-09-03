@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -56,7 +56,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfViewSelectionGroup__postCreate() {
-         this.alfSubscribe(this.selectionMenuItemTopic, lang.hitch(this, "addViewSelectionMenuItem"));
+         this.alfSubscribe(this.selectionMenuItemTopic, lang.hitch(this, this.addViewSelectionMenuItem));
          this.inherited(arguments);
       },
       
@@ -70,7 +70,7 @@ define(["dojo/_base/declare",
       addViewSelectionMenuItem: function alfresco_documentlibrary_AlfViewSelectionGroup__addViewSelectionMenuItem(payload) {
          if (payload == null || !payload.menuItem.isInstanceOf(AlfCheckableMenuItem))
          {
-            this.alfLog("warn", "A request was made to register a view selection menu item that was not an instance of 'alfresco/documentlibrary/AlfCheckableMenuItem'", menuItem);
+            this.alfLog("warn", "A request was made to register a view selection menu item that was not an instance of 'alfresco/documentlibrary/AlfCheckableMenuItem'", payload.menuItem);
          }
          else
          {

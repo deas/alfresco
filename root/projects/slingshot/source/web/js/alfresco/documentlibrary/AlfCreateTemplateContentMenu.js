@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -30,14 +30,18 @@
  */
 define(["dojo/_base/declare",
         "alfresco/menus/AlfCascadingMenu",
+        "alfresco/documentlibrary/_AlfCreateContentPermissionsMixin",
+        "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
         "alfresco/core/CoreXhr",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
+        "dojo/_base/lang",
         "dojo/_base/array",
         "service/constants/Default"], 
-        function(declare, AlfCascadingMenu, AlfCoreXhr, AlfMenuGroup, AlfMenuItem, array, AlfConstants) {
+        function(declare, AlfCascadingMenu, _AlfCreateContentPermissionsMixin, _AlfDocumentListTopicMixin, AlfCoreXhr, 
+                 AlfMenuGroup, AlfMenuItem, lang, array, AlfConstants) {
    
-   return declare([AlfCascadingMenu, AlfCoreXhr], {
+   return declare([AlfCascadingMenu, _AlfCreateContentPermissionsMixin, _AlfDocumentListTopicMixin, AlfCoreXhr], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -73,6 +77,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alf_menus_documentlibrary_AlfCreateTemplateContentMenu__postCreate() {
+         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onFilterChange));
+         this.alfSubscribe(this.userAccessChangeTopic, lang.hitch(this, this.onUserAcess));
          this.inherited(arguments);
          if (this.label)
          {
@@ -111,16 +117,16 @@ define(["dojo/_base/declare",
        * @type {boolean}
        * @default false
        */
-      _templatesLoaded: false,
+      _templatesAlreadyLoaded: false,
       
       /**
        * This function is called when the user clicks on the "Templates" cascading menu item to asynchronously
-       * load their favourite sites.
+       * load the available content templates.
        * 
        * @instance
        */
       loadTemplates: function alf_menus_documentlibrary_AlfCreateTemplateContentMenu__loadTemplates() {
-         if (this._favouritesLoaded)
+         if (this._templatesAlreadyLoaded)
          {
             this.alfLog("log", "Templates already loaded");
          }
@@ -149,7 +155,7 @@ define(["dojo/_base/declare",
        */
       _templatesLoaded: function alf_menus_documentlibrary_AlfCreateTemplateContentMenu___templatesLoaded(response, originalRequestConfig) {
          this.alfLog("log", "Templates data loaded successfully", response);
-         this._favouritesLoaded = true;
+         this._templatesAlreadyLoaded = true;
          
          // Check for keyboard access by seeing if the first child is focused...
          var focusFirstChild = (this.popup && this.popup.getChildren().length > 0 && this.popup.getChildren()[0].focused);
@@ -258,7 +264,7 @@ define(["dojo/_base/declare",
        * @param {integer} index The index to add the menu item at.
        */
       _addMenuItem: function alf_menus_documentlibrary_AlfCreateTemplateContentMenu___addMenuItem(group, widget, index) {
-         var label = (widget.title != "") ? widget.title : widget.name;
+         var label = (widget.title !== "") ? widget.title : widget.name;
          var item = new AlfMenuItem({
             label: label,
             iconClass: this.templateIconClass,

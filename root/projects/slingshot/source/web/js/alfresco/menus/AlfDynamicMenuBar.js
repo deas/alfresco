@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,8 @@
  */
 
 /**
+ * 
+ * @deprecated This module is deprecated because it is currently not in use.
  * @module alfresco/menus/AlfDynamicMenuBar
  * @extends module:alfresco/menus/AlfMenuBar
  * @author Dave Draper
@@ -34,14 +36,14 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      updateTopic: "ALF_ADD_DYNAMIC MENU_ITEMS",
+      updateTopic: "ALF_ADD_DYNAMIC_MENU_ITEMS",
       
       /**
        * @instance
        */
       postCreate: function alfresco_menus_AlfDynamicMenuBar__postCreate() {
          this.inherited(arguments);
-         this.alfSubscribe(this.updateTopic, lang.hitch(this, "processUpdates"))
+         this.alfSubscribe(this.updateTopic, lang.hitch(this, "processUpdates"));
       },
       
       /**

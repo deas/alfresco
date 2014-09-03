@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -51,7 +51,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfSelectedItemsMenuBarPopup__postCreate() {
-         this.alfSubscribe(this.selectedDocumentsChangeTopic, lang.hitch(this, "onFilesSelected"));
+         this.alfSubscribe(this.selectedDocumentsChangeTopic, lang.hitch(this, this.onFilesSelected));
          this.inherited(arguments);
       },
       
@@ -63,7 +63,7 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the selected files.
        */
       onFilesSelected: function alfresco_documentlibrary_AlfSelectedItemsMenuBarPopup__onFilesSelected(payload) {
-         this.set('disabled', (payload && payload.selectedFiles && payload.selectedFiles.length == 0));
+         this.set('disabled', (payload && payload.selectedFiles && payload.selectedFiles.length === 0));
       }
    });
 });
