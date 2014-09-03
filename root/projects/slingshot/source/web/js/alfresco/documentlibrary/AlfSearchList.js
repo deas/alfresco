@@ -56,7 +56,7 @@ define(["dojo/_base/declare",
        * @default [{cssFile:"./css/AlfSearchList.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfSearchList.css"}],
-      
+
       /**
        * Extends the [inherited function]{@link module:alfresco/lists/AlfSortablePaginatedList#setupSubscriptions}
        * to subscribe to search specific topics.
@@ -96,7 +96,7 @@ define(["dojo/_base/declare",
        */
       postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
          this.inherited(arguments);
-         this.facetFilters = {};
+         this._cleanResettableVars();
       },
 
       /**
@@ -146,16 +146,14 @@ define(["dojo/_base/declare",
             }
             else
             {
-               // If a request is NOT in progress then we need to manually request a new search, 
-               // because re-setting the hash will not trigger the changeFilter function....
+               // If a request is NOT in progress then we need to manually request a new search, because re-setting 
+               // the hash will not trigger the changeFilter function....
+               // If the current hash includes a term from the resetHashTerms array, we need to clear those terms before 
+               // setting a search term (even if it is the same), in this case updating the hash will trigger the search...
                var currHash = ioQuery.queryToObject(hash());
-               if (currHash.facetFilters != null && currHash.facetFilters !== "")
+               if (this._cleanResettableHashTerms(currHash))
                {
-                  // The current hash includes facet filters, we need to clear filters when 
-                  // setting a search term (even if it is the same), in this case updating the
-                  // hash will trigger the search...
                   currHash.searchTerm = this.searchTerm;
-                  delete currHash.facetFilters;
                   this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                      url: ioQuery.objectToQuery(currHash),
                      type: "HASH"
@@ -163,7 +161,7 @@ define(["dojo/_base/declare",
                }
                else
                {
-                  // The current hash has no facet filters so we need to trigger a manual search...
+                  // The current hash has no resettable terms so we need to trigger a manual search...
                   this.resetResultsList();
                   this.loadData();
                }
@@ -174,8 +172,8 @@ define(["dojo/_base/declare",
             // The requested search term is new, so updating the hash will result in a new search...
             this.searchTerm = searchTerm;
             var currHash = ioQuery.queryToObject(hash());
+            this._cleanResettableHashTerms(currHash);
             currHash.searchTerm = this.searchTerm;
-            delete currHash.facetFilters;
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                url: ioQuery.objectToQuery(currHash),
                type: "HASH"
@@ -252,8 +250,8 @@ define(["dojo/_base/declare",
                this.siteId = scope;
             }
 
-            // Remove any facet filters...
-            delete currHash.facetFilters;
+            // Remove any resettable terms...
+            this._cleanResettableHashTerms(currHash);
 
             // Update the hash to trigger a search...
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
@@ -408,7 +406,7 @@ define(["dojo/_base/declare",
             var newSearchTerm = lang.getObject("searchTerm", false, payload);
             if (newSearchTerm != this.searchTerm)
             {
-               this.facetFilters = {};
+               this._cleanResettableVars();
             }
    
             // The facet filters need to be handled directly because they are NOT just passed as 
@@ -425,7 +423,7 @@ define(["dojo/_base/declare",
             }
             else
             {
-               this.facetFilters = {};
+               this._cleanResettableVars();
             }
 
             lang.mixin(this, payload);
@@ -585,6 +583,46 @@ define(["dojo/_base/declare",
          this.currentPage = 1;
          this.hideChildren(this.domNode);
          this.alfPublish(this.clearDocDataTopic);
+      },
+
+      /**
+       * The vars and terms showing on the url hash that should be reset for a new search.
+       * 
+       * @instance
+       * @type {string[]}
+       * @default ["facetFilters", "query"]
+       */
+      _resetVars: ["facetFilters", "query"],
+
+      /**
+       * Clean resettable variables based on resetVars array.
+       * 
+       * @instance
+       */
+      _cleanResettableVars: function alfresco_documentlibrary_AlfSearchList___cleanResettableVars() {
+         for (var i = 0; i < this._resetVars.length; i++) {
+            this[this._resetVars[i]] = {};
+         }
+      },
+
+      /**
+       * Clean resettable hash terms based on resetVars array.
+       * 
+       * @instance
+       * @param {object} currHash An object containing current hash values
+       * @return boolean
+       */
+      _cleanResettableHashTerms: function alfresco_documentlibrary_AlfSearchList___cleanResettableHashTerms(currHash) {
+         var hasTerm = false;
+         for (var term in currHash) {
+            if(this._resetVars.indexOf(term) != -1 && currHash[term] != null && currHash[term] !== "")
+            {
+               hasTerm = true;
+               delete currHash[term];
+            }
+         }
+         return hasTerm;
       }
+
    });
 });
