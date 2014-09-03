@@ -74,7 +74,7 @@ define(["dojo/_base/declare",
          // Subscribe to filter change events - in particular we're looking for tag filter changes because
          // they won't be represented by an individual filter object (it's down to the filter object to
          // publish display information when it's selected, but we're going to let tags off the hook here)
-         this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
+         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
          
          // Subscribe to publications about documents being tagged/untagged...
          this.alfSubscribe(this.documentTaggedTopic, lang.hitch(this, "onDocumentTagged"));

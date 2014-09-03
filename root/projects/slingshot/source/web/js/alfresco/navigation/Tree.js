@@ -235,8 +235,7 @@ define(["dojo/_base/declare",
       onClick: function alfresco_navigation_Tree__onClick(item, node, evt) {
          this.alfLog("log", "Tree Node clicked", item, node, evt);
          this.alfPublish(this.onClickTopic, {
-            path: item.path,
-            type: "HASH"
+            path: item.path
          });
       },
       

@@ -5,8 +5,8 @@
    list-style-type: none;
 }
 
-.alfresco-documentlibrary-AlfDocumentFilter > a {
+.alfresco-documentlibrary-AlfDocumentFilter > span {
    .standard-font;
-   text-decoration: none;
+   cursor: pointer;
 }
 

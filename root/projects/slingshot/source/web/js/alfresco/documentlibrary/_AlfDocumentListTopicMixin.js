@@ -52,12 +52,12 @@ define(["dojo/_base/declare"],
       /**
        * @instance
        * @type {string} 
-       * @default "ALF_DOCLIST_FILTER_CHANGED"
+       * @default "ALF_HASH_CHANGED"
        */
-      filterChangeTopic: "ALF_DOCLIST_FILTER_CHANGED",
+      hashChangeTopic: "ALF_HASH_CHANGED",
       
       /**
-       * This differs from the "filterChangeTopic" because it describes the "filter" filter (as opposed to a "path" filter)
+       * This differs from the "hashChangeTopic" because it describes the "filter" filter (as opposed to a "path" filter)
        * rather than just indicating that the current filter has been changed. This is required so that widgets can reflect
        * information about the currently selected filter - for example, a breadcrumb trail needs to show information about the
        * selected filter.

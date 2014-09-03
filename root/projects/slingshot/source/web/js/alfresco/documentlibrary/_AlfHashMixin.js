@@ -60,8 +60,7 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Responds to changes in the page hash. This is typically used to set filters for the 
-       * document library.
+       * Responds to changes in the page hash.
        * 
        * @instance
        * @param {object} payload The publication topic. This object needs to contain the attribute 'filter' for
@@ -70,7 +69,7 @@ define(["dojo/_base/declare",
       onHashChange: function alfresco_documentlibrary__AlfHashMixin__onHashChange(payload) {
          var filterObj = this.processFilter(payload);
          this.alfLog("log", "Publishing decoded filter", filterObj);
-         this.alfPublish(this.filterChangeTopic, filterObj);
+         this.alfPublish(this.hashChangeTopic, filterObj);
       }
    });
 });

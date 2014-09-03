@@ -37,14 +37,14 @@ define(["dojo/_base/declare",
    return declare([Tree, _AlfDocumentListTopicMixin], {
       
       /**
-       * Extends the inherited function to subscribe to the [filterChangeTopic]{@link module:alfresco/documentlibrary/_AlfDocumentListTopicMixin#filterChangeTopic}
+       * Extends the inherited function to subscribe to the [hashChangeTopic]{@link module:alfresco/documentlibrary/_AlfDocumentListTopicMixin#hashChangeTopic}
        * topic passing the [onFilterChange function]{@link module:alfresco/navigation/PathTree#onFilterChange} as the callback handler.
        * 
        * @instance
        */
       postMixInProperties: function alfresco_navigation_PathTree__postMixInProperties() {
          this.inherited(arguments);
-         this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
+         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
       },
       
       /**

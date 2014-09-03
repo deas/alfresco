@@ -367,8 +367,8 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      onChangeFilter: function alfresco_documentlibrary_AlfSearchList__onChangeFilter(payload) {
-         this.alfLog("log", "Filter change detected", payload, this);
+      onHashChanged: function alfresco_documentlibrary_AlfSearchList__onHashChanged(payload) {
+         this.alfLog("log", "Hash change detected", payload, this);
 
          // Only update if the payload contains one of the variables we care about
          if(this._payloadContainsUpdateableVar(payload))

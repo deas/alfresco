@@ -131,7 +131,7 @@ define(["dojo/_base/declare",
 
          if (this.subscribeToDocRequests)
          {
-            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
+            this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
             this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
          }
          if (this.currentData != null)

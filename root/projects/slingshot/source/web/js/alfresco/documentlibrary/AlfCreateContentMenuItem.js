@@ -55,7 +55,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfCreateContentMenuBarPopup__postCreate() {
-         this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
+         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
          this.inherited(arguments);
       },
    

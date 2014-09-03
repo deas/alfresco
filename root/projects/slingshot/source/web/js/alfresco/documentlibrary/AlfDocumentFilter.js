@@ -31,6 +31,7 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "dijit/_OnDijitClickMixin",
         "dojo/text!./templates/AlfDocumentFilter.html",
         "alfresco/core/Core",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
@@ -39,9 +40,9 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, _AlfDocumentListTopicMixin, lang, array, domConstruct, domClass, on) {
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template,  AlfCore, _AlfDocumentListTopicMixin, lang, array, domConstruct, domClass, on) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _AlfDocumentListTopicMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, _AlfDocumentListTopicMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -87,15 +88,6 @@ define(["dojo/_base/declare",
       filter: null,
       
       /**
-       * The hash parameter name to use for the filter, defaults to "filter".
-       *
-       * @instance
-       * @type {string}
-       * @default "filter"
-       */
-      paramName: "filter",
-
-      /**
        * Additional data for the filter (appended after the filter with a bar, e.g. tag|sometag)
        * 
        * @instance
@@ -112,7 +104,6 @@ define(["dojo/_base/declare",
          if (this.label != null && this.filter != null)
          {
             this.label = this.encodeHTML(this.message(this.label));
-            this.filterHref = "#" + this.paramName + "=" + this.filter;
             if (this.description != null)
             {
                this.description = this.encodeHTML(this.message(this.description));
@@ -135,32 +126,26 @@ define(["dojo/_base/declare",
             domClass.add(this.domNode, "hidden");
          }
          // Listen to changes in the filter so that the widget can provide additional information...
-         if (this.description != null)
+         // Only do this when useHash is set to true. This means that when hashing is used the 
+         // description will be published (this is done for the benefit of breadcrumb trails or other
+         // widgets that indicate currently selected filters)...
+         if (this.description != null && this.useHash === true)
          {
-            this.alfSubscribe(this.filterChangeTopic, lang.hitch(this, "onFilterChange"));
+            this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onClick"));
          }
       },
-      
+
       /**
-       * When the filter is changed check to see whether it is our filter that has been requested and if so
-       * publish our details.
-       * 
+       *
+       *
        * @instance
-       * @param {object} payload 
+       * @param {object} evt The click event
        */
-      onFilterChange: function alfresco_documentlibrary_AlfDocumentFilter__onFilterChange(payload) {
-         /* IMPLEMENTATION NOTE:
-          *   Originally this was implemented so that the publication was performed when the user
-          * clicked on the filter. However, this is not sufficient for browsers loading URLs where
-          * the filter is already selected as the breadcrumb trail would not initiall show the filter
-          */
-         if (payload != null && payload.filter == this.filter)
-         {
-            this.alfPublish(this.filterSelectionTopic, {
-               value: this.filter,
-               description: this.description
-            });
-         }
+      onClick: function alfresco_documentlibrary_AlfDocumentFilter__onClick(evt) {
+         this.alfPublish(this.filterSelectionTopic, {
+            value: this.filter,
+            description: this.description
+         });
       }
    });
 });
