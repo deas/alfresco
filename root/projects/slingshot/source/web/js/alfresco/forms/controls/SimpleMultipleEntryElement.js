@@ -23,8 +23,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/forms/controls/MultipleEntryElement"], 
-        function(declare, MultipleEntryElement) {
+        "alfresco/forms/controls/MultipleEntryElement",
+        "alfresco/core/ObjectTypeUtils"], 
+        function(declare, MultipleEntryElement, ObjectTypeUtils) {
    
    return declare([MultipleEntryElement], {
       
@@ -37,7 +38,11 @@ define(["dojo/_base/declare",
        */
       determineKeyAndValue: function alfresco_forms_controls_SimpleMultipleEntryElement__determineKeyAndValue() {
          this.alfLog("log", "DetermineKeyAndValue", this);
-         if (this.elementConfig != null && this.elementConfig.value)
+         if (ObjectTypeUtils.isString(this.elementConfig))
+         {
+            this.elementValue = this.elementConfig;
+         }
+         else if (this.elementConfig != null && this.elementConfig.value)
          {
             this.elementValue = this.elementConfig.value;
          }

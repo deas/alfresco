@@ -61,7 +61,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      constructor: function(args) {
+      constructor: function alfresco_forms_controls_MultipleEntryElementWrapper__constructor(args) {
          declare.safeMixin(this, args);
       },
       
@@ -77,7 +77,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      postCreate: function() {
+      postCreate: function alfresco_forms_controls_MultipleEntryElementWrapper__postCreate() {
          
          // Check that a widget has been provided and then add it into the correct node...
          if (this.widget != null)
@@ -92,7 +92,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      doneEditingElement: function() {
+      doneEditingElement: function alfresco_forms_controls_MultipleEntryElementWrapper__doneEditingElement() {
          this.alfLog("log", "Done editing buttonclicked", this);
          this.blurWrapper();
       },
@@ -102,7 +102,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      editElement: function() {
+      editElement: function alfresco_forms_controls_MultipleEntryElementWrapper__editElement() {
          this.alfLog("log", "Edit element clicked", {});
          
          // Switch the widget into edit mode...
@@ -129,7 +129,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      deleteElement: function(e) {
+      deleteElement: function alfresco_forms_controls_MultipleEntryElementWrapper__deleteElement(e) {
          this.alfLog("log", "Delete element clicked", {});
          
          // When the delete button is clicked the wrapper should be removed and it's data should also be removed from
@@ -142,19 +142,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      _onBlur: function(){
-         
-//         var _this = this;
-//         if (array.some(focusUtil.activeStack, function(item) { return item == _this.id; }))
-//         {
-//            // The wrapped widget is still in the stack so don't leave edit mode yet.
-//            this.alfLog("log", "Blur detected but wrapped widget still in active stack");
-//         }
-//         else
-//         {
-//            this.alfLog("log", "Lost focus so leaving edit mode", {});
-//            this.blurWrapper();
-//         }
+      _onBlur: function alfresco_forms_controls_MultipleEntryElementWrapper___onBlur(){
          this.inherited(arguments);
       },
       
@@ -163,7 +151,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      blurWrapper: function() {
+      blurWrapper: function alfresco_forms_controls_MultipleEntryElementWrapper__blurWrapper() {
          if (this.widget && typeof this.widget.editMode == "function")
          {
             this.widget.editMode(false);

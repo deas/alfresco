@@ -66,7 +66,7 @@ define(["dojo/_base/declare",
        * @instance 
        * @param {array} args The constructor arguments.
        */
-      constructor: function alf_services_TagService__constructor(args) {
+      constructor: function alfresco_services_TagService__constructor(args) {
          lang.mixin(this, args);
          this.alfSubscribe(_TagServiceTopics.tagQueryTopic, lang.hitch(this, "onTagQuery"));
       },
@@ -75,7 +75,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      onTagQuery: function alf_services_TagService__onTagQuery(payload) {
+      onTagQuery: function alfresco_services_TagService__onTagQuery(payload) {
          if (payload == null ||
              typeof payload.callback !== "function" ||
              payload.callbackScope == null)

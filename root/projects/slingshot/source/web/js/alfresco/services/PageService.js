@@ -283,7 +283,7 @@ define(["dojo/_base/declare",
        * @param {object} response
        * @param {object} originalRequestConfig
        */
-      pageCreateSuccess: function alfresco_prototyping_ScratchPad__pageCreateSuccess(response, originalRequestConfig) {
+      pageCreateSuccess: function alfresco_services_PageService__pageCreateSuccess(response, originalRequestConfig) {
          this.alfLog("log", "Successfully created page", response, originalRequestConfig);
          this.displayMessage(this.message("page.creation.success", [originalRequestConfig.data.name]));
          this.alfPublish(this.createPageSuccessTopic, {
@@ -297,7 +297,7 @@ define(["dojo/_base/declare",
        * @param {object} response
        * @param {object} originalRequestConfig
        */
-      pageCreateFailure: function alfresco_prototyping_ScratchPad__pageCreateFailure(response, originalRequestConfig) {
+      pageCreateFailure: function alfresco_services_PageService__pageCreateFailure(response, originalRequestConfig) {
          this.alfLog("error", "Failed to create page", response, originalRequestConfig);
          this.displayMessage(this.message("page.creation.failure", [originalRequestConfig.data.name]));
          this.alfPublish(this.createPageFailureTopic, {

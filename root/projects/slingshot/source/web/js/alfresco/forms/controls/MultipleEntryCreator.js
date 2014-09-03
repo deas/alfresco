@@ -277,7 +277,7 @@ define(["dojo/_base/declare",
             this.alfLog("log", "Creating entries for MultipleEntryCreator", elements);
             array.forEach(elements, function(element, index) {
                
-               if (element != null && element instanceof Object)
+               if (element != null)
                {
                   var wrapper = this.createElementWrapper(element);
                   if (wrapper.widget)

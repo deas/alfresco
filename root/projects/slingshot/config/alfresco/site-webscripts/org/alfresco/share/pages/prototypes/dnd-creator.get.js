@@ -31,6 +31,7 @@ catch(e)
 model.jsonModel = {
    services: [
       "alfresco/services/PageService",
+      "alfresco/services/OptionsService",
       {
          name: "alfresco/services/NavigationService",
          config: {

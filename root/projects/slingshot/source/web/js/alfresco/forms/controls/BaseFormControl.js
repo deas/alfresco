@@ -368,7 +368,15 @@ define(["dojo/_base/declare",
        *          "global": true
        *       }
        *    ],
-       *    "requestTopic": "TOPIC",
+       *    "pubSub": {
+       *       "publishTopic": "ALF_GET_FORM_CONTROL_OPTIONS",
+       *       "publishPayload": {
+       *          "url": AlfConstants.PROXY_URI + "api/groups",
+       *          "itemsAttribute": "data",
+       *          "labelAttribute": "displayName",
+       *          "valueAttribute": "fullName"
+       *       },
+       *    },
        *    "callback": "functionName",
        *    "fixed": [
        *       { "label": "Option1", "value": "Value1"},
@@ -421,16 +429,15 @@ define(["dojo/_base/declare",
             }
             
             // Generate the initial set of options in the following precedence...
-            // 1) Request Topic
-            // 2) XHR request
-            // 3) Callback function
-            // 4) Fixed options
-            var requestTopic = lang.getObject("requestTopic", false, config),
+            // 1) PubSub Config
+            // 2) Callback function
+            // 3) Fixed options
+            var pubSub = lang.getObject("pubSub", false, config),
                 callback = lang.getObject("callback", false, config),
                 fixed = lang.getObject("fixed", false, config);
-            if (requestTopic != null)
+            if (pubSub != null)
             {
-               this.getPubSubOptions(requestTopic);
+               this.getPubSubOptions(pubSub);
             }
             else if (callback != null)
             {
@@ -608,15 +615,26 @@ define(["dojo/_base/declare",
        * Sets up a new subscription for options changes and then publishes a request to get those options.
        *
        * @instance
-       * @param {string} topic The topic to publish to retrieve options
+       * @param {string} config The configuration to use for retrieving options via Pub/Sub
        */
-      getPubSubOptions: function alfresco_forms_controls_BaseFormControl__getPubSubOptions(topic) {
+      getPubSubOptions: function alfresco_forms_controls_BaseFormControl__getPubSubOptions(config) {
          // Publish a topic to get the currently available options based on the current value...
-         var responseTopic = this.generateUuid();
-         this._pubSubOptionsHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onPubSubOptions"), true);
-         this.alfPublish(topic, {
-            responseTopic: responseTopic,
-         }, true);
+         if (config.publishTopic != null)
+         {
+            var responseTopic = this.generateUuid();
+            var payload = config.publishPayload;
+            if (payload == null)
+            {
+               payload = {};
+            }
+            payload.responseTopic = responseTopic;
+            this._pubSubOptionsHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onPubSubOptions"), true);
+            this.alfPublish(config.publishTopic, payload, true);
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to obtain form control options via PubSub, but no 'requestTopic' attribute was provided", config, this);
+         }
       },
 
       /**

@@ -48,6 +48,19 @@ function getRenderFilterConfig() {
             postWhenHiddenOrDisabled: false,
             widgets: [
                {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "Enter a name for the rule",
+                     description: "Please provide a name for this render condition",
+                     name: "value",
+                     value: "",
+                     postWhenHiddenOrDisabled: false,
+                     requirementConfig: {
+                        initialValue: true
+                     }
+                  }
+               },
+               {
                   name: "alfresco/forms/controls/DojoRadioButtons",
                   config: {
                      fieldId: "TARGET_FIELD",
@@ -94,10 +107,20 @@ function getRenderFilterConfig() {
                      value: "GROUP_ALFRESCO_ADMINISTRATORS",
                      postWhenHiddenOrDisabled: false,
                      optionsConfig: {
-                        fixed: [
-                           { label: "Administrators", value: "GROUP_ALFRESCO_ADMINISTRATORS"},
-                           { label: "Search Administrators", value: "GROUP_SEARCH_ADMINISTRATORS"}
-                        ]
+                        pubSub: {
+                           publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                           publishPayload: {
+                              url: url.context + "/proxy/alfresco/api/groups",
+                              itemsAttribute: "data",
+                              labelAttribute: "displayName",
+                              valueAttribute: "fullName"
+                           }
+                        }
+                        // ,
+                        // fixed: [
+                        //    { label: "Administrators", value: "GROUP_ALFRESCO_ADMINISTRATORS"},
+                        //    { label: "Search Administrators", value: "GROUP_SEARCH_ADMINISTRATORS"}
+                        // ]
                      },
                      visibilityConfig: {
                         initialValue: false,
