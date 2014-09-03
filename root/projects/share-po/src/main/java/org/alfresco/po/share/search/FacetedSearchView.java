@@ -8,6 +8,8 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -21,22 +23,24 @@ public class FacetedSearchView
     private static final By FACETED_SEARCH_RESULTS_MENU_BAR = By.cssSelector("div#FCTSRCH_RESULTS_MENU_BAR");
     private static final By RESULTS_STRING = By.cssSelector("span.alfresco-html-Label");
     private static final By SORT_ORDER_BUTTON = By.cssSelector("div#FCTSRCH_SORT_ORDER_TOGGLE > img");
-    private static final By CONFIGURE_VIEW_BUTTON = By.cssSelector("div[id^=alfresco_menus_AlfMenuBarPopup]>span[class=alf-menu-arrow]");
+    private static final By CONFIGURE_VIEW_BUTTON = By.cssSelector("img[class='alf-configure-icon']");
     
-    private static final By CONFIGURE_VIEW_ITEMS = By.cssSelector("div[class$=group-items]>table>tbody>tr[id^=uniqName_24]");
-    // Need to get the java script to get the default selection
-    private static final By SELECTED_VIEW_TYPE = By.cssSelector("div[class$=group-items]>table>tbody>tr[id^=uniqName_24]>td[class$=alf-selected-icon]");
+    private static final By CONFIGURE_VIEW_ITEMS = By.cssSelector("div#DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP td[class='dijitReset dijitMenuItemLabel']");    
+    private static final By SIMPLE_VIEW_RESULTS = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell");
+    private static final By GALLERY_VIEW_RESULTS = By.cssSelector("div[class='displayName']");
 
+    
     private WebDrone drone;
     private WebElement resultsElement;
     private String results;
     private WebElement sortOrderButton;
     private WebElement configureViewButton;
-    private String currentSelection;
     private List<WebElement> menuElements = new ArrayList<WebElement>();
+    private WebElement simpleViewResults;
+    private WebElement galleryViewResults;
 
     /**
-     * Instantiates a new faceted search sort.
+     * Instantiates a new faceted search View.
      */
     public FacetedSearchView(WebDrone drone)
     {
@@ -53,7 +57,7 @@ public class FacetedSearchView
         }
 
         this.configureViewButton = facetedSearchResultsMenuBar.findElement(CONFIGURE_VIEW_BUTTON); 
-        //this.currentSelection = facetedSearchResultsMenuBar.findElement(SELECTED_VIEW_TYPE).;
+        
     }
 
     /**
@@ -85,27 +89,7 @@ public class FacetedSearchView
     {
         return configureViewButton;
     }
-
-    /**
-     * This current selection method has to modified and replaced with get default selection using java script
-     * Gets the current selection.
-     *
-     * @return the current selection
-     */
-	public String getCurrentSelection() {
-		int i = 2;
-		openMenu();
-		if (i >= 0 && i < this.menuElements.size()) {
-			this.menuElements.get(i).getText();			
-			if (!(SELECTED_VIEW_TYPE == null))
-				cancelMenu();
-			 this.currentSelection = this.menuElements.get(i).getText();
-		} else {
-			i++;
-		}
-		return this.currentSelection;
-	}
-    
+       
     /**
      * select view by index by the indexed item in the view menu
      *
@@ -118,7 +102,7 @@ public class FacetedSearchView
         boolean found = false;
         if(i >= 0 && i < this.menuElements.size())
         {
-            this.currentSelection = this.menuElements.get(i).getText();
+            this.menuElements.get(i).getText();
             this.menuElements.get(i).click();
             found = true;
         }
@@ -143,7 +127,7 @@ public class FacetedSearchView
         {
             if(StringUtils.trim(option.getText()).equalsIgnoreCase(label))
             {
-                this.currentSelection = StringUtils.trim(option.getText());
+                StringUtils.trim(option.getText());
                 option.click();
                 found = true;
                 break;
@@ -155,6 +139,56 @@ public class FacetedSearchView
         }
         return FactorySharePage.resolvePage(this.drone);
     }
+    
+    /**
+     * Verify is results displayed in simple view
+     */
+    public boolean isSimpleViewResultsDisplayed()
+    {
+        try
+        {
+        	simpleViewResults = drone.findAndWait(SIMPLE_VIEW_RESULTS);
+        	if(simpleViewResults.isDisplayed())
+        	{        		
+        		return true;        		       		 
+        	}
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+        catch (StaleElementReferenceException ste)
+        {
+            return false;
+        }
+		return false;        
+    }
+    
+    /**
+     * Verify is results displayed in Gallery view
+     */
+    public boolean isGalleryViewResultsDisplayed()
+    {
+        try
+        {
+        	galleryViewResults = drone.findAndWait(GALLERY_VIEW_RESULTS);
+        	if(galleryViewResults.isDisplayed())
+        	{        		
+        		return true;        		       		 
+        	}
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+        catch (StaleElementReferenceException ste)
+        {
+            return false;
+        }
+		return false;        
+    }
+
+
 
     /**
      * Open the sort menu.
