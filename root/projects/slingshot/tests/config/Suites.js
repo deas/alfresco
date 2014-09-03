@@ -52,6 +52,7 @@ define({
       'tests/alfresco/core/WidgetCreationTest',
 
       'tests/alfresco/documentlibrary/DocumentListTest',
+      'tests/alfresco/documentlibrary/DocumentSelectorTest',
       'tests/alfresco/documentlibrary/SearchListTest',
       'tests/alfresco/documentlibrary/SearchListScrollTest', // PASSING - TODO: NEEDS IMPLEMENTING PROPERLY,
       'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',

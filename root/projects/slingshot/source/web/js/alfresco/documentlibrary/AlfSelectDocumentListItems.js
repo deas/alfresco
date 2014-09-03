@@ -53,12 +53,36 @@ define(["dojo/_base/declare",
       iconClass: "alf-noneselected-icon",
       
       /**
+       * The topic that is subscribed to in order to count the number of individual items that
+       * are selected.
+       *
+       * @instance
+       * @type {string}
+       * @default "  ALF_DOCLIST_DOCUMENT_SELECTED"
+       */
+      documentSelectionTopic: "ALF_DOCLIST_DOCUMENT_SELECTED",
+
+      /**
+       * The topic that is subscribed to in order to count the number of individual items that
+       * are de-selected.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_DOCLIST_DOCUMENT_DESELECTED"
+       */
+      documentDeselectionTopic: "ALF_DOCLIST_DOCUMENT_DESELECTED",
+      
+      /**
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfSelectDocumentListItems__postCreate() {
          this.selectionTopic = this.selectedDocumentsChangeTopic;
          this.alfSubscribe(this.documentsLoadedTopic, lang.hitch(this, "onDocumentsLoaded"));
          this.inherited(arguments);
+
+         // Subscribe to topics for detecting individual changes...
+         this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, this.onDocumentSelected));
+         this.alfSubscribe(this.documentDeselectionTopic, lang.hitch(this, this.onDocumentDeselected));
       },
       
       /**
@@ -70,7 +94,55 @@ define(["dojo/_base/declare",
        * @default 0
        */
       documentsAvailable: 0,
+
+      /**
+       * Keeps track of the number of documents that are currently selected. This attribute is updated
+       * by the 'onDocumentsLoaded' function and is used by the 'determineSelection' function.
+       * 
+       * @instance
+       * @type {integer}
+       * @default 0
+       */
+      documentsSelected: 0,
       
+      /**
+       * Handles the selection of an individual document
+       *
+       * @instance
+       * @param {object} payload The details of the selected document
+       */
+      onDocumentSelected: function alfresco_documentlibrary_AlfSelectDocumentListItems__onDocumentSelected(payload) {
+         this.documentsSelected++;
+         if (this.documentsSelected > this.documentsAvailable)
+         {
+            this.documentsSelected = this.documentsAvailable;
+         }
+         this.determineSelection({
+            selectedFiles: {
+               length: this.documentsSelected
+            }
+         });
+      },
+
+      /**
+       * Handles the deselection of an individual document
+       *
+       * @instance
+       * @param {object} payload The details of the selected document
+       */
+      onDocumentDeselected: function alfresco_documentlibrary_AlfSelectDocumentListItems__onDocumentDeselected(payload) {
+         this.documentsSelected--;
+         if (this.documentsSelected < 0)
+         {
+            this.documentsSelected = 0;
+         }
+         this.determineSelection({
+            selectedFiles: {
+               length: this.documentsSelected
+            }
+         });
+      },
+
       /**
        * This method is used to keep track of the number of documents that are available for selection.
        * 
@@ -98,6 +170,7 @@ define(["dojo/_base/declare",
             if (this.documentsAvailable == 0 || payload.selectedFiles.length == 0)
             {
                this.renderNoneSelected();
+               this.documentsSelected = 0;
             }
             else if (this.documentsAvailable > payload.selectedFiles.length)
             {
@@ -106,6 +179,7 @@ define(["dojo/_base/declare",
             else if (this.documentsAvailable == payload.selectedFiles.length)
             {
                this.renderAllSelected();
+               this.documentsSelected = this.documentsAvailable;
             }
          }
       },

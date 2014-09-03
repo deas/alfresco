@@ -85,7 +85,7 @@ define(["dojo/_base/declare",
        * @default "ALF_DOCLIST_FILE_SELECTION" 
        */
       notificationTopic: "ALF_DOCLIST_FILE_SELECTION",
-      
+
       /**
        * Extends the inherited implementation to set up the listener for clicks on the iconNode
        * 

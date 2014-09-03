@@ -347,15 +347,6 @@ define(["dojo/_base/declare",
             item.jsNode = new JsNode(item.node);
          }, this);
          
-         // Publish the details of the loaded documents. The initial use case for this was to allow
-         // the selected items menu to know how many items were available for selection but it
-         // clearly has many other uses...
-         this.alfPublish(this.documentsLoadedTopic, {
-            documents: this.currentData,
-            totalDocuments: response.totalRecords,
-            startIndex: response.startIndex
-         });
-         
          // Publish the details of the metadata returned from the data request...
          if (response.metadata)
          {
@@ -375,6 +366,7 @@ define(["dojo/_base/declare",
                });
             }
          }
+         this.inherited(arguments);
       }, 
       
       /**

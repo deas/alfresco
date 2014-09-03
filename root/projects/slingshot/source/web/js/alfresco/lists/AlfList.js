@@ -247,7 +247,15 @@ define(["dojo/_base/declare",
       onPageWidgetsReady: function alfresco_lists_AlfList__onPageWidgetsReady(payload) {
          this.alfUnsubscribe(this.pageWidgetsReadySubcription);
          this._readyToLoad = true;
-         this.loadData();
+         if (this.currentData != null)
+         {
+            this.processLoadedData();
+            this.renderView();
+         }
+         else
+         {
+            this.loadData();
+         }
       },
 
       /**
@@ -264,8 +272,7 @@ define(["dojo/_base/declare",
          // If no default view has been provided, then just use the first...
          if (this._currentlySelectedView == null)
          {
-            for (view in this.viewMap)
-            {
+            for (var view in this.viewMap) {
                this._currentlySelectedView = view;
                break;
             }
@@ -674,19 +681,7 @@ define(["dojo/_base/declare",
          if (foundItems)
          {
             this.processLoadedData(payload.response);
-
-            // Re-render the current view with the new data...
-            var view = this.viewMap[this._currentlySelectedView];
-            if (view != null)
-            {
-               this.showRenderingMessage();
-               view.setData(this.currentData);
-               view.renderView(this.useInfiniteScroll);
-               this.showView(view);
-               
-               // Force a resize of the sidebar container to take the new height of the view into account...
-               this.alfPublish("ALF_RESIZE_SIDEBAR", {});
-            }
+            this.renderView();
          }
 
          // This request has finished, allow another one to be triggered.
@@ -694,14 +689,40 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This is an extension point function for extending modules to perform processing on the loaded
-       * data once it's existence has been verified
+       * This function renders the view with the current data.
+       *
+       * @instance
+       */
+      renderView: function alfresco_lists_AlfList__renderView() {
+         // Re-render the current view with the new data...
+         var view = this.viewMap[this._currentlySelectedView];
+         if (view != null)
+         {
+            this.showRenderingMessage();
+            view.setData(this.currentData);
+            view.renderView(this.useInfiniteScroll);
+            this.showView(view);
+            
+            // Force a resize of the sidebar container to take the new height of the view into account...
+            this.alfPublish("ALF_RESIZE_SIDEBAR", {});
+         }
+      },
+
+      /**
+       * Publishes the details of the documents that have been loaded (primarily for multi-selection purposes)
        *
        * @instance
        * @param {object} response The original response.
        */
       processLoadedData: function alfresco_lists_AlfList__processLoadedData(response) {
-         // No action by default.
+         // Publish the details of the loaded documents. The initial use case for this was to allow
+         // the selected items menu to know how many items were available for selection but it
+         // clearly has many other uses...
+         this.alfPublish(this.documentsLoadedTopic, {
+            documents: this.currentData[this.itemsProperty],
+            totalDocuments: (response && response.totalRecords) ? response.totalRecords: this.currentData[this.itemsProperty].length,
+            startIndex: (response && response.startIndex) ? response.startIndex : 0
+         });
       }, 
       
       /**
