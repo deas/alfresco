@@ -1,7 +1,7 @@
 package org.alfresco.share.search;
 
 /**
- * These Preview popup page tests are non executable since development is still in progress
+ 
  * 
  * @author Charu
  * 
@@ -31,9 +31,9 @@ public class PreviewPopUpPageTest extends AbstractUtils
     protected String siteName;
 
 	/**
-     * Class includes: Tests from TestLink in Area: Advanced Search Tests
+     * Class includes: Tests from TestLink in Area: Image preview Tests
      * <ul>
-     *   <li>Test searches using various Properties, content, Proximity, Range Queries</li>
+     *   <li>Test includes preview of different file types </li>
      * </ul>
      */
     @Override
@@ -127,14 +127,14 @@ public class PreviewPopUpPageTest extends AbstractUtils
 
     
     /**
-     * Test:
-     * <ul>
+     * PreviewPopUpPageTestImageFiles:
+     * <ul>         
      *   <li>Login</li>
-     *   <li>Check preview is displayed when clicking on the for diff types of files: Search based on Content</li>
+     *   <li>Check preview is displayed when clicking on the for different image types of files: Search based on Content</li>
      * </ul>
      */
     @Test
-    public void PreviewPopUpPageTest_2()
+    public void ALF_3259()
     {
 
     		/**Start Test*/
@@ -180,14 +180,14 @@ public class PreviewPopUpPageTest extends AbstractUtils
     }
     
     /**
-     * Test:
+     * PreviewPopUpPageTestDiffFileTypes:
      * <ul>
      *   <li>Login</li>
      *   <li>Check preview is displayed when clicking on the for diff types of files: Search based on Content</li>
      * </ul>
      */
     @Test
-    public void PreviewPopUpPageTest_1()
+    public void ALF_3260()
     {
 
     		/**Start Test*/

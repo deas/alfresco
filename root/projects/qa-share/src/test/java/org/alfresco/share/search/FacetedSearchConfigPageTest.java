@@ -53,12 +53,12 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
     }
 
     /**
-     * Render test.
+     * renderFacetedSearchConfigTest.
      *
      * @throws Exception
      */
     @Test
-    public void renderFacetedSearchConfigTest() throws Exception
+    public void ALF_3267() throws Exception
     {
         trace("Starting renderFacetedSearchConfigTest");
 
@@ -72,12 +72,12 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
     }
 
     /**
-     * Render test.
+     * disableAndEnableFacetTest
      *
      * @throws Exception
      */
     @Test
-    public void disableAndEnableFacetTest() throws Exception
+    public void ALF_3268() throws Exception
     {
         trace("Starting disableAndEnableFacetTest");
 

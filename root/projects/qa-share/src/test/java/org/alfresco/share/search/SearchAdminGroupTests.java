@@ -19,7 +19,7 @@
 package org.alfresco.share.search;
 
 /**
- * These Search admin Group tests are non executable since development is still in progress
+ *Search Admin Group tests 
  * 
  * @author Charu
  * 
@@ -29,7 +29,6 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.GroupsPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage;
 import org.alfresco.po.share.RemoveUserFromGroupPage.Action;
-import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -92,7 +91,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      */    
     
     @Test (groups = "EnterpriseOnly")
-    public void ALF_1() throws Exception
+    public void ALF_3261() throws Exception
     {
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);      
                 
@@ -116,7 +115,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2() throws Exception
+    public void ALF_3262() throws Exception
     {        
         String testname = getTestName();        
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -148,13 +147,12 @@ public class SearchAdminGroupTests extends AbstractUtils
     /**
      * Test:
      * <ul>
-     * <li>Create new user and add to Admin group</li>    
-     * <li>Verify new user created and added to Alfresco_Admin group is present in the Members list</li>
-     * <li>Verify admin user has Config facet link displayed in search results page</li>
+     * <li>Create new user and add to EMAIL_CONTRIBUTORS group</li>    
+     * <li>Verify new user created and added to other group dont have access to Config facets</li>     
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ALF_3() throws Exception
+    public void ALF_3263() throws Exception
     {        
         String testname = getTestName();        
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -186,8 +184,8 @@ public class SearchAdminGroupTests extends AbstractUtils
     /**
      * Test:
      * <ul>
-     * <li>Create new user and add to site_admin group</li>
-     * <li>Select the Site_Admin group from the list of Groups in Groups page</li>
+     * <li>Create new user and add to search_admin group</li>
+     * <li>Select the Search_Admin group from the list of Groups in Groups page</li>
      * <li>Remove created and added user from Search_admin group</li>
      * <li>Verify Confirm remove user pop up window is displayed</li>
      * <li>Confirm 'No'to remove user from pop up window </li>
@@ -197,7 +195,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      */    
     
     @Test(groups = "EnterpriseOnly")
-    public void ALF_4() throws Exception
+    public void ALF_3264() throws Exception
     {
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -247,8 +245,8 @@ public class SearchAdminGroupTests extends AbstractUtils
     /**
      * Test:
      * <ul>
-     * <li>Create new user and add to site_admin group</li>
-     * <li>Select the Site_Admin group from the list of Groups in Groups page</li>
+     * <li>Create new user and add to search_admin group</li>
+     * <li>Select the search_admin group from the list of Groups in Groups page</li>
      * <li>Remove created and added user from Site_admin group</li>
      * <li>Verify Confirm remove user pop up window is displayed</li>
      * <li>Confirm 'Yes'to remove user from pop up window </li>
@@ -257,7 +255,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ALF_5() throws Exception
+    public void ALF_3265() throws Exception
     {
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());

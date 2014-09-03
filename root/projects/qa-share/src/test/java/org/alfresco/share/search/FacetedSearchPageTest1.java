@@ -114,8 +114,8 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     Verify only 'Down load' link and 'View in Browser' links are displayed for a file under action for different user 
     */
     
-    @Test(groups = "Enterprise-Only")
-    public void ALF_3126() throws Exception
+    @Test(groups = "alfresco-one")
+    public void ALF_3251() throws Exception
     {
         trace("Starting searchAndClickDownloadActionTest");        
         
@@ -185,15 +185,15 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     Verify url is changed after clicking on 'View In Browser' link in search results page    
     */
     
-    @Test(groups = "Enterprise-Only")
-    public void ALF_3127() throws Exception
+    @Test(groups = "alfresco-one")
+    public void ALF_3252() throws Exception
     {
         trace("Starting searchAndClickViewInBrowserActionTest");      
                 
         String actionName2 = "View In Browser";        
         
-        String name = ("b-fs-test1.txt");
-        String name1 = ("c-fs-test1.txt");
+        String name ="b-fs-test1.txt";
+        String name1 ="c-fs-test1.txt";
         
         // Login as user2
         userLogin2();
@@ -215,15 +215,15 @@ public class FacetedSearchPageTest1 extends AbstractUtils
 
         // Get the url again
         String newUrl = drone.getCurrentUrl();
-
+        
         // We should be on view in browser page
-        Assert.assertNotSame(url, newUrl, "After clicking on action the url should have changed");                 
-      
+        Assert.assertNotSame(url, newUrl, "After clicking on action the url should have changed");           
+                
         // Logout
         ShareUtil.logout(drone);       
        
         trace("searchAndClickViewInBrowserActionTest complete");
-    }
+    }    
     
     /*searchAndClickEdit OfflineActionTest
     This test is to verify 'Edit Offline' action is displayed under actions for uploaded file for same user
@@ -232,7 +232,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3128() throws Exception
+    public void ALF_3253() throws Exception
     {
         trace("Starting searchAndClickEditOfflineActionTest");      
                 
@@ -282,7 +282,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3129() throws Exception
+    public void ALF_3254() throws Exception
     {
         trace("Starting searchAndClickDeleteDocumentActionTest");      
                 
@@ -347,7 +347,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3130() throws Exception
+    public void ALF_3255() throws Exception
     {
         trace("Starting searchAndClickManagePermissionsActionTest");      
                 
@@ -388,7 +388,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3131() throws Exception
+    public void ALF_3256() throws Exception
     {
         trace("Starting searchAndVerifyFolderActionsTest");     
             
@@ -430,7 +430,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     // This test fails since Jira id ACE-1656 has been raised 
     
     @Test(groups = "Enterprise-only")
-    public void ALF_3132() throws Exception
+    public void ALF_3257() throws Exception
     {
         trace("Starting searchForContentInUserHomeFolderTest");        
         
@@ -509,7 +509,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     //This test is the verify only the same tenant user can view the file created by respective tenant
     
     @Test(groups = "CloudOnly")
-    public void ALF_3133() throws Exception
+    public void ALF_3258() throws Exception
     {
         trace("Starting searchAndVerifyMultiTenantTest");        
         
