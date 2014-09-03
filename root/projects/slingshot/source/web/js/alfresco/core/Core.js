@@ -417,7 +417,7 @@ define(["dojo/_base/declare",
 
             // Publish...
             PubQueue.getSingleton().publish(scopedTopic, payload, this);
-         });
+         }, this);
       },
 
       /**
@@ -504,7 +504,7 @@ define(["dojo/_base/declare",
                }
 
                individualHandle.remove();
-            });
+            }, this);
          }
       },
 
