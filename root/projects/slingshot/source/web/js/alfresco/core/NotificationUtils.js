@@ -19,24 +19,24 @@
 
 /**
  * A mixin that provides functions for displaying messages and dialog popups to the user.
- * 
+ *
  * @module alfresco/core/NotificationUtils
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/dialogs/AlfDialog",
-        "dojo/dom-construct"], 
+        "dojo/dom-construct"],
         function(declare, AlfCore, AlfDialog, domConstruct) {
-   
+
    return declare([AlfCore], {
-      
+
       /**
        * This function handles displaying popup messages. It currently uses the legacy YUI functions that are defined
        * in alfresco.js and are expected to be available in the JavaScript global namespace until Share is merged
        * completely to the new UI framework. At some point in time this function should be updated to use alternative
-       * means of displaying a message. 
-       * 
+       * means of displaying a message.
+       *
        * @instance
        * @param msg {String} The message to be displayed.
        */
@@ -52,14 +52,14 @@ define(["dojo/_base/declare",
             this.alfLog("error", "Alfresco.util.PopupManager not available for handling displayMessage requests.");
          }
       },
-      
+
       /**
-       * This function handles displaying popup messages that require some acknowledgement. 
+       * This function handles displaying popup messages that require some acknowledgement.
        * It currently uses the legacy YUI functions that are defined
        * in alfresco.js and are expected to be available in the JavaScript global namespace until Share is merged
        * completely to the new UI framework. At some point in time this function should be updated to use alternative
-       * means of displaying a message. 
-       * 
+       * means of displaying a message.
+       *
        * @instance
        * @param msg {String} The message to be displayed.
        */
@@ -67,5 +67,5 @@ define(["dojo/_base/declare",
          var dialog = new AlfDialog(config);
          dialog.show();
       }
-   })
+   });
 });
