@@ -41,7 +41,7 @@ import org.openqa.selenium.WebElement;
 public class TaskDetailsPage extends SharePage
 {
     private static final By TASK_DETAILS_HEADER = By.cssSelector("div.task-details-header>h1");
-    private static final By MENU_TITLE = By.cssSelector(".alf-menu-title-text");
+    private static final By MENU_TITLE = By.cssSelector(".alfresco-header-Title");
     private static final By WORKFLOW_DETAILS = By.cssSelector(".links>a");
     private static final By MY_TASK_DETAILS = By.cssSelector(".backLink>a");
     private RenderElement menuTitle = getVisibleRenderElement(MENU_TITLE);

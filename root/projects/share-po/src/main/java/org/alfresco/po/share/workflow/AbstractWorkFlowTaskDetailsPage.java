@@ -47,7 +47,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
 {
     private final Logger logger = Logger.getLogger(AbstractWorkFlowTaskDetailsPage.class);
 
-    private static final By MENU_TITLE = By.cssSelector(".alf-menu-title-text");
+    private static final By MENU_TITLE = By.cssSelector(".alfresco-header-Title");
     private static final By WORKFLOW_DETAILS_HEADER = By.cssSelector("div.workflow-details-header>h1");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='_default-cancel-button']");
     private static final By ASSIGNEE = By.cssSelector("div[id$='_hwf_assignment-cntrl']>span[id$='_assignment-cntrl-currentValueDisplay']>div");
