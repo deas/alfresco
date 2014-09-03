@@ -51,24 +51,45 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_documentlibrary_views_layouts_AlfFilmStripViewDocument__postCreate() {
-         var isContainer = lang.getObject("currentItem.node.isContainer", false, this);
-         var nodeRef = lang.getObject("currentItem.nodeRef", false, this);
-         if (isContainer === null)
+         this.isContainer = lang.getObject("currentItem.node.isContainer", false, this);
+         this.nodeRef = lang.getObject("currentItem.nodeRef", false, this);
+         if (this.isContainer === null)
          {
             // No container information, no subscription
          }
-         else if (isContainer === true)
+         else if (this.isContainer === true)
          {
             // This is a container, assume it's a folder and render the folder thumbnail.
             this.processWidgets(lang.clone(this.widgetsForContainer), this.containerNode);
          }
-         else if (isContainer === false)
+         else if (this.isContainer === false)
          {
             // This is a document so we can subscribe to the expected request to display content
             this.widgets = [{
                name: "alfresco/preview/AlfDocumentPreview"
             }];
-            this.alfSubscribe("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + nodeRef, lang.hitch(this, this.requestDocument, nodeRef));
+            this.alfSubscribe("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + this.nodeRef, lang.hitch(this, this.requestDocument, this.nodeRef));
+         }
+      },
+
+      /**
+       * Tracks whether or not the document has already been rendered
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      _documentRequested: false,
+
+      /**
+       * This function is provided so that explicit requests can be made to generate the preview
+       *
+       * @instance
+       */
+      render: function alfresco_documentlibrary_views_layouts_AlfFilmStripViewDocument__render() {
+         if (!this.isContainer && this.nodeRef)
+         {
+            this.requestDocument(this.nodeRef);
          }
       },
 
@@ -81,12 +102,16 @@ define(["dojo/_base/declare",
        * @param {object} payload The payload of the request
        */
       requestDocument: function alfresco_documentlibrary_views_layouts_AlfFilmStripViewDocument__requestDocument(nodeRef, payload) {
-         var uuid = this.generateUuid();
-         this.alfSubscribe(uuid + "_SUCCESS", lang.hitch(this, this.onDocumentLoaded));
-         this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", {
-            nodeRef: nodeRef,
-            alfResponseTopic: this.pubSubScope + uuid
-         }, true);
+         if (!this._documentRequested)
+         {
+            var uuid = this.generateUuid();
+            this.alfSubscribe(uuid + "_SUCCESS", lang.hitch(this, this.onDocumentLoaded));
+            this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", {
+               nodeRef: nodeRef,
+               alfResponseTopic: this.pubSubScope + uuid
+            }, true);
+            this._documentRequested = true;
+         }
       },
 
       /**

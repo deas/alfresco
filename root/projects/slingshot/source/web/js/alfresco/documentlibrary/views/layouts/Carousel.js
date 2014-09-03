@@ -37,12 +37,14 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/lang",
+        "dojo/_base/array",
         "dojo/dom-class",
         "dojo/dom-construct",
         "dojo/dom-style",
-        "dojo/dom-geometry"], 
+        "dojo/dom-geometry",
+        "dojo/window"], 
         function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, 
-                 lang, domClass, domConstruct, domStyle, domGeom) {
+                 lang, array, domClass, domConstruct, domStyle, domGeom, win) {
 
    return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
       
@@ -79,9 +81,12 @@ define(["dojo/_base/declare",
        * @instance postCreate
        */
       postCreate: function alfresco_documentlibrary_views_layouts_Carousel__postCreate() {
-         if (this.widgets)
+         if (this.currentItem)
          {
-            this.processWidgets(this.widgets, this.containerNode);
+            if (this.widgets)
+            {
+               this.processWidgets(this.widgets, this.containerNode);
+            }
          }
 
          // Subscibe to the page widgets ready topic to ensure that sizing occurs...
@@ -113,6 +118,32 @@ define(["dojo/_base/declare",
        * @instance
        */
       resize: function alfresco_documentlibrary_views_layouts_Carousel__resize() {
+         this.calculateSizes();
+         domStyle.set(this.itemsNode, "width", this.itemsNodeWidth + "px");
+         domStyle.set(this.itemsNode, "height", this.height);
+
+         // Set the range of displayed items...
+         this.lastDisplayedIndex = this.firstDisplayedIndex + (this.numberOfItemsShown - 1);
+         this.renderDisplayedItems();
+      },
+
+      /**
+       * This can be set to a value (in pixels) to fix the height. If this is left as null then
+       * a suitable height will attempt to be calculated
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      height: null,
+
+      /**
+       * Gets the available dimensions of the DOM node in preparation for resizing the widget components.
+       * This also works out how many items should be shown within the current viewing frame.
+       *
+       * @instance
+       */
+      calculateSizes: function alfresco_documentlibrary_views_layouts_Carousel__calculateSizes() {
          // Get the available width of the items node...
          var computedStyle = domStyle.getComputedStyle(this.domNode);
          var output = domGeom.getMarginBox(this.domNode, computedStyle);
@@ -122,9 +153,26 @@ define(["dojo/_base/declare",
 
          // For now assume that the width of each item will be 100px....
          // Divide the itemsNode width by 100 to get the number of items
-         var numberOfItemsToShow = Math.floor(overallWidth/this.itemWidth);
-         this.itemsNodeWidth = numberOfItemsToShow * this.itemWidth;
-         domStyle.set(this.itemsNode, "width", this.itemsNodeWidth + "px");
+         this.numberOfItemsShown = Math.floor(overallWidth/this.itemWidth);
+         this.itemsNodeWidth = this.numberOfItemsShown * this.itemWidth;
+
+         if (this.fixedHeight != null)
+         {
+            // Use the configured height...
+            this.height = this.fixedHeight;
+         }
+         else
+         {
+            // Calculate a suitable height...
+            this.height = Math.floor((2 / 3) * this.itemsNodeWidth);
+            var viewPort = win.getBox();
+            var maxItemHeight = viewPort.h;
+            if (this.height > maxItemHeight)
+            {
+               this.height = maxItemHeight;
+            }
+            this.height += "px";
+         }
       },
       
       /**
@@ -154,6 +202,24 @@ define(["dojo/_base/declare",
       currentLeftPosition: 0,
 
       /**
+       * This keeps track of the first displayed item in the currently visible frame.
+       *
+       * @instance
+       * @type {number}
+       * @default 0
+       */
+      firstDisplayedIndex: 0,
+
+      /**
+       * This keeps track of the lasts displayed item in the currently visible frame
+       *
+       * @instance
+       * @type {number}
+       * @default null
+       */
+      lastDisplayedIndex: null,
+
+      /**
        * Handles the user clicking on the previous items navigation control.
        *
        * @instance
@@ -164,7 +230,13 @@ define(["dojo/_base/declare",
          if (this.currentLeftPosition > 0)
          {
             this.currentLeftPosition -= this.itemsNodeWidth;
+
+            // Update the displayed range...
+            this.firstDisplayedIndex -= this.numberOfItemsShown;
+            this.lastDisplayedIndex -= this.numberOfItemsShown;
+            this.renderDisplayedItems();
          }
+
          if (this.currentLeftPosition < 0)
          {
             this.currentLeftPosition = 0;
@@ -183,8 +255,49 @@ define(["dojo/_base/declare",
       onNextClick: function alfresco_documentlibrary_views_layouts_Carousel__onNextClick(evt) {
          this.alfLog("log", "Next carousel items request", this);
          this.currentLeftPosition += this.itemsNodeWidth;
+
+         // Update the displayed range...
+         this.firstDisplayedIndex += this.numberOfItemsShown;
+         this.lastDisplayedIndex += this.numberOfItemsShown;
+
+         this.renderDisplayedItems();
+
          var left = "-" + this.currentLeftPosition + "px";
          domStyle.set(this.containerNode, "left", left);
+      },
+
+      /**
+       * Iterates over the [processed widgets]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#_renderedItemWidgets}
+       * between the [first]{@link module:alfresco/documentlibrary/views/layouts/Carousel#firstDisplayedIndex} and
+       * [last]{@link module:alfresco/documentlibrary/views/layouts/Carousel#lastDisplayedIndex} indices calling
+       * the render function on each to ensure they display themselves correctly
+       *
+       * @instance
+       */
+      renderDisplayedItems: function alfresco_documentlibrary_views_layouts_Carousel__renderDisplayedItems() {
+         for (var i=this.firstDisplayedIndex; i<=this.lastDisplayedIndex; i++)
+         {
+            if (this._renderedItemWidgets)
+            {
+               var widgets = this._renderedItemWidgets[i];
+               array.forEach(widgets, lang.hitch(this, this.renderDisplayedItem));
+               
+            }
+         }
+      },
+
+      /**
+       * Attempts to render a widget that is currently displayed in the viewing frame.
+       *
+       * @instance
+       * @param {object} widget The widget to render
+       * @param {number} index The index of the widget within the array
+       */
+      renderDisplayedItem: function alfresco_documentlibrary_views_layouts_Carousel__renderDisplayedItem(widget, index) {
+         if (widget && typeof widget.render === "function")
+         {
+            widget.render();
+         }
       }
    });
 });

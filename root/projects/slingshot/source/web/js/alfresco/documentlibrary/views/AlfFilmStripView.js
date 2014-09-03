@@ -27,9 +27,10 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/AlfFilmStripView.html",
         "alfresco/documentlibrary/AlfDocument",
         "alfresco/preview/AlfDocumentPreview",
+        "alfresco/documentlibrary/views/layouts/DocumentCarousel",
         "alfresco/documentlibrary/views/layouts/Carousel",
         "dojo/_base/lang"], 
-        function(declare, AlfDocumentListView, template, AlfDocument, AlfDocumentPreview, Carousel, lang) {
+        function(declare, AlfDocumentListView, template, AlfDocument, AlfDocumentPreview, DocumentCarousel, Carousel, lang) {
    
    return declare([AlfDocumentListView], {
       
@@ -105,9 +106,9 @@ define(["dojo/_base/declare",
             {
                this.contentCarousel.renderData();
             }
-            this.alfPublish("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + this.currentData.items[0].nodeRef, {
-               nodeRef: this.currentData.items[0].nodeRef
-            });
+            // this.alfPublish("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + this.currentData.items[0].nodeRef, {
+            //    nodeRef: this.currentData.items[0].nodeRef
+            // });
          }
       },
 
@@ -138,7 +139,7 @@ define(["dojo/_base/declare",
        * @returns {object} A new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
        */
       createDocumentListRenderer: function alfresco_documentlibrary_views_AlfFilmStripView__createDocumentListRenderer() {
-         this.contentCarousel = new Carousel({
+         this.contentCarousel = new DocumentCarousel({
             widgets: lang.clone(this.widgetsForContent),
             currentData: this.currentData,
             pubSubScope: this.pubSubScope,
@@ -152,7 +153,8 @@ define(["dojo/_base/declare",
             widgets: lang.clone(this.widgets),
             currentData: this.currentData,
             pubSubScope: this.pubSubScope,
-            parentPubSubScope: this.parentPubSubScope
+            parentPubSubScope: this.parentPubSubScope,
+            fixedHeight: "112px"
          });
          return dlr;
       },

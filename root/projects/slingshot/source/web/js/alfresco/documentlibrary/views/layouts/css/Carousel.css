@@ -5,7 +5,7 @@
 
 .alfresco-documentlibrary-views-layouts-Carousel .items {
    overflow-x: hidden;
-   height: 112px;
+   /*height: 112px;*/
    position: relative;
    z-index: 2;
    margin: 0 auto; /* Center the items */
@@ -40,7 +40,7 @@
 
 /* Absolute position over the list of items, and ensure full width so that the floated left and right
  * controls are in the correct positions */
-.alfresco-documentlibrary-views-layouts-Carousel .controls {
+.alfresco-documentlibrary-views-layouts-Carousel > div.controls {
    position: absolute;
    top: 6px;
    width: 100%;
