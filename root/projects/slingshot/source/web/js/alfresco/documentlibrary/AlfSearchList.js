@@ -18,15 +18,15 @@
  */
 
 /**
- * Extends the default [AlfDocumentList]{@link module:alfresco/documentlibrary/AlfDocumentList} to 
- * make search specific requests.
+ * Extends the [sortable paginated list]{@link module:alfresco/lists/AlfSortablePaginatedList} to 
+ * handle search specific data.
  * 
  * @module alfresco/documentlibrary/AlfSearchList
- * @extends alfresco/documentlibrary/AlfDocumentList
+ * @extends alfresco/lists/AlfSortablePaginatedList
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/AlfDocumentList", 
+        "alfresco/lists/AlfSortablePaginatedList", 
         "alfresco/core/PathUtils",
         "dojo/_base/array",
         "dojo/_base/lang",
@@ -35,9 +35,9 @@ define(["dojo/_base/declare",
         "dojo/hash",
         "dojo/io-query",
         "alfresco/core/ArrayUtils"], 
-        function(declare, AlfDocumentList, PathUtils, array, lang, domConstruct, domClass, hash, ioQuery, arrayUtils) {
+        function(declare, AlfSortablePaginatedList, PathUtils, array, lang, domConstruct, domClass, hash, ioQuery, arrayUtils) {
    
-   return declare([AlfDocumentList], {
+   return declare([AlfSortablePaginatedList], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -58,24 +58,13 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/AlfSearchList.css"}],
       
       /**
-       * Subscribe the document list topics.
-       * 
+       * Extends the [inherited function]{@link module:alfresco/lists/AlfSortablePaginatedList#setupSubscriptions}
+       * to subscribe to search specific topics.
+       *
        * @instance
        */
-      postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
-         
-         this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, "onSortRequest"));
-         this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "onSortFieldSelection"));
-         
-         // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
-         // that this widget requests...
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
-
-         this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
-         
-
-         // Subscribe to the topics that address specific search updates...
+      setupSubscriptions: function alfrescdo_documentlibrary_AlfSearchList__setupSubscriptions() {
+         this.inherited(arguments);
          this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, "onSearchTermRequest"));
          this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, "onIncludeFacetRequest"));
          this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
@@ -83,22 +72,30 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_SEARCHLIST_SCOPE_SELECTION", lang.hitch(this, "onScopeSelection"));
          this.alfSubscribe("ALF_ADVANCED_SEARCH", lang.hitch(this, this.onAdvancedSearch));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, this.reloadData));
+      },
 
-         // Infinite scroll handling
-         this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
-
-         // Listen for updates on request processing...
-         this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
-         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
-
-         // Get the messages for the template...
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#setDisplayMessages}
+       * to set search specific messages.
+       *
+       * @instance
+       */
+      setDisplayMessages: function alfrescdo_documentlibrary_AlfSearchList__setDisplayMessages() {
          this.noViewSelectedMessage = this.message("searchlist.no.view.message");
          this.noDataMessage = this.message("searchlist.no.data.message");
          this.fetchingDataMessage = this.message("searchlist.loading.data.message");
          this.renderingViewMessage = this.message("searchlist.rendering.data.message");
          this.fetchingMoreDataMessage = this.message("searchlist.loading.data.message");
          this.dataFailureMessage = this.message("searchlist.data.failure.message");
+      },
 
+      /**
+       * Extends the 
+       * 
+       * @instance
+       */
+      postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
+         this.inherited(arguments);
          this.facetFilters = {};
       },
 
@@ -379,7 +376,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * If [useHash]{@link module:alfresco/documentlibrary/AlfDocumentList#useHash} has been set to true
+       * If [useHash]{@link module:alfresco/lists/AlfHashList#useHash} has been set to true
        * then this function will be called whenever the browser hash fragment is modified. It will update
        * the attributes of this instance with the values provided in the fragment.
        * 
@@ -490,7 +487,6 @@ define(["dojo/_base/declare",
 
             // Set a response topic that is scoped to this widget...
             searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
-
             this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
          }
       },
@@ -502,11 +498,11 @@ define(["dojo/_base/declare",
        * @param {object} response The response object
        * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
        */
-      onSearchLoadSuccess: function alfresco_documentlibrary_AlfSearchList__onSearchLoadSuccess(payload) {
+      onDataLoadSuccess: function alfresco_documentlibrary_AlfSearchList__onDataLoadSuccess(payload) {
          this.alfLog("log", "Search Results Loaded", payload, this);
          
          var newData = payload.response;
-         this._currentData = newData; // Some code below expects this even if the view is null.
+         this.currentData = newData; // Some code below expects this even if the view is null.
 
          // Re-render the current view with the new data...
          var view = this.viewMap[this._currentlySelectedView];
@@ -517,7 +513,7 @@ define(["dojo/_base/declare",
             if (this.useInfiniteScroll)
             {
                view.augmentData(newData);
-               this._currentData = view.getData();
+               this.currentData = view.getData();
             }
             else
             {
@@ -526,7 +522,6 @@ define(["dojo/_base/declare",
 
             view.renderView(this.useInfiniteScroll);
             this.showView(view);
-
          }
 
          // TODO: This should probably be in the SearchService... but will leave here for now...
@@ -543,7 +538,7 @@ define(["dojo/_base/declare",
             }
          }
 
-         var resultsCount = this._currentData.numberFound != -1 ? this._currentData.numberFound : 0;
+         var resultsCount = this.currentData.numberFound != -1 ? this.currentData.numberFound : 0;
          if (resultsCount != null)
          {
             // Publish the number of search results found...
@@ -571,6 +566,5 @@ define(["dojo/_base/declare",
          this.hideChildren(this.domNode);
          this.alfPublish(this.clearDocDataTopic);
       }
-
    });
 });

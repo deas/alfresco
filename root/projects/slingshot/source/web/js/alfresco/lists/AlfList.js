@@ -26,6 +26,7 @@
  * @mixes module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreWidgetProcessing
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
+ * @mixes module:alfresco/core/DynamicWidgetProcessingTopics
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -35,15 +36,17 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
         "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
+        "alfresco/core/DynamicWidgetProcessingTopics",
         "alfresco/documentlibrary/views/AlfDocumentListView",
+        "alfresco/menus/AlfCheckableMenuItem",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
         "dojo/dom-class"], 
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin,
-                 AlfDocumentListView, array, lang, domConstruct, domClass) {
+                 DynamicWidgetProcessingTopics, AlfDocumentListView, AlfCheckableMenuItem, array, lang, domConstruct, domClass) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin, DynamicWidgetProcessingTopics], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -69,6 +72,26 @@ define(["dojo/_base/declare",
        * @type {String}
        */
       templateString: template,
+      
+      /**
+       * A map of views that the list can switch between.
+       * 
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      viewMap: null,
+      
+      /**
+       * A map of the additional controls that each view requires. This is map is populated as each view
+       * is selected (so that the controls are only loaded once) but are then loaded from the map. This
+       * allows the same controls to be added and removed as views are switched.
+       * 
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      viewControlsMap: null,
       
       /**
        * The widgets processed by AlfDocumentList should all be instances of "alfresco/documentlibrary/AlfDocumentListView".
@@ -303,15 +326,87 @@ define(["dojo/_base/declare",
        * @param {object} view The view to process
        */
       processView: function alfresco_lists_AlfList__processView(view) {
-         // Attempt to retrieve a name for the view. If the name returned is null then it indicates
-         // that the getViewName method has not been overridden or the abstract view has been used.
-         // In this instance it is acceptable to use the registered index as the name.
          var viewName = view.getViewName();
          if (viewName == null)
          {
             viewName = index;
          }
+         
+         // Create a new new menu item using the supplied configuration...
+         var viewSelectionConfig = view.getViewSelectionConfig();
+         viewSelectionConfig.value = viewName;
+         
+         // Check if this is the initially requested view...
+         if (viewName == this.view)
+         {
+            this._currentlySelectedView = viewName;
+            viewSelectionConfig.checked = true;
+         }
+
+         // Attempt to get a localized version of the label...
+         viewSelectionConfig.label = this.message(viewSelectionConfig.label);
+
+         // Publish the additional controls...
+         this.publishAdditionalControls(viewName, view);
+         
+         // Set the value of the publish topic...
+         viewSelectionConfig.publishTopic = this.viewSelectionTopic;
+         
+         // Set a common group for the menu item...
+         viewSelectionConfig.group = this.viewSelectionMenuItemGroup;
+         
+         // Create a new AlfCheckableMenuItem for selecting the view. This will then be published and any menus that have subscribed
+         // to the topic defined by "selectionMenuItemTopic" should add the menu item. When the menu item is clicked it will publish
+         // the selection on the topic defined by the "viewSelectionTopic" (to which this DocumentList instance subscribes) and the
+         // new view will be rendered...
+         var selectionMenuItem = new AlfCheckableMenuItem(viewSelectionConfig);
+         
+         // If the view meets all the required criteria then we can add it for selection...
+         this.alfPublish(this.selectionMenuItemTopic, {
+            menuItem: selectionMenuItem
+         });
          this.viewMap[viewName] = view;
+      },
+
+      /**
+       * This is the ID of the widget that should be targeted with adding additional view controls to
+       *
+       * @instance
+       * @type {string}
+       * @default "DOCLIB_TOOLBAR"
+       */
+      additionalControlsTarget: "DOCLIB_TOOLBAR",
+
+      /**
+       * Gets the additional controls for a view and publishes them.
+       * 
+       * @instance
+       * @param {string} viewName The name of the view
+       * @param {object} view The view to get the controls for.
+       */
+      publishAdditionalControls: function alfresco_lists_AlfList__publishAdditionalControls(viewName, view) {
+         if (this.viewControlsMap == null)
+         {
+            this.viewControlsMap = {};
+         }
+
+         // Get any new additional controls (check the map first)
+         var newAdditionalControls = this.viewControlsMap[viewName];
+         if (newAdditionalControls == null)
+         {
+            newAdditionalControls = view.getAdditionalControls();
+            this.viewControlsMap[viewName] = newAdditionalControls;
+         }
+         
+         // Publish the new additional controls for anyone wishing to display them...
+         if (newAdditionalControls != null)
+         {
+            this.alfPublish(this.dynamicallyAddWidgetTopic, {
+               targetId: this.additionalControlsTarget,
+               targetPosition: 0,
+               widgets: newAdditionalControls
+            });
+         }
       },
       
       /**
@@ -493,10 +588,25 @@ define(["dojo/_base/declare",
          if (!this.requestInProgress)
          {
             this.showLoadingMessage();
-            this.alfPublish(this.clearDocDataTopic);
 
-            var payload = lang.clone(this.loadDataPublishPayload);
+            // Clear the previous data only when not configured to use infinite scroll...
+            if (!this.useInfiniteScroll)
+            {
+               this.alfPublish(this.clearDocDataTopic);
+            }
+
+            var payload;
+            if (this.loadDataPublishPayload)
+            {
+               payload = lang.clone(this.loadDataPublishPayload);
+            }
+            else
+            {
+               payload = {};
+            }
+            
             payload.alfResponseTopic = this.pubSubScope + this.loadDataPublishTopic;
+            this.updateLoadDataPayload(payload);
             this.alfPublish(this.loadDataPublishTopic, payload, true);
          }
          else
@@ -504,6 +614,17 @@ define(["dojo/_base/declare",
             // Let the user know that we're still waiting on the last data load?
             this.alfLog("warn", "Waiting for previous data load request to complete", this);
          }
+      },
+
+      /**
+       * This is an extension point for extending modules to use. By default it does nothing to
+       * the supplied payload.
+       *
+       * @instance
+       * @param {object} payload The payload object to update
+       */
+      updateLoadDataPayload: function alfresco_lists_AlfList__updateLoadDataPayload(payload) {
+         // Does nothing by default.
       },
       
       /**
@@ -549,6 +670,8 @@ define(["dojo/_base/declare",
          
          if (foundItems)
          {
+            this.processLoadedData(payload.response);
+
             // Re-render the current view with the new data...
             var view = this.viewMap[this._currentlySelectedView];
             if (view != null)
@@ -566,6 +689,17 @@ define(["dojo/_base/declare",
          // This request has finished, allow another one to be triggered.
          this.alfPublish(this.requestFinishedTopic, {});
       },
+
+      /**
+       * This is an extension point function for extending modules to perform processing on the loaded
+       * data once it's existence has been verified
+       *
+       * @instance
+       * @param {object} response The original response.
+       */
+      processLoadedData: function alfresco_lists_AlfList__processLoadedData(response) {
+         // No action by default.
+      }, 
       
       /**
        * Handles failed calls to get data from the repository.

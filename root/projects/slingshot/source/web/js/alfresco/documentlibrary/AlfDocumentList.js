@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,54 +18,23 @@
  */
 
 /**
- * Used to represent a list of documents.
- * @todo Clearly needs more info
  * 
  * @module alfresco/documentlibrary/AlfDocumentList
- * @extends dijit/_WidgetBase
- * @mixes dijit/_TemplatedMixin
- * @mixes module:alfresco/core/Core
- * @mixes module:alfresco/core/CoreWidgetProcessing
+ * @extends alfresco/lists/AlfSortablePaginatedList
  * @mixes module:alfresco/core/FullScreenMixin
- * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
- * @mixes module:alfresco/documentlibrary/_AlfHashMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
-        "dijit/_TemplatedMixin",
-        "dojo/text!./templates/AlfDocumentList.html",
-        "alfresco/core/Core",
-        "alfresco/core/CoreWidgetProcessing",
+        "alfresco/lists/AlfSortablePaginatedList", 
         "alfresco/core/FullScreenMixin",
         "alfresco/core/JsNode",
-        "alfresco/documentlibrary/_AlfDocumentListTopicMixin",
-        "alfresco/documentlibrary/_AlfHashMixin",
-        "alfresco/core/DynamicWidgetProcessingTopics",
-        "alfresco/services/_PreferenceServiceTopicMixin",
-        "alfresco/documentlibrary/views/AlfDocumentListView",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "alfresco/menus/AlfCheckableMenuItem",
         "dojo/hash",
-        "dojo/io-query",
-        "dojo/dom-construct",
-        "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, FullScreenMixin, JsNode, _AlfDocumentListTopicMixin, _AlfHashMixin, DynamicWidgetProcessingTopics,
-                 _PreferenceServiceTopicMixin, AlfDocumentListView, array, lang, AlfCheckableMenuItem, hash, ioQuery, domConstruct, domClass) {
+        "dojo/io-query"], 
+        function(declare, AlfSortablePaginatedList, FullScreenMixin, JsNode, array, lang, hash, ioQuery) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, FullScreenMixin, _AlfDocumentListTopicMixin, _AlfHashMixin, 
-                   DynamicWidgetProcessingTopics, _PreferenceServiceTopicMixin], {
-      
-      /**
-       * Declare the dependencies on "legacy" JS files.
-       * 
-       * @instance
-       * @type {string[]}
-       * @default ["/js/alfresco.js"]
-       */
-      nonAmdDependencies: ["/js/yui-common.js",
-                           "/js/alfresco.js"],
+   return declare([AlfSortablePaginatedList, FullScreenMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -86,62 +55,6 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/AlfDocumentList.css"}],
 
       /**
-       * The HTML template to use for the widget.
-       * @instance
-       * @type {String}
-       */
-      templateString: template,
-      
-      /**
-       * A map of views that the DocumentList can switch between.
-       * 
-       * @instance
-       * @type {object}
-       * @default null
-       */
-      viewMap: null,
-      
-      /**
-       * A map of the additional controls that each view requires. This is map is populated as each view
-       * is selected (so that the controls are only loaded once) but are then loaded from the map. This
-       * allows the same controls to be added and removed as views are switched.
-       * 
-       * @instance
-       * @type {object}
-       * @default null
-       */
-      viewControlsMap: null,
-      
-      /**
-       * The widgets processed by AlfDocumentList should all be instances of "alfresco/documentlibrary/AlfDocumentListView".
-       * Any widget that is instantiated that does not inherit from that class will not be included as a view.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default
-       */
-      widgets: null,
-      
-      /**
-       * Indicates whether pagination should be used when requesting documents (e.g. include the page number and the number of
-       * results per page)
-       * 
-       * @instance
-       * @type {boolean}
-       * @default true
-       */
-      usePagination: true,
-
-      /**
-       * Indicates whether Infinite Scroll should be used when requesting documents
-       *
-       * @instance
-       * @type {boolean}
-       * @default true
-       */
-      useInfiniteScroll: false,
-
-      /**
        * Indicates whether or not folders should be shown in the document library.
        *
        * @instance
@@ -151,59 +64,23 @@ define(["dojo/_base/declare",
       showFolders: true,
 
       /**
-       * Indicates whether the location should be driven by changes to the browser URL hash
-       *
        * @instance
-       * @type {boolean}
-       * @default false
+       * @type {object}
+       * @default null
        */
-      useHash: false,
-
+      currentFilter: null,
+      
       /**
-       * An array of hash variables that when changed will trigger a reload
-       *
-       * @instance
-       * @type {array}
-       * @default []
-       */
-      hashVarsForUpdate: [],
-
-      /**
-       * Is there currently a request in progress?
-       *
-       * @instance
-       * @default false
-       * @type {Boolean}
-       */
-      requestInProgress: false,
-
-      /**
-       * Should we prevent multiple simultaneous requests
-       *
-       * @instance
-       * @default false
-       * @type {Boolean}
-       */
-      blockConcurrentRequests: false,
-
-      /**
-       * Subscribe the document list topics.
+       * Extends the [inherited function]{@link module:alfresco/lists/AlfSortablePaginatedListt#postMixInProperties}
+       * to set a default filter to be a root path.
        * 
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfDocumentList__postMixInProperties() {
-         this.alfPublish(this.getPreferenceTopic, {
-            preference: "org.alfresco.share.documentList.documentsPerPage",
-            callback: this.setPageSize,
-            callbackScope: this
-         });
-
+         this.inherited(arguments);
          this.currentFilter = {
             path: "/"
          };
-         
-         this.setupSubscriptions();
-         this.setDisplayMessages();
       },
 
       /**
@@ -213,65 +90,16 @@ define(["dojo/_base/declare",
        * @instance
        */
       setupSubscriptions: function alfrescdo_documentlibrary_AlfDocumentList__setupSubscriptions() {
+         this.inherited(arguments);
          this.alfSubscribe("ALF_DOCUMENTLIST_PATH_CHANGED", lang.hitch(this, this.onPathChanged));
          this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onCategoryChanged));
          this.alfSubscribe("ALF_DOCUMENTLIST_TAG_CHANGED", lang.hitch(this, this.onTagChanged));
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, this.onFilterChanged));
-
-         // Handle full screen and full window requests...
          this.alfSubscribe("ALF_DOCLIST_FULL_WINDOW", lang.hitch(this, this.toggleFullScreen, true));
          this.alfSubscribe("ALF_DOCLIST_FULL_SCREEN", lang.hitch(this, this.toggleFullScreen, false));
-
-         this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
-         this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onDocumentSelection"));
-         this.alfSubscribe(this.sortRequestTopic, lang.hitch(this, "onSortRequest"));
-         this.alfSubscribe(this.sortFieldSelectionTopic, lang.hitch(this, "onSortFieldSelection"));
-         this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, "onShowFolders"));
-         this.alfSubscribe(this.pageSelectionTopic, lang.hitch(this, "onPageChange"));
-         this.alfSubscribe(this.docsPerpageSelectionTopic, lang.hitch(this, "onDocsPerPageChange"));
-         this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, "loadData"));
-         if (this.useInfiniteScroll)
-         {
-            this.alfSubscribe(this.scrollNearBottom, lang.hitch(this, "onScrollNearBottom"));
-         }
-         
-         // Subscribe to the topics that will be published on by the DocumentService when retrieving documents
-         // that this widget requests...
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDataLoadSuccess"));
-         this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
-
-         this.alfSubscribe(this.requestInProgressTopic, lang.hitch(this, "onRequestInProgress"));
-         this.alfSubscribe(this.requestFinishedTopic, lang.hitch(this, "onRequestFinished"));
+         this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, this.onDocumentSelection));
+         this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, this.onShowFolders));
       },
-
-      /**
-       * This function should be overridden as necessary to change the messages displayed for various states
-       * of the list, e.g.
-       * <ul><li>When no view is configured</li>
-       * <li>When there is no data to render</li>
-       * <li>When data is being retrieved</li>
-       * <li>When the view is being rendered</li>
-       * <li>When the additional data is being retrieved (e.g. on infinite scroll)</li></ul>
-       *
-       * @instance
-       */
-      setDisplayMessages: function alfresco_documentlibrary_AlfDocumentList__setDisplayMessages() {
-         this.noViewSelectedMessage = this.message("doclist.no.view.message");
-         this.noDataMessage = this.message("doclist.no.data.message");
-         this.fetchingDataMessage = this.message("doclist.loading.data.message");
-         this.renderingViewMessage = this.message("doclist.rendering.data.message");
-         this.fetchingMoreDataMessage = this.message("doclist.loading.data.message");
-         this.dataFailureMessage = this.message("doclist.data.failure.message");
-      },
-
-      /**
-       * The current path displayed by the document list.
-       *
-       * @instance
-       * @type {string}
-       * @default null
-       */
-      currentPath: null,
 
       /**
        * Handles requests to update the current path.
@@ -412,20 +240,6 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Sets the number of documents per page
-       * 
-       * @instance
-       * @param {number} value The number of documents per page.
-       */
-      setPageSize: function alfresco_documentlibrary_AlfDocumentList__setPageSize(value) {
-         if (value == null)
-         {
-            value = 25;
-         }
-         this.currentPageSize = value;
-      },
-      
-      /**
        * This is the topic that will be subscribed to for responding to item clicks unless [useHash]{@link module:alfresco/documentlibrary/AlfDocumentList#useHash}
        * is set to true. [Views]{@link module:alfresco/documentlibrary/views/AlfDocumentListView} that defined
        * renderers that provide links using the [_ItemLinkMixin]{@link module:alfresco/renderers/_ItemLinkMixin} should
@@ -486,433 +300,6 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * @instance
-       */
-      postCreate: function alfresco_documentlibrary_AlfDocumentList__postCreate() {
-         
-         // Instantiate a new map to hold all of the views for the DocumentList...
-         this.viewMap = {};
-         this.viewControlsMap = {};
-         
-         // Process the array of widgets. Only views should be included as widgets of the DocumentList.
-         if (this.widgets)
-         {
-            this.processWidgets(lang.clone(this.widgets));
-         }
-      },
-      
-      /**
-       * This indicates that the instance should wait for all widgets on the page to finish rendering before
-       * making any attempt to load data. If this is set to true then loading can begin as soon as this instance
-       * has finished being created. This needs to be overridden in the case where the instance is created 
-       * dynamically after the page has loaded.
-       *
-       * @instance
-       * @type {boolean}
-       * @default true
-       */
-      waitForPageWidgets: true,
-
-      /**
-       * This is updated by the [onPageWidgetsReady]{@link module:alfresco/documentlibrary/AlfDocumentList#onPageWidgetsReady}
-       * function to be true when all widgets on the page have been loaded. It is used to block loading of 
-       * data until the page is completely setup. This is done to avoid multiple data loads as other widgets
-       * on the page publish the details of their initial state (which would otherwise trigger a call to
-       * [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#onPageWidgetsReady})
-       * 
-       * @instance
-       * @type {boolean}
-       * @default false
-       */
-      _readyToLoad: false,
-
-      /**
-       * The AlfDocumentList is intended to work co-operatively with other widgets on a page to assist with
-       * setting the data that should be retrieved. As related widgets are created and publish their initial
-       * state they may trigger requests to load data. As such, data loading should not be started until
-       * all the widgets on the page are ready.
-       *
-       * @instance
-       * @param {object} payload
-       */
-      onPageWidgetsReady: function alfresco_documentlibrary_AlfDocumentList__onPageWidgetsReady(payload) {
-         // Remove the subscription to ensure it's only processed once...
-         this.alfUnsubscribe(this.pageWidgetsReadySubcription);
-
-         this._readyToLoad = true;
-         if (this.useHash)
-         {
-            // Only subscribe to filter changes if 'useHash' is set to true. This is because multiple DocLists might
-            // be required on the same page and they can't all feed off the hash to drive the location.
-            this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onHashChanged));
-
-            var currHash = ioQuery.queryToObject(hash());
-            if(!this._payloadContainsUpdateableVar(currHash))
-            {
-               this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
-                  url: ioQuery.objectToQuery(this.currentFilter),
-                  type: "HASH"
-               }, true);
-            }
-            else
-            {
-               // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
-               // actually get the initial filter and use it to generate the first data set...
-               this.initialiseFilter(); // Function provided by the _AlfHashMixin
-            }
-         }
-         else
-         {
-            // When not using a URL hash (e.g. because this DocList is being used as a secondary item - 
-            // maybe as part of a picker, etc) then we need to load the initial data set using the instance
-            // variables provided. We also need to subscribe to topics that indicate that the location has 
-            // changed. Each view renderer that registers a link will need to set a "linkClickTopic" and this
-            // should be matched by the "linkClickTopic" of this instance)
-            this.alfSubscribe(this.linkClickTopic, lang.hitch(this, "onItemLinkClick"));
-            if (this._readyToLoad) this.loadData();
-         }
-      },
-
-      /**
-       * Iterates over the widgets processed and calls the [registerView]{@link module:alfresco/documentlibrary/AlfDocumentList#registerView}
-       * function with each one.
-       * 
-       * @instance
-       * @param {object[]} The created widgets
-       */
-      allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentList__allWidgetsProcessed(widgets) {
-         array.forEach(widgets, lang.hitch(this, "registerView"));
-
-         // If no default view has been provided, then just use the first...
-         if (this._currentlySelectedView == null)
-         {
-            for (view in this.viewMap)
-            {
-               this._currentlySelectedView = view;
-               break;
-            }
-         }
-
-         this.alfPublish(this.viewSelectionTopic, {
-            value: this._currentlySelectedView
-         });
-
-         if (this.waitForPageWidgets == true)
-         {
-            // Create a subscription to listen out for all widgets on the page being reported
-            // as ready (then we can start loading data)...
-            this.pageWidgetsReadySubcription = this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, "onPageWidgetsReady"), true);
-         }
-         else
-         {
-            // Load data immediately...
-            this._readyToLoad = true;
-            this.onPageWidgetsReady();
-         }
-
-      },
-      
-      /**
-       * This is called from [allWidgetsProcessed]{@link module:alfresco/documentlibrary/AlfDocumentList#allWidgetsProcessed} for
-       * each widget defined. Only widgets that inherit from [AlfDocumentListView]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}
-       * will be successfully registered.
-       * 
-       * @instance
-       * @param {object} view The view to register
-       * @param {number} index
-       */
-      registerView: function alfresco_documentlibrary_AlfDocumentList__registerView(view, index) {
-         if (view.isInstanceOf(AlfDocumentListView))
-         {
-            this.alfLog("log", "Registering DocumentList view", view);
-            
-            // Get the menu item for selecting the view. We need to make sure that each view provides a menu item 
-            // that can be used for selecting a view otherwise the end user will not be able to select it...
-            var viewSelectionConfig = view.getViewSelectionConfig();
-            if (viewSelectionConfig == null || !this.isValidViewSelectionConfig(viewSelectionConfig))
-            {
-               this.alfLog("error", "The following DocumentList view does not provide a valid selection menu item upon request", viewSelectionConfig);
-            }
-            else
-            {
-               // Attempt to retrieve a name for the view. If the name returned is null then it indicates
-               // that the getViewName method has not been overridden or the abstract view has been used.
-               // In this instance it is acceptable to use the registered index as the name.
-               var viewName = view.getViewName();
-               if (viewName == null)
-               {
-                  viewName = index;
-               }
-
-               // Create a new new menu item using the supplied configuration...
-               viewSelectionConfig.value = viewName;
-               
-               // Check if this is the initially requested view...
-               if (viewName == this.view)
-               {
-                  this._currentlySelectedView = viewName;
-                  viewSelectionConfig.checked = true;
-               }
-
-               // Attempt to get a localized version of the label...
-               viewSelectionConfig.label = this.message(viewSelectionConfig.label);
-
-               // Publish the additional controls...
-               this.publishAdditionalControls(viewName, view);
-               
-               // Set the value of the publish topic...
-               viewSelectionConfig.publishTopic = this.viewSelectionTopic;
-               
-               // Set a common group for the menu item...
-               viewSelectionConfig.group = this.viewSelectionMenuItemGroup;
-               
-               // Create a new AlfCheckableMenuItem for selecting the view. This will then be published and any menus that have subscribed
-               // to the topic defined by "selectionMenuItemTopic" should add the menu item. When the menu item is clicked it will publish
-               // the selection on the topic defined by the "viewSelectionTopic" (to which this DocumentList instance subscribes) and the
-               // new view will be rendered...
-               var selectionMenuItem = new AlfCheckableMenuItem(viewSelectionConfig);
-               
-               // If the view meets all the required criteria then we can add it for selection...
-               // Step 1: Publish the menu item so that the view can be selected
-               this.alfPublish(this.selectionMenuItemTopic, {
-                  menuItem: selectionMenuItem
-               });
-               
-               // Step 2: Add the view to the map of known views...
-               this.viewMap[viewName] = view;
-            }
-         }
-         else
-         {
-            this.alfLog("warn", "The following widget was provided as a view, but it does not inherit from 'alfresco/documentlibrary/AlfDocumentListView'", view);
-         }
-      },
-      
-      /**
-       * By default this just ensures that a label has been provided. However this function could be overridden to provide
-       * more complete validation if there are specific requirements for view selection configuration.
-       * 
-       * @instance isValidViewSelectionConfig
-       * @param {object} viewSelectionConfig The configuration to validate
-       * @return {boolean} Either true or false depending upon the validity of the supplied configuration.
-       */
-      isValidViewSelectionConfig: function alfresco_documentlibrary_AlfDocumentList__isValidViewSelectionConfig(viewSelectionConfig) {
-         return (viewSelectionConfig.label != null && viewSelectionConfig.label != "");
-      },
-      
-      /**
-       * Use to keeps track of the [view]{@link module:alfresco/documentlibrary/views/AlfDocumentListView} that is currently selected.
-       * 
-       * @instance
-       * @type {string} 
-       * @default null
-       */
-      _currentlySelectedView: null,
-      
-      /**
-       * Used to keep track of the current data for rendering by [views]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}.
-       * 
-       * @instance
-       * @type {object}
-       * @default null
-       */
-      _currentData: null,
-      
-      /**
-       * Handles requests to switch views. This is called whenever the [viewSelectionTopic]{@link module:alfresco/documentlibrary/_AlfDocumentListTopicMixin#viewSelectionTopic} 
-       * topic is published on and expects a payload containing an attribute "value" which should map to a registered 
-       * [view]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}. The views are mapped against the index they were configured 
-       * with so the value is expected to be an integer.
-       * 
-       * @instance
-       * @param {object} payload The payload published on the view selection topic. 
-       */
-      onViewSelected: function alfresco_documentlibrary_AlfDocumentList__onViewSelected(payload) {
-         if (this._currentData == null)
-         {
-            this.alfLog("warn", "There is no data to render a view with");
-            this.showNoDataMessage();
-         }
-         else if (payload == null || payload.value == null)
-         {
-            this.alfLog("warn", "A request was made to select a view, but not enough information was provided", payload);
-         }
-         else if (this._currentlySelectedView == payload.value)
-         {
-            // The requested view is the current view. No action required.
-         }
-         else if (this.viewMap[payload.value] == null)
-         {
-            // An invalid view was requested. Each view will have been mapped to the order in which it occurred in the
-            // the "widgets" array provided for the DocumentList. The payload value attribute should correspond to an
-            // index from that array...
-            this.alfLog("error", "A request was made to select a non-existent view. Requested view: ", payload.value, " from: ", this.viewMap);
-         }
-         else
-         {
-            // Just do some double-checking to be sure...
-            if (typeof this.viewMap[payload.value].renderView === "function")
-            {
-               // Render the selected view...
-               this._currentlySelectedView = payload.value;
-               var newView = this.viewMap[payload.value];
-               this.showRenderingMessage();
-               newView.setData(this._currentData);
-               newView.renderView(this.useInfiniteScroll);
-               this.showView(newView);
-            }
-            else
-            {
-               this.alfLog("error", "A view was requested that does not define a 'renderView' function", this.viewMap[payload.value]);
-            }
-         }
-      },
-      
-      /**
-       * This is the ID of the widget that should be targeted with adding additional view controls to
-       *
-       * @instance
-       * @type {string}
-       * @default "DOCLIB_TOOLBAR"
-       */
-      additionalControlsTarget: "DOCLIB_TOOLBAR",
-
-      /**
-       * Gets the additional controls for a view and publishes them.
-       * 
-       * @instance
-       * @param {string} viewName The name of the view
-       * @param {object} view The view to get the controls for.
-       */
-      publishAdditionalControls: function alfresco_documentlibrary_AlfDocumentList__publishAdditionalControls(viewName, view) {
-         // Get any new additional controls (check the map first)
-         var newAdditionalControls = this.viewControlsMap[viewName];
-         if (newAdditionalControls == null)
-         {
-            newAdditionalControls = view.getAdditionalControls();
-            // Check for Array using: Object.prototype.toString.call( someVar ) === '[object Array]'
-            this.viewControlsMap[viewName] = newAdditionalControls;
-         }
-         
-         // Publish the new additional controls for anyone wishing to display them...
-         if (newAdditionalControls != null)
-         {
-            this.alfPublish(this.dynamicallyAddWidgetTopic, {
-               targetId: this.additionalControlsTarget,
-               targetPosition: 0,
-               widgets: newAdditionalControls
-            });
-         }
-      },
-      
-      /**
-       * Hides all the children of the supplied DOM node by applying the "share-hidden" CSS class to them.
-       * 
-       * @instance
-       * @param {Element} targetNode The DOM node to hide the children of.
-       */
-      hideChildren: function alfresco_documentlibrary_AlfDocumentList__hideChildren(targetNode) {
-         array.forEach(targetNode.children, function(node) {
-            domClass.add(node, "share-hidden");
-         });
-      },
-      
-      /**
-       * If there is no data to render a view with then this function will be called to update the DocumentList
-       * view node with a message explaining the situation.
-       * 
-       * @instance
-       */
-      showNoDataMessage: function alfresco_documentlibrary_AlfDocumentList__showNoDataMessage() {
-         this.hideChildren(this.domNode);
-         domClass.remove(this.noDataNode, "share-hidden");
-      },
-
-      /**
-       * If there is no data to render a view with then this function will be called to update the DocumentList
-       * view node with a message explaining the situation.
-       *
-       * @instance
-       */
-      showDataLoadFailure: function alfresco_documentlibrary_AlfDocumentList__showDataLoadFailure() {
-         this.hideChildren(this.domNode);
-         domClass.remove(this.dataFailureNode, "share-hidden");
-      },
-
-      /**
-       * This is called before a request to load more data is made so that the user is aware that data
-       * is being asynchronously loaded.
-       * 
-       * @instance
-       * @param force Boolean - Clear out the previous content before showing the message or not?
-       */
-      showLoadingMessage: function alfresco_documentlibrary_AlfDocumentList__showLoadingMessage() {
-         if (!this.useInfiniteScroll)
-         {
-            this.hideChildren(this.domNode);
-            domClass.remove(this.dataLoadingNode, "share-hidden");
-         }
-         else
-         {
-            domClass.remove(this.dataLoadingMoreNode, "share-hidden");
-         }
-      },
-
-      /**
-       * This is called once data has been loaded but before the view rendering begins. This can be useful
-       * when there is a lot of data and the view is complex to render so may not be instantaneous.
-       * 
-       * @instance
-       */
-      showRenderingMessage: function alfresco_documentlibrary_AlfDocumentList__showRenderingMessage() {
-         if (!this.useInfiniteScroll)
-         {
-            this.hideChildren(this.domNode);
-            domClass.remove(this.renderingViewNode, "share-hidden");
-         }
-      },
-      
-      /**
-       * @instance
-       * @param {object} view The view to show
-       */
-      showView: function alfresco_documentlibrary_AlfDocumentList__showView(view) {
-         this.hideChildren(this.domNode);
-         if (this.viewsNode.children.length > 0)
-         {
-            this.viewsNode.removeChild(this.viewsNode.children[0]);
-         }
-         
-         // Add the new view...
-         domConstruct.place(view.domNode, this.viewsNode);
-         domClass.remove(this.viewsNode, "share-hidden");
-         
-         // Tell the view that it's now on display...
-         view.onViewShown();
-      },
-      
-      /**
-       * This function is called whenever a request is made to change the node that is displayed in the DocumentList.
-       * It may not be possible to set a specific node if some form of filtering is in use (e.g. tags, categories, custom
-       * filter, etc).
-       * 
-       * @instance onChangeDisplayedNode
-       */
-      onChangeDisplayedNode: function alfresco_documentlibrary_AlfDocumentList__onChangeDisplayedNode(payload) {
-         // No action by default
-      },
-      
-      /**
-       * This function is called whenever a request is made to change the filtered view. This could be as changing the path
-       * from the Document List root or by applying a filter (such as tag or category) to the entire Document List.
-       * 
-       * The filter to apply will be specified by a fragment identifier (#filter=) where the value is in the form 
-       * <filter-type>|<filter-data> (e.g. "path|%25/Folder1"). 
-       * 
-       * Fixed filter ids are "path", "tag" and "category". Everything else is a custom filter id
-       * 
-       * Pagination of other filters is handled by adding &page=<page-number> to the end of the fragment
-       * 
        * 
        * @instance
        * @param {object} payload
@@ -926,186 +313,70 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * Makes a request to load data for the repository. The request is built by calling the
-       * [buildDocListParams]{@link module:alfresco/documentlibrary/AlfDocumentList#buildDocListParams} function.
-       * If the request is successful then then the [onDataLoadSuccess]{@link module:alfresco/documentlibrary/AlfDocumentList#onDataLoadSuccess}
-       * function will be called. If the request fails then the 
-       * [onDataLoadFailure]{@link module:alfresco/documentlibrary/AlfDocumentList#onDataLoadFailure} function will be called.
-       * 
+       * Extends the [inherited function]{@link module:alfresco/lists/AlfSortablePaginatedList#updateLoadDataPayload} to
+       * add the additional document library related data.
+       *
        * @instance
+       * @param {object} payload The payload object to update
        */
-      loadData: function alfresco_documentlibrary_AlfDocumentList__loadData() {
-         if (!this.requestInProgress)
+      updateLoadDataPayload: function alfresco_lists_AlfSortablePaginatedList__updateLoadDataPayload(payload) {
+         this.inherited(arguments);
+
+         payload.type = this.showFolders ? "all" : "documents",
+         payload.site = this.siteId;
+         payload.container = this.containerId;
+         payload.filter = this.currentFilter;
+         payload.libraryRoot = this.rootNode;
+
+         if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
          {
-            this.showLoadingMessage();
-            var documentPayload = {
-               // path: this.currentPath,
-               type: this.showFolders ? "all" : "documents",
-               site: this.siteId,
-               container: this.containerId,
-               sortAscending: this.sortAscending,
-               sortField: this.sortField,
-               filter: this.currentFilter,
-               libraryRoot: this.rootNode
-            };
-
-            if (this.usePagination)
-            {
-               documentPayload.page = this.currentPage;
-               documentPayload.pageSize = this.currentPageSize;
-            }
-
-            // InfiniteScroll uses pagination under the covers.
-            if (this.useInfiniteScroll)
-            {
-               documentPayload.page = this.currentPage;
-               documentPayload.pageSize = this.currentPageSize;
-            }
-            else
-            {
-               this.alfPublish(this.clearDocDataTopic);
-            }
-
-            if ((this.siteId == null || this.siteId == "") && this.nodeRef != null)
-            {
-               // Repository mode (don't resolve Site-based folders)
-               documentPayload.nodeRef = this.nodeRef.toString();
-            }
-
-            // Set a response topic that is scoped to this widget...
-            documentPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
-
-            this.alfPublish("ALF_RETRIEVE_DOCUMENTS_REQUEST", documentPayload, true);
-         }
-         else
-         {
-            // TODO: Let the user know that we're still waiting on the last data load?
+            // Repository mode (don't resolve Site-based folders)
+            payload.nodeRef = this.nodeRef.toString();
          }
       },
       
       /**
-       * Handles successful calls to get data from the repository.
-       * 
+       * This is an extension point function for extending modules to perform processing on the loaded
+       * data once it's existence has been verified
+       *
        * @instance
-       * @param {object} response The response object
-       * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
+       * @param {object} response The original response.
        */
-      onDataLoadSuccess: function alfresco_documentlibrary_AlfDocumentList__onDataLoadSuccess(payload) {
-         this.alfLog("log", "Data Loaded", payload, this);
-         
-         for (var i = 0; i<payload.response.items.length; i++)
-         {
-            payload.response.items[i].jsNode = new JsNode(payload.response.items[i].node);
-         }
-         this._currentData = payload.response;
+      processLoadedData: function alfresco_lists_AlfList__processLoadedData(response) {
+         array.forEach(this.currentData, function(item, index) {
+            item.jsNode = new JsNode(item.node);
+         }, this);
          
          // Publish the details of the loaded documents. The initial use case for this was to allow
          // the selected items menu to know how many items were available for selection but it
          // clearly has many other uses...
          this.alfPublish(this.documentsLoadedTopic, {
-            documents: this._currentData.items,
-            totalDocuments: this._currentData.totalRecords,
-            startIndex: this._currentData.startIndex
+            documents: this.currentData,
+            totalDocuments: response.totalRecords,
+            startIndex: response.startIndex
          });
          
          // Publish the details of the metadata returned from the data request...
-         if (this._currentData.metadata)
+         if (response.metadata)
          {
             this.alfPublish(this.metadataChangeTopic, {
-               node: this._currentData.metadata
+               node: response.metadata
             });
+
+            // Publish the details of the permissions for the current user. This will 
+            // only be available when the a specific node is shown rather than a set
+            // of results across multiple nodes (e.g. the result of a filter request)
+            if (response.metadata.parent && 
+                response.metadata.parent.permissions && 
+                response.metadata.parent.permissions.user)
+            {
+               this.alfPublish(this.userAccessChangeTopic, {
+                  userAccess: response.metadata.parent.permissions.user
+               });
+            }
          }
-         
-         // Publish the details of the permissions for the current user. This will 
-         // only be available when the a specific node is shown rather than a set
-         // of results across multiple nodes (e.g. the result of a filter request)
-         var permissions = null;
-         if (this._currentData.metadata && 
-             this._currentData.metadata.parent && 
-             this._currentData.metadata.parent.permissions && 
-             this._currentData.metadata.parent.permissions.user)
-         {
-            this.alfPublish(this.userAccessChangeTopic, {
-               userAccess: this._currentData.metadata.parent.permissions.user
-            });
-         }
-         
-         // Re-render the current view with the new data...
-         var view = this.viewMap[this._currentlySelectedView];
-         if (view != null)
-         {
-            this.showRenderingMessage();
-            view.setData(this._currentData);
-            view.renderView(this.useInfiniteScroll);
-            this.showView(view);
-            
-            // Force a resize of the sidebar container to take the new height of the view into account...
-            this.alfPublish("ALF_RESIZE_SIDEBAR", {});
-         }
-
-         // This request has finished, allow another one to be triggered.
-         this.alfPublish(this.requestFinishedTopic, {});
-      },
+      }, 
       
-      /**
-       * Handles failed calls to get data from the repository.
-       * 
-       * @instance
-       * @param {object} response The response object
-       * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
-       */
-      onDataLoadFailure: function alfresco_documentlibrary_AlfDocumentList__onDataLoadSuccess(response, originalRequestConfig) {
-         this.alfLog("error", "Data Load Failed", response, originalRequestConfig);
-         this._currentData = null;
-         this.showDataLoadFailure();
-
-         // Allow the user to try again.
-         this.alfPublish(this.requestFinishedTopic, {});
-      },
-      
-      /**
-       * @instance
-       * @type {object}
-       * @default null
-       */
-      currentFilter: null,
-      
-      /**
-       * The current page number being shown by the DocumentList
-       * 
-       * @instance
-       * @type {number} 
-       * @default 1
-       */
-      currentPage: 1,
-
-      /**
-       * The size (or number of items) to be shown on each page.
-       * 
-       * @instance
-       * @type {number} 
-       * @default 25
-       */
-      currentPageSize: 25,
-      
-      /**
-       * The inital sort order.
-       * 
-       * @instance
-       * @type {boolean}
-       * @default true
-       */
-      sortAscending: true,
-
-      /**
-       * The initial field to sort results on.
-       *
-       * @instance
-       * @type {string}
-       * @default "cm:name"
-       */
-      sortField: "cm:name",
-
       /**
        * @instance
        * @param {object} payload The published details of the selected items
@@ -1119,87 +390,6 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload The details of the request
        */
-      onSortRequest: function alfresco_documentlibrary_AlfDocumentList__onSortRequest(payload) {
-         this.alfLog("log", "Sort requested: ", payload);
-         if (payload && (payload.direction != null || payload.value != null))
-         {
-            if (payload.direction)
-            {
-               this.sortAscending = (payload.direction == "ascending");
-            }
-            if (payload.value)
-            {
-               this.sortField = payload.value;
-            }
-            if (this._readyToLoad == true)
-            {
-               if (this.useHash == true)
-               {
-                  var currHash = ioQuery.queryToObject(hash());
-                  if (this.sortField != null)
-                  {
-                     currHash.sortField = this.sortField;
-                  }
-                  if (this.sortAscending != null)
-                  {
-                     currHash.sortAscending = this.sortAscending;
-                  }
-                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
-                     url: ioQuery.objectToQuery(currHash),
-                     type: "HASH"
-                  }, true);
-               }
-               else
-               {
-                  this.loadData();
-               }
-            }
-         }
-      },
-      
-      /**
-       * @instance
-       * @param {object} payload The details of the request
-       */
-      onSortFieldSelection: function alfresco_documentlibrary_AlfDocumentList__onSortFieldSelection(payload) {
-         this.alfLog("log", "Sort field selected: ", payload);
-         if (payload && payload.value != null)
-         {
-            this.sortField = payload.value;
-            if (payload.direction)
-            {
-               this.sortAscending = (payload.direction == "ascending");
-            }
-            if (this._readyToLoad == true)
-            {
-               if (this.useHash == true)
-               {
-                  var currHash = ioQuery.queryToObject(hash());
-                  if (this.sortField != null)
-                  {
-                     currHash.sortField = this.sortField;
-                  }
-                  if (this.sortAscending != null)
-                  {
-                     currHash.sortAscending = this.sortAscending;
-                  }
-                  this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
-                     url: ioQuery.objectToQuery(currHash),
-                     type: "HASH"
-                  }, true);
-               }
-               else
-               {
-                  this.loadData();
-               }
-            }
-         }
-      },
-      
-      /**
-       * @instance
-       * @param {object} payload The details of the request
-       */
       onShowFolders: function alfresco_documentlibrary_AlfDocumentList__onShowFolders(payload) {
          this.alfLog("log", "Show Folders Request: ", payload);
          if (payload && payload.selected != null)
@@ -1207,108 +397,6 @@ define(["dojo/_base/declare",
             this.showFolders = payload.selected;
             if (this._readyToLoad) this.loadData();
          }
-      },
-      
-      /**
-       * @instance
-       * @param {object} payload The details of the new page number
-       */
-      onPageChange: function alfresco_documentlibrary_AlfDocumentList__onPageChange(payload) {
-         if (payload && payload.value != null && payload.value != this.currentPage)
-         {
-            this.currentPage = payload.value;
-            if (this._readyToLoad) this.loadData();
-         }
-      },
-      
-      /**
-       * @instance
-       * @param {object} payload The details of the new page size
-       */
-      onDocsPerPageChange: function alfresco_documentlibrary_AlfDocumentList__onDocsPerPageChange(payload) {
-         if (payload && payload.value != null && payload.value != this.currentPageSize)
-         {
-            // Need to check that there is enough data available for the current page!!! e.g. if we're on page 3 and requesting page 3 will not return any results
-            // Is the total number of records less than the requested docs per page multiplied by 1 less than the current page...
-            if (this.currentPage == 1)
-            {
-               // No need to worry, the first page will be requested
-            }
-            else if ((this._currentData.totalRecords - payload.value) < ((this.currentPage - 1) * payload.value))
-            {
-               // The current page will be too big, get the last page...
-               this.currentPage = Math.ceil(this._currentData.totalRecords/payload.value);
-            }
-            else
-            {
-               // No need to worry. The current page is fine for the new page size...
-            }
-            
-            this.currentPageSize = payload.value;
-            if (this._readyToLoad) this.loadData();
-         }
-      },
-
-      /**
-       * Triggers when the infinite scroll widget near the bottom of the page.
-       *
-       * @instance
-       * @param payload
-       */
-      onScrollNearBottom: function alfresco_documentlibrary_AlfDocumentList__onInsertMoreDocumentsRequest(payload) {
-         // Process Infinite Scroll, if enabled & if we've not hit the end of the results
-         if(this.useInfiniteScroll && this._currentData.totalRecords < this._currentData.numberFound)
-         {
-            this.currentPage++;
-
-            this.loadData();
-         }
-         else
-         {
-            this.alfPublish(this.eventsScrollReturnTopic);
-         }
-      },
-
-      /**
-       * Triggered when a request is in progress to prevent multiple submissions.
-       *
-       */
-      onRequestInProgress: function alfresco_documentlibrary_AlfDocumentList__onRequestInProgress() {
-         this.requestInProgress = true;
-      },
-
-      onRequestFinished: function alfresco_documentlibrary_AlfDocumentList__onRequestFinished() {
-         this.requestInProgress = false;
-      },
-
-      /**
-       * Compares the payload object with the hashVarsForUpdate array of key names
-       * Returns true if hashVarsForUpdate is empty
-       * Returns true if the payload contains a key that is specified in hashVarsForUpdate
-       * Returns false otherwise
-       *
-       * @instance
-       * @param {object} payload The payload object
-       * @return {boolean}
-       */
-      _payloadContainsUpdateableVar: function alfresco_documentlibrary_AlfDocumentList___payloadContainsUpdateableVar(payload) {
-         
-         // No hashVarsForUpdate - return true
-         if(this.hashVarsForUpdate == null || this.hashVarsForUpdate.length == 0)
-         {
-            return true;
-         }
-         
-         // Iterate over the keys defined in hashVarsForUpdate - return true if the payload contains one of them
-         for(var i=0; i < this.hashVarsForUpdate.length; i++)
-         {
-            if(this.hashVarsForUpdate[i] in payload)
-            {
-               return true;
-            }
-         }
-         
-         return false;
       }
    });
 });
