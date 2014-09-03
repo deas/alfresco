@@ -134,39 +134,59 @@ define(["dojo/_base/declare",
        * @returns {object} The payload to be published
        */
       buildPayload: function alfresco_renderers__PublishPayloadMixin__buildPayload(configuredPayload, currentItem, receivedPayload) {
-         // TODO: Needs to process deep-levels of nesting...
          if(configuredPayload != null)
          {
+
             // Copy the original to grab data from...
             for (var key in configuredPayload)
             {
-               var value = configuredPayload[key];
-               if (ObjectTypeUtils.isObject(value) && value.alfType !== undefined && value.alfProperty !== undefined)
-               {
-                  var type = value.alfType;
-                  var property = value.alfProperty;
-                  
-                  if (type == "item" && currentItem)
-                  {
-                     value = lang.getObject(property, null, currentItem);
-                  }
-                  else if (type == "payload" && receivedPayload)
-                  {
-                     value = lang.getObject(property, null, receivedPayload);
-                  }
-                  else
-                  {
-                     this.alfLog("warn", "A payload was defined with 'alfType' and 'alfProperty' attributes but the 'alfType' attribute was neither 'item' nor 'payload' (which are the only supported types), or the target object was null", this);
-                  }
-                  configuredPayload[key] = value;
+               configuredPayload[key] = this.processValue(configuredPayload[key], configuredPayload, currentItem, receivedPayload);
+            }
 
-                  // Clean up the payload...
-                  delete value.alfType;
-                  delete value.alfProperty;
+            return configuredPayload;
+
+         }
+      },
+
+      processValue: function alfresco_renderers__PublishPayloadMixin__processValue(value, configuredPayload, currentItem, receivedPayload)
+      {
+         // Catch null values (typeof null === "object")
+         if (value !== null && ObjectTypeUtils.isObject(value))
+         {
+            if (value.alfType !== undefined && value.alfProperty !== undefined)
+            {
+               var type = value.alfType;
+               var property = value.alfProperty;
+
+               if (type == "item" && currentItem)
+               {
+                  value = lang.getObject(property, null, currentItem);
+               }
+               else if (type == "payload" && receivedPayload)
+               {
+                  value = lang.getObject(property, null, receivedPayload);
+               }
+               else
+               {
+                  this.alfLog("warn", "A payload was defined with 'alfType' and 'alfProperty' attributes but the 'alfType' attribute was neither 'item' nor 'payload' (which are the only supported types), or the target object was null", this);
+               }
+
+               // Clean up the payload...
+               delete value.alfType;
+               delete value.alfProperty;
+
+            }
+            else
+            {
+               // If it isn't a property we can build, does it contain one we can?
+               for (var nestedKey in value)
+               {
+                  value[nestedKey] = this.processValue(value[nestedKey], configuredPayload, currentItem, receivedPayload);
                }
             }
          }
-         return configuredPayload;
+
+         return value;
       }
    });
 });
