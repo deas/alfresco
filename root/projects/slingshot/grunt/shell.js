@@ -241,7 +241,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.testResourcesDir
+                  cwd: alf.testResourcesDir,
+                  maxBuffer: "Infinite"
                }
             }
          },
@@ -253,7 +254,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.testResourcesDir
+                  cwd: alf.testResourcesDir,
+                  maxBuffer: "Infinite"
                }
             }
          },
@@ -266,7 +268,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.testResourcesDir
+                  cwd: alf.testResourcesDir,
+                  maxBuffer: "Infinite"
                }
             }
          },
@@ -279,7 +282,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.testResourcesDir
+                  cwd: alf.testResourcesDir,
+                  maxBuffer: "Infinite"
                }
             }
          }

@@ -40,11 +40,11 @@ define(["./config/Suites"],
       maxConcurrency: 1,
 
       // Whether or not to start Sauce Connect before running tests
-      useSauceConnect: true,
+      tunnel: 'SauceLabsTunnel',
 
       // Connection information for the remote WebDriver service.
-      webdriver: {
-         host: 'localhost',
+      tunnelOptions: {
+         hostname: 'localhost',
          port: 4444,
          directDomains: [
             'www.alfresco.com'

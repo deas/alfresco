@@ -1,4 +1,10 @@
 #!/bin/sh
+
+SELENIUM_VERSION="selenium-server-standalone-2.42.2.jar"
+SELENIUM_VERSION_NUMBER="2.42"
+PHANTOMJS_VERSION="phantomjs-1.9.7-linux-x86_64" #don't include .tar.bz2 ext.
+CHROMEDRIVER_VERSION="2.10"
+
 set -e
 
 if [ -e /.installed ]; then
@@ -24,23 +30,18 @@ else
    cd /tmp
 
    # Download and copy the ChromeDriver to /usr/local/bin
-   # wget "https://chromedriver.googlecode.com/files/chromedriver_linux64_2.3.zip"
-   # unzip chromedriver_linux64_2.3.zip
-   wget "http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip"
+   wget "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
    unzip chromedriver_linux64.zip
    mv chromedriver /usr/local/bin
 
    # Download and copy Phantomjs to /usr/local/bin
-   # wget "http://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-x86_64.tar.bz2"
-   # tar -xjvf phantomjs-1.9.2-linux-x86_64.tar.bz2
-   # mv phantomjs-1.9.2-linux-x86_64/bin/phantomjs /usr/local/bin
-   wget "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2"
-   tar -xjvf phantomjs-1.9.7-linux-x86_64.tar.bz2
-   mv phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/local/bin
+   wget "https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOMJS_VERSION.tar.bz2"
+   tar -xjvf $PHANTOMJS_VERSION.tar.bz2
+   mv $PHANTOMJS_VERSION/bin/phantomjs /usr/local/bin
 
    # Download and copy Selenium to /usr/local/bin
-   wget "https://selenium.googlecode.com/files/selenium-server-standalone-2.39.0.jar"
-   mv selenium-server-standalone-2.39.0.jar /usr/local/bin
+   wget "http://selenium-release.storage.googleapis.com/$SELENIUM_VERSION_NUMBER/$SELENIUM_VERSION"
+   mv $SELENIUM_VERSION /usr/local/bin
 
    # So that running `vagrant provision` doesn't redownload everything
    touch /.installed
@@ -64,4 +65,4 @@ phantomjs --ignore-ssl-errors=true --web-security=false --webdriver=192.168.56.4
 
 echo "Starting Selenium ..."
 cd /usr/local/bin
-nohup java -jar ./selenium-server-standalone-2.39.0.jar &
+nohup java -jar ./$SELENIUM_VERSION &
