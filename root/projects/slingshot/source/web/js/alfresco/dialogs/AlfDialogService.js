@@ -88,12 +88,14 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the widgets and buttons for the dialog
        */
       onCreateDialogRequest: function alfresco_dialogs_AlfDialogService__onCreateDialogRequest(payload) {
+         // TODO: Update this and other function with scoll setting...
          var dialogConfig = {
             title: this.message(payload.dialogTitle),
             widgetsContent: payload.widgetsContent,
             widgetsButtons: payload.widgetsButtons,
             contentWidth: payload.contentWidth ? payload.contentWidth : null,
-            contentHeight: payload.contentHeight ? payload.contentHeight : null
+            contentHeight: payload.contentHeight ? payload.contentHeight : null,
+            handleOverflow: (payload.handleOverflow != null) ? payload.handleOverflow: true
          };
          this.dialog = new AlfDialog(dialogConfig);
 
@@ -187,7 +189,8 @@ define(["dojo/_base/declare",
       createDialogConfig: function alfresco_dialogs_AlfDialogService__createDialogConfig(config, formConfig) {
          var dialogConfig = {
             title: this.message(config.dialogTitle),
-            pubSubScope: config.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets,
+            pubSubScope: config.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets,,
+            handleOverflow: (config.handleOverflow != null) ? config.handleOverflow: true,
             parentPubSubScope: config.parentPubSubScope,
             widgetsContent: [formConfig],
             widgetsButtons: [

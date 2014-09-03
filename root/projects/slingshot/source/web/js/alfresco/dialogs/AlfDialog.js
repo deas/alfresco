@@ -43,10 +43,12 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/dom-style",
+        "dojo/dom-geometry",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin, lang, sniff, array, domConstruct, domClass, domStyle, html, aspect, registry) {
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin, lang, sniff, array, 
+                 domConstruct, domClass, domStyle, domGeom, html, aspect, registry) {
    
    return declare([Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin], {
       
@@ -94,6 +96,18 @@ define(["dojo/_base/declare",
        * @default null 
        */
       widgetsButtons: null,
+
+      /**
+       * In some cases the content placed within the dialog will handle overflow itself, in that
+       * case this should be set to false. However, in most cases the dialog will want to manage
+       * overflow itself. Effectively this means that scroll bars will be added as necessary to 
+       * ensure that the user can see all of the dialog content.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      handleOverflow: true,
 
       /**
        * Extends the superclass implementation to set the dialog as not closeable (by clicking an "X"
@@ -167,6 +181,16 @@ define(["dojo/_base/declare",
        */
       _onFocus: function alfresco_dialogs_AlfDialog___onFocus() {
          this.inherited(arguments);
+
+         var computedStyle = domStyle.getComputedStyle(this.containerNode);
+         var output = domGeom.getMarginBox(this.containerNode, computedStyle);
+
+         domStyle.set(this.bodyNode, "height", (output.h - 56) + "px");
+         if (this.handleOverflow === true)
+         {
+            domStyle.set(this.bodyNode, "overflow", "auto");
+         }
+
          this.alfLog("info", "Resizing dialog...");
          this.alfPublishResizeEvent(this.domNode);
          // TODO: We could optionally reveal the dialog after resizing to prevent any resizing jumping?

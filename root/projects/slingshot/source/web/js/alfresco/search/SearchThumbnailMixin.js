@@ -80,6 +80,7 @@ define(["dojo/_base/declare",
        * @returns {object} The payload to publish when clicked.
        */
       generateSearchLinkPayload: function alfresco_renderers_SearchThumbnailMixin__generateSearchLinkPayload() {
+         // TODO: Set no-scroll (because document preview handles it)
          var type = lang.getObject("type", false, this.currentItem);
          if (this.showDocumentPreview && type === "document")
          {
@@ -90,6 +91,7 @@ define(["dojo/_base/declare",
             return {
                contentWidth: (vs.w*0.8) + "px",
                contentHeight: (vs.h*0.7) + "px",
+               handleOverflow: false,
                dialogTitle: this.currentItem.name,
                widgetsContent: [
                   {

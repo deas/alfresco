@@ -31,6 +31,7 @@
 .alfresco-dialog-AlfDialog .dijitDialogPaneContent {
    border-top: @standard-border;
    padding: 0;
+   overflow: hidden !important; /* Wouldn't normally use !important but has to override direct element setting! */
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogTitleBar {
@@ -55,4 +56,7 @@
    border-top: @standard-border;
    text-align: center;
    padding: 5px 0;
+   position: relative;
+   bottom: 0;
+   width: 100%;
 }

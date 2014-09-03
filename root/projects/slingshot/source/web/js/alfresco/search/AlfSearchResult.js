@@ -115,7 +115,7 @@ define(["dojo/_base/declare",
             currentItem: this.currentItem,
             pubSubScope: this.pubSubScope,
             showDocumentPreview: true,
-            publishTopic: "ALF_NAVIGATE_TO_PAGE"
+            publishTopic: "ALF_NAVIGATE_TO_PAGE",
          }, this.thumbnailNode);
 
          new SearchResultPropertyLink({
