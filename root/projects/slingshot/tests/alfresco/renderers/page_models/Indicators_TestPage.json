@@ -17,7 +17,7 @@
          "config": {
             "currentItem": {
                "node":{
-                  "nodeRef": "12345"
+                  "nodeRef": "12345",
                   "properties": {
                      "name": "Fred"
                   }

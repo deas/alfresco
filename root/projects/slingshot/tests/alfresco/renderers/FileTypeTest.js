@@ -18,7 +18,7 @@
  */
 
 /**
- * This test renders examples of Indicators.
+ * This test renders examples of FileTypes.
  * 
  * The test is simple and much of its validity is in the use of slightly damaged or incomplete models to inspect edge cases.
  * 
@@ -31,19 +31,19 @@ define(["intern!object",
         function (registerSuite, expect, require, TestCommon) {
 
    registerSuite({
-      name: 'Indicators Test',
-      'alfresco/renderers/Indicators': function () {
+      name: 'FileType Test',
+      'alfresco/renderers/FileType': function () {
 
          var browser = this.remote;
-         var testname = "IndicatorsTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Indicators_TestPage.json", testname)
+         var testname = "FileTypeTest";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/FileType_TestPage.json", testname)
 
          .end()
 
-         .findAllByCssSelector("a.indicator-action")
-         .then(function (actions){
-            TestCommon.log(testname,null,"Check there are the expected number of actions (across several indicators)");
-            expect(actions).to.have.length(14, "There should be 14 actions rendered (across several indicators)");
+         .findAllByCssSelector("div.alfresco-renderers-FileType")
+         .then(function (filetypes){
+            TestCommon.log(testname,null,"Check there are the expected number of filetypes");
+            expect(filetypes).to.have.length(6, "There should be 6 filetypes rendered");
          })
          .end()
 
