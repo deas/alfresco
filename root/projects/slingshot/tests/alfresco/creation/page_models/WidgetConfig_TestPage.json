@@ -1,0 +1,70 @@
+{
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true,
+               "warn": true,
+               "error": true
+            }
+         }
+      }
+   ],
+   "widgets": [
+      {
+         "name": "alfresco/layout/HorizontalWidgets",
+         "config": {
+            "widgets": [
+               {
+                  "id": "DRAG_PALETTE",
+                  "name": "alfresco/creation/DragPalette",
+                  "widthPc": 33,
+                  "config": {
+                     "widgetsForPalette": [
+                        {
+                           "type": [ "widget" ],
+                           "name": "Form",
+                           "module": "alfresco/forms/Form",
+                           "defaultConfig": {},
+                           "widgetsForConfig": [],
+                           "previewWidget": false,
+                           "widgetsForDisplay": [
+                              {
+                                 "name": "alfresco/creation/DropZone",
+                                 "config": {
+                                    "horizontal": false
+                                 }
+                              }
+                           ]
+                        }
+                     ]
+                  }
+               },
+               {
+                  "id": "ROOT_DROP_ZONE",
+                  "name": "alfresco/forms/controls/DropZoneControl",
+                  "widthPc": 33,
+                  "config": {
+                     "label": "Widgets",
+                     "name": "widgets",
+                     "value": null,
+                     "acceptTypes": ["widget"]
+                  }
+               },
+               {
+                  "name": "alfresco/creation/WidgetConfig",
+                  "widthPc": 33
+               }
+            ]
+         }
+      },
+      {
+         "name": "alfresco/testing/SubscriptionLog"
+      },
+      {
+         "name": "alfresco/testing/TestCoverageResults"
+      }
+   ]
+}
