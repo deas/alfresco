@@ -18,123 +18,123 @@
  */
 
 /**
- * <p>This extends the standard [document list]{@link module:alfresco/documentlibrary/AlfDocumentList} to 
+ * <p>This extends the standard [document list]{@link module:alfresco/documentlibrary/AlfDocumentList} to
  * define a document list specifically for selecting containers (folders) (e.g. for copy and move targets, etc). It was
  * written to be used as part of a [picker]{@link module:alfresco/pickers/Picker}.</p>
- * 
+ *
  * @module alfresco/pickers/ContainerListPicker
  * @extends module:alfresco/pickers/DocumentListPicker
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/pickers/DocumentListPicker",
-        "dojo/_base/lang"], 
-        function(declare, DocumentListPicker, lang) {
-   
-   return declare([DocumentListPicker], {
+        "alfresco/pickers/DocumentListPicker"],
+   function(declare, DocumentListPicker) {
 
-      /**
-       * An array of the i18n files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{i18nFile: "./i18n/ContainerListPicker.properties"}]
-       */
-      i18nRequirements: [{i18nFile: "./i18n/ContainerListPicker.properties"}],
+      return declare([DocumentListPicker], {
 
-      /**
-       * Sets some relevant messages to display
-       *
-       * @instance
-       */
-      setDisplayMessages: function alfresco_pickers_PropertyPicker__setDisplayMessages() {
-         this.noViewSelectedMessage = this.message("containerPicker.no.view.message");
-         this.noDataMessage = this.message("containerPicker.no.data.message");
-         this.fetchingDataMessage = this.message("containerPicker.loading.data.message");
-         this.renderingViewMessage = this.message("containerPicker.rendering.data.message");
-         this.fetchingMoreDataMessage = this.message("containerPicker.loading.data.message");
-         this.dataFailureMessage = this.message("containerPicker.data.failure.message");
-      },
+         /**
+          * An array of the i18n files to use with this widget.
+          *
+          * @instance
+          * @type {object[]}
+          * @default [{i18nFile: "./i18n/ContainerListPicker.properties"}]
+          */
+         i18nRequirements: [{i18nFile: "./i18n/ContainerListPicker.properties"}],
 
-      /**
-       * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
-       * view for selecting documents.
-       * 
-       * @instance
-       */
-      postCreate: function alfresco_pickers_ContainerListPicker__postCreate(payload) {
-         var config = [{
-            name: "alfresco/documentlibrary/views/AlfDocumentListView",
-            config: {
-               widgets: [
-                  {
-                     name: "alfresco/documentlibrary/views/layouts/Row",
-                     config: {
-                        renderFilter: [
-                             {
-                                property: "node.isContainer",
-                                values: [true]
-                             }
-                          ],
-                          widgets: [
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 width: "20px",
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/FileType",
-                                       config: {
-                                          size: "small",
-                                          renderAsLink: true,
-                                          publishTopic: "ALF_DOCLIST_NAV"
-                                       }
-                                    }
-                                 ]
+         /**
+          * Sets some relevant messages to display
+          *
+          * @instance
+          */
+         setDisplayMessages: function alfresco_pickers_PropertyPicker__setDisplayMessages() {
+            this.noViewSelectedMessage = this.message("containerPicker.no.view.message");
+            this.noDataMessage = this.message("containerPicker.no.data.message");
+            this.fetchingDataMessage = this.message("containerPicker.loading.data.message");
+            this.renderingViewMessage = this.message("containerPicker.rendering.data.message");
+            this.fetchingMoreDataMessage = this.message("containerPicker.loading.data.message");
+            this.dataFailureMessage = this.message("containerPicker.data.failure.message");
+         },
+
+         /**
+          * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
+          * view for selecting documents.
+          *
+          * @instance
+          */
+         postCreate: function alfresco_pickers_ContainerListPicker__postCreate(payload) {
+            var config = [{
+               name: "alfresco/documentlibrary/views/AlfDocumentListView",
+               config: {
+                  widgets: [
+                     {
+                        name: "alfresco/documentlibrary/views/layouts/Row",
+                        config: {
+                           renderFilter: [
+                              {
+                                 property: "node.isContainer",
+                                 values: [true]
                               }
-                           },
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/PropertyLink",
-                                       config: {
-                                          propertyToRender: "node.properties.cm:name",
-                                          renderAsLink: true,
-                                          publishTopic: "ALF_DOCLIST_NAV"
+                           ],
+                           widgets: [
+                              {
+                                 name: "alfresco/documentlibrary/views/layouts/Cell",
+                                 config: {
+                                    width: "20px",
+                                    widgets: [
+                                       {
+                                          name: "alfresco/renderers/FileType",
+                                          config: {
+                                             size: "small",
+                                             renderAsLink: true,
+                                             publishTopic: "ALF_DOCLIST_NAV"
+                                          }
                                        }
-                                    }
-                                 ]
-                              }
-                           },
-                           {
-                              name: "alfresco/documentlibrary/views/layouts/Cell",
-                              config: {
-                                 width: "20px",
-                                 widgets: [
-                                    {
-                                       name: "alfresco/renderers/PublishAction",
-                                       config: {
-                                          publishPayloadType: "CURRENT_ITEM",
-                                          renderFilter: [
-                                             {
-                                                property: "node.permissions.user.CreateChildren",
-                                                values: [true]
-                                             }
-                                          ]
+                                    ]
+                                 }
+                              },
+                              {
+                                 name: "alfresco/documentlibrary/views/layouts/Cell",
+                                 config: {
+                                    widgets: [
+                                       {
+                                          name: "alfresco/renderers/PropertyLink",
+                                          config: {
+                                             propertyToRender: "node.properties.cm:name",
+                                             renderAsLink: true,
+                                             publishTopic: "ALF_DOCLIST_NAV"
+                                          }
                                        }
-                                    }
-                                 ]
+                                    ]
+                                 }
+                              },
+                              {
+                                 name: "alfresco/documentlibrary/views/layouts/Cell",
+                                 config: {
+                                    width: "20px",
+                                    widgets: [
+                                       {
+                                          name: "alfresco/renderers/PublishAction",
+                                          config: {
+                                             publishPayloadType: "CURRENT_ITEM",
+                                             publishGlobal: this.publishGlobal,
+                                             renderFilter: [
+                                                {
+                                                   property: "node.permissions.user.CreateChildren",
+                                                   values: [true]
+                                                }
+                                             ]
+                                          }
+                                       }
+                                    ]
+                                 }
                               }
-                           }
-                        ]
+                           ]
+                        }
                      }
-                  }
-               ]
-            }
-         }];
-         this.processWidgets(config, this.itemsNode);
-      }
+                  ]
+               }
+            }];
+            this.processWidgets(config, this.itemsNode);
+         }
+      });
    });
-});

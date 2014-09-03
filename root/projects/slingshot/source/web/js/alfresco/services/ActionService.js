@@ -253,18 +253,6 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Calls a "legacy" action handler that is defined within the DocumentListToolbar widget.
-       *
-       * @instance
-       * @param {function} func The handler function to call
-       * @param {object} doc The document to pass as the argument to the handler
-       * @param {integer} i The index in the array of selected documents that the document represents
-       */
-      _callLegacyActionHandler: function alfresco_services_ActionService(func, doc, i) {
-         this.alfLog("log", "Calling handler", func, doc, i);
-      },
-
-      /**
        * This is used to keep track of the documents that are currently selected. It is initialised to an empty
        * array in the constructor, the onDocumentSelected function adds elements and the onDocumentDeselected
        * function removes them.
@@ -290,7 +278,7 @@ define(["dojo/_base/declare",
       /**
        * Updates the aray of documents that are currently selected.
        * @instance
-       * @param {object} The details of the document selected
+       * @param {object} payload The details of the document selected
        */
       onDocumentSelected: function alfresco_services_ActionService__onDocumentSelected(payload) {
          if (payload && payload.value && payload.value.nodeRef != null)
@@ -575,10 +563,8 @@ define(["dojo/_base/declare",
        * Calls a JavaScript function provided (or registered with) the Alfresco.DocLibToolbar widget.
        *
        * @instance
-       * @param {string} functionName The name of the function to call
-       * @param {object} document The document to perform the action on.
        */
-      callLegacyActionHandler: function alfresco_services_ActionService__callLegacyActionHandler(functionName, document) {
+      callLegacyActionHandler: function alfresco_services_ActionService__callLegacyActionHandler() {
          this.alfLog("warn", "Legacy toolbar now removed");
       },
 
@@ -588,7 +574,7 @@ define(["dojo/_base/declare",
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
        *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The response from the request
        * @param {object} document The document to get the details for
        */
       onActionDetails: function alfresco_services_ActionService__onActionDetails(payload, document) {
@@ -655,7 +641,7 @@ define(["dojo/_base/declare",
                      value: properties[key],
                      name: name
                   }
-               }
+               };
                widgets.push(widget);
             }
 
@@ -676,7 +662,7 @@ define(["dojo/_base/declare",
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
        *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The response from the request
        * @param {object} document The document to upload a new version for.
        */
       onActionUploadNewVersion: function alfresco_services_ActionService__onActionUploadNewVersion(payload, document) {
@@ -687,7 +673,7 @@ define(["dojo/_base/declare",
        * Handles requests to edit a document inline.
        *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The response from the request
        * @param {object} document The document to edit.
        */
       onActionEditInline: function alfresco_services_ActionService__onActionEditInline(payload, document) {
@@ -889,28 +875,26 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Handles requests to copy the supplied document to another location.
+       * Handles requests to copy the supplied documents to another location.
        *
        * @instance
-       * @param {object} payload
-       * @param {object} document The document edit offline.
+       * @param {Array} payload
+       * @param {object} documents The documents edit offline.
        */
-      onActionCopyTo: function alfresco_services_ActionService__onActionCopyTo(payload, document) {
+      onActionCopyTo: function alfresco_services_ActionService__onActionCopyTo(payload, documents) {
 
-         // TODO: This should accept multiple documents/
          var responseTopic = this.generateUuid() + "_ALF_COPY_LOCATION_PICKED",
             publishPayload = {
-               nodes: [document.nodeRef],
+               nodes: this.alfNodeRefArray(documents),
                nodeRefTarget: this.copyMoveTarget,
-               document: document
+               documents: documents
             };
          this._actionCopyHandle = this.alfSubscribe(responseTopic, lang.hitch(this, this.onActionCopyToLocationSelected), true);
 
-         this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, this.onActionCopyAddItem , true));
+         this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, this.onActionCopyAddItem));
 
          // Create a dialog containing the picker...
          var dialog = new AlfDialog({
-            generatePubSubScope: true,
             title: this.message("services.ActionService.copyTo.title"),
             widgetsContent: [
                {
@@ -1002,7 +986,8 @@ define(["dojo/_base/declare",
                                              config: {
                                                 currentPickerDepth: 1,
                                                 requestItemsTopic: "ALF_GET_FAVOURITE_SITES",
-                                                subPicker: "alfresco/pickers/ContainerListPicker"
+                                                subPicker: "alfresco/pickers/ContainerListPicker",
+                                                publishGlobal: true
                                              }
                                           }
                                        }
@@ -1052,22 +1037,31 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param payload
-       * @param document
        */
-      onActionCopyToLocationSelected: function alfresco_services_ActionService__onActionCopyToLocationSelected(payload, document) {
+      onActionCopyToLocationSelected: function alfresco_services_ActionService__onActionCopyToLocationSelected(payload) {
          this.alfUnsubscribeSaveHandles([this._actionCopyHandle]);
 
-         var nodeRefs = array.map(payload.nodes, function(item) {
-            return item.nodeRef;
-         });
-         var responseTopic = this.generateUuid();
-         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onActionCopyToSuccess), true);
-         var nodeRefTarget = payload.nodeRefTarget
+         if (!this.copyMoveTarget)
+         {
+            this.alfLog("error", "copyMoveTarget not specified");
+            return;
+         }
+
+         if (!payload.documents)
+         {
+            this.alfLog("error", "Documents to copy not specified.");
+            return;
+         }
+
+         var nodeRefs = this.alfNodeRefArray(payload.documents),
+            responseTopic = this.generateUuid(),
+            subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onActionCopyToSuccess), true),
+            nodeRefTarget = payload.nodeRefTarget;
 
          this.serviceXhr({
             alfTopic: responseTopic,
             subscriptionHandle: subscriptionHandle,
-            url: AlfConstants.PROXY_URI + "slingshot/doclib/action/copy-to/node/" + payload.nodes[0],
+            url: AlfConstants.PROXY_URI + "slingshot/doclib/action/copy-to/node/" + this.copyMoveTarget.replace("://", "/"),
             method: "POST",
             data: {
                nodeRefs: nodeRefs,
@@ -1083,6 +1077,7 @@ define(["dojo/_base/declare",
        * @param payload
        */
       onActionCopyToSuccess: function alfresco_services_ActionService__onActionCopyToSuccess(payload) {
+         // TODO: Not all success is success. Need to check response.overallSuccess rather than just response status.
          this.onActionCompleteSuccess(arguments);
       },
 
@@ -1092,7 +1087,7 @@ define(["dojo/_base/declare",
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
        *
        * @instance
-       * @param {object} response The response from the request
+       * @param {object} payload The response from the request
        * @param {object} document The document edit offline.
        */
       onActionMoveTo: function alfresco_services_ActionService__onActionMoveTo(payload, document) {
@@ -1105,8 +1100,8 @@ define(["dojo/_base/declare",
        * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
        *
        * @instance
-       * @param {object} response The response from the request
-       * @param {object} document The document edit offline.
+       * @param {object} payload The response from the request
+       * @param {object} documents The document edit offline.
        */
       onActionDelete: function alfresco_services_ActionService__onActionDelete(payload, documents) {
 
