@@ -1234,6 +1234,7 @@
             <action index="290" id="document-cancel-editing" />
             <action index="295" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="297" id="document-manage-granular-permissions" />
+            <action index="298" id="document-manage-repo-permissions" />
             <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
             <action index="320" id="document-view-in-source-repository" />
