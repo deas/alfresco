@@ -28,13 +28,17 @@ module.exports = function (grunt, alf) {
    return {
       // Clean tasks
       clean: {
-         // Used to clean the coverage reports directory of json files
+         // Used to delete json files in the coverage reports directory
          coverageReports: [
             "code-coverage-reports/*.json"
          ],
-         // Used to clean the coverage reports temp directory of json files
+         // Used to delete json files in the coverage reports temp directory
          coverageReportsTemp: [
             "code-coverage-reports/temp"
+         ],
+         // Used to delete the instrumented code directory
+         instrumentedCode: [
+            "source/web/js/alfrescoInst"
          ]
       }
    }

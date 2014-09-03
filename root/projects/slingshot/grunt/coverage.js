@@ -40,6 +40,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('showExistingCoverageReports');
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
+      grunt.task.run('clean:instrumentedCode');
    });
 
    // Generate a coverage report using a vagrant initialised VM
@@ -57,8 +58,8 @@ module.exports = function (grunt, alf) {
       grunt.task.run('showExistingCoverageReports');
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
+      grunt.task.run('clean:instrumentedCode');
    });
-
 
    /* Register additional helper functions 
     * These are used in the above tasks.
