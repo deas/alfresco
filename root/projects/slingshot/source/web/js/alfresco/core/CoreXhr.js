@@ -101,10 +101,22 @@ define(["dojo/_base/declare",
                   headers[this.getCsrfHeader()] = this.getCsrfToken();
                }
 
+               // Attempt to parse the data, but reset to null if not possible...
+               var data;
+               try
+               {
+                  data = (config.data) ? JSON.stringify(config.data) : null;
+               }
+               catch (e)
+               {
+                  this.alfLog("error", "Could not stringify XHR JSON data", data);
+                  data = null;
+               }
+
                var request = xhr(config.url, {
                   handleAs: (config.handleAs) ? config.handleAs : "text",
                   method: (config.method) ? config.method : "POST",
-                  data: (config.data) ? JSON.stringify(config.data) : null,
+                  data: data,
                   query: (config.query) ? config.query : null,
                   headers: headers
                }).then(function(response) {

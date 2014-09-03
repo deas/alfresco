@@ -129,7 +129,7 @@ define({
       'tests/alfresco/renderers/XhrActionsTest',
 
       'tests/alfresco/services/SearchServiceTest',
-      'tests/alfresco/services/SiteServiceTest',
+      // 'tests/alfresco/services/SiteServiceTest',
       'tests/alfresco/services/UserServiceTest',
 
       'tests/alfresco/search/FacetFiltersTest',

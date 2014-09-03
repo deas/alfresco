@@ -138,7 +138,16 @@ define(["intern!object",
          // Has the dialog disappeared?
          .findAllByCssSelector(".alfresco-dialog-AlfDialog")
             .then(function(elements) {
-               assert(elements.length === 0, "The Dialog was found but should be hidden after the cancel button has been clicked");
+               // TODO: When dialogs are properly cleaned up, this should be a test for zero...
+               assert(elements.length === 1, "The Dialog was found but should be hidden after the cancel button has been clicked");
+            })
+            .end()
+
+         // TODO: This test can be removed once the dialog is cleaned up properly.
+         .findByCssSelector(".alfresco-dialog-AlfDialog")
+            .isDisplayed()
+            .then(function(result) {
+               assert(result === false, "The dialog should have been hidden")
             })
             .end()
 

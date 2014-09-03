@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
                {
                   payload.url = "site/" + site + "/documentlibrary?path=" + path + "/" + name;
                }
-               else
+               else if (path != null)
                {
                   path = '/' + path.split('/').slice(2).join('/');
                   payload.url = "repository?path=" + path + "/" + name;
