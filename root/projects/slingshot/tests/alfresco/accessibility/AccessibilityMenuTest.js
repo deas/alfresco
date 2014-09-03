@@ -25,7 +25,7 @@ define(["intern!object",
         "require",
         "alfresco/TestCommon",
         "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, require, TestCommon, specialKeys) {
+        function (registerSuite, expect, require, TestCommon, keys) {
 
    registerSuite({
       name: 'AccessibilityMenu Test',
@@ -87,10 +87,10 @@ define(["intern!object",
          .end()
 
          // Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip
-         .pressKeys([specialKeys.SHIFT, "s"])
-         .pressKeys([specialKeys.SHIFT])
-         .pressKeys([specialKeys.ALT, specialKeys.SHIFT, "s"])
-         .pressKeys([specialKeys.ALT, specialKeys.SHIFT])
+         .pressKeys([keys.SHIFT, "s"])
+         .pressKeys([keys.SHIFT])
+         .pressKeys([keys.ALT, keys.SHIFT, "s"])
+         .pressKeys([keys.ALT, keys.SHIFT])
 //       Can't do this because of a conflict in FF on Windows that calls up a dialogue
 //         .pressKeys([keys["Control"], keys["Command"], "s"])
 //         .pressKeys([keys["Control"], keys["Command"]])
