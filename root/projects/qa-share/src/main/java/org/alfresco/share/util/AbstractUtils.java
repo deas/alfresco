@@ -506,7 +506,7 @@ public abstract class AbstractUtils
         // in the same user session via after method
         if (driver != null)
         {
-            ShareUtil.logout(driver);
+            ShareUser.logout(driver);
         }
     }
 
