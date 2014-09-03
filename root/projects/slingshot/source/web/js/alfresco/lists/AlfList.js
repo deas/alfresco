@@ -259,6 +259,16 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * The preference property to use for saving the current view. Initially defaulted to
+       * the document library view preference but can be overridden if desired.
+       * 
+       * @instance
+       * @type {string}
+       * @default "org.alfresco.share.documentList.viewRendererName"
+       */
+      viewPreferenceProperty: "org.alfresco.share.documentList.viewRendererName",
+
+      /**
        * Iterates over the widgets processed and calls the [registerView]{@link module:alfresco/lists/AlfList#registerView}
        * function with each one.
        * 
@@ -279,7 +289,8 @@ define(["dojo/_base/declare",
          }
 
          this.alfPublish(this.viewSelectionTopic, {
-            value: this._currentlySelectedView
+            value: this._currentlySelectedView,
+            preference: this.viewPreferenceProperty
          });
 
          if (this.waitForPageWidgets == true)
@@ -358,7 +369,10 @@ define(["dojo/_base/declare",
          
          // Set the value of the publish topic...
          viewSelectionConfig.publishTopic = this.viewSelectionTopic;
-         
+         viewSelectionConfig.publishPayload = {
+            preference: this.viewPreferenceProperty
+         };
+        
          // Set a common group for the menu item...
          viewSelectionConfig.group = this.viewSelectionMenuItemGroup;
 

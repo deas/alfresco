@@ -1,6 +1,28 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-header.lib.js">
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-footer.lib.js">
 
+/* *********************************************************************************
+ *                                                                                 *
+ * GET ALL USER PREFERENCES                                                        *
+ *                                                                                 *
+ ***********************************************************************************/
+function getUserPreferences() {
+   var userPreferences = {};
+   var prefs = JSON.parse(preferences.value);
+   return prefs
+}
+
+var userPreferences = getUserPreferences();
+var viewRendererName =  "simple";
+try
+{
+   viewRendererName = userPreferences.org.alfresco.share.searchList.viewRendererName;
+}
+catch(e)
+{
+   // No action. Ignore when view preference hasn't been set-up
+}
+
 // Get Search sorting configuration from share-config
 var sortConfig = config.scoped["Search"]["sorting"];
 
@@ -372,6 +394,8 @@ var searchDocLib = {
    id: "FCTSRCH_SEARCH_RESULTS_LIST",
    name: "alfresco/documentlibrary/AlfSearchList",
    config: {
+      viewPreferenceProperty: "org.alfresco.share.searchList.viewRendererName",
+      view: viewRendererName,
       waitForPageWidgets: true,
       useHash: true,
       hashVarsForUpdate: [
@@ -638,8 +662,8 @@ services.push("alfresco/services/NavigationService",
               "alfresco/services/SearchService",
               "alfresco/services/ActionService",
               "alfresco/services/DocumentService",
-              "alfresco/dialogs/AlfDialogService"
-              );
+              "alfresco/dialogs/AlfDialogService",
+              "alfresco/services/PreferenceService");
 
 // Add in the search form and search doc lib...
 widgets.unshift(accessMenu);

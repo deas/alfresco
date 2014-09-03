@@ -217,8 +217,9 @@ define(["dojo/_base/declare",
       onViewSelection: function alfresco_services_PreferenceService__onViewSelection(payload) {
          if (payload && payload.value != null && payload.value !== "Abstract")
          {
+            var preference = (payload.preference != null) ? payload.preference : "org.alfresco.share.documentList.viewRendererName";
             this.setPreference({
-               preference: "org.alfresco.share.documentList.viewRendererName",
+               preference: preference,
                value: payload.value
             });
          }
