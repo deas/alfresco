@@ -340,7 +340,7 @@ public class ShareUserSearchPage extends AbstractUtils
     public static List<SearchResult> advanceSearch(WebDrone driver, List<String> info, Map<String, String> keyWordSearchText) throws PageException,
             Exception
     {
-        SearchResultsPage searchResults = null;
+        FacetedSearchPage searchResults = null;
         // loadAdvanceSearch method will return content search page or folder
         // TODO: subs: Why is this render necessary again?
         AdvanceSearchPage advanceSearchPage = navigateToAdvanceSearch(driver, info).render();
@@ -473,10 +473,10 @@ public class ShareUserSearchPage extends AbstractUtils
      * @return SearchResultsPage
      * @throws Exception
      */
-    public static SearchResultsPage clickSearchOnAdvanceSearch(WebDrone driver)
+    public static FacetedSearchPage clickSearchOnAdvanceSearch(WebDrone driver)
     {
         AdvanceSearchPage searchPage = (AdvanceSearchPage) ShareUser.getSharePage(driver);
-        SearchResultsPage shareResultsPage = (SearchResultsPage) searchPage.clickSearch();
+        FacetedSearchPage shareResultsPage = (FacetedSearchPage) searchPage.clickSearch();
         return shareResultsPage.render();
     }
 

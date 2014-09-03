@@ -148,7 +148,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_1);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, SERACH_ZERO_CONTENT);
+            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
 
             Assert.assertTrue(searchOk);
 
@@ -156,7 +156,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_2);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, SERACH_ZERO_CONTENT);
+            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
             Assert.assertTrue(searchOk);
         }
         catch (Throwable e)
@@ -228,7 +228,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
 
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, SERACH_ZERO_CONTENT);
+            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
             Assert.assertTrue(searchOk);
         }
         catch (Throwable e)
@@ -298,7 +298,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
             ShareUser.login(drone, testUser, testPassword);
 
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-            searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, SERACH_ZERO_CONTENT);
+            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
             Assert.assertTrue(searchOk);
         }
         catch (Throwable e)
@@ -390,7 +390,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
             // Doing the first invalid Search
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, SERACH_ZERO_CONTENT);
+            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
             Assert.assertTrue(searchOk);
 
             // Searching for valid string with content
@@ -398,7 +398,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
 
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            searchOk = ShareUserSearchPage.isSearchItemAvailable(drone, SERACH_ZERO_CONTENT);
+            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
             Assert.assertTrue(searchOk);
         }
         catch (Throwable e)
@@ -623,31 +623,31 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[0]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], siteName + "_My 4", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno Trance my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_My 1"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_My 3"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], siteName + "_My 4", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 1"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 3"));
 
             // Searching for valid keyword string
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[1]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], siteName + "_My 4", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], siteName + "_My 4", true));
 
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno Trance my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_My 2"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_My 3"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 2"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 3"));
 
             // Searching for valid keyword string
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[2]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], siteName + "_My 4", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno Trance my"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], siteName + "_My 4", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
         }
         catch (Throwable e)
         {
@@ -773,23 +773,23 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[0]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true));
 
             // Searching for valid keyword string
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[1]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_Techno", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_Techno", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true));
 
             // Searching for valid keyword string
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[2]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true));
         }
         catch (Throwable e)
         {
@@ -913,23 +913,23 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], "House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, "House my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, "House Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], "House Techno Trance my", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House Techno my"));
 
             // Searching for valid Name string
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[1]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], "House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, "Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, "House Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], "House Techno Trance my", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House Techno my"));
 
             // Searching for valid Name string
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[2]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], "House Techno Trance my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], "House Techno Trance my", true));
         }
         catch (Throwable e)
         {
@@ -1054,23 +1054,23 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno"));
 
             // Searching for valid Name string
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[1]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_Techno"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, siteName + "_House Techno"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_Techno"));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno"));
 
             // Searching for valid Name string
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[2]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true));
         }
         catch (Throwable e)
         {
@@ -1172,8 +1172,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, "Techno my"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "Techno my"));
         }
         catch (Throwable e)
         {
@@ -1298,12 +1298,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
             
-            SearchResult searchResultItem = ShareUserSearchPage.findInSearchResults(drone,"House 1");
+            SearchResult searchResultItem = ShareUserSearchPage.findInFacetSearchResults(drone,"House 1");
             
             Assert.assertNotNull(searchResultItem);
             Assert.assertTrue(searchResultItem.isFolder());
             
-            searchResultItem = ShareUserSearchPage.findInSearchResults(drone,"Techno");
+            searchResultItem = ShareUserSearchPage.findInFacetSearchResults(drone,"Techno");
             
             Assert.assertNotNull(searchResultItem);
             Assert.assertTrue(searchResultItem.isFolder());
@@ -1410,8 +1410,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "Techno my", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, "House my 1"));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "Techno my", true));
+            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House my 1"));
         }
         catch (Throwable e)
         {
@@ -1537,12 +1537,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            SearchResult searchResult = ShareUserSearchPage.findInSearchResults(drone,"House 1");
+            SearchResult searchResult = ShareUserSearchPage.findInFacetSearchResults(drone,"House 1");
             
             Assert.assertNotNull(searchResult);
             Assert.assertTrue(searchResult.isFolder());
 
-            searchResult = ShareUserSearchPage.findInSearchResults(drone,"Techno");
+            searchResult = ShareUserSearchPage.findInFacetSearchResults(drone,"Techno");
             
             Assert.assertNotNull(searchResult);
             Assert.assertTrue(searchResult.isFolder());
@@ -1936,13 +1936,13 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
             Assert.assertTrue(ShareUserSearchPage
-                    .checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
+                    .checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
         }
         catch (Throwable e)
         {
@@ -2071,12 +2071,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
         }
         catch (Throwable e)
         {
@@ -2236,15 +2236,15 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), "string M");
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string M.txt", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string alt M.txt", true),
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string M.txt", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string alt M.txt", true),
                     "MNT-8476 - Search returning inconsistent results.");
 
             // Searching for valid Name.
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), "string M");
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "\"string M\"", "string M.txt", true),
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "\"string M\"", "string M.txt", true),
                     "MNT-8476 - Search returning inconsistent results.");
         }
         catch (Throwable e)

@@ -776,7 +776,7 @@ public class DocLibClusterTest extends AbstractUtils
         // Searching for valid Name string
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), fileName1);
         ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-        Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, fileName1), "Not Found " + fileName1);
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName1), "Not Found " + fileName1);
 
         ShareUser.logout(drone);
     }

@@ -23,11 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.search.SearchResult;
+import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.site.document.ContentDetails;
@@ -69,6 +70,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     private String testDomainFree = DOMAIN_FREE;
 
     private String adminUserFree = ADMIN_USERNAME;
+    private FacetedSearchPage facetedSearchPage;   
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -1667,10 +1669,17 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), folderName2);
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        List<SearchResult> results = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-
+        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);        
+        facetedSearchPage = drone.getCurrentPage().render();
+        Assert.assertTrue(facetedSearchPage.getResults().size()>0);
+        
+        facetedSearchPage.getResultByName(folderName2).clickLink().render();
+        HtmlPage page = FactorySharePage.resolvePage(drone);
+        Assert.assertTrue(page instanceof RepositoryPage);
+        
+      
         // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results
-        boolean found = false;
+        /*boolean found = false;
         for (SearchResult item : results)
         {
             if (item.getTitle().equals(folderName2))
@@ -1682,15 +1691,22 @@ public class RepositoryManagePermissionTest extends AbstractUtils
                 break;
             }
         }
-        Assert.assertTrue(found);
+        Assert.assertTrue(found);*/
 
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), fileName);
         searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        results = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName), "Not Found " + fileName);        
+        facetedSearchPage = drone.getCurrentPage().render();
+        Assert.assertTrue(facetedSearchPage.getResults().size()>0);        
+        facetedSearchPage.getResultByName(fileName).clickLink().render();
+        HtmlPage page1 = FactorySharePage.resolvePage(drone);
+        Assert.assertTrue(page1 instanceof DocumentDetailsPage);
+
 
         // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results in all places
-        found = false;
+        /*found = false;
         for (SearchResult item : results)
         {
             if (item.getTitle().equals(fileName))
@@ -1703,7 +1719,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
             }
         }
         Assert.assertTrue(found);
-
+*/
         ShareUser.logout(drone);
     }
 

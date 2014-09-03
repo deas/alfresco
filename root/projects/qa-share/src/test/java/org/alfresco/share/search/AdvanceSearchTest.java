@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.search.AdvanceSearchPage;
+import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SearchResultsPage;
 import org.alfresco.po.share.search.SortType;
@@ -164,14 +166,14 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText[0]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], "House my 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], "House my 1", true));
 
             // Searching for valid Name string with Title
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText[1]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], "House my 2", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], "House my 2", true));
         }
         catch (Throwable e)
         {
@@ -293,14 +295,14 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText[0]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], "House 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], "House 1", true ));
 
             // Searching for valid Name string with Title
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText[1]);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], "House 2", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], "House 2", true));
         }
         catch (Throwable e)
         {
@@ -404,7 +406,7 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
         }
         catch (Throwable e)
         {
@@ -526,7 +528,7 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "House 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "House 1", true));
         }
         catch (Throwable e)
         {
@@ -640,7 +642,7 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
         }
         catch (Throwable e)
         {
@@ -785,7 +787,7 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "House 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "House 1", true));
         }
         catch (Throwable e)
         {
@@ -903,9 +905,9 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "Techno my", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "Techno my", true));
         }
         catch (Throwable e)
         {
@@ -1048,8 +1050,8 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "House 1", true));
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "Techno", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "House 1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText, "Techno", true));
         }
         catch (Throwable e)
         {
@@ -1103,23 +1105,23 @@ public class AdvanceSearchTest extends AbstractUtils
             // Main user login and creates the site.
             ShareUser.login(drone, mainUser, testPassword);
             ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-            ShareUser.logout(drone);
+            ShareUtil.logout(drone);
 
             // User1 logged in and joined in site
             ShareUser.login(drone, testUser1, testPassword);
             ShareUserMembers.userRequestToJoinSite(drone, siteName);
-            ShareUser.logout(drone);
+            ShareUtil.logout(drone);
 
             // User2 logged in and joined in site
             ShareUser.login(drone, testUser2, testPassword);
             ShareUserMembers.userRequestToJoinSite(drone, siteName);
-            ShareUser.logout(drone);
+            ShareUtil.logout(drone);
 
             // Main user logs in to create the roles for the joined users on site.
             ShareUser.login(drone, mainUser, testPassword);
             ShareUserMembers.assignRoleToSiteMember(drone, testUser1, siteName, UserRole.MANAGER);
             ShareUserMembers.assignRoleToSiteMember(drone, testUser2, siteName, UserRole.MANAGER);
-            ShareUser.logout(drone);
+            ShareUtil.logout(drone);
 
             // User1 logged in and creates the folder and content in site
             ShareUser.login(drone, testUser1, testPassword);
@@ -1142,7 +1144,7 @@ public class AdvanceSearchTest extends AbstractUtils
             editPage.render();
             editPage.save(contentDetails).render();
 
-            ShareUser.logout(drone);
+            ShareUtil.logout(drone);
 
             // User2 logged in and creates the folder and content in site
             ShareUser.login(drone, testUser2, testPassword);
@@ -1163,7 +1165,7 @@ public class AdvanceSearchTest extends AbstractUtils
             editPage.render();
             editPage.save(contentDetails).render();
 
-            ShareUser.logout(drone);
+            ShareUtil.logout(drone);
         }
         catch (Throwable e)
         {
@@ -1207,7 +1209,7 @@ public class AdvanceSearchTest extends AbstractUtils
 
             String searchTerm = testName + "test";
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "1", true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "1", true));
         }
         catch (Throwable e)
         {
@@ -1328,7 +1330,7 @@ public class AdvanceSearchTest extends AbstractUtils
             keyWordSearchText.put(SearchKeys.MIME.getSearchKeys(), "HTML");
             List<SearchResult> searchResults = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, testName + "_test", TEST1_HTML_FILE, true));
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, testName + "_test", TEST1_HTML_FILE, true));
             Assert.assertTrue(searchResults.size() == 1);
         }
         catch (Throwable e)
@@ -1460,16 +1462,23 @@ public class AdvanceSearchTest extends AbstractUtils
             contentSearchPage = ShareUserSearchPage.navigateToAdvanceSearch(drone, searchInfo);
             contentSearchPage.inputKeyword(searchTerm);
             
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Name
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);          
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("NAME");
+            facetedSearchPage.loadElements();
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "1");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "11");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(3).getTitle(), searchTerm + "22");
-            Assert.assertEquals(resultsList.get(4).getTitle(), searchTerm + "3");
+            List<SearchResult> results1 = facetedSearchPage.getResults();
+            Assert.assertNotNull(results1);
+            Assert.assertEquals(results1.size(), 5);            
+
+            Assert.assertEquals(results1.get(0).getName(), searchTerm + "1");
+            Assert.assertEquals(results1.get(1).getName(), searchTerm + "11");
+            Assert.assertEquals(results1.get(2).getName(), searchTerm + "2");
+            Assert.assertEquals(results1.get(3).getName(), searchTerm + "22");
+            Assert.assertEquals(results1.get(4).getName(), searchTerm + "3");
 
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH);
@@ -1483,17 +1492,25 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Name
-            resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
-          
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "10");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "12");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(3).getTitle(), searchTerm + "44");
-            Assert.assertEquals(resultsList.get(4).getTitle(), searchTerm + "9");
-        }
+            //resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("NAME");
+            facetedSearchPage.loadElements();
+
+            List<SearchResult> results = facetedSearchPage.getResults();
+            Assert.assertNotNull(results);
+            Assert.assertEquals(results.size(), 5);
+            
+            Assert.assertEquals(results.get(0).getName(), searchTerm + "10");
+            Assert.assertEquals(results.get(1).getName(), searchTerm + "12");
+            Assert.assertEquals(results.get(2).getName(), searchTerm + "3");
+            Assert.assertEquals(results.get(3).getName(), searchTerm + "44");
+            Assert.assertEquals(results.get(4).getName(), searchTerm + "9");           
+            
+            }
         catch (Throwable e)
         {
             reportError(drone, testName, e);
@@ -1628,17 +1645,22 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Title
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
-
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "5");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "4");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(3).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(4).getTitle(), searchTerm + "1");
-
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("TITLE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> resultsList = facetedSearchPage.getResults();
+            
+            Assert.assertEquals(resultsList.get(0).getName(), searchTerm + "5");
+            Assert.assertEquals(resultsList.get(1).getName(), searchTerm + "4");
+            Assert.assertEquals(resultsList.get(2).getName(), searchTerm + "3");
+            Assert.assertEquals(resultsList.get(3).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList.get(4).getName(), searchTerm + "1");       
+                 
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH);
             searchTerm = siteName + "_testing";
@@ -1651,17 +1673,25 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
-            // Sorting results by Title
-            resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
+            // Sorting results by Title            
+            //resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);            
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("TITLE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> resultsList1 = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList1);
+            Assert.assertEquals(resultsList1.size(), 5);      
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "5");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "4");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(3).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(4).getTitle(), searchTerm + "1");
-        }
+            Assert.assertEquals(resultsList1.get(0).getName(), searchTerm + "5");
+            Assert.assertEquals(resultsList1.get(1).getName(), searchTerm + "4");
+            Assert.assertEquals(resultsList1.get(2).getName(), searchTerm + "3");
+            Assert.assertEquals(resultsList1.get(3).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList1.get(4).getName(), searchTerm + "1");    
+          
+            }
         catch (Throwable e)
         {
             reportError(drone, testName, e);
@@ -1796,16 +1826,23 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Description
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("DESCRIPTION");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> resultsList1 = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList1);
+            Assert.assertEquals(resultsList1.size(), 5);           
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "5");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "4");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(3).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(4).getTitle(), searchTerm + "1");
+            Assert.assertEquals(resultsList1.get(0).getName(), searchTerm + "5");
+            Assert.assertEquals(resultsList1.get(1).getName(), searchTerm + "4");
+            Assert.assertEquals(resultsList1.get(2).getName(), searchTerm + "3");
+            Assert.assertEquals(resultsList1.get(3).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList1.get(4).getName(), searchTerm + "1");            
 
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH);
@@ -1819,16 +1856,24 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Description
-            resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
+            //resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("DESCRIPTION");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> resultsList2 = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList2);
+            Assert.assertEquals(resultsList2.size(), 5);         
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "5");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "4");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(3).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(4).getTitle(), searchTerm + "1");
+            Assert.assertEquals(resultsList2.get(0).getName(), searchTerm + "5");
+            Assert.assertEquals(resultsList2.get(1).getName(), searchTerm + "4");
+            Assert.assertEquals(resultsList2.get(2).getName(), searchTerm + "3");
+            Assert.assertEquals(resultsList2.get(3).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList2.get(4).getName(), searchTerm + "1");
+           
         }
         catch (Throwable e)
         {
@@ -1881,7 +1926,7 @@ public class AdvanceSearchTest extends AbstractUtils
                 // Main user logs in and creates the site.
                 ShareUser.login(drone, mainUser, testPassword);
                 ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User1 logs in and joins the site
                 ShareUser.login(drone, testUser1, testPassword);
@@ -1891,13 +1936,13 @@ public class AdvanceSearchTest extends AbstractUtils
                 // User2 logs in and joins in site
                 ShareUser.login(drone, testUser2, testPassword);
                 ShareUserMembers.userRequestToJoinSite(drone, siteName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // Main user logs in and assign the roles to user1 and user2.
                 ShareUser.login(drone, mainUser, testPassword);
                 ShareUserMembers.assignRoleToSiteMember(drone, testUser1, siteName, UserRole.MANAGER);
                 ShareUserMembers.assignRoleToSiteMember(drone, testUser2, siteName, UserRole.MANAGER);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User1 logs in and adds the content
                 ShareUser.login(drone, testUser1, testPassword);
@@ -1910,7 +1955,7 @@ public class AdvanceSearchTest extends AbstractUtils
                 contentDetails.setName(searchTerm + 2);
                 ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User2 logs in and adds the content
                 ShareUser.login(drone, testUser2, testPassword);
@@ -1922,7 +1967,7 @@ public class AdvanceSearchTest extends AbstractUtils
                 contentDetails.setName(searchTerm + 1);
                 ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
             }
         }
         catch (Throwable e)
@@ -1971,14 +2016,21 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Creator
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATOR);
-
-            Assert.assertTrue(resultsList.size()>=2,"Expecting 2 results, retrieved: " + resultsList.size());
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATOR);
+            Assert.assertTrue(facetedSearchPage.getResults().size()>=2, "Expecting 2 results, retrieved:");
+            facetedSearchPage.getSort().sortByLabel("CREATOR");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> results = facetedSearchPage.getResults();
+            Assert.assertNotNull(results);
+            Assert.assertEquals(results.size(), 2);            
+            
+            Assert.assertEquals(results.get(0).getName(), searchTerm + "2");
+            Assert.assertEquals(results.get(1).getName(), searchTerm + "1");
+            
         }
         catch (Throwable e)
         {
@@ -2051,23 +2103,23 @@ public class AdvanceSearchTest extends AbstractUtils
                 // Editing author as testUser1 from document details page.
                 editDocumentAuthorName(testUser1, (testFile + 2), docLibPage);
 
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User1 logs in and joins the site
                 ShareUser.login(drone, testUser1, testPassword);
                 ShareUserMembers.userRequestToJoinSite(drone, siteName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User2 logs in and joins in site
                 ShareUser.login(drone, testUser2, testPassword);
                 ShareUserMembers.userRequestToJoinSite(drone, siteName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // Main user logs in and assign the roles to user1 and user2.
                 ShareUser.login(drone, mainUser, testPassword);
                 ShareUserMembers.assignRoleToSiteMember(drone, testUser1, siteName, UserRole.MANAGER);
                 ShareUserMembers.assignRoleToSiteMember(drone, testUser2, siteName, UserRole.MANAGER);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
             }
         }
         catch (Throwable e)
@@ -2113,13 +2165,21 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Creator
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.AUTHOR);
-
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.AUTHOR);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("AUTHOR");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> results = facetedSearchPage.getResults();
+            Assert.assertNotNull(results);
+            Assert.assertEquals(results.size(), 2);
+            
+            Assert.assertEquals(results.get(0).getName(), searchTerm + "2");
+            Assert.assertEquals(results.get(1).getName(), searchTerm + "1");
+            
         }
         catch (Throwable e)
         {
@@ -2182,37 +2242,37 @@ public class AdvanceSearchTest extends AbstractUtils
                 contentDetails.setName(testFile + 2);
                 ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User1 logs in and joins the site
                 ShareUser.login(drone, testUser1, testPassword);
                 ShareUserMembers.userRequestToJoinSite(drone, siteName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User2 logs in and joins the site
                 ShareUser.login(drone, testUser2, testPassword);
                 ShareUserMembers.userRequestToJoinSite(drone, siteName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // Main user logs in and assign the roles to user1 and user2.
                 ShareUser.login(drone, mainUser, testPassword);
                 ShareUserMembers.assignRoleToSiteMember(drone, testUser1, siteName, UserRole.MANAGER);
                 ShareUserMembers.assignRoleToSiteMember(drone, testUser2, siteName, UserRole.MANAGER);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User1 logs in and edits the content
                 ShareUser.login(drone, testUser1, testPassword);
                 String fileName = testFile + 2;
 
                 ShareUserSitePage.editPropertiesFromDocLibPage(drone, siteName, fileName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
 
                 // User2 logs in and edits the content
                 ShareUser.login(drone, testUser2, testPassword);
                 fileName = testFile + 1;
 
                 ShareUserSitePage.editPropertiesFromDocLibPage(drone, siteName, fileName);
-                ShareUser.logout(drone);
+                ShareUtil.logout(drone);
             }
         }
         catch (Throwable e)
@@ -2261,13 +2321,21 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Creator
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIER);
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIER);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("MODIFIER");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> resultsList1 = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList1);
+            Assert.assertEquals(resultsList1.size(), 2);
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
+            Assert.assertEquals(resultsList1.get(0).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList1.get(1).getName(), searchTerm + "1");          
+            
         }
         catch (Throwable e)
         {
@@ -2379,14 +2447,21 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Created
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("CREATED DATE");
+            facetedSearchPage.loadElements();
             
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "1");
+            List<SearchResult> resultsList = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList);
+            Assert.assertEquals(resultsList.size(), 3);          
+                       
+            Assert.assertEquals(resultsList.get(0).getName(), searchTerm + "3");
+            Assert.assertEquals(resultsList.get(1).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList.get(2).getName(), searchTerm + "1");
 
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
@@ -2397,14 +2472,22 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Created
-            resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
+            //resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("CREATED DATE");
+            facetedSearchPage.loadElements();
             
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "1");
+            List<SearchResult> resultsList1 = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList1);
+            Assert.assertEquals(resultsList1.size(), 3);
+
+            Assert.assertEquals(resultsList1.get(0).getName(), searchTerm + "3");
+            Assert.assertEquals(resultsList1.get(1).getName(), searchTerm + "2");
+            Assert.assertEquals(resultsList1.get(2).getName(), searchTerm + "1");     
+                        
         }
         catch (Throwable e)
         {
@@ -2521,14 +2604,21 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Size
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("SIZE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> resultsList = facetedSearchPage.getResults();
+            Assert.assertNotNull(resultsList);
+            Assert.assertEquals(resultsList.size(), 3);
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), TEST_FILE_WITH_1KB_SIZE);
-            Assert.assertEquals(resultsList.get(1).getTitle(), TEST_FILE_WITH_1MB_SIZE);
-            Assert.assertEquals(resultsList.get(2).getTitle(), TEST_FILE_WITH_2MB_SIZE);
+            Assert.assertEquals(resultsList.get(0).getName(), TEST_FILE_WITH_1KB_SIZE);
+            Assert.assertEquals(resultsList.get(1).getName(), TEST_FILE_WITH_1MB_SIZE);
+            Assert.assertEquals(resultsList.get(2).getName(), TEST_FILE_WITH_2MB_SIZE);
 
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
@@ -2539,14 +2629,22 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Size
-            resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
+            //resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("SIZE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> results = facetedSearchPage.getResults();
+            Assert.assertNotNull(results);
+            Assert.assertEquals(results.size(), 3);
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "1");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "2");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "3");
+            Assert.assertEquals(results.get(0).getName(), searchTerm + "1");
+            Assert.assertEquals(results.get(1).getName(), searchTerm + "2");
+            Assert.assertEquals(results.get(2).getName(), searchTerm + "3");      
+            
         }
         catch (Throwable e)
         {
@@ -2654,18 +2752,18 @@ public class AdvanceSearchTest extends AbstractUtils
         testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
 
-        String TEST1_HTML_FILE = testName + "_" + TEST_HTML_FILE;
-        String TEST2_TXT_FILE = testName + "_" + TEST_TXT_FILE;
-        String TEST3_DOC_FILE = testName + "_" + TEST_DOC_FILE;
-        String TEST4_JPG_FILE = testName + "_" + TEST_JPG_FILE;
-        String TEST5_PDF_FILE = testName + "_" + TEST_PDF_FILE;
-        String TEST6_GIF_FILE = testName + "_" + TEST_GIF_FILE;
+        String TEST1_HTML_FILE = "_" + TEST_HTML_FILE;
+        String TEST2_TXT_FILE = "_" + TEST_TXT_FILE;
+        String TEST3_DOC_FILE = "_" + TEST_DOC_FILE;
+        String TEST4_JPG_FILE = "_" + TEST_JPG_FILE;
+        String TEST5_PDF_FILE = "_" + TEST_PDF_FILE;
+        String TEST6_GIF_FILE = "_" + TEST_GIF_FILE;
 
         AdvanceSearchPage contentSearchPage;
 
         // Searching and sorting the content items
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH);
-        String searchTerm = testName + "_test";
+        String searchTerm = testName;
 
         try
         {
@@ -2676,17 +2774,25 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Mime Type.
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MIMETYPE);
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MIMETYPE);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("MIME TYPE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> results = facetedSearchPage.getResults();
+            Assert.assertNotNull(results);
+            Assert.assertEquals(results.size(), 6);
 
-            Assert.assertEquals(resultsList.get(0).getTitle(), TEST3_DOC_FILE);
-            Assert.assertEquals(resultsList.get(1).getTitle(), TEST5_PDF_FILE);
-            Assert.assertEquals(resultsList.get(2).getTitle(), TEST6_GIF_FILE);
-            Assert.assertEquals(resultsList.get(3).getTitle(), TEST4_JPG_FILE);
-            Assert.assertEquals(resultsList.get(4).getTitle(), TEST1_HTML_FILE);
-            Assert.assertEquals(resultsList.get(5).getTitle(), TEST2_TXT_FILE);
+            Assert.assertEquals(results.get(0).getName(), searchTerm + TEST3_DOC_FILE);
+            Assert.assertEquals(results.get(1).getName(), searchTerm + TEST5_PDF_FILE);
+            Assert.assertEquals(results.get(2).getName(), searchTerm + TEST6_GIF_FILE);
+            Assert.assertEquals(results.get(3).getName(), searchTerm + TEST4_JPG_FILE);
+            Assert.assertEquals(results.get(4).getName(), searchTerm + TEST1_HTML_FILE);
+            Assert.assertEquals(results.get(5).getName(), searchTerm + TEST2_TXT_FILE);
+            
         }
         catch (Throwable e)
         {
@@ -2795,7 +2901,7 @@ public class AdvanceSearchTest extends AbstractUtils
             ShareUserSitePage.editPropertiesFromDocLibPage(drone, siteName, (siteName + "_testing1"));
             
             // This is required to keep the edit time difference between 2 files
-            webDriverWait(drone,70000);
+            //webDriverWait(drone,70000);
             
             // Modifying 3rd content and folder.
             ShareUserSitePage.editPropertiesFromDocLibPage(drone, siteName, (siteName + "_test3"));
@@ -2806,14 +2912,22 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Modified
-            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "2");
+            //List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("MODIFIED DATE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> results = facetedSearchPage.getResults();
+            Assert.assertNotNull(results);
+            Assert.assertEquals(results.size(), 3);
 
+            Assert.assertEquals(results.get(0).getName(), searchTerm + "3");
+            Assert.assertEquals(results.get(1).getName(), searchTerm + "1");
+            Assert.assertEquals(results.get(2).getName(), searchTerm + "2");            
+            
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
             searchTerm = siteName + "_testing";
@@ -2823,13 +2937,22 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Modified
-            resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
-            Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "3");
-            Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
-            Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "2");
+            //resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
+            Assert.assertTrue(facetedSearchPage.hasResults());
+            facetedSearchPage.getSort().sortByLabel("MODIFIED DATE");
+            facetedSearchPage.loadElements();
+            
+            List<SearchResult> results1 = facetedSearchPage.getResults();
+            Assert.assertNotNull(results1);
+            Assert.assertEquals(results1.size(), 3);
+
+            Assert.assertEquals(results1.get(0).getName(), searchTerm + "3");
+            Assert.assertEquals(results1.get(1).getName(), searchTerm + "1");
+            Assert.assertEquals(results1.get(2).getName(), searchTerm + "2");    
+           
         }
         catch (Throwable e)
         {
@@ -2922,7 +3045,7 @@ public class AdvanceSearchTest extends AbstractUtils
     @Test
     public void ALF_5027()
     {
-        /** Start Test */
+        /** Start Test */    	
         testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
@@ -2945,15 +3068,16 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            contentSearchPage.clickSearch().render();
-
+            contentSearchPage.clickSearch().render();           
+            
             // Clicking the search on basic search page.
-            SearchResultsPage page = ShareUserSearchPage.repeatSearch(drone, BASIC_SEARCH, searchTerm);
+            FacetedSearchPage page = ShareUserSearchPage.repeatBasicSearch(drone, BASIC_SEARCH, searchTerm);
 
             // Sorting results by Modified
             //TODO: Subs: Rename sortPage as sortResults?
-            page = (SearchResultsPage) page.sortPage(SortType.TYPE);
-            page.render();
+            page.getSort().sortByLabel("TYPE").render();
+            page.loadElements();
+            
             List<SearchResult> resultsList = page.getResults();
 
             // Splitting first 3 results into contents list and next 3 into folders list.
@@ -2961,11 +3085,11 @@ public class AdvanceSearchTest extends AbstractUtils
             {
                 if(i<3)
                 {
-                    resultContentItemNames.add(resultsList.get(i).getTitle());  
+                    resultContentItemNames.add(resultsList.get(i).getName());  
                 }
                 else
                 {
-                    resultFolderNames.add(resultsList.get(i).getTitle());
+                    resultFolderNames.add(resultsList.get(i).getName());
                 }
             }
            
@@ -3089,11 +3213,11 @@ public class AdvanceSearchTest extends AbstractUtils
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
             // Asserting the results as relevance sort order
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_a", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_b", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_c", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_d", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_e", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_a", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_b", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_c", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_d", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_e", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
 
             // Searching and sorting the folders
             searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
@@ -3104,11 +3228,11 @@ public class AdvanceSearchTest extends AbstractUtils
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
             // Asserting the results as relevance sort order
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_a", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_b", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_c", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_d", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
-            Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_e", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_a", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_b", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_c", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_d", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
+            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, searchTerm + "_e", true), " COUD-1916- Search returning inconsistent results in Cloud2 environment.");
         }
         catch (Throwable e)
         {

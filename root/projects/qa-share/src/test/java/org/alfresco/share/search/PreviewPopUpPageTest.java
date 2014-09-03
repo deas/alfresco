@@ -48,7 +48,7 @@ public class PreviewPopUpPageTest extends AbstractUtils
     
     // Data prep
     @Test(groups={"DataPrepSearch"})
-    public void dataPrep_PreviewPopUpPageTest_1() throws Exception
+    public void dataPrep_ALF_3260() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -93,7 +93,7 @@ public class PreviewPopUpPageTest extends AbstractUtils
     
     // Data prep to create image files in a site
     @Test(groups={"DataPrepSearch"})
-    public void dataPrep_PreviewPopUpPageTest_2() throws Exception
+    public void dataPrep_ALF_3259() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
