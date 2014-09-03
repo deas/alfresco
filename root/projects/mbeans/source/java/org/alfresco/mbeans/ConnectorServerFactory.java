@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2005-2010 Alfresco Software Limited.
+* Copyright (C) 2005-2014 Alfresco Software Limited.
 *
 * This file is part of Alfresco
 *
@@ -36,6 +36,22 @@ public class ConnectorServerFactory extends ConnectorServerFactoryBean
 {
     private static Log logger = LogFactory.getLog(ConnectorServerFactory.class);
     
+    private boolean enabled = false;
+    
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    /**
+     * Enables JMX connectivity during initialization, see {@link ConnectorServerFactory#afterPropertiesSet()}
+     * @param enabled
+     */
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+    }
+
     /**
      * Wraps original initialization method to log errors, rather than having 
      * exceptions occur within the Spring framework itself (this would cause the entire webapp to fail)
@@ -47,11 +63,21 @@ public class ConnectorServerFactory extends ConnectorServerFactoryBean
     {
         try
         {
-            super.afterPropertiesSet();
-
-            if (logger.isInfoEnabled())
+            if (enabled)
             {
-                logger.info("Created JMX serverConnector");
+                super.afterPropertiesSet();
+
+                if (logger.isInfoEnabled())
+                {
+                    logger.info("Created JMX serverConnector");
+                }
+            }
+            else
+            {
+                if (logger.isInfoEnabled())
+                {
+                    logger.info("JMX serverConnector is disabled.");
+                }
             }
 
         }
