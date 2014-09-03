@@ -142,7 +142,7 @@ define(["dojo/_base/declare",
          {
             this.offConfig = {
                label: "default.off.label"
-            }
+            };
          }
       },
 
@@ -165,6 +165,16 @@ define(["dojo/_base/declare",
        * @default "value"
        */
       subscriptionAttribute: "value",
+
+      /**
+       * This is the value that indicates the toggle should be checked. It defaults to "true" and should
+       * be overridden as necessary.
+       *
+       * @instance
+       * @type {string}
+       * @default "true"
+       */
+      checkedValue: "true",
 
       /**
        * Subscribe the document list topics.
@@ -319,7 +329,7 @@ define(["dojo/_base/declare",
          if (payload && payload[this.subscriptionAttribute] != null)
          {
             this.alfLog("log", "Setting toggle state", payload, this);
-            this.checked = ("true" == payload[this.subscriptionAttribute]);
+            this.checked = (this.checkedValue == payload[this.subscriptionAttribute]);
             if (this.checked)
             {
                this.renderToggle(this.onConfig, this.offConfig);

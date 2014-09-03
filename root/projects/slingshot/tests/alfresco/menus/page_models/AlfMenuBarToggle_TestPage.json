@@ -1,4 +1,15 @@
 {
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true
+            }
+         }
+      }
+   ],
    "widgets": [
       {
          "name": "alfresco/menus/AlfMenuBar",
@@ -7,7 +18,10 @@
                {
                   "name": "alfresco/menus/AlfMenuBarToggle",
                   "config": {
-                     "id": "BASIC_MENU_BAR_TOGGLE"
+                     "id": "BASIC_MENU_BAR_TOGGLE",
+                     "subscriptionTopic": "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                     "subscriptionAttribute": "direction",
+                     "checkedValue": "ascending"
                   }
                },
                {
@@ -15,6 +29,9 @@
                   "config": {
                      "id": "MENU_BAR_TOGGLE_CUSTOM_LABEL",
                      "checked": true,
+                     "subscriptionTopic": "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                     "subscriptionAttribute": "direction",
+                     "checkedValue": "ascending",
                      "onConfig": {
                         "label": "On (Custom Label)",
                         "publishTopic": "CLICK",
@@ -38,6 +55,9 @@
                   "config": {
                      "checked": false,
                      "id": "MENU_BAR_TOGGLE_WITH_ICON",
+                     "subscriptionTopic": "ALF_DOCLIST_SORT_FIELD_SELECTION",
+                     "subscriptionAttribute": "direction",
+                     "checkedValue": "ascending",
                      "onConfig": {
                         "label": "On (Custom Label)",
                         "iconClass": "alf-sort-ascending-icon",
