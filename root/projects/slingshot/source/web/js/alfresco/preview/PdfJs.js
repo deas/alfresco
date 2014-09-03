@@ -31,9 +31,8 @@
  */
 define(["dojo/_base/declare",
         "alfresco/preview/AlfDocumentPreviewPlugin", 
-        "dojo/_base/lang",
-        "dojo/aspect"], 
-        function(declare, AlfDocumentPreviewPlugin, lang, aspect) {
+        "dojo/_base/lang"], 
+        function(declare, AlfDocumentPreviewPlugin, lang) {
    
    var AikauPdfJs = declare([AlfDocumentPreviewPlugin], {
 
@@ -88,11 +87,15 @@ define(["dojo/_base/declare",
 
          this.onPdfLoaded = new YAHOO.util.CustomEvent("pdfLoaded", this);
          this.onResize = new YAHOO.util.CustomEvent("resize", this);
+      },
 
-         var _this = this;
-         aspect.before(this, "display", function() {
-            _this.onComponentsLoaded();
-         });
+      /**
+       * Calls the "onComponentsLoaded" function from the Pdf.js file prototype
+       *
+       * @instance
+       */
+      display: function alfresco_preview_PdfJs__display() {
+         this.onComponentsLoaded();
       }
    });
 

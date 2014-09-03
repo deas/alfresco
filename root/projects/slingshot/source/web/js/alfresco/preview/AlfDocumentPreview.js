@@ -480,15 +480,15 @@ define(["dojo/_base/declare",
        * @return {boolean} true if conditions are fulfilled for plugins to be used.
        */
       conditionsMatch: function alfresco_preview_AlfDocumentPreview__conditionsMatch(condition) {
-         if (condition.attributes.mimeType && condition.attributes.mimeType === this.mimeType)
+         if (condition.attributes.mimeType && condition.attributes.mimeType != this.mimeType)
          {
-            return true;
+            return false;
          }
-         if (condition.attributes.thumbnail && Alfresco.util.arrayContains(this.thumbnails, condition.attributes.thumbnail))
+         if (condition.attributes.thumbnail && !Alfresco.util.arrayContains(this.thumbnails, condition.attributes.thumbnail))
          {
-            return true;
+            return false;
          }
-         return false;
+         return true;
       },
 
       /**

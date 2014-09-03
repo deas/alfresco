@@ -25,6 +25,7 @@
 
 .alfresco-dialog-AlfDialog .dialog-body {
   padding: 10px;
+  overflow: hidden;
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogPaneContent {
