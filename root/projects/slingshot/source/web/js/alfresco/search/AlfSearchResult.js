@@ -91,7 +91,7 @@ define(["dojo/_base/declare",
             "document-view-in-source-repository",
             "document-view-in-cloud",
             "document-delete",
-            "document-edit-offline" // TODO: Works, but Working copy handling isn't quite correct.
+            "document-edit-offline"
             // TODO: Fix Document Picker scoping issues.
             //  "document-copy-to",
             //  "document-move-to",
