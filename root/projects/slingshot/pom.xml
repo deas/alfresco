@@ -319,6 +319,7 @@
                     </includes>
                     <!-- We don't need to re-minify YUI or 3rd party libs -->
                     <excludes>
+                        <exclude>**/sinon-1.10.3/**</exclude>
                         <exclude>**/*-min.js</exclude>
                         <exclude>**/WEB-INF/**</exclude>
                         <exclude>**/tiny_mce/**</exclude>
