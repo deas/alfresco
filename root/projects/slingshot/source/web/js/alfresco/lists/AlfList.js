@@ -167,7 +167,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       setupSubscriptions: function alfresco_lists_AlfList__setupSubscriptions() {
-         this.alfSubscribe(this.reloadDataPublishTopic, lang.hitch(this, this.loadData));
+         this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, this.loadData));
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, this.onViewSelected));
          this.alfSubscribe(this.loadDataPublishTopic + "_SUCCESS", lang.hitch(this, this.onDataLoadSuccess));
          this.alfSubscribe(this.loadDataPublishTopic + "_FAILURE", lang.hitch(this, this.onDataLoadFailure));

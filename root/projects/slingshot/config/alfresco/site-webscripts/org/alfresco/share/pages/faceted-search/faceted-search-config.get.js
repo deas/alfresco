@@ -109,9 +109,49 @@ var main = {
                                           itemsProperty: "facets",
                                           widgets: [
                                              {
-                                                name: "alfresco/documentlibrary/views/AlfDocumentListView",
+                                                name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
                                                 config: {
-                                                   additionalCssClasses: "no-borders",
+                                                   widgetsForHeader: [
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: "",
+                                                            sortable: false
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: msg.get("faceted-search-config.filterId.label"),
+                                                            sortable: false
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: msg.get("faceted-search-config.isEnabled.label")
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: msg.get("faceted-search-config.isDefault.label")
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: ""
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
+                                                            label: "",
+                                                            class: "last"
+                                                         }
+                                                      }
+                                                   ],
                                                    widgets: [
                                                       {
                                                          name: "alfresco/documentlibrary/views/layouts/Row",
@@ -120,7 +160,8 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     width: "",
+                                                                     class: "mediumpad",
+                                                                     width: "50px",
                                                                      widgets: [
                                                                         {
                                                                            name: "alfresco/renderers/Reorder"
@@ -131,12 +172,13 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
+                                                                     class: "mediumpad",
                                                                      width: "",
                                                                      widgets: [
                                                                         {
                                                                            name: "alfresco/renderers/PropertyLink",
                                                                            config: {
-                                                                              propertyToRender: "displayName",
+                                                                              propertyToRender: "filterID",
                                                                               publishTopic: "ALF_CRUD_FORM_UPDATE",
                                                                               defaultConfig: {
                                                                                  propertyToRender: "displayName",
@@ -150,7 +192,8 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     width: "",
+                                                                     class: "mediumpad",
+                                                                     width: "50px",
                                                                      widgets: [
                                                                         {
                                                                            name: "alfresco/renderers/Boolean",
@@ -164,12 +207,56 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     width: "",
+                                                                     class: "mediumpad",
+                                                                     width: "50px",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Boolean",
+                                                                           config: {
+                                                                              propertyToRender: "isDefault"
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     class: "mediumpad",
+                                                                     width: "50px",
                                                                      widgets: [
                                                                         {
                                                                            name: "alfresco/renderers/Property",
                                                                            config: {
                                                                               propertyToRender: "index"
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     class: "mediumpad",
+                                                                     width: "50px",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/PublishAction",
+                                                                           config: {
+                                                                              iconClass: "delete-16",
+                                                                              publishTopic: "ALF_CRUD_DELETE",
+                                                                              publishPayloadType: "PROCESS",
+                                                                              publishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}"
+                                                                              },
+                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              renderFilter: [
+                                                                                 {
+                                                                                    property: "isDefault",
+                                                                                    values: [false],
+                                                                                    renderOnAbsentProperty: false
+                                                                                 }
+                                                                              ]
                                                                            }
                                                                         }
                                                                      ]
@@ -373,6 +460,21 @@ var main = {
                                           value: "10",
                                           label: "faceted-search-config.minFilterValueLength.label",
                                           description: "faceted-search-config.minFilterValueLength.description",
+                                          min: 1,
+                                          max: 20,
+                                          validationConfig: {
+                                             regex: "^[0-9]+$"
+                                          }
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/forms/controls/NumberSpinner",
+                                       config: {
+                                          fieldId: "HIT_THRESHOLD",
+                                          name: "hitThreshold",
+                                          value: "10",
+                                          label: "faceted-search-config.hitThreshold.label",
+                                          description: "faceted-search-config.hitThreshold.description",
                                           min: 1,
                                           max: 20,
                                           validationConfig: {
