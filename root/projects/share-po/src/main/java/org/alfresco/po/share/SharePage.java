@@ -153,7 +153,7 @@ public abstract class SharePage extends Page
                 selector = "div.alf-menu-title span.alf-menu-title-text";
                 break;
             default:
-                selector = "a.alf-menu-title-text";
+                selector = ".alfresco-header-Title";
                 break;
         }
         return drone.find(By.cssSelector(selector)).getText().trim();
