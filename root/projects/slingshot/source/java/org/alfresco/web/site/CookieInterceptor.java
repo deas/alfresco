@@ -28,14 +28,12 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.handler.DispatcherServletWebRequest;
 
 /**
- * Cookie Interceptor that removes the alfUsername2 cookie from response.
+ * Cookie Interceptor that removes configured cookies from response.
  * 
  * @author Alex Bykov
  */
 public class CookieInterceptor extends AbstractWebFrameworkInterceptor
 {
-    private static final String COOKIE_ALFUSER = "alfUsername2";
-
     private ConfigService configService;
     private CookieConfigElement cookieConfig;
 
@@ -64,11 +62,14 @@ public class CookieInterceptor extends AbstractWebFrameworkInterceptor
             DispatcherServletWebRequest request = (DispatcherServletWebRequest) webRequest;
             if (request != null)
             {
-                // remove cookie
-                Cookie userCookie = new Cookie(COOKIE_ALFUSER, "");
-                userCookie.setPath(request.getContextPath());
-                userCookie.setMaxAge(0);
-                request.getResponse().addCookie(userCookie);
+                // remove cookies
+                for (String cookie : cookieConfig.getCookiesToRemove())
+                {
+                    Cookie userCookie = new Cookie(cookie, "");
+                    userCookie.setPath(request.getContextPath());
+                    userCookie.setMaxAge(0);
+                    request.getResponse().addCookie(userCookie);
+                }
             }
         }
     }

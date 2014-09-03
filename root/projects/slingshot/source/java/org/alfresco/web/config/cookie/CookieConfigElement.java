@@ -19,6 +19,10 @@
 
 package org.alfresco.web.config.cookie;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.dom4j.Element;
 import org.springframework.extensions.config.ConfigElement;
 import org.springframework.extensions.config.element.ConfigElementAdapter;
@@ -27,8 +31,10 @@ public class CookieConfigElement extends ConfigElementAdapter
 {
     public static final String CONFIG_ELEMENT_ID = "cookie";
 
-    // alfUserName2 cookie settings...
+    // is remove cookie feature is enabled
     protected Boolean enableCookie;
+    // cookies to remove from response
+    protected Set<String> cookiesToRemove = new HashSet<>();
 
     /**
      * Default Constructor
@@ -69,6 +75,7 @@ public class CookieConfigElement extends ConfigElementAdapter
      * @param elem the XML element
      * @return the Cookie configuration element
      */
+    @SuppressWarnings("unchecked")
     protected static ConfigElement newInstance(Element elem)
     {
         CookieConfigElement configElement = new CookieConfigElement();
@@ -79,11 +86,25 @@ public class CookieConfigElement extends ConfigElementAdapter
             configElement.enableCookie = Boolean.parseBoolean(enableCookie);
         }
 
+        Element cookiesToRemoveElement = elem.element("cookies-to-remove");
+        if (cookiesToRemoveElement != null)
+        {
+            List<Element> elements = cookiesToRemoveElement.elements("cookie-to-remove");
+            for (Element element : elements)
+            {
+                configElement.cookiesToRemove.add(element.getText().trim());
+            }
+        }
+
         return configElement;
     }
     
     public boolean isCookieEnabled()
     {
         return (this.enableCookie != null) ? this.enableCookie.booleanValue() : Boolean.TRUE;
+    }
+    
+    public Set<String> getCookiesToRemove() {
+        return cookiesToRemove;
     }
 }
