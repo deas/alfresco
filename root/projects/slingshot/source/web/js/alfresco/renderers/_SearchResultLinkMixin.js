@@ -98,7 +98,26 @@ define(["dojo/_base/declare",
                   payload.url = "site/" + site + "/links-view?linkId=" + linkid;
                }
                break;
-            
+
+            case "datalist":
+
+               var listid = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  payload.url = "site/" + site + "/data-lists?list=" + listid;
+               }
+               break;
+
+            case "calendarevent":
+
+               //var eventdate = lang.getObject("name", false, this.currentItem);
+               if (site != null)
+               {
+                  //payload.url = "site/" + site + "/calendar?date=" + eventdate; //2014-06-04
+                  payload.url = "site/" + site + "/calendar";
+               }
+               break;
+
             case "datalist":
 
                var listid = lang.getObject("name", false, this.currentItem);
