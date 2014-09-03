@@ -40,11 +40,12 @@ define(["intern!object",
          // 1. Test that enter won't submit without any data in the field...
          .findByCssSelector("#STFF1 .dijitInputContainer input")
             .pressKeys(keys.RETURN)
-            .findAllByCssSelector(TestCommon.topicSelector("TEST_PUBLISH", "publish", "any"))
-               .then(function(elements) {
-                  TestCommon.log(testname,45,"Check enter key cannot be used to submit data if field is empty");
-                  assert(elements.length == 0, "Test #1 - enter key submitted data on empty field");
-               })
+            .end()
+
+         .findAllByCssSelector(TestCommon.topicSelector("TEST_PUBLISH", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length == 0, "Test #1 - enter key submitted data on empty field");
+            })
             .end()
 
          // 2. Test entering some text and hitting enter (rather than the OK button)...
@@ -54,7 +55,6 @@ define(["intern!object",
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "search", "test"))
             .then(function(elements) {
-               TestCommon.log(testname,47,"Check enter key can be used to submit data");
                assert(elements.length == 1, "Test #2 - enter key doesn't submit data");
             })
             .end()
