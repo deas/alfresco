@@ -7,9 +7,9 @@ function main()
          siteId :(page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
          containerId : (template.properties.container != null) ? template.properties.container : "blog",
          initialFilter : {
-            filterId : (page.url.args.filterId != null) ? page.url.args.filterId : "new", 
-            filterOwner : (page.url.args.filterOwner != null) ? page.url.args.filterOwner : "Alfresco.BlogPostListFilter",
-            filterData : page.url.args.filterData
+            filterId : (page.url.args.tag != null) ? "tag" : "new", 
+            filterOwner : (page.url.args.tag != null) ? "Alfresco.TagFilter" : "Alfresco.BlogPostListFilter",
+            filterData : page.url.args.tag
          }
       }
    };
