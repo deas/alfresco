@@ -12,7 +12,8 @@
          }
       },
       "alfresco/dialogs/AlfDialogService",
-      "alfresco/services/CrudService"
+      "alfresco/services/CrudService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {

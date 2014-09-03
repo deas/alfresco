@@ -8,7 +8,8 @@
                "all": true
             }
          }
-      }
+      },
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {

@@ -12,7 +12,8 @@
          }
       },
       "alfresco/dialogs/AlfDialogService",
-      "alfresco/testing/mockservices/DocumentPickerTestService"
+      "alfresco/testing/mockservices/DocumentPickerTestService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {

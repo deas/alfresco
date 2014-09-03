@@ -1,4 +1,7 @@
 {
+   "services": [
+      "alfresco/services/ErrorReporter"
+   ],
    "widgets": [
       {
          "name": "alfresco/buttons/AlfButton",

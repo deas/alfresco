@@ -9,7 +9,8 @@
             }
          }
       },
-      "alfresco/dialogs/AlfDialogService"
+      "alfresco/dialogs/AlfDialogService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {

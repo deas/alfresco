@@ -13,7 +13,8 @@
       },
       "alfresco/dialogs/AlfDialogService",
       "alfresco/services/DocumentService",
-      "alfresco/services/SiteService"
+      "alfresco/services/SiteService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {

@@ -11,7 +11,8 @@
             }
          }
       },
-      "alfresco/services/NavigationService"
+      "alfresco/services/NavigationService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {

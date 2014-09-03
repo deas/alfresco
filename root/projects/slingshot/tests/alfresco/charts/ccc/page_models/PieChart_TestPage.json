@@ -14,7 +14,8 @@
             }
          }
       },
-      "alfresco/testing/mockservices/CCCChartTestData"
+      "alfresco/testing/mockservices/CCCChartTestData",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {

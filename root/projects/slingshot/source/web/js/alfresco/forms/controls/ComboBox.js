@@ -37,15 +37,6 @@ define(["alfresco/forms/controls/BaseFormControl",
    return declare([BaseFormControl], {
 
       /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{cssFile:"./css/ComboBox.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/ComboBox.css"}],
-
-      /**
        * @instance
        */
       getWidgetConfig: function alfresco_forms_controls_DojoSelect__getWidgetConfig() {

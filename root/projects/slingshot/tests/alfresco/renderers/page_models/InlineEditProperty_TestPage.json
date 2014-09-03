@@ -9,7 +9,8 @@
             }
          }
       },
-      "alfresco/testing/mockservices/MockCrudService"
+      "alfresco/testing/mockservices/MockCrudService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {

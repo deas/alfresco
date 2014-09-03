@@ -23,7 +23,8 @@
          "config": {
             "pubSubScope": "ADMIN_USER_"
          }
-      }
+      },
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
 

@@ -112,20 +112,16 @@ define(["intern!object",
             .clearValue()
             .type("Updated_ID1")
             .end()
+            .sleep(5000)
 
          // Post the form...
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .alfresco-buttons-AlfButton:nth-child(1) .dijitButtonText")
             .click()
             .end()
 
-         .findAllByCssSelector(TestCommon.topicSelector("ALF_CRUD_UPDATE", "publish", "any"))
+         .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_CRUD_UPDATE", "id", "Updated_ID1"))
             .then(function(elements) {
-               assert(elements.length == 1, "Test #4a - Form didn't publish");
-            })
-            .end()
-         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "id", "Updated_ID1"))
-            .then(function(elements) {
-               assert(elements.length == 1, "Test #4b - ID was not updated");
+               assert(elements.length == 1, "Test #4a - ID was not updated");
             })
             .end()
 

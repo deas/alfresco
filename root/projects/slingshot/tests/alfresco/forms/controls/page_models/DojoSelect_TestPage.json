@@ -9,7 +9,8 @@
             }
          }
       },
-      "alfresco/testing/mockservices/DojoSelectTestOptions"
+      "alfresco/testing/mockservices/DojoSelectTestOptions",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {

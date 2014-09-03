@@ -9,7 +9,8 @@
             }
          }
       },
-      "alfresco/testing/mockservices/SocialTestService"
+      "alfresco/testing/mockservices/SocialTestService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {

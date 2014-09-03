@@ -15,7 +15,8 @@
          }
       },
       "alfresco/testing/mockservices/DojoSelectTestOptions",
-      "alfresco/dialogs/AlfDialogService"
+      "alfresco/dialogs/AlfDialogService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {

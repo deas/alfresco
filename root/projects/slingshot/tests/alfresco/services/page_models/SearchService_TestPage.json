@@ -14,7 +14,8 @@
       },
       {
          "name": "alfresco/services/SearchService"
-      }
+      },
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {

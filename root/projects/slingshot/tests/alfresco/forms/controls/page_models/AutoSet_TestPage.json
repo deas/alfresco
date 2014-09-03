@@ -1,15 +1,18 @@
 {
-   "services": [{
-      "name": "alfresco/services/LoggingService",
-      "config": {
-         "loggingPreferences": {
-            "enabled": true,
-            "all": true,
-            "warn": true,
-            "error": true
+   "services": [
+      {
+         "name": "alfresco/services/LoggingService",
+         "config": {
+            "loggingPreferences": {
+               "enabled": true,
+               "all": true,
+               "warn": true,
+               "error": true
+            }
          }
-      }
-   }],
+      },
+      "alfresco/services/ErrorReporter"
+   ],
    "widgets": [
       {
          "name": "alfresco/forms/Form",

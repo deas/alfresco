@@ -10,7 +10,8 @@
                "error": true
             }
          }
-      }
+      },
+      "alfresco/services/ErrorReporter"
    ],
    "widgets": [
       {  

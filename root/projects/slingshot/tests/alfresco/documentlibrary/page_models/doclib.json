@@ -9,7 +9,8 @@
             }
          }
       },
-      "alfresco/services/DocumentService"
+      "alfresco/services/DocumentService",
+      "alfresco/services/ErrorReporter"
    ],
    "widgets":[
       {
