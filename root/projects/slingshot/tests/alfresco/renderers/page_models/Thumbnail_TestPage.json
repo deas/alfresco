@@ -87,6 +87,32 @@
          "config": {}
       },
       {
+         "id": "SMALL_ITEM_JS_NODE",
+         "name": "alfresco/renderers/SmallThumbnail",
+         "config": {
+            "currentItem": {
+               "jsNode": {
+                  "nodeRef": "dummy://nodeRef/1",
+                  "isContainer": true
+               },
+               "type": "folder",
+               "displayName": "ITEM_JS_NODE",
+               "renditionName": "doclib"
+            }
+         }
+      },
+      {
+         "id": "ITEM_NODE_REF_DOCUMENT",
+         "name": "alfresco/renderers/SmallThumbnail",
+         "config": {
+            "currentItem": {
+               "nodeRef": "dummy://nodeRef/1",
+               "displayName": "ITEM_NODE_REF_DOCUMENT",
+               "type": "document"
+            }
+         }
+      },
+      {
          "name": "alfresco/testing/ConsoleLog"
       },
       {

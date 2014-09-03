@@ -43,7 +43,7 @@ define(["intern!object",
          .findAllByCssSelector("span.alfresco-renderers-Thumbnail")
          .then(function (thumbnails){
             TestCommon.log(testname,"Check there are the expected number of thumbnails successfully rendered");
-            expect(thumbnails).to.have.length(7, "There should be 7 thumbnails successfully rendered");
+            expect(thumbnails).to.have.length(9, "There should be 9 thumbnails successfully rendered");
          })
          .end()
 
