@@ -74,8 +74,7 @@ define(["intern!object",
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #3b - Widget displayed unexpectedly");
                })
@@ -83,15 +82,13 @@ define(["intern!object",
 
             // ...and the requirement indicator should be displayed for POSITIVE and hidden for NEGATIVE
             .findByCssSelector("#SINGLE_POSITIVE_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #3c - Requirement indicator not displayed as expected");
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #3d - Requirement indicator displayed unexpectedly");
                })
@@ -117,8 +114,7 @@ define(["intern!object",
                .type(specialKeys["Back space"])
                .end()
             .findByCssSelector("#SINGLE_POSITIVE_RULES")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #3d - Widget displayed unexpectedly after processing positive rules");
                })
@@ -134,15 +130,13 @@ define(["intern!object",
                .type(specialKeys["Back space"])
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #3f - Requirement indicator not displayed as expected");
                })
                .end()
             .findByCssSelector("#SINGLE_POSITIVE_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #3g - Requirement indicator displayed unexpectedly");
                })
@@ -182,22 +176,19 @@ define(["intern!object",
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #3b - Widget displayed unexpectedly");
                })
                .end()
             .findByCssSelector("#SINGLE_POSITIVE_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #3c - Requirement indicator not displayed as expected");
                })
                .end()
             .findByCssSelector("#SINGLE_NEGATIVE_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #3d - Requirement indicator displayed unexpectedly");
                })
@@ -219,8 +210,7 @@ define(["intern!object",
             // Check mixed rules...
             // It should be initially invisible...
             .findByCssSelector("#MULTIPLE_MIXED_RULES")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #4a - Multiple mixed rule widget displayed unexpectedly");
                })
@@ -230,8 +220,7 @@ define(["intern!object",
                .type("x")
                .end()
             .findByCssSelector("#MULTIPLE_MIXED_RULES")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #4b - Multiple mixed rule widget should be displayed");
                })
@@ -241,8 +230,7 @@ define(["intern!object",
                .type("x")
                .end()
             .findByCssSelector("#MULTIPLE_MIXED_RULES")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #4c - Multiple mixed should be hidden again");
                })
@@ -254,8 +242,7 @@ define(["intern!object",
                .end()
             // Requirement should be ON
             .findByCssSelector("#MULTIPLE_MIXED_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #4d - Multiple mixed requirement indicator was not displayed");
                })
@@ -271,8 +258,7 @@ define(["intern!object",
                .type("x")
                .end()
             .findByCssSelector("#MULTIPLE_MIXED_RULES span.requirementIndicator")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #4f - Multiple mixed requirement indicator displayed unexpectedly");
                })
@@ -288,15 +274,13 @@ define(["intern!object",
             // Check validation
             // The field should be initiall invalid (not a number)...
             .findByCssSelector("#HAS_VALIDATION_CONFIG span.validation")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #5a - Validation error indicator should be displayed");
                })
                .end()
             .findByCssSelector("#HAS_VALIDATION_CONFIG span.validation-message")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #5b - Validation error message should be displayed");
                })
@@ -310,8 +294,7 @@ define(["intern!object",
                .type("x")
                .end()
             .findByCssSelector("#HAS_VALIDATION_CONFIG span.validation")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "block", "Test #5d - Validation error indicator should be displayed for non-numeric");
                })
@@ -322,8 +305,7 @@ define(["intern!object",
                .type("1234")
                .end()
             .findByCssSelector("#HAS_VALIDATION_CONFIG span.validation")
-               .getComputedStyle(
-.getActiveElement("display")
+               .getComputedStyle("display")
                .then(function(result) {
                   assert(result == "none", "Test #5a - Validation error indicator should be hidden for numeric entry");
                })

@@ -46,8 +46,7 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#LOGO2")
-            .getComputedStyle(
-.getActiveElement("display")
+            .getComputedStyle("display")
             .then(function(result) {
                assert(result == "none", "Test #1b - LOGO2 was displayed unexpectedly");
             })
@@ -58,8 +57,7 @@ define(["intern!object",
             .click()
             .end()
          .findByCssSelector("#LOGO1")
-            .getComputedStyle(
-.getActiveElement("display")
+            .getComputedStyle("display")
             .then(function(result) {
                assert(result == "none", "Test #2a - LOGO1 was not hidden");
             })
@@ -68,8 +66,7 @@ define(["intern!object",
             .click()
             .end()
          .findByCssSelector("#LOGO1")
-            .getComputedStyle(
-.getActiveElement("display")
+            .getComputedStyle("display")
             .then(function(result) {
                assert(result == "block", "Test #2b - LOGO1 was not revealed");
             })
@@ -80,8 +77,7 @@ define(["intern!object",
             .click()
             .end()
          .findByCssSelector("#LOGO2")
-            .getComputedStyle(
-.getActiveElement("display")
+            .getComputedStyle("display")
             .then(function(result) {
                assert(result == "block", "Test #3a - LOGO2 was not revealed");
             })
@@ -90,8 +86,7 @@ define(["intern!object",
             .click()
             .end()
          .findByCssSelector("#LOGO2")
-            .getComputedStyle(
-.getActiveElement("display")
+            .getComputedStyle("display")
             .then(function(result) {
                assert(result == "none", "Test #3b - LOGO2 was not hidden");
             })
@@ -100,8 +95,7 @@ define(["intern!object",
             .click()
             .end()
          .findByCssSelector("#LOGO2")
-            .getComputedStyle(
-.getActiveElement("display")
+            .getComputedStyle("display")
             .then(function(result) {
                assert(result == "block", "Test #3c - LOGO2 was not hidden again");
             })
