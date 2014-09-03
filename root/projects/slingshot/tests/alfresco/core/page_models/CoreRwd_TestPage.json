@@ -45,7 +45,7 @@
                   "config": {
                      "id": "DROP_DOWN_MENU_2",
                      "label": "Drop Down 2",
-                     "minRwdWidth": 800
+                     "minRwdWidth": 800,
                      "widgets": []
                   }
                },
@@ -54,7 +54,7 @@
                   "config": {
                      "id": "DROP_DOWN_MENU_3",
                      "label": "Drop Down 3",
-                     "maxRwdWidth": 5000
+                     "maxRwdWidth": 5000,
                      "widgets": []
                   }
                }

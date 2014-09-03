@@ -39,46 +39,46 @@ define(["intern!object",
          .end()
 
          .findById("DROP_DOWN_MENU_1")
-         .getAttribute("class")
-         .then(function (classes1){
-            TestCommon.log(testname,"Check the dropdown is not 'hidden'");
-            expect(classes1).to.not.contain("hidden", "The dropdown should not have class 'hidden'");
-         })
+            .getAttribute("class")
+            .then(function (classes1){
+               TestCommon.log(testname,"Check the dropdown is not 'hidden'");
+               expect(classes1).to.not.contain("hidden", "Test #1a - The dropdown should not have class 'hidden'");
+            })
 
-         .isDisplayed()
-         .then(function (displayed){
-            TestCommon.log(testname,"Check the dropdown is visible");
-            expect(displayed).to.equal(true, "The dropdown should be visible");
-         })
+            .isDisplayed()
+            .then(function (displayed){
+               TestCommon.log(testname,"Check the dropdown is visible");
+               expect(displayed).to.equal(true, "Test #1b - The dropdown should be visible");
+            })
 
-         .setWindowSize(null, 700, 400)
+            .setWindowSize(null, 700, 400)
 
-         .getAttribute("class")
-         .then(function (classes2){
-            TestCommon.log(testname,"Check the dropdown is 'hidden'");
-            expect(classes2).to.contain("hidden", "The dropdown should have class 'hidden'");
-         })
+            .getAttribute("class")
+            .then(function (classes2){
+               TestCommon.log(testname,"Check the dropdown is 'hidden'");
+               expect(classes2).to.contain("hidden", "Test #1c - The dropdown should have class 'hidden'");
+            })
 
-         .isDisplayed()
-         .then(function (displayed){
-            TestCommon.log(testname,"Check the dropdown is not visible");
-            expect(displayed).to.equal(false, "The dropdown should not be visible");
-         })
+            .isDisplayed()
+            .then(function (displayed){
+               TestCommon.log(testname,"Check the dropdown is not visible");
+               expect(displayed).to.equal(false, "Test #1d - The dropdown should not be visible");
+            })
 
-         .maximizeWindow()
+            .setWindowSize(null, 1024, 768)
 
-         .getAttribute("class")
-         .then(function (classes3){
-            TestCommon.log(testname,"Check the dropdown is not 'hidden' again");
-            expect(classes3).to.not.contain("hidden", "The dropdown should not have class 'hidden'");
-         })
+            .getAttribute("class")
+            .then(function (classes3){
+               TestCommon.log(testname,"Check the dropdown is not 'hidden' again");
+               expect(classes3).to.not.contain("hidden", "Test #1e - The dropdown should not have class 'hidden'");
+            })
 
-         .isDisplayed()
-         .then(function (displayed){
-            TestCommon.log(testname,"Check the dropdown is visible again");
-            expect(displayed).to.equal(true, "The dropdown should be visible again");
-         })
-         .end()
+            .isDisplayed()
+            .then(function (displayed){
+               TestCommon.log(testname,"Check the dropdown is visible again");
+               expect(displayed).to.equal(true, "Test #1f - The dropdown should be visible again");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {

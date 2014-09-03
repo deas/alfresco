@@ -249,7 +249,8 @@ define(["intern/dojo/node!fs",
        * @param {browser}
        */
       _maxWindow: function(browser) {
-         browser.maximizeWindow();
+         // browser.maximizeWindow();
+         browser.setWindowSize(null, 1024, 768);
       },
 
       /**
