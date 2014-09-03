@@ -271,6 +271,17 @@ define(["dojo/_base/declare",
       facetFields: "",
 
       /**
+       * This indicates whether or not to hide or display the included facets details when
+       * results are loaded. This is initialised to true, but will be changed to false if 
+       * any facets are requested to be included in the page.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      hideFacets: true,
+
+      /**
        * 
        * @instance
        * @param {object} payload The details of the facet to include
@@ -278,15 +289,22 @@ define(["dojo/_base/declare",
       onIncludeFacetRequest: function alfresco_documentlibrary_AlfSearchList__onIncludeFacetRequest(payload) {
          this.alfLog("log", "Adding facet filter", payload, this);
          var qname = lang.getObject("qname", false, payload);
+         var blockIncludeFacetRequest = lang.getObject("blockIncludeFacetRequest", false, payload);
          if (qname == null)
          {
             this.alfLog("warn", "No qname provided when adding facet field", payload, this);
+         }
+         else if (blockIncludeFacetRequest != null && blockIncludeFacetRequest === true)
+         {
+            // Don't include the facet in the facet fields, however indicate that facet
+            this.hideFacets = false;
          }
          else
          {
             // Make sure each facet is only included once (the search API is not tolerant of duplicates)...
             // Even if multiple widgets want to include the same facet, they will all receive the same
             // publication on search results...
+            this.hideFacets = false;
             var f = this.facetFields.split(",");
             var alreadyAdded = array.some(f, function(currQName, i) {
                return currQName === qname;
@@ -455,8 +473,6 @@ define(["dojo/_base/declare",
 
             this.alfPublish(this.requestInProgressTopic, {});
             this.showLoadingMessage();
-
-            this.hideFacets = (this.facetFields.length === 0);
 
             var filters = "";
             for (var key in this.facetFilters)
