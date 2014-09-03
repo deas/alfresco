@@ -23,9 +23,8 @@
  * @author Dave Draper
  */
 define(["intern/dojo/node!fs",
-        "config/Config",
-        "intern/dojo/node!wd/lib/special-keys"], 
-       function(fs, Config, specialKeys) {
+        "config/Config"], 
+       function(fs, Config) {
    return {
 
       /**
@@ -124,21 +123,26 @@ define(["intern/dojo/node!fs",
 
          return browser.get(this.bootstrapUrl())
 
-         .waitForElementByCss('.alfresco-core-Page.allWidgetsProcessed')
-         .safeEval("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
+         .setFindTimeout(Infinity)
+         .findByCss('.alfresco-core-Page.allWidgetsProcessed')
+         .setFindTimeout(Config.timeout.implicitWait)
+         .execute("dijit.registry.byId('UNIT_TEST_MODEL_FIELD').setValue('" + pageModel + "');'set';")
          .end()
 
          // It's necessary to type an additional space into the text area to ensure that the 
          // text area field validates and populates the form model with the data to be published...
-         .elementByCss('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
+         .findByCss('#UNIT_TEST_MODEL_FIELD > DIV.control > TEXTAREA')
          .type(" ")
          .end()
 
          // Find and click on the test button to load the test page...
-         .elementByCss("#LOAD_TEST_BUTTON")
-         .clickElement()
+         .findByCss("#LOAD_TEST_BUTTON")
+         .click()
          .end()
-         .waitForElementByCss('.alfresco-core-Page.allWidgetsProcessed')
+
+         .setFindTimeout(Infinity)
+         .findByCss('.alfresco-core-Page.allWidgetsProcessed')
+         .setFindTimeout(Config.timeout.implicitWait)
       },
 
       /**
@@ -158,16 +162,16 @@ define(["intern/dojo/node!fs",
          return browser.get(this.moduleDeploymentUrl())
          .end()
 
-         .elementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']")
-         .clickElement()
+         .findByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']")
+         .click()
          .end()
 
-         .elementByCssSelector("td > input[value='Add']")
-         .clickElement()
+         .findByCssSelector("td > input[value='Add']")
+         .click()
          .end()
 
-         .elementByCssSelector("input[value='Apply Changes']")
-         .clickElement()
+         .findByCssSelector("input[value='Apply Changes']")
+         .click()
          .end()
          
 //       this._applyTimeouts(browser);
@@ -209,16 +213,16 @@ define(["intern/dojo/node!fs",
          return browser.get(this.moduleDeploymentUrl())
          .end()
 
-         .elementByCssSelector("select[name='deployedModules'] > option[value*='Debug Enabler Extension']")
-         .clickElement()
+         .findByCssSelector("select[name='deployedModules'] > option[value*='Debug Enabler Extension']")
+         .click()
          .end()
 
-         .elementByCssSelector("td > input[value='Remove']")
-         .clickElement()
+         .findByCssSelector("td > input[value='Remove']")
+         .click()
          .end()
 
-         .elementByCssSelector("input[value='Apply Changes']")
-         .clickElement()
+         .findByCssSelector("input[value='Apply Changes']")
+         .click()
          .end()
          
       },
@@ -231,9 +235,9 @@ define(["intern/dojo/node!fs",
        * @param {browser}
        */
       _applyTimeouts: function(browser) {
-         browser.setImplicitWaitTimeout(Config.timeout.implicitWait);
+         browser.setFindTimeout(Config.timeout.implicitWait);
          browser.setPageLoadTimeout(Config.timeout.pageLoad);
-         browser.setAsyncScriptTimeout(Config.timeout.asyncScript);
+         browser.setExecuteAsyncTimeout(Config.timeout.asyncScript);
       },
 
       /**
@@ -243,7 +247,7 @@ define(["intern/dojo/node!fs",
        * @param {browser}
        */
       _maxWindow: function(browser) {
-         browser.maximize(browser.windowHandle());
+         browser.maximizeWindow();
       },
 
       /**
@@ -404,8 +408,8 @@ define(["intern/dojo/node!fs",
          {
             browser.end()
 
-            .elementByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
-            .clickElement()
+            .findByCss('.alfresco-testing-TestCoverageResults input[type=submit]')
+            .click()
             .end();
 
             console.log(">> Coverage ~~>");
@@ -427,11 +431,5 @@ define(["intern/dojo/node!fs",
       log: function(test, line, desc) {
          console.log(">> " + test + " [" + line + "]: " + desc);
       }
-
-      /**
-       * Counts the number of results from the CSS selector that is passed in.
-       *
-       */
    };
-
 });

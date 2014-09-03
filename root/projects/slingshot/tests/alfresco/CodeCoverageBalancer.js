@@ -25,9 +25,8 @@
 define(["intern!object",
         "intern/chai!assert",
         "require",
-        "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
-        function (registerSuite, assert, require, TestCommon, specialKeys) {
+        "alfresco/TestCommon"], 
+        function (registerSuite, assert, require, TestCommon) {
 
    registerSuite({
       name: 'Code Coverage Balancer',

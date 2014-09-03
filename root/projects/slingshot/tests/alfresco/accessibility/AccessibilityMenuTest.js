@@ -23,9 +23,8 @@
 define(["intern!object",
         "intern/chai!expect",
         "require",
-        "alfresco/TestCommon",
-        "intern/dojo/node!wd/lib/special-keys"], 
-        function (registerSuite, expect, require, TestCommon, specialKeys) {
+        "alfresco/TestCommon"], 
+        function (registerSuite, expect, require, TestCommon) {
 
    registerSuite({
       name: 'AccessibilityMenu Test',
@@ -38,7 +37,7 @@ define(["intern!object",
          .end()
 
          // Find the menu element
-         .elementById("AccessibilityMenu")
+         .findById("AccessibilityMenu")
          .then(function (el) {
             TestCommon.log(testname,43,"Find the menu element");
             expect(el).to.be.an("object", "The Accessibility Menu could not be found");
@@ -46,7 +45,7 @@ define(["intern!object",
          .end()
 
          // Find the heading text
-         .elementByCss("#AccessibilityMenu > p")
+         .findByCss("#AccessibilityMenu > p")
          .text()
          .then(function(headingText) {
             TestCommon.log(testname,52,"Find the heading text");
@@ -55,7 +54,7 @@ define(["intern!object",
          .end()
 
          // Find the menu items
-         .elementsByCssSelector("#AccessibilityMenu > ul > li")
+         .findAllByCssSelector("#AccessibilityMenu > ul > li")
          .then(function (menuitems) {
             TestCommon.log(testname,60,"Find the menu items");
             expect(menuitems).to.have.length(8, "The Accessibility Menu does not contain 8 <li> items");
@@ -63,7 +62,7 @@ define(["intern!object",
          .end()
 
          // Find the first target
-         .elementByCss("a#accesskey-skip")
+         .findByCss("a#accesskey-skip")
          .then(function (el) {
             TestCommon.log(testname,68,"Find the first target");
             expect(el).to.be.an("object", "The accesskey-skip target is missing");
@@ -71,7 +70,7 @@ define(["intern!object",
          .end()
 
          // Find the second target
-         .elementById("accesskey-foot")
+         .findById("accesskey-foot")
          .then(function (el) {
             TestCommon.log(testname,76,"Find the second target");
             expect(el).to.be.an("object", "The accesskey-foot target is missing");
@@ -79,7 +78,7 @@ define(["intern!object",
          .end()
 
          // Find the first menu link - which links the first target
-         .elementByCss("#AccessibilityMenu > ul > li:nth-of-type(1) > a ")
+         .findByCss("#AccessibilityMenu > ul > li:nth-of-type(1) > a ")
          .then(function (el) {
             TestCommon.log(testname,84,"Find the first menu link - which links the first target");
             expect(el).to.be.an("object", "The first link is missing");
@@ -87,10 +86,10 @@ define(["intern!object",
          .end()
 
          // Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip
-         .keys([specialKeys["Shift"], "s"])
-         .keys([specialKeys["Shift"]])
-         .keys([specialKeys["Alt"], specialKeys["Shift"], "s"])
-         .keys([specialKeys["Alt"], specialKeys["Shift"]])
+         .pressKeys([keys.SHIFT, "s"])
+         .pressKeys([keys.SHIFT])
+         .pressKeys([keys.ALT, keys.SHIFT, "s"])
+         .pressKeys([keys.ALT, keys.SHIFT])
 //       Can't do this because of a conflict in FF on Windows that calls up a dialogue
 //         .keys([specialKeys["Control"], specialKeys["Command"], "s"])
 //         .keys([specialKeys["Control"], specialKeys["Command"]])
