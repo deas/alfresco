@@ -26,6 +26,8 @@
                 Surf automatically selects the correct one depending on config mode.
    -->
    <@script type="text/javascript" src="${url.context}/res/js/yui-common.js" group="template-common"/>
+   
+   <@script type="text/javascript" src="${url.context}/res/yui/history/history.js" group="template-common"/>
 
    <@script type="text/javascript" src="${url.context}/res/js/bubbling.v2.1.js" group="template-common"/>
    <@inlineScript group="template-common">
