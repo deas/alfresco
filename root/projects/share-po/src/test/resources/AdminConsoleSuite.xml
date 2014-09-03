@@ -11,9 +11,4 @@
             <class name="org.alfresco.po.share.adminconsole.NodeBrowserPageTest"/>
         </classes>
     </test>
-    <test name="Cannel Manager">
-        <classes>
-            <class name="org.alfresco.po.share.adminconsole.ChannelManagerPageTest"/>
-        </classes>
-    </test>
 </suite>
