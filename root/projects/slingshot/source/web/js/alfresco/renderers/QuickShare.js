@@ -21,9 +21,7 @@
  * The QuickShare renderer is a customization of the [toggle renderer]{@link module:alfresco/renderers/Toggle} that allows
  * non-container nodes to be publicly shared. It renders as one of two states, unshared being the basic "toggle off" state
  * and shared being a [menu bar]{@link module:alfresco/menus/AlfMenuBar} containing [menu items]{@link module:alfresco/menus/AlfMenuItem}
- * for removing the share, viewing the shared location and sharing via social publishing.
- * 
- * The social publishing links are provided by requesting them by publishing on [QuickShare service mixin topics]{@link module:alfresco/services/_QuickShareServiceTopicMixin}.
+ * for removing the share and, viewing the shared location.
  * 
  * @module alfresco/renderers/QuickShare
  * @extends module:alfresco/renderers/Toggle
@@ -45,8 +43,10 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfCascadingMenu",
         "alfresco/menus/AlfMenuGroup",
         "alfresco/menus/AlfMenuItem",
-        "alfresco/menus/AlfMenuTextForClipboard"], 
-        function(declare, Toggle, _QuickShareServiceTopicMixin, CoreWidgetProcessing, template, lang, array, domClass, registry, AlfMenuBar, AlfMenuBarPopup, AlfCascadingMenu, AlfMenuGroup, AlfMenuItem, AlfMenuTextForClipboard) {
+        "alfresco/menus/AlfMenuTextForClipboard",
+        "service/constants/Default"], 
+        function(declare, Toggle, _QuickShareServiceTopicMixin, CoreWidgetProcessing, template, lang, array, domClass, registry, 
+                 AlfMenuBar, AlfMenuBarPopup, AlfCascadingMenu, AlfMenuGroup, AlfMenuItem, AlfMenuTextForClipboard, AlfConstants) {
 
    return declare([Toggle, _QuickShareServiceTopicMixin, CoreWidgetProcessing], {
       
@@ -134,12 +134,20 @@ define(["dojo/_base/declare",
          // It is necessary to capture the toggle off request and call the onclick function...
          // This is because the toggle off is triggered by a menu item added to the toggled on view rather
          // than being triggered directly by a bubbling DOM event...
-         this.alfSubscribe(this.toggleOffTopic, lang.hitch(this, "renderToggledOff"));
+         this.simulateToggleOff = this.generateUuid();
+         this.alfSubscribe(this.simulateToggleOff, lang.hitch(this, this.onClick));
          
          // Perform the standard setup...
          this.inherited(arguments);
       },
       
+      /**
+       * The property that will contain the shared ID when shared.
+       *
+       * @instance
+       * @type {string}
+       * @default "jsNode.properties.qshare:sharedId"
+       */
       propertyToRender: "jsNode.properties.qshare:sharedId",
 
       /**
@@ -167,18 +175,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            // Request the QuickShare and Social links (the former is for viewing quick shared items (when appended
-            // with the "qshare:sharedId" property) and the latter are for sharing the information with social media
-            // such as Facebook, Twitter, etc
-            this.alfPublish(this.getQuickShareLinkTopic, {
-               callback: this.setQuickShareLink,
-               callbackScope: this
-            });
-            this.alfPublish(this.getSocialLinksTopic, {
-               callback: this.setSocialLinks,
-               callbackScope: this
-            });
-            
+            this.quickShareLink = AlfConstants.QUICKSHARE_URL;
             if (this.isToggleOn)
             {
                var quickShareId = lang.getObject(this.propertyToRender, false, this.currentItem);
@@ -226,6 +223,7 @@ define(["dojo/_base/declare",
       onToggleOnSuccess: function alfresco_renderers_QuickShare__onToggleOnSuccess(payload) {
          this.inherited(arguments);
          this.widgets = this.defineWidgets(payload.response.sharedId);
+         lang.setObject(this.propertyToRender, payload.response.sharedId, this.currentItem);
          this.processWidgets(this.widgets, this.onNode);
       },
       
@@ -300,25 +298,11 @@ define(["dojo/_base/declare",
                                           name: "alfresco/menus/AlfMenuItem",
                                           config: {
                                              label: this.message("quick-share.unshare.label"),
-                                             publishTopic: this.toggleOffTopic,
+                                             publishTopic: this.simulateToggleOff,
                                              publishPayload: {
                                                 node: this.currentItem,
                                                 sharedId: sharedId
                                              }
-                                          }
-                                       },
-                                       {
-                                          name: "alfresco/menus/AlfCascadingMenu",
-                                          config: {
-                                             label: this.message("quick-share.share-with.label"),
-                                             widgets: [
-                                                {
-                                                   name: "alfresco/menus/AlfMenuGroup",
-                                                   config: {
-                                                      widgets: this.defineSocialLinkWidgets(shareUrl)
-                                                   }
-                                                }
-                                             ]
                                           }
                                        }
                                     ]
@@ -332,100 +316,6 @@ define(["dojo/_base/declare",
             }
          ]
          return widgets;
-      },
-      
-      /**
-       * Iterates over the configured social links and attempts to create a widget for each.
-       * 
-       * @instance
-       * @param {string} shareUrl The URL to the shared content
-       */
-      defineSocialLinkWidgets: function alfresco_renderers_QuickShare__defineSocialLinkWidgets(shareUrl) {
-         var socialLinkWidgets = [];
-         if (this.socialLinks != null)
-         {
-            array.forEach(this.socialLinks, lang.hitch(this, "defineSocialLinkWidget", socialLinkWidgets, shareUrl));
-         }
-         return socialLinkWidgets;
-      },
-      
-      /**
-       * Creates the definition for a single menu item that can be used to share the quick shared content.
-       * 
-       * @instance
-       * @param {array} socialLinkWidgets The array to add the new widget definition to
-       * @param {string} shareUrl The URL to the shared content
-       * @param {object} socialLinkConfig The configuration for the social link
-       * @param {integer} index The index of the configuration
-       */
-      defineSocialLinkWidget: function alfresco_renderers_QuickShare__defineSocialLinkWidget(socialLinkWidgets, shareUrl, socialLinkConfig, index) {
-         if (socialLinkConfig.id != null && socialLinkConfig.params != null)
-         {
-            var href = null;
-            for (var i=0; i<socialLinkConfig.params.length; i++)
-            {
-               if (typeof socialLinkConfig.params[i].href != "undefined")
-               {
-                  href = socialLinkConfig.params[i].href;
-               }
-            }
-            if (href != null)
-            {
-               var processedHref = lang.replace(href, lang.hitch(this, "substituteSocialConfigTokens", socialLinkConfig.id, shareUrl));
-               var widget = {
-                  name: "alfresco/menus/AlfMenuItem",
-                  config: {
-                     label: this.message("linkshare.action." + socialLinkConfig.id + ".label"),
-                     iconClass: "alf-social-" + socialLinkConfig.id + "-icon",
-                     publishTopic: "ALF_NAVIGATE_TO_PAGE",
-                     publishPayload: {
-                        url: processedHref,
-                        type: "FULL_PATH",
-                        target: "NEW"
-                     }
-                  }
-               };
-               socialLinkWidgets.push(widget);
-            }
-            else
-            {
-               this.alfLog("warn", "A social publishing link was configured that didn't include an 'href' parameter", socialLinkConfig);
-            }
-         }
-         else
-         {
-            this.alfLog("warn", "A social publishing link was configured that didn't include an 'id' attribute", socialLinkConfig);
-         }
-         
-      },
-      
-      /**
-       * This is a custom function that is passed to the "lang.replace" call used in the "defineSocialLinkWidget" function. It
-       * explicitly looks to substitute the "{shareUrl}" and "{displayName}" tokens (with the supplied arguments) and for 
-       * all other tokens attempts to perform a substitution using a message. The message key takes the form of 
-       * "linkshare.action.<action-id>.<subtitution-key>" and all messages are resolved passing the shareUrl and displayName
-       * arguments as available tokens.
-       * 
-       * @instance
-       * @param {string} id The id of the social link configuration item (e.g. "email", "facebook", etc)
-       * @param {string} shareUrl The URL to the shared content
-       * @param {string} _ 
-       * @param {string} key The current key to substitute
-       */
-      substituteSocialConfigTokens: function(id, shareUrl, _, key) {
-         if (key == "shareUrl")
-         {
-            return shareUrl;
-         }
-         else if (key == "displayName")
-         {
-            return this.currentItem.displayName;
-         }
-         else
-         {
-            var msg = this.message("linkshare.action." + id + "." + key, { "0" : shareUrl, "1": this.currentItem.displayName}); 
-            return  msg;
-         }
       }
    });
 });

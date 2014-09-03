@@ -76,6 +76,7 @@ define(["dojo/_base/lang"],
          <#list config.scoped["UriTemplate"]["uri-templates"].childrenMap["uri-template"] as c>
             "${c.attributes["id"]}": "${c.value}"<#if c_has_next>,</#if>
          </#list>
-      }
+      },
+      QUICKSHARE_URL: "${config.scoped["Social"]["quickshare"].getChildValue("url")?replace("{context}", url.context)?js_string}"
    };
 });

@@ -663,7 +663,11 @@ services.push("alfresco/services/NavigationService",
               "alfresco/services/ActionService",
               "alfresco/services/DocumentService",
               "alfresco/dialogs/AlfDialogService",
-              "alfresco/services/PreferenceService");
+              "alfresco/services/PreferenceService",
+              "alfresco/services/QuickShareService",
+              "alfresco/services/RatingsService",
+              "alfresco/services/CrudService",
+              "alfresco/services/NotificationService");
 
 // Add in the search form and search doc lib...
 widgets.unshift(accessMenu);
