@@ -362,6 +362,7 @@ var searchResultsMenuBar = {
                   },
                   sortMenu,
                   {
+                     id: "FCTSRCH_VIEWS_MENU",
                      name: "alfresco/menus/AlfMenuBarPopup",
                      config: {
                         iconClass: "alf-configure-icon",
