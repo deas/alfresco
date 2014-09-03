@@ -28,7 +28,7 @@ define(["dojo/_base/declare",
    
    /**
     * Extend the default alfresco/menus/AlfMenuBar implementation to set specific CSS for the menus.
-    * TODO: This will actually effect ALL of the menus unless we add an additional CSS classes to the nodes - check the CSS selectors 
+    * TODO: This will actually affect ALL of the menus unless we add an additional CSS classes to the nodes - check the CSS selectors
     */
    return declare([AlfMenuBar], {
       

@@ -14,7 +14,7 @@
         "monospaceLinks": false
     },
     "opts": {
-        "template": "templates/alfresco",
+        "template": "jsdoc-templates/alfresco",
         "encoding": "utf8",
         "destination": "../../docs",
         "recurse": true,

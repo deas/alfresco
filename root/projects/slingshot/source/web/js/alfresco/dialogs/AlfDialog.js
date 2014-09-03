@@ -202,7 +202,7 @@ define(["dojo/_base/declare",
        * This field is used to keep track of the buttons that are created.
        * 
        * @instance
-       * @type {object[]
+       * @type {object[]}
        * @default null
        */
       _buttons: null,

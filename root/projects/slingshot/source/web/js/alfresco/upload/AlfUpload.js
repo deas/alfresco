@@ -117,10 +117,6 @@ define(["dojo/_base/declare",
        * Stores references and state for each file that is in the file list.
        * The fileId parameter from the YAHOO.widget.Uploader is used as the key
        * and the value is an object that stores the state and references.
-       *
-       * @instance fileStore
-       * @type {object}
-       *       literal as the value.
        *       The object literal is of the form:
        *       {
        *          contentType: {HTMLElement},        // select, hidden input or null (holds the chosen contentType for the file).
@@ -133,6 +129,9 @@ define(["dojo/_base/declare",
        *          fileName: {string},                // filename
        *          nodeRef: {string}                  // nodeRef if the file has been uploaded successfully
        *       }
+       *
+       * @instance fileStore
+       * @type {object}
        */
       fileStore: null,
 
