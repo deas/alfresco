@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -48,19 +48,17 @@ define(["dojo/_base/declare",
         "dojo/_base/event",
         "dojo/store/JsonRest",
         "dijit/form/ComboBox",
-        "dijit/form/nls/ComboBox",
-        "dijit/form/nls/validate",
         "dojo/store/util/QueryResults",
         "dojo/store/util/SimpleQueryEngine",
         "dojo/data/util/filter",
         "dojo/aspect",
         "dojo/html",
         "service/constants/Default"], 
-        function(declare, Property, _OnDijitClickMixin, ObjectTypeUtils, CoreXhr, template, array, lang, ReadOnlyTag, EditTag, 
-                 domConstruct, registry, on, domAttr, domClass, keys, event, JsonRest, ComboBox, NlsComboBox, validate, QueryResults, 
+        function(declare, InlineEditProperty, _OnDijitClickMixin, ObjectTypeUtils, CoreXhr, template, array, lang, ReadOnlyTag, EditTag, 
+                 domConstruct, registry, on, domAttr, domClass, keys, event, JsonRest, ComboBox, QueryResults, 
                  SimpleQueryEngine, filter, aspect, html, AlfConstants) {
 
-   return declare([Property, _OnDijitClickMixin, CoreXhr], {
+   return declare([InlineEditProperty, _OnDijitClickMixin, CoreXhr], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -142,7 +140,7 @@ define(["dojo/_base/declare",
       createReadOnlyTag: function alfresco_renderers_Tags__createReadOnlyTag(nameAttribute, valueAttribute, tagData, index) {
          if (tagData == null || tagData[nameAttribute] == null)
          {
-            this.alfLog("warn", "No '" + nameAttribute + "' attribute for tag", this, tag);
+            this.alfLog("warn", "No '" + nameAttribute + "' attribute for tag", this, tagData);
          }
          else
          {
@@ -201,7 +199,7 @@ define(["dojo/_base/declare",
                searchAttr: "name",
                queryExpr: "${0}"
             }, this.editInputNode);
-            aspect.before(this.comboBox, "_openResultList", lang.hitch(this, "interceptResults"))
+            aspect.before(this.comboBox, "_openResultList", lang.hitch(this, "interceptResults"));
          }
       },
       
@@ -223,8 +221,8 @@ define(["dojo/_base/declare",
             size: "100",
             aspect: "cm:taggable",
             searchTerm: query.name
-         }
-         return [query, options];
+         };
+         return [updatedQuery, options];
       },
       
       /**
@@ -314,7 +312,7 @@ define(["dojo/_base/declare",
          {
             event.stop(e);
             var inputValue = this.comboBox.get("value");
-            if (inputValue != "")
+            if (inputValue !== "")
             {
                this.comboBox.set("value", "");
                this.createRemoteTag(inputValue, false);
@@ -379,7 +377,7 @@ define(["dojo/_base/declare",
             successCallback: this.onCreateRemoteTagSuccess,
             failureCallback: this.onCreateRemoteTagFailure,
             callbackScope: this
-         }
+         };
          this.serviceXhr(config);
       },
       
@@ -390,7 +388,7 @@ define(["dojo/_base/declare",
        */
       onCreateRemoteTagSuccess: function alfresco_renderers_Tags__onCreateRemoteTagSuccess(response, originalRequestConfig) {
          this.createEditTag("name", "nodeRef", response);
-         if (originalRequestConfig.saveTagsAfterCreate == true)
+         if (originalRequestConfig.saveTagsAfterCreate === true)
          {
             this.onSave();
          }
@@ -414,7 +412,7 @@ define(["dojo/_base/declare",
        */
       onSave: function alfresco_renderers_Tags__onSave() {
          var inputValue = this.comboBox.get("value");
-         if (inputValue != "")
+         if (inputValue !== "")
          {
             this.comboBox.set("value", "");
             this.createRemoteTag(inputValue, true);

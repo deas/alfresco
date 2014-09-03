@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -68,9 +68,45 @@ define(["dojo/_base/declare",
        */
       constructor: function alfresco_services_TagService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe(_TagServiceTopics.tagQueryTopic, lang.hitch(this, "onTagQuery"));
+         this.alfSubscribe("ALF_RETRIEVE_CURRENT_TAGS", lang.hitch(this, this.onTagListRequest));
+         this.alfSubscribe(_TagServiceTopics.tagQueryTopic, lang.hitch(this, this.onTagQuery));
       },
       
+      /**
+       * Handles requests to retrieve the list of tags, optionally filtered by a search term.
+       *
+       * @instance
+       * @param {object} payload The payload containing the details of the tags to search for
+       */
+      onTagListRequest: function alfresco_services_TagService__onTagListRequest(payload) {
+
+         // Create the root URL...
+         var url = AlfConstants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children";
+
+         // Generate some default options...
+         // TODO: Consider making this configurable on the service?
+         var options = {
+            selectableType: "cm:category",
+            size: "100",
+            aspect: "cm:taggable"
+         };
+
+         // Update the options with a query if provided...
+         if (payload.query != null)
+         {
+            options.searchTerm = payload.query;
+         }
+
+         if (url !== null)
+         {
+            this.serviceXhr({url: url,
+                             query: options,
+                             alfTopic: (payload.alfResponseTopic ? payload.alfResponseTopic : null),
+                             method: "GET"});
+         }
+      },
+
+
       /**
        * @instance
        * @param {object} payload
