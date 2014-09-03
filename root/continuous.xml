@@ -326,13 +326,12 @@
          } else if(dburl.startsWith("jdbc:db2:")) {
             dbtype = "db2"; // DB2 type 2
             project.setProperty("db.master.url", "jdbc:db2:default");
-         } else if(dburl.startsWith("jdbc:microsoft:sqlserver://")) {
+         } else if(dburl.startsWith("jdbc:sqlserver://")) {
+            dbtype = "mssql";
             // We need the JDBC connection URL for the master database
             var masterURL = dburl.substring(0, dburl.indexOf(";databaseName=")) +
                ";databaseName=master";
-
-            fail.setMessage("The Microsoft SQL Server JDBC driver isn't supported, please use JTDS");
-            fail.perform();
+            project.setProperty("db.master.url", masterURL);
          } else if(dburl.startsWith("jdbc:jtds:sqlserver://")) {
             dbtype = "mssql";
 
