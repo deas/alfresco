@@ -87,6 +87,12 @@
          }
       },
       {
+         "name": "alfresco/testing/MockXhr",
+         "config": {
+            
+         }
+      },
+      {
          "name": "alfresco/testing/SubscriptionLog"
       },
       {
