@@ -132,15 +132,12 @@ public class QNameFilterImpl implements QNameFilter
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/publishing/linkedin/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/publishing/flickr/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/transfer/1.0}*");
-        hardCodeListOfTypes.add("{http://www.alfresco.org/model/wcmappmodel/1.0}*");
-        hardCodeListOfTypes.add("{http://www.alfresco.org/model/wcmmodel/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/emailserver/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/calendar}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/blogintegration/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/linksmodel/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/datalist/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/forum/1.0}*");
-        hardCodeListOfTypes.add("{http://www.alfresco.org/model/wcmworkflow/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/cloud/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/bpm/1.0}*");
         hardCodeListOfTypes.add("{http://www.alfresco.org/model/workflow/1.0}*");

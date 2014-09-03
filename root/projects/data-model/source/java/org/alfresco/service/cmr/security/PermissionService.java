@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.alfresco.api.AlfrescoPublicApi;
 import org.alfresco.service.Auditable;
-import org.alfresco.service.PublicService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.QName;
@@ -57,11 +56,6 @@ public interface PermissionService
      */
     public static final String OWNER_AUTHORITY = "ROLE_OWNER";
 
-    /**
-     * The authority that all owners of WCM stores have.
-     */
-    public static final String WCM_STORE_OWNER_AUTHORITY = "ROLE_WCM_STORE_OWNER";
-    
     /**
      * The dynamic authority used for the ownership of locks.
      */
@@ -151,16 +145,6 @@ public interface PermissionService
     public static final String ASPECTS = "Aspects";
 
     public static final String PROPERTIES = "Properties";
-
-    public static final String WCM_CONTENT_MANAGER = "ContentManager";
-
-    public static final String WCM_CONTENT_PUBLISHER = "ContentPublisher";
-
-    public static final String WCM_CONTENT_CONTRIBUTOR = "ContentContributor";
-
-    public static final String WCM_CONTENT_REVIEWER = "ContentReviewer";
-
-    public static final String FLATTEN = "Flatten";
 
     /**
      * Get the Owner Authority
