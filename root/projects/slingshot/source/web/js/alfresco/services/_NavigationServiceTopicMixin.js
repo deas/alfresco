@@ -22,81 +22,90 @@
  * different pages in either current or the new tab. It defines attributes that should be referenced
  * rather than copying and pasted hard-coded string topics. This ensures consistency between publish
  * and subscribe handling.
- * 
+ *
  * @module alfresco/services/_NavigationServiceTopicMixin
  * @author Dave Draper
  */
-define(["dojo/_base/declare"], 
+define(["dojo/_base/declare"],
         function(declare) {
-   
+
    return declare(null, {
 
       /**
        * This topic is used to request that the browser displays a new page.
-       * 
+       *
        * @instance
        * @type {string}
        * @default ""ALF_NAVIGATE_TO_PAGE""
        */
       navigateToPageTopic: "ALF_NAVIGATE_TO_PAGE",
-      
+
       /**
        * This topic is used to request that the current page be reloaded
-       * 
+       *
        * @instance
        * @type {string}
        * @default "ALF_RELOAD_PAGE"
        */
       reloadPageTopic: "ALF_RELOAD_PAGE",
-      
+
+      /**
+       * This topic is used to request a post to the page
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_POST_TO_PAGE"
+       */
+      postToPageTopic: "ALF_POST_TO_PAGE",
+
       /**
        * This value is used to indicate that the supplied URL is relative to the Alfresco Page context (e.g. /share/page)
-       * 
+       *
        * @instance
        * @type {string}
        * @default "SHARE_PAGE_RELATIVE"
        */
       sharePageRelativePath: "SHARE_PAGE_RELATIVE",
-      
+
       /**
        * This value is used to indicate that the supplied URL is relative to the application context (e.g. /share)
-       * 
+       *
        * @instance
        * @type {string}
        * @default "CONTEXT_RELATIVE"
        */
       contextRelativePath: "CONTEXT_RELATIVE",
-      
+
       /**
        * This value is used to indicate that the supplied URL is a full path (e.g. it will begin "http")
-       * 
+       *
        * @instance
        * @type {string}
        * @default "FULL_PATH"
        */
       fullPath: "FULL_PATH",
-      
+
       /**
        * This value is used to indicate that the supplied URL is a hash path (e.g. it just applies a new hash value to the current URL)
-       * 
+       *
        * @instance
        * @type {string}
        * @default "HASH"
        */
       hashPath: "HASH",
-      
+
       /**
        * This value is used to indicate that the URL should be displayed in the current browser window.
-       * 
+       *
        * @instance
        * @type {string}
        * @default "CURRENT"
        */
       currentTarget: "CURRENT",
-      
+
       /**
        * This value is used to indicate that the URL should be displayed in a new browser window.
-       * 
+       *
        * @instance
        * @type {string}
        * @default "NEW"

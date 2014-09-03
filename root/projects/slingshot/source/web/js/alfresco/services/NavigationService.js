@@ -23,7 +23,7 @@
  * @module alfresco/services/NavigationService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/services/_NavigationServiceTopicMixin
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
@@ -59,8 +59,9 @@ define(["dojo/_base/declare",
       constructor: function alfresco_services_NavigationService__constructor(args) {
          lang.mixin(this, args);
 
-         this.alfSubscribe(this.navigateToPageTopic, lang.hitch(this, "navigateToPage"));
-         this.alfSubscribe(this.reloadPageTopic, lang.hitch(this, "reloadPage"));
+         this.alfSubscribe(this.navigateToPageTopic, lang.hitch(this, this.navigateToPage));
+         this.alfSubscribe(this.reloadPageTopic, lang.hitch(this, this.reloadPage));
+         this.alfSubscribe(this.postToPageTopic, lang.hitch(this, this.postToPage));
 
          if (this.subscriptions != null)
          {
@@ -73,9 +74,8 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} subscription The subscription to configure
-       * @param {number} index The index of the subscription
        */
-      setupNavigationSubscriptions: function alfresco_services_NavigationService__setupNavigationSubscriptions(subscription, index) {
+      setupNavigationSubscriptions: function alfresco_services_NavigationService__setupNavigationSubscriptions(subscription) {
          if (subscription != null &&
              subscription.topic != null &&
              subscription.url != null)
@@ -127,34 +127,6 @@ define(["dojo/_base/declare",
                hash(data.url);
             }
 
-            // Support for POST requests
-            if (data.method && lang.isString(data.method) && data.method.toLowerCase() === "post")
-            {
-               var form = domConstruct.create("form");
-               form.method = "POST";
-               form.action = data.url;
-               var parameters = data.parameters || {};
-               for (var name in parameters)
-               {
-                  if (parameters.hasOwnProperty(name))
-                  {
-                     var value = parameters[name];
-                     if (value)
-                     {
-                        var input;
-                        input = domConstruct.create("input");
-                        input.setAttribute("name", name);
-                        input.setAttribute("type", "hidden");
-                        input.value = value;
-                        domConstruct.place(input, form);
-                     }
-                  }
-               }
-
-               domConstruct.place(form, document.body);
-               form.submit();
-            }
-
             else if (typeof data.target == "undefined" ||
                 data.target == null ||
                 data.target === "" ||
@@ -167,6 +139,39 @@ define(["dojo/_base/declare",
                window.open(url);
             }
          }
+      },
+
+      /**
+       * Sometimes we need to navigate to a page using post data (e.g. Assign Workflow action)
+       *
+       * @instance
+       * @param data
+       */
+      postToPage: function alfresco_services_NavigationService__postToPage(data) {
+         // Support for POST requests
+         var form = domConstruct.create("form");
+         form.method = "POST";
+         form.action = data.url;
+         var parameters = data.parameters || {};
+         for (var name in parameters)
+         {
+            if (parameters.hasOwnProperty(name))
+            {
+               var value = parameters[name];
+               if (value)
+               {
+                  var input;
+                  input = domConstruct.create("input");
+                  input.setAttribute("name", name);
+                  input.setAttribute("type", "hidden");
+                  input.value = value;
+                  domConstruct.place(input, form);
+               }
+            }
+         }
+
+         domConstruct.place(form, document.body);
+         form.submit();
       },
 
       /**
