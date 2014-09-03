@@ -98,7 +98,7 @@ define(["dojo/_base/declare",
        */
       renderView: function alfresco_documentlibrary_views_AlfFilmStripView__renderView(preserveCurrentData) {
          this.inherited(arguments);
-
+         
          if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
          {
             if (this.contentCarousel)
@@ -108,6 +108,23 @@ define(["dojo/_base/declare",
             this.alfPublish("ALF_FILMSTRIP_DOCUMENT_REQUEST__" + this.currentData.items[0].nodeRef, {
                nodeRef: this.currentData.items[0].nodeRef
             });
+         }
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#onViewShown}
+       * to ensure that both carousels are sized appropriately after being added into the view.
+       *
+       * @instance
+       */
+      onViewShown: function alfresco_documentlibrary_views_AlfFilmStripView__onViewShown() {
+         if (this.docListRenderer && typeof this.docListRenderer.resize === "function")
+         {
+            this.docListRenderer.resize();
+         }
+         if (this.contentCarousel && typeof this.contentCarousel.resize === "function")
+         {
+            this.contentCarousel.resize();
          }
       },
 
@@ -128,6 +145,7 @@ define(["dojo/_base/declare",
             parentPubSubScope: this.parentPubSubScope
          });
          this.contentCarousel.placeAt(this.previewNode, "last");
+         this.contentCarousel.resize();
 
          var dlr = new Carousel({
             id: this.id + "_ITEMS",

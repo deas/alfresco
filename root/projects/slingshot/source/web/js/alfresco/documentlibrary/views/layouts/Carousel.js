@@ -31,15 +31,20 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "dijit/_OnDijitClickMixin",
         "dojo/text!./templates/Carousel.html",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
+        "dojo/_base/lang",
         "dojo/dom-class",
-        "dojo/dom-construct"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, domClass, domConstruct) {
+        "dojo/dom-construct",
+        "dojo/dom-style",
+        "dojo/dom-geometry"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, 
+                 lang, domClass, domConstruct, domStyle, domGeom) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -78,6 +83,48 @@ define(["dojo/_base/declare",
          {
             this.processWidgets(this.widgets, this.containerNode);
          }
+
+         // Subscibe to the page widgets ready topic to ensure that sizing occurs...
+         this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, this.resize), true);
+      },
+
+      /**
+       * Sets the width of each item (in pixels)
+       *
+       * @instance
+       * @type {number}
+       * default 100
+       */
+      itemWidth: 100,
+
+      /**
+       * Sets the width to allow for the next and previous buttons
+       *
+       * @instance
+       * @type {number}
+       * @default 40
+       */
+      navigationMargin: 40,
+
+      /**
+       * This function is called once all widgets have been added onto the page. At this point it can be
+       * assumed that the widget has been placed into the DOM model and has some dimensions to work with
+       *
+       * @instance
+       */
+      resize: function alfresco_documentlibrary_views_layouts_Carousel__resize() {
+         // Get the available width of the items node...
+         var computedStyle = domStyle.getComputedStyle(this.domNode);
+         var output = domGeom.getMarginBox(this.domNode, computedStyle);
+
+         // The width to use is the node width minus the space reserved for the navigation controls...
+         var overallWidth = output.w - (2 * this.navigationMargin);
+
+         // For now assume that the width of each item will be 100px....
+         // Divide the itemsNode width by 100 to get the number of items
+         var numberOfItemsToShow = Math.floor(overallWidth/this.itemWidth);
+         this.itemsNodeWidth = numberOfItemsToShow * this.itemWidth;
+         domStyle.set(this.itemsNode, "width", this.itemsNodeWidth + "px");
       },
       
       /**
@@ -92,6 +139,52 @@ define(["dojo/_base/declare",
       createWidgetDomNode: function alfresco_documentlibrary_views_layouts_Carousel__createWidgetDomNode(widget, rootNode, rootClassName) {
          var nodeToAdd = nodeToAdd = domConstruct.create("li", {}, rootNode);
          return domConstruct.create("div", {}, nodeToAdd);
+      },
+
+      /**
+       * This keeps track of the current left position (e.g. the setting that controls what items you can see 
+       * within the clipped frame). This value is updated by the 
+       * [onPrevClick]{@link module:alfresco/documentlibrary/views/layouts/Carousel#onPrevClick} and
+       * [onNextClick]{@link module:alfresco/documentlibrary/views/layouts/Carousel#onNextClick} functions.
+       * 
+       * @instance
+       * @type {number}
+       * @default 0
+       */
+      currentLeftPosition: 0,
+
+      /**
+       * Handles the user clicking on the previous items navigation control.
+       *
+       * @instance
+       * @param {object} evt The click event
+       */
+      onPrevClick: function alfresco_documentlibrary_views_layouts_Carousel__onPrevClick(evt) {
+         this.alfLog("log", "Previous carousel items request", this);
+         if (this.currentLeftPosition > 0)
+         {
+            this.currentLeftPosition -= this.itemsNodeWidth;
+         }
+         if (this.currentLeftPosition < 0)
+         {
+            this.currentLeftPosition = 0;
+         }
+         
+         var left = "-" + this.currentLeftPosition + "px";
+         domStyle.set(this.containerNode, "left", left);
+      },
+
+      /**
+       * Handles the user clicking on the previous items navigation control.
+       *
+       * @instance
+       * @param {object} evt The click event
+       */
+      onNextClick: function alfresco_documentlibrary_views_layouts_Carousel__onNextClick(evt) {
+         this.alfLog("log", "Next carousel items request", this);
+         this.currentLeftPosition += this.itemsNodeWidth;
+         var left = "-" + this.currentLeftPosition + "px";
+         domStyle.set(this.containerNode, "left", left);
       }
    });
 });

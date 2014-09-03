@@ -1,10 +1,14 @@
-.alfresco-documentlibrary-views-layouts-Carousel .items {
-   overflow-x: hidden;
+.alfresco-documentlibrary-views-layouts-Carousel {
    background-image: url(./images/black-50-transparency.png);
    background-repeat: repeat;
+}
+
+.alfresco-documentlibrary-views-layouts-Carousel .items {
+   overflow-x: hidden;
    height: 112px;
    position: relative;
    z-index: 2;
+   margin: 0 auto; /* Center the items */
 }
 
 /* This needs to be set to relative so that the controls can be absolutely positioned over it */
@@ -16,7 +20,7 @@
  * Setting the margin isn't quite working because the overflow shows in the margin
  */
 .alfresco-documentlibrary-views-layouts-Carousel div.frame {
-   margin: 0 40px;
+   /*margin: 0 40px;*/
 }
 
 /*
@@ -26,6 +30,8 @@
 .alfresco-documentlibrary-views-layouts-Carousel ol {
    width: 20000px;
    padding: 0;
+   position: relative;
+   transition: left 1.0s ease;
 }
 
 .alfresco-documentlibrary-views-layouts-Carousel .items li {
