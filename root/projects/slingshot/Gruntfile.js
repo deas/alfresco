@@ -6,6 +6,7 @@ var alf = {
       jsdocFiles: 'source/web/js/alfresco',
       jsInstFiles: 'source/web/js/alfrescoInst',
       jsFiles: ['source/web/js/alfresco/**/*.js'],
+      testFiles: ['tests/alfresco/**'],
       xmlFiles: ['/**/*.xml'],
       testResourcesDir: 'source/test-resources',
       nodeBinDir: 'node_modules/.bin/',

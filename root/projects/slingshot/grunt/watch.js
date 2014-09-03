@@ -42,7 +42,7 @@ module.exports = function (grunt, alf) {
             }
          },
          test: {
-            files: [alf.jsFiles],
+            files: [alf.jsFiles, alf.testFiles],
             tasks: [
                'intern:dev',
                'shell:jsdoc'
