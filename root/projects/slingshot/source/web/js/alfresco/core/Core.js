@@ -39,6 +39,15 @@ define(["dojo/_base/declare",
    return declare(null, {
       
       /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/Core.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/Core.css"}],
+
+      /**
        * This has been added purely to prevent any object that inherits from this mixin from being 
        * iterated over in the pub/sub log. It aims to prevent infinite loops (although there is protection
        * for this in the [SubscriptionLog]{@link module:alfresco/testing/SubscriptionLog}) module). It should

@@ -10,7 +10,7 @@
                   "name": "alfresco/menus/AlfMenuBarPopup",
                   "config": {
                      "id": "DROP_DOWN_MENU_1",
-                     "label": "Drop Down",
+                     "label": "Drop Down 1",
                      "minRwdWidth": 800,
                      "maxRwdWidth": 5000,
                      "widgets": [
@@ -44,7 +44,7 @@
                   "name": "alfresco/menus/AlfMenuBarPopup",
                   "config": {
                      "id": "DROP_DOWN_MENU_2",
-                     "label": "Drop Down",
+                     "label": "Drop Down 2",
                      "minRwdWidth": 800
                      "widgets": []
                   }
@@ -53,7 +53,7 @@
                   "name": "alfresco/menus/AlfMenuBarPopup",
                   "config": {
                      "id": "DROP_DOWN_MENU_3",
-                     "label": "Drop Down",
+                     "label": "Drop Down 3",
                      "maxRwdWidth": 5000
                      "widgets": []
                   }

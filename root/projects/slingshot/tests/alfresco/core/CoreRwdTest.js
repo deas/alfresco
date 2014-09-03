@@ -33,7 +33,7 @@ define(["intern!object",
       'alfresco/core/CoreRwd': function () {
 
          var browser = this.remote;
-         var testname = "BooleanTest";
+         var testname = "CoreRwdTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/CoreRwd_TestPage.json", testname)
 
          .end()
@@ -45,6 +45,12 @@ define(["intern!object",
             expect(classes1).to.not.contain("hidden", "The dropdown should not have class 'hidden'");
          })
 
+         .isDisplayed()
+         .then(function (displayed){
+            TestCommon.log(testname,"Check the dropdown is visible");
+            expect(displayed).to.equal(true, "The dropdown should be visible");
+         })
+
          .setWindowSize(null, 700, 400)
 
          .getAttribute("class")
@@ -53,7 +59,25 @@ define(["intern!object",
             expect(classes2).to.contain("hidden", "The dropdown should have class 'hidden'");
          })
 
+         .isDisplayed()
+         .then(function (displayed){
+            TestCommon.log(testname,"Check the dropdown is not visible");
+            expect(displayed).to.equal(false, "The dropdown should not be visible");
+         })
+
          .maximizeWindow()
+
+         .getAttribute("class")
+         .then(function (classes3){
+            TestCommon.log(testname,"Check the dropdown is not 'hidden' again");
+            expect(classes3).to.not.contain("hidden", "The dropdown should not have class 'hidden'");
+         })
+
+         .isDisplayed()
+         .then(function (displayed){
+            TestCommon.log(testname,"Check the dropdown is visible again");
+            expect(displayed).to.equal(true, "The dropdown should be visible again");
+         })
          .end()
 
          // Post the coverage results...
