@@ -137,7 +137,7 @@ define(["dojo/_base/declare",
 
          // Unbelievably it is necessary to remove any trailing forward slashes otherwise the location
          // data set for each item will duplicate first element in the path !!!
-         if (uriPart.endsWith("/"))
+         if (uriPart.lastIndexOf("/") === uriPart.length-1)
          {
             uriPart = uriPart.substring(0, uriPart.length-1);
          }

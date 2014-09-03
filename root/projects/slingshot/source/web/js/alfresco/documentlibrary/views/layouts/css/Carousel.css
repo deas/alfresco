@@ -36,6 +36,7 @@
 
 .alfresco-documentlibrary-views-layouts-Carousel .items li {
    display: inline-block;
+   margin-top: 6px;
 }
 
 /* Absolute position over the list of items, and ensure full width so that the floated left and right
