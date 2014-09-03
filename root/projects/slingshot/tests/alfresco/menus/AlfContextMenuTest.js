@@ -45,7 +45,7 @@ define(["intern!object",
             //    .moveTo()
             //    .click()
             //    .end()
-            // .elementsByCss(TestCommon.pubSubDataCssSelector("last", "key3", "value3"))
+            // .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "key3", "value3"))
             //    .then(function(elements) {
             //       TestCommon.log(testname,50,"Check targeted node context menu works");
             //       assert(elements.length == 1, "Test #1 - Targeted node context menu failure");
@@ -60,7 +60,7 @@ define(["intern!object",
             //    .moveTo()
             //    .click()
             //    .end()
-            // .elementsByCss(TestCommon.pubSubDataCssSelector("last", "key1", "value1"))
+            // .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "key1", "value1"))
             //    .then(function(elements) {
             //       TestCommon.log(testname,50,"Check inherited node context menu works");
             //       assert(elements.length == 1, "Test #2 - Inherited node context menu failure");

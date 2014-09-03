@@ -38,7 +38,7 @@ define(["intern!object",
 
                   // Test #1
                   // Check pie slices
-                     .elementsByCss("#PIECHART_1 svg text")
+                     .findAllByCssSelector("#PIECHART_1 svg text")
                      .then(function(elements) {
                         assert(elements.length == 2, "Expected to find 2 items in the chart, but found " + elements.length);
                      })

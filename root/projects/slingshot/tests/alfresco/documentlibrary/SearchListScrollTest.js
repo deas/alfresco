@@ -38,7 +38,7 @@ define(["intern!object",
                 /* TODO: Mock Search service doesn't work, so no results are returned.
                 TestCommon.log(testname, null, "Checking that result count is correct");
                 // Get all result rows from DOM
-                browser.elementsByCss(".alfresco-search-AlfSearchResult")
+                browser.findAllByCssSelector(".alfresco-search-AlfSearchResult")
                    .then(function(elements) {
                       assert(elements.length === expected, "Counting Result, expected: " + expected + ", found: " + elements.length);
                    })
@@ -66,7 +66,7 @@ define(["intern!object",
          .end()
 
          // Check search term has been set.
-         .elementsByCss(TestCommon.topicSelector("ALF_SET_SEARCH_TERM", "publish", "any"))
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_SET_SEARCH_TERM", "publish", "any"))
          .then(function(elements) {
             TestCommon.log(testname,65,"Check that search request triggered");
             assert(elements.length === 0, "Search not triggered.");
@@ -86,7 +86,7 @@ define(["intern!object",
          })
 
          // Check Trottled Scroll event
-         .elementsByCss(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
          .then(function(elements) {
             TestCommon.log(testname,74,"Checking that ALF scroll event fired.");
             assert(elements.length == 1, "Scroll event didn't fire");
@@ -94,7 +94,7 @@ define(["intern!object",
          .end()
 
          // Check Infinite Scroll Event fired.
-         .elementsByCss(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
          .then(function(elements) {
             TestCommon.log(testname,74,"Checking that ALF scroll near bottom event fired.");
             assert(elements.length == 1, "Scroll near bottom event didn't fire");

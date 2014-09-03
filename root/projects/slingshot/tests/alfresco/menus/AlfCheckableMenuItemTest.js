@@ -39,7 +39,7 @@ define(["intern!object",
             // Test #1
             // Count the number of subscriptions to for the grouped checkable items, there should be 
             // 3 subscriptions - one for each item in the group...
-            .elementsByCss(TestCommon.topicSelector("ALF_CHECKABLE_MENU_ITEM__CHECKABLE_GROUP"))
+            .findAllByCssSelector(TestCommon.topicSelector("ALF_CHECKABLE_MENU_ITEM__CHECKABLE_GROUP"))
             .then(function(elements) {
                assert(elements.length == 3, "Test #1 - A subscription for each grouped checkable menu item was expected. There should be 3 but only " + elements.length + " were found.");
             })

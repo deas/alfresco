@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -189,9 +189,9 @@ define(["intern/dojo/node!fs",
 //
 //       if(hasEnabler)
 //       {
-//          browser.elementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']").clickElement().end();
-//          browser.elementByCssSelector("td > input[value='Add']").clickElement().end();
-//          browser.elementByCssSelector("input[value='Apply Changes']").clickElement().end();
+//          browser.elementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']").click().end();
+//          browser.elementByCssSelector("td > input[value='Add']").click().end();
+//          browser.elementByCssSelector("input[value='Apply Changes']").click().end();
 //       }
 //
 //       return browser;

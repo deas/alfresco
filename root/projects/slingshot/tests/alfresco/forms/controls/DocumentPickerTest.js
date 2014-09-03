@@ -67,7 +67,7 @@ define(["intern!object",
          .end()
 
          // Count the mocked results...
-         .elementsByCss(".alfresco-documentlibrary-AlfDocumentList .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
+         .findAllByCssSelector(".alfresco-documentlibrary-AlfDocumentList .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
          .then(function(elements) {
             TestCommon.log(testname,72,"Check there are 4 results from the Shared Files");
             assert(elements.length == 4, "4 results expected for Shared Files");
@@ -91,7 +91,7 @@ define(["intern!object",
 
          // Count the number of picked items (there should now be 1)...
          // TODO: Could probably check that there were none picked when the dialog was first opened...
-         .elementsByCss(".picked-items tr")
+         .findAllByCssSelector(".picked-items tr")
          .then(function(elements) {
             TestCommon.log(testname,96,"Check that one result has been picked");
             assert(elements.length == 1, "Only one result was expected for picked items");
@@ -105,7 +105,7 @@ define(["intern!object",
          .end()
             
          // Count the selected items...
-         .elementsByCss("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
+         .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
          .then(function(elements) {
             TestCommon.log(testname,110,"Check that one result has been picked after dialog close");
             assert(elements.length == 1, "Only 1 results was expected for picked items after dialog close");
@@ -124,7 +124,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .elementsByCss(".picked-items tr")
+         .findAllByCssSelector(".picked-items tr")
          .then(function(elements) {
             TestCommon.log(testname,129,"Has the previously selected item been preserved?");
             assert(elements.length == 1, "The previously selected item was not preserved");
@@ -152,7 +152,7 @@ define(["intern!object",
          .end()
             
          // Check the item was removed...
-         .elementsByCss("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
+         .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
          .then(function(elements) {
             TestCommon.log(testname,157,"Has the previously selected item been removed?");
             assert(elements.length == 0, "The previously selected item should have been removed");
@@ -179,7 +179,7 @@ define(["intern!object",
          .end()
 
          // Count the number of picked items (there should now be 1 DESPITE clicking twice)...
-         .elementsByCss(".picked-items tr")
+         .findAllByCssSelector(".picked-items tr")
          .then(function(elements) {
             TestCommon.log(testname,184,"Has one result shown in picked items?");
             assert(elements.length == 1, "Only one results was expected for picked items");
@@ -192,7 +192,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .elementsByCss(".picked-items tr")
+         .findAllByCssSelector(".picked-items tr")
          .then(function(elements) {
             TestCommon.log(testname,197,"Have two results shown in picked items?");
             assert(elements.length == 2, "Two results were expected for picked items");
@@ -206,7 +206,7 @@ define(["intern!object",
          .end()
             
          // Check there are now 2 items...
-         .elementsByCss("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
+         .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
          .then(function(elements) {
             TestCommon.log(testname,211,"Have two results been picked?");
             assert(elements.length == 2, "Two items should have been picked");

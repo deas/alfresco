@@ -59,7 +59,7 @@ define(["intern!object",
 
          // Click button 1 - 4 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_1")
-         .clickElement()
+         .click()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -83,7 +83,7 @@ define(["intern!object",
 
          // Click button 2 - 2 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_2")
-         .clickElement()
+         .click()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -105,7 +105,7 @@ define(["intern!object",
 
          // Click button 3 - 4 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_3")
-         .clickElement()
+         .click()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -132,7 +132,7 @@ define(["intern!object",
 
          // Click the more choices button
          .findByCssSelector("li.showMore")
-         .clickElement()
+         .click()
          .end()
 
          // Check the facet values
@@ -152,7 +152,7 @@ define(["intern!object",
 
          // Click the less choices button
          .findByCssSelector("li.showLess")
-         .clickElement()
+         .click()
          .end()
 
          // Check the facet values
@@ -172,7 +172,7 @@ define(["intern!object",
 
          // Click the title - the facet menu should disappear
          .findByCssSelector("#FACET1 > div.label")
-         .clickElement()
+         .click()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters")
@@ -185,7 +185,7 @@ define(["intern!object",
 
          // Click the title again - the facet menu should reappear
          .findByCssSelector("#FACET1 > div.label")
-         .clickElement()
+         .click()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters")
@@ -198,7 +198,7 @@ define(["intern!object",
 
          // Click the first facet menu item - it should select
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
-         .clickElement()
+         .click()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
@@ -218,7 +218,7 @@ define(["intern!object",
 
          // Click the first facet menu item again - it should de-select
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
-         .clickElement()
+         .click()
          .end()
 
          .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
@@ -360,7 +360,7 @@ define(["intern!object",
 
          // Click button 4 - 3 rows of facet data should appear
          .elementById("DO_FACET_BUTTON_4")
-         .clickElement()
+         .click()
          .end()
 
          .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
@@ -372,7 +372,7 @@ define(["intern!object",
 
          // Click facet1 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
-         .clickElement()
+         .click()
          .end()
 
          .url()
@@ -385,7 +385,7 @@ define(["intern!object",
 
          // Click facet2 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
-         .clickElement()
+         .click()
          .end()
 
          .url()
@@ -399,7 +399,7 @@ define(["intern!object",
 
          // Click facet1 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
-         .clickElement()
+         .click()
          .end()
 
          .url()
@@ -412,7 +412,7 @@ define(["intern!object",
 
          // Click facet2 - check the url hash appears as expected
          .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
-         .clickElement()
+         .click()
          .end()
 
          .url()

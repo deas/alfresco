@@ -101,7 +101,7 @@ define(["intern!object",
          .end()
 
          // Check the menu selection published as expected after mouse clicks
-         .elementsByCss(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
+         .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
          .then(function(elements) {
             TestCommon.log(testname,105,"Check the menu selection published as expected after mouse clicks");
             assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after mouse clicks");
@@ -113,7 +113,7 @@ define(["intern!object",
          .end()
 
          // Check the menu publish is not shown after the refresh
-         .elementsByCss(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
+         .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
          .then(function(elements) {
             TestCommon.log(testname,117,"Check the menu publish is not shown after the refresh");
             assert(elements.length == 0, "The menu publish should have gone after a refresh", elements);
@@ -149,7 +149,7 @@ define(["intern!object",
          .end()
 
          // Check the menu selection published as expected after key presses
-         .elementsByCss(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
+         .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PUBLISHING_DROPDOWN_MENU", "alfTopic", "ALF_PUBLISHING_DROPDOWN_MENU"))
          .then(function(elements) {
             TestCommon.log(testname,153,"Check the menu selection published as expected after key presses");
             assert(elements.length == 1, "The menu did not publish on 'ALF_PUBLISHING_DROPDOWN_MENU' after key presses");

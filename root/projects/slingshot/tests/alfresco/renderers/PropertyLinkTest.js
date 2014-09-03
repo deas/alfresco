@@ -41,24 +41,24 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#LIST_WITH_HEADER_ITEMS tr:first-child td span.inner")
-         .clickElement()
+         .click()
          .end()
 
-         .elementsByCss(TestCommon.pubSubDataCssSelector("last", "name", "Site1"))
+         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "name", "Site1"))
          .then(function(elements) {
             TestCommon.log(testname,49,"Check that currentItem is published");
             assert(elements.length == 1, "'name' not included in currentItem data");
          })
          .end()
 
-         .elementsByCss(TestCommon.pubSubDataCssSelector("last", "urlname", "site1"))
+         .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "urlname", "site1"))
          .then(function(elements) {
             TestCommon.log(testname,56,"Check that currentItem is published");
             assert(elements.length == 1, "'urlname' not included in currentItem data");
          })
          .end()
 
-         .elementsByCss(TestCommon.topicSelector("publishTopic", "publish", "last"))
+         .findAllByCssSelector(TestCommon.topicSelector("publishTopic", "publish", "last"))
          .then(function(elements) {
             TestCommon.log(testname,63,"Check that topic is published");
             assert(elements.length == 1, "topic not published correctly");

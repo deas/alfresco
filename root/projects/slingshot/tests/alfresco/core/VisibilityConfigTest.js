@@ -38,7 +38,7 @@ define(["intern!object",
          .end()
 
          // Test 1: Check that LOGO1 is initially displayed and that LOGO2 is initially hidden...
-         .elementsByCss("#LOGO1")
+         .findAllByCssSelector("#LOGO1")
          .then(function (els) {
             TestCommon.log(testname,43,"Check LOGO1 is initially displayed");
             assert(els.length == 1, "Test #1a - LOGO1 was unexpectedly hidden");

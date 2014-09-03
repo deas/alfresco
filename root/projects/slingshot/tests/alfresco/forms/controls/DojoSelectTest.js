@@ -77,7 +77,7 @@ define(["intern!object",
                .end()
 
             // Count the number of fixed options (there should be 3)...
-            .elementsByCss("#FIXED_INVALID_CHANGES_TO_CONTROL_dropdown .dijitMenuItemLabel")
+            .findAllByCssSelector("#FIXED_INVALID_CHANGES_TO_CONTROL_dropdown .dijitMenuItemLabel")
                .then(function(elements) {
                   assert(elements.length == 3, "Test 3a - Three fixed options were expected, found: " + elements.length);
                })
@@ -112,7 +112,7 @@ define(["intern!object",
                .end()
 
             // There should be 2 options...
-            .elementsByCss("#HAS_UPDATE_TOPICS_CONTROL_dropdown .dijitMenuItemLabel")
+            .findAllByCssSelector("#HAS_UPDATE_TOPICS_CONTROL_dropdown .dijitMenuItemLabel")
                .then(function(elements) {
                   assert(elements.length == 2, "Test 4a - Two options were expected, found: " + elements.length);
                })
@@ -138,7 +138,7 @@ define(["intern!object",
                .click()
                .end()
 
-            .elementsByCss("#HAS_CHANGES_TO_CONTROL_dropdown .dijitMenuItemLabel")
+            .findAllByCssSelector("#HAS_CHANGES_TO_CONTROL_dropdown .dijitMenuItemLabel")
                .then(function(elements) {
                   assert(elements.length == 2, "Test 5a - Two options were expected, found: " + elements.length);
                })
