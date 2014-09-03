@@ -18,6 +18,9 @@
  */
 
 /**
+ * This module provides a view intended for use in [Document Lists]{@link module:alfresco/documentlibrary/AlfDocumentList}
+ * and allows users to quickly scan through previews of documents without needing to go to a specific page.
+ *
  * @module alfresco/documentlibrary/views/AlfFilmStripView
  * @extends module:alfresco/documentlibrary/views/AlfDocumentListView
  * @author Dave Draper

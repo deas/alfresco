@@ -18,7 +18,10 @@
  */
 
 /**
- * 
+ * This module extends the standard [Carousel]{@link module:alfresco/documentlibrary/views/layouts/Carousel} to 
+ * ensure that only one item is shown at a time in the carousel (regardless of available horizontal space). It 
+ * was written to display [document]{@link module:module alfresco/documentlibrary/views/layouts/AlfFilmStripViewDocument}
+ * modules that can render previews of individual items.
  * 
  * @module alfresco/documentlibrary/views/layouts/DocumentCarousel
  * @extends module:alfresco/documentlibrary/views/layouts/Carousel

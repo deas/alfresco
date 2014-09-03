@@ -92,7 +92,7 @@ define(["dojo/_base/declare",
       alfOnNodeResized: function alfresco_core_ResizeMixin__alfOnNodeResized(resizeHandler, resizeHandlerCallScope, payload) {
          if (this.domNode && dom.isDescendant(this.domNode, payload.node))
          {
-            resizeHandler.apply(resizeHandlerCallScope);
+            resizeHandler.apply(resizeHandlerCallScope, [payload.node]);
          }
       }
    });

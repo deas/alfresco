@@ -18,14 +18,18 @@
  */
 
 /**
- * 
+ * This module can be used to display multiple items in a horizontal strip that can be scrolled through use
+ * previous and next buttons. It was written to support the [filmstrip view]{@link module:alfresco/documentlibrary/views/AlfFilmStripView}
+ * which uses both this module (and the extending module [DocumentCarousel]{@link module:alfresco/documentlibrary/views/layouts/DocumentCarousel}
+ * to show both the entire contents of a folder and a preview of the currently selected item.
  * 
  * @module alfresco/documentlibrary/views/layouts/Carousel
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
- * @mixes module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin
+ * @mixes dijit/_OnDijitClickMixin
  * @mixes module:alfresco/core/Core
- * @mixes module:alfresco/core/CoreWidgetProcessing
+ * @mixes module:alfresco/core/ResizeMixin
+ * @mixes module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -138,11 +142,6 @@ define(["dojo/_base/declare",
          // Set the range of displayed items...
          this.lastDisplayedIndex = this.firstDisplayedIndex + (this.numberOfItemsShown - 1);
          this.renderDisplayedItems();
-
-         // Make sure the frame is aligned correctly...
-         this.currentLeftPosition = this.firstDisplayedIndex * this.itemsNodeWidth;
-         var left = "-" + this.currentLeftPosition + "px";
-         domStyle.set(this.containerNode, "left", left);
       },
 
       /**
@@ -269,16 +268,6 @@ define(["dojo/_base/declare",
             this.lastDisplayedIndex -= this.numberOfItemsShown;
             this.renderDisplayedItems();
          }
-
-         if (this.currentLeftPosition < 0)
-         {
-            this.currentLeftPosition = 0;
-            this.firstDisplayedIndex = 0;
-            this.lastDisplayedIndex = this.firstDisplayedIndex + (this.numberOfItemsShown - 1);
-         }
-         
-         var left = "-" + this.currentLeftPosition + "px";
-         domStyle.set(this.containerNode, "left", left);
       },
 
       /**
@@ -295,9 +284,6 @@ define(["dojo/_base/declare",
          this.lastDisplayedIndex += this.numberOfItemsShown;
 
          this.renderDisplayedItems();
-
-         var left = "-" + this.currentLeftPosition + "px";
-         domStyle.set(this.containerNode, "left", left);
       },
 
       /**
@@ -318,6 +304,16 @@ define(["dojo/_base/declare",
                
             }
          }
+
+         // Make sure the frame is aligned correctly...
+         this.currentLeftPosition = (this.firstDisplayedIndex / this.numberOfItemsShown) * this.itemsNodeWidth;
+         var left = "-" + this.currentLeftPosition + "px";
+         domStyle.set(this.containerNode, "left", left);
+
+         var itemsCount = lang.getObject("currentData.items.length", false, this);
+         domStyle.set(this.prevNode, "visibility", (this.firstDisplayedIndex == 0) ? "hidden": "visible");
+         domStyle.set(this.nextNode, "visibility", (this.firstDisplayedIndex <= itemsCount-1 && this.lastDisplayedIndex >= itemsCount-1) ? "hidden": "visible");
+         
       },
 
       /**
@@ -341,7 +337,6 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       selectItem: function alfresco_documentlibrary_views_layouts_Carousel__item(payload) {
-
          if (payload.index != null && !isNaN(parseInt(payload.index)))
          {
             var targetIndex = parseInt(payload.index);
@@ -354,16 +349,22 @@ define(["dojo/_base/declare",
                // Start navigating back to find the item
                while(targetIndex > this.lastDisplayedIndex)
                {
-                  this.onNextClick();
+                  // this.onNextClick();
+                  this.firstDisplayedIndex += this.numberOfItemsShown;
+                  this.lastDisplayedIndex += this.numberOfItemsShown;
                }
+               this.renderDisplayedItems();
             }
             else
             {
                // Start navigating forward to find the item
                while(targetIndex < this.firstDisplayedIndex)
                {
-                  this.onPrevClick();
+                  // this.onPrevClick();
+                  this.firstDisplayedIndex -= this.numberOfItemsShown;
+                  this.lastDisplayedIndex -= this.numberOfItemsShown;
                }
+               this.renderDisplayedItems();
             }
          }
       }
