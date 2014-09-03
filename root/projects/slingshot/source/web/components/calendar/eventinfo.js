@@ -439,6 +439,8 @@
                   // Disable buttons before submit to avoid double submits
                   EditDialog.widgets.okButton.set("disabled", true);
                   EditDialog.widgets.cancelButton.set("disabled", true);
+                  // prevent reenabling of okButton in Firefox
+                  EditDialog.form.setShowSubmitStateDynamically(false, false);
 
                   // Update time in submission fields
                   // NOTE: this uses the user's current timezone and stores it as a UTC offset.
@@ -522,6 +524,7 @@
 
                   // Reset errors
                   EditDialog.form.errorContainer = null;
+                  EditDialog.form.setShowSubmitStateDynamically(true, false);
 
                   // Time boxes should be hidden if it's not an all day event
                   var startTimeEl = document.getElementsByName('start')[0],
