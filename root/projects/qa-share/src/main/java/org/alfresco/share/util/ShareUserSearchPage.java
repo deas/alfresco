@@ -14,7 +14,7 @@ import org.alfresco.po.share.search.AdvanceSearchFolderPage;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.search.FacetedSearchResult;
-import org.alfresco.po.share.search.SearchResultItem;
+import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SearchResultsPage;
 import org.alfresco.po.share.search.SortType;
 import org.apache.commons.logging.Log;
@@ -41,7 +41,7 @@ public class ShareUserSearchPage extends AbstractUtils
      * search all sites      
      * @return searchResults
      */
-    public static List<FacetedSearchResult> basicSearch(WebDrone drone, String searchTerm, Boolean isSiteDashBoard)
+    public static List<SearchResult> basicSearch(WebDrone drone, String searchTerm, Boolean isSiteDashBoard)
     {
         SharePage sharePage = ShareUser.getSharePage(drone);
 
@@ -71,7 +71,7 @@ public class ShareUserSearchPage extends AbstractUtils
     {
         try
         {
-            SearchResultItem searchEntry = findInSearchResults(driver, entryToBeFound);            
+            SearchResult searchEntry = findInSearchResults(driver, entryToBeFound);            
             
             if (searchEntry == null)
             {
@@ -126,11 +126,11 @@ public class ShareUserSearchPage extends AbstractUtils
      * @param entryToBeFound String Case in-sensitive value to look for
      * @return SearchResultItem if found, else null
      */
-    public static SearchResultItem findInSearchResults(WebDrone driver, String entryToBeFound)
+    public static SearchResult findInSearchResults(WebDrone driver, String entryToBeFound)
     {
         int position = -1;
         Boolean moreResultPages = true;
-        SearchResultItem searchEntry = null;
+        SearchResult searchEntry = null;
 
         // Assumes User is on search Results Page
         SearchResultsPage searchResults = (SearchResultsPage) ShareUser.getSharePage(driver);
@@ -151,15 +151,15 @@ public class ShareUserSearchPage extends AbstractUtils
         while (moreResultPages)
         {
             // Get Search Results
-            List<SearchResultItem> searchOutput = searchResults.getResults();
+            List<SearchResult> searchOutput = searchResults.getResults();
 
-            for (SearchResultItem item : searchOutput)
+            for (SearchResult item : searchOutput)
             {
                 position = position + 1;
 
                 if (item.getTitle().contains(entryToBeFound))
                 {
-                    searchEntry = item;
+                    searchEntry = (SearchResult) item;
                     return searchEntry;
                 }
             }
@@ -215,15 +215,15 @@ public class ShareUserSearchPage extends AbstractUtils
                 facetedSearchPage.render();
             }
             // Get Search Results
-            List<FacetedSearchResult> searchOutput = facetedSearchPage.getResults();
+            List<SearchResult> searchOutput = facetedSearchPage.getResults();
 
-            for (FacetedSearchResult item : searchOutput)
+            for (SearchResult item : searchOutput)
             {
                 position = position + 1;
 
                 if (item.getName().contains(entryToBeFound))
                 {
-                    searchEntry = item;
+                    searchEntry = (FacetedSearchResult) item;
                     return searchEntry;
                 }
             }
@@ -337,7 +337,7 @@ public class ShareUserSearchPage extends AbstractUtils
      * @throws Exception
      * @throws PageException
      */
-    public static List<SearchResultItem> advanceSearch(WebDrone driver, List<String> info, Map<String, String> keyWordSearchText) throws PageException,
+    public static List<SearchResult> advanceSearch(WebDrone driver, List<String> info, Map<String, String> keyWordSearchText) throws PageException,
             Exception
     {
         SearchResultsPage searchResults = null;
@@ -378,7 +378,7 @@ public class ShareUserSearchPage extends AbstractUtils
             advanceSearchPage.inputModifier(keyWordSearchText.get(SearchKeys.MODIFIER.getSearchKeys()));
         }
         searchResults = advanceSearchPage.clickSearch().render(refreshDuration);
-        List<SearchResultItem> searchOutput = searchResults.getResults();
+        List<SearchResult> searchOutput = searchResults.getResults();
 
         return searchOutput;
     }
@@ -489,7 +489,7 @@ public class ShareUserSearchPage extends AbstractUtils
      * @throws Exception
      */
     // TODO: Chiran: Update JAVA Docs to say starting point is search results Page (user has performed a search)
-    public static List<SearchResultItem> sortSearchResults(WebDrone driver, SortType sortItem) throws Exception
+    public static List<SearchResult> sortSearchResults(WebDrone driver, SortType sortItem) throws Exception
     {        
         if (sortItem == null)
         {
@@ -512,7 +512,7 @@ public class ShareUserSearchPage extends AbstractUtils
      * @throws Exception
      * @throws PageException
      */
-    public static List<SearchResultItem> advanceSearchForCRM(WebDrone driver, Map<String, String> keyWordSearchText) throws PageException, Exception
+    public static List<SearchResult> advanceSearchForCRM(WebDrone driver, Map<String, String> keyWordSearchText) throws PageException, Exception
     {
         SearchResultsPage searchResults = null;
         //TODO: Chiran: Amend and use navigateToAdvanceSearch to navigate to appropriate search form
@@ -556,7 +556,7 @@ public class ShareUserSearchPage extends AbstractUtils
         }
 
         searchResults = crmSearchPage.clickSearch().render(refreshDuration);
-        List<SearchResultItem> searchOutput = searchResults.getResults();
+        List<SearchResult> searchOutput = searchResults.getResults();
 
         return searchOutput;
     }

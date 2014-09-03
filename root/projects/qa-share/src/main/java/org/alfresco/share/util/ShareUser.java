@@ -957,7 +957,7 @@ public class ShareUser extends AbstractUtils
      * @param taskName
      * @return {@link MyTasksDashlet}
      */
-    public static MyTasksDashlet selectTaskByTaskName(WebDrone driver, String taskName)
+    public static HtmlPage selectTaskByTaskName(WebDrone driver, String taskName)
     {
         MyTasksDashlet sites = ShareUser.openUserDashboard(driver).getDashlet(USER_TASKS).render();
 

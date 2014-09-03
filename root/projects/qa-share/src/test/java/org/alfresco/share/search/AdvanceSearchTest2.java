@@ -10,6 +10,7 @@ import java.util.Map;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.search.AdvanceSearchPage;
+import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SearchResultItem;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
@@ -1297,7 +1298,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
             
-            SearchResultItem searchResultItem = ShareUserSearchPage.findInSearchResults(drone,"House 1");
+            SearchResult searchResultItem = ShareUserSearchPage.findInSearchResults(drone,"House 1");
             
             Assert.assertNotNull(searchResultItem);
             Assert.assertTrue(searchResultItem.isFolder());
@@ -1536,15 +1537,15 @@ public class AdvanceSearchTest2 extends AbstractUtils
             keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
             ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
-            SearchResultItem searchResultItem = ShareUserSearchPage.findInSearchResults(drone,"House 1");
+            SearchResult searchResult = ShareUserSearchPage.findInSearchResults(drone,"House 1");
             
-            Assert.assertNotNull(searchResultItem);
-            Assert.assertTrue(searchResultItem.isFolder());
+            Assert.assertNotNull(searchResult);
+            Assert.assertTrue(searchResult.isFolder());
 
-            searchResultItem = ShareUserSearchPage.findInSearchResults(drone,"Techno");
+            searchResult = ShareUserSearchPage.findInSearchResults(drone,"Techno");
             
-            Assert.assertNotNull(searchResultItem);
-            Assert.assertTrue(searchResultItem.isFolder());
+            Assert.assertNotNull(searchResult);
+            Assert.assertTrue(searchResult.isFolder());
         }
         catch (Throwable e)
         {
@@ -1671,7 +1672,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
 
             // Searching for valid keyword.
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), siteName + "_house");
-            List<SearchResultItem> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+            List<SearchResult> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
             Assert.assertTrue(list.size() == 0);
         }
@@ -1799,7 +1800,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
 
             // Searching for valid Keyword.
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), siteName + "_house");
-            List<SearchResultItem> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+            List<SearchResult> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
             Assert.assertTrue(list.size() == 0);
         }

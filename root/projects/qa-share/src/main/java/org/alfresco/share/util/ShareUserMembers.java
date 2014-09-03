@@ -22,6 +22,7 @@ import org.alfresco.po.share.site.SiteMembersPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.po.share.site.document.UserProfile;
+import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
@@ -213,25 +214,25 @@ public class ShareUserMembers extends AbstractUtils
     }
 
     /**
-     * This method is used to accept the site invitation task in mytasks
-     * dashlet. And it is specific to Enterprise only.
+     * This method is used to accept the site invitation task in Edit
+     * TaskPage. And it is specific to Enterprise only.
      * 
      * @param drone
      * @param siteName
-     * @return {@link MyTasksDashlet}
+     * @return {@link HtmlPage}
      */
-    public static MyTasksDashlet acceptSiteInvitationTask(WebDrone drone, String siteName)
+    public static HtmlPage acceptSiteInvitationTask(WebDrone drone, String siteName)
     {
         if (isAlfrescoVersionCloud(drone))
         {
             throw new UnsupportedOperationException("This functionality is applicapable to Enterprise only.");
         }
 
-        MyTasksDashlet myTasks = ShareUser.selectTaskByTaskName(drone, siteName);
+        EditTaskPage editTaskPage = ShareUser.selectTaskByTaskName(drone, siteName).render();
 
-        myTasks = myTasks.acceptInvitaton().render(maxWaitTime);
+        return editTaskPage.selectAcceptButton().render(maxWaitTime);
 
-        return myTasks;
+        
     }
 
     /**

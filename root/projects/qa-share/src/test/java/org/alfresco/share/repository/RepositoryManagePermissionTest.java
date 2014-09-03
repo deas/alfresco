@@ -27,7 +27,7 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.search.SearchResultItem;
+import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.site.document.ContentDetails;
@@ -1667,16 +1667,16 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), folderName2);
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
         // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results
         boolean found = false;
-        for (SearchResultItem item : results)
+        for (SearchResult item : results)
         {
             if (item.getTitle().equals(folderName2))
             {
                 found = true;
-                item.click();
+                item.clickLink();
                 HtmlPage page = FactorySharePage.resolvePage(drone);
                 Assert.assertTrue(page instanceof RepositoryPage);
                 break;
@@ -1691,12 +1691,12 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results in all places
         found = false;
-        for (SearchResultItem item : results)
+        for (SearchResult item : results)
         {
             if (item.getTitle().equals(fileName))
             {
                 found = true;
-                item.click();
+                item.clickLink();
                 HtmlPage page = FactorySharePage.resolvePage(drone);
                 Assert.assertTrue(page instanceof DocumentDetailsPage);
                 break;

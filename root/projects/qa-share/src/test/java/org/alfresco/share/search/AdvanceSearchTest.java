@@ -10,7 +10,7 @@ import java.util.Map;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.search.AdvanceSearchPage;
-import org.alfresco.po.share.search.SearchResultItem;
+import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SearchResultsPage;
 import org.alfresco.po.share.search.SortType;
 import org.alfresco.po.share.site.document.ContentDetails;
@@ -1326,7 +1326,7 @@ public class AdvanceSearchTest extends AbstractUtils
             // Searching for valid Name and Mime type.
             keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), testName + "_test");
             keyWordSearchText.put(SearchKeys.MIME.getSearchKeys(), "HTML");
-            List<SearchResultItem> searchResults = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+            List<SearchResult> searchResults = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
             Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, testName + "_test", TEST1_HTML_FILE, true));
             Assert.assertTrue(searchResults.size() == 1);
@@ -1463,7 +1463,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Name
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "1");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "11");
@@ -1631,7 +1631,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Title
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "5");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "4");
@@ -1799,7 +1799,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Description
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "5");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "4");
@@ -1974,7 +1974,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Creator
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATOR);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATOR);
 
             Assert.assertTrue(resultsList.size()>=2,"Expecting 2 results, retrieved: " + resultsList.size());
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
@@ -2116,7 +2116,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Creator
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.AUTHOR);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.AUTHOR);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
@@ -2264,7 +2264,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Creator
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIER);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIER);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "2");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
@@ -2382,7 +2382,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Created
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
             
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "3");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "2");
@@ -2524,7 +2524,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Size
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), TEST_FILE_WITH_1KB_SIZE);
             Assert.assertEquals(resultsList.get(1).getTitle(), TEST_FILE_WITH_1MB_SIZE);
@@ -2679,7 +2679,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Mime Type.
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MIMETYPE);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MIMETYPE);
 
             Assert.assertEquals(resultsList.get(0).getTitle(), TEST3_DOC_FILE);
             Assert.assertEquals(resultsList.get(1).getTitle(), TEST5_PDF_FILE);
@@ -2809,7 +2809,7 @@ public class AdvanceSearchTest extends AbstractUtils
             SearchResultsPage searchResultsPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
             
             // Sorting results by Modified
-            List<SearchResultItem> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
+            List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
             Assert.assertEquals(resultsList.get(0).getTitle(), searchTerm + "3");
             Assert.assertEquals(resultsList.get(1).getTitle(), searchTerm + "1");
             Assert.assertEquals(resultsList.get(2).getTitle(), searchTerm + "2");
@@ -2954,7 +2954,7 @@ public class AdvanceSearchTest extends AbstractUtils
             //TODO: Subs: Rename sortPage as sortResults?
             page = (SearchResultsPage) page.sortPage(SortType.TYPE);
             page.render();
-            List<SearchResultItem> resultsList = page.getResults();
+            List<SearchResult> resultsList = page.getResults();
 
             // Splitting first 3 results into contents list and next 3 into folders list.
             for(int i=0; i<6; i++)

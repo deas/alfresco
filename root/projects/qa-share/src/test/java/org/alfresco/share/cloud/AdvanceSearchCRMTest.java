@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.alfresco.po.share.search.FacetedSearchResult;
+import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SearchResultItem;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -134,7 +134,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
 
         // Advance CRM Search with Account Name
         keyWordSearchText.put(SearchKeys.ACCOUNT_NAME.getSearchKeys(), accountName);
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
 
         Assert.assertTrue(ShareUserSearchPage.isSearchItemAvailable(drone, contract_Content));
         Assert.assertTrue(results.size() == 4);
@@ -142,12 +142,12 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         List<String> folders = new LinkedList<String>();
        
         //Finding the specific result item.
-        for(SearchResultItem searchItem : results)
+        for(SearchResult searchItem : results)
         {
             if(searchItem.getTitle().equalsIgnoreCase(account_Content))
             {
                 // Retrieving the folderNames from folderPath of the first resultItem.
-                folders = searchItem.getFolderNamesFromContentPath();
+                folders = ((SearchResultItem) searchItem).getFolderNamesFromContentPath();
             }
         }
         Assert.assertTrue(folders.size() > 0);
@@ -177,18 +177,18 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.ACCOUNT_IDENTIFIER.getSearchKeys(), accountIdentifier);
         
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() == 4);
 
         List<String> folders = new LinkedList<String>();
         
         //Finding the specific result item.
-        for(SearchResultItem searchItem : results)
+        for(SearchResult searchItem : results)
         {
             if(searchItem.getTitle().equalsIgnoreCase(account_Content))
             {
                 // Retrieving the folderNames from folderPath of the first resultItem.
-                folders = searchItem.getFolderNamesFromContentPath();
+                folders = ((SearchResultItem) searchItem).getFolderNamesFromContentPath();
             }
         }
         Assert.assertTrue(folders.size() > 0);
@@ -221,18 +221,18 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.ACCOUNT_IDENTIFIER.getSearchKeys(), accountIdentifier);
         keyWordSearchText.put(SearchKeys.ACCOUNT_NAME.getSearchKeys(), accountName);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() == 4);
 
         List<String> folders = new LinkedList<String>();
         
         //Finding the specific result item.
-        for(SearchResultItem searchItem : results)
+        for(SearchResult searchItem : results)
         {
             if(searchItem.getTitle().equalsIgnoreCase(account_Content))
             {
                 // Retrieving the folderNames from folderPath of the first resultItem.
-                folders = searchItem.getFolderNamesFromContentPath();
+                folders = ((SearchResultItem) searchItem).getFolderNamesFromContentPath();
             }
         }
         Assert.assertTrue(folders.size() > 0);
@@ -260,11 +260,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         // Advance CRM Search with Opportunity Name
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.OPPORTUNITY_NAME.getSearchKeys(), oppName);
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(oppName));
     }
@@ -289,11 +289,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         // Advance CRM Search with Contract Number
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.CONTRACT_NUMBER.getSearchKeys(), contractNameOrNumber);
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(contractNameOrNumber));
     }
@@ -318,11 +318,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         // Advance CRM Search with Contract Name
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.CONTRACT_NAME.getSearchKeys(), contractNameOrNumber);
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(contractNameOrNumber));
     }
@@ -351,11 +351,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.CONTRACT_NAME.getSearchKeys(), contractNameOrNumber);
         keyWordSearchText.put(SearchKeys.CONTRACT_NUMBER.getSearchKeys(), contractNameOrNumber);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(contractNameOrNumber));
     }
@@ -380,11 +380,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         // Advance CRM Search with Case Number
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.CASE_NUMBER.getSearchKeys(), caseNameOrNumber);
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(caseNameOrNumber));
     }
@@ -408,11 +408,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         // Advance CRM Search with Case Name
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.CASE_NAME.getSearchKeys(), caseNameOrNumber);
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(caseNameOrNumber));
     }
@@ -440,11 +440,11 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.CASE_NAME.getSearchKeys(), caseNameOrNumber);
         keyWordSearchText.put(SearchKeys.CASE_NUMBER.getSearchKeys(), caseNameOrNumber);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(caseNameOrNumber));
     }
@@ -475,7 +475,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.ACCOUNT_NAME.getSearchKeys(), accountName);
         keyWordSearchText.put(SearchKeys.OPPORTUNITY_NAME.getSearchKeys(), oppName);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(results.get(0).getTitle().equalsIgnoreCase(oppo_Content));
@@ -493,7 +493,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         Assert.assertTrue(results.get(0).getTitle().equalsIgnoreCase(oppo_Content));
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
 
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(oppName));
@@ -547,7 +547,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.ACCOUNT_NAME.getSearchKeys(), accountName);
         keyWordSearchText.put(SearchKeys.CONTRACT_NUMBER.getSearchKeys(), contractNameOrNumber);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(results.get(0).getTitle().equalsIgnoreCase(contract_Content));
@@ -565,7 +565,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         Assert.assertTrue(results.get(0).getTitle().equalsIgnoreCase(contract_Content));
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
 
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(contractNameOrNumber));
@@ -619,7 +619,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.ACCOUNT_NAME.getSearchKeys(), accountName);
         keyWordSearchText.put(SearchKeys.CASE_NUMBER.getSearchKeys(), caseNameOrNumber);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() > 0);
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(results.get(0).getTitle().equalsIgnoreCase(case_Content));
@@ -637,7 +637,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         Assert.assertTrue(results.get(0).getTitle().equalsIgnoreCase(case_Content));
 
         // Retrieving the folderNames from folderPath of the first resultItem.
-        List<String> folders = results.get(0).getFolderNamesFromContentPath();
+        List<String> folders = ((SearchResultItem) results.get(0)).getFolderNamesFromContentPath();
 
         Assert.assertTrue(folders.get(0).equalsIgnoreCase(attachments_Folder));
         Assert.assertTrue(folders.get(1).equalsIgnoreCase(caseNameOrNumber));
@@ -688,7 +688,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.OPPORTUNITY_NAME.getSearchKeys(), oppName);
         keyWordSearchText.put(SearchKeys.CONTRACT_NAME.getSearchKeys(), contractNameOrNumber);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() == 0);
 
         // Advance CRM Search with Contract Name and Case Name.
@@ -720,18 +720,18 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         keyWordSearchText.clear();
         keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), basic_Search_accountIdentifier);
 
-        List<SearchResultItem> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
+        List<SearchResult> results = ShareUserSearchPage.advanceSearchForCRM(drone, keyWordSearchText);
         Assert.assertTrue(results.size() == 4);
 
         List<String> folders = new LinkedList<String>();
         
         //Finding the specific result item.
-        for(SearchResultItem searchItem : results)
+        for(SearchResult searchItem : results)
         {
             if(searchItem.getTitle().equalsIgnoreCase(account_Content))
             {
                 // Retrieving the folderNames from folderPath of the first resultItem.
-                folders = searchItem.getFolderNamesFromContentPath();
+                folders = ((SearchResultItem) searchItem).getFolderNamesFromContentPath();
             }
         }
         Assert.assertTrue(folders.size() > 0);
@@ -765,7 +765,7 @@ public class AdvanceSearchCRMTest extends AbstractUtils
         ShareUser.login(drone, salesforceUserName, salesforcePassword);
 
         // Advance Basic Search with caseNameOrNumber      
-        List<FacetedSearchResult> results = ShareUserSearchPage.basicSearch(drone, caseNameOrNumber, false);
+        List<SearchResult> results = ShareUserSearchPage.basicSearch(drone, caseNameOrNumber, false);
         Assert.assertTrue(results.size() > 0);
         
         // Advance Basic Search with caseNameOrNumber

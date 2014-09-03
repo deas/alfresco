@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.po.share.search.SearchResultItem;
+import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SortType;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
@@ -166,7 +166,7 @@ public class AdvanceSearchSanityTest extends AbstractUtils
         try        
         {
             keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
-            List<SearchResultItem> searchResults = null;
+            List<SearchResult> searchResults = null;
             // Content Search with keyword: common part of filename
             searchResults = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
 
@@ -286,9 +286,9 @@ public class AdvanceSearchSanityTest extends AbstractUtils
             Assert.assertTrue(searchOk, "Incorrect Search Results for Name search- " + searchTerm + ". Result item - " + folderName + " not found");
 
             // Sorting results by Name
-            List<SearchResultItem> sortedByName = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
+            List<SearchResult> sortedByName = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
 
-            List<SearchResultItem> expectedResultsSortedByName = new ArrayList<SearchResultItem>(sortedByName);
+            List<SearchResult> expectedResultsSortedByName = new ArrayList<SearchResult>(sortedByName);
             Collections.sort(expectedResultsSortedByName, new SortedSearchResultItemByName());
 
             // Check Sort order
@@ -314,9 +314,9 @@ public class AdvanceSearchSanityTest extends AbstractUtils
      * @author abharade
      *
      */
-    private class SortedSearchResultItemByName implements Comparator<SearchResultItem>
+    private class SortedSearchResultItemByName implements Comparator<SearchResult>
     {
-        public int compare(SearchResultItem item1, SearchResultItem item2)
+        public int compare(SearchResult item1, SearchResult item2)
         {
             return StringUtils.substringBefore(item1.getTitle(), ".").compareTo(StringUtils.substringBefore(item2.getTitle(), "."));
         }
