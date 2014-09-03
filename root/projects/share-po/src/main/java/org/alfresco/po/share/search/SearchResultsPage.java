@@ -40,7 +40,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki, Subashni Prasanna
  * @since 1.0
  */
-public abstract class SearchResultsPage extends SharePage
+public abstract class SearchResultsPage extends SharePage implements SearchResultPage 
 {
     private static final String SEARCH_INFO_DIV = "div.search-info";
     private static final String SEARCH_ON_SITE = "search.site.link";
@@ -404,9 +404,9 @@ public abstract class SearchResultsPage extends SharePage
      * 
      * @return Collections of serach result
      */
-    public List<SearchResultItem> getResults()
+    public List<SearchResult> getResults()
     {
-        List<SearchResultItem> results = new ArrayList<SearchResultItem>();
+        List<SearchResult> results = new ArrayList<SearchResult>();
         if (hasResults())
         {
             try

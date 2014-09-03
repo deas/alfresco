@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -38,7 +40,7 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki
  * @since 1.3
  */
-public class SearchResultItem
+public class SearchResultItem implements SearchResult
 {
     private WebDrone drone;
     private static final String ITEM_NAME_CSS_HOLDER = "h3.itemname a";
@@ -250,5 +252,23 @@ public class SearchResultItem
         {
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public HtmlPage clickLink()
+    {
+        WebElement link = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER));
+        link.click();
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    @Override
+    /**
+     * The name and title are treated the same up till version 5.0
+     * @return String title
+     */
+    public String getName()
+    {
+        return getTitle();
     }
 }
