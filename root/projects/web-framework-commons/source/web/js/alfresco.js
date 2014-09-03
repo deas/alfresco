@@ -2385,10 +2385,11 @@ Alfresco.util.createTwister = function(p_controller, p_filterName, p_config)
                preferences = new Alfresco.service.Preferences();
             preferences[fnPref].call(preferences, Alfresco.service.Preferences.COLLAPSED_TWISTERS, p_obj.filterName);
          }
-      }
 
-      // Stop the event propogating any further (ie into the parent element)
-      p_event.stopPropagation();
+         // Stop the event propogating any further (ie into the parent element)
+         p_event.stopPropagation();
+      }
+      
    };
 
    var twistObj = 
