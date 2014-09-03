@@ -21,7 +21,7 @@ public class ManageSitesPage extends SharePage
 
     /** Constants */
     private static final By SITE_ROWS = By
-            .cssSelector("div.alfresco-documentlibrary-AlfDocumentList table tbody tr.alfresco-documentlibrary-views-layouts-Row");
+            .cssSelector("div.alfresco-documentlibrary-views-layouts-AlfDocumentListView.bordered table tbody tr.alfresco-documentlibrary-views-layouts-Row");
     private static final By SITE_ROW_NAME = By.cssSelector("td.alfresco-documentlibrary-views-layouts-Cell.siteName");
     private static final By SITE_ROW_DESCRIPTION = By.cssSelector("td.alfresco-documentlibrary-views-layouts-Cell.siteDescription");
     private static final By SITE_ROW_VISIBILITY = By.cssSelector("td.alfresco-documentlibrary-views-layouts-Cell.visibility");
@@ -143,7 +143,7 @@ public class ManageSitesPage extends SharePage
     public void loadElements()
     {
         // Initialise the available site rows
-        List<WebElement> siteRows = drone.findAll(SITE_ROWS);
+        List<WebElement> siteRows = drone.findAndWaitForElements(SITE_ROWS);
         this.managedSiteRows = new ArrayList<ManagedSiteRow>();
         for (WebElement siteRow : siteRows)
         {
