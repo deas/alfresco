@@ -15,7 +15,7 @@ public class FacetedSearchResult implements SearchResult
     private static final By DATE = By.cssSelector("div.dateCell span.inner");
     private static final By DESCRIPTION = By.cssSelector("div.descriptionCell span.value");
     private static final By SITE = By.cssSelector("div.siteCell span.inner");
-    private static final By ACTIONS = By.cssSelector("div.actionsCell");
+    private static final By ACTIONS = By.cssSelector("tr td.actionsCell");
 
     private WebDrone drone;
     private WebElement link;
