@@ -207,7 +207,7 @@ define(["intern!object",
             .findByCssSelector("#SITES_MENU_text")
                .click()
                .end()
-               .sleep(500)
+               .sleep(2000)
 
 
             .findByCssSelector("#SITES_MENU_ADD_FAVOURITE_text")
@@ -240,7 +240,7 @@ define(["intern!object",
             .findByCssSelector("#SITES_MENU_text")
                .click()
                .end()
-               .sleep(500)
+               .sleep(2000)
 
             .findByCssSelector("#SITES_MENU_REMOVE_FAVOURITE_text")
                .click()

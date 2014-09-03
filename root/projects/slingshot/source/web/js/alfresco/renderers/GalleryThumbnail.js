@@ -128,7 +128,7 @@ define(["dojo/_base/declare",
        * 
        * @instance postCreate
        */
-      postCreate: function alfresco_documentlibrary_views_AlfGalleryView__postCreate() {
+      postCreate: function alfresco_renderers_GalleryThumbnail__postCreate() {
          this.inherited(arguments);
          if (this.widgetsForSelectBar)
          {
@@ -173,7 +173,7 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      focus: function alfresco_documentlibrary_views_layouts_Row__focus() {
+      focus: function alfresco_renderers_GalleryThumbnail__focus() {
          this.domNode.focus();
          domClass.remove(this.titleNode, "share-hidden");
       },
@@ -181,7 +181,7 @@ define(["dojo/_base/declare",
       /**
        * @instance
        */
-      blur: function() {
+      blur: function alfresco_renderers_GalleryThumbnail__blur() {
          domClass.add(this.titleNode, "share-hidden");
       }
    });

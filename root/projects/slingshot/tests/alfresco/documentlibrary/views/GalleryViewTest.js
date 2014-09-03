@@ -36,7 +36,6 @@ define(["intern!object",
       name: 'GalleryView Test',
       'Basic Test': function () {
 
-         var alfPause = 150;
          var browser = this.remote;
          var testname = "GalleryView Test";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
@@ -44,11 +43,11 @@ define(["intern!object",
             // 1. Check that the AlfGalleryViewSlider is visible (this is an additional control published from the gallery view)...
             .findByCssSelector(".alfresco-documentlibrary-AlfGalleryViewSlider")
                .then(null, function() {
-                  assert(false, "Test #1a - The gallery view slider was not found")
+                  assert(false, "Test #1a - The gallery view slider was not found");
                })
                .isDisplayed()
                .then(function(result) {
-                  assert(result == true, "Test #1b - The gallery view slider was found but is not displayed");
+                  assert(result === true, "Test #1b - The gallery view slider was found but is not displayed");
                })
                .end()
 
@@ -87,6 +86,90 @@ define(["intern!object",
                   assert(elements.length == 10, "Test #4b - The number of items per row was not increased: " + elements.length);
                })
                .end()
+
+            // Post the coverage results...
+            .then(function() {
+               TestCommon.postCoverageResults(browser);
+            })
+            .end();
+      },
+      'Keyboard Navigation': function () {
+
+         var alfPause = 500;
+         var browser = this.remote;
+         var testname = "GalleryView Test";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/GalleryView_TestPage.json", testname)
+
+            // 1. Focus on the first thumbnail...
+            .pressKeys(keys.TAB) // Goes to slider...
+            .pressKeys(keys.TAB) // Goes to first thumbnail...
+
+            // 2. Tab again to select the selector...
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.SPACE)
+            .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Folder 1"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #1b - The wrong document was selected");
+               })
+               .end()
+
+            // 3. Display the More Info dialog...
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.RETURN)
+
+            .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitleBar > span")
+               .getVisibleText()
+               .then(function(text) {
+                  assert(text === "Folder 1", "Test #2a - The More Info dialog was not displayed");
+               })
+               .end()
+
+            .sleep(alfPause)
+            .pressKeys(keys.ESCAPE)
+            .sleep(alfPause)
+
+            // 4. Use the keys to move around...
+            .pressKeys(keys.ARROW_DOWN)
+            .pressKeys(keys.TAB)
+            .pressKeys(keys.SPACE)
+            .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Wiki Page"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #3a - The wrong document was selected");
+               })
+               .end()
+
+            .sleep(alfPause)
+            .pressKeys(keys.ARROW_LEFT)
+            .pressKeys(keys.TAB)
+            .sleep(alfPause)
+            .pressKeys(keys.SPACE)
+            .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Calendar Event"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #3b - The wrong document was selected");
+               })
+               .end()
+
+            .sleep(alfPause)
+            .pressKeys(keys.ARROW_UP)
+            .pressKeys(keys.TAB)
+            .sleep(alfPause)
+            .pressKeys(keys.SPACE)
+            .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Folder 4"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #3b - The wrong document was selected");
+               })
+               .end()
+
+            .sleep(alfPause)
+            .pressKeys(keys.ARROW_RIGHT)
+            .pressKeys(keys.TAB)
+            .sleep(alfPause)
+            .pressKeys(keys.SPACE)
+            .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_DESELECTED", "value", "displayName", "Folder 1"))
+               .then(function(elements) {
+                  assert(elements.length == 1, "Test #3d - The wrong document was selected");
+               })
+               .end()  
 
             // Post the coverage results...
             .then(function() {

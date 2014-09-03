@@ -34,6 +34,7 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "alfresco/core/ResizeMixin",
+        "dijit/_KeyNavContainer",
         "dojo/text!./templates/Grid.html",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/core/Core",
@@ -48,9 +49,9 @@ define(["dojo/_base/declare",
         "dijit/registry",
         "dojo/dom",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, ResizeMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, keys, lang, array, domConstruct, domGeom, query, domStyle, registry, dom, on) {
+        function(declare, _WidgetBase, _TemplatedMixin, ResizeMixin, _KeyNavContainer, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, keys, lang, array, domConstruct, domGeom, query, domStyle, registry, dom, on) {
 
-   return declare([_WidgetBase, _TemplatedMixin, ResizeMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, ResizeMixin, _KeyNavContainer, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -93,6 +94,8 @@ define(["dojo/_base/declare",
             }
          }
 
+         this.setupKeyboardNavigation();
+
          // Update the grid as the window changes...
          this.alfSetupResizeSubscriptions(this.resizeCells, this);
       },
@@ -113,18 +116,31 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This is called whenever focus leaves a child widget. It will call the blur function
+       * of the currently focused widget if it has one.
+       *
+       * @instance
+       */
+      _onChildBlur: function alfresco_documentlibrary_views_layouts_Grid___onChildBlur(focusedChild) {
+         if (typeof focusedChild.blur === "function")
+         {
+            focusedChild.blur();
+         }
+      },
+
+      /**
        *
        *
        * @instance
        */
       focusOnCellLeft: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellLeft() {
-         var target = null;
+         var target = null,
              focusIndex = this.getIndexOfChild(this.focusedChild),
              allChildren = this.getChildren(),
              childCount = this.getChildren().length;
          if (focusIndex > 0)
          {
-            target = allChildren[focusIndex-1]
+            target = allChildren[focusIndex-1];
          }
          else
          {
@@ -139,13 +155,13 @@ define(["dojo/_base/declare",
        * @instance
        */
       focusOnCellRight: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellLeft() {
-         var target = null;
+         var target = null,
              focusIndex = this.getIndexOfChild(this.focusedChild),
              allChildren = this.getChildren(),
              childCount = this.getChildren().length;
          if (focusIndex < childCount-1)
          {
-            target = allChildren[focusIndex+1]
+            target = allChildren[focusIndex+1];
          }
          else
          {
@@ -162,7 +178,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       focusOnCellAbove: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellAbove() {
-         var target = null;
+         var target = null,
              focusIndex = this.getIndexOfChild(this.focusedChild),
              focusColumn = (focusIndex % this.columns) + 1,
              allChildren = this.getChildren(),
@@ -171,7 +187,7 @@ define(["dojo/_base/declare",
          {
             // Go to last row
             var rem = childCount % this.columns;
-            if (rem == 0 || rem >= focusColumn)
+            if (rem === 0 || rem >= focusColumn)
             {
                // Get the matching column on the last row...
                target = allChildren[childCount - (this.columns - focusColumn) + 1];
@@ -196,7 +212,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       focusOnCellBelow: function alfresco_documentlibrary_views_layouts_Grid__focusOnCellBelow() {
-         var target = null;
+         var target = null,
              focusIndex = this.getIndexOfChild(this.focusedChild),
              focusColumn = (focusIndex % this.columns),
              allChildren = this.getChildren(),
@@ -276,7 +292,7 @@ define(["dojo/_base/declare",
       createWidgetDomNode: function alfresco_documentlibrary_views_layouts_Grid__createWidgetDomNode(widget, rootNode, rootClassName) {
          
          var nodeToAdd = rootNode;
-         if (this.currentIndex % this.columns == 0)
+         if (this.currentIndex % this.columns === 0)
          {
             // Create a new row if the maximum number of columns has been exceeded...
             var newRow = domConstruct.create("TR", {}, rootNode);
