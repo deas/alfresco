@@ -369,14 +369,12 @@ define(["dojo/_base/declare",
        *          "global": true
        *       }
        *    ],
-       *    "pubSub": {
-       *       "publishTopic": "ALF_GET_FORM_CONTROL_OPTIONS",
-       *       "publishPayload": {
-       *          "url": AlfConstants.PROXY_URI + "api/groups",
-       *          "itemsAttribute": "data",
-       *          "labelAttribute": "displayName",
-       *          "valueAttribute": "fullName"
-       *       },
+       *    "publishTopic": "ALF_GET_FORM_CONTROL_OPTIONS",
+       *    "publishPayload": {
+       *       "url": AlfConstants.PROXY_URI + "api/groups",
+       *       "itemsAttribute": "data",
+       *       "labelAttribute": "displayName",
+       *       "valueAttribute": "fullName"
        *    },
        *    "callback": "functionName",
        *    "fixed": [

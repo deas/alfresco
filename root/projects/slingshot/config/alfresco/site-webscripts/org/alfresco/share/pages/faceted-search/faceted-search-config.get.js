@@ -277,14 +277,12 @@ var formWidgets = [
                   label: "faceted-search-config.scopedSites.site.label",
                   description: "faceted-search-config.scopedSites.site.description",
                   optionsConfig: {
-                     pubSub: {
-                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                        publishPayload: {
-                           url: url.context + "/proxy/alfresco/api/sites",
-                           itemsAttribute: "",
-                           labelAttribute: "title",
-                           valueAttribute: "shortName"
-                        }
+                     publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                     publishPayload: {
+                        url: url.context + "/proxy/alfresco/api/sites",
+                        itemsAttribute: "",
+                        labelAttribute: "title",
+                        valueAttribute: "shortName"
                      }
                   }
                }
