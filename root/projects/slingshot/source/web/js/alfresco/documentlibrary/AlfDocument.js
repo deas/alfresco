@@ -79,6 +79,16 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST_SUCCESS", lang.hitch(this, "onDocumentLoaded"));
       },
       
+
+      postCreate: function alfresco_documentlibrary_AlfDocument_postCreate() {
+         if (this.currentItem == null && this.nodeRef != null)
+         {
+            this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", {
+               nodeRef: this.nodeRef
+            });
+         }
+      },
+
       /**
        * @instance
        * @param {object} payload The details of the document that have been provided.

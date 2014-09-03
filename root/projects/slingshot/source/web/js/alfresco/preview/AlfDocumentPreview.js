@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,7 +18,7 @@
  */
 
 /**
- * This module is currently a BETA
+ * 
  *
  * @module alfresco/preview/AlfDocumentPreview
  * @extends dijit/_WidgetBase
