@@ -34,7 +34,7 @@ define(["dojo/_base/declare",
         "dojo/dom-construct"], 
         function(declare, AlfDocumentListView, Grid, AlfGalleryViewSlider, lang, domConstruct) {
    
-   return declare([AlfDocumentListView, Grid], {
+   return declare([AlfDocumentListView], {
       
       /**
        * Returns the name of the view that is used when saving user view preferences.
@@ -70,6 +70,15 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This is the number of columns to use in the grid.
+       * 
+       * @instance
+       * @type {number}
+       * @default 4
+       */
+      columns: 4,
+
+      /**
        * This function updates the [columns]{@link module:alfresco/documentlibrary/views/AlfGalleryView#columns}
        * attribute with the value attribute of the payload argument and then calls the
        * [renderView]{@link module:alfresco/documentlibrary/views/AlfGalleryView#renderView} function followed by the
@@ -79,14 +88,15 @@ define(["dojo/_base/declare",
        * @param {object}
        */
       updateColumns: function alfresco_documentlibrary_views_AlfGalleryView__updateColumns(payload) {
-         if (payload != null && 
+         if (this.docListRenderer != null && 
+             payload != null && 
              payload.value != null &&
              !isNaN(payload.value) &&
              this.columns != payload.value)
          {
             this.alfLog("log", "Update column count to: ", payload.value);
             this.columns = payload.value;
-            this.renderView();
+            this.renderView(false);
          }
       },
       
@@ -110,32 +120,59 @@ define(["dojo/_base/declare",
        */
       renderView: function alfresco_documentlibrary_views_AlfGalleryView__renderView() {
          this.inherited(arguments);
-         this.resizeCells();
+         if (this.docListRenderer != null)
+         {
+            this.docListRenderer.resizeCells();
+         }
       },
       
+      /**
+       * Creates a new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
+       * which is used to render the actual items in the view. This function can be overridden by extending views
+       * (such as the [Film Strip View]{@link module:alfresco/documentlibrary/views/AlfFilmStripView}) to create
+       * alternative widgets applicable to that view.
+       * 
+       * @instance
+       * @returns {object} A new [DocumentListRenderer]{@link module:alfresco/documentlibrary/views/DocumentListRenderer}
+       */
+      createDocumentListRenderer: function alfresco_documentlibrary_views_AlfGalleryView__createDocumentListRenderer() {
+         var dlr = new Grid({
+            id: this.id + "_ITEMS",
+            widgets: lang.clone(this.widgets),
+            currentData: this.currentData,
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope,
+            columns: this.columns
+         });
+         return dlr;
+      },
+
       /**
        * Called after the view has been shown (note that [renderView]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#renderView}
        * does not mean that the view has been displayed, just that it has been rendered. 
        * @instance
        */
       onViewShown: function alfresco_documentlibrary_views_AlfGalleryView__onViewShown() {
-         this.resizeCells();
-      },
-      
-      /**
-       * @instance
-       */
-      allItemsRendered: function alfresco_documentlibrary_views_AlfGalleryView__allItemsRendered() {
-         var rem = this.currentData.items.length % this.columns;
-         if (rem != 0)
+         if (this.docListRenderer != null)
          {
-            var lastNode = this.containerNode.children[this.containerNode.children.length-1];
-            for (var i=0; i<rem; i++)
-            {
-               domConstruct.create("TD", {}, lastNode);
-            }
+            this.docListRenderer.resizeCells();
          }
       },
+      
+      // /**
+      //  * @instance
+      //  */
+      // allItemsRendered: function alfresco_documentlibrary_views_AlfGalleryView__allItemsRendered() {
+      //    var rem = this.currentData.items.length % this.columns;
+      //    if (rem != 0)
+      //    {
+      //       var lastNode = this.tableNode.children[this.tableNode.children.length-1];
+      //       for (var i=0; i<rem; i++)
+      //       {
+      //          domConstruct.create("TD", {}, lastNode);
+      //       }
+      //    }
+      // },
       
       /**
        * The definition for rendering an item in the view.
