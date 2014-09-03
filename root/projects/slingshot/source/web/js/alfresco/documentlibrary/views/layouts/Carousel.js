@@ -106,7 +106,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {number}
-       * default 100
+       * @default 100
        */
       itemWidth: 100,
 
@@ -312,7 +312,7 @@ define(["dojo/_base/declare",
        * Handles requests to select an item
        *
        * @instance
-       * @param {payload}
+       * @param {object} payload
        */
       selectItem: function alfresco_documentlibrary_views_layouts_Carousel__item(payload) {
          if (payload.index != null)
