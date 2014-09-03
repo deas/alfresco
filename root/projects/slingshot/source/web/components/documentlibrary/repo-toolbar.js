@@ -124,6 +124,7 @@
             params += "&filterData=" + encodeURIComponent(this.currentFilter.filterData);
          }
          params += "&format=rss";
+         params += "&libraryRoot=" + encodeURIComponent(this.options.rootNode);
          
          return Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/documentlibrary/feed/" + params;
       }
