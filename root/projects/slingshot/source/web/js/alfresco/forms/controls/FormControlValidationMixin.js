@@ -18,6 +18,41 @@
  */
 
 /**
+ * <p>This module handles form control validation and was written with the intention of being mixed into the
+ * [BaseFormControl module]{@link module:alfresco/forms/controls/BaseFormControl}. It provides the ability
+ * handle more complex validation, including asynchronous validation. This means that it is possible for 
+ * a form to request remote data (e.g. to check whether or not a suggested identifier has already been used).</p>
+ * <p>The validators that are currently provided include checking that the length of a form field value is 
+ * neither too long or too short, that it matches a specific Regular Expression pattern and whether or not the
+ * value is unique. Each validator should be configured with an explicit error message (if no error message is
+ * provided then the invalid indicator will be displayed with no message).</p>
+ * <p>Multiple validators can be chained together and if more than one validator reports that they are in error
+ * then their respective error messages will be displayed in sequence.</p>
+ * <p>Example configuration:</p>
+ * <p><pre>"validationConfig": [
+ *   {
+ *     "validation": "minLength",
+ *     "length": 3,
+ *     "errorMessage": "Too short"
+ *   },
+ *   {
+ *     "validation": "maxLength",
+ *     "length": 5,
+ *     "errorMessage": "Too long"
+ *   },
+ *   {
+ *     "validation": "regex",
+ *     "regex": "^[A-Za-z]+$",
+ *     "errorMessage": "Letters only"
+ *   },
+ *   {
+ *     "validation": "validateUnique",
+ *     "errorMessage": "Already used",
+ *     "itemsProperty": "items",
+ *     "publishTopic": "GET_VALUES"
+ *   }
+ * ]</pre></p>
+ *
  * @module alfresco/forms/controls/FormControlValidationMixin
  * @extends module:alfresco/core/Core
  * @author Dave Draper
@@ -87,6 +122,7 @@ define(["dojo/_base/declare",
             this._validationInProgressState = true;
             this._validatorsInProgress = {};
             this._validationErrorMessage = "";
+            this._validationMessage.innerHTML = this._validationErrorMessage;
             this._validationInProgress = true;
             this._queuedValidationRequest = false;
 
@@ -99,7 +135,6 @@ define(["dojo/_base/declare",
             // Hide any previous errors and reveal the in-progress indicator...
             this.hideValidationFailure();
             domClass.remove(this._validationInProgressIndicator, "hidden");
-
 
             // Iterate over each validation configuration, start it and add it to a count...
             var validationErrors = [];
@@ -199,12 +234,14 @@ define(["dojo/_base/declare",
             // Update the error message...
             if (result === false)
             {
-               // TODO: Default error message when one isn't configured?
-               if (this._validationErrorMessage.length !== 0)
+               if (validationConfig.errorMessage != null)
                {
-                  this._validationErrorMessage += ", ";
+                  if (this._validationErrorMessage.length !== 0)
+                  {
+                     this._validationErrorMessage += ", ";
+                  }
+                  this._validationErrorMessage += validationConfig.errorMessage;
                }
-               this._validationErrorMessage += validationConfig.errorMessage;
                
                // Update the validation message...
                this.showValidationFailure();
@@ -386,7 +423,7 @@ define(["dojo/_base/declare",
          // Grab the previously saved configuration from the instance and then remove it...
          var validationConfig = this._validateUniqueConfig;
          this._validateUniqueConfig = null;
-         
+
          if (payload != null)
          {
             // Get the configured items property (this identifies the attribute in the payload containing

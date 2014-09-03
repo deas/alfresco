@@ -28,7 +28,7 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes dijit/_FocusMixin
- * @mixed module:alfresco/forms/controls/FormControlValidationMixin
+ * @mixes module:alfresco/forms/controls/FormControlValidationMixin
  * @mixes module:alfresco/core/Core
  * @author Dave Draper
  */
