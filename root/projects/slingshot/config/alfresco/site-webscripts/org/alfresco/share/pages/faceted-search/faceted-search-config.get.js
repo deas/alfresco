@@ -84,7 +84,6 @@ var formWidgets = [
          ]
       }
    },
-   ,
    {
       name: "alfresco/forms/controls/DojoSelect",
       config: {
@@ -627,13 +626,14 @@ var main = {
                                     }
                                  ]
                               }
-                           },
-                           {
-                              name: "alfresco/html/Label",
-                              config: {
-                                 label: "A short intro about this new feature here. Yada yada yada."
-                              }
                            }
+                           // ,
+                           // {
+                           //    name: "alfresco/html/Label",
+                           //    config: {
+                           //       label: "A short intro about this new feature here. Yada yada yada."
+                           //    }
+                           // }
                         ]
                      }
                      // ,
