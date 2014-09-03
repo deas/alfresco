@@ -64,7 +64,9 @@ define(["dojo/_base/declare",
        * @instance
        */
       createReadDisplay: function alfresco_forms_controls_SimpleMultipleEntryElement__createReadDisplay() {
-         this.readDisplay.innerHTML = this.elementValue;
+         var readDisplay = this.encodeHTML(this.elementValue);
+         readDisplay = this.mapValueToDisplayValue(readDisplay);
+         this.readDisplay.innerHTML = readDisplay;
       },
 
       /**

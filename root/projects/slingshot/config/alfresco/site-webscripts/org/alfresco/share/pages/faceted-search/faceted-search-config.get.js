@@ -1,5 +1,7 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-header.lib.js">
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/share-footer.lib.js">
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/options/faceted-search/available-facets-controls.get.js">
+<import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/options/faceted-search/available-facets.get.js">
 
 // Get the initial header services and widgets...
 var services = getHeaderServices(),
@@ -15,6 +17,21 @@ services.push("alfresco/services/CrudService",
  * CREATE/EDIT FORM DEFINITION                                                     *
  *                                                                                 *
  ***********************************************************************************/
+
+var availableSites = [];
+var result = remote.call("/api/sites");
+if (result.status.code == status.STATUS_OK)
+{
+   var unprocessedSites = JSON.parse(result);
+   for (var i=0; i<unprocessedSites.length; i++)
+   {
+      var currSite = unprocessedSites[i];
+      availableSites.push({
+         label: currSite.title,
+         value: currSite.shortName
+      });
+   }
+}
 
 // The form definition is returned by a function because it is not possible to edit
 // the filterID when editing, so in order to avoid duplicating the definition entirely
@@ -298,13 +315,14 @@ function getFormDefinition(canEditFilterId) {
                      label: "faceted-search-config.scopedSites.site.label",
                      description: "faceted-search-config.scopedSites.site.description",
                      optionsConfig: {
-                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                        publishPayload: {
-                           url: url.context + "/proxy/alfresco/api/sites",
-                           itemsAttribute: "",
-                           labelAttribute: "title",
-                           valueAttribute: "shortName"
-                        }
+                        fixed: availableSites
+                        // publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                        // publishPayload: {
+                        //    url: url.context + "/proxy/alfresco/api/sites",
+                        //    itemsAttribute: "",
+                        //    labelAttribute: "title",
+                        //    valueAttribute: "shortName"
+                        // }
                      }
                   }
                }
@@ -317,7 +335,8 @@ function getFormDefinition(canEditFilterId) {
                      is: ["SCOPED_SITES"]
                   }
                ]
-            }
+            },
+            valueDisplayMap: availableSites
          }
       }
    ];
@@ -630,7 +649,8 @@ var main = {
                                                                                     labelAttribute: "label",
                                                                                     valueAttribute: "value"
                                                                                  }
-                                                                              }
+                                                                              },
+                                                                              valueDisplayMap: getAvailableFacets()
                                                                            }
                                                                         }
                                                                      ]
@@ -654,7 +674,8 @@ var main = {
                                                                                     labelAttribute: "label",
                                                                                     valueAttribute: "value"
                                                                                  }
-                                                                              }
+                                                                              },
+                                                                              valueDisplayMap: getAvailableFacetControls()
                                                                            }
                                                                         }
                                                                      ]

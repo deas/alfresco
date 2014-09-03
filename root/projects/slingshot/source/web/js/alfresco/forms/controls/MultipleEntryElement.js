@@ -29,12 +29,13 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/MultipleEntryElement.html",
         "alfresco/core/Core",
+        "alfresco/core/ValueDisplayMapMixin",
         "alfresco/forms/PublishForm",
         "dojo/dom-class",
         "alfresco/forms/controls/DojoValidationTextBox"], 
-        function(declare, _Widget, _Templated, template, AlfCore, PublishForm, domClass, DojoValidationTextBox) {
+        function(declare, _Widget, _Templated, template, AlfCore, ValueDisplayMapMixin, PublishForm, domClass, DojoValidationTextBox) {
    
-   return declare([_Widget, _Templated, AlfCore], {
+   return declare([_Widget, _Templated, AlfCore, ValueDisplayMapMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -122,7 +123,9 @@ define(["dojo/_base/declare",
        * @instance
        */
       createReadDisplay: function alfresco_forms_controls_MultipleEntryElement__createReadDisplay() {
-         this.readDisplay.innerHTML = this.encodeHTML(this.elementValue.value);
+         var readDisplay = this.encodeHTML(this.elementValue.value);
+         readDisplay = this.mapValueToDisplayValue(readDisplay);
+         this.readDisplay.innerHTML = readDisplay;
       },
       
       /**

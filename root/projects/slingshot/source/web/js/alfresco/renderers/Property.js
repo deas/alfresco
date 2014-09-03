@@ -29,6 +29,7 @@
  * @mixes module:alfresco/core/Core
  * @mixes module:alfresco/renderers/_JsNodeMixin
  * @mixes module:alfresco/renderers/_ItemLinkMixin
+ * @mixes module:alfresco/core/ValueDisplayMapMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -36,15 +37,16 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "alfresco/renderers/_JsNodeMixin",
         "alfresco/core/ObjectTypeUtils",
+        "alfresco/core/ValueDisplayMapMixin",
         "dojo/text!./templates/Property.html",
         "alfresco/core/Core",
-        "alfresco/renderers/_ItemLinkMixin",
         "dojo/_base/lang",
         "dojo/dom-class",
         "dojo/dom-style"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, ObjectTypeUtils, template, AlfCore, _ItemLinkMixin, lang, domClass, domStyle) {
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, ObjectTypeUtils, ValueDisplayMapMixin, template, AlfCore, 
+                 lang, domClass, domStyle) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _JsNodeMixin, _ItemLinkMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, _JsNodeMixin, ValueDisplayMapMixin], {
       
       
       /**
@@ -208,7 +210,8 @@ define(["dojo/_base/declare",
              lang.exists(this.propertyToRender, this.currentItem))
          {
             this.renderPropertyNotFound = false;
-            this.renderedValue = this.getRenderedProperty(lang.getObject(this.propertyToRender, false, this.currentItem));
+            this.originalRenderedValue = this.getRenderedProperty(lang.getObject(this.propertyToRender, false, this.currentItem));
+            this.renderedValue = this.mapValueToDisplayValue(this.originalRenderedValue);
          }
          else
          {

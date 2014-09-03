@@ -28,7 +28,6 @@
  * @mixes dijit/_OnDijitClickMixin
  * @mixes module:alfresco/core/CoreWidgetProcessing
  * @mixes module:alfresco/renderers/_PublishPayloadMixin
- * @mixes module:alfresco/renderers/_ItemLinkMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -36,7 +35,6 @@ define(["dojo/_base/declare",
         "dijit/_OnDijitClickMixin",
         "alfresco/core/CoreWidgetProcessing",
         "alfresco/renderers/_PublishPayloadMixin",
-        "alfresco/renderers/_ItemLinkMixin",
         "dojo/text!./templates/InlineEditProperty.html",
         "dojo/_base/lang",
         "dojo/on",
@@ -48,10 +46,10 @@ define(["dojo/_base/declare",
         "dojo/_base/event",
         "service/constants/Default",
         "alfresco/forms/controls/DojoValidationTextBox"], 
-        function(declare, Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin, _ItemLinkMixin, 
+        function(declare, Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin, 
                  template, lang, on, domClass, html, domAttr, fx, keys, event, AlfConstants, DojoValidationTextBox) {
 
-   return declare([Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin, _ItemLinkMixin], {
+   return declare([Property, _OnDijitClickMixin, CoreWidgetProcessing, _PublishPayloadMixin], {
       
       /**
        * The array of file(s) containing internationalised strings.
@@ -206,7 +204,7 @@ define(["dojo/_base/declare",
       onEditClick: function alfresco_renderers_InlineEditProperty__onEditClick(evt) {
          this.suppressContainerKeyboardNavigation(true);
          var editWidget = this.getEditWidget();
-         editWidget.setValue(this.renderedValue);
+         editWidget.setValue(this.originalRenderedValue);
          domClass.toggle(this.renderedValueNode, "hidden");
          domClass.toggle(this.editNode, "hidden");
          editWidget.wrappedWidget.focus() // Focus on the input node so typing can occur straight away
@@ -279,7 +277,8 @@ define(["dojo/_base/declare",
          this.alfUnsubscribeSaveHandles([this._saveSuccessHandle, this._saveFailureHandle]);
 
          this.alfLog("log", "Property '" + this.propertyToRender + "' successfully updated for node: ", this.currentItem);
-         this.renderedValue = this.getEditWidget().getValue();
+         this.originalRenderedValue = this.getEditWidget().getValue();
+         this.renderedValue = this.mapValueToDisplayValue(this.originalRenderedValue);
          
          // This is a bit ugly... there will be better ways to handle this...
          // Basically it's handling the situation where the prefix/suffix for cleared when data wasn't originally available...

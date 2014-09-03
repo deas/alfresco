@@ -46,11 +46,25 @@ define(["dojo/_base/declare",
             this.editWidget = this.createWidget({
                name: "alfresco/forms/controls/DojoSelect",
                config: {
+                  value: this.originalRenderedValue,
                   optionsConfig: this.optionsConfig
                }
             }, this.editWidgetNode);
          }
          return this.editWidget;
+      },
+
+      /**
+       * Extends the inherited function to ensure that the select widget is created as soon as
+       * the main widget is created. This is done to ensure that options are generated immediately
+       * and that the control is set with the appropriate value and not just the first entry in the
+       * list.
+       *
+       * @instance
+       */
+      postCreate: function alfresco_renderers_InlineEditSelect__postCreate() {
+         this.inherited(arguments);
+         this.getEditWidget();
       }
    });
 });

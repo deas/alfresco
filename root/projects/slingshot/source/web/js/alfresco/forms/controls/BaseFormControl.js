@@ -687,7 +687,6 @@ define(["dojo/_base/declare",
             }
          }
          this.setOptionsValue(options);
-         
       },
 
       /**

@@ -73,7 +73,8 @@ define(["alfresco/forms/controls/BaseFormControl",
             value: this.value,
             elementWrapper: (this.elementWrapper != null) ? this.elementWrapper : "alfresco/forms/controls/MultipleEntryElementWrapper",
             elementWidget: elementWidget,
-            widgets: this.widgets
+            widgets: this.widgets,
+            valueDisplayMap: this.valueDisplayMap
          };
       },
       

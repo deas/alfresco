@@ -352,7 +352,8 @@ define(["dojo/_base/declare",
          var elementWidget = this.createElementWidget({pubSubScope: this.pubSubScope,
                                                        dataScope: this.dataScope,
                                                        elementConfig: elementConfig,
-                                                       widgets: this.widgets});
+                                                       widgets: this.widgets,
+                                                       valueDisplayMap: this.valueDisplayMap});
          var wrapper = new MultipleEntryElementWrapper({creator: this,
                                                         previouslyExisted: previouslyExisted, 
                                                         widget: elementWidget});
