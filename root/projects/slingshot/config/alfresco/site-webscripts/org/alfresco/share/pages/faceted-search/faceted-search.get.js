@@ -155,7 +155,64 @@ var sideBarMenu = {
    }
 };
 
-// Compose the individual facets
+// // Make a request to the Repository to get the configured facets to use in search...
+// var rawFacets = [];
+// var result = remote.call("/api/solr/facet-config");
+// if (result.status.code == status.STATUS_OK)
+// {
+//    rawFacets = JSON.parse(result).facets;
+// }
+
+// // Iterate over the list of facets and create an array of widgets for each one.
+// // Only the enableincludeFacetd facets will be included and if any are scoped this will be
+// // taken into account...
+// var facets = [];
+// rawFacets.forEach(function(facet, index, rawFacets) {
+
+//    if (facet.isEnabled)
+//    {
+//       var includeFacet = true;
+
+//       // If we're in the context of a site and there is site scoping defined for
+//       // the current facet then we need to check that the current site is within
+//       // the list of scoped sites...
+//       var siteId = page.url.templateArgs.site;
+//       if (siteId != null && facet.scope === "SCOPED_SITES")
+//       {
+//          includeFacet = false;
+//          for (var i=0; i<facet.scopedSites.length; i++)
+//          {
+//             if (facet.scopedSites[i] === siteId)
+//             {
+//                includeFacet = true;
+//                break;
+//             }
+//          }
+//       }
+
+//       // If the facet passes all scoping criteria then it should be included...
+//       if (includeFacet)
+//       {
+//          var facet = {
+//             id: "FCTSRCH_" + facet.filterID,
+//             name: facet.displayControl,
+//             config: {
+//                label: msg.get(facet.displayName),
+//                facetQName: facet.facetQName,
+//                sortBy: facet.sortBy,
+//                maxFilters: facet.maxFilters,
+//                hitThreshold: facet.hitThreshold,
+//                minFilterValueLength: facet.minFilterValueLength,
+//                useHash: false,
+//                headingLevel: 3
+//             }
+//          };
+//          facets.push(facet);
+//       }
+//    }
+// });
+
+// // Compose the individual facets
 var facets = [
    {
       id: "FCTSRCH_FACET_FORMATS",

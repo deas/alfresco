@@ -147,8 +147,7 @@ var main = {
                                                       {
                                                          name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                                          config: {
-                                                            label: "",
-                                                            class: "last"
+                                                            label: ""
                                                          }
                                                       }
                                                    ],
@@ -371,6 +370,18 @@ var main = {
                                                 {
                                                    label: "Modifier",
                                                    value: "{http://www.alfresco.org/model/content/1.0}modifier.__"
+                                                },
+                                                {
+                                                   label: "Created",
+                                                   value: "{http://www.alfresco.org/model/content/1.0}created"
+                                                },
+                                                {
+                                                   label: "Modified",
+                                                   value: "{http://www.alfresco.org/model/content/1.0}modified"
+                                                },
+                                                {
+                                                   label: "Size",
+                                                   value: "{http://www.alfresco.org/model/content/1.0}content.size"
                                                 }
                                              ]
                                           }
@@ -472,7 +483,7 @@ var main = {
                                        config: {
                                           fieldId: "HIT_THRESHOLD",
                                           name: "hitThreshold",
-                                          value: "10",
+                                          value: "1",
                                           label: "faceted-search-config.hitThreshold.label",
                                           description: "faceted-search-config.hitThreshold.description",
                                           min: 1,
