@@ -129,19 +129,33 @@ module.exports = function (grunt, alf) {
       {
          grunt.file.mkdir(alf.coverageDirectory);
       }
-      var nodeCoverage = grunt.util.spawn({
-         cmd: 'node',
-         args: ['node_modules/node-coverage/server.js',
-                '--port',
-                '8082',
-                '--report-dir',
-                alf.coverageDirectory],
-         opts: {
-            detached: 'true',
-            stdio : 'inherit'
+      
+      var tcpPortUsed = require('tcp-port-used');
+      tcpPortUsed.check(8082, 'localhost')
+      .then(function(inUse) {
+         if(!inUse)
+         {
+            var nodeCoverage = grunt.util.spawn({
+               cmd: 'node',
+               args: ['node_modules/node-coverage/server.js',
+                      '--port',
+                      '8082',
+                      '--report-dir',
+                      alf.coverageDirectory],
+               opts: {
+                  detached: 'true',
+                  stdio : 'inherit'
+               }
+            }, function(error, result, code) {
+               grunt.log.writeln("Finished spawning node-coverage server...");
+            });
          }
-      }, function(error, result, code) {
-         grunt.log.writeln("Finished spawning node-coverage server...");
+         else
+         {
+            grunt.log.writeln("Node coverage server appears to be running already...");
+         }
+      }, function(err) {
+         console.error('Unknown if coverage server is already running:', err.message);
       });
    });
 }

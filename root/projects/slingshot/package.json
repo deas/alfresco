@@ -28,6 +28,7 @@
     "dojo": "latest",
     "chromedriver": "~2.10.0",
     "grunt-notify": "~0.3.0",
-    "grunt-contrib-clean": "latest"
+    "grunt-contrib-clean": "latest",
+    "tcp-port-used": "latest"
   }
 }
