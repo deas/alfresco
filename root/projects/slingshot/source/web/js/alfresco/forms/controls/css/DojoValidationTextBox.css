@@ -33,9 +33,3 @@
 .alfresco-forms-controls-DojoValidationTextBox.long div.control div.dijitValidationTextBox {
    width: 440px;
 }
-
-/* Hide the label */
-.alfresco-forms-controls-DojoValidationTextBox.hiddenlabel label {
-   position: absolute;
-   left: -999em;
-}

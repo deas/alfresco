@@ -9,6 +9,11 @@
    display: block;
 }
 
+.alfresco-forms-controls-BaseFormControl.hiddenlabel > label {
+   position: absolute;
+   left: -999em;
+}
+
 .alfresco-forms-controls-BaseFormControl > .description {
    font-size: @small-font-size;
    line-height: ceil(@small-font-size/@standard-line-height) * @standard-line-height;

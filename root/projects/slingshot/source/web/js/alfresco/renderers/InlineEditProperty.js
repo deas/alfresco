@@ -115,6 +115,15 @@ define(["dojo/_base/declare",
       editAltText: "inline-edit.edit.altText",
 
       /**
+       * This is the message or message key that will be used for the label attribute on the edit label
+       *
+       * @instance
+       * @type {string}
+       * @default "inline-edit.edit.label"
+       */
+      editLabel: "inline-edit.edit.label",
+
+      /**
        * This extends the inherited function to set the [postParam]{@link module:alfresco/renderers/InlineEditProperty#postParam]
        * attribute based on the [propertyToRender]{@link module:alfresco/renderers/InlineEditProperty#propertyToRender] if 
        * provided. It is expected that these will be different because the properties WebScript that this widget will use
@@ -210,8 +219,8 @@ define(["dojo/_base/declare",
             config: {
                name: this.postParam,
                validationConfig: this.validationConfig,
-               label: (this.textBoxLabel != null) ? this.message(this.textBoxLabel) : "",
-               additionalCssClasses: (this.textBoxCssClasses != null) ? this.textBoxCssClasses : ""
+               additionalCssClasses: "hiddenlabel",
+               label: this.message(this.editLabel)
             }
          };
       },

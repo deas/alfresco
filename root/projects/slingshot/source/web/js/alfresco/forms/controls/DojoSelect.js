@@ -25,8 +25,9 @@
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "dijit/form/Select",
-        "dijit/focus"], 
-        function(BaseFormControl, declare, Select, focusUtil) {
+        "dijit/focus",
+        "dojo/dom-class"], 
+        function(BaseFormControl, declare, Select, focusUtil, domClass) {
 
    return declare([BaseFormControl], {
 
@@ -56,7 +57,17 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @instance
        */
       createFormControl: function alfresco_forms_controls_DojoSelect__createFormControl(config, domNode) {
-         return new Select(config);
+         var select = new Select(config);
+
+         // Handle adding classes to control...
+         var additionalCssClasses = "";
+         if (this.additionalCssClasses != null)
+         {
+            additionalCssClasses = this.additionalCssClasses;
+         }
+         domClass.add(this.domNode, "alfresco-forms-controls-DojoSelect " + additionalCssClasses);
+
+         return select;
       }
    });
 });

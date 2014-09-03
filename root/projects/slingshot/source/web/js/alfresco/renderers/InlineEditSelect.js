@@ -47,7 +47,9 @@ define(["dojo/_base/declare",
             config: {
                name: this.postParam,
                optionsConfig: this.optionsConfig,
-               _convertStringValuesToBooleans: true
+               _convertStringValuesToBooleans: true,
+               additionalCssClasses: "hiddenlabel",
+               label: this.message(this.editLabel)
             }
          };
       }

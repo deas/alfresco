@@ -626,9 +626,7 @@ var main = {
                                                                                  url: "api/solr/facet-config/{filterID}",
                                                                                  noRefresh: true,
                                                                                  successMessage: msg.get("faceted-search-config.update.successMessage")
-                                                                              },
-                                                                              textBoxCssClasses: "hiddenlabel",
-                                                                              textBoxLabel: msg.get("faceted-search-config.inlineEdit.label")
+                                                                              }
                                                                            }
                                                                         }
                                                                      ]

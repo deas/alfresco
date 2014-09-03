@@ -21,9 +21,3 @@
 .alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .validation {
     display: none;
 }
-
-/* Hide the label */
-.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl.hiddenlabel label {
-   position: absolute;
-   left: -999em;
-}
