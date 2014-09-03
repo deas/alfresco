@@ -4,7 +4,7 @@
          "publishTopic": "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
          "publishPayload": {
             "dataSource": "customNodeRef",
-            "nodeRef": "workspace://SpacesStore/4145b84d-a85c-45ba-beab-a9bdc361d605"
+            "nodeRef": "workspace://SpacesStore/f8394454-0651-48a5-b583-d067c7d03339"
          }
       }
    ],
@@ -28,12 +28,17 @@
                {
                   "name": "alfresco/preview/AlfDocumentPreview",
                   "config": {
-
                   }
                }
             ]
          }
-      }
+      },
+      {
+         "name": "alfresco/testing/MockXhr",
+         "config": {
+            
+         }
+      },
       {
          "name": "alfresco/testing/SubscriptionLog"
       },
