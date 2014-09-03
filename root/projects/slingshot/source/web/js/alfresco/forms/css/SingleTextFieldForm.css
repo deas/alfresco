@@ -12,12 +12,13 @@
    border-width: 0;
 }*/
 
-/* Hide the requirement indicator in the text field */
-.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .requirementIndicator.required {
+/* Hide the requirement indicator in the text field, the validation error indicator and the validation message */
+.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .requirementIndicator.required,
+.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .validation,
+.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .validation-message {
     display: none;
 }
 
-/* Hide the validation error indicator */
-.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .validation {
-    display: none;
+.alfresco-forms-SingleTextFieldForm .alfresco-forms-controls-BaseFormControl .validation-message {
+    margin: 0;
 }
