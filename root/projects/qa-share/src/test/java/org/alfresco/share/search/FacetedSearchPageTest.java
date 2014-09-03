@@ -1,5 +1,7 @@
 package org.alfresco.share.search;
 
+import static org.alfresco.po.share.site.document.ContentType.PLAINTEXT;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.search.FacetedSearchFacetGroup;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.user.MyProfilePage;
@@ -47,7 +50,7 @@ public class FacetedSearchPageTest extends AbstractUtils
     private static final Class dateLinkToClassType = MyProfilePage.class;
     private static final Class siteLinkToClassType = SiteDashboardPage.class;
     private static final String fileDir = "faceted-search-files\\";
-    private static final String fileStem = "-fs-test.docx";
+    private static final String fileStem = "-fs-test.txt";
     private static final String obscureSearchWord = "antidisestablishmentarianism";
 
     private OpCloudTestContext testContext;
@@ -90,8 +93,9 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Upload Files - there are 26 starting with the letters of the alphabet
         for (int i=0; i < 26; i++)
         {
-            String[] fileInfo = { fileDir + (char)(i+97) + fileStem };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        	String fileInfo =  (char)(i+97) + fileStem;
+            ContentDetails contentDetails = new ContentDetails(fileInfo, fileInfo, fileInfo, fileInfo);
+            ShareUser.createContent(drone, contentDetails, PLAINTEXT);
         }
 
         // Navigate to the faceted search page
@@ -160,7 +164,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // There should now be some results, facet groups and facets
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -245,7 +249,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
         
         // Do a search for the letter 'e'
-        doSearch("e");
+        doretrySearch("e");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' there should be some search results");
@@ -320,7 +324,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // Check the results
         int resultsCount = facetedSearchPage.getResults().size();
@@ -371,7 +375,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -395,7 +399,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -416,7 +420,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -458,7 +462,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -525,7 +529,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
 
         // Do a search for the letter 'a'
-        doSearch("a");
+        doretrySearch("a");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'a' there should be some search results");
@@ -583,7 +587,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         userLogin();
         
         // Do a search for the obscureSearchWord
-        doSearch(obscureSearchWord);
+        doretrySearch("fs-test.txt");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for '" + obscureSearchWord + "' there should be some search results");
@@ -640,18 +644,23 @@ public class FacetedSearchPageTest extends AbstractUtils
     }
 
     /**
-     * Do search.
+     * Do retry search.
      *
      * @param searchTerm the search term
      */
-    private void doSearch(String searchTerm)
-    {
-        // Do a search for the searchTerm
-        facetedSearchPage.getSearchForm().search(searchTerm);
-
-        // Reload the page objects
-        facetedSearchPage.render();
-    }
+        
+    private void doretrySearch(String searchTerm)
+	{
+		facetedSearchPage.getSearchForm().search(searchTerm);
+		facetedSearchPage.render();
+		if (!(facetedSearchPage.getResults().size() > 0)) 
+		{
+			webDriverWait(drone, refreshDuration);
+			facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+			facetedSearchPage.getSearchForm().search(searchTerm);
+			facetedSearchPage.render();
+		}
+	}       
 
 //    /**
 //     * Do header search.

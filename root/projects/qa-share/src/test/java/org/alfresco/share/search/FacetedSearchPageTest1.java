@@ -1,5 +1,7 @@
 package org.alfresco.share.search;
 
+import static org.alfresco.po.share.site.document.ContentType.PLAINTEXT;
+
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.ShareUtil;
@@ -38,8 +40,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
 
     /** Constants */
     
-    private static final String fileDir = "faceted-search-files\\";
-    private static final String fileStem = "-fs-test1.docx";
+    private static final String fileStem = "-fs-test1.txt";
     
     private OpCloudTestContext testContext;
     private DashBoardPage dashBoardPage;
@@ -91,8 +92,9 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         // Upload 5 Files
         for (int i=0; i < 5; i++)
         {
-            String[] fileInfo = { fileDir + (char)(i+97) + fileStem };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+            String fileInfo =  (char)(i+97) + fileStem;
+            ContentDetails contentDetails = new ContentDetails(fileInfo, fileInfo, fileInfo, fileInfo);
+            ShareUser.createContent(drone, contentDetails, PLAINTEXT);
         }
 
         // Navigate to the faceted search page
@@ -123,17 +125,17 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String actionName4 = "Delete Document";
         String actionName5 = "Manage Permissions";
         
-        String name = ("b-fs-test1.docx");
-        String name1 = ("c-fs-test1.docx");
-        String name2 = ("d-fs-test1.docx");
-        String name3 = ("e-fs-test1.docx");
-        String name4 = ("a-fs-test1.docx");
+        String name = ("b-fs-test1.txt");
+        String name1 = ("c-fs-test1.txt");
+        String name2 = ("d-fs-test1.txt");
+        String name3 = ("e-fs-test1.txt");
+        String name4 = ("a-fs-test1.txt");
         
         // Login as user1
         userLogin1();
 
-        // Do a search for the letter 'a'
-        doSearch("test1.docx");
+        // Do a search 
+        doretrySearch(name);
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
@@ -163,7 +165,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         userLogin2();
         
         //Do a search for the letter 'a'
-        doSearch("fs-test1.docx");     
+        doretrySearch("fs-test1.txt");     
         
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");
@@ -190,14 +192,14 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName2 = "View In Browser";        
         
-        String name = ("b-fs-test1.docx");
-        String name1 = ("c-fs-test1.docx");
+        String name = ("b-fs-test1.txt");
+        String name1 = ("c-fs-test1.txt");
         
         // Login as user2
         userLogin2();
 
-        // Do a search for the letter 'a'
-        doSearch("test1.docx");
+        // Do a search 
+        doretrySearch("test1.txt");
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
@@ -215,11 +217,8 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String newUrl = drone.getCurrentUrl();
 
         // We should be on view in browser page
-        Assert.assertNotSame(url, newUrl, "After clicking on action the url should have changed");    
-                    
-        //Navigate back to the faceted search page
-        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-
+        Assert.assertNotSame(url, newUrl, "After clicking on action the url should have changed");                 
+      
         // Logout
         ShareUtil.logout(drone);       
        
@@ -239,13 +238,13 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName3 = "Edit Offline";      
                
-        String name = ("c-fs-test1.docx");
+        String name = ("c-fs-test1.txt");
         
         // Login as user1
         userLogin1();
 
-        // Do a search for the letter 'a'
-        doSearch(name);
+        // Do a search 
+        doretrySearch(name);
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for name there should be some search results");        
@@ -289,13 +288,13 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName4 = "Delete Document";        
         
-        String name = ("e-fs-test1.docx");
+        String name = "e-fs-test1.txt";
         
         // Login as user1
         userLogin1();
 
-        // Do a search for the letter 'a'
-        doSearch("test1.docx");
+        // Do a search
+        doretrySearch(name);
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
@@ -317,7 +316,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
         
         // Do a search for text
-        doSearch("test1.docx");
+        doretrySearch(name);
 
         // Click the first action        
         facetedSearchPage.getResultByName(name).getActions().clickActionByNameAndDialogByButtonName(actionName4,"Yes");
@@ -354,13 +353,13 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName5 = "Manage Permissions";      
                
-        String name1 = ("c-fs-test1.docx");
+        String name1 = "c-fs-test1.txt";
         
         // Login as user1
         userLogin1();
 
-        // Do a search for the letter 'a'
-        doSearch(name1);
+        // Do a search
+        doretrySearch(name1);
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for name1 there should be some search results"); 
@@ -407,25 +406,10 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         //Navigate back to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-
-        // Do a search for folderName
-        doSearch(folderName);
         
-        //Repeat search until  search results are displayed      
-        for (int i = 0; i < 5; i++)
-        {
-            if (!(facetedSearchPage.getResults().size() > 0))
-            {
-                ShareUser.refreshSharePage(drone);
-                facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-                doSearch(folderName);
-            }
-        
-        }        
-
-        // Check the results
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for folderName there should be some search results"); 
-         
+        //Do retry search        
+        doretrySearch(folderName);       
+                 
         //Check Actions are displayed on Facet results page for folder
         Assert.assertTrue(facetedSearchPage.getResultByName(folderName).getActions().hasActionByName(actionName1));        
         Assert.assertTrue(facetedSearchPage.getResultByName(folderName).getActions().hasActionByName(actionName2));
@@ -495,20 +479,8 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
         
         // Do a search for filename
-        doSearch(fileName);
-              
-        //Repeat search until  search results are displayed      
-        for (int i = 0; i < 5; i++)
-        {
-            if (!(facetedSearchPage.getResults().size() > 0))
-            {
-                ShareUser.refreshSharePage(drone);
-                facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-                doSearch(fileName);
-            }
-
-        }
-        
+        doretrySearch(fileName);              
+               
         //Check Actions are displayed on Facet results page for filename
         Assert.assertTrue(facetedSearchPage.getResultByName(fileName).getActions().hasActionByName(actionName1));        
         Assert.assertTrue(facetedSearchPage.getResultByName(fileName).getActions().hasActionByName(actionName2));    
@@ -547,13 +519,13 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String actionName4 = "Delete Document";
         String actionName5 = "Manage Permissions";
         
-        String name = "b-fs-test1.docx";
+        String name = "b-fs-test1.txt";
         
         // Login as user1        
         userLogin1();
 
         // Do a search for name
-        doSearch(name);
+        doretrySearch(name);
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for name there should be some search results");      
@@ -575,7 +547,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         userLogin3();
         
         //Do a search for the letter 'a'
-        doSearch(name);     
+        doretrySearch(name);     
         
         // Check the results
         Assert.assertFalse(facetedSearchPage.getResults().size() > 0, "After searching for name there should be no search results");    
@@ -621,12 +593,24 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     private void doSearch(String searchTerm)
     {
         // Do a search for the searchTerm
-        facetedSearchPage.getSearchForm().search(searchTerm);
-
-        // Reload the page objects
+        facetedSearchPage.getSearchForm().search(searchTerm); 
         facetedSearchPage.render();
+       
     }
-
+    
+	private void doretrySearch(String searchTerm)
+	{
+		facetedSearchPage.getSearchForm().search(searchTerm);
+		facetedSearchPage.render();
+		if (!(facetedSearchPage.getResults().size() > 0)) 
+		{
+			webDriverWait(drone, refreshDuration);
+			facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+			facetedSearchPage.getSearchForm().search(searchTerm);
+			facetedSearchPage.render();
+		}
+	}       
+    
     /**
      * Trace.
      *
