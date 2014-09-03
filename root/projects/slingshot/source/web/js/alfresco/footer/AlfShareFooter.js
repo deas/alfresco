@@ -34,9 +34,10 @@ define(["dojo/_base/declare",
         "alfresco/accessibility/_SemanticWrapperMixin",
         "dojo/text!./templates/AlfShareFooter.html",
         "alfresco/core/Core",
+        "dojo/_base/lang",
         "dojo/dom-class",
         "dojo/dom-construct"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _SemanticWrapperMixin, template, AlfCore, domClass, domConstruct) {
+        function(declare, _WidgetBase, _TemplatedMixin, _SemanticWrapperMixin, template, AlfCore, lang, domClass, domConstruct) {
    
    return declare([_WidgetBase, _TemplatedMixin, _SemanticWrapperMixin, AlfCore], {
 
