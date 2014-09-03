@@ -330,6 +330,22 @@ define(["dojo/_base/declare",
       disablementConfig: null,
       
       /**
+       * Defines an array of rules for auto-setting the value of the widget. Each element in the array is configured
+       * in the same way as the [visibilityConfig]{@link module:alfresco/forms/controls/BaseFormControl#visibilityConfig},
+       * [requirementConfig]{@link module:alfresco/forms/controls/BaseFormControl#requirementConfig} or 
+       * [disablementConfig]{@link module:alfresco/forms/controls/BaseFormControl#disablementConfig} in that it should
+       * declare a "targetId" attribute (that maps to the "fieldId" of another widget in the same form) and
+       * either a "is" or "isNot" array of values of that field to evaluate against. In addition it also needs to 
+       * set "rulePassValue" and "ruleFailValue" attributes that are the values that will be set on successful or
+       * unsuccessful evaluation of the rule.
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      autoSetConfig: null,
+
+      /**
        * @instance
        */
       constructor: function alfresco_forms_controls_BaseFormControl__constructor(args) {
@@ -347,13 +363,61 @@ define(["dojo/_base/declare",
          this.processConfig("alfVisible", this.visibilityConfig);
          this.processConfig("alfRequired", this.requirementConfig);
          this.processConfig("alfDisabled", this.disablementConfig);
-         
+
+         // Iterate over the autoSetConfig rules...
+         array.forEach(this.autoSetConfig, lang.hitch(this, this.processAutoSetConfiguration));
+
          // Setup the options handling...
          this.processOptionsConfig(this.optionsConfig);
          
          if (this.validationConfig != null && typeof this.validationConfig.regex == "string")
          {
             this.validationConfig.regExObj = new RegExp(this.validationConfig.regex);
+         }
+      },
+
+      /**
+       * Called for each entry in the [autoSetConfig]{@link module:alfresco/forms/controls/BaseFormControl#autoSetConfig}
+       * array. The [autoSetValue]{@link module:alfresco/forms/controls/BaseFormControl#autoSetValue}
+       * function will be passed each time the rules are evaluated with the evaluation result and the 
+       * pass and fail evaluation values to set.
+       *
+       * @instance
+       * @param {object} config The configuration for the current autoset value
+       * @param {number} index The index of the configuration in the original array
+       */
+      processAutoSetConfiguration: function alfresco_forms_controls_BaseFormControl__processAutoSetConfiguration(config, index) {
+         if (config.rulePassValue == null || config.ruleFailValue == null)
+         {
+            this.alfLog("warn", "An autoset configuration element was provided without both 'rulePassValue' and 'ruleFailValue' attribute", config, this);
+         }
+         else
+         {
+            var instanceVar = "alfAutoSet___" + index;
+            this[instanceVar] = lang.hitch(this, this.autoSetValue, config.rulePassValue, config.ruleFailValue);
+
+            // Process the configuration...
+            this.processConfig(instanceVar, config);
+         }
+      },
+
+      /**
+       * This function is called whenever an autoset configuration rules array is evaluated. It
+       * sets the widget value depending upon whether or not the rule evaluated successfully or not.
+       *
+       * @instance
+       * @param {object} passValue The value to set if hasPassedRule is true
+       * @param {object} failValue The value to set if hasPassedRule is false
+       * @param {boolean} hasPassedRule Indicated whether or not evaluation of the rules were successful
+       */
+      autoSetValue: function alfresco_forms_controls_BaseFormControl__autoSetValue(passValue, failValue, hasPassedRule) {
+         if (hasPassedRule === true)
+         {
+            this.setValue(passValue);
+         }
+         else
+         {
+            this.setValue(failValue);
          }
       },
       

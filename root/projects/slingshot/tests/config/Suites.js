@@ -65,9 +65,10 @@ define({
 
       'tests/alfresco/footer/FooterTest',
 
-      'tests/alfresco/forms/DynamicFormTest.js',
+      'tests/alfresco/forms/DynamicFormTest',
       'tests/alfresco/forms/FormsTest',
       'tests/alfresco/forms/SingleTextFieldFormTest',
+      'tests/alfresco/forms/controls/AutoSetTest',
       // 'tests/alfresco/forms/controls/DocumentPickerTest', // TODO: NEEDS FIXING - WIDGET POSSIBLY BROKEN
       'tests/alfresco/forms/controls/DojoSelectTest',
       'tests/alfresco/forms/controls/DojoDateTextBoxTest',  // TODO: NEEDS FIXING
