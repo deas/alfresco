@@ -35,6 +35,7 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_ItemLinkMixin",
         "alfresco/core/CoreXhr",
         "dojo/text!./templates/InlineEditProperty.html",
+        "dojo/on",
         "dojo/dom-class",
         "dojo/html",
         "dojo/dom-attr",
@@ -42,7 +43,7 @@ define(["dojo/_base/declare",
         "dojo/keys",
         "dojo/_base/event",
         "service/constants/Default"], 
-        function(declare, Property, _OnDijitClickMixin, _ItemLinkMixin, CoreXhr, template, domClass, html, domAttr, fx, keys, event, AlfConstants) {
+        function(declare, Property, _OnDijitClickMixin, _ItemLinkMixin, CoreXhr, template, on, domClass, html, domAttr, fx, keys, event, AlfConstants) {
 
    return declare([Property, _OnDijitClickMixin, _ItemLinkMixin, CoreXhr], {
       
@@ -107,12 +108,30 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Emits a custom event to notify any containers that use keyboard navigation that handling
+       * keyboard events needs to be suppressed whilst editing is taking place. If the argument
+       * is passed as false then it emits a custom event that indicates to containers that keyboard
+       * navigation can resume.
+       *
+       * @instance
+       * @param {boolean} suppress Whether or not to suppress keyboard navigation
+       */
+      suppressContainerKeyboardNavigation: function alfresco_renderers_InlineEditProperty__suppressContainerKeyboardNavigation(suppress) {
+         on.emit(this.domNode, "onSuppressKeyNavigation", {
+            bubbles: true,
+            cancelable: true,
+            suppress: suppress
+         });
+      },
+
+      /**
        * This function is called whenever the user clicks on the edit icon. It hides the display DOM node
        * and shows the edit DOM nodes.
        * 
        * @instance
        */
       onEditClick: function alfresco_renderers_InlineEditProperty__onEditClick(evt) {
+         this.suppressContainerKeyboardNavigation(true);
          if (this.renderPropertyNotFound)
          {
             domAttr.set(this.editInputNode, "value", "");
@@ -159,11 +178,6 @@ define(["dojo/_base/declare",
          }
       },
 
-      stopKeyPressEvents: function alfresco_renderers_InlineEditProperty__stopKeyPressEvents(e) {
-         console.log("Stopping event");
-         event.stop(e);
-      },
-      
       /**
        * @instance
        */
@@ -215,6 +229,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       onPropertyUpdate: function alfresco_renderers_InlineEditProperty__onSaveSuccess(response, originalConfig) {
+         this.suppressContainerKeyboardNavigation(false);
+
          this.alfLog("log", "Property '" + this.propertyToRender + "' successfully updated for node: ", this.currentItem);
          this.renderedValue = originalConfig.data[this.postParam];
          
@@ -244,6 +260,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       onCancel: function alfresco_renderers_InlineEditProperty__onCancel() {
+         this.suppressContainerKeyboardNavigation(false);
+
          domClass.remove(this.renderedValueNode, "hidden");
          domClass.add(this.editNode, "hidden");
          

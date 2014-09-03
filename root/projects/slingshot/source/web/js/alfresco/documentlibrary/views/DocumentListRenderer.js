@@ -41,12 +41,13 @@ define(["dojo/_base/declare",
         "alfresco/core/JsNode",
         "dojo/_base/lang",
         "dojo/_base/array",
+        "dojo/on",
         "dojo/keys",
         "dojo/dom-construct",
         "dojo/dom-class",
         "dijit/registry"], 
         function(declare, _WidgetBase, _TemplatedMixin, _KeyNavContainer, template, _MultiItemRendererMixin, 
-                 AlfCore, JsNode, lang, array, keys, domConstruct, domClass, registry) {
+                 AlfCore, JsNode, lang, array, on, keys, domConstruct, domClass, registry) {
    
    return declare([_WidgetBase, _TemplatedMixin, _KeyNavContainer, _MultiItemRendererMixin, AlfCore], {
       
@@ -76,6 +77,30 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_documentlibrary_views_DocumentListRenderer__postCreate() {
          this.inherited(arguments);
          this.setupKeyboardNavigation();
+         on(this.domNode, "onSuppressKeyNavigation", lang.hitch(this, this.onSuppressKeyNavigation));
+      },
+
+      /**
+       * The ability to suppress keyboard navigation (e.g. the ability to move around the rendered list of items using
+       * the keyboard) has been added to support widgets that allow inline editing (such as the
+       * [InlineEditProperty]{@link alfresco/renderers/InlineEditProperty} widget). In order to allow their keyboard
+       * events to bubble up to the browser, this widget needs to stop searching for keyboard navigation matches.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      suppressKeyNavigation: false,
+
+      /**
+       * Updates the [suppressKeyNavigation]{@link module:alfresco/documentlibrary/views/DocumentListRenderer#suppressKeyNavigation}
+       * with the emitted event details
+       *
+       * @instance
+       * @param {object} evt The emitted event.
+       */
+      onSuppressKeyNavigation: function alfresco_documentlibrary_views_DocumentListRenderer__onSuppressKeyNavigation(evt) {
+         this.suppressKeyNavigation = (evt.suppress === true);
       },
       
       /**
@@ -99,6 +124,30 @@ define(["dojo/_base/declare",
          {
             widget.blur();
          }
+      },
+
+      /**
+       * Extends the function mixed in from the dijit/_KeyNavContainer module to perform no action when
+       * [suppressKeyNavigation]{@link module:alfresco/documentlibrary/views/DocumentListRenderer#suppressKeyNavigation}
+       * is set to true.
+       * 
+       * @instance
+       * @param {object} evt The keyboard event
+       */
+      _onContainerKeydown: function alfresco_documentlibrary_views_DocumentListRenderer___onContainerKeydown(evt) {
+         if (this.suppressKeyNavigation === false) this.inherited(arguments);
+      },
+
+      /**
+       * Extends the function mixed in from the dijit/_KeyNavContainer module to perform no action when
+       * [suppressKeyNavigation]{@link module:alfresco/documentlibrary/views/DocumentListRenderer#suppressKeyNavigation}
+       * is set to true.
+       * 
+       * @instance
+       * @param {object} evt The keyboard event
+       */
+      _onContainerKeypress: function alfresco_documentlibrary_views_DocumentListRenderer___onContainerKeypress(evt) {
+         if (this.suppressKeyNavigation === false) this.inherited(arguments);
       }
    });
 });
