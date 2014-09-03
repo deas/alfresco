@@ -172,7 +172,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (AlfrescoVersion.Cloud2.equals(version))
+        if(version.isCloud())
         {
             fontAtt = fontAttForCloud ;
         }
@@ -193,7 +193,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());       
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (AlfrescoVersion.Cloud2.equals(version))
+        if (version.isCloud())
         {
             fontAtt = fontAttForCloud;
         }
@@ -215,7 +215,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(commentText, textEditor.getText());  
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if (AlfrescoVersion.Cloud2.equals(version))
+        if (version.isCloud())
         {
             fontAtt = fontAttForCloud;
         }
@@ -223,7 +223,7 @@ public class ContentFormatPageTest extends AbstractTest
         textEditor.clickUndo();        
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
         textEditor.clickRedo();       
-        if (AlfrescoVersion.Cloud2.equals(version))
+        if (version.isCloud())
         {
             fontAtt = fontAttForCloud;
         }

@@ -25,26 +25,29 @@ import org.alfresco.webdrone.Version;
 public enum AlfrescoVersion implements Version
 {
     // The current
-    Share(null, 4.3, true),
+    Share(null, 5.0, true,true),
     Enterprise(null),
-    Enterprise41(Enterprise, 4.1, false),
-    Enterprise42(Enterprise, 4.2, true),
-    Enterprise43(Enterprise, 4.3, true),
-    Cloud(null),
-    Cloud2(Cloud, 2.0, true),
-    MyAlfresco(Cloud, 2.1, true);
+    Enterprise41(Enterprise, 4.1, false, false),
+    Enterprise42(Enterprise, 4.2, true, false),
+    Enterprise43(Enterprise, 4.3, true, false),
+    Enterprise5(Enterprise, 5.0, true, true),
+    Cloud(null, 2.0, true, true),
+    CloudNonFacetSearch(Cloud, 2.0, true,false),
+    MyAlfresco(Cloud, 2.1, true, true);
 
     private static final String ALFRESCO_VERSION_DOES_NOT_MATCH_ERROR = "version %s does not match to an existing AlfrescoVersion:"
             + " Enterprise41, Enterprise42, Enterprise43, Cloud1 or Cloud2 or MyAlfresco";
     private AlfrescoVersion parent;
     private Double version;
     private boolean dojoSuport;
+    private boolean facetedSearch;
 
     private AlfrescoVersion(AlfrescoVersion parent)
     {
         this.parent = parent;
         this.version = 0.0;
         this.dojoSuport = false;
+        this.facetedSearch = false;
     }
 
     /**
@@ -54,11 +57,12 @@ public enum AlfrescoVersion implements Version
      * @param version Alfresco version identifier
      * @param dojoSupport Alfresco that have dojo in ui.
      */
-    private AlfrescoVersion(AlfrescoVersion parent, Double version, boolean dojoSupport)
+    private AlfrescoVersion(AlfrescoVersion parent, Double version, boolean dojoSupport, boolean facetedSearch)
     {
         this.parent = parent;
         this.version = version;
         this.dojoSuport = dojoSupport;
+        this.facetedSearch = facetedSearch;
     }
 
     /**
@@ -126,5 +130,16 @@ public enum AlfrescoVersion implements Version
     {
         return dojoSuport;
     }
+
+    public boolean isFacetedSearch()
+    {
+        return facetedSearch;
+    }
+
+    public void setFacetedSearch(boolean facetedSearch)
+    {
+        this.facetedSearch = facetedSearch;
+    }
+    
 
 }

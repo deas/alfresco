@@ -135,15 +135,15 @@ public abstract class SharePage extends Page
         String selector;
         switch (alfrescoVersion)
         {
-            case Enterprise41:
-                selector = "h1.theme-color-3";
-                break;
-            case Cloud2:
-                selector = "div.alf-menu-title span.alf-menu-title-text";
-                break;
-            default:
-                selector = "a.alf-menu-title-text";
-                break;
+        case Enterprise41:
+        	selector = "h1.theme-color-3";
+            break;
+        case Cloud:
+            selector = "div.alf-menu-title span.alf-menu-title-text";
+            break;
+        default:
+        	selector = "a.alf-menu-title-text";
+            break;
         }
         return drone.find(By.cssSelector(selector)).getText().trim();
     }

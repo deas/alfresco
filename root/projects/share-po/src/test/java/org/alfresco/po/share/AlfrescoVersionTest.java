@@ -35,11 +35,10 @@ public class AlfrescoVersionTest
         Assert.assertEquals(AlfrescoVersion.Enterprise42, enterprise42);
         AlfrescoVersion cloud = AlfrescoVersion.fromString("Cloud");
         Assert.assertEquals(AlfrescoVersion.Cloud, cloud);
-        AlfrescoVersion cloud2 = AlfrescoVersion.fromString("Cloud2");
-        Assert.assertEquals(AlfrescoVersion.Cloud2, cloud2);
-        
-        AlfrescoVersion lowerCasecloud2 = AlfrescoVersion.fromString("cloud2");
-        Assert.assertEquals(AlfrescoVersion.Cloud2, lowerCasecloud2);
+        AlfrescoVersion lowerCasecloud = AlfrescoVersion.fromString("cloud");
+        Assert.assertEquals(AlfrescoVersion.Cloud, lowerCasecloud);
+        AlfrescoVersion cloud2 = AlfrescoVersion.fromString("CloudNonFacetSearch");
+        Assert.assertEquals(AlfrescoVersion.CloudNonFacetSearch, cloud2);
         
         AlfrescoVersion myAlfresco = AlfrescoVersion.fromString("myalfresco");
         Assert.assertEquals(AlfrescoVersion.MyAlfresco, myAlfresco);
@@ -48,18 +47,41 @@ public class AlfrescoVersionTest
     public void isCloud()
     {
         boolean cloud = AlfrescoVersion.Cloud.isCloud();
-        boolean notCloud = AlfrescoVersion.Enterprise42.isCloud();
+        boolean cloudNonFacetedSearch = AlfrescoVersion.CloudNonFacetSearch.isCloud();
+        boolean myAlfresco = AlfrescoVersion.MyAlfresco.isCloud();
+        boolean enterprise41 = AlfrescoVersion.Enterprise41.isCloud();
+        boolean enterprise42 = AlfrescoVersion.Enterprise42.isCloud();
+        boolean enterprise43 = AlfrescoVersion.Enterprise43.isCloud();
+        boolean enterprise5 = AlfrescoVersion.Enterprise5.isCloud();
         Assert.assertEquals(true, cloud);
-        Assert.assertEquals(false, notCloud);
+        Assert.assertEquals(true, cloudNonFacetedSearch);
+        Assert.assertEquals(true, myAlfresco);
+        Assert.assertEquals(false, enterprise41);
+        Assert.assertEquals(false, enterprise42);
+        Assert.assertEquals(false, enterprise43);
+        Assert.assertEquals(false, enterprise5);
     }
     @Test
     public void isDojoSupported()
     {
-        Assert.assertEquals(true, AlfrescoVersion.Enterprise42.isDojoSupported());
         Assert.assertEquals(false, AlfrescoVersion.Enterprise41.isDojoSupported());
-        Assert.assertEquals(false, AlfrescoVersion.Cloud.isDojoSupported());
-        Assert.assertEquals(true, AlfrescoVersion.Cloud2.isDojoSupported());
+        Assert.assertEquals(true, AlfrescoVersion.Enterprise42.isDojoSupported());
+        Assert.assertEquals(true, AlfrescoVersion.Enterprise43.isDojoSupported());
+        Assert.assertEquals(true, AlfrescoVersion.Enterprise5.isDojoSupported());
+        Assert.assertEquals(true, AlfrescoVersion.Cloud.isDojoSupported());
+        Assert.assertEquals(true, AlfrescoVersion.CloudNonFacetSearch.isDojoSupported());
         Assert.assertEquals(true, AlfrescoVersion.MyAlfresco.isDojoSupported());
+    } 
+    @Test
+    public void isFacetSearchSupported()
+    {
+        Assert.assertEquals(false, AlfrescoVersion.Enterprise41.isFacetedSearch());
+        Assert.assertEquals(false, AlfrescoVersion.Enterprise42.isFacetedSearch());
+        Assert.assertEquals(false, AlfrescoVersion.Enterprise43.isFacetedSearch());
+        Assert.assertEquals(true, AlfrescoVersion.Cloud.isFacetedSearch());
+        Assert.assertEquals(false, AlfrescoVersion.CloudNonFacetSearch.isFacetedSearch());
+        Assert.assertEquals(true, AlfrescoVersion.Enterprise5.isFacetedSearch());
+        Assert.assertEquals(true, AlfrescoVersion.MyAlfresco.isFacetedSearch());
     } 
     @Test
     public void createFromNull()
