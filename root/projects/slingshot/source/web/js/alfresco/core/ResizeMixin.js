@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
          // Fire a custom event to let contained objects know that the node has been resized.
          this.alfPublish(this.alfResizeNodeTopic, {
             node: resizedNode
-         });
+         }, true);
       },
 
       /**
@@ -76,7 +76,7 @@ define(["dojo/_base/declare",
          {
             var scope = (resizeHandlerCallScope != null) ? resizeHandlerCallScope : this;
             on(window, "resize", lang.hitch(scope, resizeHandler));
-            this.alfSubscribe(this.alfResizeNodeTopic, lang.hitch(this, this.alfOnNodeResized, resizeHandler, scope));
+            this.alfSubscribe(this.alfResizeNodeTopic, lang.hitch(this, this.alfOnNodeResized, resizeHandler, scope), true);
          }
       },
 

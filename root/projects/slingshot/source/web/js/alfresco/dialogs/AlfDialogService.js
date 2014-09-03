@@ -96,7 +96,6 @@ define(["dojo/_base/declare",
             contentHeight: payload.contentHeight ? payload.contentHeight : null
          };
          this.dialog = new AlfDialog(dialogConfig);
-         
 
          if (payload.publishOnShow)
          {

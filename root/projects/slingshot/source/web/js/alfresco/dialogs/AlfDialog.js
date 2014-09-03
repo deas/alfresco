@@ -36,6 +36,7 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
         "alfresco/core/ResizeMixin",
+        "dijit/_FocusMixin",
         "dojo/_base/lang",
         "dojo/sniff",
         "dojo/_base/array",
@@ -45,9 +46,9 @@ define(["dojo/_base/declare",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, lang, sniff, array, domConstruct, domClass, domStyle, html, aspect, registry) {
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin, lang, sniff, array, domConstruct, domClass, domStyle, html, aspect, registry) {
    
-   return declare([Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin], {
+   return declare([Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -156,11 +157,19 @@ define(["dojo/_base/declare",
             html.set(this.bodyNode, this.encodeHTML(this.textContent));
          }
       },
-      
-      show: function alfresco_dialogs_AlfDialog__show() {
-         var promise = this.inherited(arguments);
+
+      /**
+       * This is called once the dialog gets focus and at that point it is necessary to resize 
+       * it's contents as this is the final function that is called after the dialog is displayed
+       * and therefore we know it will have dimensions to size against.
+       *
+       * @instance
+       */
+      _onFocus: function alfresco_dialogs_AlfDialog___onFocus() {
+         this.inherited(arguments);
+         this.alfLog("info", "Resizing dialog...");
          this.alfPublishResizeEvent(this.domNode);
-         return promise;
+         // TODO: We could optionally reveal the dialog after resizing to prevent any resizing jumping?
       },
 
       /**
@@ -171,7 +180,10 @@ define(["dojo/_base/declare",
        */
       onResizeRequest: function alfresco_dialogs_AlfDialog__onResizeRequest(payload) {
          this.alfLog("log", "Resizing dialog");
-         this.resize();
+         if (this.domNode != null)
+         {
+            this.resize();
+         }
       },
 
       /**
@@ -237,5 +249,6 @@ define(["dojo/_base/declare",
             }
          }
       }
+
    });
 });
