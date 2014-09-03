@@ -38,219 +38,227 @@ define(["intern!object",
 
             // Test #1
             // Check that the subscription is set-up correctly
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_ITEMS"))
-            .then(function(result) {
-               assert(result == true, "Test #1 - A subscription for the widget could not be found");
-            })
+            .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT_ITEMS"))
+               .then(null, function() {
+                  assert(false, "Test #1 - A subscription for the widget could not be found");
+               })
+               .end()
 
             // Test #2
             // Check that nothing is selected on page load...
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "0", "Test #2 - There should be nothing selected on page load");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "0", "Test #2 - There should be nothing selected on page load");
+               })
+               .end()
 
             // Test #3
             // Check clicking on the "Select All" item...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .click()
                .end()
             .findByCssSelector("#SELECT_ALL")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "2", "Test #3 - _itemsSelected should be 2 after clicking on ALL");
-            })
-            .hasElementByCss(TestCommon.topicSelector("MENU_BAR_SELECT_ITEMS", "publish", "last"))
-            .then(function(result) {
-               assert(result == true, "Test #3 - Mouse selection of ALL didn't publish correctly (missing publish topic)");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "selectAll"))
-            .then(function(result) {
-               assert(result == true, "Test #3 - Mouse selection of ALL didn't publish correctly (incorrect 'value' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #3 - Mouse selection of ALL set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "2", "Test #3 - _itemsSelected should be 2 after clicking on ALL");
+               })
+
+            .findByCssSelector(TestCommon.topicSelector("MENU_BAR_SELECT_ITEMS", "publish", "last"))
+               .then(null, function() {
+                  assert(false, "Test #3 - Mouse selection of ALL didn't publish correctly (missing publish topic)");
+               })
+               .end()
+
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "selectAll"))
+               .then(null, function() {
+                  assert(false, "Test #3 - Mouse selection of ALL didn't publish correctly (incorrect 'value' payload attribute");
+               })
+               .end()
+            
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #3 - Mouse selection of ALL set the correct CSS class.");
+               })
+               .end()
 
             // Test #4
             // Clicking on the 'checkbox' should now deselect everything...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "0", "Test #4 - _itemsSelected should be 0 after clicking on checkbox image");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "selectNone"))
-            .then(function(result) {
-               assert(result == true, "Test #4 - Mouse click on ALL checkbox image didn't publish correctly (incorrect 'value' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-noneselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #4 - Mouse click on ALL checkbox didn't set the correct CSS class.");
-            })
 
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "0", "Test #4 - _itemsSelected should be 0 after clicking on checkbox image");
+               })
+               .end()
+
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "selectNone"))
+               .then(null, function() {
+                  assert(false, "Test #4 - Mouse click on ALL checkbox image didn't publish correctly (incorrect 'value' payload attribute");
+               })
+               .end()
+
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-noneselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #4 - Mouse click on ALL checkbox didn't set the correct CSS class.");
+               })
+               .end()
+            
             // Test #5
             // Check clicking on the "Some" menu item...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .click()
                .end()
             .findByCssSelector("#SELECT_SOME_BY_ITEMS")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "1", "Test #5 - _itemsSelected should be 1 after clicking on SOME");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "availableItemCount", "2"))
-            .then(function(result) {
-               assert(result == true, "Test #5 - Mouse selection of SOME didn't publish correctly (incorrect 'availableItemCount' payload attribute");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "selectedItemCount", "1"))
-            .then(function(result) {
-               assert(result == true, "Test #5 - Mouse selection of SOME didn't publish correctly (incorrect 'selectedItemCount' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-someselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #5 - Mouse selection of SOME set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "1", "Test #5 - _itemsSelected should be 1 after clicking on SOME");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "availableItemCount", "2"))
+               .then(null, function() {
+                  assert(false, "Test #5 - Mouse selection of SOME didn't publish correctly (incorrect 'availableItemCount' payload attribute");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "selectedItemCount", "1"))
+               .then(null, function() {
+                  assert(false, "Test #5 - Mouse selection of SOME didn't publish correctly (incorrect 'selectedItemCount' payload attribute");
+               })
+               .end()
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-someselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #5 - Mouse selection of SOME set the correct CSS class.");
+               })
+               .end()
 
             // Test #6
             // Clicking on the 'checkbox' should move "SOME" to "ALL"...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "2", "Test #6 - _itemsSelected should be 2 after clicking on the SOME checkbox image");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "selectAll"))
-            .then(function(result) {
-               assert(result == true, "Test #6 - Mouse click on SOME checkbox image didn't publish correctly (incorrect 'value' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #6 - Mouse click on SOME checkbox didn't set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "2", "Test #6 - _itemsSelected should be 2 after clicking on the SOME checkbox image");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "selectAll"))
+               .then(null, function() {
+                  assert(false, "Test #6 - Mouse click on SOME checkbox image didn't publish correctly (incorrect 'value' payload attribute");
+               })
+               .end()
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #6 - Mouse click on SOME checkbox didn't set the correct CSS class.");
+               })
+               .end()
 
             // Test #7
             // Check clicking on the "None (by Items)" menu item will set the none state...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .click()
                .end()
             .findByCssSelector("#SELECT_NONE_BY_ITEMS")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "0", "Test #7 - _itemsSelected should be 0 after clicking on NONE (by items)");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "availableItemCount", "2"))
-            .then(function(result) {
-               assert(result == true, "Test #7 - Mouse selection of NONE (by items) didn't publish correctly (incorrect 'availableItemCount' payload attribute");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "selectedItemCount", "0"))
-            .then(function(result) {
-               assert(result == true, "Test #7 - Mouse selection of NONE (by items) didn't publish correctly (incorrect 'selectedItemCount' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-noneselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #7 - Mouse selection of NONE (by items) set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "0", "Test #7 - _itemsSelected should be 0 after clicking on NONE (by items)");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "availableItemCount", "2"))
+               .then(null, function() {
+                  assert(false, "Test #7 - Mouse selection of NONE (by items) didn't publish correctly (incorrect 'availableItemCount' payload attribute");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "selectedItemCount", "0"))
+               .then(null, function() {
+                  assert(false, "Test #7 - Mouse selection of NONE (by items) didn't publish correctly (incorrect 'selectedItemCount' payload attribute");
+               })
+               .end()
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-noneselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #7 - Mouse selection of NONE (by items) set the correct CSS class.");
+               })
+               .end()
 
             // Test #8
             // Check clicking on the "All (by Items)" menu item will set the all state...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .click()
                .end()
             .findByCssSelector("#SELECT_ALL_BY_ITEMS")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "2", "Test #8 - _itemsSelected should be 2 after clicking on ALL (by items)");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "availableItemCount", "2"))
-            .then(function(result) {
-               assert(result == true, "Test #8 - Mouse selection of ALL (by items) didn't publish correctly (incorrect 'availableItemCount' payload attribute");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "selectedItemCount", "2"))
-            .then(function(result) {
-               assert(result == true, "Test #8 - Mouse selection of ALL (by items) didn't publish correctly (incorrect 'selectedItemCount' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #8 - Mouse selection of ALL (by items) set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "2", "Test #8 - _itemsSelected should be 2 after clicking on ALL (by items)");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "availableItemCount", "2"))
+               .then(null, function() {
+                  assert(false, "Test #8 - Mouse selection of ALL (by items) didn't publish correctly (incorrect 'availableItemCount' payload attribute");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "selectedItemCount", "2"))
+               .then(null, function() {
+                  assert(false, "Test #8 - Mouse selection of ALL (by items) didn't publish correctly (incorrect 'selectedItemCount' payload attribute");
+               })
+               .end()
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
+               .then(null, function(result) {
+                  assert(false, "Test #8 - Mouse selection of ALL (by items) set the correct CSS class.");
+               })
+               .end()
 
             // Test #9
             // Check clicking on the "Select None" item...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS")
                .click()
                .end()
             .findByCssSelector("#SELECT_NONE")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "0", "Test #9 - _itemsSelected should be 0 after clicking on NONE");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "selectNone"))
-            .then(function(result) {
-               assert(result == true, "Test #9 - Mouse selection of NONE didn't publish correctly (incorrect 'value' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-noneselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #9 - Mouse selection of NONE set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "0", "Test #9 - _itemsSelected should be 0 after clicking on NONE");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "selectNone"))
+               .then(null, function() {
+                  assert(false, "Test #9 - Mouse selection of NONE didn't publish correctly (incorrect 'value' payload attribute");
+               })
+               .end()
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-noneselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #9 - Mouse selection of NONE set the correct CSS class.");
+               })
+               .end()
 
             // Test #10
             // Clicking on the 'checkbox' should move "NONE" to "ALL"...
-            .end()
             .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img")
                .click()
                .end()
-            .safeEval('dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
-            .then(function(result) {
-               assert(result == "2", "Test #10 - _itemsSelected should be 2 after clicking on the NONE checkbox image");
-            })
-            .end()
-            .hasElementByCss(TestCommon.pubSubDataCssSelector("last", "value", "selectAll"))
-            .then(function(result) {
-               assert(result == true, "Test #10 - Mouse click on NONE checkbox image didn't publish correctly (incorrect 'value' payload attribute");
-            })
-            .end()
-            .hasElementByCss("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
-            .then(function(result) {
-               assert(result == true, "Test #10 - Mouse click on NONE checkbox didn't set the correct CSS class.");
-            })
+            .execute('return dijit.registry.byId("MENU_BAR_SELECT_ITEMS")._itemsSelected.toString()')
+               .then(function(result) {
+                  assert(result == "2", "Test #10 - _itemsSelected should be 2 after clicking on the NONE checkbox image");
+               })
+               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "selectAll"))
+               .then(null, function() {
+                  assert(false, "Test #10 - Mouse click on NONE checkbox image didn't publish correctly (incorrect 'value' payload attribute");
+               })
+               .end()
+            .findByCssSelector("#MENU_BAR_SELECT_ITEMS>img.alf-allselected-icon")
+               .then(null, function() {
+                  assert(false, "Test #10 - Mouse click on NONE checkbox didn't set the correct CSS class.");
+               })
+               .end()
 
             // Post the coverage results...
             .then(function() {
