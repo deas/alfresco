@@ -1859,7 +1859,7 @@
                }
                else if (this.options.startLocation == "{shared}")
                {
-                  startingNodeRef = "alfresco://shared";
+                  startingNodeRef = "alfresco://company/shared";
                }
                else if (this.options.startLocation == "{self}")
                {
@@ -3093,7 +3093,7 @@
                }
                else if (this.options.rootNode == "{shared}")
                {
-                  rootNode = "alfresco://shared";
+                  rootNode = "alfresco://company/shared";
                }
             }
             else
