@@ -35,7 +35,7 @@ public class CMIS_FTSLexer extends Lexer {
 	public Token nextToken() {
 	        nextTokenImpl();
 	        if ( tokens.size()==0 ) {
-	             return getEOFToken();
+                return getEOFToken();
 	        }
 	        return (Token)tokens.remove(0);
 	}

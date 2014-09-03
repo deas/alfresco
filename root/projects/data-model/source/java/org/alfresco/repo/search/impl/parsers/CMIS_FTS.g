@@ -225,7 +225,7 @@ public void emit(Token token) {
 public Token nextToken() {
         nextTokenImpl();
         if ( tokens.size()==0 ) {
-             return getEOFToken();
+            return getEOFToken();
         }
         return (Token)tokens.remove(0);
 }
@@ -241,7 +241,7 @@ public Token nextTokenImpl() {
             state.text = null;
             if ( input.LA(1)==CharStream.EOF ) 
             {
-                  return getEOFToken();
+                return getEOFToken();
             }
             try 
             {
