@@ -85,9 +85,12 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_views_layouts_Grid__postCreate() {
          this.inherited(arguments);
-         if (this.widgets)
+         if (this.currentItem)
          {
-            this.processWidgets(this.widgets, this.containerNode);
+            if (this.widgets)
+            {
+               this.processWidgets(this.widgets, this.containerNode);
+            }
          }
 
          // Update the grid as the window changes...
