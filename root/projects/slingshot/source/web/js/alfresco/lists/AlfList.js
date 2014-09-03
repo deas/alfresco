@@ -719,8 +719,8 @@ define(["dojo/_base/declare",
          // the selected items menu to know how many items were available for selection but it
          // clearly has many other uses...
          this.alfPublish(this.documentsLoadedTopic, {
-            documents: this.currentData[this.itemsProperty],
-            totalDocuments: (response && response.totalRecords) ? response.totalRecords: this.currentData[this.itemsProperty].length,
+            documents: this.currentData.items,
+            totalDocuments: (response && response.totalRecords) ? response.totalRecords: this.currentData.items.length,
             startIndex: (response && response.startIndex) ? response.startIndex : 0
          });
       }, 
