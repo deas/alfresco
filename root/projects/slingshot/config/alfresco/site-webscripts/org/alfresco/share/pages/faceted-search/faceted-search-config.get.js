@@ -21,7 +21,7 @@ services.push("alfresco/services/CrudService",
 // it is defined in a function...
 function getFormDefinition(canEditFilterId) {
 
-   var filterIdValidation = [];
+   var filterIdValidation = null;
    if (canEditFilterId)
    {
       filterIdValidation = [
@@ -59,7 +59,7 @@ function getFormDefinition(canEditFilterId) {
                      fieldId: "FILTER_ID",
                      name: "filterID",
                      value: "",
-                     label: "faceted-searfalsech-config.filterId.label",
+                     label: "faceted-search-config.filterId.label",
                      description: "faceted-search-config.filterId.description",
                      visibilityConfig: {
                         initialValue: true

@@ -241,8 +241,12 @@ define(["dojo/_base/declare",
          // Hide the in-progress indicator...
          domClass.add(this._validationInProgressIndicator, "hidden");
 
+         // Check requirement validation...
+         var value = this.getValue();
+         var requirementTest = !(this._required && (value == null || value == ""));
+
          // Publish the results...
-         if (this._validationInProgressState)
+         if (this._validationInProgressState && requirementTest)
          {
             this.alfPublish("ALF_VALID_CONTROL", {
                name: this.name,
