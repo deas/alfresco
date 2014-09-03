@@ -1248,19 +1248,6 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Handles requests to start a socially publish the supplied document. This function currently
-       * delegates handling of the request to the Alfresco.DocLibToolbar by calling
-       * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
-       *
-       * @instance
-       * @param {object} payload The event payload
-       * @param {object} document The document edit offline.
-       */
-      onActionPublish: function alfresco_services_ActionService__onActionPublish(payload, document) {
-         this.callLegacyActionHandler("onActionPublish", document);
-      },
-
-      /**
        * Handles requests to start a folder download.
        *
        * @instance

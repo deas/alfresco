@@ -1,11 +1,4 @@
 <@markup id="widgets">
-   <#if (attachmentsAssocs?size > 0)>
-      <@inlineScript group="document-details">
-         YAHOO.util.Event.onContentReady("${args.htmlid?js_string}-heading", function() {
-            Alfresco.util.createTwister("${args.htmlid?js_string}-heading", "DocumentPublishing");
-         });
-      </@>
-   </#if>
 </@>
 
 <@markup id="html">

@@ -692,7 +692,7 @@
             record.onlineEditUrl = Alfresco.util.onlineEditUrl(this.doclistMetadata.custom.vtiServer, record.location);
          }
 
- 
+
          if (record.onlineEditUrl.length > 260)
          {
             //Try to use alternate edit online URL: http://{host}:{port}/{context}/_IDX_SITE_{site_uuid}/_IDX_NODE_{document_uuid}/{document_name}
@@ -974,18 +974,18 @@
          {
             record.onlineEditUrlAos = Alfresco.util.onlineEditUrlAos(this.doclistMetadata.custom.aos, record);
          }
-         
+
          var fileExtension = Alfresco.util.getFileExtension(record.location.file);
          var protocolHandler = this.getProtocolForFileExtension(fileExtension);
-         
+
          if(protocolHandler === undefined)
          {
             Alfresco.logger.error("onActionEditOnlineAos", "No protocol handler available for file extension.");
             return;
          }
-         
+
          var officeLauncher = new EmbeddedOfficeLauncher();
-         
+
          if(officeLauncher.isIOS())
          {
             this._aos_launchOfficeOnIos(officeLauncher, protocolHandler, record.onlineEditUrlAos);
@@ -1011,10 +1011,10 @@
          {
              this._aos_tryToLaunchOfficeByMsProtocolHandler(officeLauncher, protocolHandler, record.onlineEditUrlAos);
          }
-        
+
          return;
       },
-      
+
       _aos_launchOfficeByPlugin: function dlA__aos_launchOfficeByPlugin(officeLauncher, url)
       {
          var checker, dlg;
@@ -1121,7 +1121,7 @@
               }
           }, 500);
       },
-      
+
       _aos_launchOfficeOnIos: function dlA__aos_launchOfficeOnIos(officeLauncher, protocolHandler, url)
       {
          var protocolUrl = protocolHandler + ':ofe%7Cu%7C' + officeLauncher.encodeUrl(url);
@@ -1130,7 +1130,7 @@
          document.getElementsByTagName('body')[0].appendChild(iframe);
          iframe.src = protocolUrl;
       },
-      
+
       getProtocolForFileExtension: function(fileExtension)
       {
          var msProtocolNames =
@@ -1399,7 +1399,7 @@
          if (this.fullscreen !== undefined && ( this.fullscreen.isWindowOnly || Dom.hasClass(this.id, 'alf-fullscreen')))
          {
             zIndex = 1000;
-         } 
+         }
 
          var singleUpdateConfig =
          {
@@ -1602,7 +1602,7 @@
          if (this.fullscreen !== undefined && ( this.fullscreen.isWindowOnly || Dom.hasClass(this.id, 'alf-fullscreen')))
          {
             zIndex = 1000;
-         } 
+         }
 
          this.modules.copyMoveTo.setOptions(
          {
@@ -1781,22 +1781,6 @@
          siteUrl = siteUrl.substring(Alfresco.constants.URL_CONTEXT.length);
 
          return $combine(urlMapping[repoId], "/", siteUrl);
-      },
-
-      /**
-       * Social Publishing
-       *
-       * @method onActionPublish
-       * @param record {object} Object literal representing the file or folder to be actioned
-       */
-      onActionPublish: function dlA_onActionPublish(record)
-      {
-         // Call the Social Publishing Module
-         Alfresco.module.getSocialPublishingInstance().show(
-         {
-            nodeRef: record.nodeRef,
-            filename: record.fileName
-         });
       },
 
       /**

@@ -6,7 +6,6 @@
 <@script type="text/javascript" src="${url.context}/res/components/people-finder/people-finder.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/permissions.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/aspects.js" group="${dependencyGroup}"/>
-<@script type="text/javascript" src="${url.context}/res/modules/social-publish.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/modules/documentlibrary/cloud-folder.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/modules/cloud-auth.js" group="${dependencyGroup}"/>
 <@script type="text/javascript" src="${url.context}/res/js/officelauncher.js" group="${dependencyGroup}"/>
@@ -16,7 +15,6 @@
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/components/people-finder/people-finder.css" group="${dependencyGroup}"/>
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/documentlibrary/permissions.css" group="${dependencyGroup}"/>
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/documentlibrary/aspects.css" group="${dependencyGroup}"/>
-<@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/social-publish.css" group="${dependencyGroup}"/>
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/cloud/cloud-auth-form.css" group="${dependencyGroup}"/>
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/cloud/cloud-folder-picker.css" group="${dependencyGroup}"/>
 <@link rel="stylesheet" type="text/css" href="${url.context}/res/modules/cloud/cloud-sync-status.css" group="${dependencyGroup}"/>

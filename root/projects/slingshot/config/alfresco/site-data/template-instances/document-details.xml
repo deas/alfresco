@@ -298,15 +298,6 @@
          </properties>
       </component>
 
-      <!-- Document Publishing -->
-      <component>
-         <region-id>document-publishing</region-id>
-         <url>/components/document-details/document-publishing</url>
-         <properties>
-            <nodeRef>{nodeRef}</nodeRef>
-         </properties>
-      </component>
-
       <!-- Uploaders -->
       <component>
          <region-id>html-upload</region-id>

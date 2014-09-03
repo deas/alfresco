@@ -1155,12 +1155,6 @@
             <!-- aspect trx:transferred, not portlet mode -->
             <evaluator>evaluator.doclib.action.transferred</evaluator>
          </action>
-         
-         <!-- Publish document -->
-         <action id="document-publish" type="javascript" label="actions.document.publish">
-            <param name="function">onActionPublish</param>
-            <evaluator negate="true">evaluator.doclib.action.isLocked</evaluator>
-         </action>
 
          <!-- Cloud Sync: Create -->
          <action id="document-cloud-sync" type="javascript" label="actions.document.cloud-sync">
@@ -1235,7 +1229,6 @@
             <action index="295" id="document-cancel-editing-unlock" icon="document-cancel-editing"/>
             <action index="297" id="document-manage-granular-permissions" />
             <action index="298" id="document-manage-repo-permissions" />
-            <action index="300" id="document-publish" />
             <action index="310" id="document-view-googlemaps" />
             <action index="320" id="document-view-in-source-repository" />
             <action index="330" id="document-cloud-sync" />
@@ -1268,7 +1261,6 @@
             <action index="310" id="document-manage-aspects" />
             <action index="320" id="document-change-type" />
             <action index="330" id="document-view-in-source-repository" />
-            <action index="340" id="document-publish" />
             <action index="350" id="document-view-googlemaps" />
             <action index="360" id="document-cloud-sync" />
             <action index="370" id="document-cloud-unsync" />

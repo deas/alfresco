@@ -6,7 +6,7 @@ function main()
    // Get the edition information to determine if this is an enterprise license
    // This allows us to set a class on the login form to control the button colour
    model.edition = context.properties["editionInfo"].edition;
-   
+
    model.loginUrl = url.context + "/page/dologin";
    var successUrl = context.properties["alfRedirectUrl"];
    var error = "?error=true";
@@ -82,7 +82,6 @@ function main()
       "modules/documentlibrary/permissions.js",
       "components/people-finder/people-finder.js",
       "modules/documentlibrary/aspects.js",
-      "modules/social-publish.js",
       "components/documentlibrary/toolbar.js",
       "components/documentlibrary/tree.js",
       "components/documentlibrary/documentlist.js",
@@ -95,7 +94,6 @@ function main()
       "components/people-finder/people-finder.css",
       "modules/documentlibrary/permissions.css",
       "modules/documentlibrary/aspects.css",
-      "modules/social-publish.css",
       "components/documentlibrary/toolbar.css",
       "components/documentlibrary/documentlist.css",
       "components/documentlibrary/tree.css",
@@ -112,7 +110,6 @@ function main()
       "modules/document-details/revert-version.js",
       "components/document-details/document-versions.js",
       "modules/document-details/historic-properties-viewer.js",
-      "components/document-details/document-publishing.js",
       "components/document-details/document-details-panel.css",
       "components/node-details/node-header.css",
       "components/preview/web-preview.css",
