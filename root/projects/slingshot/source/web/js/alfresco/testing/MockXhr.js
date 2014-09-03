@@ -29,7 +29,7 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/aspect"
+        "dojo/aspect",
 
         "sinon/sinon/match",
         "sinon/sinon/test_case",
