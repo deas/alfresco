@@ -1,5 +1,6 @@
 {
    "browser": true,
+   "dojo": true,
    "esnext": true,
    "bitwise": false,
    "camelcase": false,
