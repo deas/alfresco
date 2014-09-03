@@ -100,10 +100,53 @@
                      "maxFilters": 5,
                      "headingLevel": "a"
                   }
+               },
+               {
+                  "id": "TWISTER_BAD_HEADING_LEVEL_TWO",
+                  "name": "alfresco/search/FacetFilters",
+                  "config": {
+                     "label": "Twister with heading level",
+                     "facetQName": "FACET1QNAME",
+                     "sortBy": "DESCENDING",
+                     "maxFilters": 5,
+                     "headingLevel": 0
+                  }
+               },
+               {
+                  "id": "TWISTER_BAD_HEADING_LEVEL_THREE",
+                  "name": "alfresco/search/FacetFilters",
+                  "config": {
+                     "label": "Twister with heading level",
+                     "facetQName": "FACET1QNAME",
+                     "sortBy": "DESCENDING",
+                     "maxFilters": 5,
+                     "headingLevel": 7
+                  }
+               },
+               {
+                  "id": "TWISTER_NULL_LABEL",
+                  "name": "alfresco/search/FacetFilters",
+                  "config": {
+                     "label": null,
+                     "facetQName": "FACET2QNAME",
+                     "sortBy": "DESCENDING",
+                     "maxFilters": 5
+                  }
+               },
+               {
+                  "id": "TWISTER_EMPTY_LABEL",
+                  "name": "alfresco/search/FacetFilters",
+                  "config": {
+                     "label": "",
+                     "facetQName": "FACET2QNAME",
+                     "sortBy": "DESCENDING",
+                     "maxFilters": 5
+                  }
                }
             ]
          }
-      },{
+      },
+      {
          "name": "alfresco/testing/ConsoleLog"
       },
       {

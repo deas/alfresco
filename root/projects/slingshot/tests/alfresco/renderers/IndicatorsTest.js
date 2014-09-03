@@ -1,0 +1,56 @@
+/**
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * The purpose of this test is to ensure that keyboard accessibility is possible between the header and the 
+ * main table. It should be possible to use the tab/shift-tab keys to navigate along the headers (and the enter/space key
+ * to make requests for sorting) and then the cursor keys to navigate around the table itself.
+ * 
+ * @author Richard Smith
+ */
+define(["intern!object",
+        "intern/chai!expect",
+        "require",
+        "alfresco/TestCommon"], 
+        function (registerSuite, expect, require, TestCommon) {
+
+   registerSuite({
+      name: 'Indicators Test',
+      'alfresco/renderers/Indicators': function () {
+
+         var browser = this.remote;
+         var testname = "IndicatorsTest";
+         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Indicators_TestPage.json", testname)
+
+         .end()
+
+         .findAllByCssSelector("a.indicator-action")
+         .then(function (actions){
+            TestCommon.log(testname,null,"Check there are the expected number of actions (across several indicators)");
+            expect(actions).to.have.length(14, "There should be 14 actions rendered (across several indicators)");
+         })
+         .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      }
+   });
+});

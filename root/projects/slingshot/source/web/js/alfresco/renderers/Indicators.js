@@ -94,7 +94,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_renderers_Indicators__postCreate() {
-         if (this.currentItem.indicators && this.currentItem.indicators.length > 0)
+         if (this.currentItem && this.currentItem.indicators && this.currentItem.indicators.length > 0)
          {
             array.forEach(this.currentItem.indicators, lang.hitch(this, "addIndicator"));
          }
