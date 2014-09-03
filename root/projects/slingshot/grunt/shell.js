@@ -40,7 +40,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
 
@@ -51,7 +54,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startRepoExistingBuild: {
@@ -59,7 +65,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          se: {
@@ -67,7 +76,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startShare: {
@@ -75,7 +87,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startShareInc: {
@@ -83,7 +98,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          }
       },
@@ -94,7 +112,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
 
@@ -104,7 +125,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startRepoFull: {
@@ -112,7 +136,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startRepoExistingBuild: {
@@ -120,7 +147,21 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
+            }
+         },
+         scb: {
+            command: 'm s -be',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOption: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          se: {
@@ -128,7 +169,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startShare: {
@@ -136,7 +180,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          },
          startShareInc: {
@@ -144,7 +191,10 @@ module.exports = function (grunt, alf) {
             options: {
                stdout: true,
                stderr: true,
-               failOnError: true
+               failOnError: true,
+               execOptions: {
+                  maxBuffer: "Infinite"
+               }
             }
          }
       },
@@ -169,7 +219,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.docsDir
+                  cwd: alf.docsDir,
+                  maxBuffer: "Infinite"
                }
             }
          },
@@ -181,7 +232,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.rootDir
+                  cwd: alf.rootDir,
+                  maxBuffer: "Infinite"
                }
             }
          },
@@ -239,7 +291,8 @@ module.exports = function (grunt, alf) {
                stderr: true,
                failOnError: true,
                execOptions: {
-                  cwd: alf.codeDir
+                  cwd: alf.codeDir,
+                  maxBuffer: "Infinite"
                }
             }
          },
