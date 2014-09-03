@@ -144,7 +144,7 @@ define(["dojo/_base/declare",
 
          this.alfSubscribe(this.clearDocDataTopic, lang.hitch(this, "clearOldView"));
       },
-      
+
       /**
        * @instance
        * @param {object} payload The details of the documents that have been provided.

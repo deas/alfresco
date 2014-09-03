@@ -314,7 +314,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "picker.favouriteSites.labe",
+                        label: "picker.favouriteSites.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,

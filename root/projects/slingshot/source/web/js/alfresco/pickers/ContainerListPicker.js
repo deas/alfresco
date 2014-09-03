@@ -34,6 +34,29 @@ define(["dojo/_base/declare",
    return declare([DocumentListPicker], {
 
       /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{i18nFile: "./i18n/ContainerListPicker.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/ContainerListPicker.properties"}],
+
+      /**
+       * Sets some relevant messages to display
+       *
+       * @instance
+       */
+      setDisplayMessages: function alfresco_pickers_PropertyPicker__setDisplayMessages() {
+         this.noViewSelectedMessage = this.message("containerPicker.no.view.message");
+         this.noDataMessage = this.message("containerPicker.no.data.message");
+         this.fetchingDataMessage = this.message("containerPicker.loading.data.message");
+         this.renderingViewMessage = this.message("containerPicker.rendering.data.message");
+         this.fetchingMoreDataMessage = this.message("containerPicker.loading.data.message");
+         this.dataFailureMessage = this.message("containerPicker.data.failure.message");
+      },
+
+      /**
        * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
        * view for selecting documents.
        * 
@@ -93,7 +116,13 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PublishAction",
                                        config: {
-                                          publishPayloadType: "CURRENT_ITEM"
+                                          publishPayloadType: "CURRENT_ITEM",
+                                          renderFilter: [
+                                             {
+                                                property: "node.permissions.user.CreateChildren",
+                                                values: [true]
+                                             }
+                                          ]
                                        }
                                     }
                                  ]

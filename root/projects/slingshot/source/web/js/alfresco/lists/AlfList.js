@@ -327,6 +327,8 @@ define(["dojo/_base/declare",
             }
             else
             {
+               // Update the view message to be consistent with the configuration of the list...
+               view.noItemsMessage = this.noDataMessage;
                this.processView(view);
             }
          }

@@ -90,10 +90,11 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_buttons_AlfButton__postMixInProperties() {
+         this.label = this.message(this.label);
          this.inherited(arguments);
          if (this.publishPayload == null)
          {
-            this.publishPayload == {};
+            this.publishPayload = {};
          }
       },
       
@@ -107,7 +108,7 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          domClass.add(this.domNode, "alfresco-buttons-AlfButton " + (this.additionalCssClasses != null ? this.additionalCssClasses : ""));
 
-         if (this.disableOnInvalidControls == true)
+         if (this.disableOnInvalidControls === true)
          {
             this.invalidControls = [];
             this.alfSubscribe("ALF_INVALID_CONTROL", lang.hitch(this, "onInvalidControl"));
@@ -176,9 +177,9 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event
        */
       onClick: function alfresco_buttons_AlfButton__onClick(evt) {
-         if (this.publishTopic != null && this.publishTopic != "")
+         if (this.publishTopic != null && this.publishTopic !== "")
          {
-            this.alfPublish(this.publishTopic, this.publishPayload, (this.publishGlobal !== undefined && this.publishGlobal == true));
+            this.alfPublish(this.publishTopic, this.publishPayload, (this.publishGlobal !== undefined && this.publishGlobal === true));
          }
          else
          {
