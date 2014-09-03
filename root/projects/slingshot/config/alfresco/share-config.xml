@@ -31,57 +31,6 @@
                displayed under a "More" drop down menu. The current site page will always be displayed -->
          <max-displayed-site-pages>5</max-displayed-site-pages>
          
-         <!-- This indicates whether or not to use the configuration defined in this "header" element for rendering
-              the header menu bar. If this is set to "false" or it not defined then the header bar will be rendered
-              using the design implemented for 4.2 Enterprise. The header definition can be found in the associated
-              WebScript controller.
-         -->
-         <legacy-mode-enabled>false</legacy-mode-enabled>
-
-         <!-- This is the configuration that will be used to populate the header menu bar when "legacy-mode-enabled"
-              has been set to true -->
-         <app-items>
-            <!-- defaults: icon="{id}.png" label="header.{id}.label" description="header.{id}.description" -->
-            <item type="link" id="my-dashboard">{userdashboardpage}</item>
-            <item type="js" id="sites">Alfresco.module.Sites</item>
-            <item type="link" id="people">/people-finder</item>
-            <item type="link" id="repository" condition="conditionRepositoryRootNode">/repository</item>
-            <item type="container" id="more">
-               <container-group id="my">
-                  <item type="link" id="my-tasks">/my-tasks#filter=workflows|active</item>
-                  <item type="link" id="my-workflows">/my-workflows#filter=workflows|active</item>
-                  <item type="link" id="my-content">/user/user-content</item>
-                  <item type="link" id="my-sites">/user/user-sites</item>
-                  <item type="link" id="my-profile">{userprofilepage}</item>
-               </container-group>
-               <container-group id="tools" permission="admin">
-                  <item type="link" id="application">/console/admin-console/application</item>
-                  <item type="link" id="groups">/console/admin-console/groups</item>
-                  <item type="link" id="replication-jobs" condition="!conditionEditionTeam">/console/admin-console/replication-jobs</item>
-                  <item type="link" id="repository">/console/admin-console/repository</item>
-                  <item type="link" id="trashcan">/console/admin-console/trashcan</item>
-                  <item type="link" id="users">/console/admin-console/users</item>
-                  <item type="link" id="more">/console/admin-console/</item>
-               </container-group>
-            </item>
-         </app-items>
-         <user-items>
-            <item type="container" id="user" icon="" description="">
-               <container-group id="usermenu" label="">
-                  <item type="user" id="status">{userprofilepage}</item>
-                  <item type="link" id="my-profile">{userprofilepage}</item>
-                  <item type="link" id="change-password" condition="user.capabilities.isMutable">/user/change-password</item>
-                  <item type="external-link" id="help">{share-help}</item>
-                  <item type="post" id="logout" condition="!context.externalAuthentication">dologout</item>
-               </container-group>
-            </item>
-         </user-items>
-         <dependencies>
-            <css src="/modules/create-site.css" />
-            <css src="/modules/header/sites.css" />
-            <js src="/modules/create-site.js" />
-            <js src="/modules/header/sites.js" />
-         </dependencies>
       </header>
    </config>
 

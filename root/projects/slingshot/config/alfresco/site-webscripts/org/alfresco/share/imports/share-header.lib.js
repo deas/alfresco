@@ -115,7 +115,7 @@ function updateRecentSites() {
       for (var i=0; i < orderedRecentSites.length; i++)
       {
          // Remove any gaps...
-         if (orderedRecentSites[i] == undefined)
+         if (orderedRecentSites[i] === undefined)
          {
             orderedRecentSites.splice(i,1);
          }
@@ -136,7 +136,7 @@ function updateRecentSites() {
             orderedRecentSites.unshift(siteId);  // Push the current site to the front of the queue
             updateRequired = true;
          }
-         else if (currentSiteIndex != 0)
+         else if (currentSiteIndex !== 0)
          {
             // We're on a site and it's not the most recent site (this would be the case when moving between pages
             // in a site, e.g. from the dashboard to the document library. In that instance we wouldn't want to
@@ -390,7 +390,7 @@ function getPages(includeUnusedPages)
    }
    // Prepare template model
    return pages;
-};
+}
 
 /**
  *
@@ -517,19 +517,20 @@ function getSiteNavigationWidgets() {
 
 
 function getSubNavigationWidgets() {
-   var navigationWidgets = []
+   var navigationWidgets = [];
    if (page.id == "search")
    {
       // Build the advanced search query...
       var args = page.url.args;
+      var query;
       if (args["t"] != null || args["tag"] != null || args["q"] != null)
       {
-         var query = "st=" + (args["t"] != null ? encodeURIComponent(args["t"]) : "") +
-                     "&stag=" + (args["tag"] != null ? encodeURIComponent(args["tag"]) : "") +
-                     "&ss=" + (args["s"] != null ? encodeURIComponent(args["s"]) : "") +
-                     "&sa=" + (args["a"] != null ? encodeURIComponent(args["a"]) : "") +
-                     "&sr=" + (args["r"] != null ? encodeURIComponent(args["r"]) : "") +
-                     "&sq=" + (args["q"] != null ? encodeURIComponent(args["q"]) : "");
+         query = "st=" + (args["t"] != null ? encodeURIComponent(args["t"]) : "") +
+                 "&stag=" + (args["tag"] != null ? encodeURIComponent(args["tag"]) : "") +
+                 "&ss=" + (args["s"] != null ? encodeURIComponent(args["s"]) : "") +
+                 "&sa=" + (args["a"] != null ? encodeURIComponent(args["a"]) : "") +
+                 "&sr=" + (args["r"] != null ? encodeURIComponent(args["r"]) : "") +
+                 "&sq=" + (args["q"] != null ? encodeURIComponent(args["q"]) : "");
          
       }
       var advancedSearchUrl = "advsearch?" + query;
@@ -635,7 +636,7 @@ function getSubNavigationWidgets() {
    {
       // Get the standard navigation widgets (expected to be site pages)...
       var siteData = getSiteData();
-      if (siteData.profile.visibility != "PUBLIC" && siteData.userIsMember == false)
+      if (siteData.profile.visibility != "PUBLIC" && siteData.userIsMember === false)
       {
          navigationWidgets = [];
       }
@@ -684,120 +685,6 @@ function getUserStatusWidget()
 
 /* *********************************************************************************
  *                                                                                 *
- * BUILD URI TEMPLATE MAP                                                          *
- *                                                                                 *
- ***********************************************************************************/
-/*
- * Create map of all the URI templates (mapping the id to the template)
- * This map will be used when processing header items of type "link" when
- * rendering the header using the legacy configuration. It is possible to
- * specify the name of a URI template and for the tokens to be substituted.
- */
-var uriTemplateMap = {};
-if (config.scoped["UriTemplate"] &&
-    config.scoped["UriTemplate"]["uri-templates"] &&
-    config.scoped["UriTemplate"]["uri-templates"].childrenMap["uri-template"])
-{
-   var uriTemplates = config.scoped["UriTemplate"]["uri-templates"].childrenMap["uri-template"];
-   for (var ii=0; ii<uriTemplates.size(); ii++)
-   {
-      var currUriTemplate = uriTemplates.get(ii);
-      uriTemplateMap[currUriTemplate.attributes["id"]] = currUriTemplate.value;
-   }
-}
-
-/* *********************************************************************************
- *                                                                                 *
- * BUILD HELP LINK MAP                                                             *
- *                                                                                 *
- ***********************************************************************************/
-/*
- * Create a map of all the help links. Just like the URI templates these can be
- * used in the legacy header configuration to specify a link. This map is used int
- * the "substituteTokens" function.
- */
-var helpMap = {};
-if (config.scoped["HelpPages"] &&
-    config.scoped["HelpPages"]["help-pages"] &&
-    config.scoped["HelpPages"]["help-pages"].getChildren() != null)
-{
-   var helpConfig = config.scoped["HelpPages"]["help-pages"].getChildren();
-   for (var iii=0; iii<helpConfig.size(); iii++)
-   {
-      helpMap[helpConfig.get(iii).getName()] = helpConfig.get(iii).getValue();
-   }
-}
-
-/* *********************************************************************************
- *                                                                                 *
- * TOKEN SUBSTITUTION HANDLING                                                     *
- *                                                                                 *
- ***********************************************************************************/
-/*
- * Creates a map of the tokens that can be be used for substitutions in links when
- * processing legacy header configuration. The token map will only be generated
- * once, however the getTokenMap() function will be called repeatedly. If more tokens
- * need to be added by an extension then this function should be overridden and
- * the page definition functions called again.
- */
-var tokenMap = null;
-function getTokenMap()
-{
-   if (tokenMap == null)
-   {
-      tokenMap = {
-         site: (page.url.templateArgs.site != null) ? page.url.templateArgs.site : "",
-         pageid: (page.url.templateArgs.pageid != null) ? page.url.templateArgs.pageid : "",
-         userid: encodeURIComponent(user.name)
-      }
-   }
-   return tokenMap;
-}
-
-/*
- * This function can be used to replace any tokens that exist in the link. The function
- * is only used for header items of type "link" when generating a header bar from the
- * legacy configuration. The substitution tokens are generated by the getTokenMap()
- * function. Extensions can add more tokens by overriding this function and then
- * calling the functions to build the header definition again.
- */
-function substituteTokens(link)
-{
-   // Perform URI template substitution first (because the resulting URI template may
-   // need additional substitutions performed on it). NOTE: It is intentional that the
-   // whole link must be token with nothing before or after it so that we get a
-   // full template as the link...
-   var re = /^{([^}]*)}$/g,
-      res = re.exec(link);
-   if (res != null && res.length > 1)
-   {
-      var uriTemplate = uriTemplateMap[res[1]];
-      if (uriTemplate != null)
-      {
-         link = uriTemplate;
-      }
-
-      // Substitute any help links...
-      var helpLink = helpMap[res[1]];
-      if (helpLink != null)
-      {
-         link = helpLink;
-      }
-   }
-
-   // Substitute any additional tokens...
-   var localTokenMap = getTokenMap();
-   for (var key in localTokenMap)
-   {
-      link = link.replace(new java.lang.String("{" + key + "}"), localTokenMap[key]);
-   }
-   return link;
-}
-
-
-
-/* *********************************************************************************
- *                                                                                 *
  * CONSTRUCT HELP LINK                                                             *
  *                                                                                 *
  ***********************************************************************************/
@@ -813,288 +700,6 @@ function getHelpLink() {
       helpLink = (helpConfig != null) ? helpConfig.getChildValue("share-help") : "";
    }
    return helpLink;
-}
-
-/* *********************************************************************************
- *                                                                                 *
- * PROCESS LEGACY CONFIGURATION                                                    *
- *                                                                                 *
- ***********************************************************************************/
-/*
- * This function checks whether the supplied items satisfies any permissions attached to it. The only
- * permissions that can be checked are whether the current user is a guest (which isn't really supported
- * by Share) or an administrator. Each item can specify "guest" or "admin" as a permission (all other
- * permission entries will result in the function returning "true") and if the current user falls
- * into the specified role then permission will be granted.
- */
-function satisfiesPermissions(item)
-{
-   var permissions = {
-      guest: user.isGuest,
-      admin: user.isAdmin
-   };
-   var success = item.getPermission().length() == 0;
-   if (!success)
-   {
-      var declaredPermission = permissions[item.getPermission()];
-      success = (declaredPermission != null && declaredPermission);
-   }
-   return success;
-}
-
-/*
- * Setup some default condition information that is provided to allow header items to check for certain things.
- */
-var showRepositoryLink = false;
-if (config.scoped["RepositoryLibrary"] &&
-    config.scoped["RepositoryLibrary"]["visible"])
-{
-   showRepositoryLink = config.scoped["RepositoryLibrary"]["visible"].getValue();
-}
-
-var repoRootNode = "";
-if (config.scoped["RepositoryLibrary"] &&
-    config.scoped["RepositoryLibrary"]["root-node"])
-{
-   repoRootNode = config.scoped["RepositoryLibrary"]["root-node"].getValue();
-}
-
-var conditionRepositoryRootNode = repoRootNode != "",
-    conditionvalueEdition = (context.properties["editionInfo"].edition) ? context.properties["editionInfo"].edition : "UNKNOWN",
-    conditionEditionCommunity = (conditionvalueEdition == "UNKNOWN"),
-    conditionEditionEnterprise = (conditionvalueEdition == "ENTERPRISE"),
-    conditionEditionTeam = (conditionvalueEdition == "TEAM");
-
-/*
- * This function checks whether the supplied item satsifies any conditions attached to it. There are some conditions that
- * can be compared against values that are initialised in this controller (e.g. "conditionEditionCommunity",
- * "conditionEditionEnterprise", etc) or any other value that can be successfully evaluated.
- */
-function satisfiesConditions(item)
-{
-   var success = item.getCondition().length() == 0;
-   if (!success)
-   {
-      var condition = item.getCondition();
-      success = eval("" + condition); // The empty String is required to ensure that the condition is evaluated as a String
-   }
-   return success;
-}
-
-/*
- * This function generates a set of widget definitions from legacy configuration.
- */
-function generateLegacyItems(items)
-{
-   var nestingIndex = 0
-       widgetDefs = [];
-   for (var i=0; i<items.length; i++)
-   {
-     var item = items[i];
-     widgetDef = generateWidgetDef(item, nestingIndex);
-     if (widgetDef != null)
-     {
-        widgetDefs.push(widgetDef)
-     }
-   }
-   return widgetDefs;
-}
-
-/*
- * This function generates the header application menu items definition from the legacy configuration.
- */
-function generateLegacyAppItems() {
-   return generateLegacyItems(config.global.header.appItems.items);
-}
-
-/*
- * This function generates the header user menu items definition from the legacy configuration.
- */
-function generateLegacyUserItems() {
-   return generateLegacyItems(config.global.header.userItems.items);
-}
-
-/*
- * This function returns the appropriate menu item widget for the current nesting index.
- * By default this means that the when the menu item is not nested (i.e. the argument
- * is 0) then the widget is a menu bar item and at any other nesting it is a menu item.
- *
- * This function could be overridden by extensions to change the widgets for different
- * nesting indexes but that extension would also need to rebuild the Dojo model.
- */
-function getMenuItemWidget(nestingIndex)
-{
-   var widget = "alfresco/menus/AlfMenuBarItem";
-   if (nestingIndex > 0)
-   {
-      widget = "alfresco/menus/AlfMenuItem";
-   }
-   return widget;
-}
-
-// At the moment there is a common widget for all levels of nesting.
-function getMenuGroupWidget(nestingIndex)
-{
-   var widget = "alfresco/header/AlfMenuBarPopup";
-   return widget;
-}
-
-/*
- * This function is provided to ensure that when generating the header from legacy configuration
- * that icons are NOT shown on the top-level items of the header bar.
- */
-function getMenuItemImage(image, nestingIndex)
-{
-   var imageURL = "";
-   if (nestingIndex > 0)
-   {
-      imageURL = url.context + "/res/components/images/header/" + image;
-   }
-   return imageURL;
-}
-
-/*
- * Generates the widget definition for the supplied item.
- */
-function generateWidgetDef(item, nestingIndex)
-{
-   // Get the localized form of the label...
-   var labelTokens = labelTokens = [ user.name || "", user.firstName || "", user.lastName || "", user.fullName || ""],
-       label = msg.get(item.label, labelTokens),
-       description = msg.get(item.description, labelTokens);
-
-   var widgetDef = null;
-   if (!satisfiesPermissions(item))
-   {
-      // Does not satisfy permissions. No action.
-   }
-   else if (!satisfiesConditions(item))
-   {
-      // Does not satisfy conditions. No action.
-   }
-   else if (item.type == "container")
-   {
-      // Handle "container" items...
-      widgetDef = {
-         id: item.id,
-         name: getMenuGroupWidget(nestingIndex),
-         config: {
-            label: label,
-            widgets: []
-         }
-      };
-      var contents = [];
-      if (item.containers && item.containers.length)
-      {
-         for (var i=0; i<item.containers.length; i++)
-         {
-            // Define the group...
-            var containerGroup = item.containers[i];
-            var containerGroupDef = {
-               id: containerGroup.id,
-               name: "alfresco/menus/AlfMenuGroup",
-               config: {
-                  label: containerGroup.label,
-                  widgets: []
-               }
-            };
-            widgetDef.config.widgets.push(containerGroupDef);
-
-            // Add each item to the container group...
-            for (var j=0; j<containerGroup.items.length; j++)
-            {
-               var subItem = containerGroup.items[j];
-               var subWidgetDef = generateWidgetDef(subItem, nestingIndex+1);
-               if (subWidgetDef != null)
-               {
-                  containerGroupDef.config.widgets.push(subWidgetDef);
-               }
-            }
-         }
-      }
-   }
-   else if (item.type == "js")
-   {
-      // Handle "js" items...
-      // Any item that is marked as type "js" will be rendered by a JavaScript entry that will have been specified in the <dependencies>
-      // element. A special wrapper widget "alfresco/wrapped/HeaderJsWrapper" has been provided for the custom JavaScript object to be
-      // instantiated within. The legacy code is somewhat restricted to what can actually be created, for example it must be linked to
-      // a button that is placed on the header (and this is one of the things that the HeaderJsWrapper widget provide).
-      var itemId = item.id + "-" + args.htmlid + "_" + item.generatedId;
-      widgetDef = {
-         id: item.id,
-         name: "alfresco/wrapped/HeaderJsWrapper",
-         config: {
-            objectToInstantiate: item.value,
-            label: label,
-            id: itemId,
-            itemId: itemId,
-            siteId: page.url.templateArgs.site
-         }
-      };
-   }
-   else if (item.type == "link")
-   {
-      var link = item.value;
-
-      // Perform URI template token substitution...
-      // It's possible for items of type link to include tokens to be substituted. These tokens will either
-      // be the names of URI templates (defined in "share-config.xml"), help pages (defined in "share-help-config.xml")
-      // or possible token that have been passed into the header.
-      // By default (in previous versions of Share) the following tokens were provided:
-      // - site
-      // - pageid
-      // - userid
-      // These tokens will be honoured here. But this function can be called again by extensions after new tokens
-      // have been added
-      link = substituteTokens(link);
-
-      // Remove any leading slashes on the link...
-      if (link.startsWith("/"))
-      {
-         link = link.substring(1);
-      }
-
-      widgetDef = {
-         id: item.id,
-         name: getMenuItemWidget(nestingIndex),
-         config: {
-            label: label,
-            iconImage: getMenuItemImage(item.icon, nestingIndex),
-            targetUrl: link,
-            targetUrlType: "SHARE_PAGE_RELATIVE"
-         }
-      }
-   }
-   else if (item.type == "external-link")
-   {
-      // The only difference between the "link" and the "external-link" types is that the
-      // "targetUrlType" attribute is set to FULL_PATH which indicates that the "targetUrl"
-      // supplied will be a full URL rather than relative to the Share page context
-      var link = item.value;
-      link = substituteTokens(link);
-      widgetDef = {
-         id: item.id,
-         name: getMenuItemWidget(nestingIndex),
-         config: {
-            label: label,
-            iconImage: getMenuItemImage(item.icon, nestingIndex),
-            targetUrl: link,
-            targetUrlType: "FULL_PATH",
-            targetUrlLocation: "NEW"
-         }
-      }
-   }
-   else if (item.type == "user")
-   {
-      // The item type "user" maps to the user status information
-      widgetDef = getUserStatusWidget();
-   }
-   else
-   {
-      // Unknown item type.
-   }
-   return widgetDef;
 }
 
 /* *********************************************************************************
@@ -1349,12 +954,6 @@ function getUserMenuWidgets()
    return userMenuWidgets;
 }
 
-/* *********************************************************************************
- *                                                                                 *
- * DECIDE ON NEW OR LEGACY CONFIGURATION                                           *
- *                                                                                 *
- ***********************************************************************************/
-
 /**
  * This builds an object with two attributes "appItems" and "userItems" where each
  * attribute is an array of widgets to include in menu bars on the header. The "appItems"
@@ -1365,34 +964,11 @@ function getUserMenuWidgets()
  * @returns {object} The menus to include in header
  */
 function getHeaderMenus() {
-
    var headerMenus = {};
-
-   /* By default the header does not support the legacy header bar configuration. However, it
-    * can be enabled so that the header is rendered as it was before (and therefore support
-    * 3rd party customizations of the header).
-    */
-   var useLegacyHeaderConfig = false;
-   if (config.global.header && config.global.header.legacyMode)
-   {
-      useLegacyHeaderConfig = (config.global.header.legacyMode == true);
-   }
-   if (useLegacyHeaderConfig)
-   {
-      // Generate the header definition using the legacy configuration (the default definition can be found in the
-      // "share-config.xml" file, although there may be a 3rd party definition that customizes the default settings).
-      headerMenus.appItems = generateLegacyAppItems();
-      headerMenus.userItems = generateLegacyUserItems();
-   }
-   else
-   {
-      // Generate the new header definition.
-      headerMenus.appItems = generateAppItems();
-      headerMenus.userItems = generateUserItems();
-   }
+   headerMenus.appItems = generateAppItems();
+   headerMenus.userItems = generateUserItems();
    return headerMenus;
 }
-
 
 /* *********************************************************************************
  *                                                                                 *
@@ -1562,7 +1138,7 @@ function getTitleBarModel() {
                      userFullName: user.fullName
                   }
                }
-            })
+            });
          }
          if (siteData.userIsSiteManager)
          {
@@ -1692,11 +1268,6 @@ function getTitleBarModel() {
    return titleConfig;
 }
 
-
-
-// Set up the page defintion using the configuration that will have been generated by either the "generateLegacyHeaderDefinition"
-// function or the "generateHeaderDefinition" function.
-
 /* *********************************************************************************
  *                                                                                 *
  * HEADER LOGO HANDLING                                                            *
@@ -1739,7 +1310,7 @@ function getHeaderLogoUrl() {
 function getUserPreferences() {
    var userPreferences = {};
    var prefs = jsonUtils.toObject(preferences.value);
-   return prefs
+   return prefs;
 }
 var userPreferences = getUserPreferences();
 
