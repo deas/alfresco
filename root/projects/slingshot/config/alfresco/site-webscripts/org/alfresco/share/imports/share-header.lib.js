@@ -66,6 +66,26 @@ var _processedUserData = getUserGroupData();
 
 /* *********************************************************************************
  *                                                                                 *
+ * REPOSITORY LINK HANDLING                                                        *
+ *                                                                                 *
+ ***********************************************************************************/
+
+var showRepositoryLink = false;
+if (config.scoped["RepositoryLibrary"] &&
+    config.scoped["RepositoryLibrary"]["visible"])
+{
+   showRepositoryLink = config.scoped["RepositoryLibrary"]["visible"].getValue();
+}
+
+var repoRootNode = "";
+if (config.scoped["RepositoryLibrary"] &&
+    config.scoped["RepositoryLibrary"]["root-node"])
+{
+   repoRootNode = config.scoped["RepositoryLibrary"]["root-node"].getValue();
+}
+
+/* *********************************************************************************
+ *                                                                                 *
  * RECENT SITES HANDLING                                                           *
  *                                                                                 *
  ***********************************************************************************/
