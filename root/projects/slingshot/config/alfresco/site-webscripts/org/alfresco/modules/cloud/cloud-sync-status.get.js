@@ -21,13 +21,26 @@ function main()
       model.isParentPath = true;
       nodeDetails = AlfrescoUtil.getRemoteNodeDetails(remoteNodeInfo.remoteParentNodeRef, remoteNodeInfo.remoteNetworkId);
    }
+   
+   if (nodeDetails && nodeDetails.error && nodeDetails.error.status)
+   {
+      model.error = {
+         code: nodeDetails.error.status.code, 
+         message: nodeDetails.error.message};
+   }
 
    if (nodeDetails && nodeDetails.error && nodeDetails.error.status && nodeDetails.error.status.code === 403)
    {
       // 403 returned when not is not a sync set member.
       model.synced = false;
+      model.error.message = msg.get("sync.status.unknown-location.unauthorized");
    }
-   else if (nodeDetails)
+   else if (nodeDetails && nodeDetails.error && nodeDetails.error.status && nodeDetails.error.status.code === 410)
+   {
+      // 410 returned if there is no permissions to get node details
+      model.error.message = msg.get("sync.status.unknown-location.no-permissions");
+   }
+   else if (nodeDetails && !nodeDetails.error)
    {
       model.nodeFound = true;
       model.item = nodeDetails.item;

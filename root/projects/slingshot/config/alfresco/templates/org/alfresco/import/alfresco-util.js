@@ -182,7 +182,7 @@ var AlfrescoUtil =
       return null;
    },
 
-   processNodeDetails: function processNodeDetails(url, site, options, libraryRoot)
+   processNodeDetails: function processNodeDetails(url, site, options, libraryRoot, returnError)
    {
       if (!site)
       {
@@ -201,6 +201,10 @@ var AlfrescoUtil =
             return details;
          }
       }
+      else if (returnError)
+      {
+         return {error: JSON.parse(result)};
+      }
       return null;
    },
 
@@ -209,7 +213,7 @@ var AlfrescoUtil =
       if (remoteNodeRef)
       {
          var url = '/cloud/doclib2/node/' + remoteNodeRef.replace("://", "/") + "?network=" + remoteNetworkId,
-            details = AlfrescoUtil.processNodeDetails(url, true, options);
+            details = AlfrescoUtil.processNodeDetails(url, true, options, null, true);
          if (details)
          {
             return details;
