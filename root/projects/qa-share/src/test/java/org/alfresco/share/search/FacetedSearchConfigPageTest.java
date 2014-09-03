@@ -1,7 +1,9 @@
 package org.alfresco.share.search;
 
 import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.search.FacetedSearchConfigFilter;
 import org.alfresco.po.share.search.FacetedSearchConfigPage;
+import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +29,7 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
 
     /** Constants */
     private DashBoardPage dashBoardPage;
+    private FacetedSearchPage facetedSearchPage;
     private FacetedSearchConfigPage facetedSearchConfigPage;
 
     /* (non-Javadoc)
@@ -63,9 +66,69 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
         Assert.assertTrue(StringUtils.isNotEmpty(facetedSearchConfigPage.getPageTitle()), "The faceted search config page should have a title");
 
         // Page should have some filters on it
-        Assert.assertTrue(facetedSearchConfigPage.getFilters().size() > 0, "The faceted search config page should have a title");
+        Assert.assertTrue(facetedSearchConfigPage.getFilters().size() > 0, "The faceted search config page should have some facets");
         
         trace("renderFacetedSearchConfigTest complete");
+    }
+
+    /**
+     * Render test.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void disableAndEnableFacetTest() throws Exception
+    {
+        trace("Starting disableAndEnableFacetTest");
+
+        // Navigate to search
+        dashBoardPage = ShareUser.selectMyDashBoard(drone);
+        
+        // Navigate to search config
+        facetedSearchConfigPage = dashBoardPage.getNav().getFacetedSearchConfigPage().render();
+
+        // Set all filters to enabled
+        for(FacetedSearchConfigFilter filter : facetedSearchConfigPage.getFilters())
+        {
+            filter.editFilterShow("yes");
+        }
+        
+         // Navigate to search
+        facetedSearchPage = facetedSearchConfigPage.getNav().getFacetedSearchPage().render();
+
+        // Search for the letter 'a'
+        facetedSearchPage = (facetedSearchPage.getSearchForm().search("a")).render();
+
+        Assert.assertTrue(facetedSearchPage.getFacetGroups().size() > 0, "After searching for the letter 'a' there should be some facet groups");
+        int groupsFound = facetedSearchPage.getFacetGroups().size();
+
+        // Navigate to search config
+        facetedSearchConfigPage = facetedSearchPage.getNav().getFacetedSearchConfigPage().render();
+
+        // Select the first filter and set it to not be shown
+        facetedSearchConfigPage.getFilters().get(0).editFilterShow("no");
+
+        // Navigate back to the search and search for a again
+        facetedSearchPage = facetedSearchConfigPage.getNav().getFacetedSearchPage().render();
+        facetedSearchPage = (facetedSearchPage.getSearchForm().search("a")).render();
+
+        Assert.assertTrue(facetedSearchPage.getFacetGroups().size() > 0, "After searching for the letter 'a' there should be some facet groups");
+        Assert.assertTrue(facetedSearchPage.getFacetGroups().size() < groupsFound, "There should be fewer facet groups now shown");
+
+        // Navigate to search config
+        facetedSearchConfigPage = facetedSearchPage.getNav().getFacetedSearchConfigPage().render();
+
+        // Select the first filter and set it to not be shown
+        facetedSearchConfigPage.getFilters().get(0).editFilterShow("yes");
+
+        // Navigate back to the search and search for a again
+        facetedSearchPage = facetedSearchConfigPage.getNav().getFacetedSearchPage().render();
+        facetedSearchPage = (facetedSearchPage.getSearchForm().search("a")).render();
+
+        Assert.assertTrue(facetedSearchPage.getFacetGroups().size() > 0, "After searching for the letter 'a' there should be some facet groups");
+        Assert.assertTrue(facetedSearchPage.getFacetGroups().size() == groupsFound, "There should be fewer facet groups now shown");
+        
+        trace("disableAndEnableFacetTest complete");
     }
 
     /* (non-Javadoc)
