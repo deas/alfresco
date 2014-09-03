@@ -623,7 +623,7 @@
       {
          if (jsNode.isContainer)
          {
-            if (record.parent.isContainer)
+            if (record.parent.isContainer || record.node.isContainer)
             {
                // handle folder parent node
                html = '#" class="filter-change" rel="' + Alfresco.DocumentList.generatePathMarkup(record.location);
