@@ -54,7 +54,8 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#NEW_LINE")
-         .getComputedCss("display")
+         .getComputedStyle(
+.getActiveElement("display")
          .then(function(result) {
             TestCommon.log(testname,59,"Check new line property is rendered correctly");
             assert(result == "block", "New line not applied");
@@ -78,7 +79,8 @@ define(["intern!object",
          .end()
 
          .findByCssSelector("#HOVER .inner")
-         .getComputedCss("visibility")
+         .getComputedStyle(
+.getActiveElement("visibility")
          .then(function(result) {
             TestCommon.log(testname,83,"Check hover property is hidden");
             assert(result == "hidden", "Hover displayed unexpectedly");
