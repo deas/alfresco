@@ -27,14 +27,14 @@
  * The width needs to be properly calculated, this is just a really big number at the moment
  * to get the frame working
  */
-.alfresco-documentlibrary-views-layouts-Carousel ol {
+.alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol.item {
    width: 20000px;
    padding: 0;
    position: relative;
    transition: left 1.0s ease;
 }
 
-.alfresco-documentlibrary-views-layouts-Carousel .items li {
+.alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol.item > li {
    display: inline-block;
    margin-top: 6px;
 }
@@ -48,13 +48,13 @@
    z-index: 1;
 }
 
-.alfresco-documentlibrary-views-layouts-Carousel .controls .prev{
+.alfresco-documentlibrary-views-layouts-Carousel > div.controls .prev{
    float: left;
    margin-left: 10px;
    z-index: 2;
 }
 
-.alfresco-documentlibrary-views-layouts-Carousel .controls .next{
+.alfresco-documentlibrary-views-layouts-Carousel > div.controls .next{
    float: right;
    margin-right: 10px;
    z-index: 2;

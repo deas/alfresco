@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -24,6 +24,10 @@
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/renderers/_JsNodeMixin
+ * @mixes module:alfresco/node/DraggableNodeMixin
+ * @mixes module:alfresco/renderers/_PublishPayloadMixin
+ * @mixes module:alfresco/node/NodeDropTargetMixin
+ * @mixes module:dijit/_OnDijitClickMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -32,6 +36,7 @@ define(["dojo/_base/declare",
         "alfresco/renderers/_JsNodeMixin",
         "alfresco/node/DraggableNodeMixin",
         "alfresco/node/NodeDropTargetMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "dijit/_OnDijitClickMixin",
         "dojo/text!./templates/Thumbnail.html",
         "alfresco/core/Core",
@@ -41,10 +46,11 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/event",
         "alfresco/core/NodeUtils"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, _OnDijitClickMixin, template, AlfCore, 
-                 _ItemLinkMixin, _AlfDndDocumentUploadMixin, AlfConstants, lang, event, NodeUtils) {
+        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, 
+                 _PublishPayloadMixin, _OnDijitClickMixin, template, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin, 
+                 AlfConstants, lang, event, NodeUtils) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin, _PublishPayloadMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -242,8 +248,7 @@ define(["dojo/_base/declare",
        * @returns {object} The payload to publish when the thumbnail is clicked.
        */
       getPublishPayload: function alfresco_renderers_Thumbnail__getPublishPayload() {
-         // TODO: This needs to be implemented to handle links for the Document Library.
-         return this.publishPayload;
+         return this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
       }
    });
 });

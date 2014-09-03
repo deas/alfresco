@@ -143,7 +143,8 @@ define(["dojo/_base/declare",
             widgets: lang.clone(this.widgetsForContent),
             currentData: this.currentData,
             pubSubScope: this.pubSubScope,
-            parentPubSubScope: this.parentPubSubScope
+            parentPubSubScope: this.parentPubSubScope,
+            itemSelectionTopics: ["ALF_FILMSTRIP_SELECT_ITEM"]
          });
          this.contentCarousel.placeAt(this.previewNode, "last");
          this.contentCarousel.resize();
@@ -197,7 +198,14 @@ define(["dojo/_base/declare",
             config: {
                dimensions: {
                   w: "100px"
-               }
+               },
+               publishTopic: "ALF_FILMSTRIP_SELECT_ITEM",
+               publishPayloadType: "PROCESS",
+               publishPayload: {
+                  index: "{index}",
+                  nodeRef: "{nodeRef}"
+               },
+               publishPayloadModifiers: ["processCurrentItemTokens"]
             }
          }
       ]

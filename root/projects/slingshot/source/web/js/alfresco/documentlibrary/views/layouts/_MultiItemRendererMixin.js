@@ -181,6 +181,7 @@ define(["dojo/_base/declare",
             // Set current Index to previousItemCount (so rendering starts at new items)
             this.currentIndex = this.currentData.previousItemCount || 0;
             this.currentItem = this.currentData.items[this.currentIndex];
+            
             var itemsToRender = (this.currentIndex)? this.currentData.items.slice(this.currentIndex): this.currentData.items;
             
             array.forEach(itemsToRender, lang.hitch(this, "renderNextItem"));
@@ -269,6 +270,12 @@ define(["dojo/_base/declare",
             {
                // Render the next item...
                this.currentItem = this.currentData.items[this.currentIndex];
+
+               // Add in the index...
+               if (this.currentItem.index == null)
+               {
+                  this.currentItem.index = this.currentIndex;
+               }
             }
          }
          else

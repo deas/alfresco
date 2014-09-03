@@ -89,6 +89,14 @@ define(["dojo/_base/declare",
             }
          }
 
+         // Subscribe to selection topics...
+         if (this.itemSelectionTopics)
+         {
+            array.forEach(this.itemSelectionTopics, function(topic, index) {
+               this.alfSubscribe(topic, lang.hitch(this, this.selectItem));
+            }, this);
+         }
+
          // Subscibe to the page widgets ready topic to ensure that sizing occurs...
          this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, this.resize), true);
       },
@@ -297,6 +305,38 @@ define(["dojo/_base/declare",
          if (widget && typeof widget.render === "function")
          {
             widget.render();
+         }
+      },
+
+      /**
+       * Handles requests to select an item
+       *
+       * @instance
+       * @param {payload}
+       */
+      selectItem: function alfresco_documentlibrary_views_layouts_Carousel__item(payload) {
+         if (payload.index != null)
+         {
+            if (payload.index >= this.firstDisplayedIndex && payload.index <= this.lastDisplayedIndex)
+            {
+               // The requested item is currently displayed, no action necessary...
+            }
+            else if (payload.index > this.firstDisplayedIndex)
+            {
+               // Start navigating back to find the item
+               while(payload.index > this.firstDisplayedIndex)
+               {
+                  this.onNextClick();
+               }
+            }
+            else
+            {
+               // Start navigating forward to find the item
+               while(payload.index < this.lastDisplayedIndex)
+               {
+                  this.onPrevClick();
+               }
+            }
          }
       }
    });
