@@ -105,6 +105,7 @@ function getFormDefinition(canEditFilterId) {
                      value: "",
                      label: "faceted-search-config.filterId.label",
                      description: "faceted-search-config.filterId.description",
+                     placeHolder: "faceted-search-config.filterId.placeHolder",
                      visibilityConfig: {
                         initialValue: true
                      },
@@ -180,9 +181,6 @@ function getFormDefinition(canEditFilterId) {
                      value: "",
                      label: "faceted-search-config.facetQName.label",
                      description: "faceted-search-config.facetQName.description",
-                     requirementConfig: {
-                        initialValue: true
-                     },
                      optionsConfig: {
                         fixed: getAvailableFacets()
                      }
@@ -490,7 +488,6 @@ var main = {
                         widgets: [
                            {
                               name: "alfresco/layout/VerticalWidgets",
-                              className: "add-borders",
                               config: {
                                  widgetMarginBottom: "10",
                                  widgets: [
@@ -559,6 +556,12 @@ var main = {
                                                       {
                                                          name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                                          config: {
+                                                            label: msg.get("faceted-search-config.scope.label")
+                                                         }
+                                                      },
+                                                      {
+                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                         config: {
                                                             label: ""
                                                          }
                                                       }
@@ -577,6 +580,7 @@ var main = {
                                                                         {
                                                                            name: "alfresco/renderers/Reorder",
                                                                            config: {
+                                                                              propertyToRender: "filterID",
                                                                               moveUpPublishTopic: "ALF_CRUD_UPDATE",
                                                                               moveUpPublishPayloadType: "PROCESS",
                                                                               moveUpPublishPayloadModifiers: ["processCurrentItemTokens"],
@@ -625,7 +629,8 @@ var main = {
                                                                               publishPayloadItemMixin: true,
                                                                               publishPayload: {
                                                                                  url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true
+                                                                                 noRefresh: true,
+                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                               }
                                                                            }
                                                                         }
@@ -648,7 +653,8 @@ var main = {
                                                                               publishPayloadItemMixin: true,
                                                                               publishPayload: {
                                                                                  url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true
+                                                                                 noRefresh: true,
+                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                               },
                                                                               optionsConfig: {
                                                                                  fixed: getAvailableFacets()
@@ -690,7 +696,8 @@ var main = {
                                                                               publishPayloadItemMixin: true,
                                                                               publishPayload: {
                                                                                  url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true
+                                                                                 noRefresh: true,
+                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                               },
                                                                               optionsConfig: {
                                                                                  fixed: getAvailableFacetControls() 
@@ -717,7 +724,8 @@ var main = {
                                                                               publishPayloadItemMixin: true,
                                                                               publishPayload: {
                                                                                  url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true
+                                                                                 noRefresh: true,
+                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                               },
                                                                               optionsConfig: {
                                                                                  fixed: [
@@ -765,12 +773,39 @@ var main = {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
                                                                      additionalCssClasses: "mediumpad",
+                                                                     width: "",
+                                                                     widgets: [
+                                                                        {
+                                                                           name: "alfresco/renderers/Property",
+                                                                           config: {
+                                                                              propertyToRender: "scope",
+                                                                              valueDisplayMap: [
+                                                                                 {
+                                                                                    label: msg.get("faceted-search-config.scope.none.label"),
+                                                                                    value: "ALL"
+                                                                                 },
+                                                                                 {
+                                                                                    label: msg.get("faceted-search-config.scope.site.label"),
+                                                                                    value: "SCOPED_SITES"
+                                                                                 }
+                                                                              ]
+                                                                           }
+                                                                        }
+                                                                     ]
+                                                                  }
+                                                               },
+                                                               {
+                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  config: {
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
                                                                            name: "alfresco/renderers/PublishAction",
                                                                            config: {
                                                                               iconClass: "delete-16",
+                                                                              propertyToRender: "filterID",
+                                                                              altText: msg.get("faceted-search-config.delete.altText"),
                                                                               publishTopic: "ALF_CRUD_DELETE",
                                                                               publishPayloadType: "PROCESS",
                                                                               publishPayload: {

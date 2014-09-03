@@ -68,6 +68,15 @@ define(["dojo/_base/declare",
       iconClass: "add-icon-16",
 
       /**
+       * The alt-text for the action.
+       *
+       * @instance
+       * @type {string}
+       * @default ""
+       */
+      altText: "",
+
+      /**
        * This defines the topic that will be published on when the associated image is clicked. The payload will be
        * the "currentItem" attribute.
        *
@@ -91,6 +100,11 @@ define(["dojo/_base/declare",
          {
             this.imageSrc = require.toUrl("alfresco/renderers") + "/css/images/" + this.iconClass + ".png";
          }
+
+         // Localize the alt text...
+         this.altText = this.message(this.altText, {
+            0: this.currentItem[this.propertyToRender]
+         });
       },
 
       /**
