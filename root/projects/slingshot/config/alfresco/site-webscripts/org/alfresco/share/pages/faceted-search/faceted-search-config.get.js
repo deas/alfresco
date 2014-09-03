@@ -56,6 +56,7 @@ function getFormDefinition(canEditFilterId) {
 
    var formWidgets = [
       {
+         id: "FORM_HIDDEN_URL",
          name: "alfresco/forms/controls/DojoValidationTextBox",
          config: {
             fieldId: "HIDDEN_UPDATE_URL",
@@ -67,6 +68,7 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_HIDDEN_CUSTOM_PROPS",
          name: "alfresco/forms/controls/HiddenValue",
          config: {
             fieldId: "CUSTOM_PROPERTIES",
@@ -94,10 +96,12 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_CONTROL_ROW_1",
          name: "alfresco/forms/ControlRow",
          config: {
             widgets: [
                {
+                  id: "FORM_FILTER_ID",
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
                      fieldId: "FILTER_ID",
@@ -119,6 +123,7 @@ function getFormDefinition(canEditFilterId) {
                   }
                },
                {
+                  id: "FORM_DISPLAY_NAME",
                   name: "alfresco/forms/controls/DojoValidationTextBox",
                   config: {
                      fieldId: "DISPLAY_NAME",
@@ -139,10 +144,12 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_CONTROL_ROW_2",
          name: "alfresco/forms/ControlRow",
          config: {
             widgets: [
                {
+                  id: "FORM_IS_ENABLED",
                   name: "alfresco/forms/controls/DojoCheckBox",
                   config: {
                      fieldId: "IS_ENABLED",
@@ -153,6 +160,7 @@ function getFormDefinition(canEditFilterId) {
                   }
                },
                {
+                  id: "FORM_IS_DEFAULT",
                   name: "alfresco/forms/controls/DojoCheckBox",
                   config: {
                      fieldId: "IS_DEFAULT",
@@ -170,10 +178,12 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_CONTROL_ROW_3",
          name: "alfresco/forms/ControlRow",
          config: {
             widgets: [
                {
+                  id: "FORM_FACET_QNAME",
                   name: "alfresco/forms/controls/DojoSelect",
                   config: {
                      fieldId: "FACET_QNAME",
@@ -187,6 +197,7 @@ function getFormDefinition(canEditFilterId) {
                   }
                },
                {
+                  id: "FORM_DISPLAY_CONTROL",
                   name: "alfresco/forms/controls/DojoSelect",
                   config: {
                      fieldId: "DISPLAY_CONTROL",
@@ -203,10 +214,12 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_CONTROL_ROW_4",
          name: "alfresco/forms/ControlRow",
          config: {
             widgets: [
                {
+                  id: "FORM_SORTBY",
                   name: "alfresco/forms/controls/DojoSelect",
                   config: {
                      fieldId: "SORTBY",
@@ -233,6 +246,7 @@ function getFormDefinition(canEditFilterId) {
                   }
                },
                {
+                  id: "FORM_MAX_FILTERS",
                   name: "alfresco/forms/controls/NumberSpinner",
                   config: {
                      fieldId: "MAXFILTERS",
@@ -251,10 +265,12 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_CONTROL_ROW_5",
          name: "alfresco/forms/ControlRow",
          config: {
             widgets: [
                {
+                  id: "FORM_MIN_FILTER_VALUE_LENGTH",
                   name: "alfresco/forms/controls/NumberSpinner",
                   config: {
                      fieldId: "MIN_FILTER_VALUE_LENGTH",
@@ -270,6 +286,7 @@ function getFormDefinition(canEditFilterId) {
                   }
                },
                {
+                  id: "FORM_HIT_THRESHOLD",
                   name: "alfresco/forms/controls/NumberSpinner",
                   config: {
                      fieldId: "HIT_THRESHOLD",
@@ -288,6 +305,7 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_SCOPE",
          name: "alfresco/forms/controls/DojoSelect",
          config: {
             fieldId: "SCOPE",
@@ -310,6 +328,7 @@ function getFormDefinition(canEditFilterId) {
          }
       },
       {
+         id: "FORM_SCOPED_SITES",
          name: "alfresco/forms/controls/MultipleEntryFormControl",
          config: {
             fieldId: "SCOPED_SITES",
@@ -387,6 +406,7 @@ var facetClickConfig = {
  ***********************************************************************************/
 
 var createFacetButton = {
+   id: "CREATE_FACET_BUTTON",
    name: "alfresco/buttons/AlfButton",
    config: {
       label: msg.get("faceted-search-config.create-facet.label"),
@@ -412,6 +432,7 @@ var createFacetButton = {
  ***********************************************************************************/
 
 var main = {
+   id: "SEARCH_CONFIG_MAIN_VERTICAL",
    name: "alfresco/layout/VerticalWidgets",
    config: {
       currentItem: {
@@ -420,6 +441,7 @@ var main = {
       baseClass: "side-margins",
       widgets: [
          {
+            id: "SEARCH_CONFIG_VSPACER",
             name: "alfresco/html/Spacer",
             config: {
                height: "20px",
@@ -427,6 +449,7 @@ var main = {
             }
          },
          {
+            id: "SEARCH_CONFIG_NO_PERMISSION_SECTION",
             name: "alfresco/layout/HorizontalWidgets",
             config: {
                renderFilterMethod: "ALL",
@@ -443,6 +466,7 @@ var main = {
                ],
                widgets: [
                   {
+                     id: "SEARCH_CONFIG_NO_PERMISSION_WARNING",
                      name: "alfresco/header/Warning",
                      config: {
                         warnings: [
@@ -457,6 +481,7 @@ var main = {
             }
          },
          {
+            id: "SEARCH_CONFIG_MAIN_HORIZONTAL",
             name: "alfresco/layout/HorizontalWidgets",
             config: {
                renderFilterMethod: "ANY",
@@ -481,348 +506,361 @@ var main = {
                      config: {
                         widgetMarginBottom: "10",
                         widgets: [
+                           createFacetButton,
                            {
-                              name: "alfresco/layout/VerticalWidgets",
+                              id: "SEARCH_CONFIG_FACET_LIST",
+                              name: "alfresco/lists/AlfList",
                               config: {
-                                 widgetMarginBottom: "10",
+                                 loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                 loadDataPublishPayload: {
+                                    url: "api/solr/facet-config"
+                                 },
+                                 itemsProperty: "facets",
                                  widgets: [
-                                    createFacetButton,
                                     {
-                                       name: "alfresco/lists/AlfList",
+                                       id: "SEARCH_CONFIG_FACET_LIST_VIEW",
+                                       name: "alfresco/documentlibrary/views/AlfDocumentListView",
                                        config: {
-                                          loadDataPublishTopic: "ALF_CRUD_GET_ALL",
-                                          loadDataPublishPayload: {
-                                             url: "api/solr/facet-config"
-                                          },
-                                          itemsProperty: "facets",
+                                          additionalCssClasses: "bordered",
+                                          widgetsForHeader: [
+                                             {
+                                                id: "SEARCH_CONFIG_REORDER_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: "",
+                                                   sortable: false
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_FILTER_ID_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.filterId.label"),
+                                                   sortable: false
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_DISPLAY_NAME_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.displayName.label"),
+                                                   sortable: false
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_FACET_QNAME_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.facetQName.label"),
+                                                   sortable: false
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_DISPLAY_CONTROL_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.displayControl.label"),
+                                                   sortable: false
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_IS_ENABLED_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.isEnabled.label")
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_IS_DEFAULT_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.isDefault.label")
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_SCOPE_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: msg.get("faceted-search-config.scope.label")
+                                                }
+                                             },
+                                             {
+                                                id: "SEARCH_CONFIG_ACTIONS_HEADER",
+                                                name: "alfresco/documentlibrary/views/layouts/HeaderCell",
+                                                config: {
+                                                   label: ""
+                                                }
+                                             }
+                                          ],
                                           widgets: [
                                              {
-                                                name: "alfresco/documentlibrary/views/AlfDocumentListView",
+                                                id: "SEARCH_CONFIG_FACET_LIST_VIEW_ROW",
+                                                name: "alfresco/documentlibrary/views/layouts/Row",
                                                 config: {
-                                                   additionalCssClasses: "bordered",
-                                                   widgetsForHeader: [
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: "",
-                                                            sortable: false
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.filterId.label"),
-                                                            sortable: false
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.displayName.label"),
-                                                            sortable: false
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.facetQName.label"),
-                                                            sortable: false
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.displayControl.label"),
-                                                            sortable: false
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.isEnabled.label")
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.isDefault.label")
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: msg.get("faceted-search-config.scope.label")
-                                                         }
-                                                      },
-                                                      {
-                                                         name: "alfresco/documentlibrary/views/layouts/HeaderCell",
-                                                         config: {
-                                                            label: ""
-                                                         }
-                                                      }
-                                                   ],
                                                    widgets: [
                                                       {
-                                                         name: "alfresco/documentlibrary/views/layouts/Row",
+                                                         id: "SEARCH_CONFIG_REORDER_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
                                                          config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "50px",
                                                             widgets: [
                                                                {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  name: "alfresco/renderers/Reorder",
                                                                   config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "50px",
-                                                                     widgets: [
+                                                                     propertyToRender: "filterID",
+                                                                     moveUpPublishTopic: "ALF_CRUD_UPDATE",
+                                                                     moveUpPublishPayloadType: "PROCESS",
+                                                                     moveUpPublishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     moveUpPublishPayloadItemMixin: true,
+                                                                     moveUpPublishPayload: {
+                                                                        url: "api/solr/facet-config/{filterID}?relativePos=-1"
+                                                                     },
+                                                                     moveDownPublishTopic: "ALF_CRUD_UPDATE",
+                                                                     moveDownPublishPayloadType: "PROCESS",
+                                                                     moveDownPublishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     moveDownPublishPayloadItemMixin: true,
+                                                                     moveDownPublishPayload: {
+                                                                        url: "api/solr/facet-config/{filterID}?relativePos=1"
+                                                                     }
+                                                                  }
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_FILTER_ID_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "",
+                                                            widgets: [
+                                                               {
+                                                                  name: "alfresco/renderers/PropertyLink",
+                                                                  config: facetClickConfig
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_DISPLAY_NAME_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "",
+                                                            widgets: [
+                                                               {
+                                                                  name: "alfresco/renderers/InlineEditProperty",
+                                                                  config: {
+                                                                     propertyToRender: "displayName",
+                                                                     publishTopic: "ALF_CRUD_UPDATE",
+                                                                     publishPayloadType: "PROCESS",
+                                                                     publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     publishPayloadItemMixin: false,
+                                                                     publishPayload: {
+                                                                        filterID: "{filterID}",
+                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        noRefresh: true,
+                                                                        successMessage: msg.get("faceted-search-config.update.successMessage")
+                                                                     }
+                                                                  }
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_FACET_QNAME_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "",
+                                                            widgets: [
+                                                               {
+                                                                  name: "alfresco/renderers/InlineEditSelect",
+                                                                  config: {
+                                                                     propertyToRender: "facetQName",
+                                                                     publishTopic: "ALF_CRUD_UPDATE",
+                                                                     publishPayloadType: "PROCESS",
+                                                                     publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     publishPayloadItemMixin: false,
+                                                                     publishPayload: {
+                                                                        filterID: "{filterID}",
+                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        noRefresh: true,
+                                                                        successMessage: msg.get("faceted-search-config.update.successMessage")
+                                                                     },
+                                                                     optionsConfig: {
+                                                                        fixed: getAvailableFacets()
+                                                                     },
+                                                                     valueDisplayMap: getAvailableFacets(),
+                                                                     hiddenDataRules: [
                                                                         {
-                                                                           name: "alfresco/renderers/Reorder",
-                                                                           config: {
-                                                                              propertyToRender: "filterID",
-                                                                              moveUpPublishTopic: "ALF_CRUD_UPDATE",
-                                                                              moveUpPublishPayloadType: "PROCESS",
-                                                                              moveUpPublishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              moveUpPublishPayloadItemMixin: true,
-                                                                              moveUpPublishPayload: {
-                                                                                 url: "api/solr/facet-config/{filterID}?relativePos=-1"
-                                                                              },
-                                                                              moveDownPublishTopic: "ALF_CRUD_UPDATE",
-                                                                              moveDownPublishPayloadType: "PROCESS",
-                                                                              moveDownPublishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              moveDownPublishPayloadItemMixin: true,
-                                                                              moveDownPublishPayload: {
-                                                                                 url: "api/solr/facet-config/{filterID}?relativePos=1"
+                                                                           name: "customProperties",
+                                                                           rulePassValue: {
+                                                                              blockIncludeFacetRequest: {
+                                                                                 name: "{http://www.alfresco.org/model/solrfacetcustomproperty/1.0}blockIncludeFacetRequest",
+                                                                                 title: null,
+                                                                                 type: null,
+                                                                                 value: "true"
                                                                               }
-                                                                           }
+                                                                           },
+                                                                           ruleFailValue: {},
+                                                                           is: ["{http://www.alfresco.org/model/content/1.0}created","{http://www.alfresco.org/model/content/1.0}modified","{http://www.alfresco.org/model/content/1.0}content.size"]
                                                                         }
                                                                      ]
                                                                   }
-                                                               },
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_DISPLAY_CONTROL_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "",
+                                                            widgets: [
                                                                {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  name: "alfresco/renderers/InlineEditSelect",
                                                                   config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "",
-                                                                     widgets: [
+                                                                     propertyToRender: "displayControl",
+                                                                     publishTopic: "ALF_CRUD_UPDATE",
+                                                                     publishPayloadType: "PROCESS",
+                                                                     publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     publishPayloadItemMixin: false,
+                                                                     publishPayload: {
+                                                                        filterID: "{filterID}",
+                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        noRefresh: true,
+                                                                        successMessage: msg.get("faceted-search-config.update.successMessage")
+                                                                     },
+                                                                     optionsConfig: {
+                                                                        fixed: getAvailableFacetControls() 
+                                                                     },
+                                                                     valueDisplayMap: getAvailableFacetControls()
+                                                                  }
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_IS_ENABLED_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "50px",
+                                                            widgets: [
+                                                               {
+                                                                  name: "alfresco/renderers/InlineEditSelect",
+                                                                  config: {
+                                                                     propertyToRender: "isEnabled",
+                                                                     publishTopic: "ALF_CRUD_UPDATE",
+                                                                     publishPayloadType: "PROCESS",
+                                                                     publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     publishPayloadItemMixin: false,
+                                                                     publishPayload: {
+                                                                        filterID: "{filterID}",
+                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        noRefresh: true,
+                                                                        successMessage: msg.get("faceted-search-config.update.successMessage")
+                                                                     },
+                                                                     optionsConfig: {
+                                                                        fixed: [
+                                                                           {
+                                                                              label: msg.get("faceted-search-config.isEnabled.yes"),
+                                                                              value: "true"
+                                                                           },
+                                                                           {
+                                                                              label: msg.get("faceted-search-config.isEnabled.no"),
+                                                                              value: "false"
+                                                                           }
+                                                                        ]
+                                                                     },
+                                                                     valueDisplayMap: [
                                                                         {
-                                                                           name: "alfresco/renderers/PropertyLink",
-                                                                           config: facetClickConfig
+                                                                           label: msg.get("faceted-search-config.isEnabled.yes"),
+                                                                           value: true
+                                                                        },
+                                                                        {
+                                                                           label: msg.get("faceted-search-config.isEnabled.no"),
+                                                                           value: false
                                                                         }
                                                                      ]
                                                                   }
-                                                               },
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_IS_DEFAULT_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "50px",
+                                                            widgets: [
                                                                {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  name: "alfresco/renderers/Boolean",
                                                                   config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "",
-                                                                     widgets: [
+                                                                     propertyToRender: "isDefault"
+                                                                  }
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_SCOPE_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "",
+                                                            widgets: [
+                                                               {
+                                                                  name: "alfresco/renderers/Property",
+                                                                  config: {
+                                                                     propertyToRender: "scope",
+                                                                     valueDisplayMap: [
                                                                         {
-                                                                           name: "alfresco/renderers/InlineEditProperty",
-                                                                           config: {
-                                                                              propertyToRender: "displayName",
-                                                                              publishTopic: "ALF_CRUD_UPDATE",
-                                                                              publishPayloadType: "PROCESS",
-                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: false,
-                                                                              publishPayload: {
-                                                                                 filterID: "{filterID}",
-                                                                                 url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true,
-                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
-                                                                              }
-                                                                           }
+                                                                           label: msg.get("faceted-search-config.scope.none.label"),
+                                                                           value: "ALL"
+                                                                        },
+                                                                        {
+                                                                           label: msg.get("faceted-search-config.scope.site.label"),
+                                                                           value: "SCOPED_SITES"
                                                                         }
                                                                      ]
                                                                   }
-                                                               },
+                                                               }
+                                                            ]
+                                                         }
+                                                      },
+                                                      {
+                                                         id: "SEARCH_CONFIG_ACTIONS_CELL",
+                                                         name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                         config: {
+                                                            additionalCssClasses: "mediumpad",
+                                                            width: "50px",
+                                                            widgets: [
                                                                {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                                  name: "alfresco/renderers/PublishAction",
                                                                   config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "",
-                                                                     widgets: [
+                                                                     iconClass: "delete-16",
+                                                                     propertyToRender: "filterID",
+                                                                     altText: msg.get("faceted-search-config.delete.altText"),
+                                                                     publishTopic: "ALF_CRUD_DELETE",
+                                                                     publishPayloadType: "PROCESS",
+                                                                     publishPayload: {
+                                                                        requiresConfirmation: true,
+                                                                        url: "api/solr/facet-config/{filterID}",
+                                                                        confirmationTitle: msg.get("faceted-search-config.delete.confirmationTitle"),
+                                                                        confirmationPrompt: msg.get("faceted-search-config.delete.confirmationPrompt"),
+                                                                        successMessage: msg.get("faceted-search-config.delete.successMessage")
+                                                                     },
+                                                                     publishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                     renderFilter: [
                                                                         {
-                                                                           name: "alfresco/renderers/InlineEditSelect",
-                                                                           config: {
-                                                                              propertyToRender: "facetQName",
-                                                                              publishTopic: "ALF_CRUD_UPDATE",
-                                                                              publishPayloadType: "PROCESS",
-                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: false,
-                                                                              publishPayload: {
-                                                                                 filterID: "{filterID}",
-                                                                                 url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true,
-                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
-                                                                              },
-                                                                              optionsConfig: {
-                                                                                 fixed: getAvailableFacets()
-                                                                              },
-                                                                              valueDisplayMap: getAvailableFacets(),
-                                                                              hiddenDataRules: [
-                                                                                 {
-                                                                                    name: "customProperties",
-                                                                                    rulePassValue: {
-                                                                                       blockIncludeFacetRequest: {
-                                                                                          name: "{http://www.alfresco.org/model/solrfacetcustomproperty/1.0}blockIncludeFacetRequest",
-                                                                                          title: null,
-                                                                                          type: null,
-                                                                                          value: "true"
-                                                                                       }
-                                                                                    },
-                                                                                    ruleFailValue: {},
-                                                                                    is: ["{http://www.alfresco.org/model/content/1.0}created","{http://www.alfresco.org/model/content/1.0}modified","{http://www.alfresco.org/model/content/1.0}content.size"]
-                                                                                 }
-                                                                              ]
-                                                                           }
-                                                                        }
-                                                                     ]
-                                                                  }
-                                                               },
-                                                               {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                                  config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "",
-                                                                     widgets: [
-                                                                        {
-                                                                           name: "alfresco/renderers/InlineEditSelect",
-                                                                           config: {
-                                                                              propertyToRender: "displayControl",
-                                                                              publishTopic: "ALF_CRUD_UPDATE",
-                                                                              publishPayloadType: "PROCESS",
-                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: false,
-                                                                              publishPayload: {
-                                                                                 filterID: "{filterID}",
-                                                                                 url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true,
-                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
-                                                                              },
-                                                                              optionsConfig: {
-                                                                                 fixed: getAvailableFacetControls() 
-                                                                              },
-                                                                              valueDisplayMap: getAvailableFacetControls()
-                                                                           }
-                                                                        }
-                                                                     ]
-                                                                  }
-                                                               },
-                                                               {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                                  config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "50px",
-                                                                     widgets: [
-                                                                        {
-                                                                           name: "alfresco/renderers/InlineEditSelect",
-                                                                           config: {
-                                                                              propertyToRender: "isEnabled",
-                                                                              publishTopic: "ALF_CRUD_UPDATE",
-                                                                              publishPayloadType: "PROCESS",
-                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              publishPayloadItemMixin: false,
-                                                                              publishPayload: {
-                                                                                 filterID: "{filterID}",
-                                                                                 url: "api/solr/facet-config/{filterID}",
-                                                                                 noRefresh: true,
-                                                                                 successMessage: msg.get("faceted-search-config.update.successMessage")
-                                                                              },
-                                                                              optionsConfig: {
-                                                                                 fixed: [
-                                                                                    {
-                                                                                       label: msg.get("faceted-search-config.isEnabled.yes"),
-                                                                                       value: "true"
-                                                                                    },
-                                                                                    {
-                                                                                       label: msg.get("faceted-search-config.isEnabled.no"),
-                                                                                       value: "false"
-                                                                                    }
-                                                                                 ]
-                                                                              },
-                                                                              valueDisplayMap: [
-                                                                                 {
-                                                                                    label: msg.get("faceted-search-config.isEnabled.yes"),
-                                                                                    value: true
-                                                                                 },
-                                                                                 {
-                                                                                    label: msg.get("faceted-search-config.isEnabled.no"),
-                                                                                    value: false
-                                                                                 }
-                                                                              ]
-                                                                           }
-                                                                        }
-                                                                     ]
-                                                                  }
-                                                               },
-                                                               {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                                  config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "50px",
-                                                                     widgets: [
-                                                                        {
-                                                                           name: "alfresco/renderers/Boolean",
-                                                                           config: {
-                                                                              propertyToRender: "isDefault"
-                                                                           }
-                                                                        }
-                                                                     ]
-                                                                  }
-                                                               },
-                                                               {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                                  config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "",
-                                                                     widgets: [
-                                                                        {
-                                                                           name: "alfresco/renderers/Property",
-                                                                           config: {
-                                                                              propertyToRender: "scope",
-                                                                              valueDisplayMap: [
-                                                                                 {
-                                                                                    label: msg.get("faceted-search-config.scope.none.label"),
-                                                                                    value: "ALL"
-                                                                                 },
-                                                                                 {
-                                                                                    label: msg.get("faceted-search-config.scope.site.label"),
-                                                                                    value: "SCOPED_SITES"
-                                                                                 }
-                                                                              ]
-                                                                           }
-                                                                        }
-                                                                     ]
-                                                                  }
-                                                               },
-                                                               {
-                                                                  name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                                  config: {
-                                                                     additionalCssClasses: "mediumpad",
-                                                                     width: "50px",
-                                                                     widgets: [
-                                                                        {
-                                                                           name: "alfresco/renderers/PublishAction",
-                                                                           config: {
-                                                                              iconClass: "delete-16",
-                                                                              propertyToRender: "filterID",
-                                                                              altText: msg.get("faceted-search-config.delete.altText"),
-                                                                              publishTopic: "ALF_CRUD_DELETE",
-                                                                              publishPayloadType: "PROCESS",
-                                                                              publishPayload: {
-                                                                                 requiresConfirmation: true,
-                                                                                 url: "api/solr/facet-config/{filterID}",
-                                                                                 confirmationTitle: msg.get("faceted-search-config.delete.confirmationTitle"),
-                                                                                 confirmationPrompt: msg.get("faceted-search-config.delete.confirmationPrompt"),
-                                                                                 successMessage: msg.get("faceted-search-config.delete.successMessage")
-                                                                              },
-                                                                              publishPayloadModifiers: ["processCurrentItemTokens"],
-                                                                              renderFilter: [
-                                                                                 {
-                                                                                    property: "isDefault",
-                                                                                    values: [false],
-                                                                                    renderOnAbsentProperty: false
-                                                                                 }
-                                                                              ]
-                                                                           }
+                                                                           property: "isDefault",
+                                                                           values: [false],
+                                                                           renderOnAbsentProperty: false
                                                                         }
                                                                      ]
                                                                   }
@@ -844,7 +882,7 @@ var main = {
                   }
                ]
             }
-         },
+         }
       ]
    }
 };
