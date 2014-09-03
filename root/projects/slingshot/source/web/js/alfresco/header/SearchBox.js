@@ -520,7 +520,6 @@ define(["dojo/_base/declare",
                      this._requests = [];
 
                      // execute our live search queries in a few ms if user has not continued typing
-                     // var then = Date.now();
                      if (this._timeoutHandle)
                      {
                         clearTimeout(this._timeoutHandle);
@@ -568,12 +567,26 @@ define(["dojo/_base/declare",
                      var desc = this.encodeHTML(item.title);
                      if (item.description) desc += (desc.length !== 0 ? "\r\n" : "") + this.encodeHTML(item.description);
                      // build the widget for the item - including the thumbnail url for the document
+                     var link;
+                     switch (item.container)
+                     {
+                        case "wiki":
+                           link = "wiki-page?title=" + encodeURIComponent(item.name);
+                           break;
+                        case "blog":
+                           link = "blog-postview?postId=" + encodeURIComponent(item.name);
+                           item.name = item.title;
+                           break;
+                        default:
+                           link = "document-details?nodeRef=" + item.nodeRef;
+                           break;
+                     }
                      var itemLink = new LiveSearchItem({
                         searchBox: this,
                         cssClass: "alf-livesearch-thumbnail",
                         title: desc,
                         label: this.encodeHTML(item.name),
-                        link: AlfConstants.URL_PAGECONTEXT + site + "document-details?nodeRef=" + item.nodeRef,
+                        link: AlfConstants.URL_PAGECONTEXT + site + link,
                         icon: AlfConstants.PROXY_URI + "api/node/" + item.nodeRef.replace(":/", "") + "/content/thumbnails/doclib?c=queue&ph=true&lastModified=" + (item.lastThumbnailModification || 1),
                         alt: this.encodeHTML(item.name),
                         meta: info
