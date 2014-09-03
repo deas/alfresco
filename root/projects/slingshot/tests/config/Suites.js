@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-   // baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest'],
+//   baseFunctionalSuites: ['tests/alfresco/accessibility/SemanticWrapperMixinTest'],
 
    /**
     * This is the base array of functional test suites
@@ -43,6 +43,7 @@ define({
     */
    baseFunctionalSuites: [
       'tests/alfresco/accessibility/AccessibilityMenuTest',
+      'tests/alfresco/accessibility/SemanticWrapperMixinTest',
 
       'tests/alfresco/charts/ccc/PieChartTest',
 
@@ -141,7 +142,7 @@ define({
     * @instance
     * @type [string]
     */
-   vmOnlyFunctionalSuites: [], //['tests/alfresco/CodeCoverageBalancer'],
+   vmOnlyFunctionalSuites: [],//['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for virtual machine tests

@@ -98,6 +98,7 @@ define(["intern/dojo/node!fs",
       bootstrapTest: function(browser, testPageDefinitionFile, testname) {
 
          this._applyTimeouts(browser);
+         this._maxWindow(browser);
 
          if(testname && browser.environmentType.browserName)
          {
@@ -156,7 +157,7 @@ define(["intern/dojo/node!fs",
       enableDebugModule: function(browser) {
 
          this._applyTimeouts(browser);
-         this._maxWindow(browser);
+
          console.log(">> Enabling debug via Debug Enabler Extension");
 
          return browser.get(this.moduleDeploymentUrl())

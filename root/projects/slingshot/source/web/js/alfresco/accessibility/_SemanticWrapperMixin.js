@@ -19,7 +19,7 @@
 
 /**
  * This mixin provides semantic wrapper capabilities. When mixed it creates a sematicWrapper configuration option.
- * Calling the generateSemanticWrapper() function from a mixing object and with a targetNode attribute will validation 
+ * Calling the generateSemanticWrapper() function from a mixing object and with a targetNode attribute will validate 
  * the semanticWrapper option supplied, generate the required semantic wrapper and return it.
  * 
  * @module alfresco/accessibility/_SemanticWrapperMixin
