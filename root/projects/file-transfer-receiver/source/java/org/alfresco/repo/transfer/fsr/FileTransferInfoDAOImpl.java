@@ -70,7 +70,7 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
 
         FileTransferInfoEntity entity = new FileTransferInfoEntity();
         entity.setNodeRef(nodeRef);
-        entity = (FileTransferInfoEntity) template.selectOne(SELECT_FTI_BY_NODEREF, entity);
+        entity = template.selectOne(SELECT_FTI_BY_NODEREF, entity);
         return entity;
     }
 
@@ -80,7 +80,7 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
 
         FileTransferInfoEntity entity = new FileTransferInfoEntity();
         entity.setParent(nodeRef);
-        return (List<FileTransferInfoEntity>)template.selectList(SELECT_FTI_BY_PARENT_NODEREF, nodeRef);
+        return template.selectList(SELECT_FTI_BY_PARENT_NODEREF, nodeRef);
     }
 
     public void updateFileTransferInfoByNodeRef(FileTransferInfoEntity modifiedEntity)
@@ -118,7 +118,7 @@ public class FileTransferInfoDAOImpl implements FileTransferInfoDAO
     {
         FileTransferNodeRenameEntity newNameEntity = new FileTransferNodeRenameEntity();
         newNameEntity.setTransferId(transferId);
-        return (List<FileTransferNodeRenameEntity>)template.selectList(SELECT_FILE_TRANSFER_RENAME_BY_TRANSFER_ID, newNameEntity);
+        return template.selectList(SELECT_FILE_TRANSFER_RENAME_BY_TRANSFER_ID, newNameEntity);
     }
 
     @Override

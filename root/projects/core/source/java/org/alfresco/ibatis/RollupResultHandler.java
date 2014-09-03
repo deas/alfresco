@@ -25,8 +25,10 @@ import java.util.List;
 
 import org.apache.ibatis.executor.result.DefaultResultContext;
 import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
+import org.mybatis.spring.SqlSessionTemplate;
 
 /**
  * A {@link ResultHandler} that collapses multiple rows based on a set of properties.
@@ -102,14 +104,16 @@ public class RollupResultHandler implements ResultHandler
     private List<Object> rawResults;
     private int resultCount;
     
+    private Configuration configuration;
+    
     /**
      * @param keyProperties         the properties that make up the unique key
      * @param collectionProperty    the property mapped using a nested <b>ResultMap</b>
      * @param resultHandler         the result handler that will receive the rolled-up results
      */
-    public RollupResultHandler(String[] keyProperties, String collectionProperty, ResultHandler resultHandler)
+    public RollupResultHandler(Configuration configuration, String[] keyProperties, String collectionProperty, ResultHandler resultHandler)
     {
-        this(keyProperties, collectionProperty, resultHandler, Integer.MAX_VALUE);
+        this(configuration, keyProperties, collectionProperty, resultHandler, Integer.MAX_VALUE);
     }
 
     /**
@@ -120,7 +124,7 @@ public class RollupResultHandler implements ResultHandler
      *                              Make sure that the query result limit is large enough to produce this
      *                              at least this number of results
      */
-    public RollupResultHandler(String[] keyProperties, String collectionProperty, ResultHandler resultHandler, int maxResults)
+    public RollupResultHandler(Configuration configuration, String[] keyProperties, String collectionProperty, ResultHandler resultHandler, int maxResults)
     {
         if (keyProperties == null || keyProperties.length == 0)
         {
@@ -130,6 +134,7 @@ public class RollupResultHandler implements ResultHandler
         {
             throw new IllegalArgumentException("RollupRowHandler must have a collection property.");
         }
+        this.configuration = configuration;
         this.keyProperties = keyProperties;
         this.collectionProperty = collectionProperty;
         this.resultHandler = resultHandler;
@@ -146,21 +151,20 @@ public class RollupResultHandler implements ResultHandler
         }
         
         Object valueObject = context.getResultObject();
-        
-        MetaObject probe = MetaObject.forObject(valueObject);
+        MetaObject probe = configuration.newMetaObject(valueObject);
         
         // Check if the key has changed
         if (lastKeyValues == null)
         {
-            lastKeyValues = getKeyValues(valueObject, probe);
+            lastKeyValues = getKeyValues(probe);
             resultCount = 0;
         }
         // Check if it has changed
-        Object[] currentKeyValues = getKeyValues(valueObject, probe);
+        Object[] currentKeyValues = getKeyValues(probe);
         if (!Arrays.deepEquals(lastKeyValues, currentKeyValues))
         {
             // Key has changed, so handle the results
-            Object resultObject = coalesceResults(rawResults, collectionProperty);
+            Object resultObject = coalesceResults(configuration, rawResults, collectionProperty);
             if (resultObject != null)
             {
                 DefaultResultContext resultContext = new DefaultResultContext();
@@ -197,7 +201,7 @@ public class RollupResultHandler implements ResultHandler
             return;
         }
         // Handle any outstanding results
-        Object resultObject = coalesceResults(rawResults, collectionProperty);
+        Object resultObject = coalesceResults(configuration, rawResults, collectionProperty);
         if (resultObject != null)
         {
             DefaultResultContext resultContext = new DefaultResultContext();
@@ -210,7 +214,7 @@ public class RollupResultHandler implements ResultHandler
     }
     
     @SuppressWarnings("unchecked")
-    private static Object coalesceResults(List<Object> valueObjects, String collectionProperty)
+    private static Object coalesceResults(Configuration configuration, List<Object> valueObjects, String collectionProperty)
     {
         // Take the first result as the base value
         Object resultObject = null;
@@ -221,7 +225,7 @@ public class RollupResultHandler implements ResultHandler
             if (collection == null)
             {
                 resultObject = object;
-                probe = MetaObject.forObject(resultObject);
+                probe = configuration.newMetaObject(resultObject);
                 collection = (Collection<Object>) probe.getValue(collectionProperty);
             }
             else
@@ -235,9 +239,9 @@ public class RollupResultHandler implements ResultHandler
     }
     
     /**
-     * @return          Returns the values for the {@link RollupRowHandler#keyProperties}
+     * @return          Returns the values for the {@link RollupResultHandler#keyProperties}
      */
-    private Object[] getKeyValues(Object valueObject, MetaObject probe)
+    private Object[] getKeyValues(MetaObject probe)
     {
         Object[] keyValues = new Object[keyProperties.length];
         for (int i = 0; i < keyProperties.length; i++)

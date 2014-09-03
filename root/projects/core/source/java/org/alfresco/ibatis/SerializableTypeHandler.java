@@ -85,6 +85,30 @@ public class SerializableTypeHandler implements TypeHandler
         }
         return ret;
     }
+
+    @Override
+    public Object getResult(ResultSet rs, int columnIndex) throws SQLException
+    {
+        final Serializable ret;
+        try
+        {
+            InputStream is = rs.getBinaryStream(columnIndex);
+            if (is == null || rs.wasNull())
+            {
+                return null;
+            }
+            // Get the stream and deserialize
+            ObjectInputStream ois = new ObjectInputStream(is);
+            Object obj = ois.readObject();
+            // Success
+            ret = (Serializable) obj;
+        }
+        catch (Throwable e)
+        {
+            throw new DeserializationException(e);
+        }
+        return ret;
+    }
     
     public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException
     {

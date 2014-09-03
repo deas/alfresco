@@ -67,7 +67,7 @@ public class TransferStatusDAOImpl implements TransferStatusDAO
     @Override
     public TransferStatusEntity findByTransferId(String transferId)
     {
-        return (TransferStatusEntity)template.selectOne(SELECT_TRANSFER_STATUS_BY_TRANSFER_ID, transferId);
+        return template.selectOne(SELECT_TRANSFER_STATUS_BY_TRANSFER_ID, transferId);
     }
 
     @Override
