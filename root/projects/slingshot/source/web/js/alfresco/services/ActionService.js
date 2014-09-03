@@ -111,7 +111,7 @@ define(["dojo/_base/declare",
       copyMoveTarget: null,
 
       /**
-       * Sets up the subscriptions for the NavigationService
+       * Sets up the subscriptions for the Action Service
        *
        * @instance
        * @param {array} args Constructor arguments
@@ -136,7 +136,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_MOVE_DOCUMENTS", lang.hitch(this, this.onMoveDocuments));
 
          // Response handlers...
-         this.alfSubscribe("ALF_ON_ACTION_DETAILS_SUCCESS", lang.hitch(this, this.onActionDetailsSucess));
+         this.alfSubscribe("ALF_ON_ACTION_DETAILS_SUCCESS", lang.hitch(this, this.onActionDetailsSuccess));
          this.alfSubscribe("ALF_ON_ACTION_EDIT_INLINE_SUCCESS", lang.hitch(this, this.onActionEditInlineSucess));
       },
 
@@ -606,7 +606,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      onActionDetailsSucess: function alfresco_services_ActionService__onActionDetailsSucess(payload) {
+      onActionDetailsSuccess: function alfresco_services_ActionService__onActionDetailsSuccess(payload) {
          if (!lang.exists("response.item.node.properties", payload))
          {
             this.alfLog("warn", "When processing a request to display document properties, the expected 'response.item.node.properties' attribute was not found", payload, this);
@@ -620,7 +620,7 @@ define(["dojo/_base/declare",
             var widgets = [];
             for (var key in properties)
             {
-               // It's a converntion of the forms processor to convert the property value into the form
+               // It's a convention of the forms processor to convert the property value into the form
                // "prop_<namespace>_<property name>". It's necessary to convert each property into this form
                // so that it can be posted correctly from the dialog.
                var splitKeyArr = key.split(":"),
@@ -635,22 +635,25 @@ define(["dojo/_base/declare",
                //       We need to be able to select the correct form control based on the property type. This could potentially
                //       be leveraged from configuration. We also need to filter out properties (e.g. those in the "sys:" namespace)
                //       that shouldn't be displayed.
-               var widget = {
-                  name: "alfresco/forms/controls/DojoValidationTextBox",
-                  config: {
-                     label: key,
-                     value: properties[key],
-                     name: name
-                  }
-               };
-               widgets.push(widget);
+               if (splitKeyArr[0] !== "sys" && typeof properties[key] === "string")
+               {
+                  var widget = {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        label: key,
+                        value: properties[key],
+                        name: name
+                     }
+                  };
+                  widgets.push(widget);
+               }
             }
 
             // Publish the request to generate a new dialog showing a form with all the properties displayed...
             this.alfPublish("ALF_CREATE_FORM_DIALOG_REQUEST", {
-               dialogTitle: "Edit Properties",
-               dialogConfirmationButtonTitle: "Save",
-               dialogCancellationButtonTitle: "Cancel",
+               dialogTitle: this.message("services.ActionService.ActionEditDetailsSuccess.title"),
+               dialogConfirmationButtonTitle: this.message("services.ActionService.button.save"),
+               dialogCancellationButtonTitle: this.message("services.ActionService.button.cancel"),
                formSubmissionTopic: "ALF_CREATE_CONTENT_REQUEST",
                widgets: widgets
             });
@@ -667,7 +670,20 @@ define(["dojo/_base/declare",
        * @param {object} document The document to upload a new version for.
        */
       onActionUploadNewVersion: function alfresco_services_ActionService__onActionUploadNewVersion(payload, document) {
-         this.callLegacyActionHandler("onActionUploadNewVersion", document);
+         // Call dialog service to open dialog with upload widget in.
+         this.alfPublish("ALF_SHOW_UPLOADER", payload);
+//         this.alfPublish("ALF_CREATE_FORM_DIALOG_REQUEST", {
+//            dialogTitle: this.message("services.ActionService.ActionUploadNewVersion.title"),
+//            dialogConfirmationButtonTitle: this.message("services.ActionService.button.save"),
+//            dialogCancellationButtonTitle: this.message("services.ActionService.button.cancel"),
+//            formSubmissionTopic: "ALF_CREATE_CONTENT_REQUEST",
+//            widgets: [{
+//               name: "alfresco/upload/AlfUpload",
+//               config: {
+//
+//               }
+//            }]
+//         });
       },
 
       /**
@@ -891,7 +907,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} payload The response from the request
-       * @param {object} document The document edit offline.
+       * @param {object} documents The document edit offline.
        */
       onActionMoveTo: function alfresco_services_ActionService__onActionMoveTo(payload, documents) {
          this.createCopyMoveDialog(payload, documents, "slingshot/doclib/action/move-to/node/", "services.ActionService.moveTo.title");
@@ -903,20 +919,23 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} payload The action payload
-       * @param {array} documents The documents selected for copy or move
+       * @param {object} documents The documents selected for copy or move
        * @param {string} urlPrefix The URL prefix for the action
        * @param {string} dialogTitle The title for the dialog
        */
       createCopyMoveDialog: function alfresco_services_ActionService__createCopyMoveDialog(payload, documents, urlPrefix, dialogTitle) {
-         var responseTopic = this.generateUuid() + "_ALF_MOVE_LOCATION_PICKED";
-         var publishPayload = {
-            nodes: NodeUtils.nodeRefArray(documents),
-            documents: documents
-         };
+         var responseTopic = this.generateUuid() + "_ALF_MOVE_LOCATION_PICKED",
+            nodes = NodeUtils.nodeRefArray(documents),
+            publishPayload = {
+               nodes: nodes,
+               documents: documents
+            };
+
+         var fileName = (nodes.length === 1)? documents[0].fileName : this.message("services.ActionService.copyMoveTo.multipleFiles");
 
          this._actionHandle = this.alfSubscribe(responseTopic, lang.hitch(this, this.onCopyMoveLocationSelected, urlPrefix), true);
          this.alfPublish("ALF_CREATE_DIALOG_REQUEST", {
-            dialogTitle: dialogTitle,
+            dialogTitle: this.message(dialogTitle, { 0: fileName}),
             handleOverflow: false,
             widgetsContent: [
                {
@@ -1133,16 +1152,33 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Handles requests to start a new workflow using the supplied document. This function currently
-       * delegates handling of the request to the Alfresco.DocLibToolbar by calling
-       * [callLegacyActionHandler]{@link module:alfresco/services/ActionsService#callLegacyActionHandler}
+       * Assign workflow.
        *
-       * @instance
-       * @param {object} payload The event payload
-       * @param {object} document The document edit offline.
+       * @method onActionAssignWorkflow
+       * @param {object} payload the publishPayload from the action.
+       * @param {object} documents Object literal representing the nodes to be actioned
        */
-      onActionAssignWorkflow: function alfresco_services_ActionService__onActionAssignWorkflow(payload, document) {
-         this.callLegacyActionHandler("onActionAssignWorkflow", document);
+      onActionAssignWorkflow: function dlA_onActionAssignWorkflow(payload, documents)
+      {
+         var nodeRefs = NodeUtils.nodeRefsString(documents),
+            destination = NodeUtils.getParentNodeRef(documents);
+
+         var postBody =
+         {
+            selectedItems: nodeRefs
+         };
+         if (destination)
+         {
+            postBody.destination = destination;
+         }
+
+         this.alfPublish(this.navigateToPageTopic, {
+            method: "POST",
+            type: this.sharePageRelativePath,
+            url: url,
+            target: this.currentTarget
+         });
+
       },
 
       /**
