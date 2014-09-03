@@ -217,6 +217,7 @@ define(["dojo/_base/declare",
       setupSubscriptions: function alfrescdo_documentlibrary_AlfDocumentList__setupSubscriptions() {
          this.alfSubscribe("ALF_DOCUMENTLIST_PATH_CHANGED", lang.hitch(this, this.onPathChanged));
          this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onCategoryChanged));
+         this.alfSubscribe("ALF_DOCUMENTLIST_TAG_CHANGED", lang.hitch(this, this.onTagChanged));
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, this.onFilterChanged));
 
          this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
@@ -371,6 +372,40 @@ define(["dojo/_base/declare",
          else
          {
             this.alfLog("warn", "A request was made to change the filter for a Document List, but no 'value' attribute was provided", payload, this);
+         }
+      },
+
+      /**
+       * 
+       *
+       * @instance
+       * @param {object} payload The details of the changed tag
+       */
+      onTagChanged: function alfresco_documentlibrary_AlfDocumentList__onTagChanged(payload) {
+         if (payload.value)
+         {
+            if (this.useHash === true)
+            {
+               var currHash = ioQuery.queryToObject(hash());
+               currHash.tag = payload.value;
+               delete currHash.category;
+               delete currHash.path;
+               delete currHash.filter;
+               this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+                  url: ioQuery.objectToQuery(currHash),
+                  type: "HASH"
+               }, true);
+            }
+            else
+            {
+               this.currentFilter = {
+                  tag: payload.value
+               }
+            }
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to change the tag filter for a Document List, but no 'value' attribute was provided", payload, this);
          }
       },
 

@@ -678,12 +678,15 @@ function getPathTree(siteId, containerId, rootNode) {
    return tree;
 }
 
-function getTags() {
+function getTags(siteId, containerId, rootNode) {
    var tags = {
       id: "DOCLIB_TAGS",
       name: "alfresco/documentlibrary/AlfTagFilters",
       config: {
-         label: "filter.label.tags"
+         label: "filter.label.tags",
+         siteId: siteId,
+         containerId: containerId,
+         rootNode: rootNode
       }
    };
    return tags;
@@ -814,7 +817,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                   widgets: [
                      getFilters(),
                      getPathTree(siteId, containerId, rootNode),
-                     getTags(),
+                     getTags(siteId, containerId, rootNode),
                      getCategories()
                   ]
                }

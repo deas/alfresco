@@ -13,6 +13,7 @@ services.push("alfresco/services/NavigationService",
               "alfresco/services/SearchService",
               "alfresco/services/ActionService",
               "alfresco/services/DocumentService",
+              "alfresco/services/TagService",
               "alfresco/dialogs/AlfDialogService");
 widgets.push(docLibWidgets);
 

@@ -66,15 +66,53 @@ define(["dojo/_base/declare",
       paramName: "tag",
 
       /**
+       * The ID of the site to use on tag query requests. This should be provided in conjunction 
+       * with [containerId]{@link module:alfresco/documentlibrary/AlfTagFilters#containerId} as
+       * an alternative to [rootNode]{@link module:alfresco/documentlibrary/AlfTagFilters#rootNode}
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      siteId: null,
+
+      /**
+       * The ID of the container to use on tag query requests (e.g. "documentlibrary"). This
+       * is the name of the folder that is being queried within a specific site. This should be provided 
+       * in conjunction with [siteId]{@link module:alfresco/documentlibrary/AlfTagFilters#siteId} as
+       * an alternative to [rootNode]{@link module:alfresco/documentlibrary/AlfTagFilters#rootNode}
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      containerId: null,
+
+      /**
+       * The root node to base tag queries on. This should be provided as an alternative to 
+       * [siteId]{@link module:alfresco/documentlibrary/AlfTagFilters#siteId} and 
+       * [containerId]{@link module:alfresco/documentlibrary/AlfTagFilters#containerId}
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      rootNode: null,
+
+      /**
+       * Overrides the mixed-in constant so that a tag specific topic is published on
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_DOCUMENTLIST_TAG_CHANGED"
+       */
+      filterSelectionTopic: "ALF_DOCUMENTLIST_TAG_CHANGED",
+
+      /**
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfTagFilters__postMixInProperties() {
          this.inherited(arguments);
-         
-         // Subscribe to filter change events - in particular we're looking for tag filter changes because
-         // they won't be represented by an individual filter object (it's down to the filter object to
-         // publish display information when it's selected, but we're going to let tags off the hook here)
-         this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
          
          // Subscribe to publications about documents being tagged/untagged...
          this.alfSubscribe(this.documentTaggedTopic, lang.hitch(this, "onDocumentTagged"));
@@ -82,7 +120,10 @@ define(["dojo/_base/declare",
          // Make a request to get the initial set of tags for the current location...
          this.alfPublish(_TagServiceTopics.tagQueryTopic, {
             callback: this.onTagQueryResults,
-            callbackScope: this
+            callbackScope: this,
+            siteId: this.siteId,
+            containerId: this.containerId,
+            rootNode: this.rootNode
          });
       },
       
@@ -131,30 +172,16 @@ define(["dojo/_base/declare",
              tagData.count != null)
          {
             var tagFilter = new AlfDocumentFilter({
+               filterSelectionTopic: this.filterSelectionTopic,
                label: this.message("filter.tag.label", {"0": tagData.name, "1": tagData.count}),
-               filter: tagData.name
+               filter: tagData.name,
+               description: this.message("filter.tagged.label", {"0":tagData.name})
             });
             this.addFilter(tagFilter);
          }
          else
          {
             this.alfLog("warn", "It is not possible to create a filter tag without 'name' and 'count' attributes", tagData);
-         }
-      },
-      
-      /**
-       * Provides special case handling for tag filtering.
-       * 
-       * @instance onClick
-       * @param {object} payload 
-       */
-      onFilterChange: function alfresco_documentlibrary_AlfTagFilters__onFilterChange(payload) {
-         if (payload != null && payload.filterId == "tag")
-         {
-            this.alfPublish(this.filterSelectionTopic, {
-               value: payload.filterData,
-               description: this.message("filter.tagged.label", {"0":payload.filterData})
-            });
          }
       },
       

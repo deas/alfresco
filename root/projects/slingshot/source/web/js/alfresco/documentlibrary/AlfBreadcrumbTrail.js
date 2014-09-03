@@ -108,6 +108,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.showPathTopic, lang.hitch(this, this.onShowBreadcrumb));
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, this.onFilterSelection));
          this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onFilterSelection));
+         this.alfSubscribe("ALF_DOCUMENTLIST_TAG_CHANGED", lang.hitch(this, this.onFilterSelection));
 
          if (this._currentNode != null && this.currentPath != null)
          {

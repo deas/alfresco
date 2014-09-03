@@ -87,17 +87,17 @@ define(["dojo/_base/declare",
            var maxTags = (payload.maxTags != null) ? payload.maxTags : 100;
            var d = new Date().getTime();
            var url = null;
-           if (this.siteId != null && this.containerId != null)
+           if (payload.siteId != null && payload.containerId != null)
            {
-              url = AlfConstants.PROXY_URI + "api/tagscopes/site/" + this.siteId + "/" + this.containerId + "/tags?d=" + d + "&topN=" + maxTags;
+              url = AlfConstants.PROXY_URI + "api/tagscopes/site/" + payload.siteId + "/" + payload.containerId + "/tags?d=" + d + "&topN=" + maxTags;
            }
-           else if (this.rootNode != null)
+           else if (payload.rootNode != null)
            {
-              AlfConstants.PROXY_URI + "collaboration/tagQuery?d=" + d + "&m=" + maxTags + "&s=count&n=" + encodeURIComponent(this.rootNode);
+              url = AlfConstants.PROXY_URI + "collaboration/tagQuery?d=" + d + "&m=" + maxTags + "&s=count&n=" + encodeURIComponent(payload.rootNode);
            }
            else
            {
-              this.alfLog("warn", "It is not possible to retrieve tags without a 'siteId' and 'containerId' or a 'rootNode' attribute set on the tag service", this);
+              this.alfLog("warn", "It is not possible to retrieve tags without a 'siteId' and 'containerId' or a 'rootNode' attribute provided in payload", this);
            }
            
            if (url != null)
