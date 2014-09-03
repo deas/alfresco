@@ -37,7 +37,7 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-class",
         "dojo/dom-construct"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _SemanticWrapperMixin, template, AlfCore, lang, domClass, domConstruct) {
+        function(declare, _WidgetBase, _TemplatedMixin, _SemanticWrapperMixin, template, AlfCore, lang, domClass) {
    
    return declare([_WidgetBase, _TemplatedMixin, _SemanticWrapperMixin, AlfCore], {
 
@@ -160,7 +160,7 @@ define(["dojo/_base/declare",
          }
 
          // Hide the license label if not available
-         if (this.licenseLabel == null || this.licenseLabel.trim() == "" || this.licenseLabel == "UNKNOWN")
+         if (this.licenseLabel == null || lang.trim(this.licenseLabel) == "" || this.licenseLabel == "UNKNOWN")
          {
             domClass.add(this.licenseHolderNode, "hidden");
          }
