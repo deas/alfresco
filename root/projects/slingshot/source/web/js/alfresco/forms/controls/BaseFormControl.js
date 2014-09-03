@@ -433,12 +433,12 @@ define(["dojo/_base/declare",
             // 1) PubSub Config
             // 2) Callback function
             // 3) Fixed options
-            var pubSub = lang.getObject("pubSub", false, config),
+            var pubSub = lang.getObject("publishTopic", false, config),
                 callback = lang.getObject("callback", false, config),
                 fixed = lang.getObject("fixed", false, config);
             if (pubSub != null)
             {
-               this.getPubSubOptions(pubSub);
+               this.getPubSubOptions(config);
             }
             else if (callback != null)
             {
@@ -578,9 +578,9 @@ define(["dojo/_base/declare",
        */
       updateOptions: function alfresco_forms_controls_BaseFormControl__onUpdateOptions(optionsConfig, payload) {
          this.alfLog("log", "OPTIONS CONFIG: Field '" + this.fieldId + "' is handling value change of field'" + payload.name);
-         if (optionsConfig.requestTopic != null)
+         if (optionsConfig.publishTopic != null)
          {
-            this.getPubSubOptions(optionsConfig.requestTopic);
+            this.getPubSubOptions(optionsConfig);
          }
          else if (optionsConfig.callback != null)
          {
@@ -635,7 +635,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfLog("warn", "A request was made to obtain form control options via PubSub, but no 'requestTopic' attribute was provided", config, this);
+            this.alfLog("warn", "A request was made to obtain form control options via PubSub, but no 'publishTopic' attribute was provided", config, this);
          }
       },
 

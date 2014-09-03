@@ -79,7 +79,7 @@
                               "INVALID": "DATA"
                            }
                         ],
-                        "requestTopic": "GET_OPTIONS_FOR_SELECT_2"
+                        "publishTopic": "GET_OPTIONS_FOR_SELECT_2"
                      }
                   }
                },
@@ -116,7 +116,7 @@
                               "INVALID": "DATA"
                            }
                         ],
-                        "requestTopic": "GET_OPTIONS_FOR_SELECT_4"
+                        "publishTopic": "GET_OPTIONS_FOR_SELECT_4"
                      }
                   }
                }
