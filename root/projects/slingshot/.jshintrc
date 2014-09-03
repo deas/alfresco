@@ -5,7 +5,6 @@
    "camelcase": false,
    "curly": false,
    "eqnull": true,
-   "quote": "double",
    "immed": true,
    "indent": 3,
    "latedef": true,

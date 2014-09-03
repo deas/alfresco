@@ -132,7 +132,7 @@ define(["intern!object",
          .findById("yui-gen0")
          .getSize()
          .then(function(endSize) {
-            expect(endSize.width).to.be.above(startSize.width, "The sidebar did not resize on the x axis");
+            expect(endSize.width).to.be.at.least(startSize.width, "The sidebar did not resize on the x axis");
             expect(endSize.height).to.equal(startSize.height, "The sidebar should not have resized on the y axis");
          })
          .end()

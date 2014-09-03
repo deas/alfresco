@@ -101,6 +101,7 @@ define(["intern/dojo/node!fs",
 
          this._applyTimeouts(browser);
          this._maxWindow(browser);
+         this._cancelModifierKeys(browser);
 
          if(testname && browser.environmentType.browserName)
          {
@@ -157,6 +158,7 @@ define(["intern/dojo/node!fs",
       enableDebugModule: function(browser) {
 
          this._applyTimeouts(browser);
+         this._cancelModifierKeys(browser);
 
          console.log(">> Enabling debug via Debug Enabler Extension");
 
@@ -209,6 +211,8 @@ define(["intern/dojo/node!fs",
       disableDebugModule: function(browser) {
 
          this._applyTimeouts(browser);
+         this._cancelModifierKeys(browser);
+
          console.log(">> Disabling debug via Debug Enabler Extension");
 
          return browser.get(this.moduleDeploymentUrl())
@@ -230,7 +234,6 @@ define(["intern/dojo/node!fs",
 
       /**
        * Set browser timeouts - refer to Config files
-       * Allows us to use "elementBy..." calls rather than a "waitForElementBy..." which is more efficient...
        *
        * @instance
        * @param {browser}
@@ -255,6 +258,16 @@ define(["intern/dojo/node!fs",
       },
 
       /**
+       * Cancels modifier keys
+       *
+       * @instance
+       * @param {browser}
+       */
+      _cancelModifierKeys: function(browser) {
+         browser.pressKeys(null);
+      },
+
+      /**
        * Internal function used to determine whether to use nth-child or last-child pseudo selector
        *
        * @instance
@@ -262,11 +275,11 @@ define(["intern/dojo/node!fs",
        * @returns {string} The pseudo selector to use
        */
       _determineRow: function(expectedRow) {
-         var row = "last-child"
+         var row = "last-child";
          if (expectedRow != "last")
          {
-            row = "nth-child(" + expectedRow + ")"
-         };
+            row = "nth-child(" + expectedRow + ")";
+         }
          return row;
       },
 
@@ -281,13 +294,11 @@ define(["intern/dojo/node!fs",
        * @returns {string} The CSS selector
        */
       pubDataCssSelector: function(publishTopic, key, value) {
-
-         var selector = "td[data-publish-topic='" + publishTopic + "'] + " +
-                        "td.sl-data tr.sl-object-row " +
-                        "td[data-pubsub-object-key=" + 
-                        key + 
-                        "]+td[data-pubsub-object-value='" + 
-                        value + "']";
+         var selector = "" +
+            "td[data-publish-topic='" + publishTopic + "'] + " +
+            "td.sl-data tr.sl-object-row " +
+            "td[data-pubsub-object-key=" + key + 
+            "]+td[data-pubsub-object-value='" + value + "']";
          return selector;
       },
 
@@ -303,14 +314,12 @@ define(["intern/dojo/node!fs",
        * @returns {string} The CSS selector
        */
       pubDataNestedValueCssSelector: function(publishTopic, key, nestedKey, nestedValue) {
-         var selector = "td[data-publish-topic='" + publishTopic + "'] + " +
-                        "td.sl-data tr.sl-object-row " +
-                        "td[data-pubsub-object-key=" + 
-                        key + 
-                        "]+ td td[data-pubsub-object-key='" + 
-                        nestedKey + "'] " + 
-                        "+ td[data-pubsub-object-value='" + 
-                        nestedValue + "']";
+         var selector = "" +
+            "td[data-publish-topic='" + publishTopic + "'] + " +
+            "td.sl-data tr.sl-object-row " +
+            "td[data-pubsub-object-key=" + key + 
+            "]+ td td[data-pubsub-object-key='" + nestedKey + "'] " + 
+            "+ td[data-pubsub-object-value='" + nestedValue + "']";
          return selector;
       },
 
@@ -326,12 +335,11 @@ define(["intern/dojo/node!fs",
        * @returns {string} The CSS selector
        */
       pubDataNestedArrayValueCssSelector: function(publishTopic, key, arrayIndex, value) {
-         var selector = "td[data-publish-topic='" + publishTopic + "'] + " +
-                        "td.sl-data tr.sl-object-row " +
-                        "td[data-pubsub-object-key=" + 
-                        key + 
-                        "]+ td td[data-pubsub-object-value='" + 
-                        value + "']:nth-child(" + arrayIndex + ")";
+         var selector = "" +
+            "td[data-publish-topic='" + publishTopic + "'] + " +
+            "td.sl-data tr.sl-object-row " +
+            "td[data-pubsub-object-key=" + key +
+            "]+ td td[data-pubsub-object-value='" + value + "']:nth-child(" + arrayIndex + ")";
          return selector;
       },
 
@@ -349,25 +357,24 @@ define(["intern/dojo/node!fs",
        */
       pubSubDataCssSelector: function(expectedRow, key, value) {
 
-         var row = ""
+         var row = "";
          if (expectedRow == "any")
          {
             // Don't specify a row
          }
          else if (expectedRow == "last")
          {
-            row = ":last-child"
+            row = ":last-child";
          }
          else if (expectedRow != "last")
          {
-            row = ":nth-child(" + expectedRow + ")"
-         };
+            row = ":nth-child(" + expectedRow + ")";
+         }
 
-         var selector = ".alfresco-testing-SubscriptionLog tr.sl-row" + row +
-            " td[data-pubsub-object-key=" + 
-            key + 
-            "]+td[data-pubsub-object-value='" + 
-            value + "']";
+         var selector = "" +
+            ".alfresco-testing-SubscriptionLog tr.sl-row" + row +
+            " td[data-pubsub-object-key=" + key + 
+            "]+td[data-pubsub-object-value='" + value + "']";
          // console.log("Topic selector: " + selector);
 
          return selector;
@@ -381,13 +388,10 @@ define(["intern/dojo/node!fs",
        * @param {number} expectedRow The row to get the topic for
        */
       nthTopicSelector: function(expectedRow) {
-
          var row = this._determineRow(expectedRow);
          var selector = ".alfresco-testing-SubscriptionLog tr.sl-row:" + row + " td.sl-topic";
          // console.log("Selector: " + selector);
-
          return selector;
-
       },
 
       /**
@@ -415,7 +419,7 @@ define(["intern/dojo/node!fs",
          }
          else if (expectedRow == "last")
          {
-            row = ":last-child"
+            row = ":last-child";
          }
          else if (expectedRow != null)
          {

@@ -44,7 +44,7 @@ define({
     */
    timeout: {
       base: 2000,
-      find: 500,
+      find: 800,
       pageLoad: 2000,
       executeAsync: 1000
    }

@@ -21,46 +21,44 @@
  * @author Dave Draper
  */
 define(["intern!object",
-        "intern/chai!expect",
         "intern/chai!assert",
         "require",
-        "alfresco/TestCommon",
-        "intern/dojo/node!leadfoot/Command"], 
-        function (registerSuite, expect, assert, require, TestCommon, Command) {
+        "alfresco/TestCommon"], 
+        function (registerSuite, assert, require, TestCommon) {
 
    registerSuite({
       name: 'Page Creator Test',
       'Basic Test': function () {
 
-         // var command = new Command(session);
          var browser = this.remote;
-
          var testname = "BasicTest";
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/creation/page_models/WidgetConfig_TestPage.json", testname)
 
-         // 1. Drag and drop the single item from the palette onto the drop-zone control...
+         .end()
+
+         // 1. Find and pick up the draggable item
          .findByCssSelector("#dojoUnique1 > .title")
-            .then(function(element) {
-               browser.moveMouseTo(element)
-            })
+            .moveMouseTo()
             .click()
             .pressMouseButton()
             .moveMouseTo(null, 1, 1)
             .end()
 
+         // 2. Move to the drop zone and release
          .findByCssSelector(".alfresco-creation-DropZone > div")
             .then(function(element) {
                browser.moveMouseTo(element)
             })
+            .sleep(500) // The drag is 'elastic' and this sleep allows the item to catch up with the mouse movement
             .releaseMouseButton()
             .end()
 
-         // 2. Select the dropped widget by clicking on the drag handle...
+         // 3. Select the dropped widget by clicking on the drag handle...
          .findByCssSelector(".dojoDndHandle")
             .click()
             .end()
 
-         // 3. Check that the validation text box is displayed...
+         // 4. Check that the validation text box is displayed...
          .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox .dijitInputContainer input")
             .getProperty('value')
             .then(function(resultText) {
@@ -68,12 +66,12 @@ define(["intern!object",
             })
             .end()
 
-         // 4. Save the config...
+         // 5. Save the config...
          .findByCssSelector(".alfresco-creation-WidgetConfig .confirmationButton > span")
             .click()
             .end()
 
-         // 5. Save the form...
+         // 6. Save the form...
          .findByCssSelector("#FORM .confirmationButton > span")
             .click()
             .end()

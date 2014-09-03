@@ -41,7 +41,7 @@ define(["intern!object",
          // Check that the header CSS is applied...
          .findByCssSelector(".alfresco-layout-LeftAndRight.alfresco-header-Header")
             .then(null, function() {
-               assert(false, "Test #1a - The header CSS was not applied correctly")
+               assert(false, "Test #1a - The header CSS was not applied correctly");
             })
             .end()
 
@@ -49,7 +49,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-header-Title > .text")
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "Test Title", "Test #1b - The title was not set correctly")
+               assert(resultText == "Test Title", "Test #1b - The title was not set correctly");
             })
             .end()
 
@@ -95,7 +95,7 @@ define(["intern!object",
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
             .then(null, function() {
-               assert(false, "Test #2a - The update dialog was not displayed")
+               assert(false, "Test #2a - The update dialog was not displayed");
             })
             .end()
          .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitleBar > span")
@@ -164,13 +164,13 @@ define(["intern!object",
          .findByCssSelector("#HEADER_SITES_MENU_RECENT_site1 a")
             .getVisibleText()
             .then(function(text) {
-               assert(text === "Site1", "Test #4a - First recent site not rendered correctly")
+               assert(text === "Site1", "Test #4a - First recent site not rendered correctly");
             })
             .end()
          .findByCssSelector("#HEADER_SITES_MENU_RECENT_site2 a")
             .getVisibleText()
             .then(function(text) {
-               assert(text === "Site2", "Test #4b - Sccond recent site not rendered correctly")
+               assert(text === "Site2", "Test #4b - Sccond recent site not rendered correctly");
             })
             .end()
 
@@ -181,14 +181,14 @@ define(["intern!object",
          .findByCssSelector("#HEADER_SITES_MENU_FAVOURITE_site1 a")
             .getVisibleText()
             .then(function(text) {
-               assert(text === "Site1", "Test #5a - First favourite site not rendered correctly")
+               assert(text === "Site1", "Test #5a - First favourite site not rendered correctly");
             })
             .end()
 
          .findByCssSelector("#HEADER_SITES_MENU_FAVOURITE_site2 a")
             .getVisibleText()
             .then(function(text) {
-               assert(text === "Site2", "Test #5b - Second favourite site not rendered correctly")
+               assert(text === "Site2", "Test #5b - Second favourite site not rendered correctly");
             })
             .end()
 

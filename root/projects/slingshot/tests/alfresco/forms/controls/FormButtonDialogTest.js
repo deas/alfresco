@@ -55,9 +55,7 @@ define(["intern!object",
 
          // Click the dialog button - does the dialog appear?
          .findById("TEST_DIALOG_BUTTON")
-            .sleep(500)
             .click()
-            .sleep(500)
             .end()
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
@@ -120,9 +118,7 @@ define(["intern!object",
 
          // Click the checkbox
          .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
-            .sleep(500)
             .click()
-            .sleep(500)
             .end()
 
          // Now is the checkbox checked?
@@ -133,34 +129,8 @@ define(["intern!object",
             })
             .end()
 
-         // Move the dialog
-         .findByCssSelector("span.dijitDialogTitle")
-         .getPosition()
-         .then(function(pos) {
-            startPos = pos;
-         })
-         .end()
-
-         .findByCssSelector("span.dijitDialogTitle")
-         .then(function(element) {
-            browser.moveMouseTo(element);
-         })
-         .pressMouseButton()
-         .moveMouseTo(null, 200, 100)
-         .releaseMouseButton()
-         .end()
-
-         .findByCssSelector("span.dijitDialogTitle")
-         .getPosition()
-         .then(function(endPos) {
-            expect(endPos.x - 200).to.equal(startPos.x, "The dialog did not move the expected distance on the x axis");
-            expect(endPos.y - 100).to.equal(startPos.y, "The dialog did not move the expected distance on the y axis");
-         })
-         .end()
-
          // Click the cancel button
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span")
-            .sleep(500)
             .click()
             .sleep(500)
             .end()
@@ -175,7 +145,6 @@ define(["intern!object",
 
          // Submit the main form
          .findByCssSelector("span.alfresco-buttons-AlfButton.confirmationButton > span")
-            .sleep(500)
             .click()
             .sleep(500)
             .end()
@@ -183,7 +152,40 @@ define(["intern!object",
          // Check the correct pub/sub form submission element has appeared
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "TEST_FORM_SUBMITTED"))
             .then(null, function() {
-               assert(false, "Form submission did not proceed as expected and the expected publish on 'TEST_FORM_SUBMITTED' was missing");
+               assert(false, "Form submission did not proceed as expected and the expected publish on 'TEST_FORM_SUBMITTED' was missing")
+            })
+            .end()
+
+         // Click the dialog button to re-open the dialog
+         .findById("TEST_DIALOG_BUTTON")
+            .click()
+            .end()
+
+         // Move the dialog
+         .findByCssSelector("span.dijitDialogTitle")
+            .getPosition()
+            .then(function(pos) {
+               startPos = pos;
+            })
+            .end()
+
+         .findByCssSelector("span.dijitDialogTitle")
+            .then(function(element) {
+               browser.moveMouseTo(element);
+            })
+            .sleep(100)
+            .pressMouseButton()
+            .sleep(100)
+            .moveMouseTo(null, 50, 25)
+            .sleep(100)
+            .releaseMouseButton()
+            .end()
+
+         .findByCssSelector("span.dijitDialogTitle")
+            .getPosition()
+            .then(function(endPos) {
+               expect(endPos.x - 50).to.equal(startPos.x, "The dialog did not move the expected distance on the x axis");
+               expect(endPos.y - 25).to.equal(startPos.y, "The dialog did not move the expected distance on the y axis");
             })
             .end()
 

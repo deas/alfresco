@@ -43,10 +43,10 @@ define({
     * @type {object}
     */
    timeout: {
-      base: 10000,
-      find: 1000,
-      pageLoad: 10000,
-      executeAsync: 1000
+      base: 3000,
+      find: 2000,
+      pageLoad: 3000,
+      executeAsync: 2000
    }
 
 });
