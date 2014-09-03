@@ -43,18 +43,19 @@ import org.openqa.selenium.WebElement;
  */
 public class SearchResultItem implements SearchResult
 {
-    private WebDrone drone;
-    private static final String ITEM_NAME_CSS_HOLDER = "h3.itemname a";
+    private WebDrone drone;    
+    private static final String ITEM_NAME_CSS_HOLDER = "div.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a";
     private static final String DOWNLOAD_LINK = "div>a>img[title='Download']";
-    private static final String THUMBNAIL_LINK = "div.thumbnail-cell";
+    private static final String THUMBNAIL_LINK = "div.thumbnail-cell";    
     private static final String VIEW_IN_BROWSER_LINK = "a>img[title='View In Browser']";
     private static final String FOLDER_CSS = "img[src$='folder.png']";
     private static final String FOLDER_PATH_CSS = "a";
     private static final String CONTENT_DETAILS_CSS = "div.details";
-    private static final String DATE = "tr td.dateCell span.inner";    
-    private static final String SITE = "tr td.siteCell span.inner";
-    
+    private static final String DATE = "div.dateCell span.inner";
+    private static final String SITE = "div.siteCell span.inner";
+    private static final String IMAGE = "tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell img";
 
+   
     private WebElement webElement;
     private String title;
 
@@ -264,8 +265,8 @@ public class SearchResultItem implements SearchResult
     public String getName()
     {
         return getTitle();
-    }
-    
+    }    
+
     @Override
     /**
      * The site are treated the same up till version 5.0
@@ -312,8 +313,14 @@ public class SearchResultItem implements SearchResult
         return FactorySharePage.resolvePage(drone);
     }
     
-    
-    
+    @Override
+    public PreViewPopUpPage clickImageLink()
+    {
+        WebElement link = webElement.findElement(By.cssSelector(IMAGE));
+        link.click();
+        return new PreViewPopUpPage(drone);
+    }   
 
     
-}
+
+   }

@@ -94,7 +94,14 @@ public interface SearchResult
       */
 	 ActionsSet getActions();
 	 
-	
+	 /**
+      * Select the Image link of the search result item.
+      * 
+      * @return PreViewPopUpPage if link found and selected
+      */
+	 
+	 PreViewPopUpPage clickImageLink();
+
      
-     
+
 }
