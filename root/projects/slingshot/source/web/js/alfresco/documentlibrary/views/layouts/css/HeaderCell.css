@@ -9,7 +9,8 @@ th.alfresco-documentlibrary-views-layouts-HeaderCell {
    text-align: left;
 }
 
-th.alfresco-documentlibrary-views-layouts-HeaderCell.last {
+th.alfresco-documentlibrary-views-layouts-HeaderCell.last,
+th.alfresco-documentlibrary-views-layouts-HeaderCell:last-of-type {
    border-right: none;
 }
 

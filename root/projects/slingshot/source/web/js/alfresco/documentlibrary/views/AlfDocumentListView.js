@@ -140,7 +140,7 @@ define(["dojo/_base/declare",
             this.renderView(false);
          }
 
-         this.renderCaption();
+         this._renderOptionalElements();
 
          this.alfSubscribe(this.clearDocDataTopic, lang.hitch(this, "clearOldView"));
       },
@@ -393,18 +393,45 @@ define(["dojo/_base/declare",
          }, this.domNode);
       },
 
+      /** 
+       * Runs _renderHeader() and _renderCaption() in the correct order to construct the elements appropriately
+       * 
+       * @instance
+       */
+      _renderOptionalElements: function alfresco_documentlibrary_views_AlfDocumentListView___renderOptionalElements() {
+         this._renderHeader();
+         this._renderCaption();
+      },
+
+      /** 
+       * Optionally builds the header contents from a nested set of widgets in attribute widgetsForHeader
+       * 
+       * @instance
+       */
+      _renderHeader: function alfresco_documentlibrary_views_AlfDocumentListView___renderHeader() {
+         this.currentItem = {};
+         if (this.widgetsForHeader != null)
+         {
+            var thead = domConstruct.create("thead", null, this.tableNode, "first");
+            this.processWidgets(this.widgetsForHeader, thead);
+         }
+         this.currentItem = null;
+      },
+
       /**
        * Optionally add a caption to the generated table
        * 
        * @instance
        */
-      renderCaption: function alfresco_documentlibrary_views_AlfDocumentListWithHeaderView__renderCaption() {
+      _renderCaption: function alfresco_documentlibrary_views_AlfDocumentListView___renderCaption() {
          if(this.a11yCaption && this.tableNode)
          {
+            // Create a caption node
             var caption = domConstruct.create("caption", {
                innerHTML: this.a11yCaption
             }, this.tableNode, "first");
 
+            // Apply a class to the caption
             if(this.a11yCaptionClass)
             {
                domClass.add(caption, this.a11yCaptionClass);

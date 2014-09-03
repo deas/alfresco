@@ -20,14 +20,14 @@
 /**
  * 
  * @module alfresco/documentlibrary/views/AlfTableView
- * @extends module:alfresco/documentlibrary/views/AlfDocumentListWithHeaderView
+ * @extends module:alfresco/documentlibrary/views/AlfDocumentListView
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView"], 
-        function(declare, AlfDocumentListWithHeaderView, template) {
+        "alfresco/documentlibrary/views/AlfDocumentListView"], 
+        function(declare, AlfDocumentListView, template) {
    
-   return declare([AlfDocumentListWithHeaderView], {
+   return declare([AlfDocumentListView], {
       
       /**
        * Returns the name of the view that is used when saving user view preferences.
@@ -139,7 +139,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Selector"
@@ -150,7 +150,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Indicators"
@@ -161,7 +161,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/InlineEditProperty",
@@ -177,7 +177,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/InlineEditProperty",
@@ -192,7 +192,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/InlineEditProperty",
@@ -207,7 +207,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Property",
@@ -222,7 +222,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Property",
@@ -237,7 +237,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Property",
@@ -252,7 +252,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Property",
@@ -267,7 +267,7 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
                      config: {
-                        "class": "mediumpad",
+                        additionalCssClasses: "mediumpad",
                         widgets: [
                            {
                               name: "alfresco/renderers/Actions"

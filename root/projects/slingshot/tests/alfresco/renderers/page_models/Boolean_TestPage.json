@@ -12,7 +12,7 @@
    ],
    "widgets":[
       {
-         "name": "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
+         "name": "alfresco/documentlibrary/views/AlfDocumentListView",
          "config": {
             "id": "LIST_WITH_HEADER",
             "currentData": {

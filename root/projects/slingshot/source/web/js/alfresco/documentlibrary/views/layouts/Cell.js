@@ -34,8 +34,9 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/Cell.html",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/core/Core",
-        "alfresco/core/CoreWidgetProcessing"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing) {
+        "alfresco/core/CoreWidgetProcessing",
+        "dojo/dom-class",], 
+        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, domClass) {
 
    return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
       
@@ -62,6 +63,10 @@ define(["dojo/_base/declare",
        * @instance postCreate
        */
       postCreate: function alfresco_documentlibrary_views_layouts_Cell__postCreate() {
+         if(this.additionalCssClasses)
+         {
+            domClass.add(this.domNode, this.additionalCssClasses);
+         }
          if (this.widgets)
          {
             this.processWidgets(this.widgets, this.containerNode);

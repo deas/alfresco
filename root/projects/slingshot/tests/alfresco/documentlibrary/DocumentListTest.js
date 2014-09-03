@@ -42,7 +42,7 @@ define(["intern!object",
          .elementsByCss(TestCommon.pubSubDataCssSelector("last", "path", "/"))
          .then(function(elements) {
             TestCommon.log(testname,44,"Check 'path' initialised correctly");
-            assert(elements.length == 2, "'path' not initialised correctly"); // 2 because there is one in the filter.path too
+            assert(elements.length == 1, "'path' not initialised correctly");
          })
          .end()
 

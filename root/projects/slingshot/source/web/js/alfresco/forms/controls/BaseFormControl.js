@@ -44,8 +44,10 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/dom-class",
         "dijit/Tooltip",
-        "dojo/dom-attr"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip, domAttr) {
+        "dojo/dom-attr",
+        "dojo/query",
+        "dojo/dom-construct"], 
+        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, ObjectTypeUtils, arrayUtils, lang, array, domStyle, domClass, Tooltip, domAttr, query, domConstruct) {
 
    return declare([_Widget, _Templated, _FocusMixin, AlfCore], {
       
@@ -1153,8 +1155,25 @@ define(["dojo/_base/declare",
             // TODO: This message might not make much sense if it is just missing data for a required field...
             this._validationMessage.innerHTML = this.encodeHTML(this.message(this.validationConfig.errorMessage));
          }
+
+         // Fix for missing label on validation input
+         var validationInput = query("input.dijitValidationIcon.dijitValidationInner", this._controlNode),
+             validationInputId = this.wrappedWidget.id + "_validationInput";
+         if(validationInput && validationInput.length > 0)
+         {
+            // Add 'id' to the input
+            domAttr.set(validationInput[0], "id", validationInputId);
+
+            // Create a label for the input
+            domConstruct.create("label", {
+               innerHTML: this.message("validation.control.invalid"),
+               "for": validationInputId,
+               "class": "hiddenAccessible"
+            }, validationInput[0], "before");
+         }
+         
       },
-      
+
       /**
        * Whenever a widgets value changes we need to publish the details out to the other form controls (that exist in the
        * same scope) so that they can modify their appearance/behaviour as necessary). This function sets up the default events 

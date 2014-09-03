@@ -3,9 +3,15 @@
    position: absolute;
    left: 0;
    top: 0;
+   height: 0;
    width: 100%;
    margin-left: 0;
    text-align: center;
+}
+.accessibilityMenu p
+{
+   position: absolute;
+   left: -99999px;
 }
 .accessibilityMenu ul
 {
@@ -25,7 +31,7 @@
 .accessibilityMenu a:active{
    position: relative;
    left: 0;
-   z-index:9999;
+   z-index: 9999;
    width: 75%;
    height: auto;
    margin: 0 auto;
@@ -36,6 +42,5 @@
    color: #333;
    background-color: #fff;
    opacity: 0.80;
-   -ms-filter:"progid:DXImageTransform.Microsoft.Alpha"(Opacity=80);
    border: 1px solid #333;
 }

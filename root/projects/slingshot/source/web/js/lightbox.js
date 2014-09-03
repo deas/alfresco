@@ -342,6 +342,7 @@ function initLightbox()
 		var objLoadingImage = document.createElement("img");
 		objLoadingImage.src = loadingImage;
 		objLoadingImage.setAttribute('id','loadingImage');
+		objLoadingImage.setAttribute('alt',Alfresco.util.message.call(this, "lightbox.loading"));
 		objLoadingImage.style.position = 'absolute';
 		objLoadingImage.style.zIndex = '150';
 		objLoadingImageLink.appendChild(objLoadingImage);
@@ -383,6 +384,7 @@ function initLightbox()
 		var objCloseButton = document.createElement("img");
 		objCloseButton.src = closeButton;
 		objCloseButton.setAttribute('id','closeButton');
+		objCloseButton.setAttribute('alt',Alfresco.util.message.call(this, "lightbox.close"));
 		objCloseButton.style.position = 'absolute';
 		objCloseButton.style.zIndex = '200';
 		objLink.appendChild(objCloseButton);
@@ -395,6 +397,7 @@ function initLightbox()
 	// create image
 	var objImage = document.createElement("img");
 	objImage.setAttribute('id','lightboxImage');
+	objImage.setAttribute('alt','');
 	objLink.appendChild(objImage);
 	
 	// create details div, a container for the caption and keyboard message
@@ -415,7 +418,6 @@ function initLightbox()
 	objKeyboardMsg.innerHTML = 'Press <a href="#" onclick="hideLightbox(); return false;"><kbd>X</kbd></a> to close.';
 	objLightboxDetails.appendChild(objKeyboardMsg);*/
 }
-
 
 //
 // addLoadEvent()

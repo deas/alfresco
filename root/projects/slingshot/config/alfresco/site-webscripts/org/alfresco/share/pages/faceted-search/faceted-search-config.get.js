@@ -109,8 +109,9 @@ var main = {
                                           itemsProperty: "facets",
                                           widgets: [
                                              {
-                                                name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
+                                                name: "alfresco/documentlibrary/views/AlfDocumentListView",
                                                 config: {
+                                                   additionalCssClasses: "bordered",
                                                    widgetsForHeader: [
                                                       {
                                                          name: "alfresco/documentlibrary/views/layouts/HeaderCell",
@@ -159,7 +160,7 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     class: "mediumpad",
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
@@ -171,7 +172,7 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     class: "mediumpad",
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "",
                                                                      widgets: [
                                                                         {
@@ -191,7 +192,7 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     class: "mediumpad",
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
@@ -206,7 +207,7 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     class: "mediumpad",
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
@@ -221,7 +222,7 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     class: "mediumpad",
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
@@ -236,7 +237,7 @@ var main = {
                                                                {
                                                                   name: "alfresco/documentlibrary/views/layouts/Cell",
                                                                   config: {
-                                                                     class: "mediumpad",
+                                                                     additionalCssClasses: "mediumpad",
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {

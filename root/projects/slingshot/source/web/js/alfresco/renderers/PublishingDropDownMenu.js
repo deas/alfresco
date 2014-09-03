@@ -115,6 +115,11 @@ define(["dojo/_base/declare",
             // uncessarily process the setup publications which are intended to be processed by 
             // other controls in the same scoped form...
             this.alfSubscribe(subscriptionTopic, lang.hitch(this, "onPublishChange"), true);
+            
+            if(this.additionalCssClasses)
+            {
+               domClass.add(this.domNode, this.additionalCssClasses);
+            }
          }
          else
          {

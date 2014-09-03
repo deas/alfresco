@@ -113,6 +113,24 @@ define(["dojo/_base/declare",
       a11yScope: null,
 
       /**
+       * Optional alt text for the sort ascending icon
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      sortAscAlt: null,
+
+      /**
+       * Optional alt text for the sort descending icon
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      sortDescAlt: null,
+
+      /**
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_views_layouts_HeaderCell__postMixInProperties() {
@@ -133,6 +151,9 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, "onExternalSortRequest"));
          this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "onExternalSortRequest"));
 
+         domAttr.set(this.ascendingSortNode, "alt", this.sortAscAlt ? this.sortAscAlt : "");
+         domAttr.set(this.descendingSortNode, "alt", this.sortDescAlt ? this.sortDescAlt : "");
+
          if (this.sortable == false || this.usedForSort == false)
          {
             this.sortIcon("nil");
@@ -140,6 +161,11 @@ define(["dojo/_base/declare",
          else
          {
             this.sortIcon(this.sortedAscending == false ? "desc" : "asc");
+         }
+
+         if(this.additionalCssClasses)
+         {
+            domClass.add(this.domNode, this.additionalCssClasses);
          }
 
          if (this.toolTipMsg)

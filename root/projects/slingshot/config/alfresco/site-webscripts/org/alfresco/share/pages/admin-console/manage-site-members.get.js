@@ -92,7 +92,7 @@ model.jsonModel = {
                      site: page.url.args["site"],
                      widgets: [
                         {
-                           name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
+                           name: "alfresco/documentlibrary/views/AlfDocumentListView",
                            config: {
                               itemKey: "shortName",
                               widgetsForHeader: [

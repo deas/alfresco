@@ -74,8 +74,9 @@ model.jsonModel = {
                      ],
                      widgets: [
                         {
-                           name: "alfresco/documentlibrary/views/AlfDocumentListWithHeaderView",
+                           name: "alfresco/documentlibrary/views/AlfDocumentListView",
                            config: {
+                              additionalCssClasses: "bordered",
                               noItemsMessage: msg.get("message.no-sites"),
                               itemKey: "shortName",
                               widgetsForHeader: [
@@ -110,8 +111,7 @@ model.jsonModel = {
                                  {
                                     name: "alfresco/documentlibrary/views/layouts/HeaderCell",
                                     config: {
-                                       label: msg.get("message.actions-header-label"),
-                                       class: "last"
+                                       label: msg.get("message.actions-header-label")
                                     }
                                  }
                               ],
@@ -123,7 +123,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "siteName mediumpad",
+                                                additionalCssClasses: "siteName mediumpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/PropertyLink",
@@ -147,7 +147,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "siteDescription mediumpad",
+                                                additionalCssClasses: "siteDescription mediumpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Property",
@@ -162,12 +162,12 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "visibility smallpad",
+                                                additionalCssClasses: "visibility smallpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/PublishingDropDownMenu",
                                                       config: {
-                                                         class: "unmargined",
+                                                         additionalCssClasses: "unmargined",
                                                          publishTopic: "ALF_UPDATE_SITE_DETAILS",
                                                          publishPayloadType: "BUILD",
                                                          publishPayload: {
@@ -196,7 +196,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "siteManager mediumpad",
+                                                additionalCssClasses: "siteManager mediumpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/renderers/Boolean",
@@ -211,7 +211,7 @@ model.jsonModel = {
                                           {
                                              name: "alfresco/documentlibrary/views/layouts/Cell",
                                              config: {
-                                                class: "actions smallpad last",
+                                                additionalCssClasses: "actions smallpad",
                                                 widgets: [
                                                    {
                                                       name: "alfresco/menus/AlfMenuBar",
@@ -226,7 +226,7 @@ model.jsonModel = {
                                                                      {
                                                                         name: "alfresco/menus/AlfMenuGroup",
                                                                         config: {
-                                                                           class: "unmargined",
+                                                                           additionalCssClasses: "unmargined",
                                                                            widgets: [
                                                                               {
                                                                                  name: "alfresco/menus/AlfMenuItem",

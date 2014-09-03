@@ -99,7 +99,12 @@ define(["dojo/_base/declare",
             this.label = this.message(this.label);
             this._groupTitleNode.innerHTML = this.encodeHTML(this.label);
          }
-         
+
+         if(this.additionalCssClasses)
+         {
+            domClass.add(this._containerNode, this.additionalCssClasses);
+         }
+
          // Setup the Drop down menu as normal...
          this.inherited(arguments);
       },
