@@ -42,61 +42,60 @@ define({
     * @type [string]
     */
    baseFunctionalSuites: [
-      'tests/alfresco/accessibility/AccessibilityMenuTest'
-      // ,
+      'tests/alfresco/accessibility/AccessibilityMenuTest',
 
-      // 'tests/alfresco/charts/ccc/PieChartTest',
+      'tests/alfresco/charts/ccc/PieChartTest',
 
-      // 'tests/alfresco/core/PublishPayloadMixinTest',
-      // 'tests/alfresco/core/RenderFilterTest',
-      // 'tests/alfresco/core/VisibilityConfigTest',
-      // 'tests/alfresco/core/WidgetCreationTest',
+      'tests/alfresco/core/PublishPayloadMixinTest',
+      'tests/alfresco/core/RenderFilterTest',
+      'tests/alfresco/core/VisibilityConfigTest',
+      'tests/alfresco/core/WidgetCreationTest',
 
-      // 'tests/alfresco/documentlibrary/DocumentListTest',
-      // 'tests/alfresco/documentlibrary/SearchListTest',
-      // 'tests/alfresco/documentlibrary/SearchListScrollTest',
-      // 'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
+      'tests/alfresco/documentlibrary/DocumentListTest',
+      'tests/alfresco/documentlibrary/SearchListTest',
+      'tests/alfresco/documentlibrary/SearchListScrollTest',
+      'tests/alfresco/documentlibrary/views/AlfDocumentListWithHeaderTest',
 
-      // 'tests/alfresco/footer/FooterTest',
+      'tests/alfresco/footer/FooterTest',
 
-      // 'tests/alfresco/forms/FormsTest',
-      // 'tests/alfresco/forms/SingleTextFieldFormTest',
-      // 'tests/alfresco/forms/controls/DocumentPickerTest',
-      // 'tests/alfresco/forms/controls/DojoSelectTest',
-      // 'tests/alfresco/forms/controls/DojoDateTextBoxTest',
-      // 'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
-      // 'tests/alfresco/forms/controls/FormButtonDialogTest',
+      'tests/alfresco/forms/FormsTest',
+      'tests/alfresco/forms/SingleTextFieldFormTest',
+      'tests/alfresco/forms/controls/DocumentPickerTest',
+      'tests/alfresco/forms/controls/DojoSelectTest',
+      'tests/alfresco/forms/controls/DojoDateTextBoxTest',
+      'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
+      'tests/alfresco/forms/controls/FormButtonDialogTest',
 
-      // 'tests/alfresco/header/WarningTest',
+      'tests/alfresco/header/WarningTest',
 
-      // 'tests/alfresco/html/LabelTest',
+      'tests/alfresco/html/LabelTest',
 
-      // 'tests/alfresco/layout/BasicLayoutTest',
+      'tests/alfresco/layout/BasicLayoutTest',
 
-      // 'tests/alfresco/menus/AlfCheckableMenuItemTest',
-      // 'tests/alfresco/menus/AlfContextMenuTest',
-      // 'tests/alfresco/menus/AlfFormDialogMenuItemTest',
-      // 'tests/alfresco/menus/AlfMenuBarSelectItemsTest',
-      // 'tests/alfresco/menus/AlfMenuBarSelectTest',
-      // 'tests/alfresco/menus/AlfMenuBarToggleTest',
-      // 'tests/alfresco/menus/AlfMenuItemWrapperTest',
-      // 'tests/alfresco/menus/AlfMenuTextForClipboardTest',
-      // 'tests/alfresco/menus/AlfVerticalMenuBarTest',
-      // 'tests/alfresco/menus/MenuTests',
+      'tests/alfresco/menus/AlfCheckableMenuItemTest',
+      'tests/alfresco/menus/AlfContextMenuTest',
+      'tests/alfresco/menus/AlfFormDialogMenuItemTest',
+      'tests/alfresco/menus/AlfMenuBarSelectItemsTest',
+      'tests/alfresco/menus/AlfMenuBarSelectTest',
+      'tests/alfresco/menus/AlfMenuBarToggleTest',
+      'tests/alfresco/menus/AlfMenuItemWrapperTest',
+      'tests/alfresco/menus/AlfMenuTextForClipboardTest',
+      'tests/alfresco/menus/AlfVerticalMenuBarTest',
+      'tests/alfresco/menus/MenuTests',
 
-      // 'tests/alfresco/misc/AlfTooltipTest',
+      'tests/alfresco/misc/AlfTooltipTest',
 
-      // 'tests/alfresco/renderers/BooleanTest',
-      // 'tests/alfresco/renderers/DateTest',
-      // 'tests/alfresco/renderers/DateLinkTest',
-      // 'tests/alfresco/renderers/PropertyTest',
-      // 'tests/alfresco/renderers/PropertyLinkTest',
-      // 'tests/alfresco/renderers/PublishingDropDownMenuTest',
-      // 'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
-      // 'tests/alfresco/renderers/SearchResultPropertyLinkTest',
-      // 'tests/alfresco/renderers/XhrActionsTest',
+      'tests/alfresco/renderers/BooleanTest',
+      'tests/alfresco/renderers/DateTest',
+      'tests/alfresco/renderers/DateLinkTest',
+      'tests/alfresco/renderers/PropertyTest',
+      'tests/alfresco/renderers/PropertyLinkTest',
+      'tests/alfresco/renderers/PublishingDropDownMenuTest',
+      'tests/alfresco/renderers/PublishPayloadMixinOnActionsTest',
+      'tests/alfresco/renderers/SearchResultPropertyLinkTest',
+      'tests/alfresco/renderers/XhrActionsTest',
 
-      // 'tests/alfresco/search/FacetFiltersTest'
+      'tests/alfresco/search/FacetFiltersTest'
    ],
 
    /**
@@ -201,7 +200,7 @@ define({
     * @instance
     * @type [string]
     */
-   setupFunctionalSuites: [], //['tests/alfresco/DebugEnable'],
+   setupFunctionalSuites: ['tests/alfresco/DebugEnable'],
 
    /**
     * This is the array of functional test suites for teardown purposes
@@ -209,6 +208,6 @@ define({
     * @instance
     * @type [string]
     */
-   teardownFunctionalSuites: [],//['tests/alfresco/DebugDisable']
+   teardownFunctionalSuites: ['tests/alfresco/DebugDisable']
 
 });
