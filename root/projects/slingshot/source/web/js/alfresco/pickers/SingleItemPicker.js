@@ -63,15 +63,6 @@ define(["dojo/_base/declare",
       subPicker: "alfresco/pickers/DocumentListPicker",
 
       /**
-       * Should events be published globally?
-       *
-       * @instance
-       * @type {Boolean}
-       * @default false
-       */
-      publishGlobal: true,
-
-      /**
        *
        *
        * @instance
@@ -157,8 +148,7 @@ define(["dojo/_base/declare",
                      config: {
                         libraryRoot: siteNodeRef,
                         nodeRef: siteNodeRef,
-                        path: "/",
-                        publishGlobal: this.publishGlobal
+                        path: "/"
                      }
                   }
                }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -41,6 +41,14 @@ define(["dojo/_base/declare",
    
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
+      /**
+       * An array of the i18n files to use with this widget.
+       * 
+       * @instance
+       * @type {Array}
+       */
+      i18nRequirements: [{i18nFile: "./i18n/Picker.properties"}],
+      
       /**
        * An array of the CSS files to use with this widget.
        * 

@@ -77,7 +77,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       constructor: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__constructor() {
-         this.dndUploadCapable = ('draggable' in document.createElement('span')) && YAHOO.env.ua.mobile === null;
+         this.dndUploadCapable = ('draggable' in document.createElement('span'));
       },
       
       /**

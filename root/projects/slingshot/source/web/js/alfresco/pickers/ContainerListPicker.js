@@ -116,7 +116,6 @@ define(["dojo/_base/declare",
                                           name: "alfresco/renderers/PublishAction",
                                           config: {
                                              publishPayloadType: "CURRENT_ITEM",
-                                             publishGlobal: this.publishGlobal,
                                              renderFilter: [
                                                 {
                                                    property: "node.permissions.user.CreateChildren",

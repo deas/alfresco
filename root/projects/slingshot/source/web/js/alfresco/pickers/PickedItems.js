@@ -54,8 +54,6 @@ define(["dojo/_base/declare",
           */
          i18nRequirements: [{i18nFile: "./i18n/PickedItems.properties"}],
 
-         publishGlobal: true,
-
          /**
           * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
           * This allows files to be dragged and dropped from the operating system directly into the browser
@@ -69,8 +67,8 @@ define(["dojo/_base/declare",
             this.removeUploadDragAndDrop(this.domNode);
             // this.setupKeyboardNavigation();
 
-            this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, "addPickedItem"), this.publishGlobal);
-            this.alfSubscribe("ALF_ITEM_REMOVED", lang.hitch(this, "removePickedItem"), this.publishGlobal);
+            this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, "addPickedItem"));
+            this.alfSubscribe("ALF_ITEM_REMOVED", lang.hitch(this, "removePickedItem"));
 
             // Initialise the data...
             this.currentData = {
@@ -146,7 +144,7 @@ define(["dojo/_base/declare",
                this.renderView(false);
                this.alfPublish("ALF_ITEMS_SELECTED", {
                   pickedItems: this.currentData.items
-               }, this.publishGlobal);
+               });
             }
          },
 
