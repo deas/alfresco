@@ -114,7 +114,7 @@ define(["dojo/_base/declare",
          }
 
          // Set the appropriate alt-text for the logo image
-         if (this.altText != null && lang.trim(this.altText) != null)
+         if (this.altText != null && lang.trim(this.altText) != "")
          {
             this.altText = this.message(this.altText);
          }
