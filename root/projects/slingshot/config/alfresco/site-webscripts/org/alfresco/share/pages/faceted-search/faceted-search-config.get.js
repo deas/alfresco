@@ -168,6 +168,8 @@ var main = {
                                  deleteButtonLabel: "Delete",
                                  deleteButtonPublishTopic: "ALF_DELETE_QUADDS_ITEM",
                                  deleteButtonPublishGlobal: true,
+                                 showInfoTopics: ["ALF_DELETE_QUADDS_ITEM", "ALF_CREATE_QUADDS_ITEM", "ALF_UPDATE_QUADDS_ITEM"],
+                                 showFormTopics: [],
                                  widgets: [
                                     {
                                        name: "alfresco/forms/controls/DojoValidationTextBox",

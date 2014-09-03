@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -53,6 +53,28 @@ define(["dojo/_base/declare",
       defaultData: null,
 
       /**
+       * This should be configured to be an array of topics that when published will reveal the
+       * the information panel. The information panel is expected to be shown after creation, update
+       * and deletion events
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      showInfoTopics: null,
+
+      /**
+       * This should be configured to be an array of topics that when published will reveal the
+       * the form. The form is expected to be shown when an existing item is selected or when a new
+       * item should be created.
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      showFormTopics: null,
+
+      /**
        * Subscribes to 
        * @instance
        */
@@ -63,6 +85,60 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_CRUD_FORM_CREATE", lang.hitch(this, "onShowCreateState"));
          this.alfSubscribe("ALF_CRUD_FORM_UPDATE", lang.hitch(this, "onShowUpdateState"));
 
+         if (this.showInfoTopics)
+         {
+            array.forEach(this.showInfoTopics, function(topic, i) {
+               this.alfSubscribe(topic, lang.hitch(this, this.onShowInfo));
+            }, this);
+         }
+         if (this.showFormTopics)
+         {
+            array.forEach(this.showFormTopics, function(topic, i) {
+               this.alfSubscribe(topic, lang.hitch(this, this.onShowForm));
+            }, this);
+         }
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/forms/Form#postCreate} to 
+       * create a new "info" node. This node will be displayed when no item has been selected
+       * or when the last viewed item has been updated or deleted.
+       * 
+       * @instance
+       */
+      postCreate: function alfresco_forms_CrudForm__postCreate() {
+         this.infoNode = domConstruct.create("div", null, this.domNode, "first");
+         this.__creatingInfoWidgets = true;
+         this.processWidgets(this.widgetsForInfo, this.infoNode);
+         this.inherited(arguments);
+         this.onShowInfo();
+      },
+
+      /**
+       * This function is called whenever the form should be displayed and the information panel
+       * hidden. The topics that when published will cause this function to be called can be configured
+       * via the [showFormTopics]{@link module:alfresco/forms/CrudForm#showFormTopics} attribute.
+       * 
+       * @instance
+       */
+      onShowForm: function alfresco_forms_CrudForm__onShowForm() {
+         domStyle.set(this.infoNode, "display", "none");
+         domStyle.set(this._form.domNode, "display", "block");
+         domStyle.set(this.buttonsNode, "display", "block");
+
+      },
+
+      /**
+       * This function is called whenever the information panel should be displayed and the form
+       * hidden. The topics that when published will cause this function to be called can be configured
+       * via the [showFormTopics]{@link module:alfresco/forms/CrudForm#showInfoTopics} attribute.
+       * 
+       * @instance
+       */
+      onShowInfo: function alfresco_forms_CrudForm__onShowInfo() {
+         domStyle.set(this._form.domNode, "display", "none");
+         domStyle.set(this.buttonsNode, "display", "none");
+         domStyle.set(this.infoNode, "display", "block");
       },
 
       /**
@@ -73,23 +149,30 @@ define(["dojo/_base/declare",
        * @param {array} widgets The created form controls
        */
       allWidgetsProcessed: function alfresco_forms_CrudForm__allWidgetsProcessed(widgets) {
-         this.inherited(arguments);
-
-         // Collect the initial set of form data...
-         var startingFormData = {};
-         array.forEach(this._form.getChildren(), function(entry, i) {
-            lang.setObject(entry.get("name"), entry.getValue(), startingFormData);
-         });
-
-         if (this.defaultData != null)
+         if (this.__creatingInfoWidgets === true)
          {
-            // Mix the default data into the starting form data (this overrides what's initialised in the form)
-            lang.mixin(startingFormData, this.defaultData);
+            this.__creatingInfoWidgets = false;
          }
          else
          {
-            // Use the initial form data as the default data set for creating new items...
-            this.defaultData = startingFormData;
+            this.inherited(arguments);
+
+            // Collect the initial set of form data...
+            var startingFormData = {};
+            array.forEach(this._form.getChildren(), function(entry, i) {
+               lang.setObject(entry.get("name"), entry.getValue(), startingFormData);
+            });
+
+            if (this.defaultData != null)
+            {
+               // Mix the default data into the starting form data (this overrides what's initialised in the form)
+               lang.mixin(startingFormData, this.defaultData);
+            }
+            else
+            {
+               // Use the initial form data as the default data set for creating new items...
+               this.defaultData = startingFormData;
+            }
          }
       },
 
@@ -173,6 +256,8 @@ define(["dojo/_base/declare",
          // Set the "OK" button as the "Create" button and then validate so that it is enabled/disabled appropriately
          this.okButton = this.createButton; 
          this.validate();
+
+         this.onShowForm();
       },
 
       /**
@@ -196,6 +281,24 @@ define(["dojo/_base/declare",
          // Set the "OK" button as the "Update" button and then validate so that it is enabled/disabled appropriately
          this.okButton = this.updateButton; 
          this.validate();
-      }
+
+         this.onShowForm();
+      },
+
+      widgetsForInfo: [
+         {
+            name: "alfresco/layout/VerticalWidgets",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/html/Label",
+                     config: {
+                        label: "Info Page TBD"
+                     }
+                  }
+               ]
+            }
+         }
+      ]
    });
 });

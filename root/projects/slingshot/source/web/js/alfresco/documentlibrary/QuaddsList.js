@@ -57,6 +57,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_QuaddsList__loadData() {
+         this.alfPublish(this.clearDocDataTopic);
          this.showLoadingMessage();
 
          // Set a response topic that is scoped to this widget...
