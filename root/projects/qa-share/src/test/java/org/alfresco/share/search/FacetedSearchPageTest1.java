@@ -1,4 +1,3 @@
-
 package org.alfresco.share.search;
 
 import org.alfresco.po.share.DashBoardPage;
@@ -113,7 +112,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     Verify only 'Down load' link and 'View in Browser' links are displayed for a file under action for different user 
     */
     
-    @Test(groups = "alfresco-one")
+    @Test(groups = "Enterprise-Only")
     public void ALF_3126() throws Exception
     {
         trace("Starting searchAndClickDownloadActionTest");        
@@ -158,7 +157,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Logout
-        ShareUser.logout(drone);
+        ShareUtil.logout(drone);
         
         //login as user2
         userLogin2();
@@ -175,7 +174,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         Assert.assertFalse(facetedSearchPage.getResultByName(name3).getActions().hasActionByName(actionName4));        
         Assert.assertFalse(facetedSearchPage.getResultByName(name4).getActions().hasActionByName(actionName5));
 
-        trace("searchAndClickDownloadActionTest");
+        trace("searchAndClickDownloadActionTest complete" );
     }
     
     /*searchAndClickViewInBrowserActionTest
@@ -222,7 +221,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Logout
-        ShareUser.logout(drone);       
+        ShareUtil.logout(drone);       
        
         trace("searchAndClickViewInBrowserActionTest complete");
     }
@@ -270,7 +269,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Logout
-        ShareUser.logout(drone);       
+        ShareUtil.logout(drone);       
        
         trace("searchAndClickEditOfflineActionTest complete");
     }
@@ -290,7 +289,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
                 
         String actionName4 = "Delete Document";        
         
-        String name = ("c-fs-test.docx");
+        String name = ("e-fs-test.docx");
         
         // Login as user1
         userLogin1();
@@ -336,7 +335,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Logout
-        ShareUser.logout(drone);       
+        ShareUtil.logout(drone);       
        
         trace("searchAndClickDeleteDocumentActionTest complete");
     }
@@ -406,11 +405,23 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);        
         ShareUserSitePage.createFolder(drone, folderName, null);
         
-       //Navigate back to the faceted search page
+        //Navigate back to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Do a search for folderName
         doSearch(folderName);
+        
+        //Repeat search until  search results are displayed      
+        for (int i = 0; i < 5; i++)
+        {
+            if (!(facetedSearchPage.getResults().size() > 0))
+            {
+                ShareUser.refreshSharePage(drone);
+                facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+                doSearch(folderName);
+            }
+        
+        }        
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for folderName there should be some search results"); 
@@ -425,7 +436,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Logout
-        ShareUser.logout(drone);       
+        ShareUtil.logout(drone);       
        
         trace("searchAndVerifyFolderActionsTest complete");
     }
