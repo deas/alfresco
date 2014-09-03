@@ -37,12 +37,12 @@
             <class name="org.alfresco.share.admin.SiteAdminChangeVisibilityTest"></class>
         </classes>
     </test>    
-    <test name="FacetedSearchTests" verbose="1" parallel="classes" thread-count="1">
+    <test name="FacetedSearchPageTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.search.FacetedSearchPageTest"></class>
         </classes>
     </test>
-    <test name="FacetedSearchTests" verbose="1" parallel="classes" thread-count="1">
+    <test name="FacetedSearchPageTest1" verbose="1" parallel="classes" thread-count="1">
         <classes>
             <class name="org.alfresco.share.search.FacetedSearchPageTest1"></class>
         </classes>
