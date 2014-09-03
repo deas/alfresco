@@ -28,6 +28,7 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "alfresco/core/ResizeMixin",
         "alfresco/services/_PreferenceServiceTopicMixin",
         "dojo/text!./templates/AlfSideBarContainer.html",
         "alfresco/core/Core",
@@ -40,9 +41,9 @@ define(["dojo/_base/declare",
         "dojo/on",
         "dojo/dom-geometry",
         "dojo/window"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _PreferenceServiceTopicMixin, template, AlfCore, CoreWidgetProcessing, BorderContainer, lang, array, domStyle, domClass, on, domGeom, win) {
+        function(declare, _WidgetBase, _TemplatedMixin, ResizeMixin, _PreferenceServiceTopicMixin, template, AlfCore, CoreWidgetProcessing, BorderContainer, lang, array, domStyle, domClass, on, domGeom, win) {
    
-   return declare([_WidgetBase, _TemplatedMixin, _PreferenceServiceTopicMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, ResizeMixin, _PreferenceServiceTopicMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -292,9 +293,7 @@ define(["dojo/_base/declare",
          domStyle.set(this.mainNode, "width", (size - w) + "px");
          
          // Fire a custom event to let contained objects know that the node has been resized.
-         this.alfPublish("ALF_NODE_RESIZED", {
-            node: this.mainNode
-         });
+         this.alfPublishResizeEvent(this.mainNode);
       },
       
       /**

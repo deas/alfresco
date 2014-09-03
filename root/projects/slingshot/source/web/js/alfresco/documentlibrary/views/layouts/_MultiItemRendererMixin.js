@@ -182,6 +182,12 @@ define(["dojo/_base/declare",
             this.currentIndex = this.currentData.previousItemCount || 0;
             this.currentItem = this.currentData.items[this.currentIndex];
             
+            // Add in the index...
+            if (this.currentItem.index == null)
+            {
+               this.currentItem.index = this.currentIndex;
+            }
+
             var itemsToRender = (this.currentIndex)? this.currentData.items.slice(this.currentIndex): this.currentData.items;
             
             array.forEach(itemsToRender, lang.hitch(this, "renderNextItem"));

@@ -32,10 +32,10 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
-        "dojo/text!./templates/Carousel.html",
-        "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/core/Core",
-        "alfresco/core/CoreWidgetProcessing",
+        "alfresco/core/ResizeMixin",
+        "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
+        "dojo/text!./templates/Carousel.html",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-class",
@@ -43,10 +43,10 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/dom-geometry",
         "dojo/window"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, 
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, ResizeMixin, _MultiItemRendererMixin, template, 
                  lang, array, domClass, domConstruct, domStyle, domGeom, win) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, ResizeMixin, _MultiItemRendererMixin, AlfCore], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -99,8 +99,11 @@ define(["dojo/_base/declare",
 
          // Subscibe to the page widgets ready topic to ensure that sizing occurs...
          this.alfSubscribe("ALF_WIDGETS_READY", lang.hitch(this, this.resize), true);
-      },
 
+         // Handle resize events...
+         this.alfSetupResizeSubscriptions(this.resize, this);
+      },
+      
       /**
        * Sets the width of each item (in pixels)
        *

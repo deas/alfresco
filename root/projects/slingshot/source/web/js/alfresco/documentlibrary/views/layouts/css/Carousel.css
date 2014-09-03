@@ -5,7 +5,6 @@
 
 .alfresco-documentlibrary-views-layouts-Carousel .items {
    overflow-x: hidden;
-   /*height: 112px;*/
    position: relative;
    z-index: 2;
    margin: 0 auto; /* Center the items */
@@ -16,25 +15,21 @@
    position: relative;
 }
 
-/**
- * Setting the margin isn't quite working because the overflow shows in the margin
- */
 .alfresco-documentlibrary-views-layouts-Carousel div.frame {
-   /*margin: 0 40px;*/
 }
 
 /*
  * The width needs to be properly calculated, this is just a really big number at the moment
  * to get the frame working
  */
-.alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol.item {
+.alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol {
+   transition: left 1.0s ease;
    width: 20000px;
    padding: 0;
    position: relative;
-   transition: left 1.0s ease;
 }
 
-.alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol.item > li {
+.alfresco-documentlibrary-views-layouts-Carousel > div.items > div.frame > ol > li {
    display: inline-block;
    margin-top: 6px;
 }

@@ -33,6 +33,7 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "alfresco/core/ResizeMixin",
         "dojo/text!./templates/Grid.html",
         "alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin",
         "alfresco/core/Core",
@@ -47,9 +48,9 @@ define(["dojo/_base/declare",
         "dijit/registry",
         "dojo/dom",
         "dojo/on"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, keys, lang, array, domConstruct, domGeom, query, domStyle, registry, dom, on) {
+        function(declare, _WidgetBase, _TemplatedMixin, ResizeMixin, template, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing, keys, lang, array, domConstruct, domGeom, query, domStyle, registry, dom, on) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, ResizeMixin, _MultiItemRendererMixin, AlfCore, CoreWidgetProcessing], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -88,9 +89,9 @@ define(["dojo/_base/declare",
          {
             this.processWidgets(this.widgets, this.containerNode);
          }
+
          // Update the grid as the window changes...
-         on(window, "resize", lang.hitch(this, "resizeCells"));
-         this.alfSubscribe("ALF_NODE_RESIZED", lang.hitch(this, "onNodeResized"));
+         this.alfSetupResizeSubscriptions(this.resizeCells, this);
       },
       
       /**
@@ -206,21 +207,6 @@ define(["dojo/_base/declare",
             target = allChildren[focusIndex + this.columns];
          }
          this.focusChild(target);
-      },
-      
-      /**
-       * This is the handler for node resize events. If the resized node is an ancestor of the DOM node
-       * then the [resizeCells]{@link module:alfresco/documentlibrary/views/layouts/Grid#resizeCells] function
-       * will be called.
-       * 
-       * @instance
-       * @param {object} payload The details of the node that has been resized.
-       */
-      onNodeResized: function alfresco_documentlibrary_views_layouts_Grid__onNodeResized(payload) {
-         if (dom.isDescendant(this.domNode, payload.node))
-         {
-            this.resizeCells();
-         }
       },
       
       /**
