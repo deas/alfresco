@@ -140,7 +140,7 @@ public class FacetedSearchResultsPageTest extends AbstractTest
         Assert.assertTrue(itemPage.getTitle().contains("Project Lists"));
     }
     
-    @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeWiki")
+    @Test(groups = {"Enterprise-only"}, dependsOnMethods="selectSearchResultOfTypeDataList")
     public void pagination() throws Exception
     {
         int expectedResultLength = 10;
