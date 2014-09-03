@@ -103,7 +103,7 @@ define(["dojo/_base/declare",
 
          // Localize the alt text...
          this.altText = this.message(this.altText, {
-            0: this.currentItem[this.propertyToRender]
+            0: (this.currentItem != null ? this.currentItem[this.propertyToRender] : "")
          });
       },
 
