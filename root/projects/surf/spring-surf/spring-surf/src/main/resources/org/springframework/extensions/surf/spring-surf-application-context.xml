@@ -78,10 +78,14 @@
       <property name="webFrameworkConfigElement" ref="webframework.config.element"/>
    </bean>
 
-
    <bean id="webscript.extensibility.moduleDeployment.get" class="org.springframework.extensions.surf.webscripts.GetDeployedModules" parent="webscript" scope="prototype">
       <property name="moduleDeploymentService" ref="module.deployment.service"/>
    </bean>
+   
+
+   <!--  This is the Java-controller for the client-side error report handling WebScript -->
+   <bean id="webscript.error.reporting.clientside-error.post" class="org.springframework.extensions.surf.webscripts.PostClientSideError" parent="webscript" scope="prototype"/>
+   
    <bean id="webscript.extensibility.moduleDeployment.post" class="org.springframework.extensions.surf.webscripts.PostDeployedModules" parent="webscript" scope="prototype">
       <property name="moduleDeploymentService" ref="module.deployment.service"/>
    </bean>
