@@ -46,111 +46,111 @@ define(["intern!object",
                 */
              },
             scrollToBottom = function() {
-               browser.eval("window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight))")
+               browser.execute("return window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight))")
             },
             scrollToTop = function() {
-               browser.eval("window.scrollTo(0,0)");
+               browser.execute("return window.scrollTo(0,0)");
             };
 
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/SearchListScroll_TestPage.json", testname)
 
-         .end()
+            .end()
 
-         // Click the button to set the search term via the hash...
-         .then(function(){
-         TestCommon.log(testname, null, "Setting search data");
-         })
-         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-         .click()
-         .end()
+            // Click the button to set the search term via the hash...
+            .then(function(){
+               TestCommon.log(testname, null, "Setting search data");
+            })
+            .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
+               .click()
+               .end()
 
-         // Check search term has been set.
-         .findAllByCssSelector(TestCommon.topicSelector("ALF_SET_SEARCH_TERM", "publish", "any"))
-         .then(function(elements) {
-            TestCommon.log(testname,65,"Check that search request triggered");
-            assert(elements.length === 0, "Search not triggered.");
-         })
-         .end()
+            // Check search term has been set.
+            .findAllByCssSelector(TestCommon.topicSelector("ALF_SET_SEARCH_TERM", "publish", "any"))
+               .then(function(elements) {
+                  TestCommon.log(testname,65,"Check that search request triggered");
+                  assert(elements.length === 0, "Search not triggered.");
+               })
+               .end()
 
-         // Count number of results - there should be 25 (Request 1)
-         .then(function(){
-         countResults(25);
-         })
+            // Count number of results - there should be 25 (Request 1)
+            .then(function(){
+               countResults(25);
+            })
 
-         // Trigger Infinite Scroll.
-         .then(function(){
-            scrollToBottom();
-            scrollToTop();
-            scrollToBottom();
-         })
+            // Trigger Infinite Scroll.
+            .then(function(){
+               scrollToBottom();
+               scrollToTop();
+               scrollToBottom();
+            })
 
-         // Check Trottled Scroll event
-         .findAllByCssSelector(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
-         .then(function(elements) {
-            TestCommon.log(testname,74,"Checking that ALF scroll event fired.");
-            assert(elements.length == 1, "Scroll event didn't fire");
-         })
-         .end()
+            // Check Trottled Scroll event
+            .findAllByCssSelector(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
+               .then(function(elements) {
+                  TestCommon.log(testname,74,"Checking that ALF scroll event fired.");
+                  assert(elements.length == 1, "Scroll event didn't fire");
+               })
+               .end()
 
-         // Check Infinite Scroll Event fired.
-         .findAllByCssSelector(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
-         .then(function(elements) {
-            TestCommon.log(testname,74,"Checking that ALF scroll near bottom event fired.");
-            assert(elements.length == 1, "Scroll near bottom event didn't fire");
-         })
-         .end()
+            // Check Infinite Scroll Event fired.
+            .findAllByCssSelector(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
+               .then(function(elements) {
+                  TestCommon.log(testname,74,"Checking that ALF scroll near bottom event fired.");
+                  assert(elements.length == 1, "Scroll near bottom event didn't fire");
+               })
+               .end()
 
-         // Count Results. there should be 50. (Request 2)
-         .then(function(){
-            countResults(50);
-         })
+            // Count Results. there should be 50. (Request 2)
+            .then(function(){
+               countResults(50);
+            })
 
 
-         // Scroll Again.
-         .then(function(){
-            scrollToBottom();
-         })
+            // Scroll Again.
+            .then(function(){
+               scrollToBottom();
+            })
 
-         // Count Results there should be 75 (Request 3)
-         .then(function(){
-            countResults(75);
-         })
+            // Count Results there should be 75 (Request 3)
+            .then(function(){
+               countResults(75);
+            })
 
-         // Facet Results. Check Facet Event
-         .findByCssSelector("#APPLY_FACET_FILTER")
-         .click()
-         .end()
+            // Facet Results. Check Facet Event
+            .findByCssSelector("#APPLY_FACET_FILTER")
+               .click()
+               .end()
 
-         // Count Results there should be 6 (Request 4)
-         .then(function(){
-            countResults(6);
-         })
+            // Count Results there should be 6 (Request 4)
+            .then(function(){
+               countResults(6);
+            })
 
-         // Scroll to bottom
-         .then(function(){
-            scrollToBottom();
-         })
+            // Scroll to bottom
+            .then(function(){
+               scrollToBottom();
+            })
 
-         // Check no scroll event is triggered.
-         .then(function(){
-            countResults(6);
-         })
+            // Check no scroll event is triggered.
+            .then(function(){
+               countResults(6);
+            })
 
-         // Retrigger Search results
-         .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
-         .click()
-         .end()
+            // Retrigger Search results
+            .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
+               .click()
+               .end()
 
-         // Count Results. Check 25 Exist.
-         .then(function(){
-            countResults(25);
-         })
+            // Count Results. Check 25 Exist.
+            .then(function(){
+               countResults(25);
+            })
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+            // Post the coverage results...
+            .then(function() {
+               TestCommon.postCoverageResults(browser);
+            })
+            .end();
       }
    });
 });
