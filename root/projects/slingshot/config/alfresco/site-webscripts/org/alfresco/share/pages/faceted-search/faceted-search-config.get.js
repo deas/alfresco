@@ -711,11 +711,11 @@ var main = {
                                                                                  fixed: [
                                                                                     {
                                                                                        label: msg.get("faceted-search-config.isEnabled.yes"),
-                                                                                       value: true
+                                                                                       value: "true"
                                                                                     },
                                                                                     {
                                                                                        label: msg.get("faceted-search-config.isEnabled.no"),
-                                                                                       value: false
+                                                                                       value: "false"
                                                                                     }
                                                                                  ]
                                                                               },

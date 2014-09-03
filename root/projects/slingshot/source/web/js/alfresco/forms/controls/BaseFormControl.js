@@ -1248,6 +1248,19 @@ define(["dojo/_base/declare",
                this.alfLog("log", "An exception was thrown retrieving the value for field: '" + this.fieldId + "'");
             }
          }
+
+         if (this._convertStringValuesToBooleans === true && ObjectTypeUtils.isString(value))
+         {
+            if (value.toLowerCase() === "true")
+            {
+               value = true;
+            }
+            else if (value.toLowerCase() === "false")
+            {
+               value = false;
+            }
+         }
+
          // Commented out because it does make the logging quite verbose
          // this.alfLog("log", "Returning value for field: '" + this.fieldId + "': ", value);
          return value;
@@ -1262,6 +1275,10 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Setting field: '" + this.fieldId + "' with value: ", value);
          if (this.wrappedWidget)
          {
+            if (this._convertStringValuesToBooleans === true && typeof value === "boolean")
+            {
+               value = value.toString();
+            }
             this.wrappedWidget.setValue(value);
          }
       },

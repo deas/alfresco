@@ -47,7 +47,8 @@ define(["dojo/_base/declare",
                name: "alfresco/forms/controls/DojoSelect",
                config: {
                   value: this.originalRenderedValue,
-                  optionsConfig: this.optionsConfig
+                  optionsConfig: this.optionsConfig,
+                  _convertStringValuesToBooleans: true
                }
             }, this.editWidgetNode);
          }
