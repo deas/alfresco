@@ -276,7 +276,6 @@ define(["alfresco/core/ProcessWidgets",
          domClass.add(this.domNode, "allWidgetsProcessed");
 
          domClass.add(win.body(), "aikau-reveal");
-      },
-
+      }
    });
 });
