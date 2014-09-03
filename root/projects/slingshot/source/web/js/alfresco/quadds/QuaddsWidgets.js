@@ -21,11 +21,11 @@
  * 
  * @module alfresco/quadds/QuaddsWidgets
  * @extends module:alfresco/core/ProcessWidgets
- * @mixes module:alfresco/core/WidgetsProcessingFilterMixin
+ * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["alfresco/core/ProcessWidgets",
-        "alfresco/core/WidgetsProcessingFilterMixin",
+        "alfresco/core/CoreWidgetProcessing",
         "dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
@@ -35,9 +35,9 @@ define(["alfresco/core/ProcessWidgets",
         "dojo/json",
         "dojo/query",
         "dojo/NodeList-manipulate"], 
-        function(ProcessWidgets, WidgetsProcessingFilterMixin, declare, array, lang, CoreXhr, AlfConstants, domConstruct, dojoJson, query) {
+        function(ProcessWidgets, CoreWidgetProcessing, declare, array, lang, CoreXhr, AlfConstants, domConstruct, dojoJson, query) {
    
-   return declare([ProcessWidgets, WidgetsProcessingFilterMixin, CoreXhr], {
+   return declare([ProcessWidgets, CoreWidgetProcessing, CoreXhr], {
       
       /**
        * 
@@ -98,12 +98,11 @@ define(["alfresco/core/ProcessWidgets",
                lang.mixin(window[response.i18nGlobalObject].messages.scope[scope], response.i18nMap[scope]);
             }
          }
-         
-         var _this = this;
+
          // The data response will contain a MD5 referencing JavaScript resource that we should request that Dojo loads...
          var requires = [];
          array.forEach(response.nonAmdDeps, function(dep, i) {
-            requires.push(AlfConstants.URL_RESCONTEXT + dep)
+            requires.push(AlfConstants.URL_RESCONTEXT + dep);
          });
          requires.push(AlfConstants.URL_RESCONTEXT + response.javaScript);
          require(requires, function() {
