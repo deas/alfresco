@@ -59,8 +59,8 @@ public class LazyClassPathXmlApplicationContext extends
    protected static class AlwaysLazyInitBeanDefinitionDocumentReader extends DefaultBeanDefinitionDocumentReader {
       @Override
       protected BeanDefinitionParserDelegate createHelper(
-            XmlReaderContext readerContext, Element root) {
-         BeanDefinitionParserDelegate helper = super.createHelper(readerContext, root);
+            XmlReaderContext readerContext, Element root, BeanDefinitionParserDelegate parentDelegate) {
+         BeanDefinitionParserDelegate helper = super.createHelper(readerContext, root, parentDelegate);
          helper.getDefaults().setLazyInit("true");
          return helper;
       }

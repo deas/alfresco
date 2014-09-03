@@ -63,7 +63,7 @@ public class NoAutoStartClassPathXmlApplicationContext extends
    protected static class NoAutoStartBeanDefinitionDocumentReader extends DefaultBeanDefinitionDocumentReader {
       @Override
       protected BeanDefinitionParserDelegate createHelper(
-            XmlReaderContext readerContext, Element root) {
+            XmlReaderContext readerContext, Element root, BeanDefinitionParserDelegate parentDelegate) {
          BeanDefinitionParserDelegate delegate = new NoAutoStartBeanDefinitionParserDelegate(readerContext);
          delegate.initDefaults(root);
          return delegate;

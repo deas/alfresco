@@ -151,7 +151,7 @@
     <dependency.vorbisJava.version>0.4</dependency.vorbisJava.version>
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.5.2</dependency.antlr.version>
-    <dependency.spring.version>3.0.5.RELEASE</dependency.spring.version>
+    <dependency.spring.version>3.2.10.RELEASE</dependency.spring.version>
     <dependency.activiti.version>5.13-alf-20140708</dependency.activiti.version>
     <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
@@ -169,7 +169,7 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -184,7 +184,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -235,87 +235,87 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.1</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.9</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.8</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
-            <version>1.8.1</version>
-        </dependency>    
+            <version>2.1</version>
+        </dependency>
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4-DBCP330</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
             <version>0.5</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.3.1</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-jxpath</groupId>
             <artifactId>commons-jxpath</artifactId>
             <version>1.3</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1.3</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-modeler</groupId>
             <artifactId>commons-modeler</artifactId>
-            <version>1.1</version>
-        </dependency>    
+            <version>2.0.1</version>
+        </dependency>
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.3</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
             <version>1.6</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.4.0</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
