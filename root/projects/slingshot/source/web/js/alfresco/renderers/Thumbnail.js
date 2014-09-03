@@ -88,7 +88,7 @@ define(["dojo/_base/declare",
          this.imgAltText = "";
          this.imgTitle = "";
 
-         if (this.currentItem != null && this.currentItem.node)
+         if (this.currentItem != null && this.currentItem.jsNode)
          {
             var jsNode = this.currentItem.jsNode;
             this.thumbnailUrl = this.generateThumbnailUrl();
@@ -221,7 +221,7 @@ define(["dojo/_base/declare",
          {
             this.renditionName = "doclib";
          }
-         if (this.currentItem != null && this.currentItem.node)
+         if (this.currentItem != null && this.currentItem.jsNode)
          {
             var jsNode = this.currentItem.jsNode;
             if (jsNode.isContainer || (jsNode.isLink && jsNode.linkedNode.isContainer))

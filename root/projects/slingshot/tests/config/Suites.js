@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-  // baseFunctionalSuites: ['tests/alfresco/core/CoreRwdTest'],
+//   baseFunctionalSuites: ['tests/alfresco/accessibility/AccessibilityMenuTest'],
 
    /**
     * This is the base array of functional test suites
@@ -115,6 +115,7 @@ define({
       'tests/alfresco/renderers/ReorderTest',
       'tests/alfresco/renderers/SearchResultPropertyLinkTest',
       'tests/alfresco/renderers/SocialRenderersTest',
+      'tests/alfresco/renderers/ThumbnailTest',
 
       'tests/alfresco/renderers/XhrActionsTest',
 
@@ -128,7 +129,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: [], // ['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: [],//['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests
