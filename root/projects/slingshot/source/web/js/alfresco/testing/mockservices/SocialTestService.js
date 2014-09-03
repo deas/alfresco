@@ -79,7 +79,7 @@ define(["dojo/_base/declare",
                   alfTopic += "_SUCCESS";
                   response = {
                      data: {
-                        ratingsCount: 1
+                        ratingsCount: 5
                      }
                   };
                   break;
@@ -87,7 +87,7 @@ define(["dojo/_base/declare",
                   alfTopic += "_SUCCESS";
                   response = {
                      data: {
-                        ratingsCount: 0
+                        ratingsCount: 4
                      }
                   };
                   break;

@@ -33,9 +33,119 @@ define(["intern!object",
       'Basic Test': function () {
          var browser = this.remote;
          var testname = "Social Renderers Test";
+
+         // type (like, favourite), status (processing, on, off, count, warning)
+         var toggleSelector = function(id, status) {
+            return "#" + id + " ." + status;
+         };
+
          return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SocialRenderers_TestPage.json", testname)
 
          .end()
+         
+         // Check the initial state of the LIKE widget...
+         .findByCssSelector(toggleSelector("LIKES", "processing"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #1a - like PROCESSING image displayed incorrectly")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "on"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #1b - like ON image displayed incorrectly")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "off"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #1c - like OFF image was not displayed")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "warning"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #1d - like WARNING image displayed incorrectly")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "count"))
+            .getVisibleText()
+            .then(function(resultText) {
+               assert(resultText == "4", "Test #1e - like COUNT is incorrect: " + resultText)
+            })
+            .end()
+
+         // Click on LIKE and check the response...
+         .findByCssSelector("#LIKES")
+            .click()
+            .end()
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_RATING_ADD", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length === 1, "Test #2a - Add rating request not published");
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "on"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #2b - like ON image not displayed following like")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "off"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #2c - like OFF image displayed despite liking")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "count"))
+            .getVisibleText()
+            .then(function(resultText) {
+               assert(resultText == "5", "Test #2d - like COUNT is incorrect following liking: " + resultText)
+            })
+            .end()
+
+         // Click on LIKE again and check the response...
+         .findByCssSelector("#LIKES")
+            .click()
+            .end()
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_RATING_REMOVE", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length === 1, "Test #3a - Add rating request not published");
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "on"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == false, "Test #3b - like ON image displayed despite removing like")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "off"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #3c - like OFF image not displayed despite removing like")
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "count"))
+            .getVisibleText()
+            .then(function(resultText) {
+               assert(resultText == "4", "Test #3d - like COUNT is incorrect following liking: " + resultText)
+            })
+            .end()
+
+         // Click on the LIKE again to check the simulated failure request...
+         .findByCssSelector("#LIKES")
+            .click()
+            .end()
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_RATING_ADD", "publish", "any"))
+            .then(function(elements) {
+               assert(elements.length === 2, "Test #4a - Add rating request not published");
+            })
+            .end()
+         .findByCssSelector(toggleSelector("LIKES", "warning"))
+            .isDisplayed()
+            .then(function(result) {
+               assert(result == true, "Test #4b - like WARNING image not displayed following simulated failure")
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {
