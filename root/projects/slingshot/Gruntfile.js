@@ -104,17 +104,11 @@ module.exports = function(grunt) {
       'shell:svnUp'
    ]);
 
-   // Do a mvn and an ant clean.
-   grunt.registerTask('clean', [
-      'shell:antClean',
-      'shell:mvnClean'
-   ]);
-
    // Build & start after a Clean & UPdate
    grunt.registerTask('cup', [
       'shell:killRepo',
       'shell:killShare',
-      'clean',
+      'shell:mvnClean',
       'shell:svnUp',
       'shell:startRepo',
       'shell:startShareInc'
@@ -128,6 +122,16 @@ module.exports = function(grunt) {
       'shell:killRepo',
       'shell:killShare',
       'vdown'
+   ]);
+
+   grunt.registerTask('hideExistingCoverageReports', [
+      'copy:coverageReportsToTemp',
+      'clean:coverageReports'
+   ]);
+
+   grunt.registerTask('showExistingCoverageReports', [
+      'copy:coverageReportsFromTemp',
+      'clean:coverageReportsTemp'
    ]);
 
    // Display notifications on test passes and failures...

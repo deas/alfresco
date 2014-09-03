@@ -31,11 +31,13 @@ module.exports = function (grunt, alf) {
       grunt.option('force', true);
       grunt.task.run('instrument-code');
       grunt.task.run('copy:instrumentedJs');
+      grunt.task.run('hideExistingCoverageReports');
       grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('start-node-coverage-server');
       grunt.task.run('intern:local');
       grunt.task.run('merge-reports');
       grunt.task.run('clean-reports');
+      grunt.task.run('showExistingCoverageReports');
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
    });
@@ -46,11 +48,13 @@ module.exports = function (grunt, alf) {
       grunt.option('force', true);
       grunt.task.run('instrument-code');
       grunt.task.run('copy:instrumentedJs');
+      grunt.task.run('hideExistingCoverageReports');
       grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('start-node-coverage-server');
       grunt.task.run('intern:dev');
       grunt.task.run('merge-reports');
       grunt.task.run('clean-reports');
+      grunt.task.run('showExistingCoverageReports');
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
    });

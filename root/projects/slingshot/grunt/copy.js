@@ -72,6 +72,30 @@ module.exports = function (grunt, alf) {
                   }
                }
             ]
+         },
+         // Used for hiding existing coverage reports
+         coverageReportsToTemp: {
+            files: [
+               {
+                  expand: true,
+                  flatten: true,
+                  src: ['code-coverage-reports/*'],
+                  dest: 'code-coverage-reports/temp/',
+                  filter: 'isFile'
+               }
+            ]
+         },
+         // Used for showing existing coverage reports
+         coverageReportsFromTemp: {
+            files: [
+               {
+                  expand: true,
+                  flatten: true,
+                  src: ['code-coverage-reports/temp/*'],
+                  dest: 'code-coverage-reports/',
+                  filter: 'isFile'
+               }
+            ]
          }
       }
    }

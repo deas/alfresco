@@ -27,6 +27,7 @@
     "selenium-standalone": "latest",
     "dojo": "latest",
     "chromedriver": "~2.10.0",
-    "grunt-notify": "~0.3.0"
+    "grunt-notify": "~0.3.0",
+    "grunt-contrib-clean": "latest"
   }
 }
