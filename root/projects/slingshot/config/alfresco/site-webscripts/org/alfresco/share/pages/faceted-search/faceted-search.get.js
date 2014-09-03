@@ -129,9 +129,9 @@ var hideOnZeroResultsConfig = {
    initialValue: false,
    rules: [
       {
-         topic: "ALF_SEARCH_RESULTS_COUNT",
-         attribute: "count",
-         isNot: [0]
+         topic: "ALF_HIDE_FACETS",
+         attribute: "hide",
+         isNot: [true]
       }
    ]
 };

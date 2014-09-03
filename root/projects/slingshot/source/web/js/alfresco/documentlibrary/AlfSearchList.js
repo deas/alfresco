@@ -297,7 +297,7 @@ define(["dojo/_base/declare",
             }
             else
             {
-               this.facetFields = (this.facetFields != "") ? this.facetFields + "," + qname : qname;
+               this.facetFields = (this.facetFields !== "") ? this.facetFields + "," + qname : qname;
             }
          }
       },
@@ -456,9 +456,11 @@ define(["dojo/_base/declare",
             this.alfPublish(this.requestInProgressTopic, {});
             this.showLoadingMessage();
 
+            this.requestedFacetCount = 0;
             var filters = "";
             for (var key in this.facetFilters)
             {
+               this.requestedFacetCount++;
                filters = filters + key.replace(/\.__.u/g, "").replace(/\.__/g, "") + ",";
             }
             filters = filters.substring(0, filters.length - 1);
@@ -565,6 +567,10 @@ define(["dojo/_base/declare",
                label: resultsCount
             });
          }
+
+         this.alfPublish("ALF_HIDE_FACETS", {
+            hide: (this.requestedFacetCount === 0 || resultsCount === 0)
+         });
       
          // This request has finished, allow another one to be triggered.
          this.alfPublish(this.requestFinishedTopic, {});
