@@ -19,7 +19,6 @@
 package org.alfresco.share.site.document;
 
 import org.alfresco.po.share.MyTasksPage;
-import org.alfresco.po.share.adminconsole.ChannelManagerPage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.workflow.*;
@@ -38,7 +37,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.alfresco.po.share.adminconsole.Channel.Flickr;
 import static org.testng.Assert.*;
 
 /**
@@ -51,9 +49,7 @@ public class ManageDocumentsTest extends AbstractUtils
     private static Log logger = LogFactory.getLog(ManageDocumentsTest.class);
     protected String testUser;
     protected String siteName = "";
-    private String flickrName = "gogigruzinidze@yahoo.com";
-    private String flickrPassword = "parkh0useG";
-
+    
     @Override
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
@@ -525,139 +521,5 @@ public class ManageDocumentsTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13817() throws Exception
-    {
-        String testName = getTestName();
-        String siteName = getSiteName(testName);
-
-        // Login as Admin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-        
-        // Create Site
-        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-        ShareUser.openSiteDashboard(drone, siteName);
-
-        // Upload File
-        String fileName = "channel-test-jpg.jpg";
-        String[] fileInfo = { fileName, DOCLIB };
-        DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
-
-        // Create channel Flickr.
-        ChannelManagerPage channelManagerPage = documentLibraryPage.getNav().getChannelManagerPage();
-        if (channelManagerPage.isChannelPresent(Flickr) && !channelManagerPage.isChannelAuthorised(Flickr))
-        {
-            channelManagerPage.deleteChannel(Flickr);
+    
         }
-        else if (!channelManagerPage.isChannelPresent(Flickr))
-        {
-            // Create flickr channel
-            channelManagerPage.createFlickrChannel(flickrName, flickrPassword);
-        }
-        ShareUser.logout(drone);
-    }
-
-    @Test(groups = "EnterpriseOnly", timeOut = 400000)
-    public void Enterprise40x_13817() throws Exception
-    {
-        /** Start Test */
-        testName = getTestName();
-
-        /** Test Data Setup */
-        String siteName = getSiteName(testName);
-        String oldFileName = "channel-test-jpg.jpg";
-        String fileName = getRandomString(5) + ".JPG";
-
-        DocumentLibraryPage documentLibraryPage;
-
-        // Login as Admin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-        // To get a unique file name
-        documentLibraryPage = ShareUserSitePage.editContentNameInline(drone, oldFileName, fileName, true);
-
-        FileDirectoryInfo fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
-        double currentVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
-
-        // TODO: Implement as part of selectPublish. Also amend selectPublish to return factorySharePage.resolvePage(drone) rather than new
-        fileDirectoryInfo.selectMoreLink();
-        PublishPage publishPage = fileDirectoryInfo.selectPublish();
-        publishPage.selectChannel(Flickr);
-        publishPage.selectCancelPublish();
-
-        // The content is not uploaded to the channel.
-        Assert.assertFalse(PublishUtil.isContentUploadedToFlickrChannel(drone, fileName, flickrName, flickrPassword), "Document published on Flickr.");
-
-        // The version of the document hasn't changed
-        double actualVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
-        Assert.assertEquals(actualVersion, currentVersion, "Document version changed.");
-    }
-
-    @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13814() throws Exception
-    {
-        String testName = getTestName();
-        String siteName = getSiteName(testName);
-
-        // Login as Admin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-        // Create Site
-        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
-        ShareUser.openSiteDashboard(drone, siteName);
-
-        // Upload File
-        String fileName = "channel-test-jpg.jpg";
-        String[] fileInfo = { fileName, DOCLIB };
-        DocumentLibraryPage documentLibraryPage = ShareUser.uploadFileInFolder(drone, fileInfo);
-
-        // Create channel Flickr.
-        ChannelManagerPage channelManagerPage = documentLibraryPage.getNav().getChannelManagerPage();
-        if (channelManagerPage.isChannelPresent(Flickr))
-        {
-            channelManagerPage.deleteChannel(Flickr);
-        }
-        channelManagerPage.createFlickrChannel(flickrName, flickrPassword);
-        ShareUser.logout(drone);
-    }
-
-    @Test(groups = "EnterpriseOnly", timeOut = 400000)
-    public void Enterprise40x_13814() throws Exception
-    {
-        testName = getTestName();
-
-        String siteName = getSiteName(testName);
-        String oldFileName = "channel-test-jpg.jpg";
-        String fileName = getRandomString(5) + ".JPG";
-
-        // Login as Admin
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-        // To get a unique file name
-
-        ShareUserSitePage.editContentNameInline(drone, oldFileName, fileName, true);
-
-        FileDirectoryInfo fileDirectoryInfo = ShareUserSitePage.getFileDirectoryInfo(drone, fileName);
-        double currentVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
-
-        // TODO: As above. Also create util in ShareUSerAdmin? to publish to specified channel
-        fileDirectoryInfo.selectMoreLink();
-        PublishPage publishPage = fileDirectoryInfo.selectPublish();
-        publishPage.selectChannel(Flickr);
-
-        publishPage.selectPublish().render();
-
-        // The popup window "<filename.filetype> is queued for publishing to <channel's name>" is displayed.
-        assertTrue(fileDirectoryInfo.isPublishPopupDisplayed(fileName, Flickr));
-
-        // The content is not uploaded to the channel.
-        assertTrue(PublishUtil.isContentUploadedToFlickrChannel(drone, fileName, flickrName, flickrPassword), "Document didn't published on Flickr.");
-
-        // The version of the document hasn't changed
-        double actualVersion = Double.parseDouble(fileDirectoryInfo.getVersionInfo());
-        Assert.assertNotEquals(actualVersion, currentVersion, "Document version changed.");
-
-    }
-
-}
