@@ -9,7 +9,7 @@
  ***********************************************************************************/
 function getUserPreferences() {
    var userPreferences = {};
-   var prefs = jsonUtils.toObject(preferences.value);
+   var prefs = JSON.parse(preferences.value);
    return prefs
 }
 

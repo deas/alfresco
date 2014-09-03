@@ -58,7 +58,7 @@ define(["dojo/_base/declare",
        * @property {string|null} iconClass The class to place next to the label
        */
       viewSelectionConfig: {
-         label: "Simple View",
+         label: "doclist.view.simple.label",
          iconClass: "alf-simplelist-icon"
       },
       

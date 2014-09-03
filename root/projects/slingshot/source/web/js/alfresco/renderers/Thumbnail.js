@@ -96,12 +96,13 @@ define(["dojo/_base/declare",
             {
                this.currentItem.displayName = jsNode.properties["cm:name"];
             }
-            this.imgTitle = this.encodeHTML(this.currentItem.displayName);
-            this.imgAltText = (this.currentItem.displayName != null) ? this.currentItem.displayName.substring(this.currentItem.displayName.lastIndexOf(".")) : "";
-            this.imgId = jsNode.nodeRef.nodeRef;
+            this.setImageTitle();
          }
          else if (this.currentItem != null && this.currentItem.nodeRef != null)
          {
+            this.imageIdProperty = "nodeRef";
+            this.setImageTitle();
+
             // Fallback to just having a nodeRef available... this has been added to handle rendering of 
             // thumbnails in search results where full node information may not be available...
             var nodeRef = NodeUtils.processNodeRef(this.currentItem.nodeRef);
@@ -117,6 +118,43 @@ define(["dojo/_base/declare",
             {
                this.thumbnailUrl = this.generateFallbackThumbnailUrl();
             }
+         }
+      },
+
+      /**
+       * The property to use for the image title. Defaults to "displayName"
+       *
+       * @instance
+       * @type {string}
+       * @default "displayName"
+       */
+      imageTitleProperty: "displayName",
+
+      /**
+       * The property to use for the image id. Defaults to "jsNode.nodeRef.nodeRef"
+       * 
+       * @instance
+       * @type {string}
+       * @default "jsNode.nodeRef.nodeRef"
+       */
+      imageIdProperty: "jsNode.nodeRef.nodeRef",
+
+      /**
+       * Sets the title to display over the thumbnail
+       *
+       * @instance
+       */
+      setImageTitle: function alfresco_renderers_Thumbnail__setImageTitle() {
+         var title = this.currentItem[this.imageTitleProperty];
+         if (title)
+         {
+            this.imgTitle = this.encodeHTML(title);
+            this.imgAltText = (title != null) ? title.substring(title.lastIndexOf(".")) : "";
+         }
+         var id = this.currentItem[this.imageIdProperty];
+         if (id)
+         {
+            this.imgId = id;
          }
       },
 
@@ -235,20 +273,8 @@ define(["dojo/_base/declare",
          {
             var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
             var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
-            this.alfPublish(this.publishTopic, this.getPublishPayload(), publishGlobal, publishToParent);
+            this.alfPublish(this.publishTopic, this.publishPayload, publishGlobal, publishToParent);
          }
-      },
-
-      /**
-       * This function currently returns the configured payload. It needs to be updated to 
-       * actually return something contextually relevant to the current item. It has been added
-       * to support extending modules.
-       *
-       * @instance
-       * @returns {object} The payload to publish when the thumbnail is clicked.
-       */
-      getPublishPayload: function alfresco_renderers_Thumbnail__getPublishPayload() {
-         return this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
       }
    });
 });

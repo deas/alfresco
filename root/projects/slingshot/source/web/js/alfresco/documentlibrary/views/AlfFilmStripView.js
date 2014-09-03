@@ -61,7 +61,7 @@ define(["dojo/_base/declare",
        * @property {string|null} iconClass The class to place next to the label
        */
       viewSelectionConfig: {
-         label: "Filmstrip View",
+         label: "doclist.view.filmstrip.label",
          iconClass: "alf-filmstrip-icon"
       },
       

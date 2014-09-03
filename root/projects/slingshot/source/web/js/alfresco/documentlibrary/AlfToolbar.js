@@ -49,7 +49,7 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_AlfToolbar__postCreate() {
          this.inherited(arguments);
-         domClass.add(this.domNode, "alf-documentlist-toolbar");
+         domClass.add(this.domNode, "alfresco_documentlibrary_AlfToolbar");
       },
 
       /**

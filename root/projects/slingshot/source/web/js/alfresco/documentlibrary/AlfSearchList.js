@@ -72,6 +72,9 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onSearchLoadSuccess"));
          this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_FAILURE", lang.hitch(this, "onDataLoadFailure"));
 
+         this.alfSubscribe(this.viewSelectionTopic, lang.hitch(this, "onViewSelected"));
+         
+
          // Subscribe to the topics that address specific search updates...
          this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, "onSearchTermRequest"));
          this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, "onIncludeFacetRequest"));

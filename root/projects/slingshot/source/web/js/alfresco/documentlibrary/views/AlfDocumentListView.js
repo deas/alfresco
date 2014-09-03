@@ -246,7 +246,7 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          if (this.docListRenderer != null)
          {
-            this.docListRenderer.augmentData(newData);
+            this.docListRenderer.currentData = this.currentData;
          }
       },
 

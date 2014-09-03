@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_SearchResultPropertyLink__postCreate() {
          this.inherited(arguments);
-         this.publishPayload = this.generatePayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
+         this.publishPayload = this.generateSearchLinkPayload(this.payload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
          this.makeAnchor(this.publishPayload.url, this.publishPayload.type);
       },
 

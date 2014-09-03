@@ -45,7 +45,7 @@ define(["dojo/_base/declare",
        * @property {string|null} iconClass The class to place next to the label
        */
       viewSelectionConfig: {
-         label: "Detailed View",
+         label: "doclist.view.detailed.label",
          iconClass: "alf-detailedlist-icon"
       },
       

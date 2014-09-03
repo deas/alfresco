@@ -340,7 +340,7 @@ var sortMenu = {
 // Compose result menu bar
 var searchResultsMenuBar = {
    id: "FCTSRCH_RESULTS_MENU_BAR",
-   name: "alfresco/layout/LeftAndRight",
+   name: "alfresco/documentlibrary/AlfToolbar",
    config: {
       widgets: [
          {
@@ -363,6 +363,7 @@ var searchResultsMenuBar = {
          {
             name: "alfresco/menus/AlfMenuBar",
             align: "right",
+            id: "FCTSRCH_SEARCH_LIST_MENU_BAR",
             config: {
                visibilityConfig: hideOnZeroResultsConfig,
                widgets: [
@@ -396,7 +397,19 @@ var searchResultsMenuBar = {
                         }
                      }
                   },
-                  sortMenu
+                  sortMenu,
+                  {
+                     name: "alfresco/menus/AlfMenuBarPopup",
+                     config: {
+                        iconClass: "alf-configure-icon",
+                        widgets: [
+                           {
+                              id: "DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP",
+                              name: "alfresco/documentlibrary/AlfViewSelectionGroup"
+                           }
+                        ]
+                     }
+                  }
                ]
             }
          }
@@ -425,19 +438,8 @@ var searchDocLib = {
       siteId: null, // Don't set the siteId initially (we don't want to do a site search on first load)
       rootNode: null,
       repo: true,
+      additionalControlsTarget: "FCTSRCH_RESULTS_MENU_BAR",
       widgets: [
-//         {
-//            id: "FCTSRCH_SEARCH_ADVICE_LANDING",
-//            name: "alfresco/documentlibrary/views/AlfSearchListView",
-//            config: {
-//               searchAdviceTitle: "faceted-search.landing.title",
-//               searchAdvice: [
-//                  "faceted-search.landing.suggestion1",
-//                  "faceted-search.landing.suggestion2",
-//                  "faceted-search.landing.suggestion3"
-//               ]
-//            }
-//         },
          {
             id: "FCTSRCH_SEARCH_ADVICE_NO_RESULTS",
             name: "alfresco/documentlibrary/views/AlfSearchListView",
@@ -447,6 +449,28 @@ var searchDocLib = {
                   "faceted-search.advice.suggestion1",
                   "faceted-search.advice.suggestion2",
                   "faceted-search.advice.suggestion3"
+               ]
+            }
+         },
+         {
+            name: "alfresco/documentlibrary/views/AlfGalleryView",
+            config: {
+               widgets: [
+                  {
+                     name: "alfresco/search/SearchGalleryThumbnail",
+                     config: {
+                        widgetsForSelectBar: [
+                           {
+                              name: "alfresco/renderers/MoreInfo",
+                              align: "right",
+                              config: {
+                                 xhrRequired: true
+                              }
+                           }
+                        ],
+                        publishTopic: "ALF_NAVIGATE_TO_PAGE"
+                     }
+                  }
                ]
             }
          },

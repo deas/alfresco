@@ -21,39 +21,29 @@
  * Renders a thumbnail specific to search results. This is different from the usual thumbnail
  * in that it renders specific images for items that are neither documents nor folders.
  * 
- * @module alfresco/renderers/SearchThumbnail
- * @extends module:alfresco/renderers/Thumbnail
+ * @module alfresco/search/SearchGalleryThumbnail
+ * @extends module:alfresco/renderers/GalleryThumbnail
  * @mixes module:alfresco/search/SearchThumbnailMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/renderers/Thumbnail",
+        "alfresco/renderers/GalleryThumbnail",
         "alfresco/search/SearchThumbnailMixin",
         "dojo/dom-class"], 
-        function(declare, Thumbnail, SearchThumbnailMixin, domClass) {
+        function(declare, GalleryThumbnail, SearchThumbnailMixin, domClass) {
 
-   return declare([Thumbnail, SearchThumbnailMixin], {
-
-      /**
-       * An array of the CSS files to use with this widget.
-       * 
-       * @instance
-       * @type {object[]}
-       * @default [{cssFile:"./css/Thumbnail.css"}]
-       */
-      cssRequirements: [{cssFile:"./css/SearchThumbnail.css"}],
+   return declare([GalleryThumbnail, SearchThumbnailMixin], {
 
       /**
        * Generates the publication payload by calling the mixed in 
-       * [generatePayload]{@link module:alfresco/renderers/_SearchResultLinkMixin#generatePayload}
+       * [generatePayload]{@link module:alfresco/search/SearchThumbnailMixin#generatePayload}
        * function and then wraps the property in an anchor element by calling the mixed in 
        * [makeAnchor]{@link module:alfresco/navigation/_HtmlAnchorMixin#makeAnchor} function
        *
        * @instance
        */
-      postCreate: function alfresco_renderers_SearchThumbnail__postCreate() {
+      postCreate: function alfresco_search_SearchGalleryThumbnail__postCreate() {
          this.inherited(arguments);
-         domClass.add(this.domNode, "alfresco-renderers-SearchThumbnail");
       }
    });
 });

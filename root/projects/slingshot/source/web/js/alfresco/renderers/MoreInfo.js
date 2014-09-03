@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -31,15 +31,17 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
+        "alfresco/renderers/_XhrActionsMixin",
         "alfresco/core/ObjectTypeUtils",
         "dojo/text!./templates/MoreInfo.html",
         "alfresco/core/Core",
         "alfresco/documentlibrary/views/layouts/Popup",
         "dojo/_base/lang",
-        "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, ObjectTypeUtils, template, AlfCore, Popup, lang, domClass) {
+        "dojo/dom-class",
+        "dojo/_base/event"], 
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, ObjectTypeUtils, template, AlfCore, Popup, lang, domClass, event) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, AlfCore], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -76,14 +78,6 @@ define(["dojo/_base/declare",
       currentItem: null,
       
       /**
-       * 
-       * @instance
-       */
-      postMixInProperties: function alfresco_renderers_Property__postMixInProperties() {
-         
-      },
-      
-      /**
        * This is used to hold a reference to the information dialog that is popped up when the widget is clicked.
        * The dialog is not instantiated until the first time that a user requests additional information.
        * 
@@ -94,24 +88,81 @@ define(["dojo/_base/declare",
       moreInfoDialog: null,
       
       /**
+       * Used to indicate whether or not the info to display needs to be asynchronously retrieved. Defaults
+       * to false assuming that all the data required is currently available in "currentItem".
+       * 
        * @instance
+       * @type {boolean}
+       * @default false
        */
-      onMoreInfo: function() {
+      xhrRequired: false,
+
+      /**
+       * This is called when the user clicks on the "info" symbol and creates a new
+       * [popup]{@link module:alfresco/documentlibrary/views/layouts/Popup} containing the info
+       * to be displayed.
+       *
+       * @instance
+       * @param {object} evt The click event.
+       */
+      onMoreInfo: function alfresco_renderers_MoreInfo__onMoreInfo(evt) {
+         event.stop(evt);
          if (this.moreInfoDialog == null)
          {
-            var title = "";
-            if (ObjectTypeUtils.isObject(this.currentItem) && lang.exists("displayName", this.currentItem))
+            if (this.xhrRequired == true)
             {
-               title = lang.getObject("displayName", false, this.currentItem);
+               this.getXhrData()
             }
-            
-            this.moreInfoDialog = new Popup({
-               title: title,
-               currentItem: this.currentItem,
-               widgetsContent: this.widgets
-            });
+            else
+            {
+               this.createMoreInfoDialog();
+            }
          }
+         else
+         {
+            this.moreInfoDialog.show();
+         }
+      },
+
+      /**
+       * Creates the dialog containing the information to be displayed
+       *
+       * @instance
+       */
+      createMoreInfoDialog: function alfresco_renderers_MoreInfo__createMoreInfoDialog() {
+         var title = "";
+         if (ObjectTypeUtils.isObject(this.currentItem) && lang.exists("displayName", this.currentItem))
+         {
+            title = lang.getObject("displayName", false, this.currentItem);
+         }
+         
+         this.moreInfoDialog = new Popup({
+            title: title,
+            currentItem: this.currentItem,
+            widgetsContent: lang.clone(this.widgets)
+         });
          this.moreInfoDialog.show();
+      },
+
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/renderers/_XhrActionsMixin#clearLoadingItem}
+       * to intentionally perform no action.
+       * 
+       * @instance
+       */
+      clearLoadingItem: function alfresco_renderers_MoreInfo__clearLoadingItem() {
+         // No action by design.
+      },
+
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/renderers/_XhrActionsMixin#addXhrItems}
+       * to create the dialog with the requested data by calling the 
+       * [createMoreInfoDialog function]{@link module:alfresco/renderers/MoreInfo#createMoreInfoDialog}.
+       *
+       * @instance
+       */
+      addXhrItems: function alfresco_renderers_MoreInfo__addXhrItems() {
+         this.createMoreInfoDialog();
       },
       
       /**

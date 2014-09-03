@@ -654,6 +654,9 @@ define(["dojo/_base/declare",
                   viewSelectionConfig.checked = true;
                }
 
+               // Attempt to get a localized version of the label...
+               viewSelectionConfig.label = this.message(viewSelectionConfig.label);
+
                // Publish the additional controls...
                this.publishAdditionalControls(viewName, view);
                
@@ -766,6 +769,15 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * This is the ID of the widget that should be targeted with adding additional view controls to
+       *
+       * @instance
+       * @type {string}
+       * @default "DOCLIB_TOOLBAR"
+       */
+      additionalControlsTarget: "DOCLIB_TOOLBAR",
+
+      /**
        * Gets the additional controls for a view and publishes them.
        * 
        * @instance
@@ -786,7 +798,7 @@ define(["dojo/_base/declare",
          if (newAdditionalControls != null)
          {
             this.alfPublish(this.dynamicallyAddWidgetTopic, {
-               targetId: "DOCLIB_TOOLBAR",
+               targetId: this.additionalControlsTarget,
                targetPosition: 0,
                widgets: newAdditionalControls
             });

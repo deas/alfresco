@@ -38,7 +38,7 @@ define(["dojo/_base/declare",
        * @instance
        * @return {object} The generated payload
        */
-      generatePayload: function alfresco_renderers__SearchResultLinkMixin__generatePayload() {
+      generateSearchLinkPayload: function alfresco_renderers__SearchResultLinkMixin__generateSearchLinkPayload() {
          var payload = {
             type: "SHARE_PAGE_RELATIVE",
             target: "CURRENT",

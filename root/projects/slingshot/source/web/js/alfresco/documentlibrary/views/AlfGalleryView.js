@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -28,14 +28,22 @@
  */
 define(["dojo/_base/declare",
         "alfresco/documentlibrary/views/AlfDocumentListView",
+        "dojo/text!./templates/AlfGalleryView.html",
         "alfresco/documentlibrary/views/layouts/Grid",
         "alfresco/documentlibrary/AlfGalleryViewSlider",
         "dojo/_base/lang",
         "dojo/dom-construct"], 
-        function(declare, AlfDocumentListView, Grid, AlfGalleryViewSlider, lang, domConstruct) {
+        function(declare, AlfDocumentListView, template, Grid, AlfGalleryViewSlider, lang, domConstruct) {
    
    return declare([AlfDocumentListView], {
       
+      /**
+       * The HTML template to use for the widget.
+       * @instance
+       * @type {String}
+       */
+      templateString: template,
+
       /**
        * Returns the name of the view that is used when saving user view preferences.
        * 
@@ -54,7 +62,7 @@ define(["dojo/_base/declare",
        * @property {string|null} iconClass The class to place next to the label
        */
       viewSelectionConfig: {
-         label: "Gallery View",
+         label: "doclist.view.gallery.label",
          iconClass: "alf-gallery-icon"
       },
       
@@ -96,6 +104,13 @@ define(["dojo/_base/declare",
          {
             this.alfLog("log", "Update column count to: ", payload.value);
             this.columns = payload.value;
+
+            // In the case of infinite scroll, we need to ensure that we reset the count for rendering
+            // data so that all the items are re-rendered and sized appropriately...
+            if (lang.exists("docListRenderer.currentData.previousItemCount"), this)
+            {
+               this.docListRenderer.currentData.previousItemCount = 0;
+            }
             this.renderView(false);
          }
       },
@@ -117,8 +132,10 @@ define(["dojo/_base/declare",
        * Extends the default implementation to resize the cells in the gallery.
        * 
        * @instance
+       * @param {boolean} preserveCurrentData This should be set to true when you don't want to clear the old data, the
+       * most common example of this is when infinite scroll is being used.
        */
-      renderView: function alfresco_documentlibrary_views_AlfGalleryView__renderView() {
+      renderView: function alfresco_documentlibrary_views_AlfGalleryView__renderView(preserveCurrentData) {
          this.inherited(arguments);
          if (this.docListRenderer != null)
          {
@@ -158,21 +175,6 @@ define(["dojo/_base/declare",
             this.docListRenderer.resizeCells();
          }
       },
-      
-      // /**
-      //  * @instance
-      //  */
-      // allItemsRendered: function alfresco_documentlibrary_views_AlfGalleryView__allItemsRendered() {
-      //    var rem = this.currentData.items.length % this.columns;
-      //    if (rem != 0)
-      //    {
-      //       var lastNode = this.tableNode.children[this.tableNode.children.length-1];
-      //       for (var i=0; i<rem; i++)
-      //       {
-      //          domConstruct.create("TD", {}, lastNode);
-      //       }
-      //    }
-      // },
       
       /**
        * The definition for rendering an item in the view.

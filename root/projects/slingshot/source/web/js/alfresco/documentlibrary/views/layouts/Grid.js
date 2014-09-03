@@ -221,11 +221,12 @@ define(["dojo/_base/declare",
        */
       resizeCells: function alfresco_documentlibrary_views_layouts_Grid__resizeCells() {
          this.alfLog("info", "Resizing");
-         if (lang.exists("containerNode.parentNode", this) && this.containerNode.parentNode != null)
+         var node = lang.getObject("containerNode.parentNode", false, this);
+         if (node)
          {
-            var marginBox = domGeom.getContentBox(this.containerNode.parentNode); // NOTE: Get the parent node for the size because the table will grow outside of its allotted area
+            var marginBox = domGeom.getContentBox(node); // NOTE: Get the parent node for the size because the table will grow outside of its allotted area
             var widthToSet = (Math.floor(marginBox.w / this.columns) - 4) + "px";
-            query("tr > td", this.containerNode).forEach(lang.hitch(this, "resizeCell", marginBox, widthToSet));
+            query("tr > td", node).forEach(lang.hitch(this, "resizeCell", marginBox, widthToSet));
          }
       },
       
