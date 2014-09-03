@@ -122,7 +122,7 @@ define(["dojo/_base/declare",
          // Work through the base classes and use their i18nScope property (if available) as a scope to
          // check. This allows a widget to check its class hierarchy for message scopes.
          if (this.constructor && this.constructor._meta) {
-            array.forEach(this.constructor._meta.parents, function(entry, i) {
+            array.forEach(this.constructor._meta.parents, function(entry) {
 
                // PLEASE NOTE: Use of the constructor _meta property is used at risk. It is the recognised
                //              way of accessing parent classes (for example it is used in the .isInstanceOf()
@@ -244,6 +244,7 @@ define(["dojo/_base/declare",
             // as the owner. Not sure if this is necessary, we can't tell if the widget is destroyed
          }
          // Set the new data...
+         // Variable reuse here is correct.
          data = lang.getObject(dotNotation, true, scope);
          var oldValue = data._alfValue;
          lang.setObject(dotNotation + "._alfValue", value, scope);
@@ -394,9 +395,7 @@ define(["dojo/_base/declare",
             topics = [topics];
          }
 
-         for (var i = 0; i < topics.length; i++)
-         {
-            var topic = topics[i];
+         array.forEach(topics, function(topic) {
             var scopedTopic = topic;
             if (global != null && global === true)
             {
@@ -418,7 +417,7 @@ define(["dojo/_base/declare",
 
             // Publish...
             PubQueue.getSingleton().publish(scopedTopic, payload, this);
-         }
+         });
       },
 
       /**
@@ -431,6 +430,7 @@ define(["dojo/_base/declare",
       alfPublishDelayed: function alfresco_core_Core__alfPublishDelayed(topic, payload, delay) {
          this._delayedPublishPayload = payload;
          window.setTimeout(lang.hitch(this, function(){
+            // due to lang.hitch, usage of 'this' below is correct.
             this.alfPublish(topic, this._delayedPublishPayload);
          }), delay);
       },
@@ -497,7 +497,7 @@ define(["dojo/_base/declare",
             {
                handle = [handle];
             }
-            handle.forEach(function(individualHandle){
+            array.forEach(handle, function(individualHandle){
                if (AlfConstants.DEBUG === true)
                {
                   PubSubLog.getSingleton().unsub(individualHandle, this);
@@ -516,7 +516,7 @@ define(["dojo/_base/declare",
        * @param {array} handles The handles to unsubscribe
        */
       alfUnsubscribeSaveHandles: function alfresco_core_Core__alfUnsubscribeSaveHandles(handles) {
-         array.forEach(handles, function(handle, index) {
+         array.forEach(handles, function(handle) {
             if (handle != null)
             {
                this.alfUnsubscribe(handle);
@@ -541,7 +541,7 @@ define(["dojo/_base/declare",
       destroy: function alfresco_core_Core__destroy(preserveDom) {
          if (this.alfSubscriptions != null)
          {
-            array.forEach(this.alfSubscriptions, function(handle, i) {
+            array.forEach(this.alfSubscriptions, function(handle) {
                if (typeof handle.remove === "function")
                {
                   handle.remove();
@@ -550,14 +550,14 @@ define(["dojo/_base/declare",
          }
          if (this.dataBindingCallbacks != null)
          {
-            array.forEach(this.dataBindingCallbacks, function(binding, i) {
+            array.forEach(this.dataBindingCallbacks, function(binding) {
                this.alfRemoveDataListener(binding);
             }, this);
          }
 
          if (this.servicesToDestroy != null)
          {
-            array.forEach(this.servicesToDestroy, function(service, i) {
+            array.forEach(this.servicesToDestroy, function(service) {
                if (service != null && typeof service.destroy === "function")
                {
                   service.destroy();
@@ -567,7 +567,7 @@ define(["dojo/_base/declare",
 
          if (this.widgetsToDestroy != null)
          {
-            array.forEach(this.widgetsToDestroy, function(widget, i) {
+            array.forEach(this.widgetsToDestroy, function(widget) {
                if (widget != null && typeof widget.destroy === "function")
                {
                   widget.destroy();
