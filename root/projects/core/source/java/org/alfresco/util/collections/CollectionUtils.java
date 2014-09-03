@@ -31,9 +31,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.alfresco.util.Pair;
 
@@ -551,5 +552,54 @@ public abstract class CollectionUtils
                 return valueComparator.compare(e1.getValue(), e2.getValue());
             }
         };
+    }
+    
+    /**
+     * This method returns a new List instance containing the same element objects as the provided
+     * list, but with the specified element having been moved left by the specified offset.
+     * <p/>
+     * If the offset would mean that the element would move beyond the start or end of the list, it will
+     * move only to the end.
+     * 
+     * @param offset the number of places over which to move the specified element.
+     * @param element the element to be moved.
+     * @param list the list to be reordered.
+     * @return a new List instance containing the ordered elements.
+     * @throws NoSuchElementException if the list does not contain an element equal to the one specified.
+     */
+    public static <T> List<T> moveLeft(int offset, T element, List<T> list)
+    {
+        return moveRight(-offset, element, list);
+    }
+    
+    /**
+     * This method does the same as {@link #moveLeft(int, Object, List)} but it moves the specified element
+     * to the right instead of the left.
+     */
+    public static <T> List<T> moveRight(int offset, T element, List<T> list)
+    {
+        final int elementIndex = list.indexOf(element);
+        
+        if (elementIndex == -1) { throw new NoSuchElementException("Element not found in provided list."); }
+        
+        if (offset == 0)
+        {
+            return list;
+        }
+        else
+        {
+            int newElementIndex = elementIndex + offset;
+            
+            // Ensure that the element will not move off the end of the list.
+            if      (newElementIndex >= list.size()) { newElementIndex = list.size() - 1; }
+            else if (newElementIndex < 0)            { newElementIndex = 0; }
+            
+            List<T> result = new ArrayList<>(list);
+            result.remove(element);
+            
+            result.add(newElementIndex, element);
+            
+            return result;
+        }
     }
 }

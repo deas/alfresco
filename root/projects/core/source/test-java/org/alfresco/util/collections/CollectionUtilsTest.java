@@ -18,17 +18,21 @@
  */
 package org.alfresco.util.collections;
 
-import static org.alfresco.util.collections.CollectionUtils.*;
+import static org.alfresco.util.collections.CollectionUtils.nullSafeMerge;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.junit.Before;
@@ -161,5 +165,29 @@ public class CollectionUtilsTest
         result.put("Alan Turing",           1912);
         result.put("Matthew Smith",         1966);
         return result;
+    }
+    
+    @Test public void moveItemInList() throws Exception
+    {
+        final List<String> input = Arrays.asList(new String[] { "a", "b", "c" });
+        
+        assertEquals(Arrays.asList(new String[] { "a", "b", "c"}), CollectionUtils.moveRight(0, "b", input));
+        assertEquals(Arrays.asList(new String[] { "a", "c", "b"}), CollectionUtils.moveRight(1, "b", input));
+        assertEquals(Arrays.asList(new String[] { "a", "c", "b"}), CollectionUtils.moveRight(5, "b", input));
+        
+        assertEquals(Arrays.asList(new String[] { "c", "a", "b"}), CollectionUtils.moveRight(-2, "c", input));
+        assertEquals(Arrays.asList(new String[] { "c", "a", "b"}), CollectionUtils.moveRight(-5, "c", input));
+        
+        assertEquals(Arrays.asList(new String[] { "a", "b", "c"}), CollectionUtils.moveLeft(0, "b", input));
+        assertEquals(Arrays.asList(new String[] { "b", "a", "c"}), CollectionUtils.moveLeft(1, "b", input));
+        assertEquals(Arrays.asList(new String[] { "b", "a", "c"}), CollectionUtils.moveLeft(5, "b", input));
+        
+        assertEquals(Arrays.asList(new String[] { "b", "c", "a"}), CollectionUtils.moveLeft(-2, "a", input));
+        assertEquals(Arrays.asList(new String[] { "b", "c", "a"}), CollectionUtils.moveLeft(-5, "a", input));
+        
+        try                                     { CollectionUtils.moveRight(1, "x", input); }
+        catch (NoSuchElementException expected) { return; }
+        
+        fail("Expected exception was not thrown.");
     }
 }
