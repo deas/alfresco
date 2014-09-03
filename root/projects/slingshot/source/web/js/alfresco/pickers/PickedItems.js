@@ -104,25 +104,22 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the item that has been picked
        */
       addPickedItem: function alfresco_pickers_PickedItems__addPickedItem(payload) {
-         if (payload.item != null)
+         var keyToAdd = lang.getObject(this.itemKey, false, payload);
+         if (keyToAdd == null)
          {
-            var keyToAdd = lang.getObject(this.itemKey, false, payload.item);
-            if (keyToAdd == null)
+            this.alfLog("warn", "The supplied item does not have a key attribute as expected", payload, this);
+         }
+         else
+         {
+            var existingKey = this.findPickedItem(keyToAdd);
+            if (existingKey == null)
             {
-               this.alfLog("warn", "The supplied item does not have a key attribute as expected", payload.item, this);
+               this.currentData.items.push(payload);
+               this.renderView(false);
             }
             else
             {
-               var existingKey = this.findPickedItem(keyToAdd);
-               if (existingKey == null)
-               {
-                  this.currentData.items.push(payload.item);
-                  this.renderView();
-               }
-               else
-               {
-                  this.alfLog("log", "Item is already picked - it will not be added a second time", payload.item, this);
-               }
+               this.alfLog("log", "Item is already picked - it will not be added a second time", payload, this);
             }
          }
       },
@@ -135,10 +132,10 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the item that has been picked
        */
       removePickedItem: function alfresco_pickers_PickedItems__removePickedItem(payload) {
-         var keyToRemove = lang.getObject(this.itemKey, false, payload.item);
+         var keyToRemove = lang.getObject(this.itemKey, false, payload);
          if (keyToRemove == null)
          {
-            this.alfLog("warn", "The supplied item does not have a key attribute as expected", payload.item, this);
+            this.alfLog("warn", "The supplied item does not have a key attribute as expected", payload, this);
          }
          else
          {
@@ -147,7 +144,7 @@ define(["dojo/_base/declare",
                var key = lang.getObject(this.itemKey, false, item);
                return key != keyToRemove;
             }, this);
-            this.renderView();
+            this.renderView(false);
             this.alfPublish("ALF_ITEMS_SELECTED", {
                pickedItems: this.currentData.items
             });
@@ -196,29 +193,6 @@ define(["dojo/_base/declare",
          this.renderView();
       },
 
-      /**
-       * Calls the [renderData]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#renderData}
-       * function if the [currentData]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin#currentData}
-       * attribute has been set to an object with an "items" attribute that is an array of objects.
-       * 
-       * @instance
-       */
-      // renderView: function alfresco_pickers_PickedItems__renderView() {
-      //    if (this.containerNode != null)
-      //    {
-      //       array.forEach(registry.findWidgets(this.containerNode), lang.hitch(this, "destroyWidget"));
-      //       domConstruct.empty(this.containerNode);
-      //    }
-      //    if (this.currentData && this.currentData.items && this.currentData.items.length > 0)
-      //    {
-      //       this.renderData();
-      //    }
-      //    else
-      //    {
-      //       this.renderNoDataDisplay();
-      //    }
-      // },
-      
       /**
        * The widgets to be processed to generate each item in the rendered view.
        * 
@@ -269,7 +243,8 @@ define(["dojo/_base/declare",
                               name: "alfresco/renderers/PublishAction",
                               config: {
                                  iconClass: "delete-16",
-                                 publishTopic: "ALF_ITEM_REMOVED"
+                                 publishTopic: "ALF_ITEM_REMOVED",
+                                 publishPayloadType: "CURRENT_ITEM"
                               }
                            }
                         ]

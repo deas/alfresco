@@ -106,7 +106,7 @@ define(["dojo/_base/declare",
 
          if (payload.publishOnShow)
          {
-            array.forEach(payload.publishOnShow, lang.hitch(this, this.publishOnShow))
+            array.forEach(payload.publishOnShow, lang.hitch(this, this.publishOnShow));
          }
          this.dialog.show();
       },
@@ -160,7 +160,7 @@ define(["dojo/_base/declare",
                // Create a new pubSubScope just for this request (to allow multiple dialogs to behave independently)...
                var pubSubScope = this.generateUuid();
                var subcriptionTopic =  pubSubScope + this._formConfirmationTopic;
-               this.alfSubscribe(subcriptionTopic, lang.hitch(this, "onDialogConfirmation"));
+               this.alfSubscribe(subcriptionTopic, lang.hitch(this, this.onFormDialogConfirmation));
 
                // Take a copy of the default configuration and mixin in the supplied config to override defaults
                // as appropriate...
@@ -259,7 +259,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload The dialog content
        */
-      onDialogConfirmation: function alfresco_dialogs_AlfDialogService__onDialogConfirmation(payload) {
+      onFormDialogConfirmation: function alfresco_dialogs_AlfDialogService__onFormDialogConfirmation(payload) {
          if (payload != null && 
              payload.dialogContent != null &&
              payload.dialogContent.length == 1 &&

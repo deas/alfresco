@@ -111,7 +111,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_ADD_PICKER", lang.hitch(this, this.addPicker));
 
          // If requested, show picked items...
-         if (this.showPickedItems == true)
+         if (this.showPickedItems === true)
          {
             this._processsingPickedItems = true;
             this.processWidgets(lang.clone(this.widgetsForPickedItems), this.pickedItemsNode);
@@ -179,7 +179,7 @@ define(["dojo/_base/declare",
        */
       allWidgetsProcessed: function alfresco_pickers_Picker__allWidgetsProcessed(widgets) {
 
-         if (this._processsingPickedItems ==true)
+         if (this._processsingPickedItems === true)
          {
             // Reset the _processsingPickedItems flag now that the picked items model has 
             // been rendered...
@@ -217,7 +217,7 @@ define(["dojo/_base/declare",
        */
       getValue: function alfresco_pickers_Picker__getValue() {
          var value = [];
-         if (this.showPickedItems == true)
+         if (this.showPickedItems === true)
          {
             if (this.pickedItemsWidget != null)
             {
@@ -267,7 +267,9 @@ define(["dojo/_base/declare",
                               name: "alfresco/pickers/DocumentListPicker",
                               config: {
                                  nodeRef: "alfresco://company/shared",
-                                 path: "/"
+                                 filter: {
+                                    path: "/"
+                                 }
                               }
                            }
                         }

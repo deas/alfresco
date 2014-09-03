@@ -92,7 +92,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postMixInProperties: function alfresco_renderers_PublishAction__postMixInProperties() {
-         if (this.iconClass == null || this.iconClass == "")
+         if (this.iconClass == null || this.iconClass === "")
          {
             this.imageSrc = require.toUrl("alfresco/renderers") + "/css/images/add-icon-16.png";
          }
@@ -105,6 +105,10 @@ define(["dojo/_base/declare",
          this.altText = this.message(this.altText, {
             0: (this.currentItem != null ? this.currentItem[this.propertyToRender] : "")
          });
+
+         this.publishPayload = this.getGeneratedPayload();
+         this.publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
+         this.publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
       },
 
       /**
@@ -115,10 +119,7 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event object
        */
       onClick: function alfresco_renderers_PublishAction__onClick(evt) {
-         var publishGlobal = (this.publishGlobal != null) ? this.publishGlobal : false;
-         var publishToParent = (this.publishToParent != null) ? this.publishToParent : false;
-         var payload = this.generatePayload(this.publishPayload, this.currentItem, null, this.publishPayloadType, this.publishPayloadItemMixin, this.publishPayloadModifiers);
-         this.alfPublish(this.publishTopic, payload, publishGlobal, publishToParent);
+         this.alfPublish(this.publishTopic, this.publishPayload, this.publishGlobal, this.publishToParent);
       }
    });
 });

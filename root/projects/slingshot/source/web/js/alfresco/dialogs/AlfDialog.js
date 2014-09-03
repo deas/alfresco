@@ -227,7 +227,7 @@ define(["dojo/_base/declare",
        * @param {Object[]}
        */
       allWidgetsProcessed: function alfresco_dialogs_AlfDialog__allWidgetsProcessed(widgets) {
-         if (this.creatingButtons == true)
+         if (this.creatingButtons === true)
          {
             // When creating the buttons, attach the handler to each created...
             this._buttons = [];
@@ -281,6 +281,5 @@ define(["dojo/_base/declare",
             }
          }
       }
-
    });
 });

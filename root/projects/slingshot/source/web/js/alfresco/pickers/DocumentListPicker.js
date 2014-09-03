@@ -34,8 +34,35 @@ define(["dojo/_base/declare",
    
    return declare([AlfDocumentList], {
 
+      /**
+       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfList#waitForPageWidgets} to ensure that pickers 
+       * don't wait for the page to be loaded (as typically the page will be loaded long before the picker is opened). 
+       * This can still be overridden again in configuration when creating a new picker.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      waitForPageWidgets: false,
+
+      /**
+       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfHashList#useHash} to indicate that the location 
+       * should not be driven by changes to the browser URL hash
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      useHash: false,
+
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
+       * view for selecting documents.
+       * 
+       * @instance
+       */
       postCreate: function alfresco_pickers_DocumentListPicker__postCreate(payload) {
-         var config = {
+         var config = [{
             name: "alfresco/documentlibrary/views/AlfDocumentListView",
             config: {
                widgets: [
@@ -82,6 +109,7 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PublishAction",
                                        config: {
+                                          publishPayloadType: "CURRENT_ITEM",
                                           renderFilter: [
                                              {
                                                 property: "node.isContainer",
@@ -98,29 +126,9 @@ define(["dojo/_base/declare",
                   }
                ]
             }
-         };
-
+         }];
          this.processWidgets(config, this.itemsNode);
       },
-
-      /**
-       * Indicates whether the location should be driven by changes to the browser URL hash
-       *
-       * @instance
-       * @type {boolean}
-       * @default false
-       */
-      useHash: false,
-
-      /**
-       * Override the [inherited value]{@link module:alfresco/documentlibrary/AlfDocumentList#waitForPageWidgets} because
-       * this widget is typically created after the page has loaded.
-       *
-       * @instance
-       * @type {boolean}
-       * @default false
-       */
-      waitForPageWidgets: false,
 
       /**
        * Override the default implementation to call [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#loadData}
@@ -130,7 +138,6 @@ define(["dojo/_base/declare",
        * @param {object} payload
        */
       onFolderClick: function alfresco_pickers_DocumentListPicker__onFolderClick(payload) {
-
          var targetNode = lang.getObject("item.nodeRef", false, payload) || payload.nodeRef;
          if (targetNode != null)
          {

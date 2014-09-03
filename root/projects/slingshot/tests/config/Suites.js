@@ -69,7 +69,7 @@ define({
       'tests/alfresco/forms/FormsTest',
       'tests/alfresco/forms/SingleTextFieldFormTest',
       'tests/alfresco/forms/controls/AutoSetTest',
-      // 'tests/alfresco/forms/controls/DocumentPickerTest', // TODO: NEEDS FIXING - WIDGET POSSIBLY BROKEN
+      'tests/alfresco/forms/controls/DocumentPickerTest',
       'tests/alfresco/forms/controls/DojoSelectTest',
       'tests/alfresco/forms/controls/DojoDateTextBoxTest',  // TODO: NEEDS FIXING
       'tests/alfresco/forms/controls/DojoValidationTextBoxTest',

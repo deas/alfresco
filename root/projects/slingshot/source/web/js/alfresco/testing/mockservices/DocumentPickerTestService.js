@@ -52,7 +52,7 @@ define(["dojo/_base/declare",
        */
       onRetrieveDocumentsRequest: function alfresco_testing_mockservices_DocumentPickerTestService__onRetrieveDocumentsRequest(payload) {
          var _this = this;
-         var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS";
+         var alfTopic = (payload.alfResponseTopic != null) ? (payload.alfResponseTopic + "_SUCCESS") : "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS";
          // var alfTopic = payload.alfResponseTopic + "_SUCCESS";
          var template = payload.nodeRef.replace(/\//g, "_").replace(/:/g, "");
          var url = dojo.moduleUrl("alfresco/testing/mockservices/responseTemplates/DocumentPickerTest/" + template).slice(0, -1) + ".json";
