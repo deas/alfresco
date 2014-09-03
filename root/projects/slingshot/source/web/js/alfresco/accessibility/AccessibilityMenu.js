@@ -210,7 +210,8 @@
                      domAttr.set(target, "tabindex", -1);
                      on(item, "blur, focusout", function(){
                         domAttr.remove(target, "tabindex");
-                     }).focus();
+                     });
+                     target.focus();
                   });
                }
             }

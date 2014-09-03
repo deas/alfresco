@@ -487,7 +487,6 @@ var main = {
    config: {
       baseClass: "side-margins",
       widgets: [
-         accessMenu,
          {
             name: "alfresco/html/Spacer",
             config: {
@@ -661,6 +660,7 @@ services.push("alfresco/services/NavigationService",
               );
 
 // Add in the search form and search doc lib...
+widgets.unshift(accessMenu);
 widgets.push(main);
 
 // Push services and widgets into the getFooterModel to return with a sticky footer wrapper
