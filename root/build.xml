@@ -99,15 +99,12 @@
          <pathelement location="${dir.project.legacylucene.classes.test}" />
          <pathelement location="${dir.project.jlan.classes}" />
          <pathelement location="${dir.project.mbeans.classes}" />
-         <pathelement location="${dir.project.deployment.classes}" />
-         <pathelement location="${dir.project.deployment.classes.test}" />
          <pathelement location="${dir.project.repository.classes}" />
          <pathelement location="${dir.project.repository.classes.test}" />
          <pathelement location="${dir.project.3rdparty.lib}/junit-dep-4.11.jar" />
          
          <pathelement location="${dir.project.datamodel.config}" />
          <pathelement location="${dir.project.repository.config}" />
-         <pathelement location="${dir.project.deployment.config}" />
          
          <pathelement location="${dir.project.core}/${dir.name.source}/${dir.name.test.resources}" />
          <pathelement location="${dir.project.repository}/${dir.name.source}/${dir.name.test.resources}" />
@@ -537,7 +534,6 @@
          <include name="**/org/alfresco/rest/api/tests/TestCMISAPI.java"/>
 
          <!-- Excluding long tests -->
-         <exclude name="**/org/alfresco/deployment/impl/dmr/DMDeploymentTargetTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/enterprise/license/LicenseComponentTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/enterprise/repo/admin/indexcheck/IndexCheckServiceImplTest.java" if="minimal.testing" />
          <exclude name="**/org/alfresco/RepositoryStartStopTest.java" if="minimal.testing" />
@@ -616,7 +612,6 @@
                     incremental-legacylucene,
                     incremental-jlan,
                     incremental-mbeans,
-                    incremental-deployment,
                     incremental-repository,
                     incremental-remoteapi,
                     incremental-webframeworkcommons" />
@@ -722,7 +717,6 @@
                     generate-javadocs-datamodel, 
                     generate-javadocs-legacylucene, 
                     generate-javadocs-mbeans,
-                    generate-javadocs-deployment,
                     generate-javadocs-repository, 
                     generate-javadocs-remoteapi, 
                     generate-javadocs-webclient, 
@@ -760,7 +754,6 @@
                     clean-legacylucene,
                     clean-jlan, 
                     clean-mbeans,
-                    clean-deployment, 
                     clean-repository, 
                     clean-remoteapi,
                     clean-webframeworkcommons,
@@ -877,7 +870,6 @@
          <fileset dir="${dir.project.events.classes}" />
          <fileset dir="${dir.project.legacylucene.classes}" />
          <fileset dir="${dir.project.mbeans.classes}" />
-         <fileset dir="${dir.project.deployment.classes}" />
          <fileset dir="${dir.project.repository.classes}" 
                   excludes="**/extension/**" />
          <fileset dir="${dir.project.remoteapi.classes}" />
@@ -1497,7 +1489,6 @@
                     test-core,
                     test-datamodel, 
                     test-legacylucene, 
-                    test-deployment, 
                     test-repository,
                     test-remoteapi,
                     test-webframeworkcommons, 

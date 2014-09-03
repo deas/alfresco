@@ -114,7 +114,6 @@
                     distribute-amps,
                     assemble-tomcat,
                     distribute-war,
-                    distribute-deployment,
                     distribute-webeditor,
                     distribute-wcmqs-extension,
                     distribute-solr,
@@ -598,15 +597,6 @@
             <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.continuous.build}/${file.name.dist.installer.win64}" -out "${dir.continuous.dist}/${file.name.dist.installer.win64}" -t "${url.signcode.timestamp}"'/>
         </exec>
     </target>
-    
-    <target name="windows-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.continuous.build}/error-deploy-win.txt" failonerror="true">
-            <arg line='${installer.build.type} deployment.xml windows ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.build}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" "project.installerFilename=${file.name.dist.deployment.win}"'/>
-        </exec>
-        <exec dir="${dir.installer.deploy}" executable="${file.name.signcode.exe.linux}" output="${dir.continuous.build}/error-signcode-deploy-win.txt" failonerror="true">
-            <arg line='-spc "${file.name.signcode.spc}" -key "${file.name.signcode.key}" -n "Alfresco" -i "http://www.alfresco.com/" -in "${dir.continuous.build}/${file.name.dist.deployment.win}" -out "${dir.continuous.dist}/${file.name.dist.deployment.win}" -t "${url.signcode.timestamp}"'/>
-        </exec>
-    </target>
 
     <target name="osx-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.continuous.build}/error-install-osx64.txt" failonerror="false">
@@ -620,30 +610,12 @@
         </tar>
     </target>
 
-    <target name="osx-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.continuous.build}/error-deploy-osx.txt" failonerror="false">
-            <arg line='${installer.build.type} deployment.xml osx ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.osx}"'/>
-        </exec>
-        <tar destfile="${dir.continuous.dist}/${file.name.dist.deployment.osx}.tar.gz"
-             longfile="gnu"
-             compression="gzip">
-            <tarfileset dir="${dir.continuous.dist}/${file.name.dist.deployment.osx}"
-                        prefix="${file.name.dist.deployment.osx}" mode="755"/>
-        </tar>
-    </target>
-        
     <target name="linux-64-bit-installer">
         <exec dir="${dir.installer.bitrock}" executable="${platformExe}" output="${dir.continuous.build}/error-install-linux64.txt" failonerror="true">
             <arg line='${installer.build.type} project.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" ${installer.build.args} project.installerFilename="${file.name.dist.installer.linux64}" binaries_folder="${installer.build.binaries.lin64}" alfresco_googledocs_source_file="${googledocs.repo.amp}" alfresco_googledocs_share_source_file="${googledocs.share.amp}"'/>
         </exec>      
     </target>
-    
-    <target name="linux-64-bit-deployment-installer">
-        <exec dir="${dir.installer.deploy}" executable="${platformExe}" output="${dir.continuous.build}/error-deploy-linux64.txt" failonerror="true">
-            <arg line='${installer.build.type} deployment.xml linux-x64 ${installer.package.type} --license ${file.name.bitrock.license.xml} --setvars "project.outputDirectory=${dir.continuous.dist}" "project.version=${file.name.exe.version}" "project.fullName=Alfresco ${file.name.codeline} Deployment" project.installerFilename="${file.name.dist.deployment.linux64}"'/>
-        </exec>
-    </target>
-    
+
     <!-- Targets for building BitRock installer for specific platforms -->
     <target name="build-windows-32-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder">   
@@ -653,25 +625,13 @@
             depends="continuous-init, set-build-number, set-bitrock-builder">  
         <antcall target="windows-64-bit-installer"/>            
     </target>
-    <target name="build-windows-deployment-installer"
-            depends="continuous-init, set-build-number, set-bitrock-builder">    
-        <antcall target="windows-deployment-installer"/>
-    </target>
     <target name="build-osx-64-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder"> 
         <antcall target="osx-64-bit-installer"/>            
     </target>
-    <target name="build-osx-deployment-installer"
-            depends="continuous-init, set-build-number, set-bitrock-builder">    
-        <antcall target="osx-deployment-installer"/>
-    </target>
     <target name="build-linux-64-bit-installer"
             depends="continuous-init, set-build-number, set-bitrock-builder">   
         <antcall target="linux-64-bit-installer"/>            
-    </target>
-    <target name="build-linux-64-bit-deployment-installer"
-            depends="continuous-init, set-build-number, set-bitrock-builder">    
-        <antcall target="linux-64-bit-deployment-installer"/>
     </target>
             
    <!-- Build installers -->
@@ -679,11 +639,8 @@
            depends="continuous-init, set-build-number, set-bitrock-builder" >
             <antcall target="windows-32-bit-installer"/>
             <antcall target="windows-64-bit-installer"/>
-            <antcall target="windows-deployment-installer"/>
             <antcall target="osx-64-bit-installer"/>
-            <antcall target="osx-deployment-installer"/>
             <antcall target="linux-64-bit-installer"/>
-            <antcall target="linux-64-bit-deployment-installer"/>
    </target>
 
    
@@ -754,19 +711,6 @@
       <delete quiet="yes" file="${dir.continuous.assemble}/temp.tar" />
 
    </target>
-      
-   <!-- ************************ -->
-   <!-- ** Deployment targets ** -->
-   <!-- ************************ -->
-      
-   <target name="distribute-deployment" 
-           depends="continuous-init, set-build-number"
-           description="Creates a zip file containing the deployment receiver">
-      <mkdir dir="${dir.continuous.dist}" />
-      <copy file="${dir.project.deployment.dist}/${file.name.zip.deployment}"
-            tofile="${dir.continuous.dist}/${file.name.dist.deployment}.zip" />
-   </target>
-   
 
    <!-- ************************************ -->
    <!-- ** Module Management Tool targets ** -->

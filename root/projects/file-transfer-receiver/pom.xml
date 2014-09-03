@@ -41,13 +41,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-deployment</artifactId>
-            <version>${project.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>test</scope>

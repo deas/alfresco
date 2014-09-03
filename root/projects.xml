@@ -232,109 +232,6 @@
    </target>
 
    <!-- ************************ -->
-   <!-- ** Deployment Project ** -->
-   <!-- ************************ -->
-   
-   <target name="incremental-deployment" 
-           depends="package-deployment" />
-      
-   <target name="build-deployment" 
-           depends="clean-deployment, 
-           incremental-deployment" />
-   
-   <target name="clean-deployment" 
-           depends="init">
-      <clean projectdir="${dir.project.deployment}" />
-   </target>
-   
-   <target name="compile-deployment" 
-           depends="init,
-   			compile-core">
-      <compile-java projectdir="${dir.project.deployment}" />
-      <compile-java-javac srcdir="${dir.project.deployment.src.test}" classesdir="${dir.project.deployment.classes.test}">
-        <addPath2>
-            <pathelement location="${dir.project.deployment.classes}" />
-        </addPath2>
-      </compile-java-javac>
-   </target>
-   
-   <target name="package-deployment"
-           depends="package-deployment-jar,
-                    package-deployment-zip">
-   </target>
-         
-   <target name="package-deployment-jar"
-           depends="compile-deployment">
-      <mkdir dir="${dir.project.deployment.dist}" />
-      <jar jarfile="${dir.project.deployment.dist}/${file.name.jar.deployment}" 
-                 basedir="${dir.project.deployment.classes}" />
-   </target>
-   
-   <target name="package-deployment-zip"
-           depends="assemble-deployment">
-      <mkdir dir="${dir.project.deployment.dist}" />
-      <zip basedir="${dir.project.deployment.assemble}" compress="yes"
-           destfile="${dir.project.deployment.dist}/${file.name.zip.deployment}" />
-   </target>
-   
-   <target name="assemble-deployment" 
-           depends="
-   				package-deployment-jar, 
-   				package-repository,
-   				package-datamodel,
-   				package-legacylucene,
-   				package-core">
-      <mkdir dir="${dir.project.deployment.assemble}" />
-      <copy todir="${dir.project.deployment.assemble}">
-         <fileset dir="${dir.project.deployment.dist}">
-            <include name="${file.name.jar.deployment}" />
-         </fileset>
-         <fileset dir="${dir.project.deployment}/config">
-            <include name="**/*" />
-         	<exclude name= "**/sample*" />
-         </fileset>
-         <fileset dir="${dir.project.3rdparty.lib}">
-            <include name="org.springframework*.jar" />
-            <include name="jug-*.jar" />
-            <include name="aopalliance.jar" />
-         </fileset>
-         <fileset dir="${dir.project.3rdparty.lib}/spring-surf">
-            <include name="spring-surf-core-*.jar" />
-         </fileset>
-         <fileset dir="${dir.project.3rdparty.lib}/optional">
-            <include name="log4j-*.jar" />
-         </fileset> 
-         <fileset dir="${dir.project.3rdparty.lib}/commons">
-            <filename name="commons-logging-*.jar" />
-         </fileset>
-         <fileset dir="${dir.project.core.dist}">
-            <filename name="${file.name.jar.core}" />
-         </fileset>
-         <fileset dir="${dir.project.datamodel.dist}">
-           <filename name="${file.name.jar.datamodel}" />
-         </fileset>
-         <fileset dir="${dir.project.legacylucene.dist}">
-           <filename name="${file.name.jar.legacylucene}" />
-         </fileset>
-         <fileset dir="${dir.project.repository.dist}">
-           <filename name="${file.name.jar.repository}" />
-         </fileset>
-      </copy>
-   </target>
-   
-   <target name="test-deployment" 
-           depends="compile-deployment">
-      <run-tests projectdir="${dir.project.deployment}" />
-   </target>
-   
-   <target name="generate-javadocs-deployment" 
-           depends="init">
-      <generate-javadocs documenttitle="Alfresco Deployment Receiver ${version.number}" 
-                         windowtitle="Alfresco Deployment Receiver" 
-                         projectdir="${dir.project.deployment}" />
-   </target>
-
-   <!-- ************************ -->
    <!-- ** Repository Project ** -->
    <!-- ************************ -->
       
@@ -1607,8 +1504,6 @@
                   includes="${file.name.jar.repository}" />
          <fileset dir="${dir.project.mbeans.dist}" 
                   includes="${file.name.jar.mbeans}" />
-         <fileset dir="${dir.project.deployment.dist}"
-                  includes="${file.name.jar.deployment}"/>
          <fileset dir="${dir.project.remoteapi.dist}" 
                   includes="${file.name.jar.remoteapi}" />
          <fileset dir="${dir.project.webframeworkcommons.dist}" 
