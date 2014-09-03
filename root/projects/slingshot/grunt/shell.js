@@ -72,7 +72,7 @@ module.exports = function (grunt, alf) {
             }
          },
          se: {
-            command: 'mvn prepare-package -pl projects/slingshot -DskipTests -Dmaven.yuicompressor.skip',
+            command: 'mvn prepare-package -pl projects/slingshot -DskipTests -Dmaven.yuicompressor.skip --offline',
             options: {
                stdout: true,
                stderr: true,
@@ -165,7 +165,8 @@ module.exports = function (grunt, alf) {
             }
          },
          se: {
-            command: 'm s -e',
+            // Note: always do an offline build for this use-case, we want it fast.
+            command: 'm s -e -o',
             options: {
                stdout: true,
                stderr: true,

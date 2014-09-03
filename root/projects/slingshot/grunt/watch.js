@@ -33,7 +33,7 @@ module.exports = function (grunt, alf) {
          // It works best to have only one watch, otherwise multiple builds could happen simultaneously.
          // TODO: Aikau files only...
          deploy: {
-            files: [alf.jsFiles, alf.cssFiles],
+            files: [alf.jsFiles, alf.cssFiles, alf.htmlFiles], // no alf.testFiles in deploy watch as they don't get deployed.
             tasks: [
                's',
                'notify:shareDeployed'
@@ -43,7 +43,7 @@ module.exports = function (grunt, alf) {
             }
          },
          test: {
-            files: [alf.jsFiles, alf.testFiles],
+            files: [alf.jsFiles, alf.cssFiles, alf.testFiles, alf.htmlFiles],
             tasks: [
                'intern:dev',
                'shell:jsdoc'

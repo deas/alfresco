@@ -9,6 +9,7 @@
       jsInstFiles: 'source/web/js/alfrescoInst',
       jsFiles: ['source/web/js/alfresco/**/*.js'],
       testFiles: ['tests/alfresco/**'],
+      htmlFiles: ['source/web/js/alfresco/**/*.html'],
       xmlFiles: ['/**/*.xml'],
       testResourcesDir: 'source/test-resources',
       nodeBinDir: 'node_modules/.bin/',
