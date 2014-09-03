@@ -84,6 +84,7 @@ define({
       'tests/alfresco/menus/MenuTests',
 
       // 'tests/alfresco/misc/AlfTooltipTest', - COMMENTED OUT - THE TOOLTIP ITSELF NEEDS REWRITING
+      'tests/alfresco/misc/TableAndFormDialogTest',
 
       'tests/alfresco/renderers/BooleanTest',
       'tests/alfresco/renderers/DateTest',
@@ -105,7 +106,7 @@ define({
     * @instance
     * @type [string]
     */
-   localOnlyFunctionalSuites: [], //['tests/alfresco/CodeCoverageBalancer'],
+   localOnlyFunctionalSuites: ['tests/alfresco/CodeCoverageBalancer'],
 
    /**
     * This is the full array of functional test suites for local tests

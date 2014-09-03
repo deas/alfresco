@@ -134,10 +134,10 @@ define(["dojo/_base/declare",
        */ 
       onCreateFormDialogRequest: function alfresco_dialogs_AlfDialogService__onCreateFormDialogRequest(payload) {
          // Destroy any previously created dialog...
-         // if (this.dialog != null)
-         // {
-         //    this.dialog.destroyRecursive();
-         // }
+         if (this.dialog != null)
+         {
+            this.dialog.destroyRecursive();
+         }
 
          if (payload.widgets == null)
          {
