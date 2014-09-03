@@ -189,9 +189,9 @@ define(["intern/dojo/node!fs",
 //
 //       if(hasEnabler)
 //       {
-//          browser.elementByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']").click().end();
-//          browser.elementByCssSelector("td > input[value='Add']").click().end();
-//          browser.elementByCssSelector("input[value='Apply Changes']").click().end();
+//          browser.findByCssSelector("select[name='undeployedModules'] > option[value*='Debug Enabler Extension']").click().end();
+//          browser.findByCssSelector("td > input[value='Add']").click().end();
+//          browser.findByCssSelector("input[value='Apply Changes']").click().end();
 //       }
 //
 //       return browser;

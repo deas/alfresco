@@ -39,7 +39,7 @@ define(["intern!object",
          .end()
 
          // Check there are 3 drop down menus as described in the model
-         .elementsByCssSelector("div.alfresco-renderers-PublishingDropDownMenu")
+         .findAllByCssSelector("div.alfresco-renderers-PublishingDropDownMenu")
          .then(function (dropdowns) {
             TestCommon.log(testname,43,"Check there are 3 drop down menus as described in the model");
             expect(dropdowns).to.have.length(3, "There should be 3 dropdown menus rendered");

@@ -38,7 +38,7 @@ define(["intern!object",
          .end()
 
          // Check there are 3 action menus as described in the model
-         .elementsByCssSelector("div.alfresco-menus-AlfMenuBar")
+         .findAllByCssSelector("div.alfresco-menus-AlfMenuBar")
          .then(function (actionmenus) {
             TestCommon.log(testname,43,"Check there are 3 action menus as described in the model");
             expect(actionmenus).to.have.length(3, "There should be 3 action menus rendered");

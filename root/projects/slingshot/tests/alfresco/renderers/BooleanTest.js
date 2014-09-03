@@ -41,7 +41,7 @@ define(["intern!object",
          .end()
 
          // Check there are 10 rows x 5 columns = 50 cells
-         .elementsByCssSelector("span.alfresco-renderers-Property")
+         .findAllByCssSelector("span.alfresco-renderers-Property")
          .then(function (booleans) {
             TestCommon.log(testname,46,"Check there are 50 cells as described in the model");
             expect(booleans).to.have.length(50, "There should be 30 rows rendered");
@@ -49,7 +49,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1) td:first-of-type")
          .getVisibleText()
          .then(function (result1) {
             TestCommon.log(testname,55,"Check the value of a boolean");
@@ -57,7 +57,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(1) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result2) {
             TestCommon.log(testname,63,"Check the value of a boolean");
@@ -66,7 +66,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2) td:first-of-type")
          .getVisibleText()
          .then(function (result3) {
             TestCommon.log(testname,72,"Check the value of a boolean");
@@ -74,7 +74,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(2) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result4) {
             TestCommon.log(testname,80,"Check the value of a boolean");
@@ -83,7 +83,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3) td:first-of-type")
          .getVisibleText()
          .then(function (result5) {
             TestCommon.log(testname,89,"Check the value of a boolean");
@@ -91,7 +91,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(3) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result6) {
             TestCommon.log(testname,97,"Check the value of a boolean");
@@ -100,7 +100,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4) td:first-of-type")
          .getVisibleText()
          .then(function (result7) {
             TestCommon.log(testname,106,"Check the value of a boolean");
@@ -108,7 +108,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(4) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result8) {
             TestCommon.log(testname,114,"Check the value of a boolean");
@@ -117,7 +117,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5) td:first-of-type")
          .getVisibleText()
          .then(function (result9) {
             TestCommon.log(testname,123,"Check the value of a boolean");
@@ -125,7 +125,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(5) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result10) {
             TestCommon.log(testname,131,"Check the value of a boolean");
@@ -134,7 +134,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6) td:first-of-type")
          .getVisibleText()
          .then(function (result11) {
             TestCommon.log(testname,140,"Check the value of a boolean");
@@ -142,7 +142,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(6) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result12) {
             TestCommon.log(testname,148,"Check the value of a boolean");
@@ -151,7 +151,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7) td:first-of-type")
          .getVisibleText()
          .then(function (result13) {
             TestCommon.log(testname,157,"Check the value of a boolean");
@@ -159,7 +159,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(7) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result14) {
             TestCommon.log(testname,165,"Check the value of a boolean");
@@ -168,7 +168,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8) td:first-of-type")
          .getVisibleText()
          .then(function (result15) {
             TestCommon.log(testname,174,"Check the value of a boolean");
@@ -176,7 +176,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(8) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result16) {
             TestCommon.log(testname,182,"Check the value of a boolean");
@@ -185,7 +185,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9) td:first-of-type")
          .getVisibleText()
          .then(function (result17) {
             TestCommon.log(testname,191,"Check the value of a boolean");
@@ -193,7 +193,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(9) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result18) {
             TestCommon.log(testname,199,"Check the value of a boolean");
@@ -202,7 +202,7 @@ define(["intern!object",
          .end()
 
          // Check each row
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10) td:first-of-type")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10) td:first-of-type")
          .getVisibleText()
          .then(function (result19) {
             TestCommon.log(testname,208,"Check the value of a boolean");
@@ -210,7 +210,7 @@ define(["intern!object",
          })
          .end()
          
-         .elementByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10) td:nth-of-type(2)")
+         .findByCssSelector("tr.alfresco-documentlibrary-views-layouts-Row:nth-of-type(10) td:nth-of-type(2)")
          .getVisibleText()
          .then(function (result20) {
             TestCommon.log(testname,216,"Check the value of a boolean");

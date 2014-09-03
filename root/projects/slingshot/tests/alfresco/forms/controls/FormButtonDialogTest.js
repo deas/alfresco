@@ -46,7 +46,7 @@ define(["intern!object",
          .end()
          
          // Does the dialog opening button exist?
-         .elementById("TEST_DIALOG_BUTTON")
+         .findById("TEST_DIALOG_BUTTON")
          .then(function(el2) {
             TestCommon.log(testname,51,"Does the dialog opening button exist?");
             expect(el2).to.be.an("object", "The Button could not be found");
@@ -54,7 +54,7 @@ define(["intern!object",
          .end()
 
          // Click the dialog button - does the dialog appear?
-         .elementById("TEST_DIALOG_BUTTON")
+         .findById("TEST_DIALOG_BUTTON")
          .sleep(500)
          .click()
          .sleep(500)
@@ -75,7 +75,7 @@ define(["intern!object",
          .end()
 
          // Does the dialog have a couple of buttons?
-         .elementsByCssSelector("div.alfresco-dialog-AlfDialog div.footer > span.alfresco-buttons-AlfButton")
+         .findAllByCssSelector("div.alfresco-dialog-AlfDialog div.footer > span.alfresco-buttons-AlfButton")
          .then(function (buttons) {
             TestCommon.log(testname,81,"Does the dialog have a couple of buttons?");
             expect(buttons).to.have.length(2, "The popup Dialog does not contain 2 buttons");

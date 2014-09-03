@@ -42,7 +42,7 @@ define(["intern!object",
          .end()
 
          // Check the initial labels are correctly displayed...
-         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .findById("BASIC_MENU_BAR_TOGGLE_text")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,48,"Check basic toggle label");
@@ -50,7 +50,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,56,"Check custom toggle label");
@@ -58,7 +58,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementsById("MENU_BAR_SELECT_WITH_ICON_text")
+         .findAllById("MENU_BAR_SELECT_WITH_ICON_text")
          .then(function(result) {
             TestCommon.log(testname,63,"Check label for icon toggle");
             expect(result).to.have.length(0, "Label for icon toggle was displayed and it shouldn't be");
@@ -87,7 +87,7 @@ define(["intern!object",
 
          .end()
          
-         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .findById("BASIC_MENU_BAR_TOGGLE_text")
          .click()
          .end()
 
@@ -98,7 +98,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .findById("BASIC_MENU_BAR_TOGGLE_text")
          .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,105,"Check basic toggle text is changed after mouse click");
@@ -106,7 +106,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
          .click()
          .end()
 
@@ -182,7 +182,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .findById("BASIC_MENU_BAR_TOGGLE_text")
          .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,191,"Check basic toggle text is changed after keyboard selection");
@@ -215,7 +215,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
          .getVisibleText()
          .then(function(resultText) {
             TestCommon.log(testname,224,"Check custom toggle text is changed after keyboard selection");
@@ -269,11 +269,11 @@ define(["intern!object",
 
          .end()
 
-         .elementById("TEST_BUTTON_ASC")
+         .findById("TEST_BUTTON_ASC")
          .click()
          .end()
 
-         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .findById("BASIC_MENU_BAR_TOGGLE_text")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,283,"Check basic toggle label asc");
@@ -281,7 +281,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,291,"Check custom toggle label asc");
@@ -296,11 +296,11 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("TEST_BUTTON_DESC")
+         .findById("TEST_BUTTON_DESC")
          .click()
          .end()
 
-         .elementById("BASIC_MENU_BAR_TOGGLE_text")
+         .findById("BASIC_MENU_BAR_TOGGLE_text")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,311,"Check basic toggle label desc");
@@ -308,7 +308,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
+         .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,319,"Check custom toggle label desc");

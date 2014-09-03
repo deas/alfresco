@@ -37,7 +37,7 @@ define(["intern!object",
 
          .end()
 
-         .elementByCssSelector("#WARNINGS1 > div.warnings > div.info > span:last-child")
+         .findByCssSelector("#WARNINGS1 > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {
                TestCommon.log(testname,43, "Test 1a: Check warning");
@@ -45,7 +45,7 @@ define(["intern!object",
             })
             .end()
 
-         .elementByCssSelector("#WARNINGS2 > div.warnings > div.info > span:last-child")
+         .findByCssSelector("#WARNINGS2 > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {
                TestCommon.log(testname,51, "Test 1b: Check error");
@@ -53,7 +53,7 @@ define(["intern!object",
             })
             .end()
          
-         .elementByCssSelector("#LICENSEWARNING_READONLY > div.warnings > div.info > span:last-child")
+         .findByCssSelector("#LICENSEWARNING_READONLY > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {
                TestCommon.log(testname,59, "Test 1c: Check readonly message");
@@ -61,21 +61,21 @@ define(["intern!object",
             })
             .end()
 
-         .elementsByCssSelector("#LICENSEWARNING_DISPLAY_TO_ADMIN > div.warnings > div.info")
+         .findAllByCssSelector("#LICENSEWARNING_DISPLAY_TO_ADMIN > div.warnings > div.info")
             .then(function (adminWarnings) {
                TestCommon.log(testname,46,"Test 2a - Test that admins see low severity warnings");
                expect(adminWarnings).to.have.length(3, "Test 2a - Admins should see low severity warnings");
             })
             .end()
 
-         .elementsByCssSelector("#LICENSEWARNING_HIDE_FROM_USER > div.warnings > div.info")
+         .findAllByCssSelector("#LICENSEWARNING_HIDE_FROM_USER > div.warnings > div.info")
             .then(function (nonAdminWarnings) {
                TestCommon.log(testname,46,"Test 2b - Test that non-admin users don't see low severity warnings");
                expect(nonAdminWarnings).to.have.length(0, "Test 2b - Low severity warnings should be hidden from non-admins");
             })
             .end()
 
-         .elementsByCssSelector("#LICENSEWARNING_DISPLAY_TO_USER > div.warnings > div.info")
+         .findAllByCssSelector("#LICENSEWARNING_DISPLAY_TO_USER > div.warnings > div.info")
             .then(function (nonAdminWarnings) {
                TestCommon.log(testname,46,"Test 2c - Test that non-admin users see high severity warnings");
                expect(nonAdminWarnings).to.have.length(3, "Test 2c - High severity warnings should be displayed to non-admins");

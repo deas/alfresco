@@ -45,7 +45,7 @@ define(["intern!object",
             // Sort on the first column header...
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .active()
+            .getActiveElement()
             .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,51,"Check tab focus on column header 1");
@@ -111,7 +111,7 @@ define(["intern!object",
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
 
-            .active()
+            .getActiveElement()
             .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,117,"Check row 1 selection");
@@ -125,7 +125,7 @@ define(["intern!object",
             // Select the first element...
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .active()
+            .getActiveElement()
             .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,131,"Check cursor down moves to next row");
@@ -144,7 +144,7 @@ define(["intern!object",
             // Select the first element...
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .active()
+            .getActiveElement()
             .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,150,"Check cursor down wraps to first row");
@@ -159,7 +159,7 @@ define(["intern!object",
             // Select the first element...
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .active()
+            .getActiveElement()
             .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,165,"Check cursor up wraps to last row");
@@ -174,7 +174,7 @@ define(["intern!object",
             // Select the first element...
             .pressKeys(specialKeys.Tab)
             .sleep(alfPause)
-            .active()
+            .getActiveElement()
             .getVisibleText()
             .then(function(resultText) {
                TestCommon.log(testname,180,"Check cursor up moves to previous row");

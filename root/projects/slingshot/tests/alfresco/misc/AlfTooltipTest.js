@@ -37,7 +37,7 @@ define(["intern!object",
          .end()
 
          // Does the test button exist?
-         .elementById("TEST_BUTTON")
+         .findById("TEST_BUTTON")
          .then(function(el1) {
             TestCommon.log(testname,42,"Does the test button exist?");
             expect(el1).to.be.an("object", "The Test Button could not be found");
@@ -72,7 +72,7 @@ define(["intern!object",
          .end()
 
          // Move to test button two - does the tool tip disappear?
-         .elementById("TEST_BUTTON_TWO")
+         .findById("TEST_BUTTON_TWO")
          .sleep(250)
          .hasElementByCss(".dijitTooltip")
          .then(function(result3) {

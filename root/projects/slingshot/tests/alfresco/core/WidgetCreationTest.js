@@ -42,20 +42,20 @@ define(["intern!object",
          // chaining of promises - this test should be sufficient but it would be nice to update at some
          // point in the future!
 
-         .elementsByCssSelector(".alfresco-logo-Logo")
+         .findAllByCssSelector(".alfresco-logo-Logo")
             .then(function (els) {
                TestCommon.log(testname,46,"Count the number of Logo widgets");
                assert(els.length == 3, "An unexpected number of logo widgets found", els.length);
             })
             .end()
 
-         .elementsByCssSelector("#SPECIFIC_DOM_ID")
+         .findAllByCssSelector("#SPECIFIC_DOM_ID")
             .then(function (els) {
                TestCommon.log(testname,53,"Check for the Logo with the specific ID");
                assert(els.length == 1, "Couldn't find Logo with specific DOM id", els.length);
             })
             .end()
-         .elementsByCssSelector("#SPECIFIC_DOM_ID")
+         .findAllByCssSelector("#SPECIFIC_DOM_ID")
             .then(function (els) {
                TestCommon.log(testname,59,"Check for the Logo with the overridden ID");
                assert(els.length == 1, "Couldn't find Logo with overridden DOM id", els.length);

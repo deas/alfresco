@@ -50,49 +50,49 @@ define(["intern!object",
          // MBI6 - failed AND condition
          // MI2 - failed filter rule following inherited currentItem change
 
-         .elementById("MBI1")
+         .findById("MBI1")
          .then(function (el) {
             TestCommon.log(testname,56,"Test standard single rule");
             expect(el).to.be.an("object", "A single render filter rule failed unexpectedly");
          })
          .end()
 
-         .elementById("MBI3")
+         .findById("MBI3")
          .then(function (el) {
             TestCommon.log(testname,63,"Test negated single rule");
             expect(el).to.be.an("object", "A single negated render filter rule failed unexpectedly");
          })
          .end()
 
-         .elementById("MBI4")
+         .findById("MBI4")
          .then(function (el) {
             TestCommon.log(testname,70,"Test absent property rule");
             expect(el).to.be.an("object", "A single absent property render filter rule failed unexpectedly");
          })
          .end()
 
-         .elementById("MBI5")
+         .findById("MBI5")
          .then(function (el) {
             TestCommon.log(testname,77,"Test AND property rule");
             expect(el).to.be.an("object", "An AND condition property render filter rule failed unexpectedly");
          })
          .end()
 
-         .elementById("MBI7")
+         .findById("MBI7")
          .then(function (el) {
             TestCommon.log(testname,84,"Test OR property rule");
             expect(el).to.be.an("object", "An OR condition property render filter rule failed unexpectedly");
          })
          .end()
 
-         .elementsByCssSelector("#MBI8")
+         .findAllByCssSelector("#MBI8")
          .then(function (els) {
             TestCommon.log(testname,91,"Test failing OR rule");
             assert(els.length == 0, "An OR condition property render filter rule passed unexpectedly");
          })
          .end()
 
-         .elementsByCssSelector("#MBI2")
+         .findAllByCssSelector("#MBI2")
          .then(function (els) {
             TestCommon.log(testname,98,"Test failing standard single rule");
             assert(els.length == 0, "An inherited currentItem change render filter rule passed unexpectedly");
@@ -107,14 +107,14 @@ define(["intern!object",
          .sleep(250)
 
          .end()
-         .elementById("MI1")
+         .findById("MI1")
          .then(function (el) {
             TestCommon.log(testname,114,"Test inherited current item change rule (success)");
             expect(el).to.be.an("object", "An inherited currentItem change render filter rule failed unexpectedly");
          })
          .end()
 
-         .elementsByCssSelector("#MI2")
+         .findAllByCssSelector("#MI2")
          .then(function (els) {
             TestCommon.log(testname,121,"Test inherited current item change rule (failure)");
             assert(els.length == 0, "An inherited currentItem change render filter rule passed unexpectedly");

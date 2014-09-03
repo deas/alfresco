@@ -42,7 +42,7 @@ define(["intern!object",
          .end()
 
          // Check no facets are shown to begin with
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,48,"Check no facets are shown to begin with");
@@ -50,7 +50,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,55,"Check no facet rows are shown to begin with");
             expect(rows).to.have.length(0, "There should be no visible rows in the facet display");
@@ -58,11 +58,11 @@ define(["intern!object",
          .end()
 
          // Click button 1 - 4 rows of facet data should appear
-         .elementById("DO_FACET_BUTTON_1")
+         .findById("DO_FACET_BUTTON_1")
          .click()
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,67,"Check facets are shown after clicking button 1");
             expect(rows).to.have.length(4, "There should be 4 rows in the facet display");
@@ -70,7 +70,7 @@ define(["intern!object",
          .end()
 
          // Check the facet values
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,76,"Check the first set of facets have appeared");
@@ -82,11 +82,11 @@ define(["intern!object",
          .end()
 
          // Click button 2 - 2 rows of facet data should appear
-         .elementById("DO_FACET_BUTTON_2")
+         .findById("DO_FACET_BUTTON_2")
          .click()
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,91,"Check facets are shown after clicking button 2");
             expect(rows).to.have.length(2, "There should be 2 rows in the facet display");
@@ -94,7 +94,7 @@ define(["intern!object",
          .end()
 
          // Check the facet values
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,100,"Check the second set of facets have appeared");
@@ -104,11 +104,11 @@ define(["intern!object",
          .end()
 
          // Click button 3 - 4 rows of facet data should appear
-         .elementById("DO_FACET_BUTTON_3")
+         .findById("DO_FACET_BUTTON_3")
          .click()
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,113,"Check facets are shown after clicking button 3");
             expect(rows).to.have.length(6, "There should be 6 rows in the facet display");
@@ -116,7 +116,7 @@ define(["intern!object",
          .end()
 
          // Check the facet values
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,122,"Check the third set of facets have appeared");
@@ -136,7 +136,7 @@ define(["intern!object",
          .end()
 
          // Check the facet values
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,142,"Check the four set of facets are shown");
@@ -156,7 +156,7 @@ define(["intern!object",
          .end()
 
          // Check the facet values
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
             TestCommon.log(testname,162,"Check the fifth set of facets are shown");
@@ -175,7 +175,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters")
+         .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,181,"Check facet menu is hidden when the title is clicked");
@@ -188,7 +188,7 @@ define(["intern!object",
          .click()
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters")
+         .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,194,"Check facet menu is shown when the title is clicked again");
@@ -197,11 +197,11 @@ define(["intern!object",
          .end()
 
          // Click the first facet menu item - it should select
-         .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
+         .findByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
          .click()
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
+         .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,207,"Facet menu item should select when clicked");
@@ -217,11 +217,11 @@ define(["intern!object",
          .end()
 
          // Click the first facet menu item again - it should de-select
-         .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
+         .findByCssSelector("#FACET1 > ul.filters > li:first-of-type span.filterLabel")
          .click()
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
+         .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,227,"Facet menu item should de-select when clicked again");
@@ -251,7 +251,7 @@ define(["intern!object",
          .end()
 
          // Check no facets are shown to begin with
-         .elementById("FACET1")
+         .findById("FACET1")
          .getVisibleText()
          .then(function (initialValue) {
             TestCommon.log(testname,257,"Check no facets are shown to begin with");
@@ -259,7 +259,7 @@ define(["intern!object",
          })
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,264,"Check no facet rows are shown to begin with");
             expect(rows).to.have.length(0, "There should be no visible rows in the facet display");
@@ -271,7 +271,7 @@ define(["intern!object",
          .pressKeys(specialKeys["Return"])
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,276,"Check facets are shown after selecting button 1 with the keyboard");
             expect(rows).to.have.length(4, "There should be 4 rows in the facet display");
@@ -285,7 +285,7 @@ define(["intern!object",
          .pressKeys(specialKeys["Return"])
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters")
+         .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,291,"Check facet menu is hidden when the title is clicked with the keyboard");
@@ -297,7 +297,7 @@ define(["intern!object",
          .pressKeys(specialKeys["Return"])
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters")
+         .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,303,"Check facet menu is displayed when the title is re-clicked with the keyboard");
@@ -310,7 +310,7 @@ define(["intern!object",
          .pressKeys(specialKeys["Return"])
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
+         .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,316,"Facet menu item should select when clicked with the keyboard");
@@ -329,7 +329,7 @@ define(["intern!object",
          .pressKeys(specialKeys["Return"])
          .end()
 
-         .elementByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
+         .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
             TestCommon.log(testname,335,"Facet menu item should de-select when clicked again using the keyboard");
@@ -359,11 +359,11 @@ define(["intern!object",
          .end()
 
          // Click button 4 - 3 rows of facet data should appear
-         .elementById("DO_FACET_BUTTON_4")
+         .findById("DO_FACET_BUTTON_4")
          .click()
          .end()
 
-         .elementsByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
+         .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
             TestCommon.log(testname,368,"Check facets are shown after clicking button 4");
             expect(rows).to.have.length(3, "There should be 3 rows in the facet display");
@@ -371,7 +371,7 @@ define(["intern!object",
          .end()
 
          // Click facet1 - check the url hash appears as expected
-         .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
+         .findByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
          .click()
          .end()
 
@@ -384,7 +384,7 @@ define(["intern!object",
          .end()
 
          // Click facet2 - check the url hash appears as expected
-         .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
+         .findByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
          .click()
          .end()
 
@@ -398,7 +398,7 @@ define(["intern!object",
          .end()
 
          // Click facet1 - check the url hash appears as expected
-         .elementByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
+         .findByCssSelector("#FACET2 > ul.filters > li:first-of-type span.filterLabel")
          .click()
          .end()
 
@@ -411,7 +411,7 @@ define(["intern!object",
          .end()
 
          // Click facet2 - check the url hash appears as expected
-         .elementByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
+         .findByCssSelector("#FACET2 > ul.filters > li:nth-of-type(2) span.filterLabel")
          .click()
          .end()
 

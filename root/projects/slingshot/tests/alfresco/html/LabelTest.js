@@ -41,7 +41,7 @@ define(["intern!object",
          .end()
          
          // Has label with correct phrase
-         .elementById("TEST_LABEL")
+         .findById("TEST_LABEL")
          .getVisibleText()
          .then(function (label) {
             TestCommon.log(testname,47,"Check the label is shown with the correct text to begin with");
@@ -67,7 +67,7 @@ define(["intern!object",
          .end()
          
          // Click button to publish topic
-         .elementById("TEST_BUTTON")
+         .findById("TEST_BUTTON")
          .click()
          .end()
 
@@ -80,7 +80,7 @@ define(["intern!object",
          .end()
 
          // Label copy has changed appropriately
-         .elementById("TEST_LABEL")
+         .findById("TEST_LABEL")
          .getVisibleText()
          .then(function (label) {
             TestCommon.log(testname,87,"Check the label is now shown with the text from the topic publish payload");
