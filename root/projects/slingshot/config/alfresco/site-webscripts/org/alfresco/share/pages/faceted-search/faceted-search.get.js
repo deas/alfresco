@@ -180,7 +180,7 @@ rawFacets.forEach(function(facet, index, rawFacets) {
       {
          includeFacet = false;
          var siteId = page.url.templateArgs.site;
-         if (siteId != null)
+         if (siteId != null && facet.scopedSites != null && facet.scopedSites.length != null)
          {
             for (var i=0; i<facet.scopedSites.length; i++)
             {
