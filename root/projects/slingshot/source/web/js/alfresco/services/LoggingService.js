@@ -33,7 +33,7 @@ define(["dojo/_base/declare",
         "alfresco/buttons/AlfButton",
         "alfresco/testing/SubscriptionLog",
         "alfresco/debug/CoreDataDebugger"],
-        function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, has, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
+        function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, sniff, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
    
    return declare([AlfCore, _PreferenceServiceTopicMixin], {
       
@@ -303,7 +303,7 @@ define(["dojo/_base/declare",
              (this.loggingPreferences.all == true ||
               this.loggingPreferences[payload.severity] == true))
          {
-            if (typeof console[payload.severity] != "function" && (!has("ie") > 9))
+            if (typeof console[payload.severity] != "function" && (!sniff("ie") > 9))
             {
                // Catch developer errors !!
                console.error("The supplied severity is not a function of console", payload.severity);
@@ -342,18 +342,22 @@ define(["dojo/_base/declare",
                }
                
                // If the filter is mapped (or if there is no filter) output the log...
-               if (matchesFilter)
+               if (matchesFilter || sniff("ie"))
                {
                   payload.messageArgs[0] = callerName + payload.messageArgs[0];
-                  if (has("ie") <= 9)
+                  if (sniff("ie") <= 8)
+                  {
+                     console.log(payload.messageArgs);
+                  }
+                  else if (sniff("ie") <= 10)
                   {
                      if (payload.severity == "error")
                      {
-                        console.error(payload.messageArgs);
+                        console.error.apply(this, payload.messageArgs);
                      }
                      else
                      {
-                        console.log(payload.messageArgs);
+                        console.log.apply(this, payload.messageArgs);
                      }
                   }
                   else

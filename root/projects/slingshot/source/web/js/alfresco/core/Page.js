@@ -57,16 +57,24 @@ define(["alfresco/core/ProcessWidgets",
        * @instance
        */
       postCreate: function alfresco_core_Page__postCreate() {
-         
-         if (this.services != null && this.services.length != 0)
+         try
          {
-            this.processServices(this.services);
+            if (this.services != null && this.services.length != 0)
+            {
+               this.processServices(this.services);
+            }
+            else if (this.widgets != null && this.widgets.length != 0)
+            {
+               // Make sure to process widgets if there are no services...
+               // Otherwise they will be processed once all the services are instantiated...
+               this.processWidgets(this.widgets, this.containerNode);
+            }
          }
-         else if (this.widgets != null && this.widgets.length != 0)
+         catch (e)
          {
-            // Make sure to process widgets if there are no services...
-            // Otherwise they will be processed once all the services are instantiated...
-            this.processWidgets(this.widgets, this.containerNode);
+            console.error("BOOM!");
+            this.alfLog("error", "The following error occurred building the page", e);
+            PubQueue.getSingleton().release();
          }
       },
       
@@ -119,7 +127,7 @@ define(["alfresco/core/ProcessWidgets",
          }
       },
 
-            /**
+      /**
        * This method will instantiate a new service having requested that its JavaScript resource and
        * dependent resources be downloaded. In principle all of the required resources should be available
        * if the service is being processed in the context of the Surf framework and dependency analysis of 

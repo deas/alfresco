@@ -49,20 +49,26 @@ define(["dojo/_base/declare",
          // There are two options for providing configuration, either via a JSON object or
          // via a URL to asynchronously retrieve the configuration. The configuration object
          // takes precedence as it will be faster by virtue of not requiring a remote call.
-         
-         // For the moment we'll just ignore handling the configUrl...
-         var _this = this;
-         if (widgets && widgets instanceof Array)
+         try
          {
-            // Reset the processing complete flag (this is to support multiple invocations of widget processing)...
-            this.widgetProcessingComplete = false;
-            
-            // TODO: Using these attributes will not support multiple calls to processWidgets from within the same object instance
-            this._processedWidgetCountdown = widgets.length;
-            this._processedWidgets = [];
-            
-            // Iterate over all the widgets in the configuration object and add them...
-            array.forEach(widgets, lang.hitch(this, "processWidget", rootNode));
+            // For the moment we'll just ignore handling the configUrl...
+            var _this = this;
+            if (widgets && widgets instanceof Array)
+            {
+               // Reset the processing complete flag (this is to support multiple invocations of widget processing)...
+               this.widgetProcessingComplete = false;
+               
+               // TODO: Using these attributes will not support multiple calls to processWidgets from within the same object instance
+               this._processedWidgetCountdown = widgets.length;
+               this._processedWidgets = [];
+               
+               // Iterate over all the widgets in the configuration object and add them...
+               array.forEach(widgets, lang.hitch(this, "processWidget", rootNode));
+            }
+         }
+         catch(e)
+         {
+            this.alfLog("error", "The following error occurred processing widgets", e);
          }
       },
       
@@ -82,8 +88,13 @@ define(["dojo/_base/declare",
       processWidget: function alfresco_core_CoreWidgetProcessing__processWidget(rootNode, widgetConfig, index) {
          if (widgetConfig != null && this.filterWidget(widgetConfig, index))
          {
-            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, (widgetConfig.className != null ? widgetConfig.className : ""));
+            var domNode = this.createWidgetDomNode(widgetConfig, rootNode, widgetConfig.className);
             this.createWidget(widgetConfig, domNode, this._registerProcessedWidget, this, index);
+         }
+         else
+         {
+            this.alfLog("warn", "Could not process widget because it was missing configuration - check 'widgets' array for empty elements", this, index);
+            this._processedWidgetCountdown--;
          }
       },
       
@@ -99,7 +110,7 @@ define(["dojo/_base/declare",
       /**
        * This is used to countdown the widgets that are still waiting to be created. It is initialised to the size
        * of the widgets array supplied to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function.
-       * 
+       * widgets
        * @instance 
        * @type {number}
        * @default null
@@ -117,7 +128,7 @@ define(["dojo/_base/declare",
        */
       _registerProcessedWidget: function alfresco_core_CoreWidgetProcessing___registerProcessedWidget(widget, index) {
          this._processedWidgetCountdown--;
-         this.alfLog("log", "Widgets expected: ", this._processedWidgetCountdown);
+         this.alfLog("log", "Widgets expected: ", this._processedWidgetCountdown, this.id);
          if (widget != null)
          {
             if (this._processedWidgets == null)
@@ -160,6 +171,10 @@ define(["dojo/_base/declare",
                   }, this);
                }
             }
+         }
+         else
+         {
+            this.alfLog("warn", "No widget supplied following registration", this);
          }
          
          if (this._processedWidgetCountdown == 0)
@@ -308,126 +323,138 @@ define(["dojo/_base/declare",
        */
       createWidget: function alfresco_core_CoreWidgetProcessing__createWidget(config, domNode, callback, callbackScope, index) {
 
-         var _this = this;
-         this.alfLog("log", "Creating widget: ",config);
-
-         // Make sure we have an instantiation args object...
-         var initArgs = (config && config.config && (typeof config.config === 'object')) ? config.config : {};
-
-         // Ensure that each widget has a unique id. Without this Dojo seems to occasionally
-         // run into trouble trying to re-use an existing id...
-         if (typeof initArgs.id == "undefined")
+         try
          {
-            // Attempt to use the model ID as the DOM ID if available, but if not just generate an ID
-            // based on the module name...
-            if (config.id == null || lang.trim(config.id) == "")
+            var _this = this;
+            this.alfLog("log", "Creating widget: ",config);
+
+            // Make sure we have an instantiation args object...
+            var initArgs = (config && config.config && (typeof config.config === 'object')) ? config.config : {};
+
+            // Ensure that each widget has a unique id. Without this Dojo seems to occasionally
+            // run into trouble trying to re-use an existing id...
+            if (typeof initArgs.id == "undefined")
             {
-               initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
+               // Attempt to use the model ID as the DOM ID if available, but if not just generate an ID
+               // based on the module name...
+               if (config.id == null || config.id.trim() == "")
+               {
+                  initArgs.id = config.name.replace(/\//g, "_") + "___" + this.generateUuid();
+               }
+               else
+               {
+                  initArgs.id = config.id;
+               }
+            }
+
+            if (initArgs.generatePubSubScope === true)
+            {
+               // Generate a new pubSubScope if requested to...
+               initArgs.pubSubScope = this.generateUuid();
+            }
+            else if (initArgs.pubSubScope === undefined)
+            {
+               // ...otherwise inherit the callers pubSubScope if one hasn't been explicitly configured...
+               initArgs.pubSubScope = this.pubSubScope;
+            }
+
+            // Pass on the pub/sub scope from the parent...
+            if (initArgs.pubSubScope == this.pubSubScope)
+            {
+               // If the scope is inherited then also inherit the parent scope...
+               if (this.parentPubSubScope == null)
+               {
+                  // ...set as global if not set already
+                  initArgs.parentPubSubScope = "";
+               }
+               else
+               {
+                  // ...but try to inherit...
+                  initArgs.parentPubSubScope = this.parentPubSubScope;
+               }
             }
             else
             {
-               initArgs.id = config.id;
+               // If the scope has changed then inherit the my scope...
+               initArgs.parentPubSubScope = this.pubSubScope;
             }
-         }
 
-         if (initArgs.generatePubSubScope === true)
-         {
-            // Generate a new pubSubScope if requested to...
-            initArgs.pubSubScope = this.generateUuid();
-         }
-         else if (initArgs.pubSubScope === undefined)
-         {
-            // ...otherwise inherit the callers pubSubScope if one hasn't been explicitly configured...
-            initArgs.pubSubScope = this.pubSubScope;
-         }
-
-         // Pass on the pub/sub scope from the parent...
-         if (initArgs.pubSubScope == this.pubSubScope)
-         {
-            // If the scope is inherited then also inherit the parent scope...
-            if (this.parentPubSubScope == null)
+            if (initArgs.dataScope === undefined)
             {
-               // ...set as global if not set already
-               initArgs.parentPubSubScope = "";
+               initArgs.dataScope = this.dataScope;
             }
-            else
+
+            if (initArgs.currentItem === undefined)
             {
-               // ...but try to inherit...
-               initArgs.parentPubSubScope = this.parentPubSubScope;
+               initArgs.currentItem = this.currentItem;
             }
-         }
-         else
-         {
-            // If the scope has changed then inherit the my scope...
-            initArgs.parentPubSubScope = this.pubSubScope;
-         }
-
-         if (initArgs.dataScope === undefined)
-         {
-            initArgs.dataScope = this.dataScope;
-         }
-
-         if (initArgs.currentItem === undefined)
-         {
-            initArgs.currentItem = this.currentItem;
-         }
-         if (initArgs.groupMemberships === undefined)
-         {
-            initArgs.groupMemberships = this.groupMemberships;
-         }
-
-         // Create a reference for the widget to be added to. Technically the require statement
-         // will need to asynchronously request the widget module - however, assuming the widget
-         // has been included in such a way that it will have been included in the generated 
-         // module cache then the require call will actually process synchronously and the widget
-         // variable will be returned with an assigned value...
-         var widget = null;
-
-         // Dynamically require the specified widget
-         // The use of indirection is done so modules will not rolled into a build (should we do one)
-         var requires = [config.name];
-         require(requires, function(WidgetType) {
-            // Just to be sure, check that no widget doesn't already exist with that id and
-            // if it does, generate a new one...
-            if (registry.byId(initArgs.id) != null)
+            if (initArgs.groupMemberships === undefined)
             {
-               initArgs.id = config.name + "___" + _this.generateUuid();
+               initArgs.groupMemberships = this.groupMemberships;
             }
+
+            // Create a reference for the widget to be added to. Technically the require statement
+            // will need to asynchronously request the widget module - however, assuming the widget
+            // has been included in such a way that it will have been included in the generated 
+            // module cache then the require call will actually process synchronously and the widget
+            // variable will be returned with an assigned value...
+            var widget = null;
+
+            // Dynamically require the specified widget
+            // The use of indirection is done so modules will not rolled into a build (should we do one)
+            var requires = [config.name];
+            require(requires, function(WidgetType) {
+               // Just to be sure, check that no widget doesn't already exist with that id and
+               // if it does, generate a new one...
+               if (registry.byId(initArgs.id) != null)
+               {
+                  initArgs.id = config.name + "___" + _this.generateUuid();
+               }
+               
+               // Instantiate the new widget
+               // This is an asynchronous response so we need a callback method...
+               widget = new WidgetType(initArgs, domNode);
+               if (_this.widgetsToDestroy == null)
+               {
+                  _this.widgetsToDestroy = [];
+                  _this.widgetsToDestroy.push(widget);
+               }
+               _this.alfLog("log", "Created widget", widget);
+               widget.startup();
+               if (config.assignTo != null)
+               {
+                  _this[config.assignTo] = widget;
+               }
+
+               // Set any additional style attributes...
+               if (initArgs.style != null && widget.domNode != null)
+               {
+                  domStyle.set(widget.domNode, initArgs.style);
+               }
+
+               if (callback)
+               {
+                  // If there is a callback then call it with any provided scope (but default to the
+                  // "this" as the scope if one isn't provided).
+                  callback.call((callbackScope != null ? callbackScope : this), widget, index);
+               }
+            });
             
-            // Instantiate the new widget
-            // This is an asynchronous response so we need a callback method...
-            widget = new WidgetType(initArgs, domNode);
-            if (_this.widgetsToDestroy == null)
+            if (widget == null)
             {
-               _this.widgetsToDestroy = [];
-               _this.widgetsToDestroy.push(widget);
+               this.alfLog("warn", "A widget was not declared so that it's modules were included in the loader cache", config, this);
             }
-            _this.alfLog("log", "Created widget", widget);
-            widget.startup();
-            if (config.assignTo != null)
-            {
-               _this[config.assignTo] = widget;
-            }
-
-            // Set any additional style attributes...
-            if (initArgs.style != null && widget.domNode != null)
-            {
-               domStyle.set(widget.domNode, initArgs.style);
-            }
-
+            return widget;
+         }
+         catch (e)
+         {
+            this.alfLog("error", "The following error occurred creating a widget", e, this);
             if (callback)
             {
-               // If there is a callback then call it with any provided scope (but default to the
-               // "this" as the scope if one isn't provided).
-               callback.call((callbackScope != null ? callbackScope : this), widget, index);
+               callback.call((callbackScope != null ? callbackScope : this), null, index);
             }
-         });
-         
-         if (widget == null)
-         {
-            this.alfLog("warn", "A widget was not declared so that it's modules were included in the loader cache", config, this);
+            return null;
          }
-         return widget;
       },
 
       /**
@@ -457,7 +484,7 @@ define(["dojo/_base/declare",
             {
                // Check that the widget passes all the filter checks...
                var renderFilterMethod = lang.getObject("config.renderFilterMethod", false, widgetConfig);
-               if (renderFilterMethod == null || lang.trim(renderFilterMethod) == "ALL")
+               if (renderFilterMethod == null || renderFilterMethod.trim() == "ALL")
                {
                   // Handle AND logic (all filters must pass)
                   shouldRender = array.every(renderFilterConfig, lang.hitch(this, this.processFilterConfig));
