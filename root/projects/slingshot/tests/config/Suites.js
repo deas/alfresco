@@ -33,7 +33,7 @@ define({
    baseNonFunctionalSuites: null,
 
    // Uncomment and add specific tests as necessary during development!
-//   baseFunctionalSuites: ['tests/alfresco/accessibility/SemanticWrapperMixinTest'],
+//   baseFunctionalSuites: ['tests/alfresco/layout/TwisterTest'],
 
    /**
     * This is the base array of functional test suites
@@ -82,6 +82,7 @@ define({
 
       'tests/alfresco/layout/AlfSideBarContainerTest',
       'tests/alfresco/layout/BasicLayoutTest',
+      'tests/alfresco/layout/TwisterTest',
 
       'tests/alfresco/menus/AlfCheckableMenuItemTest',
       'tests/alfresco/menus/AlfContextMenuTest',

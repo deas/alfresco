@@ -22,11 +22,11 @@
  * events. Secondly it provides a tool for use in unit testing that Selenium WebDriver can use to capture events
  * that occur to validate correct widget behaviour.
  *
- * @module alfresco/testing/SubscriptionLog
+ * @module alfresco/testing/ConsoleLog
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
- * @author Dave Draper
+ * @author Richard Smith
  */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 

@@ -441,6 +441,17 @@ define(["intern/dojo/node!fs",
          // console.log("Topic selector: " + selector);
          return selector;
       },
+      
+      /**
+       * This generates an xpath selector that matches the supplied value in the console log.
+       *
+       * @instance
+       * @param {string} value The value to search for
+       * @returns {string} The XPATH selector
+       */
+      consoleXpathSelector: function(value) {         
+         return "//table[@class=\"log\"]/tbody/tr[@class=\"cl-row\"]/td[contains(.,'" + value + "')]";
+      },
 
       /**
        * This function searches for the button to post test coverage results to the "node-coverage"
