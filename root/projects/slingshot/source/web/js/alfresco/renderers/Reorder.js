@@ -28,14 +28,15 @@ define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "dojo/text!./templates/Reorder.html",
         "alfresco/core/Core",
         "dojo/on",
         "dojo/_base/lang",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, template, AlfCore, on, lang, domClass) {
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _PublishPayloadMixin, template, AlfCore, on, lang, domClass) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, _PublishPayloadMixin], {
       
       /**
       * The array of file(s) containing internationalised strings.
@@ -179,11 +180,17 @@ define(["dojo/_base/declare",
        */
       onUpClick: function alfresco_renderers_Reorder__onUpClick(evt) {
          this.alfLog("log", "Moving item up", this);
-         on.emit(this.domNode, "onMoveItemUp", {
-            bubbles: true,
-            cancelable: true,
-            item: this.currentItem
+         var payload = this.generatePayload(this.moveUpPublishPayload, 
+                                            this.currentItem, 
+                                            null, 
+                                            this.moveUpPublishPayloadType, 
+                                            this.moveUpPublishPayloadItemMixin, 
+                                            this.moveUpPublishPayloadModifiers);
+         var message = this.message("reorder.moveup.success", {
+            0: this.currentItem[this.propertyToRender]
          });
+         payload.successMessage = message;
+         this.alfPublish(this.moveUpPublishTopic, payload);
       },
 
       /**
@@ -193,11 +200,17 @@ define(["dojo/_base/declare",
        */
       onDownClick: function alfresco_renderers_Reorder__onDownClick(evt) {
          this.alfLog("log", "Moving item down", this);
-         on.emit(this.domNode, "onMoveItemDown", {
-            bubbles: true,
-            cancelable: true,
-            item: this.currentItem
+         var payload = this.generatePayload(this.moveDownPublishPayload, 
+                                            this.currentItem, 
+                                            null, 
+                                            this.moveDownPublishPayloadType, 
+                                            this.moveDownPublishPayloadItemMixin, 
+                                            this.moveDownPublishPayloadModifiers);
+         var message = this.message("reorder.movedown.success", {
+            0: this.currentItem[this.propertyToRender]
          });
+         payload.successMessage = message;
+         this.alfPublish(this.moveDownPublishTopic, payload);
       }
    });
 });

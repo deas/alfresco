@@ -550,7 +550,23 @@ var main = {
                                                                      width: "50px",
                                                                      widgets: [
                                                                         {
-                                                                           name: "alfresco/renderers/Reorder"
+                                                                           name: "alfresco/renderers/Reorder",
+                                                                           config: {
+                                                                              moveUpPublishTopic: "ALF_CRUD_UPDATE",
+                                                                              moveUpPublishPayloadType: "PROCESS",
+                                                                              moveUpPublishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              moveUpPublishPayloadItemMixin: true,
+                                                                              moveUpPublishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}?relativePos=-1"
+                                                                              },
+                                                                              moveDownPublishTopic: "ALF_CRUD_UPDATE",
+                                                                              moveDownPublishPayloadType: "PROCESS",
+                                                                              moveDownPublishPayloadModifiers: ["processCurrentItemTokens"],
+                                                                              moveDownPublishPayloadItemMixin: true,
+                                                                              moveDownPublishPayload: {
+                                                                                 url: "api/solr/facet-config/{filterID}?relativePos=1"
+                                                                              }
+                                                                           }
                                                                         }
                                                                      ]
                                                                   }
