@@ -60,15 +60,6 @@ define(["dojo/_base/declare",
       templateString: template,
       
       /**
-       * The key should be the identifier of this element.
-       * TODO: Could we just rely on the widget provided id attribute?
-       * 
-       * @instance
-       * @default null
-       */
-      id: null,
-      
-      /**
        * The element configuration should be passed as a construction argument. It should provide a key
        * and a value to use for rendering the element.
        * 
@@ -121,6 +112,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_forms_controls_MultipleEntryElement__postCreate() {
+         this.elementValue = this.getValue();
          this.createReadDisplay();
       },
       
@@ -130,8 +122,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       createReadDisplay: function alfresco_forms_controls_MultipleEntryElement__createReadDisplay() {
-         var currentValue = this.getValue();
-         this.readDisplay.innerHTML = this.encodeHTML(currentValue.value);
+         this.readDisplay.innerHTML = this.encodeHTML(this.elementValue.value);
       },
       
       /**
@@ -223,25 +214,13 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * This is called whenever the text box in the edit view is updated.
-       * 
-       * @instance
-       * @param {string} name The name of the changed element
-       * @param {string} oldValue The value before the change
-       * @param {string} value The value after the change
-       */
-      onElementValueChange: function alfresco_forms_controls_MultipleEntryElement__onElementValueChange(name, oldValue, value) {
-         this.elementValue.value = value;
-         this.createReadDisplay();
-      },
-
-      /**
        * Switches the visibility of the edit and read displays.
        * 
        * @instance
        * @param {boolean} switchToEdit Indicates whether or not to switch into edit mode
+       * @param {boolean} saveChanges Indicates whether or not state changes should be saved.
        */
-      editMode: function alfresco_forms_controls_MultipleEntryElement__editMode(switchToEdit) {
+      editMode: function alfresco_forms_controls_MultipleEntryElement__editMode(switchToEdit, saveChanges) {
          if (switchToEdit)
          {
             this.createEditDisplay();
@@ -253,6 +232,12 @@ define(["dojo/_base/declare",
             // TODO: We should consider preventing exiting validation of edit mode (there are issues with this though,
             //       it's possible that the user may want to accept an entry that is invalid if it can be made valid
             //       via another entry.
+            var currentValue;
+            if (saveChanges)
+            {
+               // If the changes should be saved then the value from the form should be retrieved.
+               this.elementValue = this.getValue();
+            }
             this.createReadDisplay();
             domClass.add(this.editDisplay, "hide");
             domClass.remove(this.readDisplay, "hide");

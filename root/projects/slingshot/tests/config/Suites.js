@@ -65,6 +65,7 @@ define({
       'tests/alfresco/forms/controls/DojoDateTextBoxTest',  // TODO: NEEDS FIXING
       'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
       'tests/alfresco/forms/controls/FormButtonDialogTest',
+      'tests/alfresco/forms/controls/MultipleEntryFormControlTest',
 
       'alfresco/footer/FooterTest', 
 

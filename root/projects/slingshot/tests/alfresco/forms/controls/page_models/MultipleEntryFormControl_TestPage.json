@@ -14,54 +14,104 @@
    ],
    "widgets":[
       {
-         "name": "alfresco/forms/controls/MultipleEntryFormControl",
+         "name": "alfresco/forms/Form",
          "config": {
-            "label": "Properties",
+            "pubSubScope": "FORM1",
+            "showOkButton": true,
+            "okButtonPublishTopic": "SAVE_FORM_1",
+            "okButtonLabel": "Save Form 1",
+            "showCancelButton": false,
+            "scopeFormControls": false,
             "widgets": [
                {
-                  "name": "alfresco/forms/controls/DojoValidationTextBox",
+                  "id": "SIMPLE_NO_VALUE",
+                  "name": "alfresco/forms/controls/MultipleEntryFormControl",
                   "config": {
-                     "name": "fieldId",
-                     "label": "fieldId",
-                     "visibilityConfig": {
-                        "initialValue": false
-                     }
+                     "fieldId": "SIMPLE_PROPS",
+                     "name": "simple",
+                     "value": "",
+                     "label": "Simple Properties",
+                     "useSimpleValues": true,
+                     "widgets": [
+                        {
+                           "name": "alfresco/forms/controls/DojoValidationTextBox",
+                           "config": {
+                              "name": "value",
+                              "label": "Entry"
+                           }
+                        }
+                     ]
                   }
                },
                {
-                  "name": "alfresco/forms/controls/DojoValidationTextBox",
+                  "id": "SIMPLE_WITH_VALUE",
+                  "name": "alfresco/forms/controls/MultipleEntryFormControl",
                   "config": {
-                     "name": "value",
-                     "label": "Property Name",
-                     "requirementConfig": {
-                        "initialValue": true
-                     }
-                  }
-               }
-               {
-                  "name": "alfresco/forms/controls/DojoSelect",
-                  "config": {
-                     "fieldId": "propertyType",
-                     "label": "Property Type",
-                     "value": "value",
-                     "optionsConfig": {
-                        "fixed": [
-                           { "label": "Checkbox", "value": "CHECKBOX" },
-                           { "label": "Text Field", "value": "STRING" },
-                           { "label": "Number", "value": "NUMBER" }
-                        ]
-                     }
+                     "fieldId": "SIMPLE_PROPS_WITH_VALUE",
+                     "name": "simpleWithValue",
+                     "value": ["test1","test2","test3"],
+                     "label": "Simple Properties (preset value)",
+                     "useSimpleValues": true,
+                     "widgets": [
+                        {
+                           "name": "alfresco/forms/controls/DojoValidationTextBox",
+                           "config": {
+                              "name": "value",
+                              "label": "Entry"
+                           }
+                        }
+                     ]
                   }
                },
                {
-                  "name": "alfresco/forms/controls/DojoValidationTextBox",
+                  "id": "COMPLEX_NO_VALUE",
+                  "name": "alfresco/forms/controls/MultipleEntryFormControl",
                   "config": {
-                     "name": "description",
-                     "label": "Description"
+                     "fieldId": "COMPLEX_PROPS",
+                     "name": "complex",
+                     "value": "",
+                     "label": "Complex Properties",
+                     "useSimpleValues": false,
+                     "widgets": [
+                        {
+                           "name": "alfresco/forms/controls/DojoValidationTextBox",
+                           "config": {
+                              "name": "value",
+                              "label": "Entry"
+                           }
+                        }
+                     ]
                   }
                },
                {
-                  "name": "alfresco/forms/"
+                  "id": "COMPLEX_WITH_VALUE",
+                  "name": "alfresco/forms/controls/MultipleEntryFormControl",
+                  "config": {
+                     "fieldId": "COMPLEX_PROPS_WITH_VALUE",
+                     "name": "complexWithValue",
+                     "value": [{"value":"test4"},{"value":"test5"}],
+                     "label": "Complex Properties (preset value)",
+                     "useSimpleValues": false,
+                     "widgets": [
+                        {
+                           "name": "alfresco/forms/controls/DojoValidationTextBox",
+                           "config": {
+                              "name": "value",
+                              "label": "Entry"
+                           }
+                        }
+                     ]
+                  }
+               },
+               {
+                  "id": "KEY_VALUE_PAIR",
+                  "name": "alfresco/forms/controls/MultipleKeyValuePairFormControl",
+                  "config": {
+                     "fieldId": "KEY_VALUE_PAIR",
+                     "name": "keyValuePair",
+                     "value": null,
+                     "label": "Key/Value Pair"
+                  }
                }
             ]
          }

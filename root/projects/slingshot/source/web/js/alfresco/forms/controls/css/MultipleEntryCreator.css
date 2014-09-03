@@ -29,22 +29,6 @@
    margin: 5px 2px 2px;
 }
 
-.alfresco-forms-controls-MultipleEntryCreator .button.doneEditing {
-   background-image: url("./images/done-16.png");
-}
-
-.alfresco-forms-controls-MultipleEntryCreator .button.edit {
-   background-image: url("./images/edit-16.png");
-}
-
-.alfresco-forms-controls-MultipleEntryCreator .button.delete {
-   background-image: url("./images/delete-16.png");
-}
-
-.alfresco-forms-controls-MultipleEntryCreator .button.add {
-   background-image: url("./images/add-icon-16.png");
-}
-
 .alfresco-forms-controls-MultipleEntryCreator .clear-both {
    clear: both;
 }

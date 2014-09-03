@@ -64,8 +64,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       createReadDisplay: function alfresco_forms_controls_SimpleMultipleEntryElement__createReadDisplay() {
-         var currentValue = this.getValue();
-         this.readDisplay.innerHTML = currentValue;
+         this.readDisplay.innerHTML = this.elementValue;
       },
 
       /**
@@ -109,19 +108,6 @@ define(["dojo/_base/declare",
          }
       },
       
-      /**
-       * This is called whenever the text box in the edit view is updated.
-       * 
-       * @instance
-       * @param {string} name The name of the changed element
-       * @param {string} oldValue The value before the change
-       * @param {string} value The value after the change
-       */
-      onElementValueChange: function alfresco_forms_controls_SimpleMultipleEntryElement__onElementValueChange(name, oldValue, value) {
-         this.elementValue = value;
-         this.createReadDisplay();
-      },
-
       /**
        * @instance
        * @returns {object}

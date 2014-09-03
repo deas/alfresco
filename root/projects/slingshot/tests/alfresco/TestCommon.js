@@ -288,6 +288,50 @@ define(["intern/dojo/node!fs",
       },
 
       /**
+       * This generates a CSS selector that attempts to select a publication payload entry from the SubscriptionLOg
+       * widget where the payload contains a nested key/value pair that is the value of a key
+       *
+       * @instance
+       * @param {string} publishTopic The topic published on
+       * @param {string} key The key for the data
+       * @param {string} nestedKey The key nested as the value for the data
+       * @param {string} nestedValue The value of the nested data.
+       * @returns {string} The CSS selector
+       */
+      pubDataNestedValueCssSelector: function(publishTopic, key, nestedKey, nestedValue) {
+         var selector = "td[data-publish-topic='" + publishTopic + "'] + " +
+                        "td.sl-data tr.sl-object-row " +
+                        "td[data-pubsub-object-key=" + 
+                        key + 
+                        "]+ td td[data-pubsub-object-key='" + 
+                        nestedKey + "'] " + 
+                        "+ td[data-pubsub-object-value='" + 
+                        nestedValue + "']";
+         return selector;
+      },
+
+      /**
+       * This generates a CSS selector that attempts to select a publication payload entry from the SubscriptionLOg
+       * widget where the payload contains a nested array that is the value of a key
+       *
+       * @instance
+       * @param {string} publishTopic The topic published on
+       * @param {string} key The key for the data
+       * @param {string} arrayIndex The index of the nested array
+       * @param {string} value The expected value of the nested data.
+       * @returns {string} The CSS selector
+       */
+      pubDataNestedArrayValueCssSelector: function(publishTopic, key, arrayIndex, value) {
+         var selector = "td[data-publish-topic='" + publishTopic + "'] + " +
+                        "td.sl-data tr.sl-object-row " +
+                        "td[data-pubsub-object-key=" + 
+                        key + 
+                        "]+ td td[data-pubsub-object-value='" + 
+                        value + "']:nth-child(" + arrayIndex + ")";
+         return selector;
+      },
+
+      /**
        * This generates a CSS selector that attempts to select a publication payload entry from the SubscriptionLog
        * widget. It looks on a specific row of the table for an entry with a specific key/value pair. It's important to
        * remember that the first generated row will be 3 (!! THREE !!) because the index starts at 1 NOT 0 and the first

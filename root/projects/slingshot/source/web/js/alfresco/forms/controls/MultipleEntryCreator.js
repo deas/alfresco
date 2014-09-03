@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,14 +18,17 @@
  */
 
 /**
- * @module alfresco/forms/controls/MultipleEntryFormControl
- * @extends alfresco/forms/controls/BaseFormControl
+ * @module alfresco/forms/controls/MultipleEntryCreator
+ * @extends dijit/_WidgetBase
+ * @mixes dijit/_TemplatedMixin
+ * @mixes dijit/_OnDijitClickMixin
+ * @mixes module:alfresco/core/Core
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
-        "dijit/_FocusMixin",
+        "dijit/_OnDijitClickMixin",
         "dojo/text!./templates/MultipleEntryCreator.html",
         "alfresco/core/Core",
         "alfresco/forms/controls/MultipleEntryElementWrapper",
@@ -37,10 +40,10 @@ define(["dojo/_base/declare",
         "dojo/aspect",
         "dojo/dnd/Source",
         "dojo/dom-construct"], 
-        function(declare, _Widget, _Templated, _FocusMixin, template, AlfCore, MultipleEntryElementWrapper, 
+        function(declare, _Widget, _Templated, _OnDijitClickMixin, template, AlfCore, MultipleEntryElementWrapper, 
                  MultipleEntryElement, SimpleMultipleEntryElement, array, focusUtil, registry, aspect, Source, domConstruct) {
    
-   return declare([_Widget, _Templated, AlfCore], {
+   return declare([_Widget, _Templated, _OnDijitClickMixin, AlfCore], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -65,6 +68,33 @@ define(["dojo/_base/declare",
        */
       templateString: template,
       
+      /**
+       * This is the altText that is used for the add entry button.
+       * 
+       * @instance
+       * @type {string}
+       * @default "multiple-entry.add"
+       */
+      addEntryAltText: "multiple-entry.add",
+
+      /**
+       * This is the source of the image used for the add entry button
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      addEntryImageSrc: null,
+
+      /**
+       * This is the source of the image used for the add entry button
+       *
+       * @instance
+       * @type {string}
+       * @default "add-icon-16.png"
+       */
+      addEntryImage: "add-icon-16.png",
+
       /**
        * This constructor ensures that valid data has been set.
        * @instance
@@ -205,6 +235,19 @@ define(["dojo/_base/declare",
       elementWrappers: null,
       
       /**
+       * Set up the attributes to be used when rendering the template.
+       * 
+       * @instance
+       */
+      postMixInProperties: function alfresco_forms_controls_MultipleEntryCreator__postMixInProperties() {
+         if (this.addEntryImageSrc == null || this.addEntryImageSrc == "")
+         {
+            this.addEntryImageSrc = require.toUrl("alfresco/forms/controls") + "/css/images/" + this.addEntryImage;
+         }
+         this.addEntryAltText = this.message(this.addEntryAltText);
+      },
+
+      /**
        * Creates each element to display/edit
        * 
        * @instance
@@ -276,10 +319,9 @@ define(["dojo/_base/declare",
             // Iterate over the list of elements and create a wrapper containing each element...
             this.alfLog("log", "Creating entries for MultipleEntryCreator", elements);
             array.forEach(elements, function(element, index) {
-               
                if (element != null)
                {
-                  var wrapper = this.createElementWrapper(element);
+                  var wrapper = this.createElementWrapper(element, true);
                   if (wrapper.widget)
                   {
                      wrapper.widget.createReadDisplay();
@@ -298,8 +340,9 @@ define(["dojo/_base/declare",
        * 
        * @instance
        * @param {object} elementConfig
+       * @param {boolean} previouslyExisted Indicates that the element previously existed.
        */
-      createElementWrapper: function alfresco_forms_controls_MultipleEntryCreator__createElementWrapper(elementConfig) {
+      createElementWrapper: function alfresco_forms_controls_MultipleEntryCreator__createElementWrapper(elementConfig, previouslyExisted) {
          // Create the element widget from the element configuration and then create a new
          // wrapper to hold it and add the wrapper at the end of the list of entries...
          this.alfLog("log", "Creating MultipleEntryElementWrapper", elementConfig);
@@ -310,7 +353,9 @@ define(["dojo/_base/declare",
                                                        dataScope: this.dataScope,
                                                        elementConfig: elementConfig,
                                                        widgets: this.widgets});
-         var wrapper = new MultipleEntryElementWrapper({creator: this, widget: elementWidget});
+         var wrapper = new MultipleEntryElementWrapper({creator: this,
+                                                        previouslyExisted: previouslyExisted, 
+                                                        widget: elementWidget});
          aspect.after(wrapper, "blurWrapper", function(deferred) {
             _this.alfLog("log", "Wrapper 'blurWrapper' function processed");
             _this.validationRequired();
@@ -336,8 +381,6 @@ define(["dojo/_base/declare",
        * @returns {object} A nwe MultipleEntryElement instance.
        */
       createElementWidget: function alfresco_forms_controls_MultipleEntryCreator__createElementWidget(config) {
-//         return new MultipleEntryElement(config);
-         
          // Relies on the dependency already being in the Dojo cache!
          var widget = null;
          var requires = [this.elementWidget];
@@ -392,7 +435,8 @@ define(["dojo/_base/declare",
        * @instance
        */
       deleteEntry: function alfresco_forms_controls_MultipleEntryCreator__deleteEntry(wrapper) {
-         wrapper.destroyRecursive();
+         wrapper.destroy(false);
+         this.validationRequired();
       },
       
       /**
