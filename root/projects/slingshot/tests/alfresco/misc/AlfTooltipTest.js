@@ -39,7 +39,7 @@ define(["intern!object",
          // Does the test button exist?
          .findById("TEST_BUTTON")
          .then(function(el1) {
-            TestCommon.log(testname,42,"Does the test button exist?");
+            TestCommon.log(testname,"Does the test button exist?");
             expect(el1).to.be.an("object", "The Test Button could not be found");
          })
          .end()
@@ -47,7 +47,7 @@ define(["intern!object",
          // Tool tip should be missing to begin with
          .hasElementByCss(".dijitTooltip")
          .then(function(result1) {
-            TestCommon.log(testname,50,"Tool tip should be missing to begin with");
+            TestCommon.log(testname,"Tool tip should be missing to begin with");
             expect(result1).to.equal(false, "The Tooltip should not be available yet");
          })
          .end()
@@ -57,7 +57,7 @@ define(["intern!object",
          .sleep(1000)
          .hasElementByCss(".dijitTooltip")
          .then(function(result2) {
-            TestCommon.log(testname,61,"Move to test button - does the tool tip appear?");
+            TestCommon.log(testname,"Move to test button - does the tool tip appear?");
             expect(result2).to.equal(true, "The Tooltip did not appear");
          })
          .end()
@@ -66,7 +66,7 @@ define(["intern!object",
          .findByCssSelector(".dijitTooltipContainer.dijitTooltipContents")
          .getVisibleText()
          .then(function(resultText1) {
-            TestCommon.log(testname,70,"Does the tool tip contain the appropriate copy");
+            TestCommon.log(testname,"Does the tool tip contain the appropriate copy");
             expect(resultText1).to.equal("This is the test button", "The tool tip text is incorrect");
          })
          .end()
@@ -76,7 +76,7 @@ define(["intern!object",
          .sleep(250)
          .hasElementByCss(".dijitTooltip")
          .then(function(result3) {
-            TestCommon.log(testname,81,"Move to test button two - does the tool tip disappear?");
+            TestCommon.log(testname,"Move to test button two - does the tool tip disappear?");
             expect(result3).to.equal(true, "The Tooltip code should not have disappeared");
          })
          .end()
@@ -84,7 +84,7 @@ define(["intern!object",
          .findByCssSelector(".dijitTooltip")
          .isDisplayed()
          .then(function(result4) {
-            TestCommon.log(testname,89,"Move to test button two - does the tool tip disappear?");
+            TestCommon.log(testname,"Move to test button two - does the tool tip disappear?");
             if(browser.environmentType.browserName.indexOf("chrome") === -1) {
                expect(result4).to.equal(false, "The Tooltip should be hidden");
             }

@@ -104,7 +104,7 @@ define(["intern!object",
 
          .findByCssSelector("#DOCUMENT_PICKER .alfresco-layout-VerticalWidgets > span.alfresco-buttons-AlfButton.confirmationButton > span > span")
             .then(null, function() {
-               // TestCommon.log(testname,117,"Have we found the element? " + result);
+               // TestCommon.log(testname,"Have we found the element? " + result);
             })
             .end()
 

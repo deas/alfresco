@@ -43,14 +43,14 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TOPIC1", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,46,"Check that no search request is used when 'useHash' is enabled");
+            TestCommon.log(testname,"Check that no search request is used when 'useHash' is enabled");
             assert(elements.length == 1, "Minimal configuration publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "data1", "value1"))
          .then(function(elements) {
-            TestCommon.log(testname,53,"Check that minimal configuration works");
+            TestCommon.log(testname,"Check that minimal configuration works");
             assert(elements.length == 1, "Minimal config payload failure");
          })
          .end()
@@ -62,21 +62,21 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TOPIC2", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,65,"Check that CONFIGURED type payload is published");
+            TestCommon.log(testname,"Check that CONFIGURED type payload is published");
             assert(elements.length == 1, "CONFIGURED type publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "data2", "value2"))
          .then(function(elements) {
-            TestCommon.log(testname,72,"Check that minimal configuration works");
+            TestCommon.log(testname,"Check that minimal configuration works");
             assert(elements.length == 1, "CONFIGURED type payload failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "mixinData1", "mixinValue1"))
          .then(function(elements) {
-            TestCommon.log(testname,79,"Check that CONFIGURED type doesn't mixin current item without explicit config");
+            TestCommon.log(testname,"Check that CONFIGURED type doesn't mixin current item without explicit config");
             assert(elements.length == 0, "CONFIGURED type payload failure mixed in current item unexpectedly");
          })
          .end()
@@ -88,21 +88,21 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TOPIC3", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,91,"Check that CONFIGURED type payload is published");
+            TestCommon.log(testname,"Check that CONFIGURED type payload is published");
             assert(elements.length == 1, "CONFIGURED type publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "data3", "value3"))
          .then(function(elements) {
-            TestCommon.log(testname,98,"Check that minimal configuration works");
+            TestCommon.log(testname,"Check that minimal configuration works");
             assert(elements.length == 1, "CONFIGURED type payload failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "mixinData2", "mixinValue2"))
          .then(function(elements) {
-            TestCommon.log(testname,105,"Check that CONFIGURED type doesn't mixin current item without explicit config");
+            TestCommon.log(testname,"Check that CONFIGURED type doesn't mixin current item without explicit config");
             assert(elements.length == 1, "CONFIGURED type payload didn't mixin in current item");
          })
          .end()
@@ -114,21 +114,21 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TOPIC4", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,117,"Check that CURRENT_ITEM type payload is published");
+            TestCommon.log(testname,"Check that CURRENT_ITEM type payload is published");
             assert(elements.length == 1, "CURRENT_ITEM type publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "data4", "value4"))
          .then(function(elements) {
-            TestCommon.log(testname,124,"Check that CURRENT_ITEM type doesn't include configured payload");
+            TestCommon.log(testname,"Check that CURRENT_ITEM type doesn't include configured payload");
             assert(elements.length == 0, "CURRENT_ITEM type payload failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "mixinData3", "mixinValue3"))
          .then(function(elements) {
-            TestCommon.log(testname,131,"Check that CURRENT_ITEM type payload is correct");
+            TestCommon.log(testname,"Check that CURRENT_ITEM type payload is correct");
             assert(elements.length == 1, "CURRENT_ITEM type was not correct");
          })
          .end()
@@ -140,14 +140,14 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TOPIC5", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,143,"Check that PROCESS type payload is published");
+            TestCommon.log(testname,"Check that PROCESS type payload is published");
             assert(elements.length == 1, "PROCESS type publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "data5", "prefix_mixinValue4_postfix"))
          .then(function(elements) {
-            TestCommon.log(testname,150,"Check that PROCESS is generated correctly");
+            TestCommon.log(testname,"Check that PROCESS is generated correctly");
             assert(elements.length == 1, "PROCESS type payload failure");
          })
          .end()
@@ -159,14 +159,14 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TOPIC6", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,162,"Check that BUILD type payload is published");
+            TestCommon.log(testname,"Check that BUILD type payload is published");
             assert(elements.length == 1, "BUILD type publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "itemData", "mixinValue5"))
          .then(function(elements) {
-            TestCommon.log(testname,169,"Check that BUILD type payload was correct");
+            TestCommon.log(testname,"Check that BUILD type payload was correct");
             assert(elements.length == 1, "BUILD type payload failure");
          })
          .end()
@@ -178,21 +178,21 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("PROPERTY_LINK", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,181,"Check that PROPERTYLINK payload is published");
+            TestCommon.log(testname,"Check that PROPERTYLINK payload is published");
             assert(elements.length == 1, "PROPERTYLINK publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
          .then(function(elements) {
-            TestCommon.log(testname,188,"Check that PROPERTYLINK type payload was correct");
+            TestCommon.log(testname,"Check that PROPERTYLINK type payload was correct");
             assert(elements.length == 1, "PROPERTYLINK type payload failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "site/abcdefg/dashboard"))
          .then(function(elements) {
-            TestCommon.log(testname,195,"Check that PROPERTYLINK url payload was correct");
+            TestCommon.log(testname,"Check that PROPERTYLINK url payload was correct");
             assert(elements.length == 1, "PROPERTYLINK url payload failure");
          })
          .end()
@@ -204,21 +204,21 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("DATE_LINK", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,207,"Check that DATELINK payload is published");
+            TestCommon.log(testname,"Check that DATELINK payload is published");
             assert(elements.length == 1, "DATELINK publish failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
          .then(function(elements) {
-            TestCommon.log(testname,214,"Check that DATELINK type payload was correct");
+            TestCommon.log(testname,"Check that DATELINK type payload was correct");
             assert(elements.length == 1, "DATELINK type payload failure");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "user/bgriffin/profile"))
          .then(function(elements) {
-            TestCommon.log(testname,221,"Check that DATELINK url payload was correct");
+            TestCommon.log(testname,"Check that DATELINK url payload was correct");
             assert(elements.length == 1, "DATELINK url payload failure");
          })
          .end()

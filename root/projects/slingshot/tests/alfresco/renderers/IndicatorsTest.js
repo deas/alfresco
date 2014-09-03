@@ -42,7 +42,7 @@ define(["intern!object",
 
          .findAllByCssSelector("a.indicator-action")
          .then(function (actions){
-            TestCommon.log(testname,null,"Check there are the expected number of actions (across several indicators)");
+            TestCommon.log(testname,"Check there are the expected number of actions (across several indicators)");
             expect(actions).to.have.length(14, "There should be 14 actions rendered (across several indicators)");
          })
          .end()

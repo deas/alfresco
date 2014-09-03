@@ -76,7 +76,7 @@ define(["intern!object",
 
          .findById("MBI7")
             .then(function (el) {
-               TestCommon.log(testname,84,"Test OR property rule");
+               TestCommon.log(testname,"Test OR property rule");
                expect(el).to.be.an("object", "An OR condition property render filter rule failed unexpectedly");
             })
             .end()

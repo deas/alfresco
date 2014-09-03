@@ -40,7 +40,7 @@ define(["intern!object",
          .findByCssSelector("#BASIC .value")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,43,"Check standard property is rendered correctly");
+            TestCommon.log(testname,"Check standard property is rendered correctly");
             assert(resultText == "Test", "Standard property not rendered correctly: " + resultText);
          })
          .end()
@@ -48,7 +48,7 @@ define(["intern!object",
          .findByCssSelector("#PREFIX_SUFFIX .value")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,51,"Check prefixed/suffixed property is rendered correctly");
+            TestCommon.log(testname,"Check prefixed/suffixed property is rendered correctly");
             assert(resultText == "(Test)", "Prefix and suffix not rendered correctly: " + resultText);
          })
          .end()
@@ -56,7 +56,7 @@ define(["intern!object",
          .findByCssSelector("#NEW_LINE")
          .getComputedStyle("display")
          .then(function(result) {
-            TestCommon.log(testname,59,"Check new line property is rendered correctly");
+            TestCommon.log(testname,"Check new line property is rendered correctly");
             assert(result == "block", "New line not applied");
          })
          .end()
@@ -64,7 +64,7 @@ define(["intern!object",
          .findByCssSelector("#WARN1 .value")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,67,"Check standard warning is rendered correctly");
+            TestCommon.log(testname,"Check standard warning is rendered correctly");
             assert(resultText == "No property for: \"missing\"", "Standard warning not rendered correctly: " + resultText);
          })
          .end()
@@ -72,7 +72,7 @@ define(["intern!object",
          .findByCssSelector("#WARN2 .value")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,75,"Check explicit warning is rendered correctly");
+            TestCommon.log(testname,"Check explicit warning is rendered correctly");
             assert(resultText == "No description", "Explicit warning not rendered correctly: " + resultText);
          })
          .end()
@@ -80,7 +80,7 @@ define(["intern!object",
          .findByCssSelector("#HOVER .inner")
          .getComputedStyle("visibility")
          .then(function(result) {
-            TestCommon.log(testname,83,"Check hover property is hidden");
+            TestCommon.log(testname,"Check hover property is hidden");
             assert(result == "hidden", "Hover displayed unexpectedly");
          })
          .end()
@@ -92,7 +92,7 @@ define(["intern!object",
 //         .findByCssSelector("#HOVER .value")
 //         .getVisibleText()
 //         .then(function(resultText) {
-//            TestCommon.log(testname,95,"Check hover property is shown on hover");
+//            TestCommon.log(testname,"Check hover property is shown on hover");
 //            assert(resultText == "Test", "Hover not displayed: " + resultText);
 //         })
 //         .end()
@@ -100,7 +100,7 @@ define(["intern!object",
          .findByCssSelector("#LABEL .label")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,103,"Check label is rendered correctly");
+            TestCommon.log(testname,"Check label is rendered correctly");
             assert(resultText == "Label:", "Label not rendered correctly: " + resultText);
          })
          .end()

@@ -36,7 +36,7 @@ define(["intern!object",
              document,
              countResults = function(expected) {
                 /* TODO: Mock Search service doesn't work, so no results are returned.
-                TestCommon.log(testname, null, "Checking that result count is correct");
+                TestCommon.log(testname, "Checking that result count is correct");
                 // Get all result rows from DOM
                 browser.findAllByCssSelector(".alfresco-search-AlfSearchResult")
                    .then(function(elements) {
@@ -58,7 +58,7 @@ define(["intern!object",
 
             // Click the button to set the search term via the hash...
             .then(function(){
-               TestCommon.log(testname, null, "Setting search data");
+               TestCommon.log(testname, "Setting search data");
             })
             .findByCssSelector("#SET_MULTIPLE_SEARCH_DATA")
                .click()
@@ -67,7 +67,7 @@ define(["intern!object",
             // Check search term has been set.
             .findAllByCssSelector(TestCommon.topicSelector("ALF_SET_SEARCH_TERM", "publish", "any"))
                .then(function(elements) {
-                  TestCommon.log(testname,65,"Check that search request triggered");
+                  TestCommon.log(testname,"Check that search request triggered");
                   assert(elements.length === 0, "Search not triggered.");
                })
                .end()
@@ -87,7 +87,7 @@ define(["intern!object",
             // Check Trottled Scroll event
             .findAllByCssSelector(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
                .then(function(elements) {
-                  TestCommon.log(testname,74,"Checking that ALF scroll event fired.");
+                  TestCommon.log(testname,"Checking that ALF scroll event fired.");
                   assert(elements.length == 1, "Scroll event didn't fire");
                })
                .end()
@@ -95,7 +95,7 @@ define(["intern!object",
             // Check Infinite Scroll Event fired.
             .findAllByCssSelector(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
                .then(function(elements) {
-                  TestCommon.log(testname,74,"Checking that ALF scroll near bottom event fired.");
+                  TestCommon.log(testname,"Checking that ALF scroll near bottom event fired.");
                   assert(elements.length == 1, "Scroll near bottom event didn't fire");
                })
                .end()

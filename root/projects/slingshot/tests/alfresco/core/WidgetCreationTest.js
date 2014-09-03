@@ -44,20 +44,20 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-logo-Logo")
             .then(function (els) {
-               TestCommon.log(testname,46,"Count the number of Logo widgets");
+               TestCommon.log(testname,"Count the number of Logo widgets");
                assert(els.length == 3, "An unexpected number of logo widgets found", els.length);
             })
             .end()
 
          .findAllByCssSelector("#SPECIFIC_DOM_ID")
             .then(function (els) {
-               TestCommon.log(testname,53,"Check for the Logo with the specific ID");
+               TestCommon.log(testname,"Check for the Logo with the specific ID");
                assert(els.length == 1, "Couldn't find Logo with specific DOM id", els.length);
             })
             .end()
          .findAllByCssSelector("#SPECIFIC_DOM_ID")
             .then(function (els) {
-               TestCommon.log(testname,59,"Check for the Logo with the overridden ID");
+               TestCommon.log(testname,"Check for the Logo with the overridden ID");
                assert(els.length == 1, "Couldn't find Logo with overridden DOM id", els.length);
             })
             .end()

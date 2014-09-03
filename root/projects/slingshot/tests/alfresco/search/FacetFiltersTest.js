@@ -46,14 +46,14 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (initialValue) {
-            TestCommon.log(testname,48,"Check no facets are shown to begin with");
+            TestCommon.log(testname,"Check no facets are shown to begin with");
             expect(initialValue).to.equal("Facet 1", "The only text shown should be 'Facet 1'");
          })
          .end()
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,55,"Check no facet rows are shown to begin with");
+            TestCommon.log(testname,"Check no facet rows are shown to begin with");
             expect(rows).to.have.length(0, "There should be no visible rows in the facet display");
          })
          .end()
@@ -65,7 +65,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,67,"Check facets are shown after clicking button 1");
+            TestCommon.log(testname,"Check facets are shown after clicking button 1");
             expect(rows).to.have.length(4, "There should be 4 rows in the facet display");
          })
          .end()
@@ -74,7 +74,7 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
-            TestCommon.log(testname,76,"Check the first set of facets have appeared");
+            TestCommon.log(testname,"Check the first set of facets have appeared");
             expect(facets).to.contain("result 1", "Facets should contain 'result 1'");
             expect(facets).to.contain("result 2", "Facets should contain 'result 2'");
             expect(facets).to.contain("result 3", "Facets should contain 'result 3'");
@@ -89,7 +89,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,91,"Check facets are shown after clicking button 2");
+            TestCommon.log(testname,"Check facets are shown after clicking button 2");
             expect(rows).to.have.length(2, "There should be 2 rows in the facet display");
          })
          .end()
@@ -98,7 +98,7 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
-            TestCommon.log(testname,100,"Check the second set of facets have appeared");
+            TestCommon.log(testname,"Check the second set of facets have appeared");
             expect(facets).to.contain("result 5", "Facets should contain 'result 5'");
             expect(facets).to.contain("result 6", "Facets should contain 'result 6'");
          })
@@ -111,7 +111,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,113,"Check facets are shown after clicking button 3");
+            TestCommon.log(testname,"Check facets are shown after clicking button 3");
             expect(rows).to.have.length(6, "There should be 6 rows in the facet display");
          })
          .end()
@@ -120,7 +120,7 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
-            TestCommon.log(testname,122,"Check the third set of facets have appeared");
+            TestCommon.log(testname,"Check the third set of facets have appeared");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
             expect(facets).to.contain("result 8", "Facets should contain 'result 8'");
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
@@ -140,7 +140,7 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
-            TestCommon.log(testname,142,"Check the four set of facets are shown");
+            TestCommon.log(testname,"Check the four set of facets are shown");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
             expect(facets).to.contain("result 8", "Facets should contain 'result 8'");
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
@@ -160,7 +160,7 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (facets) {
-            TestCommon.log(testname,162,"Check the fifth set of facets are shown");
+            TestCommon.log(testname,"Check the fifth set of facets are shown");
             expect(facets).to.contain("result 7", "Facets should contain 'result 7'");
             expect(facets).to.contain("result 8", "Facets should contain 'result 8'");
             expect(facets).to.contain("result 9", "Facets should contain 'result 9'");
@@ -179,7 +179,7 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,181,"Check facet menu is hidden when the title is clicked");
+            TestCommon.log(testname,"Check facet menu is hidden when the title is clicked");
             expect(displayed).to.equal(false, "Facet menu should be hidden when the title is clicked");
          })
          .end()
@@ -192,7 +192,7 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,194,"Check facet menu is shown when the title is clicked again");
+            TestCommon.log(testname,"Check facet menu is shown when the title is clicked again");
             expect(displayed).to.equal(true, "Facet menu should be shown when the title is clicked again");
          })
          .end()
@@ -205,14 +205,14 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,207,"Facet menu item should select when clicked");
+            TestCommon.log(testname,"Facet menu item should select when clicked");
             expect(displayed).to.equal(true, "Facet menu item should select when clicked");
          })
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
          .then(
-            function(){TestCommon.log(testname,214,"Clicking a facet should publish");},
+            function(){TestCommon.log(testname,"Clicking a facet should publish");},
             function(){assert(false, "The facet did not publish on 'ALF_APPLY_FACET_FILTER'");}
          )
          .end()
@@ -225,14 +225,14 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,227,"Facet menu item should de-select when clicked again");
+            TestCommon.log(testname,"Facet menu item should de-select when clicked again");
             expect(displayed).to.equal(false, "Facet menu item should de-select when clicked again");
          })
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
          .then(
-            function(){TestCommon.log(testname,234,"Clicking a facet to deselect should publish");},
+            function(){TestCommon.log(testname,"Clicking a facet to deselect should publish");},
             function(){assert(false, "The facet deselection did not publish on 'ALF_REMOVE_FACET_FILTER'");}
          )
          .end()
@@ -255,14 +255,14 @@ define(["intern!object",
          .findById("FACET1")
          .getVisibleText()
          .then(function (initialValue) {
-            TestCommon.log(testname,257,"Check no facets are shown to begin with");
+            TestCommon.log(testname,"Check no facets are shown to begin with");
             expect(initialValue).to.equal("Facet 1", "The only text shown should be 'Facet 1'");
          })
          .end()
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,264,"Check no facet rows are shown to begin with");
+            TestCommon.log(testname,"Check no facet rows are shown to begin with");
             expect(rows).to.have.length(0, "There should be no visible rows in the facet display");
          })
          .end()
@@ -274,7 +274,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,276,"Check facets are shown after selecting button 1 with the keyboard");
+            TestCommon.log(testname,"Check facets are shown after selecting button 1 with the keyboard");
             expect(rows).to.have.length(4, "There should be 4 rows in the facet display");
          })
          .end()
@@ -289,7 +289,7 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,291,"Check facet menu is hidden when the title is clicked with the keyboard");
+            TestCommon.log(testname,"Check facet menu is hidden when the title is clicked with the keyboard");
             expect(displayed).to.equal(false, "Facet menu should be hidden when the title is clicked using the keyboard");
          })
          .end()
@@ -301,7 +301,7 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,303,"Check facet menu is displayed when the title is re-clicked with the keyboard");
+            TestCommon.log(testname,"Check facet menu is displayed when the title is re-clicked with the keyboard");
             expect(displayed).to.equal(true, "Facet menu should be displayed when the title is re-clicked using the keyboard");
          })
          .end()
@@ -314,14 +314,14 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,316,"Facet menu item should select when clicked with the keyboard");
+            TestCommon.log(testname,"Facet menu item should select when clicked with the keyboard");
             expect(displayed).to.equal(true, "Facet menu item should select when clicked using the keyboard");
          })
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_APPLY_FACET_FILTER"))
          .then(
-            function(){TestCommon.log(testname,323,"Clicking a facet with the keyboard should publish");},
+            function(){TestCommon.log(testname,"Clicking a facet with the keyboard should publish");},
             function(){assert(false, "The facet did not publish on 'ALF_APPLY_FACET_FILTER' when clicked with the keyboard");}
          )
          .end()
@@ -333,14 +333,14 @@ define(["intern!object",
          .findByCssSelector("#FACET1 > ul.filters > li:first-of-type > span.status > span")
          .isDisplayed()
          .then(function (displayed) {
-            TestCommon.log(testname,335,"Facet menu item should de-select when clicked again using the keyboard");
+            TestCommon.log(testname,"Facet menu item should de-select when clicked again using the keyboard");
             expect(displayed).to.equal(false, "Facet menu item should de-select when clicked again using the keyboard");
          })
          .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_REMOVE_FACET_FILTER"))
          .then(
-            function(){TestCommon.log(testname,342,"Clicking a facet using the keyboard to deselect should publish");},
+            function(){TestCommon.log(testname,"Clicking a facet using the keyboard to deselect should publish");},
             function(){assert(false, "The facet deselection using the keyboard did not publish on 'ALF_REMOVE_FACET_FILTER'");}
          )
          .end()
@@ -366,7 +366,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,368,"Check facets are shown after clicking button 4");
+            TestCommon.log(testname,"Check facets are shown after clicking button 4");
             expect(rows).to.have.length(3, "There should be 3 rows in the facet display");
          })
          .end()
@@ -378,7 +378,7 @@ define(["intern!object",
 
          .getCurrentUrl()
          .then(function (url) {
-            TestCommon.log(testname,380,"Click the first item in the facet menu");
+            TestCommon.log(testname,"Click the first item in the facet menu");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
                .and.to.contain("facFil1", "The facet click did not write the value 'facFil1' to the url hash as expected");
          })
@@ -391,7 +391,7 @@ define(["intern!object",
 
          .getCurrentUrl()
          .then(function (url) {
-            TestCommon.log(testname,393,"Click the second item in the facet menu");
+            TestCommon.log(testname,"Click the second item in the facet menu");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
                .and.to.contain("facFil1", "The url hash should contain 'facFil2'")
                .and.to.contain("facFil2", "The facet click did not add the value 'facFil2' to the url hash as expected");
@@ -405,7 +405,7 @@ define(["intern!object",
 
          .getCurrentUrl()
          .then(function (url) {
-            TestCommon.log(testname,407,"Click the first item in the facet menu again");
+            TestCommon.log(testname,"Click the first item in the facet menu again");
             expect(url).to.contain("FACET2QNAME", "The url hash should contain 'FACET2QNAME'")
                .and.to.not.contain("facFil1", "The facet click did not remove the value 'facFil1' from the url hash as expected");
          })
@@ -418,7 +418,7 @@ define(["intern!object",
 
          .getCurrentUrl()
          .then(function (url) {
-            TestCommon.log(testname,420,"Click the second item in the facet menu again");
+            TestCommon.log(testname,"Click the second item in the facet menu again");
             expect(url).to.not.contain("FACET2QNAME", "The url hash should not now contain 'FACET2QNAME'")
                .and.to.not.contain("facFil2", "The facet click did not remove the value 'facFil2' from the url hash as expected");
          })

@@ -46,14 +46,14 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister renders correctly");
+            TestCommon.log(testname,"Check the first twister renders correctly");
             expect(text).to.equal("Twister with heading level", "The first twister did not render correctly");
          })
          .end()
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,null,"Check facets are shown after clicking button 1");
+            TestCommon.log(testname,"Check facets are shown after clicking button 1");
             expect(rows).to.have.length.above(0, "There should some facets shown");
          })
          .end()
@@ -61,7 +61,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_NO_HEADING_LEVEL > div")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the second twister renders correctly");
+            TestCommon.log(testname,"Check the second twister renders correctly");
             expect(text).to.equal("Twister with no heading level", "The second twister did not render correctly");
          })
          .end()
@@ -69,14 +69,14 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_BAD_HEADING_LEVEL > div")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the third twister renders correctly");
+            TestCommon.log(testname,"Check the third twister renders correctly");
             expect(text).to.equal("", "The third twister did not render correctly");
          })
          .end()
 
          .findByXpath(TestCommon.consoleXpathSelector("A heading must have a numeric level from 1 to 6 and must have a label"))
          .then(
-            function(){TestCommon.log(testname,null,"Check the console logged the faulty twister");},
+            function(){TestCommon.log(testname,"Check the console logged the faulty twister");},
             function(){assert(false, "The console did not log the faulty twister");}
          )
          .end()
@@ -90,7 +90,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is still visible");
+            TestCommon.log(testname,"Check the first twister title is still visible");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible");
          })
          .end()
@@ -98,7 +98,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > ul")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the facets have hidden");
+            TestCommon.log(testname,"Check the facets have hidden");
             expect(text).to.equal("", "The facets should be hidden");
          })
          .end()
@@ -112,14 +112,14 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is still visible");
+            TestCommon.log(testname,"Check the first twister title is still visible");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible");
          })
          .end()
 
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,null,"Check facets are shown after clicking the title again");
+            TestCommon.log(testname,"Check facets are shown after clicking the title again");
             expect(rows).to.have.length.above(0, "There should be some facets shown");
          })
          .end()
@@ -153,7 +153,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is visible after keyboard [RETURN]");
+            TestCommon.log(testname,"Check the first twister title is visible after keyboard [RETURN]");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible after keyboard [RETURN]");
          })
          .end()
@@ -162,7 +162,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > ul")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the facets have hidden after keyboard [RETURN]");
+            TestCommon.log(testname,"Check the facets have hidden after keyboard [RETURN]");
             expect(text).to.equal("", "The facets should be hidden after keyboard [RETURN]");
          })
          .end()
@@ -174,7 +174,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is visible after re-pressing keyboard [RETURN]");
+            TestCommon.log(testname,"Check the first twister title is visible after re-pressing keyboard [RETURN]");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible after re-pressing keyboard [RETURN]");
          })
          .end()
@@ -182,7 +182,7 @@ define(["intern!object",
          // Facets should not be hidden
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,null,"Check facets are shown after re-pressing keyboard [RETURN]");
+            TestCommon.log(testname,"Check facets are shown after re-pressing keyboard [RETURN]");
             expect(rows).to.have.length.above(0, "There should be some facets shown after re-pressing keyboard [RETURN]");
          })
          .end()
@@ -194,7 +194,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is visible after keyboard [SPACE]");
+            TestCommon.log(testname,"Check the first twister title is visible after keyboard [SPACE]");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible after keyboard [SPACE]");
          })
          .end()
@@ -203,7 +203,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > ul")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the facets have hidden after keyboard [SPACE]");
+            TestCommon.log(testname,"Check the facets have hidden after keyboard [SPACE]");
             expect(text).to.equal("", "The facets should be hidden after keyboard [SPACE]");
          })
          .end()
@@ -215,7 +215,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is visible after re-pressing keyboard [SPACE]");
+            TestCommon.log(testname,"Check the first twister title is visible after re-pressing keyboard [SPACE]");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible after re-pressing keyboard [SPACE]");
          })
          .end()
@@ -223,7 +223,7 @@ define(["intern!object",
          // Facets should not be hidden
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,null,"Check facets are shown after re-pressing keyboard [SPACE]");
+            TestCommon.log(testname,"Check facets are shown after re-pressing keyboard [SPACE]");
             expect(rows).to.have.length.above(0, "There should be some facets shown after re-pressing keyboard [SPACE]");
          })
          .end()
@@ -235,7 +235,7 @@ define(["intern!object",
          .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check the first twister title is visible after re-pressing keyboard [k]");
+            TestCommon.log(testname,"Check the first twister title is visible after re-pressing keyboard [k]");
             expect(text).to.equal("Twister with heading level", "The first twister title is not visible after re-pressing keyboard [k]");
          })
          .end()
@@ -243,7 +243,7 @@ define(["intern!object",
          // Facets should not be hidden
          .findAllByCssSelector(".alfresco-search-FacetFilter:not(.hidden)")
          .then(function (rows) {
-            TestCommon.log(testname,null,"Check facets are still shown after pressing keyboard [k]");
+            TestCommon.log(testname,"Check facets are still shown after pressing keyboard [k]");
             expect(rows).to.have.length.above(0, "There should be some facets shown after pressing keyboard [k]");
          })
          .end()

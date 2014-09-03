@@ -46,21 +46,21 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "name", "Site1"))
          .then(function(elements) {
-            TestCommon.log(testname,49,"Check that currentItem is published");
+            TestCommon.log(testname,"Check that currentItem is published");
             assert(elements.length == 1, "'name' not included in currentItem data");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "urlname", "site1"))
          .then(function(elements) {
-            TestCommon.log(testname,56,"Check that currentItem is published");
+            TestCommon.log(testname,"Check that currentItem is published");
             assert(elements.length == 1, "'urlname' not included in currentItem data");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.topicSelector("publishTopic", "publish", "last"))
          .then(function(elements) {
-            TestCommon.log(testname,63,"Check that topic is published");
+            TestCommon.log(testname,"Check that topic is published");
             assert(elements.length == 1, "topic not published correctly");
          })
          .end()

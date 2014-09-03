@@ -174,7 +174,7 @@ define(["intern!object",
          .findById("BASIC_MENU_BAR_TOGGLE_text")
             .getVisibleText()
             .then(function(resultText) {
-               TestCommon.log(testname,191,"Check basic toggle text is changed after keyboard selection");
+               TestCommon.log(testname,"Check basic toggle text is changed after keyboard selection");
                expect(resultText).to.equal("On", "The label was not updated after toggle by keyboard: " + resultText);
             })
             .end()
@@ -204,7 +204,7 @@ define(["intern!object",
          .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
             .getVisibleText()
             .then(function(resultText) {
-               TestCommon.log(testname,224,"Check custom toggle text is changed after keyboard selection");
+               TestCommon.log(testname,"Check custom toggle text is changed after keyboard selection");
                expect(resultText).to.equal("Off (Custom Label)", "The custom toggle label was not updated after toggle by keyboard: " + resultText);
             })
             .end()
@@ -258,7 +258,7 @@ define(["intern!object",
          .findById("BASIC_MENU_BAR_TOGGLE_text")
             .getVisibleText()
             .then(function (initialValue) {
-               TestCommon.log(testname,283,"Check basic toggle label asc");
+               TestCommon.log(testname,"Check basic toggle label asc");
                expect(initialValue).to.equal("On", "The asc label of the basic toggle was not correct: " + initialValue);
             })
             .end()
@@ -266,7 +266,7 @@ define(["intern!object",
          .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
             .getVisibleText()
             .then(function (initialValue) {
-               TestCommon.log(testname,291,"Check custom toggle label asc");
+               TestCommon.log(testname,"Check custom toggle label asc");
                expect(initialValue).to.equal("On (Custom Label)", "The asc label of the custom toggle was not correct: " + initialValue);
             })
             .end()
@@ -284,7 +284,7 @@ define(["intern!object",
          .findById("BASIC_MENU_BAR_TOGGLE_text")
             .getVisibleText()
             .then(function (initialValue) {
-               TestCommon.log(testname,311,"Check basic toggle label desc");
+               TestCommon.log(testname,"Check basic toggle label desc");
                expect(initialValue).to.equal("Off", "The desc label of the basic toggle was not correct: " + initialValue);
             })
             .end()
@@ -292,7 +292,7 @@ define(["intern!object",
          .findById("MENU_BAR_TOGGLE_CUSTOM_LABEL_text")
             .getVisibleText()
             .then(function (initialValue) {
-               TestCommon.log(testname,319,"Check custom toggle label desc");
+               TestCommon.log(testname,"Check custom toggle label desc");
                expect(initialValue).to.equal("Off (Custom Label)", "The desc label of the custom toggle was not correct: " + initialValue);
             })
             .end()

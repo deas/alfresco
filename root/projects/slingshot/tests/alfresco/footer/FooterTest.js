@@ -44,7 +44,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-footer-AlfShareFooter span.copyright span:last-child")
             .getVisibleText()
             .then(function (text) {
-               TestCommon.log(testname,43,"Check copyright text");
+               TestCommon.log(testname,"Check copyright text");
                expect(text).to.equal("SOME COPYRIGHT LABEL", "The copyright has not been set correctly");
             })
             .end()
@@ -52,7 +52,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-footer-AlfShareFooter .licenseHolder")
             .getVisibleText()
             .then(function (text) {
-               TestCommon.log(testname,51,"Check license text");
+               TestCommon.log(testname,"Check license text");
                expect(text).to.equal("Licensed To: SOME LICENSE LABEL", "The license label was not set correctly");
             })
             .end()

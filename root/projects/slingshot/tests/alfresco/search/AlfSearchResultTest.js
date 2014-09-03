@@ -40,7 +40,7 @@ define(["intern!object",
 
          .findAllByCssSelector('#SEARCH_RESULTS table tbody tr')
          .then(function (rows){
-            TestCommon.log(testname,null,"Check the correct number of rows is shown");
+            TestCommon.log(testname,"Check the correct number of rows is shown");
             expect(rows).to.have.length(11, "There should be 11 search result rows shown");
          })
          .end()

@@ -40,7 +40,7 @@ define(["intern!object",
          .findByCssSelector("#NO_WRAPPER > span.copyright > span.licenseHolder")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check NO_WRAPPER dom is correct");
+            TestCommon.log(testname,"Check NO_WRAPPER dom is correct");
             expect(text).to.equal("Licensed To: NO_WRAPPER licenseLabel", "The NO_WRAPPER dom must be incorrect");
          })
          .end()
@@ -48,7 +48,7 @@ define(["intern!object",
          .findByCssSelector("#GOOD_WRAPPER > footer > span.copyright > span.licenseHolder")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check GOOD_WRAPPER dom is correct");
+            TestCommon.log(testname,"Check GOOD_WRAPPER dom is correct");
             expect(text).to.equal("Licensed To: GOOD_WRAPPER licenseLabel", "The GOOD_WRAPPER dom must be incorrect");
          })
          .end()
@@ -56,7 +56,7 @@ define(["intern!object",
          .findByCssSelector("#BAD_WRAPPER > span.copyright > span.licenseHolder")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check BAD_WRAPPER dom is correct");
+            TestCommon.log(testname,"Check BAD_WRAPPER dom is correct");
             expect(text).to.equal("Licensed To: BAD_WRAPPER licenseLabel", "The BAD_WRAPPER dom must be incorrect");
          })
          .end()
@@ -64,7 +64,7 @@ define(["intern!object",
          .findByCssSelector("#LEFT_AND_RIGHT_WRAPPER > header > div > div.left-widgets")
          .getVisibleText()
          .then(function (text) {
-            TestCommon.log(testname,null,"Check LEFT_AND_RIGHT_WRAPPER dom is correct");
+            TestCommon.log(testname,"Check LEFT_AND_RIGHT_WRAPPER dom is correct");
             expect(text).to.equal("This is a title with a semantic wrapper", "The LEFT_AND_RIGHT_WRAPPER dom must be incorrect");
          })
          .end()

@@ -482,10 +482,9 @@ define(["intern/dojo/node!fs",
        *
        * @instance
        * @param {string} test The name of the test running
-       * @param {string} line The line number
        * @param {string} desc The test description
        */
-      log: function(test, line, desc) {
+      log: function(test, desc) {
          console.log(">> " + test + ": " + desc);
       }
    };

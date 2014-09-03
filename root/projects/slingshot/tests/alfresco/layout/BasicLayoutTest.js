@@ -107,12 +107,12 @@ define(["intern!object",
             .findByCssSelector("#LEVEL2_HORIZONTAL2 > div > div:nth-child(3)")
                .getComputedStyle("margin-left")
                .then(function(x) {
-                  TestCommon.log(testname,117,"Test left margin of horizontal widget");
+                  TestCommon.log(testname,"Test left margin of horizontal widget");
                   assert(x == "10px", "Test #4a - The left margin was not set correctly on a horizontal widget: " + x);
                })
                .getComputedStyle("margin-right")
                .then(function(x) {
-                  TestCommon.log(testname,122,"Test right margin of horizontal widget");
+                  TestCommon.log(testname,"Test right margin of horizontal widget");
                   assert(x == "20px", "Test #4b - The right margin was not set correctly on a horizontal widget: " + x);
                })
                .getComputedStyle("width")
@@ -121,7 +121,7 @@ define(["intern!object",
                   // 75% of the the width of the REMAINDER of the horizontal widget parent minus all the margins and the pixel width widget
                   var x = width.substring(0, width.lastIndexOf("px"));
                   var shouldBe = (testableDimensions.horiz2 - 90 - 300 - 3) * 0.75;
-                  TestCommon.log(testname,131,"Test width of horizontal element by remaining percentage");
+                  TestCommon.log(testname,"Test width of horizontal element by remaining percentage");
                   assert(shouldBe == x, "Test #4c - The width was not set correctly by remaining percentage: " + x + " (should be: " + shouldBe + ")");
                })
                .end()
@@ -129,7 +129,7 @@ define(["intern!object",
             .findByCssSelector("#LEVEL2_HORIZONTAL2 > div > div:nth-child(2)")
                .getComputedStyle("width")
                .then(function(width) {
-                  TestCommon.log(testname,139,"Test width is set correctly");
+                  TestCommon.log(testname,"Test width is set correctly");
                   assert(width == "300px", "Test #4d - The width was not set correctly by pixels: " + width);
                })
                .end()
@@ -146,7 +146,7 @@ define(["intern!object",
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));
                   var shouldBe = (testableDimensions.horiz3 - 2) * 0.5;
-                  TestCommon.log(testname,156,"Test space is evenly divided");
+                  TestCommon.log(testname,"Test space is evenly divided");
                   assert(shouldBe == x, "Test #4e - The width was not set correctly by evenly dividing space, was: " + x + ", should be: " + shouldBe);
                })
                .end()
@@ -156,7 +156,7 @@ define(["intern!object",
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));
                   var shouldBe = (testableDimensions.horiz3 - 2) * 0.5;
-                  TestCommon.log(testname,165,"Test space is evenly divided");
+                  TestCommon.log(testname,"Test space is evenly divided");
                   assert(shouldBe == x, "Test #4f - The width was not set correctly by evenly dividing space");
                })
                .end()

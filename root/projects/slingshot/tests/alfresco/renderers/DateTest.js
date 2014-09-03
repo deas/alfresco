@@ -43,7 +43,7 @@ define(["intern!object",
          .findByCssSelector("#CUSTOM_PROPS .value")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,46,"Check custom property is rendered correctly");
+            TestCommon.log(testname,"Check custom property is rendered correctly");
             assert(/(Modified over \d+ years ago by Brian Griffin)/g.test(resultText), "Custom property not rendered correctly: " + resultText);
          })
          .end()
@@ -51,7 +51,7 @@ define(["intern!object",
          .findByCssSelector("#STANDARD_PROPS .value")
          .getVisibleText()
          .then(function(resultText) {
-            TestCommon.log(testname,54,"Check standard property is rendered correctly");
+            TestCommon.log(testname,"Check standard property is rendered correctly");
             assert(/(Modified over \d+ years ago by Chris Griffin)/g.test(resultText), "Standard property not rendered correctly: " + resultText);
          })
          .end()

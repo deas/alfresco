@@ -41,56 +41,56 @@ define(["intern!object",
          // 1. Check that the initial request for data is correct...
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "path", "/"))
          .then(function(elements) {
-            TestCommon.log(testname,44,"Check 'path' initialised correctly");
+            TestCommon.log(testname,"Check 'path' initialised correctly");
             assert(elements.length == 1, "'path' not initialised correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "all"))
          .then(function(elements) {
-            TestCommon.log(testname,51,"Check initialised to show folders");
+            TestCommon.log(testname,"Check initialised to show folders");
             assert(elements.length == 1, "not initialised to show folders");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "site", "fake-site"))
          .then(function(elements) {
-            TestCommon.log(testname,58,"Check 'site' initialised correctly");
+            TestCommon.log(testname,"Check 'site' initialised correctly");
             assert(elements.length == 1, "'site' not initialised correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "container", "documentlibrary"))
          .then(function(elements) {
-            TestCommon.log(testname,65,"Check 'container' initialised correctly");
+            TestCommon.log(testname,"Check 'container' initialised correctly");
             assert(elements.length == 1, "'container' not initialised correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortAscending", "false"))
          .then(function(elements) {
-            TestCommon.log(testname,72,"Check 'sortAscending' initialised correctly");
+            TestCommon.log(testname,"Check 'sortAscending' initialised correctly");
             assert(elements.length == 1, "'sortAscending' not initialised correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:title"))
          .then(function(elements) {
-            TestCommon.log(testname,79,"Check 'sortField' initialised correctly");
+            TestCommon.log(testname,"Check 'sortField' initialised correctly");
             assert(elements.length == 1, "'sortField' not initialised correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "page", "1"))
          .then(function(elements) {
-            TestCommon.log(testname,86,"Check 'page' initialised correctly");
+            TestCommon.log(testname,"Check 'page' initialised correctly");
             assert(elements.length == 1, "'page' not initialised correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "pageSize", "3"))
          .then(function(elements) {
-            TestCommon.log(testname,93,"Check 'pageSize' initialised correctly");
+            TestCommon.log(testname,"Check 'pageSize' initialised correctly");
             assert(elements.length == 1, "'pageSize' not initialised correctly");
          })
          .end()
@@ -102,14 +102,14 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortAscending", "true"))
          .then(function(elements) {
-            TestCommon.log(testname,106,"Check 'sortAscending' updated correctly");
+            TestCommon.log(testname,"Check 'sortAscending' updated correctly");
             assert(elements.length == 1, "'sortAscending' not updated correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:name"))
          .then(function(elements) {
-            TestCommon.log(testname,113,"Check 'sortField' updated correctly");
+            TestCommon.log(testname,"Check 'sortField' updated correctly");
             assert(elements.length == 1, "'sortField' not updated correctly");
          })
          .end()
@@ -121,14 +121,14 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortAscending", "true"))
          .then(function(elements) {
-            TestCommon.log(testname,126,"Check 'sortAscending' has not changed");
+            TestCommon.log(testname,"Check 'sortAscending' has not changed");
             assert(elements.length == 1, "'sortAscending' changed unexpectedly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:title"))
          .then(function(elements) {
-            TestCommon.log(testname,133,"Check 'sortField' updated correctly");
+            TestCommon.log(testname,"Check 'sortField' updated correctly");
             assert(elements.length == 1, "'sortField' not updated correctly");
          })
          .end()
@@ -140,14 +140,14 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortAscending", "false"))
          .then(function(elements) {
-            TestCommon.log(testname,146,"Check 'sortAscending' updated correctly");
+            TestCommon.log(testname,"Check 'sortAscending' updated correctly");
             assert(elements.length == 1, "'sortAscending' not updated correctly");
          })
          .end()
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "sortField", "cm:title"))
          .then(function(elements) {
-            TestCommon.log(testname,153,"Check 'sortField' has not changed");
+            TestCommon.log(testname,"Check 'sortField' has not changed");
             assert(elements.length == 1, "'sortField' changed unexpectedly");
          })
          .end()
@@ -159,7 +159,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "documents"))
          .then(function(elements) {
-            TestCommon.log(testname,166,"Check 'type' updated correctly");
+            TestCommon.log(testname,"Check 'type' updated correctly");
             assert(elements.length == 1, "'type' not updated correctly");
          })
          .end()
@@ -171,7 +171,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "all"))
          .then(function(elements) {
-            TestCommon.log(testname,179,"Check 'type' updated correctly");
+            TestCommon.log(testname,"Check 'type' updated correctly");
             assert(elements.length == 1, "'type' not updated correctly");
          })
          .end()
@@ -183,7 +183,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "page", "2"))
          .then(function(elements) {
-            TestCommon.log(testname,192,"Check 'page' updated correctly");
+            TestCommon.log(testname,"Check 'page' updated correctly");
             assert(elements.length == 1, "'page' not updated correctly");
          })
          .end()
@@ -195,14 +195,14 @@ define(["intern!object",
          // 8. Check the first view is displayed...
         .findAllByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(1)")
          .then(function(elements) {
-            TestCommon.log(testname,205,"Check 'VIEW1' was displayed");
+            TestCommon.log(testname,"Check 'VIEW1' was displayed");
             assert(elements.length == 3, "'VIEW1' was not displayed");
          })
          .end()
 
          .findAllByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(2)")
          .then(function(elements) {
-            TestCommon.log(testname,212,"Check 'VIEW1' was not displayed");
+            TestCommon.log(testname,"Check 'VIEW1' was not displayed");
             assert(elements.length == 0, "'VIEW2' was displayed unexpectedly");
          })
          .end()
@@ -213,7 +213,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView .alfresco-documentlibrary-views-layouts-Cell span.alfresco-renderers-Property:nth-child(2)")
          .then(function(elements) {
-            TestCommon.log(testname,224,"Check 'VIEW2' has displayed");
+            TestCommon.log(testname,"Check 'VIEW2' has displayed");
             assert(elements.length == 3, "'VIEW2' was not displayed");
          })
          .end()
@@ -225,7 +225,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "page", "1"))
          .then(function(elements) {
-            TestCommon.log(testname,237,"Check 'page' was reset to 1 to account for new page size");
+            TestCommon.log(testname,"Check 'page' was reset to 1 to account for new page size");
 //            assert(elements.length == 1, "'page' not didn't get reset to 1 to account for new page size");
             console.log("TODO: Failing test commented out - needs looking at");
          })
@@ -233,7 +233,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "pageSize", "6"))
          .then(function(elements) {
-            TestCommon.log(testname,244,"Check 'pageSize' updated correctly");
+            TestCommon.log(testname,"Check 'pageSize' updated correctly");
             assert(elements.length == 1, "'pageSize' not updated correctly");
          })
          .end()

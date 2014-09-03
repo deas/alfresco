@@ -40,7 +40,7 @@ define(["intern!object",
          // Find the menu element
          .findById("AccessibilityMenu")
          .then(function (el) {
-            TestCommon.log(testname,43,"Find the menu element");
+            TestCommon.log(testname,"Find the menu element");
             expect(el).to.be.an("object", "The Accessibility Menu could not be found");
          })
          .end()
@@ -49,7 +49,7 @@ define(["intern!object",
          .findByCssSelector("#AccessibilityMenu > p")
          .getVisibleText()
          .then(function(headingText) {
-            TestCommon.log(testname,52,"Find the heading text");
+            TestCommon.log(testname,"Find the heading text");
             expect(headingText).to.equal("Access key links:", "The heading text is wrong");
          })
          .end()
@@ -57,7 +57,7 @@ define(["intern!object",
          // Find the menu items
          .findAllByCssSelector("#AccessibilityMenu > ul > li")
          .then(function (menuitems) {
-            TestCommon.log(testname,60,"Find the menu items");
+            TestCommon.log(testname,"Find the menu items");
             expect(menuitems).to.have.length(8, "The Accessibility Menu does not contain 8 <li> items");
          })
          .end()
@@ -65,7 +65,7 @@ define(["intern!object",
          // Find the first target
          .findByCssSelector("a#accesskey-skip")
          .then(function (el) {
-            TestCommon.log(testname,68,"Find the first target");
+            TestCommon.log(testname,"Find the first target");
             expect(el).to.be.an("object", "The accesskey-skip target is missing");
          })
          .end()
@@ -73,7 +73,7 @@ define(["intern!object",
          // Find the second target
          .findById("accesskey-foot")
          .then(function (el) {
-            TestCommon.log(testname,76,"Find the second target");
+            TestCommon.log(testname,"Find the second target");
             expect(el).to.be.an("object", "The accesskey-foot target is missing");
          })
          .end()
@@ -81,7 +81,7 @@ define(["intern!object",
          // Find the first menu link - which links the first target
          .findByCssSelector("#AccessibilityMenu > ul > li:nth-of-type(1) > a ")
          .then(function (el) {
-            TestCommon.log(testname,84,"Find the first menu link - which links the first target");
+            TestCommon.log(testname,"Find the first menu link - which links the first target");
             expect(el).to.be.an("object", "The first link is missing");
          })
          .end()
@@ -98,11 +98,11 @@ define(["intern!object",
          .then(function (page) {
             // Only check the test if this isn't a Mac because of key combo conflicts.
             if(browser.environmentType.platform !== "MAC") {
-               TestCommon.log(testname,101,"Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip");
+               TestCommon.log(testname,"Hit the browser with a sequence of different accesskey combinations and the letter 's' for a nav skip");
                expect(page).to.contain("#accesskey-skip", "Accesskey target not linked to");
             }
             else {
-               TestCommon.log(testname,105,"Skipping key combo test due to Mac compatibility issues.");
+               TestCommon.log(testname,"Skipping key combo test due to Mac compatibility issues.");
             }
          })
          .end()

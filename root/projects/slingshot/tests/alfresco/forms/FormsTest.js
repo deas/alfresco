@@ -55,7 +55,7 @@ define(["intern!object",
 //          Raised issue with Intern here: https://github.com/theintern/intern/issues/188
 //         .getCurrentUrl()
 //         .then(function(page) {
-//            TestCommon.log(testname,54,"Check fragment hash has been updated: " + page);
+//            TestCommon.log(testname,"Check fragment hash has been updated: " + page);
 //            expect(page).to.contain("#field1=test1&field2=test2", "Test #1 - form submit did not update hash fragment");
 //         })
 //         .end()

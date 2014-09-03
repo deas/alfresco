@@ -41,7 +41,7 @@ define(["intern!object",
                .findByCssSelector(".alfresco-menus-AlfMenuBar span:first-child")
                .getVisibleText()
                .then(function(resultText) {
-                  TestCommon.log(testname, null,"Check Actions menu was rendered");
+                  TestCommon.log(testname,"Check Actions menu was rendered");
                   assert(resultText == "Actions", "Test #1- Actions should be rendered as a menu: " + resultText);
                })
 
@@ -51,7 +51,7 @@ define(["intern!object",
                .end()
                .findAllByCssSelector(TestCommon.topicSelector("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", "publish", "any"))
                .then(function(elements) {
-                  TestCommon.log(testname, null,"Check that document request event was triggered");
+                  TestCommon.log(testname,"Check that document request event was triggered");
                   assert(elements.length == 1, "Test #2 - Retrieve single doc request not triggered");
                })
                .end()

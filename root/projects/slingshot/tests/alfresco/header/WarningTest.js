@@ -40,7 +40,7 @@ define(["intern!object",
          .findByCssSelector("#WARNINGS1 > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {
-               TestCommon.log(testname,43, "Test 1a: Check warning");
+               TestCommon.log(testname,"Test 1a: Check warning");
                expect(result1).to.equal("WARNING", "Test 1a - Warning not displayed");
             })
             .end()
@@ -48,7 +48,7 @@ define(["intern!object",
          .findByCssSelector("#WARNINGS2 > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {
-               TestCommon.log(testname,51, "Test 1b: Check error");
+               TestCommon.log(testname,"Test 1b: Check error");
                expect(result1).to.equal("ERROR", "Test 1b - Error not displayed");
             })
             .end()
@@ -56,28 +56,28 @@ define(["intern!object",
          .findByCssSelector("#LICENSEWARNING_READONLY > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {
-               TestCommon.log(testname,59, "Test 1c: Check readonly message");
+               TestCommon.log(testname,"Test 1c: Check readonly message");
                expect(result1).to.equal("Alfresco is running in READ ONLY mode. Please consult your System Administrator to resolve this.", "Test 1c - Readonly error not displayed");
             })
             .end()
 
          .findAllByCssSelector("#LICENSEWARNING_DISPLAY_TO_ADMIN > div.warnings > div.info")
             .then(function (adminWarnings) {
-               TestCommon.log(testname,46,"Test 2a - Test that admins see low severity warnings");
+               TestCommon.log(testname,"Test 2a - Test that admins see low severity warnings");
                expect(adminWarnings).to.have.length(3, "Test 2a - Admins should see low severity warnings");
             })
             .end()
 
          .findAllByCssSelector("#LICENSEWARNING_HIDE_FROM_USER > div.warnings > div.info")
             .then(function (nonAdminWarnings) {
-               TestCommon.log(testname,46,"Test 2b - Test that non-admin users don't see low severity warnings");
+               TestCommon.log(testname,"Test 2b - Test that non-admin users don't see low severity warnings");
                expect(nonAdminWarnings).to.have.length(0, "Test 2b - Low severity warnings should be hidden from non-admins");
             })
             .end()
 
          .findAllByCssSelector("#LICENSEWARNING_DISPLAY_TO_USER > div.warnings > div.info")
             .then(function (nonAdminWarnings) {
-               TestCommon.log(testname,46,"Test 2c - Test that non-admin users see high severity warnings");
+               TestCommon.log(testname,"Test 2c - Test that non-admin users see high severity warnings");
                expect(nonAdminWarnings).to.have.length(3, "Test 2c - High severity warnings should be displayed to non-admins");
             })
             .end()

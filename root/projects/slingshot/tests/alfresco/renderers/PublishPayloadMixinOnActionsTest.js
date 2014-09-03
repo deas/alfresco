@@ -41,7 +41,7 @@ define(["intern!object",
          // Check there are 3 action menus as described in the model
          .findAllByCssSelector("div.alfresco-menus-AlfMenuBar")
             .then(function (actionmenus) {
-               TestCommon.log(testname,43,"Check there are 3 action menus as described in the model");
+               TestCommon.log(testname,"Check there are 3 action menus as described in the model");
                expect(actionmenus).to.have.length(3, "There should be 3 action menus rendered");
             })
             .end()
@@ -61,7 +61,7 @@ define(["intern!object",
          .findByCssSelector(".dijitPopup")
             .isDisplayed()
             .then(function(result2) {
-               TestCommon.log(testname,65,"Check the action menu has appeared");
+               TestCommon.log(testname,"Check the action menu has appeared");
                expect(result2).to.equal(true, "The action menu should be visible on mouse clicks");
             })
             .end()

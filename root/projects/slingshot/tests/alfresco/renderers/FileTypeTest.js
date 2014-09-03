@@ -42,7 +42,7 @@ define(["intern!object",
 
          .findAllByCssSelector("div.alfresco-renderers-FileType")
          .then(function (filetypes){
-            TestCommon.log(testname,null,"Check there are the expected number of filetypes");
+            TestCommon.log(testname,"Check there are the expected number of filetypes");
             expect(filetypes).to.have.length(6, "There should be 6 filetypes rendered");
          })
          .end()
