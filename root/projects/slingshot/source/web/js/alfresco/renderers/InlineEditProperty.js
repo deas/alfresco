@@ -209,7 +209,9 @@ define(["dojo/_base/declare",
             name: "alfresco/forms/controls/DojoValidationTextBox",
             config: {
                name: this.postParam,
-               validationConfig: this.validationConfig
+               validationConfig: this.validationConfig,
+               label: (this.textBoxLabel != null) ? this.message(this.textBoxLabel) : "",
+               additionalCssClasses: (this.textBoxCssClasses != null) ? this.textBoxCssClasses : ""
             }
          };
       },

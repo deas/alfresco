@@ -74,13 +74,13 @@ define(["intern!object",
 
          // Check the alt-text is meaningful...
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-Row:nth-child(1) .alfresco-renderers-Reorder .down > img")
-            .getAttribute("alttext")
+            .getAttribute("alt")
             .then(function(result) {
                assert(result === "Click to move \"First\" down a place", "Test #2a - Alt text not set correctly on down arrow: " + result)
             })
             .end()
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-Row:nth-child(2) .alfresco-renderers-Reorder .up > img")
-            .getAttribute("alttext")
+            .getAttribute("alt")
             .then(function(result) {
                assert(result === "Click to move \"Middle\" up a place", "Test #2a - Alt text not set correctly on down arrow: " + result)
             })

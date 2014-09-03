@@ -25,23 +25,31 @@
 define(["intern!object",
         "intern/chai!assert",
         "require",
-        "alfresco/TestCommon"], 
-        function (registerSuite, assert, require, TestCommon) {
+        "alfresco/TestCommon",
+        "intern/lib/args"], 
+        function (registerSuite, assert, require, TestCommon, args) {
 
    registerSuite({
       name: 'Code Coverage Balancer',
-      'Menus Test': function () {
+      'Balance': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/page_models/RequireEverything.json")
+         if(args.doCoverage === "true")
+         {
+            return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/page_models/RequireEverything.json")
 
-            .end()
+               .end()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+               // Post the coverage results...
+               .then(function() {
+                  TestCommon.postCoverageResults(browser);
+               })
+               .end();
+          }
+          else
+          {
+            return browser.end();
+          }
       }
    });
 });
