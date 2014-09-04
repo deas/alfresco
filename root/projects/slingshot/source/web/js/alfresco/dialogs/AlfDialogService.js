@@ -96,6 +96,7 @@ define(["dojo/_base/declare",
          // TODO: Update this and other function with scoll setting...
          var dialogConfig = {
             title: this.message(payload.dialogTitle),
+            textContent: payload.textContent,
             widgetsContent: payload.widgetsContent,
             widgetsButtons: payload.widgetsButtons,
             contentWidth: payload.contentWidth ? payload.contentWidth : null,

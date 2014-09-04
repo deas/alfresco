@@ -82,7 +82,4 @@ model.jsonModel = {
          }
       }
    ]
-}
-
-
-;
+};

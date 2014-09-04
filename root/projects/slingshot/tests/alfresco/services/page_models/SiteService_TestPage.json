@@ -13,6 +13,9 @@
          "name": "alfresco/services/SiteService"
       },
       {
+         "name": "alfresco/dialogs/AlfDialogService"
+      },
+      {
          "name": "alfresco/services/SiteService",
          "config": {
             "pubSubScope": "NORMAL_USER_"
