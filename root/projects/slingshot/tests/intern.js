@@ -33,10 +33,10 @@ define(["./config/Suites"],
       // Maximum number of simultaneous integration tests that should be executed on the remote WebDriver service
       maxConcurrency: 1,
 
-      // Whether or not to start Sauce Connect before running tests
-      useSauceConnect: false,
+      // Dig Dug tunnel handler
+      tunnel: 'NullTunnel',
 
-      // Connection information for the remote WebDriver service.
+      // Dig Dug tunnel options
       tunnelOptions: {
          hostname: '192.168.56.4',
          port: 4444
