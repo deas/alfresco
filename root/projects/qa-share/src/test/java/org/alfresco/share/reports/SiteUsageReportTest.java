@@ -143,7 +143,7 @@ public class SiteUsageReportTest extends AbstractUtils
     }
     
     /**
-     *  Datapreps for ALONE-15939 - Site usage report for All Activities  
+     *  Datapreps for AONE-15939 - Site usage report for All Activities  
      *   
      * 1) Create Test user
      * 2) Created test user logs in
@@ -154,7 +154,7 @@ public class SiteUsageReportTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepSiteUsageReport" })
-    public void dataPrep_SiteUsageReport_ALF_15939() throws Exception
+    public void dataPrep_SiteUsageReport_AONE_15939() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
