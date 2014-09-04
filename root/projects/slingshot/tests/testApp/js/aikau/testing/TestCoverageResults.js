@@ -59,9 +59,20 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default "localhost:8082"
+       * @default "192.168.56.1:8082"
        */
-      nodeCoverageServer: "localhost:8082",
+      nodeCoverageServer: "192.168.56.1:8082",
+
+      /**
+       * Ensure that the [nodeCoverageServer]{@link module:aikau/testing/TestCoverageResults#nodeCoverageServer}
+       * is set correctly. This ensures that coverage results can be posted when running the test on a VM
+       *
+       * @instance
+       */
+      postMixInProperties: function alfresco_testing_TestCoverageResults__postMixInProperties() {
+         this.inherited(arguments);
+         // this.nodeCoverageServer = window.location.hostname + ":8282";
+      },
 
       /**
        * This is the input field that will be used to post the coverage results to the

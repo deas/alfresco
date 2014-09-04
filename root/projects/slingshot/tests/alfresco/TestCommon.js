@@ -525,7 +525,7 @@ define(["intern/dojo/node!fs",
                console.log(">> Waiting for coverage submission to complete...");
             })
             
-            .then(pollUntil('return document.querySelector("body > script");'))
+            .then(pollUntil('return document.querySelector("body > pre");'))
                .then(function (element) {}, function (error) {})
                .end();
             

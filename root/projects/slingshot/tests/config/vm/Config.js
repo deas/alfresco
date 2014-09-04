@@ -34,7 +34,8 @@ define({
    urls: {
       bootstrapBaseUrl: "http://192.168.56.1:8081",
       moduleDeploymentBaseUrl: "http://admin:admin@192.168.56.1:8081",
-      unitTestAppBaseUrl: "http://192.168.56.1:8089"
+      unitTestAppBaseUrl: "http://192.168.56.1:8089",
+      coverageServerUrl: "http://192.168.56.1:8282"
    },
 
    /**
@@ -46,7 +47,7 @@ define({
    timeout: {
       base: 5000,
       find: 5000,
-      pageLoad: 5000,
+      pageLoad: 90000,
       executeAsync: 5000
    }
 

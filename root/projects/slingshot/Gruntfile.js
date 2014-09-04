@@ -19,7 +19,7 @@
       docsDir: 'docs',
       alfWidgetsList: 'alfresco_widgets.json',
       requireEverythingTemplate: 'RequireEverything.template.js',
-      requireEverythingWidget: 'source/web/js/aikauTesting/RequireEverything.js',
+      requireEverythingWidget: 'tests/testApp/js/aikau/testing/RequireEverything.js',
       requireEverythingWidgetsPrefix: 'source/web/js/',
       requireEverythingWidgetsSuffix: '.js',
       requireEverythingExclusions: [

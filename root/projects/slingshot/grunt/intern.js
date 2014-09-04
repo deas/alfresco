@@ -59,6 +59,7 @@ module.exports = function (grunt, alf) {
 
    grunt.registerTask('startUnitTestApp', 'Spawn a Maven process to start the Jetty server running the unit test application', function() {
 
+      grunt.log.writeln("Check Jetty unit test application state...");
       var done = this.async();
 
       var tcpPortUsed = require('tcp-port-used');
@@ -66,17 +67,9 @@ module.exports = function (grunt, alf) {
       .then(function(inUse) {
          if(!inUse)
          {
-            var testApp = grunt.util.spawn({
-               cmd: 'mvn',
-               args: ['jetty:run'],
-               opts: {
-                  detached: 'true',
-                  stdio : 'inherit'
-               }
-            }, function(error, result, code) {
-               grunt.log.writeln("Finished spawning Jetty unit test application...");
-               done();
-            });
+            grunt.log.writeln("Starting unit test app...");
+            grunt.task.run('shell:startTestApp');
+            done();
          }
          else
          {

@@ -34,8 +34,9 @@ module.exports = function (grunt, alf) {
       grunt.task.run('instrument-code');
       grunt.task.run('copy:instrumentedJs');
       grunt.task.run('hideExistingCoverageReports');
-      grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('start-node-coverage-server');
+      grunt.task.run('startUnitTestApp');
+      grunt.task.run('waitServer');
       grunt.task.run('intern:local_coverage');
       grunt.task.run('merge-reports');
       grunt.task.run('clean-reports');
@@ -43,6 +44,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('clean:instrumentedCode');
+      grunt.task.run('shell:stopTestApp');
    });
 
    // Generate a coverage report using a vagrant initialised VM
@@ -53,8 +55,9 @@ module.exports = function (grunt, alf) {
       grunt.task.run('instrument-code');
       grunt.task.run('copy:instrumentedJs');
       grunt.task.run('hideExistingCoverageReports');
-      grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('start-node-coverage-server');
+      grunt.task.run('startUnitTestApp');
+      grunt.task.run('waitServer');
       grunt.task.run('intern:dev_coverage');
       grunt.task.run('merge-reports');
       grunt.task.run('clean-reports');
@@ -62,6 +65,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('copy:uninstrumentedJs');
       grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('clean:instrumentedCode');
+      grunt.task.run('shell:stopTestApp');
    });
 
    /* Register additional helper functions 
