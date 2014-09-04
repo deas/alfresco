@@ -228,17 +228,6 @@ define(["dojo/_base/declare",
                if (this.title) {
                   this.label[key] = this.title;
                }
-               if (this.titleConfig) {
-                  this.alfSubscribe(this.titleConfig.topic, lang.hitch(this, this._processTitleConfig));
-               }
-            },
-
-            _processTitleConfig: function(payload){
-               this._setTitle(lang.getObject(this.titleConfig.attribute, false, payload));
-            },
-
-            _setTitle: function (title) {
-               this.titleNode.innerHTML = AlfCore.encodeHTML(title);
             }
 
          });
