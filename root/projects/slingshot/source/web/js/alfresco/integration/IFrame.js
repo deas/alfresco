@@ -38,8 +38,7 @@ define(["dojo/_base/declare",
    "dojo/_base/lang",
    "dojo/dom-attr",
    "dojo/dom-style"],
-      function(declare, _WidgetBase, _TemplatedMixin, template,
-               AlfCore, CoreWidgetProcessing, DomElementUtils, lang, domAttr, domStyle) {
+      function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, DomElementUtils, lang, domAttr, domStyle) {
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, DomElementUtils], {
 
@@ -48,7 +47,7 @@ define(["dojo/_base/declare",
              *
              * @instance
              * @type {string}
-             * @default "alfresco-charts-ccc-Chart"
+             * @default "alfresco-integration-IFrame"
              */
             baseClass: "alfresco-integration-IFrame",
 
@@ -60,19 +59,19 @@ define(["dojo/_base/declare",
             iFrameNode: null,
 
             /**
-             * The element showing the message
+             * The element showing the messages
              * @instance
              * @type {HTMLElement}
              */
-            messageNode: null,
+            messagesNode: null,
 
             /**
-             * A message showed when src is set to null
+             * The messages to show when src is set to null
              *
              * @instance
-             * @type {String}
+             * @type {Array}
              */
-            message: "",
+            messages: [],
 
             /**
              * Thi stopic will be subscribed to for new src information
@@ -157,6 +156,12 @@ define(["dojo/_base/declare",
              */
             postCreate: function alfresco_integration_IFrame__postCreate() {
                this._setSrc(this.src);
+               var messageEl;
+               for (var i = 0, il = this.messages.length; i < il; i++) {
+                  messageEl = document.createElement('div');
+                  messageEl.appendChild(document.createTextNode(this.messages[i]));
+                  this.messagesNode.appendChild(messageEl);
+               }
             },
 
             /**
@@ -168,13 +173,13 @@ define(["dojo/_base/declare",
                if (src != null) {
                   domAttr.set(this.iFrameNode, "src", src);
                   domStyle.set(this.iFrameNode, "display", "");
-                  domStyle.set(this.messageNode, "display", "none");
+                  domStyle.set(this.messagesNode, "display", "none");
                }
                else
                {
                   domStyle.set(this.iFrameNode, "display", "none");
                   if (this.message) {
-                     domStyle.set(this.messageNode, "display", "");
+                     domStyle.set(this.messagesNode, "display", "");
                   }
                }
             },
@@ -191,4 +196,5 @@ define(["dojo/_base/declare",
             }
 
          });
-      });
+      }
+);

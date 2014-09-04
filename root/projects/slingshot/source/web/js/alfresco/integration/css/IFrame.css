@@ -1,9 +1,12 @@
-.alfresco-layout-IFrame iframe {
+.alfresco-integration-IFrame iframe {
    border: none;
 }
 
-.alfresco-layout-IFrame div {
+.alfresco-integration-IFrame > div {
    display: table;
    margin: 0 auto;
    padding-top: 4em;
+}
+.alfresco-integration-IFrame > div > div {
+   padding-bottom: 1em;
 }
