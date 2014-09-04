@@ -8,8 +8,7 @@
 package org.alfresco.events.types;
 
 import java.io.Serializable;
-
-import org.safehaus.uuid.UUIDGenerator;
+import java.util.UUID;
 
 /**
  * Abstract event bean.
@@ -37,7 +36,7 @@ public abstract class EventImpl implements Event, Serializable
 	{
 		this.type = type;
 		this.timestamp = timestamp;
-		this.id = UUIDGenerator.getInstance().generateRandomBasedUUID().toString();
+		this.id = UUID.randomUUID().toString();
 		this.username = username;
 	}
 	
