@@ -29,6 +29,17 @@ module.exports = function (grunt, alf) {
    // @see: https://github.com/theintern/intern/wiki/Using-Intern-with-Grunt#task-options
    grunt.loadNpmTasks('intern');
 
+   // New Test
+   grunt.registerTask('newTest', [
+      'shell:stopTestApp',
+      'vdown',
+      'vup',
+      'test'
+   ]);
+   grunt.registerTask('nt', [
+      'newTest'
+   ]);
+
    // Register a test task that uses Intern
    grunt.registerTask('test', [
       'startUnitTestApp',
@@ -57,8 +68,8 @@ module.exports = function (grunt, alf) {
       'intern:grid' // Run all the intern tests on grid
    ]);
 
-   // Start the Jetty application for running the unit tests against. This will check that the 
-   // Jetty server is not already running (but checking that the port is not already in use) 
+   // Start the Jetty application for running the unit tests against. This will check that the
+   // Jetty server is not already running (but checking that the port is not already in use)
    // but it will immediately return after spawning the process so it is necessary to use the
    // waitServer task to ensure that the server is ready before beginning tests
    grunt.registerTask('startUnitTestApp', 'Spawn a Maven process to start the Jetty server running the unit test application', function() {
@@ -85,6 +96,11 @@ module.exports = function (grunt, alf) {
          done();
       });
    });
+
+   grunt.registerTask('restartTestApp', [
+      'shell:stopTestApp',
+      'startUnitTestApp'
+   ]);
 
    // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
    return {

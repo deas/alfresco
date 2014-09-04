@@ -51,18 +51,18 @@ fi
 export DISPLAY=:10
 cd /vagrant
 
-echo "Starting Xvfb ..."
+echo "Starting Xvfb (v`dpkg -s xvfb| grep Version|cut -d: -f2`)..."
 Xvfb :10 -screen 0 1366x768x24 -ac &
 
-echo "Starting Google Chrome ..."
+echo "Starting Google Chrome (v`dpkg -s google-chrome-stable| grep Version|cut -d: -f2` w/ Chrome Driver v$CHROMEDRIVER_VERSION)..."
 google-chrome --remote-debugging-port=9222 &
 
-echo "Starting Firefox ..."
+echo "Starting Firefox (v`dpkg -s firefox| grep Version|cut -d: -f2`)..."
 firefox &
 
-echo "Starting Phantomjs ..."
+echo "Starting Phantomjs ($PHANTOMJS_VERSION)..."
 phantomjs --ignore-ssl-errors=true --web-security=false --webdriver=192.168.56.4:4444 &
 
-echo "Starting Selenium ..."
+echo "Starting Selenium (v$SELENIUM_VERSION_NUMBER)..."
 cd /usr/local/bin
 nohup java -jar ./$SELENIUM_VERSION &
