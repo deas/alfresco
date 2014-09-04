@@ -37,9 +37,11 @@ define(["dojo/_base/declare",
    "dojo/_base/lang",
    "dojo/_base/array",
    "dojo/dom-construct",
-   "dojo/dom-class"],
+   "dojo/dom-class",
+   "dojo/date",
+   "dojo/date/stamp"],
       function(declare, _WidgetBase, _TemplatedMixin, template, Chart,
-               AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass) {
+               AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, date, stamp) {
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
@@ -223,6 +225,37 @@ define(["dojo/_base/declare",
              * @param payload
              */
             onSubscriptionTopic: function(payload) {
+                var now = stamp.toISOString(new Date(), { selector: "date" });
+                var startDate = payload.startDate, endDate = payload.endDate;
+                var getStartDate = function(timePeriod) {
+                   switch (timePeriod)
+                   {
+                      case "TODAY":
+                          return now;
+                      case "7D":
+                          return stamp.toISOString(date.add(new Date(), "day", -7), { selector: "date" });
+                      case "30D":
+                          return stamp.toISOString(date.add(new Date(), "day", -30), { selector: "date" });
+                      case "YEAR":
+                          return stamp.toISOString(date.add(new Date(), "year", -1), { selector: "date" });
+                      case "CUSTOM":
+                          return startDate;
+                      default:
+                         break;
+                   }
+                    return startDate;
+                };
+                var getEndDate = function(timePeriod) {
+                   if (timePeriod == "CUSTOM") {
+                      return endDate;
+                   } else {
+                      return now;
+                   }
+                };
+                if (payload.timePeriod) {
+                    payload.startDate = getStartDate(payload.timePeriod);
+                    payload.endDate = getEndDate(payload.timePeriod);
+                }
                lang.mixin(this._currentDataRequestPayload, payload);
                this.requestData();
             },

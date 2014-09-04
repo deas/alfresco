@@ -36,8 +36,36 @@ define(["dojo/_base/declare",
       function(declare, AlfCore, I18nUtils, Report, _NavigationServiceTopicMixin, lang, date, stamp) {
 
          // Lets default the report to show data from the last month
+         var timePeriod = "30D";
          var startDate = stamp.toISOString(date.add(new Date(), "month", -1), { selector: "date" });
          var endDate = stamp.toISOString(new Date(), { selector: "date" });
+         var now = stamp.toISOString(new Date(), { selector: "date" });
+
+         var getStartDate = function() {
+            switch (timePeriod)
+            {
+               case "TODAY":
+                  return now;
+               case "7D":
+                   return stamp.toISOString(date.add(new Date(), "day", -7), { selector: "date" });
+               case "30D":
+                   return stamp.toISOString(date.add(new Date(), "day", -30), { selector: "date" });
+               case "YEAR":
+                   return stamp.toISOString(date.add(new Date(), "year", -1), { selector: "date" });
+               case "CUSTOM":
+                   return startDate;
+               default:
+                  break;
+            }
+             return startDate;
+         };
+         var getEndDate = function() {
+            if (timePeriod == "CUSTOM") {
+               return endDate;
+            } else {
+               return now;
+            }
+         };
 
          var i18nScope = "alfresco.reports.TopSiteContributorReport";
 
@@ -109,6 +137,53 @@ define(["dojo/_base/declare",
                      validFormValuesPublishOnInit: false,
                      widgets: [
                         {
+                            name: "alfresco/forms/controls/DojoSelect",
+                            config: {
+                               fieldId: "PERIOD",
+                               name: "timePeriod",
+                               value: timePeriod,
+                               label: "Display",
+                               description: "Time period to report upon",
+                               unitsLabel: "",
+                               visibilityConfig: {
+                                  initialValue: true,
+                                  rules: []
+                               },
+                               requirementConfig: {
+                                  initialValue: false,
+                                  rules: []
+                               },
+                               disablementConfig: {
+                                  initialValue: false,
+                                  rules: []
+                               },
+                               optionsConfig: {
+                                  fixed: [
+                                     {
+                                        label: "Today",
+                                        value: "TODAY"
+                                     },
+                                     {
+                                        label: "Last 7 Days",
+                                        value: "7D"
+                                     },
+                                     {
+                                         label: "Last 30 Days",
+                                         value: "30D"
+                                     },
+                                     {
+                                         label: "Last Year",
+                                         value: "YEAR"
+                                     },
+                                     {
+                                         label: "Custom Range",
+                                         value: "CUSTOM"
+                                     }
+                                  ]
+                               }
+                            }
+                        },
+                        {
                            name: "alfresco/forms/controls/DojoDateTextBox",
                            config: {
                               name: "startDate",
@@ -134,8 +209,8 @@ define(["dojo/_base/declare",
                      dataRequestTopic: "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT",
                      dataRequestPayload: {
                         site: Alfresco.constants.SITE,
-                        startDate: startDate,
-                        endDate: endDate
+                        startDate: getStartDate(),
+                        endDate: getEndDate()
                      },
                      subscriptionTopic: "SHOW_CONTRIBUTORS_BY_DATE",
                      widgets: [
