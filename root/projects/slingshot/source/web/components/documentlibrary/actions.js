@@ -1060,9 +1060,21 @@
                         visible: true,
                         zIndex: 9999
                });
-               // TODO: Properly format message
+               var dlgMessageKey = 'message.edit-online-aos.plugin_blocked.body.firefox';
+               if(officeLauncher.isFirefox())
+               {
+                   dlgMessageKey = 'message.edit-online-aos.plugin_blocked.body.firefox';
+               }
+               else if(officeLauncher.isChrome())
+               {
+                   dlgMessageKey = 'message.edit-online-aos.plugin_blocked.body.chrome';
+               }
+               else if(officeLauncher.isSafari())
+               {
+                   dlgMessageKey = 'message.edit-online-aos.plugin_blocked.body.safari';
+               }
                dlg.setHeader(this.msg('message.edit-online-aos.plugin_blocked.caption'));
-               dlg.setBody(this.msg('message.edit-online-aos.plugin_blocked.body'));
+               dlg.setBody(this.msg(dlgMessageKey));
                dlg.cfg.queueProperty('buttons', [ {
                      text: this.msg('message.edit-online-aos.plugin_blocked.button_dismiss'),
                      handler: function() {
