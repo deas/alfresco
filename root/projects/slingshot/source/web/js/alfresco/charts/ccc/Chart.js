@@ -64,6 +64,16 @@ define(["dojo/_base/declare",
             pvcChartType: null,
 
             /**
+             * Any additional configuration attributes for the chart can be set here
+             * 
+             * <p>Options set here will override anything set via another named property.</p>
+             *
+             * @instance
+             * @type {object}
+             */
+            chartConfig: null,
+
+            /**
              * The charts container element (will be set by dojo)
              * @instance
              * @type {HTMLElement}
@@ -311,6 +321,16 @@ define(["dojo/_base/declare",
                   backgroundColor: ["rgba(0, 0, 0, 0)", "transparent"]
                });
                config.colors = styles.backgroundColor;
+
+               // Set any additional chart options
+               if (typeof this.chartConfig == "object")
+               {
+                  for (var p in this.chartConfig)
+                  {
+                     config[p] = this.chartConfig[p];
+                  }
+               }
+
                return config;
             },
 
