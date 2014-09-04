@@ -38,6 +38,7 @@ import org.springframework.extensions.config.Config;
 import org.springframework.extensions.config.ConfigService;
 import org.springframework.extensions.config.ServerConfigElement;
 import org.springframework.extensions.config.ServerProperties;
+import org.springframework.extensions.config.WebFrameworkConfigElement;
 import org.springframework.extensions.surf.CssImageDataHandler;
 import org.springframework.extensions.surf.DependencyAggregator;
 import org.springframework.extensions.surf.DojoDependencies;
@@ -121,6 +122,13 @@ public class ProcessJsonModelDirective extends JavaScriptDependencyDirective
     {
         this.configService = configService;
     }
+    
+    private WebFrameworkConfigElement webFrameworkConfigElement;
+    public void setWebFrameworkConfigElement(WebFrameworkConfigElement webFrameworkConfigElement)
+    {
+        this.webFrameworkConfigElement = webFrameworkConfigElement;
+    }
+    
     /**
      * This is a custom token matching pattern to use to override the default one defined in {@link UriUtils}. It
      * is roughly the same but uses double curly braces {{ }} rather than single to avoid potential clashes within
@@ -142,6 +150,13 @@ public class ProcessJsonModelDirective extends JavaScriptDependencyDirective
                                                                        TemplateDirectiveBody body, 
                                                                        Environment env) throws TemplateException
     {
+        // Check to see whether or not resource caching has been disabled or not. If it has then clear all the
+        // dependency caches before processing the current request...
+        if (this.webFrameworkConfigElement != null && this.webFrameworkConfigElement.isResourceCachingDisabled() == true)
+        {
+            this.dojoDependencyHandler.clearCaches();
+        }
+        
         // Get the FreeMarker model...
         TemplateHashModel model = env.getDataModel();
         

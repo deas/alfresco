@@ -164,11 +164,13 @@ public interface DirectiveFactory
      * @param directiveName The name of the directive
      * @param extensibilityModel The current {@link ExtensibilityModel} being worked on.
      * @param context The current {@link RequestContext}
+     * @param webFrameworkConfig TODO
      * @param webFrameworkConfigElement The {@link WebFrameworkConfigElement} for the application.
      * @return
      */
     public ProcessJsonModelDirective createProcessJsonModelDirective(String directiveName,
                                                                      ModelObject object,
                                                                      ExtensibilityModel extensibilityModel, 
-                                                                     RequestContext context);
+                                                                     RequestContext context, 
+                                                                     WebFrameworkConfigElement webFrameworkConfig);
 }

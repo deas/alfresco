@@ -146,6 +146,8 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
     
     protected Boolean enableDynamicExtensions;
     
+    protected Boolean disableResourceCaching;
+    
     /**
      * Default Constructor
      */
@@ -363,6 +365,12 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
         if (configElement.enableDynamicExtensions != null)
         {
             combinedElement.enableDynamicExtensions = configElement.enableDynamicExtensions;
+        }
+        
+        combinedElement.disableResourceCaching = this.disableResourceCaching;
+        if (configElement.disableResourceCaching != null)
+        {
+            combinedElement.disableResourceCaching = configElement.disableResourceCaching;
         }
         
         // Combine any Dojo configurations...
@@ -612,6 +620,11 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
     public boolean isDynamicExtensionModulesEnabled()
     {
         return (this.enableDynamicExtensions != null) ? this.enableDynamicExtensions.booleanValue() : Boolean.TRUE; 
+    }
+    
+    public boolean isResourceCachingDisabled()
+    {
+        return (this.disableResourceCaching != null) ? this.disableResourceCaching.booleanValue() : Boolean.FALSE; 
     }
     
     /**
@@ -1254,6 +1267,12 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
         if (enableDynamicExtensionModules != null)
         {
             configElement.enableDynamicExtensions = Boolean.valueOf(enableDynamicExtensionModules);
+        }
+        
+        String disableResourceCaching = elem.elementTextTrim("disable-resource-caching");
+        if (disableResourceCaching != null)
+        {
+            configElement.disableResourceCaching = Boolean.valueOf(disableResourceCaching);
         }
         
         // Process any Dojo configuration...

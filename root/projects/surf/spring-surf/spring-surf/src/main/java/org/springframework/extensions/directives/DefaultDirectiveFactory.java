@@ -313,7 +313,7 @@ public class DefaultDirectiveFactory implements DirectiveFactory
     public ProcessJsonModelDirective createProcessJsonModelDirective(String directiveName, 
                                                            ModelObject object,
                                                            ExtensibilityModel extensibilityModel, 
-                                                           RequestContext context)
+                                                           RequestContext context, WebFrameworkConfigElement webFrameworkConfig)
     {
         ProcessJsonModelDirective d = new ProcessJsonModelDirective(directiveName, extensibilityModel);
         setupDirective(d, object, context);
@@ -321,6 +321,7 @@ public class DefaultDirectiveFactory implements DirectiveFactory
         d.setI18nDependencyHandler(this.i18nDependencyHandler);
         d.setConfigService(this.configService);
         d.setWebScriptsContainer(this.webScriptsContainer);
+        d.setWebFrameworkConfigElement(this.webFrameworkConfig);
         return d;
     }
 }

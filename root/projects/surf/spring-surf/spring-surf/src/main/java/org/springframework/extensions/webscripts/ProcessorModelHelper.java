@@ -784,7 +784,7 @@ public final class ProcessorModelHelper implements ApplicationContextAware
             // If Dojo support has been enabled then we'll create the createDojoPage directive...
             if (this.webFrameworkConfigElement.isDojoEnabled())
             {
-                model.put(ProcessJsonModelDirective.DIRECTIVE_NAME, this.directiveFactory.createProcessJsonModelDirective(ProcessJsonModelDirective.DIRECTIVE_NAME, object, extensibilityModel, context));
+                model.put(ProcessJsonModelDirective.DIRECTIVE_NAME, this.directiveFactory.createProcessJsonModelDirective(ProcessJsonModelDirective.DIRECTIVE_NAME, object, extensibilityModel, context, null));
             }
         }
         else
