@@ -89,6 +89,13 @@ define(["dojo/_base/declare",
             dataTopic: null,
 
             /**
+             * The initial payload of the [dataTopic]{@link module:alfresco/charts/ccc/Chart#dataTopic}.
+             *
+             * @instance
+             */
+            dataTopicPayload: {},
+
+            /**
              * The topic to publish when chart data item has been clicked.
              *
              * @instance
@@ -305,7 +312,6 @@ define(["dojo/_base/declare",
                   config.dimensions = this.dimensions;
                }
                if (this.extensionPoints)
-               {
                   config.extensionPoints = this.extensionPoints;
                }
 
@@ -361,7 +367,7 @@ define(["dojo/_base/declare",
             postCreate: function alfresco_charts_ccc_Chart__postCreate() {
                if (this.dataTopic) {
                   // Set a response topic that is scoped to this widget...
-                  var dataTopicPayload = {};
+                  var dataTopicPayload = this.dataTopicPayload || {};
                   dataTopicPayload.alfResponseTopic = this.dataTopic;
                   this.alfPublish(this.dataTopic, dataTopicPayload);
                }
