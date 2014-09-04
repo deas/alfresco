@@ -17,9 +17,7 @@
  */
 package org.springframework.extensions.surf.webscripts;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,20 +25,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.DocumentException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.extensions.surf.DependencyHandler;
-import org.springframework.extensions.surf.ModuleDeploymentService;
-import org.springframework.extensions.surf.exception.ModelObjectPersisterException;
-import org.springframework.extensions.surf.types.Extension;
-import org.springframework.extensions.surf.types.ExtensionModule;
-import org.springframework.extensions.webscripts.DeclarativeWebScript;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.Cache;
+import org.springframework.extensions.webscripts.DeclarativeWebScript;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
  * <p>Receives client-side error reports and outputs them via the standard logging mechanisms.</p>
@@ -62,23 +54,26 @@ public class PostClientSideError  extends DeclarativeWebScript
         try
         {
             String content = req.getContent().getContent();
-            JSONParser jp = new JSONParser();
-            Object o = jp.parse(content);
-            if (o instanceof JSONObject)
+            if (content.length() > 0)
             {
-                JSONObject jsonData = (JSONObject) o;
-                String callerName = (String)jsonData.get("callerName");
-                JSONArray messageArgs = (JSONArray)jsonData.get("messageArgs");
-                String userName = (String)jsonData.get("userName");
-                String location = (String)jsonData.get("location");
-                
-                StringBuilder sb = new StringBuilder();
-                sb.append("The following client-side error has been reported:");
-                sb.append("\n   user: " + userName);
-                sb.append("\n   page: " + location);
-                sb.append("\n   callerName: "  + callerName);
-                sb.append("\n   messageArgs: " + messageArgs.toString());
-                logger.error(sb.toString());
+                JSONParser jp = new JSONParser();
+                Object o = jp.parse(content);
+                if (o instanceof JSONObject)
+                {
+                    JSONObject jsonData = (JSONObject) o;
+                    String callerName = (String)jsonData.get("callerName");
+                    JSONArray messageArgs = (JSONArray)jsonData.get("messageArgs");
+                    String userName = (String)jsonData.get("userName");
+                    String location = (String)jsonData.get("location");
+                    
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("The following client-side error has been reported:");
+                    sb.append("\n   user: " + userName);
+                    sb.append("\n   page: " + location);
+                    sb.append("\n   callerName: "  + callerName);
+                    sb.append("\n   messageArgs: " + messageArgs.toString());
+                    logger.error(sb.toString());
+                }
             }
         }
         catch (IOException e)
@@ -88,7 +83,7 @@ public class PostClientSideError  extends DeclarativeWebScript
         catch (ParseException e)
         {
             status.setCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            status.setMessage("An error occurred parsing the 'widgets' request parameter into JSON");
+            status.setMessage("An error occurred parsing the client side error");
             status.setException(e);
             status.setRedirect(true);
         }

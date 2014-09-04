@@ -285,7 +285,9 @@ define(["dojo/_base/declare",
          // in a document library)...
          if (this.publishTopic == null)
          {
-            this.generateFileFolderLink();
+            this.publishPayload = {};
+            this.publishTopic = this.generateFileFolderLink(this.publishPayload);
+            this.publishGlobal = true;
          }
          else if (this.publishPayload != null)
          {

@@ -18,10 +18,15 @@
  */
 
 /**
- * Extends the standard (read-only) [property renderer]{@link module:alfresco/renderers/Property} to provide
- * the ability to edit and save changes to the property. The select menu is rendered by a
+ * <p>Extends the standard (read-only) [property renderer]{@link module:alfresco/renderers/Property} to provide
+ * the ability to edit and save changes to the property. The edit view is rendered by a
  * [DojoValidationTextBox widget]{@link module:alfresco/forms/controls/DojoValidationTextBox} and this module accepts the same 
- * [validationConfig]{@link module:alfresco/forms/controls/BaseFormControl#validationConfig} as it does.
+ * [validationConfig]{@link module:alfresco/forms/controls/BaseFormControl#validationConfig} as it does.</p>
+ * <p>When an edit is completed and saved a publication will be made and that should be defined using the standard
+ * "publishTopic", "publishPayload" and related publication attributes. However, for convenience it is assumed that the typical
+ * use case will be for editing the properties of nodes and so if the "publishTopic" attribute is configured as null then
+ * the publication will automatically be set up to result in saving node properties (however, it will be necessary to make
+ * sure that the [CrudService]{@link module:alfresco/services/CrudService} is included on the page to service those requests).</p> 
  * 
  * @module alfresco/renderers/InlineEditProperty
  * @extends module:alfresco/renderers/Property
@@ -124,6 +129,28 @@ define(["dojo/_base/declare",
       editLabel: "inline-edit.edit.label",
 
       /**
+       * The topic to publish when a property edit should be persisted. For convenience it is assumed that document
+       * or folder properties are being edited so this function is called whenever a 'publishTopic' attribute
+       * has not been set. The defaults are to publish on the "ALF_CRUD_CREATE" topic which will publish a payload
+       * to be processed by the [CrudService]{@link module:alfresco/services/CrudService} that should result in a
+       * POST a request being made to the Repository form processor.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_CRUD_CREATE"
+       */
+      setDefaultPublicationData: function alfresco_renderers_InlineEditProperty__setDefaultPublicationData() {
+         this.publishTopic = "ALF_CRUD_CREATE";
+         this.publishPayloadType = "PROCESS";
+         this.publishPayloadModifiers = ["processCurrentItemTokens"];
+         this.publishPayloadItemMixin = false;
+         this.publishPayload = {
+            url: "api/node/{jsNode.nodeRef.uri}/formprocessor",
+            noRefresh: true
+         };
+      },
+
+      /**
        * This extends the inherited function to set the [postParam]{@link module:alfresco/renderers/InlineEditProperty#postParam]
        * attribute based on the [propertyToRender]{@link module:alfresco/renderers/InlineEditProperty#propertyToRender] if 
        * provided. It is expected that these will be different because the properties WebScript that this widget will use
@@ -135,6 +162,12 @@ define(["dojo/_base/declare",
       postMixInProperties: function alfresco_renderers_InlineEditProperty__postMixInProperties() {
          this.inherited(arguments);
          
+         // If no topic has been provided then assume the default behaviour of editing document/folder properties
+         if (this.publishTopic == null)
+         {
+            this.setDefaultPublicationData();
+         }
+
          if (this.propertyToRender != null)
          {
             if (this.postParam == null && this.propertyToRender != null)

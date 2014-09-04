@@ -126,7 +126,7 @@ define(["dojo/_base/declare",
                                        config: {
                                           widgets: [
                                              {
-                                                name: "alfresco/renderers/InlineEditProperty",
+                                                name: "alfresco/renderers/InlineEditPropertyLink",
                                                 config: {
                                                    propertyToRender: "node.properties.cm:name",
                                                    postParam: "prop_cm_name",

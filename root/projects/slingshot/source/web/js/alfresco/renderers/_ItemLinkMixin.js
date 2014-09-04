@@ -68,19 +68,18 @@ define(["dojo/_base/declare",
        * Updates the publication payload and topic for a folder.
        *
        * @instance
+       * @param {object} publishPayload The publication payload object to update.
        */
-      updateFolderLinkPublication: function alfresco_renderers__ItemLinkMIxin__updateFolderLinkPublication() {
-         this.publishTopic = "ALF_DOCUMENTLIST_PATH_CHANGED";
-         this.publishPayload = {};
+      updateFolderLinkPublication: function alfresco_renderers__ItemLinkMIxin__updateFolderLinkPublication(publishPayload) {
          var locn = this.currentItem.location;
          if (this.currentItem.parent.isContainer)
          {
-            this.publishPayload.path = this.combinePaths(locn.path, locn.file);
+            publishPayload.path = this.combinePaths(locn.path, locn.file);
          }
          else if (this.currentItem.location.path === "/")
          {
             // handle Repository root parent node (special store_root type - not a folder)
-            this.publishPayload.path = this.combinePaths(locn.path, "");
+            publishPayload.path = this.combinePaths(locn.path, "");
          }
          else
          {
@@ -90,45 +89,58 @@ define(["dojo/_base/declare",
 
       /**
        * @instance
+       * @param {object} payload The payload to add the link data to
+       * @returns {string} The topic to publish on
        */
-      generateFileFolderLink: function alfresco_renderers__ItemLinkMixin__generateFileFolderLink() {
-         if (this.currentItem != null && this.currentItem.node)
+      generateFileFolderLink: function alfresco_renderers__ItemLinkMixin__generateFileFolderLink(publishPayload) {
+         var topic = "ALF_NAVIGATE_TO_PAGE";
+         if (publishPayload == null)
          {
-            var jsNode = this.currentItem.jsNode;
-            if (jsNode.isLink && this.currentItem.location.site)
+            this.alfLog("warn", "A request was made to generate a file or folder link but no payload object was provided to be updated", this);
+         }
+         else
+         {
+            if (this.currentItem != null && this.currentItem.node)
             {
-               if (jsNode.isContainer)
+               var jsNode = this.currentItem.jsNode;
+               if (jsNode.isLink && this.currentItem.location.site)
                {
-                  this.updateFolderLinkPublication();
-               }
-               else
-               {
-                  // TODO: This needs re-writing...
-                  payload.url = this.getActionUrls(this.currentItem, this.currentItem.location.site.name).documentDetailsUrl;
-               }
-            }
-            else
-            {
-               if (jsNode.isContainer)
-               {
-                  this.updateFolderLinkPublication();
-               }
-               else
-               {
-                  // TODO: It'll be necessary to get the actual actionUrls - but currently it's to tangled to untangle easily
-                  //var actionUrls = this.getActionUrls(this.currentItem);
-                  var actionsUrls = this.getActionUrls(this.currentItem);
-                  if (jsNode.isLink && jsNode.linkedNode.isContainer)
+                  if (jsNode.isContainer)
                   {
-                     payload.url = actionUrls.folderDetailsUrl;
+                     this.updateFolderLinkPublication(publishPayload);
+                     topic = "ALF_DOCUMENTLIST_PATH_CHANGED";
                   }
                   else
                   {
-                     this.updateDocumentLinkPublication();
+                     // TODO: This needs re-writing...
+                     publishPayload.url = this.getActionUrls(this.currentItem, this.currentItem.location.site.name).documentDetailsUrl;
+                  }
+               }
+               else
+               {
+                  if (jsNode.isContainer)
+                  {
+                     this.updateFolderLinkPublication(publishPayload);
+                     topic = "ALF_DOCUMENTLIST_PATH_CHANGED";
+                  }
+                  else
+                  {
+                     // TODO: It'll be necessary to get the actual actionUrls - but currently it's to tangled to untangle easily
+                     //var actionUrls = this.getActionUrls(this.currentItem);
+                     var actionUrls = this.getActionUrls(this.currentItem);
+                     if (jsNode.isLink && jsNode.linkedNode.isContainer)
+                     {
+                        publishPayload.url = actionUrls.folderDetailsUrl;
+                     }
+                     else
+                     {
+                        this.updateDocumentLinkPublication(publishPayload);
+                     }
                   }
                }
             }
          }
+         return topic;
       },
       
       /**
@@ -145,30 +157,27 @@ define(["dojo/_base/declare",
        * can be overridden by setting a [custom details URL]{@link module:alfresco/renderers/_ItemLinkMixin#customDetailsURL}
        * or by overriding this function in classes that mixin this module.
        *
-       * @returns {object} The navigtation payload to use.
+       * @param {object} publishPayload The publication payload object to update.
        */
-      updateDocumentLinkPublication: function alfresco_renderers__ItemLinkMixin__updateDocumentLinkPublication() {
-         this.publishTopic = "ALF_NAVIGATE_TO_PAGE";
-         this.publishPayload = {
-            url: "",
-            type: "FULL_PATH",
-            target: "CURRENT"
-         };
+      updateDocumentLinkPublication: function alfresco_renderers__ItemLinkMixin__updateDocumentLinkPublication(publishPayload) {
+         publishPayload.url = "";
+         publishPayload.type = "FULL_PATH";
+         publishPayload.target = "CURRENT";
          if (this.customDetailsURL == null)
          {
-            var actionsUrls = this.getActionUrls(this.currentItem);
-            this.publishPayload.url = actionUrls.documentDetailsUrl;
+            var actionUrls = this.getActionUrls(this.currentItem);
+            publishPayload.url = actionUrls.documentDetailsUrl;
          }
          else
          {
             // If a custom URL has been provided then use that but append the nodeRef URI on the end
-            this.publishPayload.url = this.customDetailsURL
+            publishPayload.url = this.customDetailsURL;
             if (lang.exists("currentItem.jsNode.nodeRef.uri", this))
             {
                // If the current item is a node with an accessible uri attribute then append it to the URL...
                // We should possibly only do this if a boolean attribute is set to true but at the moment
                // I can't see any cases where you wouldn't want to specify the node...
-               this.publishPayload.url += "/" + this.currentItem.jsNode.nodeRef.uri;
+               publishPayload.url += "/" + this.currentItem.jsNode.nodeRef.uri;
             }
          }
       }

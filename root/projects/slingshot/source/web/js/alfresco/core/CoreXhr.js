@@ -105,11 +105,11 @@ define(["dojo/_base/declare",
                var data;
                try
                {
-                  data = (config.data) ? JSON.stringify(config.data) : null;
+                  data = (config.data != null) ? JSON.stringify(config.data) : null;
                }
                catch (e)
                {
-                  this.alfLog("error", "Could not stringify XHR JSON data", data);
+                  this.alfLog("warn", "Could not stringify XHR JSON data", data);
                   data = null;
                }
 
