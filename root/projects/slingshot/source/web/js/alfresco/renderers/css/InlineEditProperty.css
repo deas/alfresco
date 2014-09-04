@@ -2,17 +2,22 @@
   /*margin-left: 20px; */
 }
 
-.alfresco_renderers_InlineEditProperty .alfresco-renderers-Property {
+.alfresco-renderers-InlineEditProperty .alfresco-renderers-Property {
   margin-left: 0;
 }
 
-.alfresco_renderers_InlineEditProperty .editIcon {
+.alfresco-renderers-InlineEditProperty .editIcon {
    height: 16px;
    width: 16px;
    display: inline-block;
    opacity: 0;
 }
 
-.alfresco_renderers_InlineEditProperty .action {
+.alfresco-renderers-InlineEditProperty .action {
    cursor: pointer;
+}
+
+.alfresco-renderers-InlineEditProperty > .editor > .alfresco-forms-Form {
+   display: inline-block;
+   vertical-align: top;
 }

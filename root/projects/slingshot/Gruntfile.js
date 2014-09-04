@@ -169,14 +169,16 @@
          'shell:scb'
       ]);
 
+      // Re-build test app for development purposes...
+      grunt.registerTask('utd', [
+         'shell:stopTestApp',
+         'shell:se',
+         'startUnitTestApp',
+         'waitServer'
+      ]);
+
       // Display notifications on test passes and failures...
       var notify = require('./node_modules/grunt-notify/lib/notify-lib');
-      // grunt.event.on("intern.pass", function(data) {
-      //    notify({
-      //       title: "Unit Test Passed",
-      //       message: data
-      //    });
-      // });
       grunt.event.on("intern.fail", function(data) {
          notify({
             title: "Unit Test Failed",

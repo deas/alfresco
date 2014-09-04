@@ -307,7 +307,8 @@ define(["dojo/_base/declare",
          this.suppressContainerKeyboardNavigation(true);
          var formWidget = this.getFormWidget();
          var o = new Object();
-         o[this.postParam] = this.originalRenderedValue;
+         var o = {};
+         lang.setObject(this.postParam, this.originalRenderedValue, o);
          formWidget.setValue(o);
          domClass.toggle(this.renderedValueNode, "hidden");
          domClass.toggle(this.editNode, "hidden");
@@ -361,13 +362,20 @@ define(["dojo/_base/declare",
          payload.alfResponseTopic = responseTopic;
          this._saveSuccessHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onSaveSuccess), true);
          this._saveFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onSaveFailure), true);
-
-         // TODO: Should be getting this from a widget...
-         lang.mixin(payload, this.getFormWidget().getValue());
-
+         this.updateSaveData(payload);
          this.alfPublish(this.publishTopic, payload, true);
          
          // TODO: Set some sort of indicator to show that a save operation is in flight?
+      },
+
+      /**
+       * Updates the supplied payload with the current form value.
+       *
+       * @instance
+       * @param {object} payload The save payload to update.
+       */
+      updateSaveData: function alfresco_renderers_InlineEditProperty__getSaveData(payload) {
+         lang.mixin(payload, this.getFormWidget().getValue());
       },
 
       /**

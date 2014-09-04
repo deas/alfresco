@@ -18,10 +18,8 @@
  */
 
 /**
- * Extends the standard (read-only) [property renderer]{@link module:alfresco/renderers/Property} to provide
- * the ability to edit and save changes to the property. Currently the implementation performs its own 
- * XHR post to save the date but it may be updated to use services to handle this action at some point in the
- * future.
+ * Extends the [inline edit property renderer]{@link module:alfresco/renderers/InlineEditProperty} to provide
+ * the ability to edit and save tags.
  * 
  * @module alfresco/renderers/Tags
  * @extends module:alfresco/renderers/InlineEditProperty
@@ -31,34 +29,22 @@
  */
 define(["dojo/_base/declare",
         "alfresco/renderers/InlineEditProperty", 
-        "dijit/_OnDijitClickMixin",
         "alfresco/core/ObjectTypeUtils",
-        "alfresco/core/CoreXhr",
-        "dojo/text!./templates/Tags.html",
         "dojo/_base/array",
         "dojo/_base/lang",
+        "alfresco/forms/controls/ComboBox",
         "alfresco/renderers/ReadOnlyTag",
         "alfresco/renderers/EditTag",
         "dojo/dom-construct",
+        "dojo/dom-class",
         "dijit/registry",
         "dojo/on",
-        "dojo/dom-attr",
-        "dojo/dom-class",
         "dojo/keys",
-        "dojo/_base/event",
-        "dojo/store/JsonRest",
-        "dijit/form/ComboBox",
-        "dojo/store/util/QueryResults",
-        "dojo/store/util/SimpleQueryEngine",
-        "dojo/data/util/filter",
-        "dojo/aspect",
-        "dojo/html",
-        "service/constants/Default"], 
-        function(declare, InlineEditProperty, _OnDijitClickMixin, ObjectTypeUtils, CoreXhr, template, array, lang, ReadOnlyTag, EditTag, 
-                 domConstruct, registry, on, domAttr, domClass, keys, event, JsonRest, ComboBox, QueryResults, 
-                 SimpleQueryEngine, filter, aspect, html, AlfConstants) {
+        "dojo/_base/event"], 
+        function(declare, InlineEditProperty, ObjectTypeUtils, array, lang, ComboBox, ReadOnlyTag, EditTag, domConstruct, 
+                 domClass, registry, on, keys, event) {
 
-   return declare([InlineEditProperty, _OnDijitClickMixin, CoreXhr], {
+   return declare([InlineEditProperty], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -70,28 +56,6 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/Tags.css"}],
       
       /**
-       * The HTML template to use for the widget.
-       * @instance
-       * @type {string}
-       */
-      templateString: template,
-      
-      /**
-       * 
-       * @instance
-       */
-      postMixInProperties: function alfresco_renderers_Tags__postMixInProperties() {
-         this.inherited(arguments);
-      },
-      
-      /**
-       * @instance
-       * @type {object[]}
-       * @default null
-       */
-      currentReadOnlyTags: null,
-      
-      /**
        * Overrides the [inherited function]{@link module:alfresco/renderers/Property#getRenderedProperty} to convert the tags
        * value into visual tokens.
        * 
@@ -100,7 +64,7 @@ define(["dojo/_base/declare",
       getRenderedProperty: function alfresco_renderers_Tags__getRenderedProperty(value) {
          // Reset the tags...
          var renderedValue = null;
-         array.forEach(this.currentTags, lang.hitch(this, "destroyTag"));
+         array.forEach(this.currentTags, lang.hitch(this, this.destroyTag));
          this.currentTags = [];
          if (!ObjectTypeUtils.isArray(value))
          {
@@ -108,7 +72,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            array.forEach(value, lang.hitch(this, "createReadOnlyTag", "name", "nodeRef"));
+            array.forEach(value, lang.hitch(this, this.createReadOnlyTag, "name", "nodeRef"));
             renderedValue = ""; // By setting an empty string as a rendered value the inherited postMixInProperties function knows that a value is set.
          }
          return renderedValue; // Always return the empty string
@@ -144,10 +108,14 @@ define(["dojo/_base/declare",
          }
          else
          {
+            // Create a ReadOnlyTag widget and place it in the rendered value section.
             var tagWidget = new ReadOnlyTag({
                tagName: tagData[nameAttribute],
                tagValue: tagData[valueAttribute]
             });
+            
+            // Keep track of the initial set of tags as this will be updated as new tags are added or tags
+            // are removed...
             this.currentTags.push(tagWidget);
          }
       },
@@ -163,8 +131,10 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Tags__postCreate() {
          this.inherited(arguments);
-         on(this.editTagsNode, "ALF_REMOVE_TAG", lang.hitch(this, "onRemoveTag"));
-         array.forEach(this.currentTags, lang.hitch(this, "placeReadOnlyTag"));
+         array.forEach(this.currentTags, lang.hitch(this, this.placeReadOnlyTag));
+
+         // Make a backup of the initial tags so that they can be restored on a cancel action...
+         this.initialTags = lang.clone(this.currentTags);
       },
       
       /**
@@ -177,6 +147,32 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * Overrides the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#getPrimaryFormWidget}
+       * to return a [select form control]{@link module:alfresco/forms/controls/DojoSelect}.
+       *
+       * @instance
+       * @returns {object} The widget for editing.
+       */
+      getPrimaryFormWidget: function alfresco_renderers_Tags__getPrimaryFormWidget() {
+         return {
+            id: this.id + "_EDIT_TAGS",
+            name: "alfresco/forms/controls/ComboBox", 
+            config: {
+               label: "",
+               name: this.postParam,
+               additionalCssClasses: "hiddenlabel",
+               optionsConfig: {
+                  queryAttribute: "name",
+                  publishTopic: "ALF_RETRIEVE_CURRENT_TAGS",
+                  publishPayload: {
+                     resultsProperty: "response.data.items"
+                  }
+               }
+            }
+         };
+      },
+
+      /**
        * Extends the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#onEditClick} to 
        * create the edit tag instances.
        * 
@@ -184,65 +180,15 @@ define(["dojo/_base/declare",
        */
       onEditClick: function alfresco_renderers_Tags__onEditClick() {
          this.inherited(arguments);
-         array.forEach(this.currentTags, lang.hitch(this, "createEditTag", "tagName", "tagValue"));
-         if (this.tagStore == null)
+         if (this.editTagsNode != null)
          {
-            this.tagStore = new JsonRest({
-               target: AlfConstants.PROXY_URI + "api/forms/picker/category/workspace/SpacesStore/tag:tag-root/children"
-            });
-            aspect.before(this.tagStore, "query", lang.hitch(this, "interceptQuery"));
+            var oldEditTags = registry.findWidgets(this.editTagsNode);
+            array.forEach(oldEditTags, lang.hitch(this, this.destroyTag));
+            domConstruct.destroy(this.editTagsNode);
          }
-         if (this.comboBox == null)
-         {
-            this.comboBox = new ComboBox({
-               store: this.tagStore,
-               searchAttr: "name",
-               queryExpr: "${0}"
-            }, this.editInputNode);
-            aspect.before(this.comboBox, "_openResultList", lang.hitch(this, "interceptResults"));
-         }
-      },
-      
-      /**
-       * Added as an aspect before the query function of the tag store to change the query string. This 
-       * is done so that query passed in the XHR request will get the correct results. The reason this
-       * is necessary is because the XHR request may not return the data in the standard Dojo pattern
-       * so this function allows the query argument (which is configured to work with the ComboBox) to 
-       * be updated to work with the back-end WebScript.
-       * 
-       * @instance
-       * @param {object} query The query that will be passed to the query function
-       * @param {object} options The query options that will be passed to the query function
-       * @returns {object[]} The updated arguments to pass to the query function.
-       */
-      interceptQuery: function alfresco_renderers_Tags__interceptQuery(query, options) {
-         var updatedQuery = {
-            selectableType: "cm:category",
-            size: "100",
-            aspect: "cm:taggable",
-            searchTerm: query.name
-         };
-         return [updatedQuery, options];
-      },
-      
-      /**
-       * Added as an aspect before the _openResultList function to update the results arguments that is
-       * passed. This is required because the XHR response is not in the schema required by the ComboBox
-       * so it is necessary to modify it to contain the correct data.
-       * 
-       * @instance
-       * @param {object} res The results that were returned from the XHR request
-       * @param {object} query The query configuration used to request the results
-       * @param {object} options The options used to query the results
-       * @returns {object[]} The updated arguments to pass to the query function.
-       */
-      interceptResults: function alfresco_renderers_Tags__interceptResults(res, query, options) {
-         var updatedResults = res.data.items;
-         var updatedQuery = {
-            name: new RegExp("^" + query.name.toString() + ".*$")
-         }; 
-         var results = QueryResults(SimpleQueryEngine(updatedQuery)(updatedResults));
-         return [results, updatedQuery, options];
+         this.editTagsNode = domConstruct.create("span", {}, this.editNode, "first");
+         on(this.editTagsNode, "ALF_REMOVE_TAG", lang.hitch(this, this.onRemoveEditTag));
+         array.forEach(this.currentTags, lang.hitch(this, this.createEditTag, "tagName", "tagValue"));
       },
       
       /**
@@ -261,6 +207,7 @@ define(["dojo/_base/declare",
             tagValue: tagData[valueAttribute]
          });
          tagWidget.placeAt(this.editTagsNode);
+         this.currentTags.push(tagWidget);
       },
       
       /**
@@ -269,29 +216,18 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      onRemoveTag: function alfresco_renderers_Tags__onRemoveTag(evt) {
+      onRemoveEditTag: function alfresco_renderers_Tags__onRemoveEditTag(evt) {
          var tagWidget = registry.byNode(evt.target);
          if (tagWidget != null)
          {
+            // Filter out the deleted tag from the list of current tags, this is done to ensure
+            // that we persist the correct tags on save and redraw the correct tags on readonly mode...
+            var tagName = tagWidget.tagName;
+            this.currentTags = array.filter(this.currentTags, function(currTag, index) {
+               return currTag.tagName !== tagName;
+            });
             tagWidget.destroy();
          }
-      },
-      
-      /**
-       * @instance
-       */
-      onPropertyUpdate: function alfresco_renderers_Tags__onSaveSuccess(response, originalConfig) {
-         // This needs to be updated to render the tags...
-         html.set(this.renderedValueNode, "");
-         array.forEach(this.currentTags, lang.hitch(this, "destroyTag"));
-         this.currentTags = [];
-         var editTags = registry.findWidgets(this.editTagsNode);
-         array.forEach(editTags, lang.hitch(this, "createReadOnlyTag", "tagName", "tagValue"));
-         array.forEach(this.currentTags, lang.hitch(this, "placeReadOnlyTag"));
-         array.forEach(editTags, lang.hitch(this, "destroyTag"));
-         domClass.remove(this.renderedValueNode, "hidden faded");
-         domClass.add(this.editNode, "hidden");
-         this.renderedValueNode.focus();
       },
       
       /**
@@ -311,50 +247,29 @@ define(["dojo/_base/declare",
          else if(e.charOrCode == keys.ENTER)
          {
             event.stop(e);
-            var inputValue = this.comboBox.get("value");
-            if (inputValue !== "")
+            var formValue = this.getFormWidget().getValue();
+            var tagName = lang.getObject(this.postParam, false, formValue);
+            if (tagName !== "")
             {
-               this.comboBox.set("value", "");
-               this.createRemoteTag(inputValue, false);
+               var o = {};
+               lang.setObject(this.postParam, "", o);
+               this.getFormWidget().setValue(o);
+               this.createTag(tagName, false);
             }
             else
             {
                this.onSave();
             }
          }
-         else if (e.charOrCode == keys.PAGE_DOWN ||
-                  e.charOrCode ==  keys.DOWN_ARROW ||
-                  e.charOrCode == keys.PAGE_UP ||
-                  e.charOrCode ==  keys.UP_ARROW)
-         {
-            // Prevent up/down keys from bubbling. This is done to ensure that the 
-            // focus doesn't shift to the previous or next item in the view.
-            event.stop(e);
-         }
-      },
-      
-      /**
-       * Gets the URL to use when creating remote tags. 
-       * 
-       * @instance
-       * @returns {string} The URL to use when remotely creating tags
-       */
-      getCreateRemoteTagURL: function alfresco_renderers_Tags__createRemoteTag() {
-         return AlfConstants.PROXY_URI + "api/tag/workspace/SpacesStore"; 
-      },
-      
-      /**
-       * Creates and returns an object to post to the URL returned by [getCreateRemoteTagURL]{@link module:alfresco/renderers/Tags#getCreateRemoteTagURL}
-       * in order to create a new tag.
-       * 
-       * @instance
-       * @param {string} tagName The name of the tag to create
-       * @returns {object} The data to post in order to create a new tag.
-       */
-      getCreateRemoteTagData: function alfresco_renderers_Tags__getCreateRemoteTagData(tagName) {
-         return {
-            name: tagName
-         };
+         // else if (e.charOrCode == keys.PAGE_DOWN ||
+         //          e.charOrCode ==  keys.DOWN_ARROW ||
+         //          e.charOrCode == keys.PAGE_UP ||
+         //          e.charOrCode ==  keys.UP_ARROW)
+         // {
+         //    // Prevent up/down keys from bubbling. This is done to ensure that the 
+         //    // focus doesn't shift to the previous or next item in the view.
+         //    event.stop(e);
+         // }
       },
       
       /**
@@ -368,39 +283,40 @@ define(["dojo/_base/declare",
        * @param {boolean} saveTagsAfterCreate Indicates whether or not to save all tags on successful creation.
        * @return {object} The created tag details
        */
-      createRemoteTag: function alfresco_renderers_Tags__createRemoteTag(tagName, saveTagsAfterCreate) {
-         var config = {
-            url: this.getCreateRemoteTagURL(),
-            method: "POST",
-            saveTagsAfterCreate: saveTagsAfterCreate,
-            data: this.getCreateRemoteTagData(tagName),
-            successCallback: this.onCreateRemoteTagSuccess,
-            failureCallback: this.onCreateRemoteTagFailure,
-            callbackScope: this
-         };
-         this.serviceXhr(config);
-      },
-      
-      /**
-       * @instance
-       * @param {object} response The response from the request to create a tag
-       * @param {object} originalRequestConfig The object passed when making the request
-       */
-      onCreateRemoteTagSuccess: function alfresco_renderers_Tags__onCreateRemoteTagSuccess(response, originalRequestConfig) {
-         this.createEditTag("name", "nodeRef", response);
-         if (originalRequestConfig.saveTagsAfterCreate === true)
+      createTag: function alfresco_renderers_Tags__createTag(tagName, saveTagsAfterCreate) {
+
+         var tagUsed = array.some(this.currentTags, function(currentTag, index) {
+            return currentTag.tagName === tagName;
+         });
+
+         if (tagUsed === true)
          {
-            this.onSave();
+            this.alfLog("log", "Tag already used, no need to add again", this, tagName);
+            // TODO: Should we clear the ComboBox? Should we display a message?
+         }
+         else
+         {
+            var responseTopic = this.generateUuid();
+            var payload = {
+               tagName: tagName,
+               alfResponseTopic: responseTopic
+            };
+            this._createTagHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onTagCreated), true);
+            this.alfPublish("ALF_CREATE_TAG", payload, true);
          }
       },
       
       /**
        * @instance
-       * @param {object} response The response from the request to create a tag
-       * @param {object} originalRequestConfig The object passed when making the request
+       * @param {object} payload The payload of the successful tag creation request.
        */
-      onCreateRemoteTagFailure: function alfresco_renderers_Tags__onCreateRemoteTagFailure(response, originalRequestConfig) {
-         this.alfLog("error", "Could not create a tag", response, originalRequestConfig);
+      onTagCreated: function alfresco_renderers_Tags__onTagCreated(payload) {
+         this.alfUnsubscribeSaveHandles([this._createTagHandle]);
+         this.createEditTag("name", "nodeRef", payload.response);
+         if (payload.originalRequestConfig.saveTagsAfterCreate === true)
+         {
+            this.onSave();
+         }
       },
       
       /**
@@ -411,11 +327,14 @@ define(["dojo/_base/declare",
        * @instance
        */
       onSave: function alfresco_renderers_Tags__onSave() {
-         var inputValue = this.comboBox.get("value");
-         if (inputValue !== "")
+         var formValue = this.getFormWidget().getValue();
+         var tagName = lang.getObject(this.postParam, false, formValue);
+         if (tagName !== "")
          {
-            this.comboBox.set("value", "");
-            this.createRemoteTag(inputValue, true);
+            var o = {};
+            lang.setObject(this.postParam, "", o);
+            this.getFormWidget().setValue(o);
+            this.createTag(tagName, true);
          }
          else
          {
@@ -424,40 +343,68 @@ define(["dojo/_base/declare",
       },
       
       /**
-       * This extends the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#onCancel} to ensure
-       * that the previous ComboBox data is cleared.
-       * 
+       * Overrides the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#updateSaveData} to 
+       * set the save payload with the tag data.
+       *
        * @instance
+       * @param {object} payload The save payload to update.
        */
-      onCancel: function alfresco_renderers_InlineEditProperty__onCancel() {
-         this.inherited(arguments);
-         this.comboBox.set("value", "");
+      updateSaveData: function alfresco_renderers_Tags__getSaveData(payload) {
          var editTags = registry.findWidgets(this.editTagsNode);
-         array.forEach(editTags, lang.hitch(this, "destroyTag"));
-      },
-      /**
-       * This overrides the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#getSaveData} to
-       * return an object with the [postParam]{@link module:alfresco/renderers/InlineEditProperty#postParam} set to
-       * a comma delimited string of the values associated with each tag.
-       * 
-       * @instance
-       * @returns {object} The data object to post when performing a save
-       */
-      getSaveData: function alfresco_renderers_Tags__getSaveData() {
-         var editTags = registry.findWidgets(this.editTagsNode);
-         var saveValue = "";
+         var tags = "";
          for (var i=0; i<editTags.length; i++) 
          {
-            saveValue = saveValue + "," + editTags[i].tagValue;
+            tags = tags + "," + editTags[i].tagValue;
          }
          // Trim the first comma...
-         if (saveValue.length > 0)
+         if (tags.length > 0)
          {
-            saveValue = saveValue.substring(1);
+            tags = tags.substring(1);
          }
-         var data = {};
-         data[this.postParam] = saveValue;
-         return data;
+         payload[this.postParam] = tags;
+      },
+
+      /**
+       * Overrides the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#onSaveSuccess} 
+       * to render the newly saved tags.
+       *
+       * @instance
+       * @param {object} payload The success payload
+       */
+      onSaveSuccess: function alfresco_renderers_Tags__onSaveSuccess(payload) {
+         this.alfUnsubscribeSaveHandles([this._saveSuccessHandle, this._saveFailureHandle]);
+
+         this.alfLog("log", "Property '" + this.propertyToRender + "' successfully updated for node: ", this.currentItem);
+
+         // Remove all the old read-only tags...
+         var oldReadOnlyTags = registry.findWidgets(this.renderedValueNode);
+         array.forEach(oldReadOnlyTags, lang.hitch(this, this.destroyTag));
+         domConstruct.empty(this.renderedValueNode);
+
+         // Build the list of new tags from those in the edit view...
+         this.currentTags = [];
+         var editTags = registry.findWidgets(this.editTagsNode);
+         array.forEach(editTags, lang.hitch(this, this.createReadOnlyTag, "tagName", "tagValue"));
+         array.forEach(this.currentTags, lang.hitch(this, this.placeReadOnlyTag));
+
+         // Update the initial tags to reflect the updated state...
+         this.initialTags = lang.clone(this.currentTags);
+
+         // Switch back into the "view" mode...
+         domClass.remove(this.renderedValueNode, "hidden faded");
+         domClass.add(this.editNode, "hidden");
+         this.renderedValueNode.focus();
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/renderers/InlineEditProperty#onCancel} to clear
+       * the edit tags.
+       *
+       * @instance
+       */
+      onCancel: function alfresco_renderers_Tags__onCancel() {
+         this.inherited(arguments);
+         this.currentTags = lang.clone(this.initialTags);
       }
    });
 });

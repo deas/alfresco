@@ -70,6 +70,7 @@ define(["dojo/_base/declare",
          lang.mixin(this, args);
          this.alfSubscribe("ALF_RETRIEVE_CURRENT_TAGS", lang.hitch(this, this.onTagListRequest));
          this.alfSubscribe(_TagServiceTopics.tagQueryTopic, lang.hitch(this, this.onTagQuery));
+         this.alfSubscribe("ALF_CREATE_TAG", lang.hitch(this, this.createTag));
       },
       
       /**
@@ -147,6 +148,33 @@ define(["dojo/_base/declare",
               this.serviceXhr(config);
            }
         }
-      }
+      },
+
+      /**
+       * Creates a tag at the remote store (the same location from which available tags are retrieved). 
+       * 
+       * @instance
+       * @param {string} tagName The name of the tag to create.
+       * @return {object} The created tag details
+       */
+      createTag: function alfresco_services_TagService__createTag(payload) {
+         var tagName = lang.getObject("tagName", false, payload);
+         if (tagName != null && lang.trim(tagName) !== "")
+         {
+            var config = {
+               url: AlfConstants.PROXY_URI + "api/tag/workspace/SpacesStore",
+               method: "POST",
+               alfTopic: (payload.alfResponseTopic ? payload.alfResponseTopic : null),
+               data: {
+                  name: tagName
+               }
+            };
+            this.serviceXhr(config);
+         }
+         else
+         {
+            this.alfLog("warn", "A request was made to create a tag but no 'tagName' attribute was provided", this, payload);
+         }
+      },
    });
 });

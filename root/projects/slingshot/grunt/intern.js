@@ -54,6 +54,11 @@ module.exports = function (grunt, alf) {
       'intern:local'
    ]);
 
+   // Register a test task that uses Intern_local for development purposes (no server restarts)
+   grunt.registerTask('dt', [
+      'intern:local'
+   ]);
+
    // Register a test task that uses Intern_sl
    grunt.registerTask('test_sl', [
       'startUnitTestApp',
@@ -150,5 +155,5 @@ module.exports = function (grunt, alf) {
             }
          }
       }
-   }
-}
+   };
+};

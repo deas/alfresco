@@ -37,24 +37,24 @@ define(["intern!object",
          var testname = "TagsTest";
          return TestCommon.loadTestWebScript(this.remote, "/Tags", testname)
 
-         .findAllByCssSelector("span.alfresco_renderers_InlineEditProperty.alfresco-renderers-Property")
+         .findAllByCssSelector("span.alfresco-renderers-InlineEditProperty.alfresco-renderers-Property")
             .then(function (tagcontrols){
                TestCommon.log(testname,"Check there are the expected number of tag controls successfully rendered");
-               expect(tagcontrols).to.have.length(4, "There should be 4 tag controls successfully rendered");
+               expect(tagcontrols).to.have.length(4, "Test #1a - There should be 4 tag controls successfully rendered");
             })
             .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-ReadOnlyTag")
             .then(function (readonlytags){
                TestCommon.log(testname,"Check there are the expected number of readonlytags successfully rendered");
-               expect(readonlytags).to.have.length(3, "There should be 3 readonlytags successfully rendered");
+               expect(readonlytags).to.have.length(3, "Test #1b - There should be 3 readonlytags successfully rendered");
             })
             .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag")
             .then(function (edittags){
                TestCommon.log(testname,"Check there are no edittags shown");
-               expect(edittags).to.have.length(0, "There should be 0 edittags shown");
+               expect(edittags).to.have.length(0, "Test #1c - There should be 0 edittags shown");
             })
             .end()
 
@@ -63,36 +63,36 @@ define(["intern!object",
             .click()
             .end()
 
-         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
+         .findByCssSelector(TestCommon.pubDataCssSelector("ALF_NAVIGATE_TO_PAGE", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
             .then(
-               function(){TestCommon.log(testname,"Check the link click published as expected")},
-               function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
+               function(){TestCommon.log(testname,"Check the link click published as expected");},
+               function(){assert(false, "Test #1d - The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks");}
             )
             .end()
 
-         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "HASH"))
+         .findByCssSelector(TestCommon.pubDataCssSelector("ALF_NAVIGATE_TO_PAGE", "type", "HASH"))
             .then(
-               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-               function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected");},
+               function(){assert(false, "Test #1e - The link did not publish the payload with 'type' as 'HASH'");}
             )
             .end()
 
-         .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "filter=tag|Test1"))
+         .findByCssSelector(TestCommon.pubDataCssSelector("ALF_NAVIGATE_TO_PAGE", "url", "filter=tag|Test1"))
             .then(
-               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-               function(){assert(false, "The link did not publish the payload with 'url' as 'filter=tag|Test1'")}
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected");},
+               function(){assert(false, "Test #1f - The link did not publish the payload with 'url' as 'filter=tag|Test1'");}
             )
             .end()
 
          // Click the edit icon of the 4th tag control
-         .findByCssSelector("#TAGS_4 > span.editIcon")
+         .findByCssSelector("#TAGS_4 > img.editIcon")
             .click()
             .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag")
             .then(function (edittags){
                TestCommon.log(testname,"Check there are the expected number of edittags now shown");
-               expect(edittags).to.have.length(3, "There should be 3 edittags now shown");
+               expect(edittags).to.have.length(3, "Test #1g - There should be 3 edittags now shown");
             })
             .end()
 
@@ -100,7 +100,7 @@ define(["intern!object",
             .getVisibleText()
             .then(function (edittagtext){
                TestCommon.log(testname,"Check the first edit tag reads 'Test1'");
-               expect(edittagtext).to.contain("Test1", "Edit tag 1 should read 'Test1'");
+               expect(edittagtext).to.contain("Test1", "Test #1h - Edit tag 1 should read 'Test1'");
             })
             .end()
 
@@ -112,7 +112,7 @@ define(["intern!object",
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag")
             .then(function (edittags){
                TestCommon.log(testname,"Check there are the expected number of edittags now shown");
-               expect(edittags).to.have.length(2, "There should be 2 edittags now shown");
+               expect(edittags).to.have.length(2, "Test #1i - There should be 2 edittags now shown");
             })
             .end()
 
@@ -120,7 +120,7 @@ define(["intern!object",
             .getVisibleText()
             .then(function (edittagtext){
                TestCommon.log(testname,"Check the first edit tag now reads 'Test2'");
-               expect(edittagtext).to.contain("Test2", "Edit tag 1 should now read 'Test2'");
+               expect(edittagtext).to.contain("Test2", "Test #1j - Edit tag 1 should now read 'Test2'");
             })
             .end()
 

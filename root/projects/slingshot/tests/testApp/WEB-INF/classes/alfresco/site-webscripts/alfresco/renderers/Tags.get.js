@@ -9,6 +9,8 @@ model.jsonModel = {
             }
          }
       },
+      "alfresco/services/TagService",
+      "alfresco/services/CrudService",
       "alfresco/services/ErrorReporter"
    ],
    widgets:[
@@ -67,6 +69,9 @@ model.jsonModel = {
                }
             }
          }
+      },
+      {
+         name: "aikauTesting/mockservices/ComboBoxMockXhr"
       },
       {
          name: "alfresco/logging/SubscriptionLog"

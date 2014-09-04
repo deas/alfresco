@@ -2,5 +2,5 @@
   <shortname>Upload Test</shortname>
   <description>This WebScript defines the Upload page test</description>
   <family>aikau-unit-tests</family>
-  <url>/Upload</url>
+  <url>/aikau-upload-unit-test</url>
 </webscript>

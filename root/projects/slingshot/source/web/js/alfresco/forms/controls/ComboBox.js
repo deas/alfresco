@@ -39,7 +39,7 @@ define(["alfresco/forms/controls/BaseFormControl",
       /**
        * @instance
        */
-      getWidgetConfig: function alfresco_forms_controls_DojoSelect__getWidgetConfig() {
+      getWidgetConfig: function alfresco_forms_controls_ComboBox__getWidgetConfig() {
          // Return the configuration for the widget
          return {
             id : this.id + "_CONTROL",
@@ -55,7 +55,7 @@ define(["alfresco/forms/controls/BaseFormControl",
        * 
        * @instance
        */
-      createFormControl: function alfresco_forms_controls_DojoSelect__createFormControl(config, domNode) {
+      createFormControl: function alfresco_forms_controls_ComboBox__createFormControl(config, domNode) {
          var publishTopic = lang.getObject("optionsConfig.publishTopic", false, this);
          var publishPayload = lang.getObject("optionsConfig.publishPayload", false, this);
          var queryAttribute = lang.getObject("optionsConfig.queryAttribute", false, this);
@@ -73,6 +73,21 @@ define(["alfresco/forms/controls/BaseFormControl",
             queryExpr: "${0}"
          });
          return comboBox;
+      },
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/forms/controls/BaseFormControl#setValue} to
+       * reset the ComboBox if the empty string is set as the value.
+       * 
+       * @instance
+       * @param {object} value
+       */
+      setValue: function alfresco_forms_controls_ComboBox__setValue(value) {
+         this.inherited(arguments);
+         if (value === "")
+         {
+            this.wrappedWidget.reset();
+         }
       }
    });
 });
