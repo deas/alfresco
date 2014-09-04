@@ -107,7 +107,6 @@
       ]);
 
       grunt.registerTask('dev', [
-         'vup',
          'watch'
       ]);
 

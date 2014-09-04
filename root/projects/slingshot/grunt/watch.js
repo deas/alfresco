@@ -45,7 +45,7 @@ module.exports = function (grunt, alf) {
          test: {
             files: [alf.jsFiles, alf.cssFiles, alf.testFiles, alf.htmlFiles],
             tasks: [
-               'intern:dev',
+               'newTest',
                'shell:jsdoc'
             ],
             options: {
