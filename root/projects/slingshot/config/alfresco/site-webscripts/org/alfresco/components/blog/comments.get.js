@@ -1,8 +1,7 @@
 function main()
 {
    var height = (args.editorHeight != null) ? args.editorHeight : 180,
-       width = (args.editorWidth != null) ? args.editorWidth : 700,
-       locale = locale.substring(0, 2);
+       width = (args.editorWidth != null) ? args.editorWidth : 700;
 
    var commentList = {
       id: "CommentList",

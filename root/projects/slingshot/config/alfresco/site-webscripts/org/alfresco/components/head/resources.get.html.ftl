@@ -90,6 +90,8 @@
       ];
       
       Alfresco.constants.MENU_ARROW_SYMBOL = "&#9662;";
+
+      Alfresco.constants.TINY_MCE_SUPPORTED_LOCALES = "${config.global["I18N"].getChildValue("tiny-mce-supported-locales")}";
       
       <#if PORTLET>
       document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=";

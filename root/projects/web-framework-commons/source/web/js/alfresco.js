@@ -10142,7 +10142,7 @@ Alfresco.util.RichEditor = function(editorName,id,config)
          // Check we can support the requested language
          if (config.language)
          {
-            var langs = Alfresco.util.message("tinymce_languages").split(","),
+            var langs = Alfresco.constants.TINY_MCE_SUPPORTED_LOCALES.split(","),
                   lang = "en";
             for (var i = 0, j = langs.length; i < j; i++)
             {

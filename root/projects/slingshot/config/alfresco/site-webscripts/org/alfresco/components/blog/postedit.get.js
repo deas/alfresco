@@ -1,7 +1,5 @@
 function main()
 {
-   var locale = this.locale.substring(0, 2);
-
    var blogPostEdit = {
       id : "BlogPostEdit",
       name : "Alfresco.BlogPostEdit",

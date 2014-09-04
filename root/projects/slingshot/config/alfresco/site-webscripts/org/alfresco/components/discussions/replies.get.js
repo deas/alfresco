@@ -10,7 +10,7 @@ function main()
          editorConfig : {
             width: "85%",
             height: 300,
-            language: this.locale.substring(0, 2)
+            language: this.locale
          }
       }
    };

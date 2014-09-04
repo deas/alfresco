@@ -20,6 +20,10 @@
          -->
          <client-debug-autologging>false</client-debug-autologging>
       </flags>
+
+      <I18N>
+         <tiny-mce-supported-locales>en,de,es,fr,it,ja,nl,zh_CN,ru,nb,pt_BR</tiny-mce-supported-locales>
+      </I18N>
       
       <header>
       

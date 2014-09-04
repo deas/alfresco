@@ -11,7 +11,7 @@ function main()
          editMode : (page.url.args.topicId != null),
          editorConfig : {
             height: 300,
-            language: this.locale.substring(0, 2)
+            language: this.locale
          }
       }
    };

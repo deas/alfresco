@@ -1,8 +1,7 @@
 function main()
 {
    var height = (args.editorHeight != null) ? args.editorHeight : 250,
-         width = (args.editorWidth != null) ? args.editorWidth : 538,
-         locale = locale.substring(0, 2);
+         width = (args.editorWidth != null) ? args.editorWidth : 538;
 
    var createComment = {
       id: "CreateComment",

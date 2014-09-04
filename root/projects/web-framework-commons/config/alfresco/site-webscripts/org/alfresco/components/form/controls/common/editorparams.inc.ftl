@@ -9,7 +9,7 @@
       height: ${height},
       width: ${width},
       theme: 'modern',
-      language: "${locale?substring(0, 2)?js_string}",
+      language: "${locale?js_string}",
    <#if appearance == "full"> 
       toolbar: "bold italic underline strikethrough | fontselect fontsizeselect | link unlink image | justifyleft justifycenter justifyright justifyfull | bullist numlist | undo redo | forecolor backcolor"
    <#elseif appearance == "explorer">

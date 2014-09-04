@@ -93,7 +93,7 @@ function main()
          tags : (model.result && model.result.tags != null) ? model.result.tags : [],
          pages : (model.result && model.result.pageList != null) ? model.result.pageList : [],
          versions: versions,
-         locale : locale.substring(0, 2),
+         locale : locale,
          permissions: permissions
       }
    };
