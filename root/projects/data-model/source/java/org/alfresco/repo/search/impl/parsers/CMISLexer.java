@@ -110,7 +110,7 @@ public class CMISLexer extends Lexer {
 	            state.text = null;
 	            if ( input.LA(1)==CharStream.EOF ) 
 	            {
-                    return getEOFToken();
+	                  return getEOFToken();
 	            }
 	            try 
 	            {

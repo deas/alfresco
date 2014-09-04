@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2010 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -509,8 +509,7 @@ public class CMISMapping implements InitializingBean
         // AND any that are derived from them.
         if (       dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_VERSIONABLE)
                 || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_AUDITABLE)
-                || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE)
-                || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_LOCALIZED))
+                || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE))
         {
             return false;
         }
@@ -551,8 +550,7 @@ public class CMISMapping implements InitializingBean
         	// AND any that are derived from them.
         	if (       dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_VERSIONABLE)
         			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_AUDITABLE)
-        			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE)
-        			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_LOCALIZED))
+        			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE))
         	{
         		return false;
         	}
