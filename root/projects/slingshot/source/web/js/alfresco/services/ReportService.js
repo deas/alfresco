@@ -38,7 +38,6 @@ define(["dojo/_base/declare",
 
             TOP_SITE_CONTRIBUTOR_REPORT: "TOP_SITE_CONTRIBUTOR_REPORT",
             SITE_CONTENT_REPORT: "SITE_CONTENT_REPORT",
-            SITE_USAGE_REPORT: "SITE_USAGE_REPORT",
 
             /**
              * An array of the i18n files to use with this widget.
@@ -58,7 +57,6 @@ define(["dojo/_base/declare",
                lang.mixin(this, args);
                this.alfSubscribe("ALF_RETRIEVE_SITE_CONTENT_REPORT", lang.hitch(this, this.getSiteContentReport));
                this.alfSubscribe("ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT", lang.hitch(this, this.getTopSiteContributorReport));
-               this.alfSubscribe("ALF_RETRIEVE_SITE_USAGE_REPORT", lang.hitch(this, this.getSiteUsageReport));
             },
 
             /**
@@ -139,61 +137,7 @@ define(["dojo/_base/declare",
                      }
                   }
                });
-            },
-
-            /**
-             * Requests data that gives an overview of the number of activities taking place in the top sites
-             *
-             * @instance
-             * @param {object} payload The details of the request
-             */
-            getSiteUsageReport: function alfresco_services_ReportService__getSiteUsageReport(payload) {
-               var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_USAGE_REPORT";
-               var url = AlfConstants.PROXY_URI + "pentaho/plugin/cda/api/doQuery?path=/public/Alfresco/Alfresco-Authenticated-Reports.cda&dataAccessId=1";
-               if (payload.startDate)
-               {
-                  url += "&paramStartDate=" + encodeURIComponent(payload.startDate);
-               }
-               if (payload.activityType)
-               {
-                  url += "&paramActivityType=" + encodeURIComponent(payload.activityType);
-               }
-               var config = {
-                  alfTopic: alfTopic,
-                  url: url,
-                  method: "GET",
-                  successCallback: this.publishSiteUsageReport,
-                  callbackScope: this
-               };
-               this.serviceXhr(config);
-               // WA Hard-code response data for now until the services are there
-               /*
-               this.alfPublish(alfTopic + "_SUCCESS", {
-                  requestConfig: config,
-                  response: {
-                     data: {"queryInfo":{"totalRows":"2"},"resultset":[["All Sites","Sample: Web Site Design Project",28,15],["All Sitess","Test",3,6]],"metadata":[{"colIndex":0,"colType":"String","colName":"[Sites].[(All)]"},{"colIndex":1,"colType":"String","colName":"[Sites].[Name]"},{"colIndex":2,"colType":"Numeric","colName":"[Activity].[All Activitys].[activity.org.alfresco.documentlibrary.file-downloaded]/[Measures].[Number of Events]"},{"colIndex":3,"colType":"Numeric","colName":"[Activity].[All Activitys].[activity.org.alfresco.documentlibrary.file-previewed]/[Measures].[Number of Events]"}]},
-                     dataDescriptor: {
-                        crosstabMode: false,
-                        seriesInRows: false
-                     }
-                  }
-               });
-               */
-            },
-
-            publishSiteUsageReport: function alfresco_services_ReportService__publishSiteUsageReport(response, requestConfig) {
-               this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
-                  requestConfig: requestConfig,
-                  response: {
-                     data: response,
-                     dataDescriptor: {
-                         crosstabMode: false,
-                         seriesInRows: false
-                      }
-                  }
-               });
             }
-
 
          });
       });
