@@ -230,14 +230,19 @@ define(["dojo/_base/declare",
                      subscriptionTopic: "SHOW_CONTRIBUTORS_BY_DATE",
                      widgets: [
                         {
-                           name: "alfresco/charts/ccc/DonutChart",
+                           name: "alfresco/charts/ccc/PieChart",
                            config: {
                               readers: [
                                  { names: 'category', indexes: 0 },
                                  { names: 'value', indexes: 2 }
                               ],
-                              selectable: true,
+                              explodedSliceRadius: null,
+                              selectable: false,
                               hoverable:  true,
+                              extensionPoints: {
+                                 slice_innerRadiusEx: '55%',
+                                 slice_strokeStyle: 'white'
+                              },
                               clickTopic: "REPORT_ITEM_CLICKED",
                               tooltip: {
                                  format: function(scene){

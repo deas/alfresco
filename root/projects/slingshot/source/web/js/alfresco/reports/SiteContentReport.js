@@ -69,6 +69,13 @@ define(["dojo/_base/declare",
                         { names: 'category', indexes: 0 },
                         { names: 'value', indexes: 2 }
                      ],
+                     explodedSliceRadius: null,
+                     selectable: false,
+                     hoverable:  true,
+                     extensionPoints: {
+                        slice_innerRadiusEx: '55%',
+                        slice_strokeStyle: 'white'
+                     },
                      tooltip: {
                         format: function(scene){
                            var tooltip = '<div style="text-align: left;">';
