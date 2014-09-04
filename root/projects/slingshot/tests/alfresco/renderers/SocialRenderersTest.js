@@ -39,7 +39,7 @@ define(["intern!object",
             return "#" + id + " ." + status;
          };
 
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SocialRenderers_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SocialRenderers", testname)
 
          .end()
          
@@ -162,7 +162,7 @@ define(["intern!object",
             return "#" + id + " ." + status;
          };
 
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SocialRenderers_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SocialRenderers", testname)
 
          .end()
          
@@ -267,7 +267,7 @@ define(["intern!object",
             return "#" + id + " ." + status;
          };
 
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SocialRenderers_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SocialRenderers", testname)
 
          .end()
          

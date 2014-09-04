@@ -53,7 +53,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "MultipleEntryFormControlTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/MultipleEntryFormControl_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/MultipleEntryFormControl", testname)
 
          .end()
 

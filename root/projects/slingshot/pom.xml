@@ -429,7 +429,8 @@
                    <stopWait>10</stopWait>
                    <!-- Configure the application, this will essentially be Share but overlaid with the test resources -->
                    <webApp>
-                     <descriptor>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</descriptor>
+                     <!--  <descriptor>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</descriptor> -->
+                     <descriptor>tests/testApp/WEB-INF/web.xml</descriptor>
                      <!--  <descriptor>tests/testApp/WEB-INF/web.xml</descriptor> -->
                      <contextPath>/aikau</contextPath>
                      <resourceBases>

@@ -33,7 +33,7 @@ define(["intern!object",
 
          // var browser = this.remote;
          var testname = "Pagination Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/Paginator_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Paginator", testname)
 
          // Make sure the page has loaded...
          .findByCssSelector(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "any"))

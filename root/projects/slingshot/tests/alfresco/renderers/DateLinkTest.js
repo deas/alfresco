@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "DateLinkTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/DateLink_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/DateLink", testname)
 
          .end()
 

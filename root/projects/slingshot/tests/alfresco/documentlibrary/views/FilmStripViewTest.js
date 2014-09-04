@@ -60,7 +60,7 @@ define(["intern!object",
 
          // var browser = this.remote;
          var testname = "FilmStripView Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/FilmStripView_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/FilmStripView", testname)
 
             // Wait for view to be created...
 

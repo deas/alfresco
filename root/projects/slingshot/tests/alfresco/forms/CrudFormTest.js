@@ -33,7 +33,7 @@ define(["intern!object",
       'Basic Test': function () {
          var browser = this.remote;
          var testname = "CRUD Form Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/page_models/CrudForm_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/CrudForm", testname)
 
             // Check the info node is displayed initially...
             .findByCssSelector("#CRUD_FORM_INFO_NODE")

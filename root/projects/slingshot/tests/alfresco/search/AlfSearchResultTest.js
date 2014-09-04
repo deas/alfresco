@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "AlfSearchResult Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/search/page_models/AlfSearchResult_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/AlfSearchResult", testname)
 
          .end()
 

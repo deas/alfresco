@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Header Widgets Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/HeaderWidgets_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/HeaderWidgets", testname)
 
          .end()
 
@@ -200,7 +200,7 @@ define(["intern!object",
       'Add Favourite Test': function() {
          var browser = this.remote;
          var testname = "Add Favourite";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/AddFavouriteSite_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/AddFavouriteSite", testname)
 
             .end()
 
@@ -233,7 +233,7 @@ define(["intern!object",
       'Remove Favourite Test': function() {
          var browser = this.remote;
          var testname = "Remove Favourite";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/RemoveFavouriteSite_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/RemoveFavouriteSite", testname)
 
             .end()
             

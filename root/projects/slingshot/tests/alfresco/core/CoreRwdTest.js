@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "CoreRwdTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/CoreRwd_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/CoreRwd", testname)
 
          .end()
 

@@ -39,7 +39,7 @@ define(["intern!object",
          var alfPause = 150;
          var browser = this.remote;
          var testname = "AlfDocumentListWithHeaderTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/AlfDocumentListWithHeader", testname)
             
             .sleep(alfPause)
 

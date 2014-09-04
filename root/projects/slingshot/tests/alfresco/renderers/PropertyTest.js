@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "PropertyTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Property_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Property", testname)
 
          .end()
 

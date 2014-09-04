@@ -34,7 +34,7 @@ define(["intern!object",
          var browser = this.remote;
          var testname = "AlfSideBarContainer Test";
          var startSize;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/layout/page_models/AlfSideBarContainer_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/AlfSideBarContainer", testname)
 
          .end()
 

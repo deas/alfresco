@@ -33,7 +33,7 @@ define(["intern!object",
       'Forms': function () {
          var browser = this.remote;
          var testname = "SingleTextFieldFormTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/page_models/SingleTextFieldForm_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SingleTextFieldForm", testname)
 
          .end()
 

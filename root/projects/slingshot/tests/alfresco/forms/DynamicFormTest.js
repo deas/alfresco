@@ -33,7 +33,7 @@ define(["intern!object",
       'Basic Test': function () {
          var browser = this.remote;
          var testname = "DynamicForm Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/page_models/DynamicForm_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/DynamicForm", testname)
 
          .end()
 

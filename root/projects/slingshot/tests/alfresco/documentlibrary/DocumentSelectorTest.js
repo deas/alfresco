@@ -55,7 +55,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "AlfDocumentListTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/DocumentSelector_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/DocumentSelector", testname)
 
          .end()
 

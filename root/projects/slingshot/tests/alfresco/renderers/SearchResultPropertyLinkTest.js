@@ -33,7 +33,7 @@ define(["intern!object",
       'SearchResultPropertyLinkTest': function () {
          var browser = this.remote;
          var testname = "SearchResultPropertyLinkTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/SearchResultPropertyLink_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SearchResultPropertyLink", testname)
 
          .end()
 

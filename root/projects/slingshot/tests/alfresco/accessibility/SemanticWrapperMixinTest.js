@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "SemanticWrapperMixinTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/accessibility/page_models/SemanticWrapperMixin_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SemanticWrapperMixin", testname)
 
          .end()
 

@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "DocumentPickerTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/DocumentPicker_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/DocumentPicker", testname)
 
          .end()
 

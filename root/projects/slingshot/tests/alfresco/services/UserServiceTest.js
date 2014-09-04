@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "UserServiceTest - Success";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/services/page_models/UserServiceSuccess_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/UserServiceSuccess", testname)
 
          .end()
 
@@ -82,7 +82,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "UserServiceTest - Failure";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/services/page_models/UserServiceFailure_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/UserServiceFailure", testname)
 
          .end()
 

@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Twister mouse tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/layout/page_models/Twister_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Twister", testname)
 
          .end()
 
@@ -134,7 +134,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Twister keyboard tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/layout/page_models/Twister_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Twister", testname)
 
          .end()
 

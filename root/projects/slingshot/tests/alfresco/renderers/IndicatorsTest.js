@@ -36,7 +36,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "IndicatorsTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Indicators_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Indicators", testname)
 
          .end()
 

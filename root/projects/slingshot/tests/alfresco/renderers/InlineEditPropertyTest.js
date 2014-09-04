@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Inline Edit Property Basic Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/InlineEditProperty_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/InlineEditProperty", testname)
 
             // Check that the edit icon isn't initially displayed...
             .findByCssSelector("#INLINE_EDIT .editIcon")

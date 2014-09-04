@@ -67,8 +67,13 @@ public class I18nDependencyHandler
         content.append(globalMessagesObject);
         content.append(".messages == null) {\n   ");
         content.append(globalMessagesObject);
-        content.append(".messages = {};\n}\n");
+        content.append(".messages = {};\n}\nif(");
+        content.append(globalMessagesObject);
+        content.append(".messages.global == null) {\n   ");
+        content.append(globalMessagesObject);
+        content.append(".messages.global = {};\n}\n");
 
+        
         content.append(globalMessagesObject);
         content.append(".messages.defaultScope = '");
         content.append(this.webFrameworkConfigElement.getDojoMessagesDefaultScope());

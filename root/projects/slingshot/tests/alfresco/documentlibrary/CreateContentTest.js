@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Create Content Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/CreateContent", testname)
 
          // Check everything is initialised correctly...
          .findByCssSelector("#CREATE_CONTENT_MENU_text")
@@ -92,7 +92,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Create Content Test (Deny Permission)";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/CreateContent", testname)
 
          // Deny permissions...
          .findByCssSelector("#DENY_CREATE_PERMISSION_label")
@@ -180,7 +180,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Create Content Test (Change Path)";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/CreateContent", testname)
 
          // Set tag filter...
          .findByCssSelector("#SET_OTHER_FILTER_label")
@@ -268,7 +268,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Create Templates Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/CreateContent_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/CreateContent", testname)
 
          .end()
 

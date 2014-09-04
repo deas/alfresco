@@ -43,7 +43,7 @@ define(["intern!object",
       'Upload Failure': function () {
 
          // var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/upload/page_models/UploadFailure_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/UploadFailure", testname)
 
          // Simulate providing a zero byte file and check the output...
          .findByCssSelector("#SINGLE_UPLOAD_label")
@@ -64,7 +64,7 @@ define(["intern!object",
       'Bad File Data': function () {
 
          // var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/upload/page_models/Upload_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Upload", testname)
 
          // Simulate providing a zero byte file and check the output...
          .findByCssSelector("#BAD_FILE_DATA_label")

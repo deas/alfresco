@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "PublishPayloadMixinOnActionsTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/PublishPayloadMixinOnActions_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/PublishPayloadMixinOnActions", testname)
 
          .end()
 

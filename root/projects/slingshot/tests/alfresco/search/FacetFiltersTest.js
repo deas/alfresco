@@ -38,7 +38,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "FacetFiltersTest - Mouse tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/search/page_models/FacetFilters_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/FacetFilters", testname)
 
          .end()
 
@@ -247,7 +247,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "FacetFiltersTest - Keyboard tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/search/page_models/FacetFilters_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/FacetFilters", testname)
 
          .end()
 
@@ -355,7 +355,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "FacetFiltersTest - Url hash tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/search/page_models/FacetFilters_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/FacetFilters", testname)
 
          .end()
 

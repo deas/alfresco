@@ -33,7 +33,7 @@ define(["intern!object",
       'RenderFilter': function () {
          var browser = this.remote;
          var testname = "RenderFilterTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/RenderFilter_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/RenderFilter", testname)
 
          // The IDs that should be displayed are...
          // MBI1 - successful filter rule

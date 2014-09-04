@@ -32,7 +32,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "BasicTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/creation/page_models/WidgetConfig_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/WidgetConfig", testname)
 
          .end()
 

@@ -57,12 +57,12 @@ define(["dojo/_base/lang"],
       USERNAME: "${(user.name!"")?js_string}",
       PORTLET: ${PORTLET?string},
       PORTLET_URL: unescape("${(context.attributes.portletUrl!"")?js_string}"),
-      JS_LOCALE: "${locale}",
+      <#if config.scoped["CSRFPolicy"]??>
       CSRF_POLICY: {
-         enabled: ${((config.scoped["CSRFPolicy"]["filter"].getChildren("rule")?size > 0)?string)!false},
-         cookie: "${config.scoped["CSRFPolicy"]["client"].getChildValue("cookie")!""}",
-         header: "${config.scoped["CSRFPolicy"]["client"].getChildValue("header")!""}",
-         parameter: "${config.scoped["CSRFPolicy"]["client"].getChildValue("parameter")!""}",
+         enabled: <#if config.scoped["CSRFPolicy"]["filter"]??>${((config.scoped["CSRFPolicy"]["filter"].getChildren("rule")?size > 0)?string)!false}<#else>false</#if>,
+         cookie: <#if config.scoped["CSRFPolicy"]["client"]??>"${config.scoped["CSRFPolicy"]["client"].getChildValue("cookie")!""}"<#else>""</#if>,
+         header: <#if config.scoped["CSRFPolicy"]["client"]??>"${config.scoped["CSRFPolicy"]["client"].getChildValue("header")!""}"<#else>""</#if>,
+         parameter: <#if config.scoped["CSRFPolicy"]["client"]??>"${config.scoped["CSRFPolicy"]["client"].getChildValue("parameter")!""}"<#else>""</#if>,
          properties: {
             <#if config.scoped["CSRFPolicy"]["properties"]??>
                <#assign csrfProperties = (config.scoped["CSRFPolicy"]["properties"].children)![]>
@@ -72,11 +72,13 @@ define(["dojo/_base/lang"],
             </#if>
          }
       },
+      </#if>
       URI_TEMPLATES: {
          <#list config.scoped["UriTemplate"]["uri-templates"].childrenMap["uri-template"] as c>
             "${c.attributes["id"]}": "${c.value}"<#if c_has_next>,</#if>
          </#list>
       },
-      QUICKSHARE_URL: "${config.scoped["Social"]["quickshare"].getChildValue("url")?replace("{context}", url.context)?js_string}"
+      QUICKSHARE_URL: <#if config.scoped["Social"]["quickshare"]??>"${config.scoped["Social"]["quickshare"].getChildValue("url")?replace("{context}", url.context)?js_string}"<#else>""</#if>,
+      JS_LOCALE: "${locale}"
    };
 });

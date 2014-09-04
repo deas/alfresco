@@ -33,7 +33,7 @@ define(["intern!object",
       'VisibilityConfig': function () {
          var browser = this.remote;
          var testname = "VisibilityConfigTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/VisibilityConfig_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/VisibilityConfig", testname)
 
          .end()
 

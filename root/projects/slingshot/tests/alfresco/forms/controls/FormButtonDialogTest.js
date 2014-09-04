@@ -35,7 +35,7 @@ define(["intern!object",
          var browser = this.remote;
          var testname = "FormButtonDialogTest";
          var startPos;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/FormButtonDialog_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/FormButtonDialog", testname)
 
          .end()
 

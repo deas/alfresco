@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "WarningTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/header/page_models/Warning_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Warning", testname)
 
          .end()
 

@@ -32,7 +32,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "PublishPayloadMixinTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/core/page_models/PublishPayloadMixin_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/PublishPayloadMixin", testname)
 
          // Check that with minimal configuration we still get a payload published
          .findByCssSelector("#PA_NO_TYPE")

@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "PublishingDropDownMenuTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/PublishingDropDownMenu_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/PublishingDropDownMenu", testname)
 
          .end()
 

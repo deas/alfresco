@@ -36,7 +36,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "LabelTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/html/page_models/Label_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Label", testname)
 
          .end()
 

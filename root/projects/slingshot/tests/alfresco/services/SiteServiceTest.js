@@ -35,7 +35,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "SiteServiceTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/services/page_models/SiteService_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
 
          .end()
 
@@ -368,7 +368,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "SiteServiceTest - phase2";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/services/page_models/SiteService_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
 
          .end()
 

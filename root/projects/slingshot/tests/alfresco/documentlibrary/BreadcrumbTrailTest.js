@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Breadcrumb Trail Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/BreadcrumbTrail_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/BreadcrumbTrail", testname)
 
          // Test 1...
          // Check the path is initially displayed...

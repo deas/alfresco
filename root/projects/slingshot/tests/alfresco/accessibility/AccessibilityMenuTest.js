@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "AccessibilityMenuTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/accessibility/page_models/AccessibilityMenu_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/AccessibilityMenu", testname)
 
          // Find the menu element
          .findById("AccessibilityMenu")

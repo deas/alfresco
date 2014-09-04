@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Table and Form Dialog Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/misc/page_models/TableAndFormDialog_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/TableAndFormDialog", testname)
 
          .end()
 

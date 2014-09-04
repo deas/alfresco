@@ -33,7 +33,7 @@ define(["intern!object",
 
             var browser = this.remote;
             var testname = "XhrActionsTest";
-            return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/XhrActions_TestPage.json", testname)
+            return TestCommon.loadTestWebScript(this.remote, "/XhrActions", testname)
 
                // Test spec:
                // 1: Check dropdown element exists

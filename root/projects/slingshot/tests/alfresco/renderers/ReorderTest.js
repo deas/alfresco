@@ -33,7 +33,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "Reorder Test";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/renderers/page_models/Reorder_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Reorder", testname)
 
          // Although there are 3 items, only 2 up arrows and 2 down arrows should be displayed (first
          // can't be moved up, last can't be moved down)...

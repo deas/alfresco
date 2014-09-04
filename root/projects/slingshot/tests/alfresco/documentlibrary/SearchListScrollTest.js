@@ -55,7 +55,7 @@ define(["intern!object",
                .end();
             };
 
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/page_models/SearchListScroll_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/SearchListScroll", testname)
 
             // Check for the search request being made...
             .findByCssSelector(TestCommon.topicSelector("ALF_SEARCH_REQUEST", "publish", "any"))

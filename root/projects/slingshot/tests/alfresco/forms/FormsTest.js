@@ -34,7 +34,7 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "FormsTest";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/page_models/Forms_TestPage.json", testname)
+         return TestCommon.loadTestWebScript(this.remote, "/Forms", testname)
 
          .end()
 
