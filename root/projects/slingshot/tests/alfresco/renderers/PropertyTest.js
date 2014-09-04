@@ -78,25 +78,34 @@ define(["intern!object",
             })
             .end()
 
+         // Position the mouse over the SubscriptionLog to make sure the hover only property isn't displayed...
+         .findByCssSelector(".alfresco-testing-SubscriptionLog")
+            .then(function(element) {
+               browser.moveMouseTo(element);
+            })
+            .end()
+
          .findByCssSelector("#HOVER .inner")
-            .getComputedStyle("visibility")
+           .isDisplayed()
             .then(function(result) {
                TestCommon.log(testname,"Check hover property is hidden");
-               assert(result == "hidden", "Hover displayed unexpectedly");
+               assert(result === false, "Hover displayed unexpectedly");
             })
             .end()
 
          .findByCssSelector("#LIST table tbody tr td")
-            .moveMouseTo()
+            .then(function(element) {
+               browser.moveMouseTo(element);
+            })
             .end()
 
-//         .findByCssSelector("#HOVER .value")
-//         .getVisibleText()
-//         .then(function(resultText) {
-//            TestCommon.log(testname,"Check hover property is shown on hover");
-//            assert(resultText == "Test", "Hover not displayed: " + resultText);
-//         })
-//         .end()
+        .findByCssSelector("#HOVER .value")
+           .isDisplayed()
+           .then(function(result) {
+               TestCommon.log(testname,"Check hover property is displayed");
+               assert(result === true, "Hover displayed unexpectedly");
+            })
+           .end()
 
          .findByCssSelector("#LABEL .label")
             .getVisibleText()
