@@ -101,6 +101,7 @@ define(["dojo/_base/declare",
              * @default null
              */
             widgets: [
+               /*
                {
                   name: "alfresco/forms/Form",
                   config: {
@@ -127,6 +128,7 @@ define(["dojo/_base/declare",
                      ]
                   }
                },
+               */
                {
                   name: "alfresco/charts/ccc/ChartsView",
                   config:
