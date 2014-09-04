@@ -80,9 +80,7 @@ define({
       'tests/alfresco/forms/controls/DojoValidationTextBoxTest',
       'tests/alfresco/forms/controls/FormButtonDialogTest',
       'tests/alfresco/forms/controls/MultipleEntryFormControlTest',
-      'tests/alfresco/forms/controls/ValidationTest',
-
-      'alfresco/footer/FooterTest', 
+      'tests/alfresco/forms/controls/ValidationTest', 
 
       'tests/alfresco/header/HeaderWidgetsTest',
       'tests/alfresco/header/WarningTest',

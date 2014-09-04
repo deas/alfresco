@@ -35,6 +35,9 @@ define(["intern!object",
          var testname = "PropertyTest";
          return TestCommon.loadTestWebScript(this.remote, "/Property", testname)
 
+         .moveMouseTo(null, 0, 0)
+            .end()
+
          .findByCssSelector("#BASIC .value")
             .getVisibleText()
             .then(function(resultText) {
