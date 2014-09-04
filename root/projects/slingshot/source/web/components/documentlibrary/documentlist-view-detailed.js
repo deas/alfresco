@@ -254,7 +254,8 @@
          if (jsNode.isLink)
          {
             // Link handling
-            oRecord.setData("displayName", scope.msg("details.link-to", record.location.file));
+            // MNT-11988: Renaming links is not working correctly
+            oRecord.setData("displayName", record.fileName.replace(/(.url)$/,""));
          }
          else if (properties.title && properties.title !== record.displayName && scope.options.useTitle)
          {
