@@ -23,18 +23,16 @@
  * @author Richard Smith
  */
 define(["intern!object",
-        "intern/chai!expect",
         "require",
-        "alfresco/TestCommon",
-        "intern/dojo/node!leadfoot/keys"], 
-        function (registerSuite, expect, require, TestCommon, keys) {
+        "alfresco/TestCommon"], 
+        function (registerSuite, require, TestCommon) {
 
    registerSuite({
       name: 'Site Service Test',
-      'SiteService': function () {
+      'SiteServiceTest - Create and edit site': function () {
 
          var browser = this.remote;
-         var testname = "SiteServiceTest";
+         var testname = "SiteServiceTest - Create and edit site";
          return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
 
          // Create and edit
@@ -56,6 +54,20 @@ define(["intern!object",
          .findByCssSelector("div.yui-simple-dialog span.yui-button button")
             .click()
             .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      },
+
+      'SiteServiceTest - Site details': function () {
+
+         var browser = this.remote;
+         var testname = "SiteServiceTest - Site details";
+         return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
+
+         .end()
 
          // Site details
          .findById("GET_SITE_DETAILS")
@@ -83,6 +95,50 @@ define(["intern!object",
             .click()
             .then(function () {
                TestCommon.log(testname,"Test ALF_GET_SITE_DETAILS with a faulty payload 3");
+            })
+            .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      },
+
+      'SiteServiceTest - Favourite and recent sites': function () {
+
+         var browser = this.remote;
+         var testname = "SiteServiceTest - Favourite and recent sites";
+         return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
+
+         .end()
+
+         // Recent sites
+         .findById("GET_RECENT_SITES")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_GET_RECENT_SITES");
+            })
+            .end()
+
+         .findById("GET_RECENT_SITES_BAD1")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_GET_RECENT_SITES with a faulty payload 1");
+            })
+            .end()
+
+         // Favourite sites
+         .findById("GET_FAVOURITE_SITES")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_GET_FAVOURITE_SITES");
+            })
+            .end()
+
+         .findById("GET_FAVOURITE_SITES_BAD1")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_GET_FAVOURITE_SITES with a faulty payload 1");
             })
             .end()
 
@@ -130,6 +186,20 @@ define(["intern!object",
             })
             .end()
 
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+      },
+
+      'SiteServiceTest - Site memberships': function () {
+
+         var browser = this.remote;
+         var testname = "SiteServiceTest - Site memberships";
+         return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
+
+         .end()
+
          // Get site memberships
          .findById("GET_SITE_MEMBERSHIPS")
             .click()
@@ -156,21 +226,6 @@ define(["intern!object",
             .click()
             .then(function () {
                TestCommon.log(testname,"Test ALF_GET_SITE_MEMBERSHIPS with a faulty payload 3");
-            })
-            .end()
-
-         // Update site
-         .findById("UPDATE_SITE_DETAILS")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_UPDATE_SITE_DETAILS");
-            })
-            .end()
-
-         .findById("UPDATE_SITE_DETAILS_BAD1")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_UPDATE_SITE_DETAILS with a faulty payload 1");
             })
             .end()
 
@@ -236,7 +291,7 @@ define(["intern!object",
             })
             .end()
 
-         .findByCssSelector("div.alfresco-dialog-AlfDialog div.footer span.dijitReset.dijitInline.dijitButtonNode")
+         .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode")
             .click()
             .end()
 
@@ -247,49 +302,7 @@ define(["intern!object",
             })
             .end()
 
-         .findByCssSelector("div.alfresco-dialog-AlfDialog div.footer span.dijitReset.dijitInline.dijitButtonNode")
-            .click()
-            .end()
-
-         // Recent sites
-         .findById("GET_RECENT_SITES")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_GET_RECENT_SITES");
-            })
-            .end()
-
-         .findById("GET_RECENT_SITES_BAD1")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_GET_RECENT_SITES with a faulty payload 1");
-            })
-            .end()
-
-         // Favourite sites
-         .findById("GET_FAVOURITE_SITES")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_GET_FAVOURITE_SITES");
-            })
-            .end()
-
-         .findById("GET_FAVOURITE_SITES_BAD1")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_GET_FAVOURITE_SITES with a faulty payload 1");
-            })
-            .end()
-
-         // Delete site
-         .findById("DELETE_SITE")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_DELETE_SITE");
-            })
-            .end()
-
-         .findByCssSelector("div.alfresco-dialog-AlfDialog div.footer span.dijitReset.dijitInline.dijitButtonNode:first-of-type")
+         .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode")
             .click()
             .end()
 
@@ -323,6 +336,28 @@ define(["intern!object",
             .end()
 
          // Leave site
+         .findById("LEAVE_SITE")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_LEAVE_SITE");
+            })
+            .end()
+
+         .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:last-of-type")
+            .click()
+            .end()
+
+         .findById("LEAVE_SITE")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_LEAVE_SITE");
+            })
+            .end()
+
+         .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:first-of-type")
+            .click()
+            .end()
+
          .findById("LEAVE_SITE_BAD1")
             .click()
             .then(function () {
@@ -330,7 +365,7 @@ define(["intern!object",
             })
             .end()
 
-         .findByCssSelector("div.dijitDialogPaneContent > div.footer > span:nth-child(2) > span")
+         .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:last-of-type")
             .click()
             .end()
 
@@ -341,51 +376,55 @@ define(["intern!object",
             })
             .end()
 
-         .findByCssSelector("div.dijitDialogPaneContent > div.footer > span:nth-child(2) > span")
+         .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:last-of-type")
             .click()
             .end()
 
-         .findById("LEAVE_SITE")
-            .click()
-            .then(function () {
-               TestCommon.log(testname,"Test ALF_LEAVE_SITE");
-            })
-            .end()
-
-         .findByCssSelector("div.dijitDialogPaneContent > div.footer > span:nth-child(2) > span")
-            .click()
-            .end()
-         
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
          });
       },
 
-      'SiteService - phase2': function () {
+      'SiteServiceTest - Update and delete site': function () {
 
          var browser = this.remote;
-         var testname = "SiteServiceTest - phase2";
+         var testname = "SiteServiceTest - Update and delete site";
          return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
 
          .end()
 
-         .findById("LEAVE_SITE")
+         // Update site
+         .findById("UPDATE_SITE_DETAILS")
             .click()
             .then(function () {
-               TestCommon.log(testname,"Test ALF_LEAVE_SITE");
+               TestCommon.log(testname,"Test ALF_UPDATE_SITE_DETAILS");
             })
             .end()
 
-         .findByCssSelector("div.dijitDialogPaneContent > div.footer > span:nth-child(1) > span")
+         .findById("UPDATE_SITE_DETAILS_BAD1")
             .click()
-            .sleep(500)
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_UPDATE_SITE_DETAILS with a faulty payload 1");
+            })
             .end()
 
-         .then(function () {
-            TestCommon.postCoverageResults(browser, true);
-         });
+         // Delete site
+         .findById("DELETE_SITE")
+            .click()
+            .then(function () {
+               TestCommon.log(testname,"Test ALF_DELETE_SITE");
+            })
+            .end()
 
+         .findByCssSelector("div.alfresco-dialog-AlfDialog div.footer span.dijitReset.dijitInline.dijitButtonNode:first-of-type")
+            .click()
+            .end()
+
+         // Post the coverage results...
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
       }
    });
 });
