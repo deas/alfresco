@@ -47,10 +47,11 @@ define(["dojo/_base/declare",
       constructor: function alfresco_services_NotificationService__constructor(args) {
          lang.mixin(this, args);
          this.alfSubscribe("ALF_DISPLAY_NOTIFICATION", lang.hitch(this, "onDisplayNotification"));
+         this.alfSubscribe("ALF_DISPLAY_PROMPT", lang.hitch(this, "onDisplayPrompt"));
       },
       
       /**
-       * Returns a URL for adding and removing ratings for a node.
+       * Displays a notification to the user
        * 
        * @instance
        * @param {object} payload The The details of the notification.
@@ -62,6 +63,31 @@ define(["dojo/_base/declare",
             Alfresco.util.PopupManager.displayMessage({
                text: message
             });
+         }
+         else
+         {
+            this.alfLog("warn", "It was not possible to display the message because no 'message' attribute was provided", payload);
+         }
+      },
+
+      /**
+       * Displays a prompt to the user
+       *
+       * @instance
+       * @param {object} payload The The details of the notification.
+       */
+      onDisplayPrompt: function alfresco_services_NotificationService__onDisplayPrompt(payload) {
+         var message = lang.getObject("message", false, payload);
+         if (message != null)
+         {
+            var config = {
+               text: message
+            };
+            if (payload.title)
+            {
+               config.title = payload.title;
+            }
+            Alfresco.util.PopupManager.displayMessage(config);
          }
          else
          {

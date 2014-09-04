@@ -88,6 +88,32 @@ define(["dojo/_base/declare",
             templateString: template,
 
             /**
+             * Config that makes it possible to dynamically update the title.
+             * Should be supplied in the format of
+             * {
+             *    titleConfig: {
+             *       topic: "SOME_TOPIC",
+             *       attribute: "path.to.topic.payload.attribute"
+             *    }
+             * }
+             *
+             * If there is no attribute present the entire payload value will be used as the title.
+             *
+             * @instance
+             * @type {object}
+             */
+            titleConfig: null,
+
+            /**
+             * The container that holds the title.
+             * Will be populated by dojo.
+             *
+             * @instance
+             * @type {HTMLElement}
+             */
+            titleNode: null,
+
+            /**
              * Widgets to place as title bar actions.
              *
              * @instance
@@ -199,7 +225,22 @@ define(["dojo/_base/declare",
                array.forEach(["title"], lang.hitch(this, function(key) {
                   this.label[key] = this.message(key);
                }));
+               if (this.title) {
+                  this.label[key] = this.title;
+               }
+               if (this.titleConfig) {
+                  this.alfSubscribe(this.titleConfig.topic, lang.hitch(this, this._processTitleConfig));
+               }
+            },
+
+            _processTitleConfig: function(payload){
+               this._setTitle(lang.getObject(this.titleConfig.attribute, false, payload));
+            },
+
+            _setTitle: function (title) {
+               this.titleNode.innerHTML = AlfCore.encodeHTML(title);
             }
 
          });
-      });
+      }
+);
