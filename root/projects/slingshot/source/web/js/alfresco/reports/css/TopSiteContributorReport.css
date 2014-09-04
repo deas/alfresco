@@ -16,6 +16,10 @@
    float: none;
 }
 
+.alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl > label {
+   display: inline;
+}
+
 /* Remove the 'Select' label which is useful for screen readers but not otherwise */
 .alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl:first-child .label {
    display: none;
