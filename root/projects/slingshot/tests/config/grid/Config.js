@@ -33,7 +33,8 @@ define({
     */
    urls: {
       bootstrapBaseUrl: "http://localhost:8081",
-      moduleDeploymentBaseUrl: "http://admin:admin@localhost:8081"
+      moduleDeploymentBaseUrl: "http://admin:admin@localhost:8081",
+      unitTestAppBaseUrl: "http://localhost:8089"
    },
 
    /**

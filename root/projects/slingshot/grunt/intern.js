@@ -33,24 +33,27 @@ module.exports = function (grunt, alf) {
    grunt.registerTask('test', [
       // 'csslint', // TODO: Make this friendly.
       // 'jshint', // TODO: tweak .jshintrc to match our code style.
+      'waitServer',
       'intern:dev' // Run all the intern tests
    ]);
 
    // Register a test task that uses Intern_local
    grunt.registerTask('test_local', [
       // 'shell:startTestApp',
-      // 'waitServer',
+      'waitServer',
       'intern:local'
       // 'shell:stopTestApp' // Run all the intern tests a local instance of selenium
    ]);
 
    // Register a test task that uses Intern_sl
    grunt.registerTask('test_sl', [
+      'waitServer',
       'intern:sl' // Run all the intern tests on sauce labs
    ]);
 
    // Register a test task that uses Intern_grid
    grunt.registerTask('test_grid', [
+      'waitServer',
       'intern:grid' // Run all the intern tests on grid
    ]);
 
