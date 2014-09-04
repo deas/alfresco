@@ -20,11 +20,18 @@
 'use strict';
 
 /**
- * Notification tasks
+ * Server wait tasks
  */
 
 module.exports = function (grunt, alf) {
    // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
+
+   // NOTE: It is by design that we wait for RequireEverything to be loaded. This is because
+   //       by waiting for all dependencies to be processed in Surf BEFORE starting the unit tests
+   //       we can avoid spurious test failures caused by timeouts. If RequireEverthing has been 
+   //       loaded then then unit tests will run much faster and in a more consistent fashion.
+   //       The down-side is that this is the longest page to load, however for test development
+   //       it is recommended to manually control the Jetty test server for expediency.
    return {
       waitServer: {
          server: {
