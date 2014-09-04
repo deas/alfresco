@@ -138,17 +138,17 @@ define(["dojo/_base/declare",
          
          // We need a menu...
          this._menuBar = new CustomMenuBar({});
+         this._menuBar.placeAt(this.containerNode);
 
-         var _this = this;
          if (this.widgets && this.widgets instanceof Array)
          {
             // Convert any i18n keys into the translated labels...
             array.forEach(this.widgets, function(entry, i) {
                if (entry.config && entry.config.label)
                {
-                  entry.config.label = _this.message(entry.config.label);
+                  entry.config.label = this.message(entry.config.label);
                }
-            });
+            }, this);
             
             // Process all the widgets, when complete the allWidgetsProcessed function will be called
             // with all the instantiated menu widgets passed as an argument. These will then be added
@@ -167,7 +167,6 @@ define(["dojo/_base/declare",
          array.forEach(widgets, function(entry, i) {
             this._menuBar.addChild(entry);
          }, this);
-         this._menuBar.placeAt(this.containerNode);
       }
    });
 });
