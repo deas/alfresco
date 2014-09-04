@@ -1,0 +1,9 @@
+.alfresco-layout-IFrame iframe {
+   border: none;
+}
+
+.alfresco-layout-IFrame div {
+   display: table;
+   margin: 0 auto;
+   margin-top: 4em;
+}
