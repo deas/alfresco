@@ -237,8 +237,9 @@ public class ProcessJsonModelDirective extends JavaScriptDependencyDirective
                 {
                     if (g != null && !g.trim().equals(""))
                     {
+                        groupsJSONStr.append("\"");
                         groupsJSONStr.append(g);
-                        groupsJSONStr.append(":true,");
+                        groupsJSONStr.append("\":true,");
                     }
                 }
                 if (groupsJSONStr.length() > 1)
