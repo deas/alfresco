@@ -43,15 +43,15 @@ define(["dojo/_base/declare",
             pvcChartType: "BarChart",
 
             /**
-             * Direction in which the bars should run
+             * The chart orientation indicates if the direction or the bars is vertical or horizontal. 
              *
              * For more details visit:
-             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.plots.BarPlot.html#oritentation}
+             * {@link http://www.webdetails.pt/ctools/charts/jsdoc/symbols/pvc.options.charts.BarChart.html#orientation}
              *
              * @instance
              * @default "vertical"
              */
-            oritentation: "vertical",
+            orientation: "vertical",
 
             /**
              * An array of the i18n files to use with this widget.

@@ -150,7 +150,6 @@ define(["dojo/_base/declare",
             getSiteUsageReport: function alfresco_services_ReportService__getSiteUsageReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_USAGE_REPORT";
                var url = AlfConstants.PROXY_URI + "pentaho/content/cda/doQuery?path=solution/cda/file.cda&dataAccessId=1";
-               url += "/stats?facet=content.creator";
                if (payload.startDate)
                {
                   url += "&paramStartDate=" + encodeURIComponent(payload.startDate);
@@ -168,10 +167,10 @@ define(["dojo/_base/declare",
                };
                //this.serviceXhr(config);
                // WA Hard-code response data for now until the services are there
-               this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
-                  requestConfig: requestConfig,
+               this.alfPublish(alfTopic + "_SUCCESS", {
+                  requestConfig: config,
                   response: {
-                     data: [],
+                     data: {"queryInfo":{"totalRows":"2"},"resultset":[["All Sites","Sample: Web Site Design Project",28,15],["All Sitess","Test",3,6]],"metadata":[{"colIndex":0,"colType":"String","colName":"[Sites].[(All)]"},{"colIndex":1,"colType":"String","colName":"[Sites].[Name]"},{"colIndex":2,"colType":"Numeric","colName":"[Activity].[All Activitys].[activity.org.alfresco.documentlibrary.file-downloaded]/[Measures].[Number of Events]"},{"colIndex":3,"colType":"Numeric","colName":"[Activity].[All Activitys].[activity.org.alfresco.documentlibrary.file-previewed]/[Measures].[Number of Events]"}]},
                      dataDescriptor: {
                         crosstabMode: false,
                         seriesInRows: false
