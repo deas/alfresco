@@ -47,6 +47,8 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
     private static final String PIE_CHART_SLICES = "path[transform]";
     private static final String TOOLTIP_DATA = "div[id^='tipsyPvBehavior']";
     private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";
+    private static final String CHART_NODE = "div[data-dojo-attach-point='chartNode']";
+    private static final String NO_DATA_FOUND = "text[pointer-events='none']";
     
     //date picker
     private static final String DATE_PICKER_DROP_DOWN =  "input[class='dijitReset dijitInputField dijitArrowButtonInner']";
@@ -57,8 +59,8 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
     private static final String DATE_RANGE = "td[id='dijit_MenuItem_4_text']";   
     private static final String FROM_DATE_INPUT_FIELD = "";
     private static final String TO_DATE_INPUT_FIELD = "";
-
-
+    private static final String DATE_INPUT_FIELDS = "input[id^='alfresco_forms_controls_DojoDateTextBox']";
+  
     /**
      * Constructor
      * 
@@ -88,7 +90,20 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
         elementRender(timer, getVisibleRenderElement(By.cssSelector(TOP_SITE_CONTRIBUTOR_REPORT_DASHLET)));
         return this;
     }
-
+    
+    public TopSiteContributorDashlet renderDateDropDown(RenderTime timer)
+    {
+        elementRender(timer, getVisibleRenderElement(By.cssSelector("div[id^='alfresco_forms_controls_DojoDateTextBox']")));
+        return this;
+    }
+    
+    /**
+    public TopSiteContributorDashlet renderNoDataMessage(RenderTime timer)
+    {
+        elementRender(timer, getVisibleRenderElement(By.cssSelector(NO_DATA_FOUND)));
+        return this;
+    }
+**/
     
     /**
      * Gets the list of user data appearing in tooltips (file type-count) 
@@ -97,17 +112,13 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
     public List<String> getTooltipUserData() throws Exception
     {
         List<WebElement> pieChartSlices = getPieChartSlices();
-        //System.out.println("PIE CHART SLICES SIZE *** " + pieChartSlices.size());
         List<String> toolTipData = new ArrayList<String>();
         for (WebElement pieChartSlice : pieChartSlices)
         {
             drone.mouseOver(pieChartSlice);
             WebElement tooltipElement = drone.findAndWait(By.cssSelector(TOOLTIP_DATA));
-            //System.out.println("TTE *** " + tooltipElement);
             String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/table/tr/td/div/strong");
-            //System.out.println("USER *** " + user);
             String items = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/table/tr/td/div/text()[preceding-sibling::br]");
-            //System.out.println("ITEMS *** " + items);
             String [] counts = items.split(" ");
             String fileCount = counts[0];
             StringBuilder builder = new StringBuilder();
@@ -174,14 +185,15 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
         }
         try
         {
-
             WebElement input = drone.findAndWait(By.cssSelector(FROM_DATE_INPUT_FIELD));
             input.clear();
             input.sendKeys(fromDate);
+            
             if (logger.isTraceEnabled())
             {
                 logger.trace("From date entered: " + fromDate);
             }
+            
             return FactorySharePage.resolvePage(drone);
         }
         catch (TimeoutException nse)
@@ -204,7 +216,6 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
         }
         try
         {
-
             WebElement input = drone.findAndWait(By.cssSelector(TO_DATE_INPUT_FIELD));
             input.clear();
             input.sendKeys(toDate);
@@ -330,6 +341,115 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
             {
                 logger.trace("Exceeded time to find and click on the Date Range option from dropdown.", e);
             }
+        }
+    }
+    
+    
+    /**
+     * Checks if No data found is displayed
+     * 
+     * @return
+     */
+    public boolean isNoDataFoundDisplayed()
+    {
+        try
+        {
+            WebElement noDataFound = drone.find(By.cssSelector(NO_DATA_FOUND));
+            return noDataFound.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No No data found message " + nse);
+            throw new PageException("Unable to find No data found message.", nse);
+        }
+    }
+    
+    /**
+     * Clicks on chart
+     * 
+     */
+    public void clickOnChart()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(CHART_NODE)).click();
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find and click on chart.", e);
+            }
+        }
+    }    
+    /**
+     * Enters to an from date into calendar
+     * 
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
+    public HtmlPage enterFromToDate(final String fromDate, final String toDate)
+    {
+        if (fromDate == null || fromDate.isEmpty())
+        {
+            throw new UnsupportedOperationException("From date is required");
+        }
+        
+        if (toDate == null || toDate.isEmpty())
+        {
+            throw new UnsupportedOperationException("To date is required");
+        }
+        
+        try
+        {
+            List<WebElement> inputFields = getDateInputFields();
+            
+            WebElement fromInput = inputFields.get(0);
+            WebElement toInput = inputFields.get(1);
+            
+            fromInput.clear();
+            fromInput.sendKeys(fromDate);
+            
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("From date entered: " + toDate);
+            }
+            
+            toInput.clear();
+            toInput.sendKeys(toDate);
+            
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("To date entered: " + toDate);
+            }
+            return FactorySharePage.resolvePage(drone);
+        }
+        catch (TimeoutException nse)
+        {
+            throw new PageException("Calendar to date drop down not displayed.");
+        }
+    }
+    
+    
+    /**
+     * 
+     * Returns the list of date input fields elements
+     * 
+     * @return
+     */
+    public List<WebElement> getDateInputFields()
+    {
+        try
+        {
+            List<WebElement> elements = drone.findDisplayedElements(By.cssSelector(DATE_INPUT_FIELDS));
+            return elements;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No date input fields " + nse);
+            throw new PageException("Unable to find date input fields.", nse);
+            
         }
     }
 }

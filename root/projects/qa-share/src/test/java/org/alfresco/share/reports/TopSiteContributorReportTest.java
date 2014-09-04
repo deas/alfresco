@@ -28,6 +28,7 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserMembers;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.RenderTime;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
@@ -285,7 +286,6 @@ public class TopSiteContributorReportTest extends AbstractUtils
      * 7) User1 logs in
      * 8) User1 creates txt files
      * 9) User1 logs out
-     * 10) Steps 2,4,5,6,7,8,9 repeated for user2, user3, user4 and user5
      * 
      * @throws Exception
      */
@@ -367,6 +367,96 @@ public class TopSiteContributorReportTest extends AbstractUtils
     
     
     
+    /**
+     * 1) Create test user
+     * 2) Login as test user
+     * 3) Create site
+     * 4) Create user1
+     * 5) Add user1 with write permissions to write to the site
+     * 6) Test user logs out
+     * 7) User1 logs in
+     * 8) User1 creates txt files
+     * 9) User1 logs out
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "DataPrepTopSiteContributorReport" })
+    public void dataPrep_TopSiteContributor_AONE_16014() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        int numberOfFiles = 1;
+ 
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Create site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
+
+        // first user
+        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String[] testUserInfo1 = new String[] { testUser1 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // add user with write permissions to write to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // first user creates files
+        createUsersAndUploadFiles(numberOfFiles, siteName);
+
+        // first user logs out
+        ShareUser.logout(drone);
+
+    }
+
+    /**
+     * 1) Test user (site creator) logs in
+     * 2) Test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+     * 3) Test user (site creator) selects date Range option from calendar and enters To and From dates in the past
+     * 4) Verify chart is not displayed and No data found message is shown     
+     */
+    @Test(groups = { "TopSiteContributorReport" })
+    public void AONE_16014()
+    {
+        // test user (site creator) logs in
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String siteName = getSiteName(testName);
+        ShareUser.login(drone, testUser, testPassword);
+
+        // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.TOP_SITE_CONTRIBUTOR_REPORT);
+             
+        TopSiteContributorDashlet topSiteContributorDashlet = ShareUserDashboard.getTopSiteContributorDashlet(drone, siteName);
+     
+        //select Date Range option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarDateRangeOption();
+        topSiteContributorDashlet.renderDateDropDown(new RenderTime(maxWaitTime));
+        
+        topSiteContributorDashlet.enterFromToDate("7/27/2012", "7/28/2012");
+        
+        //Verify chart is not displayed and No data found message is shown
+        topSiteContributorDashlet.clickOnChart();
+        Assert.assertTrue(topSiteContributorDashlet.isNoDataFoundDisplayed());
+
+    }   
 
     /**
      * Uploads files to site's document library
@@ -410,19 +500,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String testUser3 = getUserNameForDomain(testName + "3", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
         String testUser4 = getUserNameForDomain(testName + "4", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
         String testUser5 = getUserNameForDomain(testName + "5", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        
-        System.out.println("TEST USER 1 *** " + testUser1);
-        System.out.println("TEST USER 2 *** " + testUser2);
-        System.out.println("TEST USER 3 *** " + testUser3);
-        System.out.println("TEST USER 4 *** " + testUser4);
-        System.out.println("TEST USER 5 *** " + testUser5);
-        
-        
-        for (String user : users)
-        {
-            System.out.println("User *** " + user);
-        }
-        
+               
         Assert.assertTrue(users.contains(testUser1));
         Assert.assertTrue(users.contains(testUser2));
         Assert.assertTrue(users.contains(testUser3));
