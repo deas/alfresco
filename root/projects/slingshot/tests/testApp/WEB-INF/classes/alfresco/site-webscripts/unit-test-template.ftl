@@ -22,14 +22,16 @@
    <@createComponent scope="global" regionId="bootstrap" sourceId="global" uri="/surf/dojo/bootstrap"/>
    <@region scope="global" id="bootstrap" chromeless="true"/>
    
+   <link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/presentation.css"/>
+   <link rel="stylesheet" type="text/css" href="${url.context}${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css"/>
+   <link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css"/>
+   
+   
    <@outputJavaScript/>
    <@outputCSS/>
    
    <#-- <link rel="stylesheet" type="text/css" href="${url.context}${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css"/> -->
    
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/themes/${theme}/presentation.css" group="template-common" />
-   <@link rel="stylesheet" type="text/css" href="${url.context}/${sitedata.getDojoPackageLocation('dijit')}/themes/claro/claro.css" group="share" forceAggregation="true"/>
-   <@link rel="stylesheet" type="text/css" href="${url.context}/res/js/alfresco/css/global.css" group="share" forceAggregation="true"/>
 
    <#-- Template Resources (nested content from < @templateHeader > call) -->
    <#nested>
