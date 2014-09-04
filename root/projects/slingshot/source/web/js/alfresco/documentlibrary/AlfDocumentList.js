@@ -26,15 +26,14 @@
  */
 define(["dojo/_base/declare",
         "alfresco/lists/AlfSortablePaginatedList", 
-        "alfresco/core/FullScreenMixin",
         "alfresco/core/JsNode",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/hash",
         "dojo/io-query"], 
-        function(declare, AlfSortablePaginatedList, FullScreenMixin, JsNode, array, lang, hash, ioQuery) {
+        function(declare, AlfSortablePaginatedList, JsNode, array, lang, hash, ioQuery) {
    
-   return declare([AlfSortablePaginatedList, FullScreenMixin], {
+   return declare([AlfSortablePaginatedList], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -95,8 +94,6 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_DOCUMENTLIST_CATEGORY_CHANGED", lang.hitch(this, this.onCategoryChanged));
          this.alfSubscribe("ALF_DOCUMENTLIST_TAG_CHANGED", lang.hitch(this, this.onTagChanged));
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, this.onFilterChanged));
-         this.alfSubscribe("ALF_DOCLIST_FULL_WINDOW", lang.hitch(this, this.toggleFullScreen, true));
-         this.alfSubscribe("ALF_DOCLIST_FULL_SCREEN", lang.hitch(this, this.toggleFullScreen, false));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, this.onDocumentSelection));
          this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, this.onShowFolders));
       },

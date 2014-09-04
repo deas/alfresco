@@ -131,7 +131,12 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Tags__postCreate() {
          this.inherited(arguments);
-         array.forEach(this.currentTags, lang.hitch(this, this.placeReadOnlyTag));
+
+         if (this.currentTags && this.currentTags.length > 0)
+         {
+            domConstruct.empty(this.renderedValueNode);
+            array.forEach(this.currentTags, lang.hitch(this, this.placeReadOnlyTag));
+         }
 
          // Make a backup of the initial tags so that they can be restored on a cancel action...
          this.initialTags = lang.clone(this.currentTags);

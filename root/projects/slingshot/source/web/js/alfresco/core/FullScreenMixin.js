@@ -19,19 +19,41 @@
 
 /**
  * This module can be mixed into any other widget that has a requirement to make it's DOM element
- * either full-screen or full-window.
+ * either full-screen or full-window. However, rather than making the actual DOM element full screen or
+ * window it actually maximises the size of the DOM element so that it fills the window and then the document
+ * body is made full screen (or window). This is done so that any popups or dialogs that are placed outside
+ * of the target element will still be displayed.
  * 
  * @module alfresco/core/FullScreenMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
+        "alfresco/core/Core",
+        "dojo/_base/lang",
         "dojo/on",
         "dojo/dom-class",
-        "dojo/has"], 
-        function(declare, on, domClass, has) {
+        "dojo/has",
+        "dojo/_base/window"], 
+        function(declare, AlfCore, lang, on, domClass, has, win) {
    
-   return declare(null, {
+   // Define the classes that will be re-used throughout the mixin...
+   var fullScreenClass = "alfresco-core-FullScreenMixin-fullScreen",
+       fullWindowClass = "alfresco-core-FullScreenMixin-fullWindow",
+       enteringFullScreenClass = "alfresco-core-FullScreenMixin-enteringFullScreen",
+       enteringTrueFullScreenClass = "alfresco-core-FullScreenMixin-enteringTrueFullScreen",
+       trueFullScreenClass = "alfresco-core-FullScreenMixin-trueFullScreen";
+
+   return declare([AlfCore], {
       
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance cssRequirements {Array}
+       * @type {object[]}
+       * @default [{cssFile:"./css/FullScreenMixin.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/FullScreenMixin.css"}],
+
       /**
        * The current full screen mode
        *
@@ -42,21 +64,41 @@ define(["dojo/_base/declare",
       isWindowOnly: true,
       
       /**
+       * The topic to publish on to toggle full window mode.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_FULL_WINDOW"
+       */
+      fullWindowTopic: "ALF_FULL_WINDOW",
+
+      /**
+       * The topic to publish on to toggle full screen mode.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_FULL_SCREEN"
+       */
+      fullScreenTopic: "ALF_FULL_SCREEN",
+
+      /**
        * Toggles full-screen mode for the current context element
        *
        * @instance
        */
-      toggleFullScreen: function alfresco_core_FullScreenMixin__toggleFullScreen(isWindowOnly)
-      {
-         if (this.domNode != null)
+      toggleFullScreen: function alfresco_core_FullScreenMixin__toggleFullScreen(isWindowOnly, payload) {
+         if (payload.selected === true)
          {
-            if (!dojo.doc.fullscreen && !dojo.doc.mozFullScreen && !dojo.doc.webkitFullScreen)
+            if (this.domNode != null)
             {
-               this.requestFullScreen(isWindowOnly);
-            }
-            else
-            {
-               this.cancelFullScreen();
+               if (!dojo.doc.fullscreen && !dojo.doc.mozFullScreen && !dojo.doc.webkitFullScreen)
+               {
+                  this.requestFullScreen(isWindowOnly);
+               }
+               else
+               {
+                  this.cancelFullScreen();
+               }
             }
          }
       },
@@ -67,45 +109,48 @@ define(["dojo/_base/declare",
        * @instance
        * @param {boolean} isWindowOnly Indicates whether to make the element the size of the window
        */
-      requestFullScreen: function alfresco_core_FullScreenMixin__requestFullScreen(isWindowOnly)
-      {
-         if (isWindowOnly != null)
+      requestFullScreen: function alfresco_core_FullScreenMixin__requestFullScreen(isWindowOnly) {
+         this.isWindowOnly = (isWindowOnly != null) ? isWindowOnly : false;
+
+         // Always enter full window mode first... this is done so that popups that are outide the target
+         // DOM element can still be displayed. We're going to make the document body NOT the target DOM
+         // element the full screen, but we want to fill the body first...
+         this.toggleFullWindow();
+
+         if (!isWindowOnly)
          {
-            this.isWindowOnly = isWindowOnly;
-         }
-         if (this.isWindowOnly)
-         {
-            this.toggleFullWindow();
-            return;
-         }
-         if (this.domNode.requestFullscreen || this.domNode.mozRequestFullScreen || this.domNode.webkitRequestFullScreen)
-         {
-            domClass.add(this.domNode, 'alf-fullscreen');
-            domClass.add(this.domNode, 'alf-entering-true-fullscreen');
-         }
-         if (this.domNode.requestFullscreen)
-         {
-            this.domNode.requestFullscreen();
-         }
-         else if (this.domNode.mozRequestFullScreen)
-         {
-            this.domNode.mozRequestFullScreen();
-         }
-         else if (this.domNode.webkitRequestFullScreen)
-         {
-            // TODO Safari bug doesn't support keyboard input
-            if (has("safari") && !has("chrome"))
+            // If we're requesting full screen, now try make the document body full screen...
+            var body = win.body();
+            if (body.requestFullscreen || body.mozRequestFullScreen || body.webkitRequestFullScreen)
             {
-               this.domNode.webkitRequestFullScreen();
+               domClass.add(this.domNode, fullScreenClass);
+               domClass.add(this.domNode, enteringFullScreenClass);
+            }
+            if (body.requestFullscreen)
+            {
+               body.requestFullscreen();
+            }
+            else if (body.mozRequestFullScreen)
+            {
+               body.mozRequestFullScreen();
+            }
+            else if (this.domNode.webkitRequestFullScreen)
+            {
+               // TODO Safari bug doesn't support keyboard input
+               if (has("safari") && !has("chrome"))
+               {
+                  body.webkitRequestFullScreen();
+               }
+               else
+               {
+                  body.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+               }
             }
             else
             {
-               this.domNode.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+               // Full screen mode isn't supported by the browser so just leave in full window mode
+               // as it currently is...
             }
-         }
-         else
-         {
-            this.toggleFullWindow();
          }
       },
       
@@ -114,14 +159,12 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      cancelFullScreen: function alfresco_core_FullScreenMixin__cancelFullScreen()
-      {
+      cancelFullScreen: function alfresco_core_FullScreenMixin__cancelFullScreen() {
          if (this.isWindowOnly)
          {
             this.toggleFullWindow();
-            return;
          }
-         if (dojo.doc.exitFullscreen)
+         else if (dojo.doc.exitFullscreen)
          {
             dojo.doc.exitFullscreen();
          }
@@ -144,43 +187,42 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      onFullScreenChange: function alfresco_core_FullScreenMixin__onFullScreenChange()
-      {
+      onFullScreenChange: function alfresco_core_FullScreenMixin__onFullScreenChange() {
          if (this.domNode != null)
          {
-            if (domClass.contains(this.domNode, 'alf-entering-true-fullscreen'))
+            if (domClass.contains(this.domNode, enteringFullScreenClass))
             {
-               domClass.remove(this.domNode, 'alf-entering-true-fullscreen');
+               domClass.remove(this.domNode, enteringTrueFullScreenClass);
                // Let resizing take place then add the true-fullscreen class
                var _this = this;
                setTimeout(function()
                {
-                  domClass.add(_this.domNode, 'alf-true-fullscreen');
+                  domClass.add(_this.domNode, trueFullScreenClass);
                }, 1000);
             }
             else
             {
-               if (domClass.contains(this.domNode, 'alf-true-fullscreen'))
+               if (domClass.contains(this.domNode, trueFullScreenClass))
                {
-                  if (domClass.contains(this.domNode, 'alf-fullscreen'))
+                  if (domClass.contains(this.domNode, fullScreenClass))
                   {
                      // Exiting true fullscreen complete
-                     domClass.remove(this.domNode, 'alf-fullscreen');
-                     domClass.remove(this.domNode, 'alf-true-fullscreen');
+                     domClass.remove(this.domNode, fullScreenClass);
+                     domClass.remove(this.domNode, trueFullScreenClass);
                      this.onFullScreenExitComplete();
                   }
                }
                else
                {
                   // We've probably been programatically called in fullwindow mode
-                  if (!domClass.contains(this.domNode, 'alf-fullscreen'))
+                  if (!domClass.contains(this.domNode, fullScreenClass))
                   {
-                     domClass.add(this.domNode, 'alf-fullscreen');
+                     domClass.add(this.domNode, fullScreenClass);
                      this.onFullScreenEnterComplete();
                   }
                   else
                   {
-                     domClass.remove(this.domNode, 'alf-fullscreen');
+                     domClass.remove(this.domNode, fullScreenClass);
                      this.onFullScreenExitComplete();
                   }
                }
@@ -217,25 +259,38 @@ define(["dojo/_base/declare",
       toggleFullWindow: function alfresco_core_FullScreenMixin__toggleFullWindow() {
          if (this.domNode != null)
          {
-            if (!domClass.contains(this.domNode, 'alf-fullwindow'))
+            if (!domClass.contains(this.domNode, fullWindowClass))
             {
-               domClass.add(this.domNode, 'alf-fullwindow');
-               var _this = this;
-
+               domClass.add(this.domNode, fullWindowClass);
                // By using on.once the keyup capture will only occur once (i.e. the listener
                // is removed once the esc key has been used)...
-               on.once(this.domNode, "keyup", function(evt) {
-                  if (evt.keyCode == 27)
-                  {
-                     _this.toggleFullWindow();
-                  }
-               });
+               on.once(win.body(), "keyup", lang.hitch(this, this.onKeyUp));
             }
             else
             {
-               domClass.remove(this.domNode, 'alf-fullwindow');
+               domClass.remove(this.domNode, fullWindowClass);
             }
             this.onFullScreenChange();
+         }
+      },
+
+      /**
+       * This function is called when a key is pressed in full screen or full window mode. If the 
+       * key that has been pressed happens to be the the ESCAPE key then the current mode is exited.
+       *
+       * @instance
+       * @param {object} evt The key up event
+       */
+      onKeyUp: function alfresco_core_FullScreenMixin__onKeyUp(evt) {
+         if (evt.keyCode == 27)
+         {
+            this.alfPublish(this.fullScreenTopic, {
+               selected: false
+            });
+            this.alfPublish(this.fullWindowTopic, {
+               selected: false
+            });
+            this.toggleFullWindow();
          }
       }
    });

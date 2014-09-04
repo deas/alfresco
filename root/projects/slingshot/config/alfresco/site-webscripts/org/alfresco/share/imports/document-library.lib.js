@@ -824,7 +824,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
             },
             {
                id: "DOCLIB_SIDEBAR_MAIN",
-               name: "alfresco/layout/VerticalWidgets",
+               name: "alfresco/layout/FullScreenWidgets",
                config: 
                {
                   widgets: 
@@ -951,7 +951,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                                                label: msg.get("doclib.fullwindow.label"),
                                                                iconClass: "alf-fullscreen-icon",
                                                                checked: false,
-                                                               publishTopic: "ALF_DOCLIST_FULL_WINDOW"
+                                                               publishTopic: "ALF_FULL_WINDOW"
                                                             }
                                                          },
                                                          {
@@ -961,7 +961,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                                                label: msg.get("doclib.fullscreen.label"),
                                                                iconClass: "alf-fullscreen-icon",
                                                                checked: false,
-                                                               publishTopic: "ALF_DOCLIST_FULL_SCREEN"
+                                                               publishTopic: "ALF_FULL_SCREEN"
                                                             }
                                                          }
                                                       ]
