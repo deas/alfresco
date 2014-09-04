@@ -125,7 +125,9 @@ define(["dojo/_base/declare",
             this.iconNode = domConstruct.create("img", { 
                className: this.iconClass, 
                src: AlfConstants.URL_RESCONTEXT + (this.iconSrc ? this.iconSrc : "js/alfresco/menus/css/images/transparent-20.png"),
-               alt: this.message(this.iconAltText)
+               title: this.message(this.iconAltText),
+               alt: this.message(this.iconAltText),
+               tabIndex: 0
             }, this.focusNode, "first");
             if (this.label)
             {

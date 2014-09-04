@@ -179,7 +179,9 @@ define(["dojo/_base/declare",
                role:"presentation",
                className: "dijitInline dijitIcon dijitMenuItemIcon " + this.iconClass,
                src: AlfConstants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
-               alt: this.message(this.iconAltText)
+               title: this.message(this.iconAltText),
+               alt: this.message(this.iconAltText),
+               tabIndex: 0
             }, iconNodeParent, "first");
          }
          else if (this.iconImage && this.iconNode)
@@ -190,9 +192,9 @@ define(["dojo/_base/declare",
              * block. Because the style is being explicitly set it will take precedence over the
              * Dojo CSS class.
              */
-            if(has("ie") == 8)
+            if (has("ie") === 8)
             {
-               if(location.protocol.indexOf("https") != -1)
+               if (location.protocol.indexOf("https") !== -1)
                {
                   //It is ssl in IE8, so we use full URL. see MNT-10867
                   this.iconImage = location.protocol + "//" + location.host + this.iconImage;

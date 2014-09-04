@@ -66,6 +66,8 @@ define(["dojo/_base/declare",
                className: this.iconClass,
                src: AlfConstants.URL_RESCONTEXT + "/js/alfresco/menus/css/images/transparent-20.png",
                alt: this.message(this.iconAltText),
+               title: this.message(this.iconAltText),
+               tabIndex: 0,
                style: {
                   display: "inline-block"
                }
