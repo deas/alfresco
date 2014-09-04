@@ -172,7 +172,7 @@ model.jsonModel = {
 		                {
 		                   name: "alfresco/logo/Logo",
 		                   widthPx: 200,
-		                   widthCalc: 184
+		                   widthCalc: 184,
 		                   config: {
 		                      id: "LOGO9"
 		                   }
@@ -180,7 +180,7 @@ model.jsonModel = {
 		                {
 		                   name: "alfresco/logo/Logo",
 		                   widthPx: 200,
-		                   widthCalc: 184
+		                   widthCalc: 184,
 		                   config: {
 		                      id: "LOGO10"
 		                   }

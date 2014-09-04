@@ -28,7 +28,7 @@ model.jsonModel = {
          align: "left",
          config: {
          	id: "TEST_LABEL",
-            label: "This is a test label"
+            label: "This is a test label",
             subscriptionTopic: "NOT_A_REAL_TOPIC",
             additionalCssClasses: "bold"
          }

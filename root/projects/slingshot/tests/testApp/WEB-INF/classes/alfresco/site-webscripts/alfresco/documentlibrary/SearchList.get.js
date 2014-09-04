@@ -192,7 +192,7 @@ model.jsonModel = {
                   startIndex: 0,
                   numberFound: 3,
                   facets: {
-                     @qname1: {
+                     "@qname1": {
                         test: 3
                      }
                   },

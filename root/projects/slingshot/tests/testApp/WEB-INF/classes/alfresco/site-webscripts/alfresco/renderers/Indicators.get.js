@@ -126,7 +126,7 @@ model.jsonModel = {
          config: {
             currentItem: {
                node:{
-                  nodeRef: "54321"
+                  nodeRef: "54321",
                   properties: {
                      name: "Wilma"
                   }

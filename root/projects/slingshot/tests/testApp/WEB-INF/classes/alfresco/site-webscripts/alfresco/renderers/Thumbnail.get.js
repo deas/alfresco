@@ -35,7 +35,7 @@ model.jsonModel = {
                jsNode: {
                   nodeRef: "dummy://nodeRef/1",
                   properties: {
-                     cm:name: "ITEM_JS_NODE_NO_DISPLAYNAME"
+                     "cm:name": "ITEM_JS_NODE_NO_DISPLAYNAME"
                   }
                },
                type: "folder"
@@ -98,7 +98,7 @@ model.jsonModel = {
                },
                node: {
                   properties: {
-                     cm:name: "SMALL_ITEM_JS_NODE_1"
+                     "cm:name": "SMALL_ITEM_JS_NODE_1"
                   }
                },
                type: "folder",
@@ -156,7 +156,7 @@ model.jsonModel = {
                },
                node: {
                   properties: {
-                     cm:name: "SMALL_ITEM_JS_NODE_4"
+                     "cm:name": "SMALL_ITEM_JS_NODE_4"
                   }
                },
                type: "folder",

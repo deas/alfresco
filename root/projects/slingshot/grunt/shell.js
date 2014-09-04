@@ -206,6 +206,7 @@ module.exports = function (grunt, alf) {
             command: 'mvn jetty:run',
             options: {
                stdout: false,
+               stderr: false,
                async: true
             }
          },

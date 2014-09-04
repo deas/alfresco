@@ -28,7 +28,7 @@ model.jsonModel = {
             }
          },
          customTypeMappings: {
-            cm:test: "test"
+            "cm:test": "test"
          },
          customExtnMappings: {
             test: "test"

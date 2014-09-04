@@ -33,7 +33,7 @@ model.jsonModel = {
                   nodeRef: "workspace://SpacesStore/d91128af-3b99-4710-95b6-a858eb090418",
                   name: "TAGS_3",
                   properties: {
-                     cm:taggable: {}
+                     "cm:taggable": {}
                   }
                }
             }
@@ -49,7 +49,7 @@ model.jsonModel = {
                   nodeRef: "workspace://SpacesStore/d91128af-3b99-4710-95b6-a858eb090418",
                   name: "TAGS_4",
                   properties: {
-                     cm:taggable: [
+                     "cm:taggable": [
                         {
                            nodeRef: "workspace://SpacesStore/284d485c-9cb7-42cb-8e3d-fed80de17f25",
                            name: "Test1"

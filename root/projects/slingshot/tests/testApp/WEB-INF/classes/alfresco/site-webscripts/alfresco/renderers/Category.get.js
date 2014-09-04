@@ -50,7 +50,7 @@ model.jsonModel = {
                   nodeRef: "workspace://SpacesStore/d91128af-3b99-4710-95b6-a858eb090418",
                   name: "Languages",
                   properties: {
-                     cm:categories: []
+                     "cm:categories": []
                   }
                }
             }
@@ -65,7 +65,7 @@ model.jsonModel = {
                   nodeRef: "workspace://SpacesStore/d91128af-3b99-4710-95b6-a858eb090418",
                   name: "Languages",
                   properties: {
-                     cm:categories: [
+                     "cm:categories": [
                         {
                            nodeRef: "workspace://SpacesStore/284d485c-9cb7-42cb-8e3d-fed80de17f25",
                            name: "English",
