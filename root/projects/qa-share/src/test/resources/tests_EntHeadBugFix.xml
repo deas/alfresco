@@ -84,6 +84,8 @@
 
     <test name="DashletTest" verbose="1" parallel="classes" thread-count="1">
         <classes>
+            <class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+	    <class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> 
             <class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
             <class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>

@@ -36,6 +36,9 @@
 			</class>
 
 			<!-- <class name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest" /> -->
+						
+			<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> 
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
 			<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>
