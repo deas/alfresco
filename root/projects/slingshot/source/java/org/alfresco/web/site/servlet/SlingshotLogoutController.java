@@ -46,7 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class SlingshotLogoutController extends LogoutController
 {
     private static Log logger = LogFactory.getLog(SlingshotLogoutController.class);
-    private ConnectorService connectorService;
+    protected ConnectorService connectorService;
     
     
     /**

@@ -158,7 +158,12 @@ define(["dojo/_base/declare",
                      var redirect = response.response.getHeader("Location");
                      if (redirect)
                      {
-                        window.location.href = window.location.protocol + "//" + window.location.host + redirect;
+                        if (redirect.indexOf("http://") == 0 || redirect.indexOf("https://") == 0 ) {
+                           window.location.href = redirect;
+                        }
+                        else {
+                           window.location.href = window.location.protocol + "//" + window.location.host + redirect;
+                        }
                         return;
                      }
                      else
