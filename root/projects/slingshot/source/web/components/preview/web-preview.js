@@ -230,13 +230,6 @@
          // Convert the JSON string conditions back into an object...
          this.options.pluginConditions = eval(this.options.pluginConditions);
          
-         //Fire event to register use of webpreviewer
-         Alfresco.util.Ajax.jsonPost(
-         {
-            url: Alfresco.constants.PROXY_URI + "api/events/" + encodeURIComponent(Alfresco.constants.SITE) 
-                 + "/webpreview/view"
-         });
-         
          // Setup web preview
          this.setupPreview(false);
          
