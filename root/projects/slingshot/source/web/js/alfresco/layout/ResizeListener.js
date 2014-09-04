@@ -135,7 +135,7 @@ define(["dojo/_base/declare",
                            tmp = document.querySelector(c.selector);
 
                            // Function
-                           if (c.function == "rect") {
+                           if (c["function"] == "rect") {
                               tmp = tmp.getBoundingClientRect();
                            }
 
