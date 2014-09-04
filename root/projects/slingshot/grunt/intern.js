@@ -55,16 +55,33 @@ module.exports = function (grunt, alf) {
    ]);
 
    grunt.registerTask('startUnitTestApp', 'Spawn a Maven process to start the Jetty server running the unit test application', function() {
+
       var done = this.async();
-      var nodeCoverage = grunt.util.spawn({
-         cmd: 'mvn',
-         args: ['jetty:run'],
-         opts: {
-            detached: 'true',
-            stdio : 'inherit'
+
+      var tcpPortUsed = require('tcp-port-used');
+      tcpPortUsed.check(8089, 'localhost')
+      .then(function(inUse) {
+         if(!inUse)
+         {
+            var testApp = grunt.util.spawn({
+               cmd: 'mvn',
+               args: ['jetty:run'],
+               opts: {
+                  detached: 'true',
+                  stdio : 'inherit'
+               }
+            }, function(error, result, code) {
+               grunt.log.writeln("Finished spawning Jetty unit test application...");
+               done();
+            });
          }
-      }, function(error, result, code) {
-         grunt.log.writeln("Jetty Application Started...");
+         else
+         {
+            grunt.log.writeln("Jetty unit test application appears to be running already...");
+            done();
+         }
+      }, function(err) {
+         console.error('Unknown if Jetty unit test application is already running:', err.message);
          done();
       });
    });
