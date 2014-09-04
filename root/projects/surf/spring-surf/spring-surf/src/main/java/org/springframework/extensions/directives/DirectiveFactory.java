@@ -21,6 +21,7 @@ import org.springframework.extensions.config.WebFrameworkConfigElement;
 import org.springframework.extensions.surf.ModelObject;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.extensibility.ExtensibilityModel;
+import org.springframework.extensions.surf.render.RenderService;
 import org.springframework.extensions.webscripts.MessagesWebScript;
 
 public interface DirectiveFactory
@@ -173,4 +174,17 @@ public interface DirectiveFactory
                                                                      ExtensibilityModel extensibilityModel, 
                                                                      RequestContext context, 
                                                                      WebFrameworkConfigElement webFrameworkConfig);
+    
+    /**
+     * <p>Creates a new {@link AutoComponentRegionDirective}.</p>
+     * @param directiveName The name of the directive
+     * @param extensibilityModel The current {@link ExtensibilityModel} being worked on.
+     * @param context The current {@link RequestContext}
+     * @param webFrameworkConfig TODO
+     * @param webFrameworkConfigElement The {@link WebFrameworkConfigElement} for the application.
+     * @return
+     */
+    public AutoComponentRegionDirective createAutoComponentRegionDirective(String directiveName,
+                                                                           RequestContext context, 
+                                                                           RenderService renderService);
 }

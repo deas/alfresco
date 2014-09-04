@@ -619,7 +619,7 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
     
     public boolean isDynamicExtensionModulesEnabled()
     {
-        return (this.enableDynamicExtensions != null) ? this.enableDynamicExtensions.booleanValue() : Boolean.TRUE; 
+        return (this.enableDynamicExtensions != null) ? this.enableDynamicExtensions.booleanValue() : Boolean.FALSE; 
     }
     
     public boolean isResourceCachingDisabled()

@@ -3,8 +3,7 @@
 
 <@templateBody>
    <div id="content">
-      <@createComponent scope="global" regionId="remote-page" sourceId="global" uri="/remote-page"/>
-      <@region scope="global" id="remote-page" chromeless="true"/>
+      <@autoComponentRegion uri="/remote-page"/>
    </div>
 </@>
 

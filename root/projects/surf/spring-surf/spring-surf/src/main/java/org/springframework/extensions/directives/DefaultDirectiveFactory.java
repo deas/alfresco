@@ -27,6 +27,7 @@ import org.springframework.extensions.surf.ModelObject;
 import org.springframework.extensions.surf.ModelObjectService;
 import org.springframework.extensions.surf.RequestContext;
 import org.springframework.extensions.surf.extensibility.ExtensibilityModel;
+import org.springframework.extensions.surf.render.RenderService;
 import org.springframework.extensions.webscripts.LocalWebScriptRuntimeContainer;
 import org.springframework.extensions.webscripts.MessagesWebScript;
 
@@ -313,7 +314,8 @@ public class DefaultDirectiveFactory implements DirectiveFactory
     public ProcessJsonModelDirective createProcessJsonModelDirective(String directiveName, 
                                                            ModelObject object,
                                                            ExtensibilityModel extensibilityModel, 
-                                                           RequestContext context, WebFrameworkConfigElement webFrameworkConfig)
+                                                           RequestContext context, 
+                                                           WebFrameworkConfigElement webFrameworkConfig)
     {
         ProcessJsonModelDirective d = new ProcessJsonModelDirective(directiveName, extensibilityModel);
         setupDirective(d, object, context);
@@ -322,6 +324,16 @@ public class DefaultDirectiveFactory implements DirectiveFactory
         d.setConfigService(this.configService);
         d.setWebScriptsContainer(this.webScriptsContainer);
         d.setWebFrameworkConfigElement(this.webFrameworkConfig);
+        return d;
+    }
+    
+    public AutoComponentRegionDirective createAutoComponentRegionDirective(String directiveName,
+                                                                           RequestContext context, 
+                                                                           RenderService renderService)
+    {
+        AutoComponentRegionDirective d = new AutoComponentRegionDirective(directiveName);
+        d.setRenderService(renderService);
+        d.setRequestContext(context);
         return d;
     }
 }
