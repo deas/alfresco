@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
        */
       loadBinaryData: function alfresco_testing_mockservices_PreviewMockXhr__loadBinaryData() {
          var oReq = new XMLHttpRequest();
-         oReq.open("GET", "http://localhost:8081/share/res/js/alfresco/testing/mockservices/responseTemplates/previews/Image.jpg", true);
+         oReq.open("GET", "http://localhost:8081/aikau/res/js/alfresco/testing/mockservices/responseTemplates/previews/Image.jpg", true);
          oReq.responseType = "arraybuffer";
 
          var _this = this;
@@ -63,7 +63,7 @@ define(["dojo/_base/declare",
       setupServerWithBinaryData: function alfresco_testing_mockservices_PreviewMockXhr__setupServerWithBinaryData() {
          this.alfLog("log", "Setting up server with binary data");
          this.server.respondWith("GET", 
-                                 /\/share\/proxy\/alfresco\/api\/node\/workspace\/SpacesStore\/62e6c83c-f239-4f85-b1e8-6ba0fd50fac4\/content\/thumbnails\/imgpreview\?(.*)/,
+                                 /\/aikau\/proxy\/alfresco\/api\/node\/workspace\/SpacesStore\/62e6c83c-f239-4f85-b1e8-6ba0fd50fac4\/content\/thumbnails\/imgpreview\?(.*)/,
                                  [200,
                                  {"Content-Type":"image/jpeg"},
                                  this.imageByteArray]);
@@ -79,7 +79,7 @@ define(["dojo/_base/declare",
          try
          {
             this.server.respondWith("GET",
-                                    /\/share\/service\/components\/documentlibrary\/data\/node\/workspace\/SpacesStore\/62e6c83c-f239-4f85-b1e8-6ba0fd50fac4\?(.*)/,
+                                    /\/aikau\/service\/components\/documentlibrary\/data\/node\/workspace\/SpacesStore\/62e6c83c-f239-4f85-b1e8-6ba0fd50fac4\?(.*)/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8",
                                      "Content-Length":7962},

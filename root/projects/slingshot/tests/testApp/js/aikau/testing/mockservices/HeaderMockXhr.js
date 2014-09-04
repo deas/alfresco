@@ -56,17 +56,17 @@ define(["dojo/_base/declare",
             }
 
             this.server.respondWith("GET",
-                                    /\/share\/service\/header\/sites-menu\/recent(.*)/,
+                                    /\/aikau\/service\/header\/sites-menu\/recent(.*)/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      siteTemplateToUse]);
             this.server.respondWith("GET",
-                                    "/share/service/header/sites-menu/favourites",
+                                    "/aikau/service/header/sites-menu/favourites",
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      favouritesTemplate]);
             this.server.respondWith("GET",
-                                    "/share/proxy/alfresco/api/sites/site1",
+                                    "/aikau/proxy/alfresco/api/sites/site1",
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      siteDetailsTemplate]);

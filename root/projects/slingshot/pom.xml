@@ -408,6 +408,23 @@
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <configuration>
+                  <!-- Set up an interval to scan for changes -->
+                  <!-- <scanIntervalSeconds>10</scanIntervalSeconds>
+                  <scanTargetPatterns>
+                     <scanTargetPattern>
+                        <directory>${project.build.directory}/${project.build.finalName}</directory>
+                        <includes>
+                          <include>**/*</include>
+                        </includes>
+                    </scanTargetPattern>
+                    <scanTargetPattern>
+                        <directory>tests/testApp</directory>
+                        <includes>
+                          <include>**/*</include>
+                        </includes>
+                    </scanTargetPattern>
+                 </scanTargetPatterns> -->
+                  
                   <!-- Sets the port when using mvn jetty:run-forked -->
                   <jvmArgs>-Djetty.port=8089</jvmArgs>
                   <!-- Override the system properties to set a port that *should* be unused -->
@@ -436,6 +453,7 @@
                    </webApp>
                    <webAppSourceDirectory>tests/testApp</webAppSourceDirectory>
                    <classesDirectory>tests/testApp/WEB-INF/classes</classesDirectory>
+                   <baseAppFirst>false</baseAppFirst>
                 </configuration>
          </plugin>
         </plugins>

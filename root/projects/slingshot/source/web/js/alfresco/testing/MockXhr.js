@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -29,20 +29,7 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/aspect",
-        "sinon/sinon/match",
-        "sinon/sinon/test_case",
-        "sinon/sinon/test",
-        "sinon/sinon/sandbox",
-        "sinon/sinon/assert",
-        "sinon/sinon/collection",
-        "sinon/sinon/mock",
-        "sinon/sinon/stub",
-        "sinon/sinon/behavior",
-        "sinon/sinon/call",
-        "sinon/sinon/spy",
-        "sinon/sinon",
-        "sinon/sinon-server-1.10.3"], 
+        "dojo/aspect"], 
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domConstruct, aspect) {
    
    return declare([ _WidgetBase, _TemplatedMixin, AlfCore], {
@@ -73,6 +60,8 @@ define(["dojo/_base/declare",
          this.loadBinaryData();
 
          // Set-up a fake server to handle all the responses...
+         // NOTE: Sinon 1.10.3 does not support AMD so this relies on the Sinon server lib files
+         //       being imported via a script element in the test page.
          this.server = sinon.fakeServer.create();
          this.server.autoRespond = true;
          this.setupServer();

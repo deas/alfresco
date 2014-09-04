@@ -38,10 +38,10 @@ module.exports = function (grunt, alf) {
 
    // Register a test task that uses Intern_local
    grunt.registerTask('test_local', [
-      'shell:startTestApp',
-      'waitServer',
-      'intern:local',
-      'shell:stopTestApp' // Run all the intern tests a local instance of selenium
+      // 'shell:startTestApp',
+      // 'waitServer',
+      'intern:local'
+      // 'shell:stopTestApp' // Run all the intern tests a local instance of selenium
    ]);
 
    // Register a test task that uses Intern_sl

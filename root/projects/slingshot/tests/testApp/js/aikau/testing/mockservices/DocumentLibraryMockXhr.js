@@ -80,22 +80,22 @@ define(["dojo/_base/declare",
          try
          {
             this.server.respondWith("GET",
-                                    /\/share\/service\/components\/documentlibrary\/data\/doclist\/all\/node\/alfresco\/company\/home\?filter=path(.*)/,
+                                    /\/aikau\/service\/components\/documentlibrary\/data\/doclist\/all\/node\/alfresco\/company\/home\?filter=path(.*)/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      rootFolderTemplate]);
             this.server.respondWith("GET",
-                                    /\/share\/service\/components\/documentlibrary\/data\/doclist\/all\/node\/alfresco\/company\/home\/Folder1\?filter=path(.*)/,
+                                    /\/aikau\/service\/components\/documentlibrary\/data\/doclist\/all\/node\/alfresco\/company\/home\/Folder1\?filter=path(.*)/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      folder1Template]);
             this.server.respondWith("GET",
-                                     /\/share\/service\/components\/documentlibrary\/data\/doclist\/all\/node\/alfresco\/company\/home\/Folder2\?filter=path(.*)/,
+                                     /\/aikau\/service\/components\/documentlibrary\/data\/doclist\/all\/node\/alfresco\/company\/home\/Folder2\?filter=path(.*)/,
                                      [200,
                                       {"Content-Type":"application/json;charset=UTF-8"},
                                       folder2Template]);
             this.server.respondWith("GET",
-                                     /\/share\/service\/components\/documentlibrary\/data\/node\/workspace\/SpacesStore\/(.*)/,
+                                     /\/aikau\/service\/components\/documentlibrary\/data\/node\/workspace\/SpacesStore\/(.*)/,
                                      [200,
                                       {"Content-Type":"application/json;charset=UTF-8"},
                                       nodeTemplate]);

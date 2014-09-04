@@ -39,12 +39,12 @@ define(["dojo/_base/declare",
          try
          {
             this.server.respondWith("GET",
-                                    /\/share\/proxy\/alfresco\/slingshot\/doclib\/node-templates/,
+                                    /\/aikau\/proxy\/alfresco\/slingshot\/doclib\/node-templates/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      nodeTemplates]);
             this.server.respondWith("GET",
-                                    /\/share\/proxy\/alfresco\/slingshot\/doclib\/folder-templates/,
+                                    /\/aikau\/proxy\/alfresco\/slingshot\/doclib\/folder-templates/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      nodeTemplates]);

@@ -32,11 +32,11 @@ model.jsonModel = {
                         fixed: [
                            {
                               label: "Form 1",
-                              value: "[{\\\id\\\:\\\"Form1_Field\\\",\\\name\\\:\\\"alfresco/forms/controls/DojoValidationTextBox\\\",\\\config\\\:{\\\label\\\:\\\"One\\\",\\\name\\\:\\\"field1\\\",\\\value\\\:\\\"Value1\\\"}}]"
+                              value: "[{\"id\":\"Form1_Field\",\"name\":\"alfresco/forms/controls/DojoValidationTextBox\",\"config\":{\"label\":\"One\",\"name\":\"field1\",\"value\":\"Value1\"}}]"
                            },
                            {
                               label: "Form 2",
-                              value: "[{\\\id\\\:\\\"Form2_Field\\\",\\\name\\\:\\\"alfresco/forms/controls/DojoValidationTextBox\\\",\\\config\\\:{\\\label\\\:\\\"Two\\\",\\\name\\\:\\\"field2\\\",\\\value\\\:\\\"Value2\\\"}}]"
+                              value: "[{\"id\":\"Form2_Field\",\"name\":\"alfresco/forms/controls/DojoValidationTextBox\",\"config\":{\"label\":\"Two\",\"name\":\"field2\",\"value\":\"Value2\"}}]"
                            }
                         ]
                      }

@@ -56,7 +56,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "GET",
-               /\/share\/proxy\/alfresco\/api\/sites[^\/]*/,
+               /\/aikau\/proxy\/alfresco\/api\/sites[^\/]*/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -66,7 +66,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "GET",
-               /\/share\/proxy\/alfresco\/api\/admin-sites[^\/]*/,
+               /\/aikau\/proxy\/alfresco\/api\/admin-sites[^\/]*/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -76,7 +76,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "GET",
-               /\/share\/proxy\/alfresco\/api\/sites\/[^\/]*/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/[^\/]*/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -86,7 +86,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "PUT",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -96,7 +96,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "DELETE",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -106,7 +106,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "POST",
-               /\/share\/proxy\/alfresco\/api\/people\/(.*)\/preferences/,
+               /\/aikau\/proxy\/alfresco\/api\/people\/(.*)\/preferences/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -116,7 +116,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "DELETE",
-               /\/share\/proxy\/alfresco\/api\/people\/(.*)\/preferences?pf=org.alfresco.share.sites.favourites.(.*)/,
+               /\/aikau\/proxy\/alfresco\/api\/people\/(.*)\/preferences?pf=org.alfresco.share.sites.favourites.(.*)/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -126,7 +126,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "GET",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)\/memberships/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)\/memberships/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -136,7 +136,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "POST",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)\/memberships/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)\/memberships/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -146,7 +146,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "POST",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)\/invitations/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)\/invitations/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -156,7 +156,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "PUT",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)\/memberships/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)\/memberships/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -166,7 +166,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "DELETE",
-               /\/share\/proxy\/alfresco\/api\/sites\/(.*)\/memberships\/(.*)/,
+               /\/aikau\/proxy\/alfresco\/api\/sites\/(.*)\/memberships\/(.*)/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -176,7 +176,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "GET",
-               /\/share\/proxy\/alfresco\/api\/people\/(.*)\/sites\/recent/,
+               /\/aikau\/proxy\/alfresco\/api\/people\/(.*)\/sites\/recent/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},
@@ -186,7 +186,7 @@ define(["dojo/_base/declare",
 
             this.server.respondWith(
                "GET",
-               /\/share\/proxy\/alfresco\/api\/people\/(.*)\/sites\/favourites/,
+               /\/aikau\/proxy\/alfresco\/api\/people\/(.*)\/sites\/favourites/,
                [
                   200,
                   {"Content-Type":"application/json;charset=UTF-8"},

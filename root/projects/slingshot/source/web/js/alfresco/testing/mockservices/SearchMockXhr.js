@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
          {
             var templateToUse = xhrSearchResponse;
             this.server.respondWith("GET",
-                                    /\/share\/proxy\/alfresco\/slingshot\/search/,
+                                    /\/aikau\/proxy\/alfresco\/slingshot\/search/,
                                     [200,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      templateToUse]);

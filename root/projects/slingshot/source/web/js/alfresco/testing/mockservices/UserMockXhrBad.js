@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
          {
             var templateToUse = xhrUserStatusResponseBad;
             this.server.respondWith("POST",
-                                    /\/share\/service\/components\/profile\/userstatus/,
+                                    /\/aikau\/service\/components\/profile\/userstatus/,
                                     [400,
                                      {"Content-Type":"application/json;charset=UTF-8"},
                                      templateToUse]);

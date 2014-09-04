@@ -19,6 +19,7 @@ package org.springframework.extensions.surf;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -32,6 +33,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.springframework.extensions.config.WebFrameworkConfigElement;
 import org.springframework.extensions.surf.DojoDependencies.I18nDependency;
 import org.springframework.extensions.surf.util.I18NUtil;
+import org.springframework.extensions.surf.util.StringBuilderWriter;
+import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.json.JSONWriter;
 
 public class I18nDependencyHandler
@@ -71,8 +74,26 @@ public class I18nDependencyHandler
         content.append(globalMessagesObject);
         content.append(".messages.global == null) {\n   ");
         content.append(globalMessagesObject);
-        content.append(".messages.global = {};\n}\n");
-
+        content.append(".messages.global = ");
+        Writer writer = new StringBuilderWriter(8192);
+        JSONWriter out = new JSONWriter(writer);
+        try
+        {
+            out.startObject();
+            Map<String, String> messages = I18NUtil.getAllMessages(I18NUtil.parseLocale(I18NUtil.getLocale().toString()));
+            for (Map.Entry<String, String> entry : messages.entrySet())
+            {
+                out.writeValue(entry.getKey(), entry.getValue());
+            }
+            out.endObject();
+            writer.write(";\r\n");
+        }
+        catch (IOException jsonErr)
+        {
+            throw new WebScriptException("Error building messages response.", jsonErr);
+        }
+        content.append(writer.toString());
+        content.append("\n}\n");
         
         content.append(globalMessagesObject);
         content.append(".messages.defaultScope = '");

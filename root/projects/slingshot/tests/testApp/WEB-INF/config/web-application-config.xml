@@ -31,9 +31,6 @@
             
             <!-- Surf Autowire Support -->
             <value>webapp:WEB-INF/surf.xml</value>
-
-            <!-- Add additional configuration file for overridding via modules -->
-            <value>webapp:WEB-INF/static-config.xml</value>
             
          </list>
       </constructor-arg>
@@ -91,5 +88,17 @@
 		 make the application structure cleaner. -->
 	<bean id="webframework.store.webapp.abstract" class="org.springframework.extensions.webscripts.WebApplicationStore" abstract="true" init-method="init">
       <property name="path"><value>/surf-config/</value></property>
+   </bean>
+   
+   <!-- This section of configuration will pull in the standard message bundles from Alfresco Share. It's worth noting that some Aikau
+        widgets still rely on these message bundles so this will need to be addressed if Aikau is ever used independently from Share. -->
+   <bean id="webscripts.resources" class="org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent">
+      <property name="resourceBundles">
+         <list>
+            <value>webscripts.messages.webscripts</value>
+            <value>alfresco.messages.common</value>
+            <value>alfresco.messages.slingshot</value>
+         </list>
+      </property>
    </bean>
 </beans>
