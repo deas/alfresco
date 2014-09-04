@@ -103,14 +103,22 @@
          @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
          
          // Generic colours for displaying collections of items
-         @collectionColour1: #225DA8;
-         @collectionColour2: #F5993D;
-         @collectionColour3: #47AC50;
-         @collectionColour4: #F8E23C;
-         @collectionColour5: #2881C3;
-         @collectionColour6: #f8b828;
-         @collectionColour7: #8CC84F;
-         @collectionColour8: #f8f866;
+         @collectionColour1: #66ccff;
+         @collectionColour2: #fff24d;
+         @collectionColour3: #f44e4e;
+         @collectionColour4: #66ff99;
+         @collectionColour5: #ff99ff;
+         @collectionColour6: #6699ff;
+         @collectionColour7: #f9ac3d;
+         @collectionColour8: #d80707;
+         @collectionColour9: #33cc99;
+         @collectionColour10: #ff3399;
+         @collectionColour11: #006699;
+         @collectionColour12: #f27606;
+         @collectionColour13: #990e0e;
+         @collectionColour14: #0ea56f;
+         @collectionColour15: #7246b2;
+         @collectionColour16: #50545b;
 
          // Charting item colours
          @chartItemColour1: @collectionColour1;
@@ -121,6 +129,14 @@
          @chartItemColour6: @collectionColour6;
          @chartItemColour7: @collectionColour7;
          @chartItemColour8: @collectionColour8;
+         @chartItemColour9: @collectionColour9;
+         @chartItemColour10: @collectionColour10;
+         @chartItemColour11: @collectionColour11;
+         @chartItemColour12: @collectionColour12;
+         @chartItemColour13: @collectionColour13;
+         @chartItemColour14: @collectionColour14;
+         @chartItemColour15: @collectionColour15;
+         @chartItemColour16: @collectionColour16;
       </less-variables>
 
    </css-tokens>

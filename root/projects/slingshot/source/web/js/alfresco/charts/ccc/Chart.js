@@ -323,7 +323,7 @@ define(["dojo/_base/declare",
 
                config.tooltip = this.tooltip;
 
-               var styles = this.resolveCssStyles(this.baseClass + "--color", [1,2,3,4,5,6,7,8], {
+               var styles = this.resolveCssStyles(this.baseClass + "--color", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], {
                   backgroundColor: ["rgba(0, 0, 0, 0)", "transparent"]
                });
                config.colors = styles.backgroundColor;
