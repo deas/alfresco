@@ -46,7 +46,7 @@ import org.alfresco.repo.site.SiteModel;
 import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
 import org.alfresco.repo.version.VersionModel;
 import org.alfresco.repo.webdav.ActivityPostProducer;
-import org.alfresco.repo.webdav.ActivityPoster;
+import org.alfresco.repo.webdav.WebDAVActivityPoster;
 import org.alfresco.repo.webdav.WebDAV;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVServerException;
@@ -83,7 +83,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
     private SiteService siteService;
     private AuthenticationComponent authenticationComponent;
     private ShareUtils shareUtils;
-    private ActivityPoster activityPoster;
+    private WebDAVActivityPoster activityPoster;
     private WebDavService davService;
     private WebDAVHelper davHelper;
     
@@ -864,7 +864,7 @@ public class AlfrescoMethodHandler extends AbstractAlfrescoMethodHandler impleme
     }
 
     @Override
-    public void setActivityPoster(ActivityPoster activityPoster)
+    public void setActivityPoster(WebDAVActivityPoster activityPoster)
     {
         this.activityPoster = activityPoster;
     }

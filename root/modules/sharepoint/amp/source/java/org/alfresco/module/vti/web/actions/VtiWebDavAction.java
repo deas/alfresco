@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.alfresco.module.vti.handler.alfresco.VtiPathHelper;
 import org.alfresco.module.vti.web.VtiAction;
 import org.alfresco.repo.webdav.ActivityPostProducer;
-import org.alfresco.repo.webdav.ActivityPoster;
+import org.alfresco.repo.webdav.WebDAVActivityPoster;
 import org.alfresco.repo.webdav.WebDAVHelper;
 import org.alfresco.repo.webdav.WebDAVMethod;
 import org.alfresco.repo.webdav.WebDAVServerException;
@@ -55,7 +55,7 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
 
     private VtiWebDavActionExecutor davActionExecutor = this;
     
-    private ActivityPoster activityPoster;
+    private WebDAVActivityPoster activityPoster;
     
     /**
      * <p>Process WebDAV protocol request, dispatch among set of 
@@ -115,7 +115,7 @@ public abstract class VtiWebDavAction implements VtiAction, VtiWebDavActionExecu
     /**
      * @param activityPoster the activityPoster to set
      */
-    public void setActivityPoster(ActivityPoster activityPoster)
+    public void setActivityPoster(WebDAVActivityPoster activityPoster)
     {
         this.activityPoster = activityPoster;
     }

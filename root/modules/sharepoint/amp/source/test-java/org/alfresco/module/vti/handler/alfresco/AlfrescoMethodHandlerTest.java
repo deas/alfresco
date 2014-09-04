@@ -17,7 +17,7 @@ import org.alfresco.module.vti.handler.MethodHandler;
 import org.alfresco.module.vti.web.VtiRequestDispatcher;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.tenant.TenantService;
-import org.alfresco.repo.webdav.ActivityPoster;
+import org.alfresco.repo.webdav.WebDAVActivityPoster;
 import org.alfresco.repo.webdav.WebDAVServerException;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -51,7 +51,7 @@ public class AlfrescoMethodHandlerTest
     private NodeService nodeService;
     private String shortSiteId;
     private NodeRef docLib;
-    private @Mock ActivityPoster mockActivityPoster;
+    private @Mock WebDAVActivityPoster mockActivityPoster;
     private @Mock WebDavService mockDavService;
     
     @BeforeClass

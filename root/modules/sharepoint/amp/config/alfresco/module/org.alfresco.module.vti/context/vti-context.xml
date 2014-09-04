@@ -301,7 +301,7 @@
     
     <bean id="vtiActivityPoster" class="org.alfresco.repo.webdav.ActivityPosterImpl">
         <property name="appTool" value="Sharepoint"/>
-        <property name="activityService" ref="activityService"/>
+        <property name="poster" ref="activitiesPoster" />
     </bean>
     
     <bean id="abstractDAVAction" abstract="true">
