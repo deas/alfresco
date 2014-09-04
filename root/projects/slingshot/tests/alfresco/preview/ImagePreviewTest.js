@@ -40,7 +40,7 @@ define(["intern!object",
          // the image preview creates an <img> element rather than making an XHR request.
          // However, the code has been left for education purposes for now. This test is therefore
          // not actually expected to render an image (due to a lack of authentication and a non-existant nodeRef)
-         .sleep(5000)
+         // .sleep(20000)
          .findByCssSelector(".alfresco-preview-AlfDocumentPreview > div.previewer")
             .then(null, function() {
                assert(false, "Test #1a - Couldn't find preview node");
