@@ -24,8 +24,9 @@ define(["intern!object",
         "intern/chai!expect",
         "intern/chai!assert",
         "require",
-        "alfresco/TestCommon"], 
-        function (registerSuite, expect, assert, require, TestCommon) {
+        "alfresco/TestCommon",
+        'intern/dojo/node!fs'], 
+        function (registerSuite, expect, assert, require, TestCommon, fs) {
 
    registerSuite({
       name: 'AlfSideBarContainer Test',
@@ -44,22 +45,30 @@ define(["intern!object",
             .end()
 
          // this test seems to need a moment to render correctly
+         .takeScreenshot()
+            .then(function(data) {
+               fs.writeFileSync("AlfSideBarContainer.png", data, 'base64');
+            })
+            .end()
          
          .findByCssSelector(".yui-resize-handle.yui-resize-handle-r")
             .then(null, function() {
-               assert(false, "Test 1a - Couldn't find resize handle")
+               TestCommon.log(testname, "Looking for resize handle...");
+               assert(false, "Test #1a - Couldn't find resize handle")
             })
             .end()
 
          // Check that the logo widgets have been placed in the correct positions...
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar #SIDEBAR_LOGO")
             .then(null, function() {
-               assert(false, "Test 1b - Sidebar logo wasn't placed correctly")
+               TestCommon.log(testname, "Checking for logo in sidebar...");
+               assert(false, "Test #1b - Sidebar logo wasn't placed correctly")
             })
             .end()
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .main #MAIN_LOGO")
             .then(null, function() {
-               assert(false, "Test 1c - Main logo wasn't placed correctly")
+               TestCommon.log(testname, "Checking for logo in main panel...");
+               assert(false, "Test #1c - Main logo wasn't placed correctly")
             })
             .end()
 
@@ -67,6 +76,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
+               TestCommon.log(testname, "Checking width initialised correctly...");
                assert(width == "150px", "Test #1d - The sidebar width wasn't initialised correctly");
             })
             .end()
@@ -81,6 +91,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
+               TestCommon.log(testname, "Checking sidebar was hidden...");
                assert(width == "9px", "Test #2a - The sidebar wasn't hidden via the bar control");
             })
             .end()
@@ -92,6 +103,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
+               TestCommon.log(testname, "Checking sidebar was revealed...");
                assert(width == "150px", "Test #2b - The sidebar wasn't shown via the bar control");
             })
             .end()
@@ -103,7 +115,8 @@ define(["intern!object",
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
-               assert(width == "9px", "Test #2a - The sidebar wasn't hidden via the bar control");
+               TestCommon.log(testname, "Checking sidebar was hidden (using control)...");
+               assert(width == "9px", "Test #3a - The sidebar wasn't hidden via the bar control");
             })
             .end()
 
@@ -114,34 +127,36 @@ define(["intern!object",
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
-               assert(width == "150px", "Test #2b - The sidebar wasn't shown via the bar control");
+               TestCommon.log(testname, "Checking sidebar was revealed (using control)...");
+               assert(width == "150px", "Test #3b - The sidebar wasn't shown via the bar control");
             })
             .end()
 
          // Perform a resize
          .findById("yui-gen0")
-         .getSize()
-         .then(function(size) {
-            startSize = size;
-         })
-         .end()
+            .getSize()
+            .then(function(size) {
+               startSize = size;
+            })
+            .end()
 
          .findById("yui-gen1")
-         .then(function(element) {
-            browser.moveMouseTo(element);
-         })
-         .pressMouseButton()
-         .moveMouseTo(null, 200, 0)
-         .releaseMouseButton()
-         .end()
+            .then(function(element) {
+               browser.moveMouseTo(element);
+            })
+            .pressMouseButton()
+            .moveMouseTo(null, 200, 0)
+            .releaseMouseButton()
+            .end()
 
          .findById("yui-gen0")
-         .getSize()
-         .then(function(endSize) {
-            expect(endSize.width).to.be.at.least(startSize.width, "The sidebar did not resize on the x axis");
-            expect(endSize.height).to.equal(startSize.height, "The sidebar should not have resized on the y axis");
-         })
-         .end()
+            .getSize()
+            .then(function(endSize) {
+               TestCommon.log(testname, "Checking sizes after drag...");
+               expect(endSize.width).to.be.at.least(startSize.width, "The sidebar did not resize on the x axis");
+               expect(endSize.height).to.equal(startSize.height, "The sidebar should not have resized on the y axis");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {
