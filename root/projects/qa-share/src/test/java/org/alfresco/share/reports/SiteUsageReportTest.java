@@ -99,7 +99,7 @@ public class SiteUsageReportTest extends AbstractUtils
     private static int site4NumberOfDeleteFiles = 1;
     private static int site5NumberOfDeleteFiles = 4;
     
-    //Number of days to subtract for time periods
+    //Number of days to subtract from today for time periods
     private static int intNumOfDaysPeriod1 = -5;
     private static int intNumOfDaysPeriod2 = -15;
     private static int intNumOfDaysPeriod3 = -45;
@@ -116,13 +116,6 @@ public class SiteUsageReportTest extends AbstractUtils
         super.setup();
 
         camelContext = new DefaultCamelContext();
-        /**
-        camelContext.addRoutes(new RouteBuilder() {
-            public void configure() {
-                from("activemq:alfresco.events.raw").to("browse:orderReceived");
-            }
-        });
-        **/
         camelContext.addComponent("activemq:alfresco.events.raw", activeMQComponent("vm://localhost?broker.persistent=false"));
         template = camelContext.createProducerTemplate();
         camelContext.start();
@@ -149,9 +142,19 @@ public class SiteUsageReportTest extends AbstractUtils
         }       
     }
     
-      
+    /**
+     *  Datapreps for ALONE-15939 - Site usage report for All Activities  
+     *   
+     * 1) Create Test user
+     * 2) Created test user logs in
+     * 3) Created test user creates Site1, Site2, Site3, Site4, Site5, Site6   
+     * 4) Historic events created on the queue for sites   
+     * 5) Test user logs out 
+     *   
+     * @throws Exception
+     */
     @Test(groups = { "DataPrepSiteUsageReport" })
-    public void dataPrep_SiteUsageReport_ALF_1533_1() throws Exception
+    public void dataPrep_SiteUsageReport_ALF_15939() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
@@ -183,7 +186,7 @@ public class SiteUsageReportTest extends AbstractUtils
         // Create Site6
         SiteUtil.createSite(drone, siteName6, AbstractUtils.SITE_VISIBILITY_PUBLIC);
             
-        
+        //data used for events creation
         String [][] sitesData = {{ siteName1, FILE_PREVIEW_EVENT, Integer.toString(site1NumberOfPreviewFiles) }, {siteName2, FILE_PREVIEW_EVENT, Integer.toString(site2NumberOfPreviewFiles) }, {siteName3, FILE_PREVIEW_EVENT, Integer.toString(site3NumberOfPreviewFiles) }, {siteName4, FILE_PREVIEW_EVENT, Integer.toString(site4NumberOfPreviewFiles)}, {siteName5, FILE_PREVIEW_EVENT, Integer.toString(site5NumberOfPreviewFiles)},
                                  { siteName1, FILE_DOWNLOAD_EVENT, Integer.toString(site1NumberOfDownloadFiles) }, {siteName2, FILE_DOWNLOAD_EVENT, Integer.toString(site2NumberOfDownloadFiles) }, {siteName3, FILE_DOWNLOAD_EVENT, Integer.toString(site3NumberOfDownloadFiles) }, {siteName4, FILE_DOWNLOAD_EVENT, Integer.toString(site4NumberOfDownloadFiles)}, {siteName5, FILE_DOWNLOAD_EVENT, Integer.toString(site5NumberOfDownloadFiles)},   
                                  { siteName1, FILE_EDIT_EVENT, Integer.toString(site1NumberOfEditFiles) }, {siteName2, FILE_EDIT_EVENT, Integer.toString(site2NumberOfEditFiles) }, {siteName3, FILE_EDIT_EVENT, Integer.toString(site3NumberOfEditFiles) }, {siteName4, FILE_EDIT_EVENT, Integer.toString(site4NumberOfEditFiles)}, {siteName5, FILE_EDIT_EVENT, Integer.toString(site5NumberOfEditFiles)},
@@ -193,6 +196,7 @@ public class SiteUsageReportTest extends AbstractUtils
                                  { siteName1, FILE_DELETE_EVENT, Integer.toString(site1NumberOfDeleteFiles) }, {siteName2, FILE_DELETE_EVENT, Integer.toString(site2NumberOfDeleteFiles) }, {siteName3, FILE_DELETE_EVENT, Integer.toString(site3NumberOfDeleteFiles) }, {siteName4, FILE_DELETE_EVENT, Integer.toString(site4NumberOfDeleteFiles)}, {siteName5, FILE_DELETE_EVENT, Integer.toString(site5NumberOfDeleteFiles)}
                                 };
         
+        //create events on the queue
         for(int i=0; i < sitesData.length; i++)
         {
             String siteName = sitesData[i][0];
