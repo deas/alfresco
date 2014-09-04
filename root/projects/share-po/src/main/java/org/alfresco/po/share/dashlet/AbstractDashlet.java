@@ -20,10 +20,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
@@ -394,16 +396,21 @@ abstract class AbstractDashlet extends SharePage
      * @param element
      * @return
      */
-    protected String getElement(String xml, String element)
+    protected String getElement(String xml, String element) throws Exception
     {
         String tooltipElement = " ";
-
+        xml = xml.replaceAll("alt=\"avatar\">", "alt=\"avatar\"/>");
+        xml = xml.replaceAll("<br>", "");
+        
+        
         XPathFactory xpathFactory = XPathFactory.newInstance();
         XPath xpath = xpathFactory.newXPath();
         InputSource source = new InputSource(new StringReader(xml));
+     
         try
         {
             tooltipElement = (String) xpath.evaluate(element, source, XPathConstants.STRING);
+            
         } catch (XPathExpressionException ee)
         {
             logger.error("Cannot parse xml string " + ee);

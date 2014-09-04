@@ -42,14 +42,22 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
 {
     private static Log logger = LogFactory.getLog(TopSiteContributorDashlet.class);
 
+    //chart
     private static final String TOP_SITE_CONTRIBUTOR_REPORT_DASHLET = "div[id*='DASHLET']";
     private static final String PIE_CHART_SLICES = "path[transform]";
     private static final String TOOLTIP_DATA = "div[id^='tipsyPvBehavior']";
     private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";
+    
+    //date picker
+    private static final String DATE_PICKER_DROP_DOWN =  "input[class='dijitReset dijitInputField dijitArrowButtonInner']";
+    private static final String TODAY = "td[id='dijit_MenuItem_0_text']";
+    private static final String LAST_SEVEN_DAYS = "td[id='dijit_MenuItem_1_text']";
+    private static final String LAST_THIRTY_DAYS = "td[id='dijit_MenuItem_2_text']";
+    private static final String PAST_YEAR = "td[id='dijit_MenuItem_3_text']";
+    private static final String DATE_RANGE = "td[id='dijit_MenuItem_4_text']";   
     private static final String FROM_DATE_INPUT_FIELD = "";
     private static final String TO_DATE_INPUT_FIELD = "";
-    private static final String OK_BUTTON = "";
-    private static final String CANCEL_BUTTON = "";
+
 
     /**
      * Constructor
@@ -86,16 +94,20 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
      * Gets the list of user data appearing in tooltips (file type-count) 
      * @return
      */
-    public List<String> getTooltipUserData()
+    public List<String> getTooltipUserData() throws Exception
     {
         List<WebElement> pieChartSlices = getPieChartSlices();
+        //System.out.println("PIE CHART SLICES SIZE *** " + pieChartSlices.size());
         List<String> toolTipData = new ArrayList<String>();
         for (WebElement pieChartSlice : pieChartSlices)
         {
             drone.mouseOver(pieChartSlice);
             WebElement tooltipElement = drone.findAndWait(By.cssSelector(TOOLTIP_DATA));
-            String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/strong");
-            String items = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/text()[preceding-sibling::br]");
+            //System.out.println("TTE *** " + tooltipElement);
+            String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/table/tr/td/div/strong");
+            //System.out.println("USER *** " + user);
+            String items = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/table/tr/td/div/text()[preceding-sibling::br]");
+            //System.out.println("ITEMS *** " + items);
             String [] counts = items.split(" ");
             String fileCount = counts[0];
             StringBuilder builder = new StringBuilder();
@@ -110,22 +122,20 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
      * Gets the list of usernames appearing in tooltips 
      * @return
      */
-    public List<String> getTooltipUsers()
+    public List<String> getTooltipUsers() throws Exception
     {
         List<WebElement> pieChartSlices = getPieChartSlices();
         List<String> users = new ArrayList<String>();
         for (WebElement pieChartSlice : pieChartSlices)
         {
             drone.mouseOver(pieChartSlice);
+            drone.mouseOverOnElement(pieChartSlice);
             WebElement tooltipElement = drone.findAndWait(By.cssSelector(TOOLTIP_DATA));
-            String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/strong");
+            String user = getElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/table/tr/td/div/strong");
             users.add(user);
         }   
         return users;
     }
-    
-    
-    
     
     
     
@@ -148,9 +158,7 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
         }
         return pieChartSlices;
     }
-    
-
-    
+     
     
     /**
      * Enters from date into calendar
@@ -213,39 +221,114 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
     }
 
     /**
-     * Clicks on calendar Ok button
+     * Clicks on calendar right handside arrow
+     * 
      */
-    public void clickCalendarOkButtton()
+    public void clickOnCalendarDropdown()
     {
         try
         {
-            scrollDownToDashlet();
-            drone.findAndWait(By.cssSelector(OK_BUTTON)).click();
+            drone.findAndWait(By.cssSelector(DATE_PICKER_DROP_DOWN)).click();
         }
         catch (TimeoutException e)
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Exceeded time to find and click the Ok Button.", e);
+                logger.trace("Exceeded time to find and click the date picker dropdown arrow.", e);
             }
         }
     }
 
     /**
-     * Clicks on calendar Cancel button
+     * Selects TODAY option from the calendar dropdown  
+     * 
      */
-    public void clickCalendarCancelButtton()
+    public void clickCalendarTodayOption()
     {
         try
         {
-            scrollDownToDashlet();
-            drone.findAndWait(By.cssSelector(CANCEL_BUTTON)).click();
+            drone.findAndWait(By.cssSelector(TODAY)).click();
         }
         catch (TimeoutException e)
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace("Exceeded time to find and click the Cancel Button.", e);
+                logger.trace("Exceeded time to find and click on the TODAY option from dropdown.", e);
+            }
+        }
+    }
+    
+    /**
+     * Selects LAST 7 DAYS option from the calendar dropdown 
+     *  
+     */
+    public void clickCalendarLastSevenDaysOption()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(LAST_SEVEN_DAYS)).click();
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find and click on the LAST 7 DAYS option from dropdown.", e);
+            }
+        }
+    }
+    
+    /**
+     * Selects LAST 30 DAYS option from the calendar dropdown  
+     */
+    public void clickCalendarLastThirtyDaysOption()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(LAST_THIRTY_DAYS)).click();
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find and click on the LAST 30 DAYS option from dropdown.", e);
+            }
+        }
+    }
+    
+    /**
+     * Selects PAST YEAR option from the calendar dropdown 
+     *  
+     */
+    public void clickCalendarPastYearOption()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(PAST_YEAR)).click();
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find and click on the PAST YEAR option from dropdown.", e);
+            }
+        }
+    }
+    
+    /**
+     * Selects Date Range option from the calendar dropdown 
+     *  
+     */
+    public void clickCalendarDateRangeOption()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(DATE_RANGE)).click();
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find and click on the Date Range option from dropdown.", e);
             }
         }
     }

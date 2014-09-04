@@ -72,91 +72,12 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
         elementRender(timer, getVisibleRenderElement(By.cssSelector(SITE_CONTENT_REPORT_DASHLET)));
         return this;
     }
-    
-    
-    /**
-     * Gets the list of content data
-     * 
-     * @return
-     */
-    /**
-    public List<String> getSiteContentReportData()
-    {
-        List<String> siteContentData = new ArrayList<String>();
-        try
-        {
 
-            List<WebElement> siteContentDataElements = drone.findAll(By.cssSelector(SITE_CONTENT_DATA));
-            if (siteContentDataElements.size() > 0)
-            {
-                for (WebElement contentDataElement : siteContentDataElements)
-                {
-                    siteContentData.add(contentDataElement.getText());
-                }
-            }
-
-        }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("No site content data " + nse);
-        }
-        return siteContentData;
-    }
-    **/
-    
-    /**
-     * Gets the list of strings: mime type - count
-     * @return
-     */
-    /**
-    public List<String> getTypesAndCounts()
-    {
-        List<String> siteContentData = getSiteContentReportData();
-        StringBuilder builder = new StringBuilder(" ");
-        List<String> typesAndCounts = new ArrayList<String>();
-        for (String data : siteContentData)
-        {
-            builder.append(data).append(" ");
-        }
-        String [] items = builder.toString().split("items");
-        for (String item : items)
-        {
-            if (item.indexOf("-") != -1)
-            {
-                typesAndCounts.add(item.trim().substring(item.indexOf(")")+1));
-            }   
-        }
-        return typesAndCounts;
-    }
-    
-    **/
-   /** 
-    public List<String> getTooltipFile()
-    {
-        List<WebElement> pieChartSlices = getPieChartSlices();
-        List<String> toolTipCounts = new ArrayList<String>();
-        for (WebElement pieChartSlice : pieChartSlices)
-        {
-            drone.mouseOver(pieChartSlice);
-            pieChartSlice.click();
-            WebElement tooltipElement = drone.findAndWait(By.cssSelector(TOOLTIP_DATA));
-            String items = getTooltipElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/text()[preceding-sibling::br]");
-            String [] counts = items.split(" ");
-            String fileCount = counts[0];
-            toolTipTypes.add(getTooltipElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/strong"));
-            //System.out.println("TTTTT 0 **** " + tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE));
-            //System.out.println("TTTTT 1 **** " + getTooltipElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/strong"));
-            System.out.println("TTTTT 2 **** " + getTooltipElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div/text()[preceding-sibling::br]"));
-            //System.out.println("TTTTT 3 **** " + getTooltipElement(tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE), "/div"));
-        }   
-        return toolTipTypes;
-    }
-**/
     /**
      * Gets the list of files data appearing in tooltips (file type-count) 
      * @return
      */
-    public List<String> getTooltipFileData()
+    public List<String> getTooltipFileData()throws Exception
     {
         List<WebElement> pieChartSlices = getPieChartSlices();
         List<String> toolTipData = new ArrayList<String>();
@@ -180,7 +101,7 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
      * Gets the list of file types data appearing in tooltips  
      * @return
      */
-    public List<String> getTooltipFileTypes()
+    public List<String> getTooltipFileTypes() throws Exception
     {
         List<WebElement> pieChartSlices = getPieChartSlices();
         List<String> toolTipFileTypes = new ArrayList<String>();
@@ -193,13 +114,6 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
         }   
         return toolTipFileTypes;
     }
-    
-    
-    
-    
-    
-    
-    
     
     /**
      * Gets the list of pie chart slices elements
@@ -220,30 +134,5 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
         }
         return pieChartSlices;
     }
-    
-    /**
-     * Parses the xml string of the original-title element 
-     * 
-     * @param xml
-     * @param element
-     * @return
-     */
-    /**
-    private String getElement(String xml, String element)
-    {
-        String tooltipElement = " ";
 
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath xpath = xpathFactory.newXPath();
-        InputSource source = new InputSource(new StringReader(xml));
-        try
-        {
-            tooltipElement = (String) xpath.evaluate(element, source, XPathConstants.STRING);
-        } catch (XPathExpressionException ee)
-        {
-            logger.error("Cannot parse xml string " + ee);
-        }
-        return tooltipElement;
-    }
-    **/
 }

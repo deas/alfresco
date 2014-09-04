@@ -52,12 +52,12 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
     private static final String TOP_SITE_CONTRIBUTOR_REPORT = "top-site-contributor-report";
     private TopSiteContributorDashlet topSiteContributorDashlet = null;
     private CustomiseSiteDashboardPage customiseSiteDashBoard = null;
-
-    private String random1 = UUID.randomUUID().toString();
-    private String random2 = UUID.randomUUID().toString();
-    private String random3 = UUID.randomUUID().toString();
-    private String random4 = UUID.randomUUID().toString();
-    private String random5 = UUID.randomUUID().toString();
+    
+    private String random1 = "User_" + System.currentTimeMillis() + "_" + 1;
+    private String random2 = "User_" + System.currentTimeMillis() + "_" + 2;
+    private String random3 = "User_" + System.currentTimeMillis() + "_" + 3;
+    private String random4 = "User_" + System.currentTimeMillis() + "_" + 4;
+    private String random5 = "User_" + System.currentTimeMillis() + "_" + 5;
     
     private static int firstNumberOfFiles = 7;
     private static int secondNumberOfFiles = 4;
@@ -81,7 +81,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         // uploadDocument();
         dashBoard = loginAs(username, password);
         SiteUtil.createSite(drone, siteName, "description", "moderated");
-
+        
         logout(drone);
 
         createUsersAndFiles(firstNumberOfFiles, random1);
@@ -90,14 +90,15 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         createUsersAndFiles(fourthNumberOfFiles, random4);
         createUsersAndFiles(fifthNumberOfFiles, random5);
 
+        
     }
-
+    
     @AfterClass
     public void deleteSite()
     {
         SiteUtil.deleteSite(drone, siteName);
     }
-
+    
     /**
      * Creates a user, invites it to the site as a collaborator and logs out
      * Collaborator logs in and uploads files to site's document library
@@ -163,14 +164,55 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
     @Test(dependsOnMethods = "instantiateDashlet")
     public void testTopSiteContributorData() throws Exception
     {
-        List<String> users = topSiteContributorDashlet.getTooltipUsers();
-        Assert.assertTrue(users.contains(random1));
-        Assert.assertTrue(users.contains(random2));
-        Assert.assertTrue(users.contains(random3));
-        Assert.assertTrue(users.contains(random4));
-        Assert.assertTrue(users.contains(random5)); 
+        verifyDashletData();
         
+        //select Today option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarTodayOption();
+        
+        //Verify results
+        verifyDashletData();
+        
+        //select Last 7 days option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarLastSevenDaysOption();
+        
+        //Verify results
+        verifyDashletData();
+        
+        //select Past Year days option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarPastYearOption();
+        
+        //Verify results
+        verifyDashletData();
+        
+        
+        //select Date Range option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarDateRangeOption();
+        
+        //Verify results
+        verifyDashletData();
+         
+    }
+    
+    /**
+     * Verifies that dashlat displays correct data
+     * 
+     * @throws Exception
+     */
+    private void verifyDashletData() throws Exception
+    {
+        List<String> users = topSiteContributorDashlet.getTooltipUsers();
         List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
+        
+        Assert.assertTrue(users.contains(random1.toLowerCase()));
+        Assert.assertTrue(users.contains(random2.toLowerCase()));
+        Assert.assertTrue(users.contains(random3.toLowerCase()));
+        Assert.assertTrue(users.contains(random4.toLowerCase()));
+        Assert.assertTrue(users.contains(random5.toLowerCase())); 
+        
         Assert.assertEquals(usersData.size(), 5);
         
         for(String userData : usersData)
@@ -203,6 +245,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
            {
                 Assert.assertEquals(Integer.parseInt(fileCount), fifthNumberOfFiles);
            }
-        }        
+        }
+
     }
 }

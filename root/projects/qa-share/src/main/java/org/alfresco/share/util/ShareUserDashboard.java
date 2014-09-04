@@ -103,7 +103,35 @@ public class ShareUserDashboard extends AbstractUtils
         dashBoard = customiseUserDashBoard.addDashlet(dashlet, 1).render();
         return dashBoard;
     }
-     
+
+    
+    /**
+     * Removes dashlet from the site dash board page
+     * 
+     * @param driver
+     * @param dashlet
+     * @param siteName
+     * @return
+     */
+    public static SiteDashboardPage removeDashlet(WebDrone driver, Dashlets dashlet, String siteName)
+    {
+        SiteDashboardPage siteDashBoard = null;
+        SharePage thisPage = ShareUser.getSharePage(driver);
+
+        if (!(thisPage instanceof DashBoardPage))
+        {
+            siteDashBoard = ShareUser.openSiteDashboard(driver, siteName);
+        }
+        else
+        {
+            siteDashBoard = (SiteDashboardPage) thisPage;
+        }
+
+        CustomiseSiteDashboardPage customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard().render();
+        siteDashBoard = customiseSiteDashBoard.remove(dashlet).render();
+        return siteDashBoard;
+    }
+    
     
     /**
      * Method to set the Search term and use defaults for non-mandatory fields
@@ -343,10 +371,6 @@ public class ShareUserDashboard extends AbstractUtils
         }
  
     }
-    
-    
-    
-    
     
     
     /**

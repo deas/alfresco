@@ -86,7 +86,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTopSiteContributorReport" })
-    public void dataPrep_TopSiteContributor_ALF_1055() throws Exception
+    public void dataPrep_TopSiteContributor_AONE_16001() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
@@ -95,7 +95,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
 
         // Create test user
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
-
+        
         // Login as created test user
         ShareUser.login(drone, testUser, testPassword);
 
@@ -107,7 +107,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo1);
-          
+        
         // Login as created test user
         ShareUser.login(drone, testUser, testPassword);
         
@@ -230,7 +230,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
      * 3) Checks the number of top site contributors is correct
      */
     @Test(groups = { "TopSiteContributorReport" })
-    public void ALF_1055()
+    public void AONE_16001() throws Exception
     {
         // test user (site creator) logs in
         String testName = getTestName();
@@ -240,58 +240,38 @@ public class TopSiteContributorReportTest extends AbstractUtils
 
         // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
         ShareUserDashboard.addDashlet(drone, siteName, Dashlets.TOP_SITE_CONTRIBUTOR_REPORT);
+             
         TopSiteContributorDashlet topSiteContributorDashlet = ShareUserDashboard.getTopSiteContributorDashlet(drone, siteName);
- 
-        List<String> users = topSiteContributorDashlet.getTooltipUsers();
-  
-        String testUser1 = getUserNameForDomain(testName + "1", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser2 = getUserNameForDomain(testName + "2", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser3 = getUserNameForDomain(testName + "3", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser4 = getUserNameForDomain(testName + "4", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser5 = getUserNameForDomain(testName + "5", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        verifyDashletData(topSiteContributorDashlet, testName);
         
-        Assert.assertTrue(users.contains(testUser1));
-        Assert.assertTrue(users.contains(testUser2));
-        Assert.assertTrue(users.contains(testUser3));
-        Assert.assertTrue(users.contains(testUser4));
-        Assert.assertTrue(users.contains(testUser5));        
+        //select Today option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarTodayOption();
         
-        List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
-        Assert.assertEquals(usersData.size(), 5);
+        //Verify results
+        verifyDashletData(topSiteContributorDashlet, testName);
         
-        for(String userData : usersData)
-        {
-           String [] tokens = userData.split("-");
-           String user = tokens[0];
-           String fileCount = tokens[1];
-                      
-           if (user.trim().equalsIgnoreCase(testUser1))
-           {
-               Assert.assertEquals(Integer.parseInt(fileCount), firstNumberOfFiles);
-           }
-           
-           if (user.trim().equalsIgnoreCase(testUser2))
-           {
-               Assert.assertEquals(Integer.parseInt(fileCount), secondNumberOfFiles);
-           }
-           
-           if (user.trim().equalsIgnoreCase(testUser3))
-           {
-                Assert.assertEquals(Integer.parseInt(fileCount), thirdNumberOfFiles);
-           }
-          
-           if (user.trim().equalsIgnoreCase(testUser4))
-           {
-                Assert.assertEquals(Integer.parseInt(fileCount), fourthNumberOfFiles);
-           }
-
-           if (user.trim().equalsIgnoreCase(testUser5))
-           {
-                Assert.assertEquals(Integer.parseInt(fileCount), fifthNumberOfFiles);
-           }
-            
-        }        
-      
+        //select Last 7 days option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarLastSevenDaysOption();
+        
+        //Verify results
+        verifyDashletData(topSiteContributorDashlet, testName);
+        
+        //select Past Year days option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarPastYearOption();
+        
+        //Verify results
+        verifyDashletData(topSiteContributorDashlet, testName);
+                
+        //select Date Range option from calendar drop down
+        topSiteContributorDashlet.clickOnCalendarDropdown();
+        topSiteContributorDashlet.clickCalendarDateRangeOption();
+        
+        //Verify results
+        verifyDashletData(topSiteContributorDashlet, testName);
+        
     }
     
     
@@ -310,7 +290,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepTopSiteContributorReport" })
-    public void dataPrep_TopSiteContributor_ALF_1058() throws Exception
+    public void dataPrep_TopSiteContributor_AONE_16002() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
@@ -360,7 +340,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
      * 3) Verify user can't customize the site dasboard      
      */
     @Test(groups = { "TopSiteContributorReport" })
-    public void ALF_1058()
+    public void AONE_16002()
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -412,5 +392,76 @@ public class TopSiteContributorReportTest extends AbstractUtils
             ShareUser.uploadFileInFolder(drone, fileInfo);
         }
 
+    }
+    
+    /**
+     * Verifies that dashlat displays correct data
+     * 
+     * @param topSiteContributorDashlet
+     * @throws Exception
+     */
+    private void verifyDashletData(TopSiteContributorDashlet topSiteContributorDashlet, String testName) throws Exception
+    {
+        List<String> users = topSiteContributorDashlet.getTooltipUsers();
+        List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
+        
+        String testUser1 = getUserNameForDomain(testName + "1", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser2 = getUserNameForDomain(testName + "2", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser3 = getUserNameForDomain(testName + "3", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser4 = getUserNameForDomain(testName + "4", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        String testUser5 = getUserNameForDomain(testName + "5", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
+        
+        System.out.println("TEST USER 1 *** " + testUser1);
+        System.out.println("TEST USER 2 *** " + testUser2);
+        System.out.println("TEST USER 3 *** " + testUser3);
+        System.out.println("TEST USER 4 *** " + testUser4);
+        System.out.println("TEST USER 5 *** " + testUser5);
+        
+        
+        for (String user : users)
+        {
+            System.out.println("User *** " + user);
+        }
+        
+        Assert.assertTrue(users.contains(testUser1));
+        Assert.assertTrue(users.contains(testUser2));
+        Assert.assertTrue(users.contains(testUser3));
+        Assert.assertTrue(users.contains(testUser4));
+        Assert.assertTrue(users.contains(testUser5));        
+        
+        Assert.assertEquals(usersData.size(), 5);
+        
+        for(String userData : usersData)
+        {
+           String [] tokens = userData.split("-");
+           String user = tokens[0];
+           String fileCount = tokens[1];
+                      
+           if (user.trim().equalsIgnoreCase(testUser1))
+           {
+               Assert.assertEquals(Integer.parseInt(fileCount), firstNumberOfFiles);
+           }
+           
+           if (user.trim().equalsIgnoreCase(testUser2))
+           {
+               Assert.assertEquals(Integer.parseInt(fileCount), secondNumberOfFiles);
+           }
+           
+           if (user.trim().equalsIgnoreCase(testUser3))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), thirdNumberOfFiles);
+           }
+          
+           if (user.trim().equalsIgnoreCase(testUser4))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), fourthNumberOfFiles);
+           }
+
+           if (user.trim().equalsIgnoreCase(testUser5))
+           {
+                Assert.assertEquals(Integer.parseInt(fileCount), fifthNumberOfFiles);
+           }
+            
+        }                
     }
 }
