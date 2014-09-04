@@ -44,7 +44,12 @@ define(["intern!object",
             .end()
 
          // this test seems to need a moment to render correctly
-         .sleep(3000)
+         
+         .findByCssSelector(".yui-resize-handle.yui-resize-handle-r")
+            .then(null, function() {
+               assert(false, "Test 1a - Couldn't find resize handle")
+            })
+            .end()
 
          // Check that the logo widgets have been placed in the correct positions...
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar #SIDEBAR_LOGO")
