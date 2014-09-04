@@ -254,6 +254,60 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
         
     }
     
+    /**
+     * 1) Create test user
+     * 2) Login as test user
+     * 3) Create site
+     * 4) test user logs out
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "DataPrepSiteContentBreakdownReport" })
+    public void dataPrep_TopSiteContributor_AONE_16016() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+ 
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Create site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
+
+        //test user logs out
+        ShareUser.logout(drone);
+
+    }
+    
+    /**
+     * 1) Test user (site creator) logs in
+     * 2) Test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+     * 3) Test user (site creator) selects all the options from the calendar and
+     * 4) Verifies for each calendar option that the chart is not displayed and No data found message is shown     
+     */
+    @Test(groups = { "SiteContentBreakdownReport" })
+    public void AONE_16016()
+    {
+        // test user (site creator) logs in
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String siteName = getSiteName(testName);
+        ShareUser.login(drone, testUser, testPassword);
+
+        // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_CONTENT_REPORT);
+        SiteContentBreakdownDashlet siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
+      
+        //Verify chart is not displayed and No data found message is shown - Last 30 Days
+        siteContentBreakdownDashlet.clickOnChart();
+        Assert.assertTrue(siteContentBreakdownDashlet.isNoDataFoundDisplayed());
+
+    }   
     
     /**
      * 

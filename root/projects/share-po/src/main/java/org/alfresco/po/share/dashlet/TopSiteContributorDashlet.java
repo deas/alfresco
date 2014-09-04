@@ -47,8 +47,6 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
     private static final String PIE_CHART_SLICES = "path[transform]";
     private static final String TOOLTIP_DATA = "div[id^='tipsyPvBehavior']";
     private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";
-    private static final String CHART_NODE = "div[data-dojo-attach-point='chartNode']";
-    private static final String NO_DATA_FOUND = "text[pointer-events='none']";
     
     //date picker
     private static final String DATE_PICKER_DROP_DOWN =  "input[class='dijitReset dijitInputField dijitArrowButtonInner']";
@@ -343,45 +341,7 @@ public class TopSiteContributorDashlet extends AbstractDashlet implements Dashle
             }
         }
     }
-    
-    
-    /**
-     * Checks if No data found is displayed
-     * 
-     * @return
-     */
-    public boolean isNoDataFoundDisplayed()
-    {
-        try
-        {
-            WebElement noDataFound = drone.find(By.cssSelector(NO_DATA_FOUND));
-            return noDataFound.isDisplayed();
-        }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("No No data found message " + nse);
-            throw new PageException("Unable to find No data found message.", nse);
-        }
-    }
-    
-    /**
-     * Clicks on chart
-     * 
-     */
-    public void clickOnChart()
-    {
-        try
-        {
-            drone.findAndWait(By.cssSelector(CHART_NODE)).click();
-        }
-        catch (TimeoutException e)
-        {
-            if (logger.isTraceEnabled())
-            {
-                logger.trace("Exceeded time to find and click on chart.", e);
-            }
-        }
-    }    
+     
     /**
      * Enters to an from date into calendar
      * 

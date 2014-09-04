@@ -20,12 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
@@ -62,7 +60,12 @@ abstract class AbstractDashlet extends SharePage
     protected static final By CONFIGURE_DASHLET_ICON = By.cssSelector("div.titleBarActionIcon.edit");
     protected static final By DASHLET_TITLE = By.cssSelector(".title");
     private static final By titleBarActions = By.cssSelector("div.titleBarActions");
+    private static final String CHART_NODE = "div[data-dojo-attach-point='chartNode']";
+    private static final String NO_DATA_FOUND = "text[pointer-events='none']";
+
+
     private By resizeHandle;
+    
 
     /**
      * Constructor.
@@ -416,5 +419,43 @@ abstract class AbstractDashlet extends SharePage
             logger.error("Cannot parse xml string " + ee);
         }
         return tooltipElement;
+    }
+    
+    /**
+     * Clicks on chart
+     * 
+     */
+    public void clickOnChart()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(CHART_NODE)).click();
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Exceeded time to find and click on chart.", e);
+            }
+        }
+    }   
+    
+    /**
+     * Checks if No data found is displayed instead of chart
+     * 
+     * @return
+     */
+    public boolean isNoDataFoundDisplayed()
+    {
+        try
+        {
+            WebElement noDataFound = drone.find(By.cssSelector(NO_DATA_FOUND));
+            return noDataFound.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No No data found message " + nse);
+            throw new PageException("Unable to find No data found message.", nse);
+        }
     }
 }
