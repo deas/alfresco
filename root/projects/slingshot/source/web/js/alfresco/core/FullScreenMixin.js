@@ -101,6 +101,10 @@ define(["dojo/_base/declare",
                }
             }
          }
+         else
+         {
+            this.cancelFullScreen();
+         }
       },
       
       /**
@@ -115,7 +119,7 @@ define(["dojo/_base/declare",
          // Always enter full window mode first... this is done so that popups that are outide the target
          // DOM element can still be displayed. We're going to make the document body NOT the target DOM
          // element the full screen, but we want to fill the body first...
-         this.toggleFullWindow();
+         this.toggleFullWindow(true);
 
          if (!isWindowOnly)
          {
@@ -160,11 +164,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       cancelFullScreen: function alfresco_core_FullScreenMixin__cancelFullScreen() {
-         if (this.isWindowOnly)
-         {
-            this.toggleFullWindow();
-         }
-         else if (dojo.doc.exitFullscreen)
+         if (dojo.doc.exitFullscreen)
          {
             dojo.doc.exitFullscreen();
          }
@@ -176,10 +176,7 @@ define(["dojo/_base/declare",
          {
             dojo.doc.webkitCancelFullScreen();
          }
-         else
-         {
-            this.toggleFullWindow();
-         }
+         this.toggleFullWindow(false);
       },
       
       /**
@@ -255,11 +252,12 @@ define(["dojo/_base/declare",
        * explicit setting of params.isWindowOnly=true.
        *
        * @instance
+       * @param {boolean} enable Whether to enable the mode
        */
-      toggleFullWindow: function alfresco_core_FullScreenMixin__toggleFullWindow() {
+      toggleFullWindow: function alfresco_core_FullScreenMixin__toggleFullWindow(enable) {
          if (this.domNode != null)
          {
-            if (!domClass.contains(this.domNode, fullWindowClass))
+            if (enable === true && !domClass.contains(this.domNode, fullWindowClass))
             {
                domClass.add(this.domNode, fullWindowClass);
                // By using on.once the keyup capture will only occur once (i.e. the listener
@@ -290,7 +288,7 @@ define(["dojo/_base/declare",
             this.alfPublish(this.fullWindowTopic, {
                selected: false
             });
-            this.toggleFullWindow();
+            this.toggleFullWindow(false);
          }
       }
    });

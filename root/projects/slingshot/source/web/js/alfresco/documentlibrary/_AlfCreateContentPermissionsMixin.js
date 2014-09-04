@@ -124,7 +124,7 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of the selected files.
        */
       onFilterChange: function alfresco_documentlibrary__AlfCreateContentPermissionsMixin__onFilterChange(payload) {
-         var path = lang.getObject("filter.path", false, payload);
+         var path = lang.getObject("path", false, payload);
          this.set('disabled', (path == null));
       } 
    });

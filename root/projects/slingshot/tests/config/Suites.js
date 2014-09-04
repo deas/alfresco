@@ -89,6 +89,7 @@ define({
 
       'tests/alfresco/layout/AlfSideBarContainerTest',
       'tests/alfresco/layout/BasicLayoutTest',
+      'tests/alfresco/layout/FullScreenWidgetsTest',
       'tests/alfresco/layout/TwisterTest',
 
       'tests/alfresco/menus/AlfCheckableMenuItemTest',

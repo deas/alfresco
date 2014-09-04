@@ -129,9 +129,7 @@ model.jsonModel = {
             label: "Set Path Filter",
             publishTopic: "ALF_HASH_CHANGED",
             publishPayload: {
-               filter: {
-                  path: "/"
-               }
+               path: "/"
             }
          }
       },
@@ -142,9 +140,7 @@ model.jsonModel = {
             label: "Set Tag Filter",
             publishTopic: "ALF_HASH_CHANGED",
             publishPayload: {
-               filter: {
-                  tag: "test"
-               }
+               tag: "test"
             }
          }
       },
