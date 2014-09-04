@@ -118,9 +118,11 @@ define(["intern!object",
 
             // 1. Focus on the first thumbnail...
             .pressKeys(keys.TAB) // Goes to first thumbnail...
+            .sleep(alfPause)
 
             // 2. Tab again to select the selector...
             .pressKeys(keys.TAB)
+            .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Folder 1"))
                .then(function(elements) {
@@ -130,6 +132,7 @@ define(["intern!object",
 
             // 3. Display the More Info dialog...
             .pressKeys(keys.TAB)
+            .sleep(alfPause)
             .pressKeys(keys.RETURN)
 
             .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitleBar > span")
@@ -145,7 +148,9 @@ define(["intern!object",
 
             // 4. Use the keys to move around...
             .pressKeys(keys.ARROW_DOWN)
+            .sleep(alfPause)
             .pressKeys(keys.TAB)
+            .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Wiki Page"))
                .then(function(elements) {
@@ -166,6 +171,7 @@ define(["intern!object",
 
             .sleep(alfPause)
             .pressKeys(keys.ARROW_UP)
+            .sleep(alfPause)
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
@@ -177,9 +183,11 @@ define(["intern!object",
 
             .sleep(alfPause)
             .pressKeys(keys.ARROW_RIGHT)
+            .sleep(alfPause)
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
+            .sleep(alfPause)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_DESELECTED", "value", "displayName", "Folder 1"))
                .then(function(elements) {
                   assert(elements.length == 1, "Test #3d - The wrong document was selected");

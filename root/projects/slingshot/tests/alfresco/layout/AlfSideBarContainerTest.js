@@ -44,7 +44,7 @@ define(["intern!object",
             .end()
 
          // this test seems to need a moment to render correctly
-         .sleep(1000)
+         .sleep(3000)
 
          // Check that the logo widgets have been placed in the correct positions...
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar #SIDEBAR_LOGO")
