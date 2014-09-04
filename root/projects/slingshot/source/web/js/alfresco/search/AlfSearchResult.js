@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -61,6 +61,15 @@ define(["dojo/_base/declare",
        * @type {String}
        */
       templateString: template,
+
+      /**
+       * Indicates whether or not to enable the context menu to show the actions with a right-click.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      enableContextMenu: false,
 
       /**
        * Creates the renderers to display for a search result and adds them into the template. Renderers
@@ -267,18 +276,23 @@ define(["dojo/_base/declare",
             allowedActions: (this.currentItem.type === "document" || this.currentItem.type === "folder") ? documentAndFolderActions : otherNodeActions
          }, this.actionsNode);
 
-         // TEMPORARILY DISABLING CONTEXT-MENU ACTIONS
-         // try
-         // {
-         //    new XhrContextActions({
-         //       targetNodeIds: [this.domNode],
-         //       currentItem: this.currentItem
-         //    });
-         // }
-         // catch (e)
-         // {
-         //    this.alfLog("error", "An error occurred creating context menu", e);
-         // }
+         if (this.enableContextMenu)
+         {
+            try
+            {
+               new XhrContextActions({
+                  targetNodeIds: [this.domNode],
+                  currentItem: this.currentItem,
+                  pubSubScope: this.pubSubScope,
+                  filterActions: true,
+                  allowedActions: (this.currentItem.type === "document" || this.currentItem.type === "folder") ? documentAndFolderActions : otherNodeActions
+               });
+            }
+            catch (e)
+            {
+               this.alfLog("error", "An error occurred creating context menu", e);
+            }
+         }
       }
    });
 });

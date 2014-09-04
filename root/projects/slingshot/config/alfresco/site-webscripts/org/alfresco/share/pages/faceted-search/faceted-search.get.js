@@ -444,6 +444,15 @@ var searchDocLib = {
                         a11yScope: "col"
                      }
                   }
+               ],
+               widgets: [
+                  {
+                     id: "FCTSRCH_SEARCH_RESULT",
+                     name: "alfresco/search/AlfSearchResult",
+                     config: {
+                        enableContextMenu: false
+                     }
+                  }
                ]
             }
          },
