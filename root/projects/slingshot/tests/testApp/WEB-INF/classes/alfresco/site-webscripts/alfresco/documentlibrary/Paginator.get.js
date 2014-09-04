@@ -96,7 +96,7 @@ model.jsonModel = {
       },
       {
          name: "alfresco/testing/mockservices/PaginationMockXhr"
-      }
+      },
       {
          name: "alfresco/testing/SubscriptionLog",
          config: {

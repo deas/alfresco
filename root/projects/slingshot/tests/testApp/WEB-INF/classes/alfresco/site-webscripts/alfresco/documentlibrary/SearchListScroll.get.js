@@ -33,7 +33,7 @@ model.jsonModel = {
       },
       {
          name: "alfresco/testing/mockservices/SearchScrollMockXhr"
-      }
+      },
       {
          name: "alfresco/testing/SubscriptionLog"
       },

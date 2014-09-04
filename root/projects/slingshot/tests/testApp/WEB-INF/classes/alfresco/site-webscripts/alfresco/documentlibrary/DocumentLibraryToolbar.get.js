@@ -133,7 +133,7 @@ model.jsonModel = {
                }
             ]
          }
-      }
+      },
       {
          name: "alfresco/testing/SubscriptionLog"
       },

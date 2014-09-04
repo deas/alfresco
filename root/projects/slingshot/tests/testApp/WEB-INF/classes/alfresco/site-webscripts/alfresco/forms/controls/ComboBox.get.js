@@ -59,7 +59,7 @@ model.jsonModel = {
       },
       {
          name: "alfresco/testing/mockservices/ComboBoxMockXhr"
-      }
+      },
       {
          name: "alfresco/testing/SubscriptionLog"
       },

@@ -72,7 +72,8 @@ model.jsonModel = {
                                  }
                               ]
                            }
-                        }{
+                        },
+                        {
                            name: "alfresco/documentlibrary/views/layouts/Cell",
                            config: {
                               widgets: [

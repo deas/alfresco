@@ -80,7 +80,7 @@ model.jsonModel = {
          config: {
             id: "TEXTAREA"
          }
-      }
+      },
       {
          name: "alfresco/testing/SubscriptionLog"
       },

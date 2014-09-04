@@ -28,7 +28,7 @@ model.jsonModel = {
             textBoxIconClass: "alf-search-icon",
             textBoxCssClasses: "long"
          }
-      }
+      },
       {
          name: "alfresco/testing/SubscriptionLog"
       },
