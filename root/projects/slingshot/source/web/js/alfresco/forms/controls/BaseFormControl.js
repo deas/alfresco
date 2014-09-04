@@ -232,7 +232,7 @@ define(["dojo/_base/declare",
          this._visible = status;
          if (this.containerNode)
          {
-            var display = status ? "block" : "none";
+            var display = status ? "" : "none";
             domStyle.set(this.containerNode, {
                display: display
             });
