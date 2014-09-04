@@ -311,7 +311,7 @@ define(["dojo/_base/declare",
                if (this.dimensions) {
                   config.dimensions = this.dimensions;
                }
-               if (this.extensionPoints)
+               if (this.extensionPoints) {
                   config.extensionPoints = this.extensionPoints;
                }
 
