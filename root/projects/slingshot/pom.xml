@@ -402,6 +402,7 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <configuration>
                   <!-- Set up an interval to scan for changes -->
+                  <!--
                   <scanIntervalSeconds>10</scanIntervalSeconds>
                   <scanTargetPatterns>
                      <scanTargetPattern>
@@ -423,7 +424,7 @@
                           <include>WEB-INF/classes/alfresco/site-webscripts/**</include>
                         </includes>
                     </scanTargetPattern>
-                 </scanTargetPatterns>
+                 </scanTargetPatterns> -->
                   
                   <!-- Sets the port when using mvn jetty:run-forked -->
                   <jvmArgs>-Djetty.port=8089</jvmArgs>
@@ -438,7 +439,7 @@
                    <!--  The following 3 settings allow us to execute a mvn jetty:stop command to shutdown the test application -->
                    <stopPort>9966</stopPort>
                    <stopKey>foo</stopKey>
-                   <stopWait>10</stopWait>
+                   <stopWait>20</stopWait>
                    <!-- Configure the application, this will essentially be Share but overlaid with the test resources -->
                    <webApp>
                      <!--  <descriptor>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</descriptor> -->

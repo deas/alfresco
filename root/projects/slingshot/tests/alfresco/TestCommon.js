@@ -524,10 +524,11 @@ define(["intern/dojo/node!fs",
             .then(function() {
                console.log(">> Waiting for coverage submission to complete...");
             })
+            .sleep(1000).end();
             
-            .then(pollUntil('return document.querySelector("body > pre");'))
-               .then(function (element) {}, function (error) {})
-               .end();
+            // .then(pollUntil('return document.querySelector("body > pre");'))
+            //    .then(function (element) {}, function (error) {})
+            //    .end();
             
          }
          else

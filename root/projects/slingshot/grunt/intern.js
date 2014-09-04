@@ -33,6 +33,7 @@ module.exports = function (grunt, alf) {
    grunt.registerTask('test', [
       // 'csslint', // TODO: Make this friendly.
       // 'jshint', // TODO: tweak .jshintrc to match our code style.
+      'startUnitTestApp',
       'waitServer',
       'intern:dev' // Run all the intern tests
    ]);

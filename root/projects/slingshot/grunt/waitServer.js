@@ -29,9 +29,9 @@ module.exports = function (grunt, alf) {
       waitServer: {
          server: {
             options: {
-               url: "http://localhost:8089/aikau/page/tp/ws/AccessibilityMenu",
+               url: "http://localhost:8089/aikau/page/tp/ws/RequireEverything",
                interval: 5000,
-               timeout: 90000
+               timeout: 100000
             }
          }
       }

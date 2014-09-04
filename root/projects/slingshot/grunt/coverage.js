@@ -42,7 +42,7 @@ module.exports = function (grunt, alf) {
       grunt.task.run('clean-reports');
       grunt.task.run('showExistingCoverageReports');
       grunt.task.run('copy:uninstrumentedJs');
-      grunt.task.run('http:clearDependencyCaches');
+      // grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('clean:instrumentedCode');
       grunt.task.run('shell:stopTestApp');
    });
@@ -50,6 +50,7 @@ module.exports = function (grunt, alf) {
    // Generate a coverage report using a vagrant initialised VM
    // The VM is run up by the task
    grunt.registerTask('vm-coverage-report', 'A task for collecting code coverage reports using a vagrant VM', function() {
+      grunt.task.run('shell:stopTestApp');
       grunt.option('force', true);
       grunt.task.run('generate-require-everything');
       grunt.task.run('instrument-code');
@@ -63,9 +64,8 @@ module.exports = function (grunt, alf) {
       grunt.task.run('clean-reports');
       grunt.task.run('showExistingCoverageReports');
       grunt.task.run('copy:uninstrumentedJs');
-      grunt.task.run('http:clearDependencyCaches');
+      // grunt.task.run('http:clearDependencyCaches');
       grunt.task.run('clean:instrumentedCode');
-      grunt.task.run('shell:stopTestApp');
    });
 
    /* Register additional helper functions 
