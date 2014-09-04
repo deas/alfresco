@@ -66,9 +66,9 @@ define(["dojo/_base/declare",
                var config = this.inherited(arguments);
 
                // BarChart specific options
-               if (this.oritentation)
+               if (this.orientation)
                {
-                  config.oritentation = this.oritentation;
+                  config.orientation = this.orientation;
                }
 
                return config;
