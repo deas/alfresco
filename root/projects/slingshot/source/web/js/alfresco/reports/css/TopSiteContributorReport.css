@@ -1,12 +1,42 @@
 .alfresco-reports-TopSiteContributorReport {
-   margin: 1em;
-   text-align: center;
 }
+
+.alfresco-reports-TopSiteContributorReport .alfresco-forms-Form {
+   padding: 3px;
+}
+
 .alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl {
-   display: inline-block !important;
+   /* WA Removed !important be cause it stops display: none from working when set on the elements to hide them */
+   display: inline-block;
+   margin-bottom: 0;
 }
 
 .alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl > div {
-   display: inline-block !important;
+   display: inline-block;
    float: none;
+}
+
+/* Remove the 'Select' label which is useful for screen readers but not otherwise */
+.alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl:first-child .label {
+   display: none;
+}
+
+/* When displaying controls on one line this div adds extra unwanted padding on the right */
+.alfresco-reports-TopSiteContributorReport .alfresco-forms-controls-BaseFormControl > div.clear-both {
+   display: none;
+}
+
+/* Remove 20px line height from form control labels */
+.alfresco-reports-TopSiteContributorReport .alfresco-forms-controls-BaseFormControl .label {
+   line-height: 1em;
+}
+
+/* Fix up the width of the date select boxes */
+.alfresco-reports-TopSiteContributorReport form .alfresco-forms-controls-BaseFormControl .dijitTextBox {
+   width: 8em;
+}
+
+/* Remove the form control descriptions which are useful for screen readers but not otherwise */
+.alfresco-reports-TopSiteContributorReport .alfresco-forms-controls-BaseFormControl > div.description {
+   display: none;
 }
