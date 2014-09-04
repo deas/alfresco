@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -114,7 +114,8 @@
       
           // Separate the (initial) rendering of the calendar from the data loading.
           // If for some reason the data fails to load, the calendar will still display.
-         this.calendar = new YAHOO.widget.Calendar("calendar", { navigator:true });
+         var navConfig = Alfresco.util.getCalendarControlConfiguration();
+         this.calendar = new YAHOO.widget.Calendar("calendar", { navigator:navConfig });
          // Set localised properties
          Alfresco.util.calI18nParams(this.calendar);
          var calView = Alfresco.util.ComponentManager.findFirst('Alfresco.CalendarView');

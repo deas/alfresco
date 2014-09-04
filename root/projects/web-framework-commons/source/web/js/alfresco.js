@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -12011,4 +12011,22 @@ Alfresco.util.generateThumbnailUrl = function(jsNode, thumbnailName)
       url = Alfresco.constants.PROXY_URI + "api/node/" + nodeRef.uri + "/content/thumbnails/" + thumbnailName + "?c=queue&ph=true&lastModified=1";
    }
    return url;
+};
+
+Alfresco.util.getCalendarControlConfiguration = function()
+{
+   var navConfig =
+   {
+      strings :
+      {
+         month : Alfresco.util.message("calendar.widget_control_config.label_month"),
+         year : Alfresco.util.message("calendar.widget_control_config.label_year"),
+         submit : Alfresco.util.message("button.ok"),
+         cancel : Alfresco.util.message("button.cancel"),
+         invalidYear : Alfresco.util.message("calendar.widget_control_config.label_invalid_year")
+      },
+      monthFormat : YAHOO.widget.Calendar.SHORT,
+      initialFocus : "year"
+   };
+   return navConfig;
 };

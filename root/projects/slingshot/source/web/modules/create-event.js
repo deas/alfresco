@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -407,7 +407,8 @@ Alfresco.module.event.validation = Alfresco.module.event.validation || {};
          // Align the Overlay to the Button instance
          oCalendarMenu.align();
 
-         var oCalendar = new YAHOO.widget.Calendar("buttoncalendar", oCalendarMenu.body.id, {close:true, navigator:true});
+         var navConfig = Alfresco.util.getCalendarControlConfiguration();
+         var oCalendar = new YAHOO.widget.Calendar("buttoncalendar", oCalendarMenu.body.id, {close:true, navigator:navConfig});
          Alfresco.util.calI18nParams(oCalendar);
          oCalendar.render();
 

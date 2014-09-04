@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -200,7 +200,8 @@
          }
          
          // construct the picker
-         this.widgets.calendar = new YAHOO.widget.Calendar(this.id, this.id, { title:this._msg("form.control.date-picker.choose"), close:true, navigator:true });
+         var navConfig = Alfresco.util.getCalendarControlConfiguration();
+         this.widgets.calendar = new YAHOO.widget.Calendar(this.id, this.id, { title:this._msg("form.control.date-picker.choose"), close:true, navigator:navConfig });
          this.widgets.calendar.cfg.setProperty("pagedate", page);
          this.widgets.calendar.cfg.setProperty("selected", selected);
          Alfresco.util.calI18nParams(this.widgets.calendar);
