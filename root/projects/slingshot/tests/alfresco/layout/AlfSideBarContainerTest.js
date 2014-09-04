@@ -43,7 +43,9 @@ define(["intern!object",
          //    })
          //    .end()
 
-         console.log("TODO: Failing test of 'ALF_PREFERENCE_GET' needs looking at");
+         .then(function(){
+            console.log("TODO: Failing test of 'ALF_PREFERENCE_GET' needs looking at");
+         })
          // // Test that the sidedbar container requests user preferences...
          // .findByCssSelector(TestCommon.pubDataCssSelector("ALF_PREFERENCE_GET", "preference", "org.alfresco.share.sideBarWidth"))
          //    .then(function(elements) {
