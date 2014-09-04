@@ -20,7 +20,7 @@
 /**
  * A class that wraps an iframe
  *
- * @module alfresco/layout/IFrame
+ * @module alfresco/integration/IFrame
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
@@ -50,7 +50,7 @@ define(["dojo/_base/declare",
              * @type {string}
              * @default "alfresco-charts-ccc-Chart"
              */
-            baseClass: "alfresco-layout-IFrame",
+            baseClass: "alfresco-integration-IFrame",
 
             /**
              * The iframe element (will be set by dojo)
@@ -60,7 +60,7 @@ define(["dojo/_base/declare",
             iFrameNode: null,
 
             /**
-             * The element showing them essage
+             * The element showing the message
              * @instance
              * @type {HTMLElement}
              */
@@ -141,7 +141,7 @@ define(["dojo/_base/declare",
              *
              * @instance
              */
-            postMixInProperties: function alfresco_charts_ccc_Chart__postMixInProperties() {
+            postMixInProperties: function alfresco_integration_IFrame__postMixInProperties() {
                if (this.srcTopic) {
                   this.alfSubscribe(this.srcTopic, lang.hitch(this, this._setSrc));
                }
@@ -155,7 +155,7 @@ define(["dojo/_base/declare",
              *
              * @instance
              */
-            postCreate: function alfresco_charts_ccc_Chart__postCreate() {
+            postCreate: function alfresco_integration_IFrame__postCreate() {
                this._setSrc(this.src);
             },
 
@@ -164,7 +164,7 @@ define(["dojo/_base/declare",
              * @param src
              * @private
              */
-            _setSrc: function(src) {
+            _setSrc: function alfresco_integration_IFrame___setSrc(src)  {
                if (src != null) {
                   domAttr.set(this.iFrameNode, "src", src);
                   domStyle.set(this.iFrameNode, "display", "");
@@ -184,7 +184,7 @@ define(["dojo/_base/declare",
              * @param height
              * @private
              */
-            _setHeight: function(height) {
+            _setHeight: function alfresco_integration_IFrame___setHeight(height) {
                if (height != null) {
                   domAttr.set(this.iFrameNode, "height", height);
                }
