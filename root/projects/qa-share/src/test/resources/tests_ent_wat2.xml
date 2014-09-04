@@ -91,8 +91,8 @@
                      <include name="ALF_3162" />
                 </methods>
 			</class>
-			 <!--<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
-			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> -->
+			<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
+			<class name="org.alfresco.share.reports.TopSiteContributorReportTest" /> 
 		 </classes>
      </test>
  

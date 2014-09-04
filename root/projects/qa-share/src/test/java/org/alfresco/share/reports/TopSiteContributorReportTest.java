@@ -96,18 +96,21 @@ public class TopSiteContributorReportTest extends AbstractUtils
         // Create test user
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
 
-        // Login as created user
+        // Login as created test user
         ShareUser.login(drone, testUser, testPassword);
 
-        // Create site
+        // test user creates site
         SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
 
         // first user
         String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
         String[] testUserInfo1 = new String[] { testUser1 };
 
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
-
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo1);
+          
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+        
         // add user with write permissions to write to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.COLLABORATOR);
 
@@ -127,7 +130,10 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String testUser2 = getUserNameForDomain(testName + "-2", DOMAIN_FREE);
         String[] testUserInfo2 = new String[] { testUser2 };
 
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo2);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo2);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
 
         // add user with write permissions to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser2, siteName, UserRole.COLLABORATOR);
@@ -148,8 +154,11 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String testUser3 = getUserNameForDomain(testName + "-3", DOMAIN_FREE);
         String[] testUserInfo3 = new String[] { testUser3 };
 
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo3);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo3);
 
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+        
         // add user with write permissions to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser3, siteName, UserRole.COLLABORATOR);
 
@@ -169,7 +178,10 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String testUser4 = getUserNameForDomain(testName + "-4", DOMAIN_FREE);
         String[] testUserInfo4 = new String[] { testUser4 };
 
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo4);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo4);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
 
         // add user with write permissions to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser4, siteName, UserRole.COLLABORATOR);
@@ -190,7 +202,10 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String testUser5 = getUserNameForDomain(testName + "-5", DOMAIN_FREE);
         String[] testUserInfo5 = new String[] { testUser5 };
 
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo5);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo5);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
 
         // add user with write permissions to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser5, siteName, UserRole.COLLABORATOR);
@@ -318,6 +333,9 @@ public class TopSiteContributorReportTest extends AbstractUtils
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
 
         // add user with write permissions to write to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.COLLABORATOR);

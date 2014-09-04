@@ -38,7 +38,7 @@ public class SiteContentBreakdownDashlet extends AbstractDashlet implements Dash
 
     private static Log logger = LogFactory.getLog(SiteContentBreakdownDashlet.class);
 
-    private static final String SITE_CONTENT_REPORT_DASHLET = "div[id*='SiteContentReport']";
+    private static final String SITE_CONTENT_REPORT_DASHLET = "div[id*='DASHLET']";
     private static final String PIE_CHART_SLICES = "path[transform]";
     private static final String TOOLTIP_DATA = "div[id^='tipsyPvBehavior']";
     private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";

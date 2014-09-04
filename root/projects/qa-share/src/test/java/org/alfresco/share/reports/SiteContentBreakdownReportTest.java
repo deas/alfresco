@@ -225,6 +225,9 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
+        
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
 
         // add user with write permissions to write to the site
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.COLLABORATOR);
