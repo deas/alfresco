@@ -149,7 +149,7 @@ define(["dojo/_base/declare",
              */
             getSiteUsageReport: function alfresco_services_ReportService__getSiteUsageReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_USAGE_REPORT";
-               var url = AlfConstants.PROXY_URI + "pentaho/content/cda/doQuery?path=solution/cda/file.cda&dataAccessId=1";
+               var url = AlfConstants.PROXY_URI + "pentaho/plugin/cda/api/doQuery?path=/public/Alfresco/Alfresco-Authenticated-Reports.cda&dataAccessId=1";
                if (payload.startDate)
                {
                   url += "&paramStartDate=" + encodeURIComponent(payload.startDate);
@@ -165,8 +165,9 @@ define(["dojo/_base/declare",
                   successCallback: this.publishSiteUsageReport,
                   callbackScope: this
                };
-               //this.serviceXhr(config);
+               this.serviceXhr(config);
                // WA Hard-code response data for now until the services are there
+               /*
                this.alfPublish(alfTopic + "_SUCCESS", {
                   requestConfig: config,
                   response: {
@@ -177,13 +178,18 @@ define(["dojo/_base/declare",
                      }
                   }
                });
+               */
             },
 
             publishSiteUsageReport: function alfresco_services_ReportService__publishSiteUsageReport(response, requestConfig) {
                this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
                   requestConfig: requestConfig,
                   response: {
-                     data: response
+                     data: response,
+                     dataDescriptor: {
+                         crosstabMode: false,
+                         seriesInRows: false
+                      }
                   }
                });
             }
