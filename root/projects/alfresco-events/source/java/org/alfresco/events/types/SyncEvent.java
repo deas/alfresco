@@ -23,6 +23,11 @@ public class SyncEvent extends ContentEventImpl implements ContentEvent
     protected String remoteNetwork; //cloudNetwork
     protected String syncSetGUID;
     
+    public SyncEvent()
+    {
+        super();
+    }
+    
     public SyncEvent(String type, String username, String networkId, String txnId, String nodeId,
                 String siteId, String nodeType, Client client, String name, String mimeType, long size,
                 String encoding, String remoteNodeId, String remoteNetwork, String syncSetGUID)
@@ -46,6 +51,21 @@ public class SyncEvent extends ContentEventImpl implements ContentEvent
         return this.syncSetGUID;
     }
 
+    public void setRemoteNodeId(String remoteNodeId)
+    {
+        this.remoteNodeId = remoteNodeId;
+    }
+
+    public void setRemoteNetwork(String remoteNetwork)
+    {
+        this.remoteNetwork = remoteNetwork;
+    }
+
+    public void setSyncSetGUID(String syncSetGUID)
+    {
+        this.syncSetGUID = syncSetGUID;
+    }
+    
     @Override
     public String toString()
     {

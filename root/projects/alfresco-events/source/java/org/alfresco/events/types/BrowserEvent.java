@@ -22,15 +22,20 @@ public class BrowserEvent extends EventImpl implements ClientEvent, SiteEvent
     private static final long serialVersionUID = 382560004647243948L;
     public static final String BROWSER_EVENT_TYPE = "browser";
     
-    private final String siteId;
-    private final String txnId;
-    private final String networkId; // network/tenant
+    private String siteId;
+    private String txnId;
+    private String networkId; // network/tenant
     
-    private final String component; //aka Page
-    private final String action;
-    private final String agent;
-    private final String attributes; //json map of additional attributes
+    private String component; //aka Page
+    private String action;
+    private String agent;
+    private String attributes; //json map of additional attributes
 
+    public BrowserEvent()
+    {
+        super();
+    }
+    
     /**
      * Constructor for BrowserEvent
      * @param username - the user
@@ -99,6 +104,41 @@ public class BrowserEvent extends EventImpl implements ClientEvent, SiteEvent
         return this.attributes;
     }
 
+    public void setSiteId(String siteId)
+    {
+        this.siteId = siteId;
+    }
+
+    public void setTxnId(String txnId)
+    {
+        this.txnId = txnId;
+    }
+
+    public void setNetworkId(String networkId)
+    {
+        this.networkId = networkId;
+    }
+
+    public void setComponent(String component)
+    {
+        this.component = component;
+    }
+
+    public void setAction(String action)
+    {
+        this.action = action;
+    }
+
+    public void setAgent(String agent)
+    {
+        this.agent = agent;
+    }
+
+    public void setAttributes(String attributes)
+    {
+        this.attributes = attributes;
+    }
+    
     @Override
     public String toString()
     {
@@ -112,4 +152,5 @@ public class BrowserEvent extends EventImpl implements ClientEvent, SiteEvent
                     .append(", attributes=").append(this.attributes).append("]");
         return builder.toString();
     }
+
 }

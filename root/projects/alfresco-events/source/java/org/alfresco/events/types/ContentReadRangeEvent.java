@@ -18,7 +18,12 @@ import org.alfresco.util.FileFilterMode.Client;
 public class ContentReadRangeEvent extends ContentEventImpl
 {
     private static final long serialVersionUID = 6438882751635793990L;
-    final String range;
+    String range;
+
+    public ContentReadRangeEvent()
+    {
+        super();
+    }
 
     public ContentReadRangeEvent(String username, String networkId, String txnId,
                 String nodeId, String siteId, String nodeType, Client client, String name, String mimeType,
@@ -33,6 +38,11 @@ public class ContentReadRangeEvent extends ContentEventImpl
         return this.range;
     }
 
+    public void setRange(String range)
+    {
+        this.range = range;
+    }
+    
     @Override
     public String toString()
     {
@@ -48,4 +58,5 @@ public class ContentReadRangeEvent extends ContentEventImpl
                .append(", range=").append(this.range).append("]");
         return builder.toString();
     }
+
 }
