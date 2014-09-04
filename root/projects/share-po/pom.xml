@@ -164,13 +164,13 @@
                         <suiteXmlFile>src/test/resources/ShareSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/AdminConsoleSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/ContentRulesSuite.xml</suiteXmlFile>
-						<suiteXmlFile>src/test/resources/BlogPageSuite.xml</suiteXmlFile>
-						<suiteXmlFile>src/test/resources/DataListPageSuite.xml</suiteXmlFile>
-						<suiteXmlFile>src/test/resources/DiscussionsPageSuite.xml</suiteXmlFile>
-						<suiteXmlFile>src/test/resources/LinksPageSuite.xml</suiteXmlFile>						
-						<suiteXmlFile>src/test/resources/CalendarPageSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/BlogPageSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/DataListPageSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/DiscussionsPageSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/LinksPageSuite.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/CalendarPageSuite.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/MyProfileSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/AlfrescoTestSuite.xml</suiteXmlFile>
+
                     </suiteXmlFiles>
                     <argLine>-Xms512m -Xmx1024m</argLine>
                     <excludedGroups>
