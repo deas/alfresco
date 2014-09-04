@@ -23,7 +23,32 @@ model.jsonModel = {
             useInfiniteScroll: true,
             widgets: [
                {
-                  name: "alfresco/documentlibrary/views/AlfSearchListView"
+                  name: "alfresco/documentlibrary/views/AlfSearchListView",
+                  config: {
+                     widgets: [
+                        {
+                           name: "alfresco/documentlibrary/views/layouts/Row",
+                           config: {
+                              widgets: [
+                                 {
+                                    name: "alfresco/documentlibrary/views/layouts/Cell",
+                                    config: {
+                                       width: "16px",
+                                       widgets: [
+                                          {
+                                             name: "alfresco/renderers/Property",
+                                             config: {
+                                                propertyToRender: "displayName"
+                                             }
+                                          }
+                                       ]
+                                    }
+                                 }
+                              ]
+                           }
+                        }
+                     ]
+                  }
                }
             ]
          }
@@ -35,7 +60,10 @@ model.jsonModel = {
          name: "aikauTesting/mockservices/SearchScrollMockXhr"
       },
       {
-         name: "alfresco/logging/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog",
+         config: {
+            topicsToIgnore: ["ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS"]
+         }
       },
       {
          name: "aikauTesting/TestCoverageResults"

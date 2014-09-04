@@ -45,13 +45,13 @@ define(["intern!object",
             scrollToBottom = function() {
                TestCommon.log(testname, "Scrolling to bottom...");
                browser.execute("return window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight))")
-               .sleep(500)
+               .sleep(2000)
                .end();
             },
             scrollToTop = function() {
                TestCommon.log(testname, "Scrolling to top...");
                browser.execute("return window.scrollTo(0,0)")
-               .sleep(500)
+               .sleep(2000)
                .end();
             };
 
@@ -66,7 +66,7 @@ define(["intern!object",
                .end()
 
             // Check for the search results being returned...
-            .findByCssSelector(TestCommon.topicSelector("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", "publish", "any"))
+            .findByCssSelector(TestCommon.topicSelector("ALF_SEARCH_RESULTS_COUNT", "publish", "any"))
                .then(null, function() {
                   TestCommon.log(testname, "Looking for first search response...");
                   assert(false, "Test #1b - Search results not returned");
@@ -78,28 +78,14 @@ define(["intern!object",
                countResults(25);
             })
 
+            .sleep(1000)
+
             // Trigger Infinite Scroll.
             .then(function(){
                scrollToBottom();
                scrollToTop();
                scrollToBottom();
             })
-
-            // Check Trottled Scroll event
-            .findAllByCssSelector(TestCommon.topicSelector("ALF_EVENTS_SCROLL", "publish", "any"))
-               .then(function(elements) {
-                  TestCommon.log(testname,"Checking that scroll event fired.");
-                  assert(elements.length == 1, "Test #1c - Scroll event didn't fire, expected 1, found: " + elements.length);
-               })
-               .end()
-
-            // Check Infinite Scroll Event fired.
-            .findAllByCssSelector(TestCommon.topicSelector("ALF_SCROLL_NEAR_BOTTOM", "publish", "any"))
-               .then(function(elements) {
-                  TestCommon.log(testname,"Checking that scroll near bottom event fired.");
-                  assert(elements.length == 1, "Test #1d - Scroll near bottom event didn't fire. Expected 1, found: " + elements.length);
-               })
-               .end()
 
             // Count Results. there should be 50. (Request 2)
             .then(function(){
