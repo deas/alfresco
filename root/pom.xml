@@ -155,7 +155,7 @@
     <dependency.jackson2.version>2.3.2</dependency.jackson2.version>
     <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
-    
+    <dependency.mysql.version>5.1.31</dependency.mysql.version>
     <manifest.major.version>5</manifest.major.version>
     <manifest.minor.version>0</manifest.minor.version>
     <manifest.servicepack.version>0</manifest.servicepack.version>
@@ -365,7 +365,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.31</version>
+            <version>${dependency.mysql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -658,7 +658,7 @@
                     <dependency>
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
-                        <version>5.1.14</version>
+                        <version>${dependency.mysql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -940,7 +940,7 @@
 			            <dependency>
 			                <groupId>mysql</groupId>
 			                <artifactId>mysql-connector-java</artifactId>
-			                <version>5.1.14</version>
+                         <version>${dependency.mysql.version}</version>
 			            </dependency>
 					</dependencies>
 				</plugin>
@@ -950,7 +950,6 @@
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>5.1.14</version>
 			</dependency>
 		</dependencies>
 	</profile>
