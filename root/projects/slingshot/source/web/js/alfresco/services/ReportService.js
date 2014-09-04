@@ -38,6 +38,7 @@ define(["dojo/_base/declare",
 
             TOP_SITE_CONTRIBUTOR_REPORT: "TOP_SITE_CONTRIBUTOR_REPORT",
             SITE_CONTENT_REPORT: "SITE_CONTENT_REPORT",
+            SITE_USAGE_REPORT: "SITE_USAGE_REPORT",
 
             /**
              * An array of the i18n files to use with this widget.
@@ -57,6 +58,7 @@ define(["dojo/_base/declare",
                lang.mixin(this, args);
                this.alfSubscribe("ALF_RETRIEVE_SITE_CONTENT_REPORT", lang.hitch(this, this.getSiteContentReport));
                this.alfSubscribe("ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT", lang.hitch(this, this.getTopSiteContributorReport));
+               this.alfSubscribe("ALF_RETRIEVE_SITE_USAGE_REPORT", lang.hitch(this, this.getSiteUsageReport));
             },
 
             /**
@@ -81,7 +83,7 @@ define(["dojo/_base/declare",
                this.serviceXhr(config);
             },
 
-            publishSiteContentReport: function alfresco_services_ReportService__publishSiteContentReport(response, requestConfig){
+            publishSiteContentReport: function alfresco_services_ReportService__publishSiteContentReport(response, requestConfig) {
                this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
                   requestConfig: requestConfig,
                   response: {
@@ -135,6 +137,54 @@ define(["dojo/_base/declare",
                         crosstabMode: false,
                         seriesInRows: false
                      }
+                  }
+               });
+            },
+
+            /**
+             * Requests data that gives an overview of the number of activities taking place in the top sites
+             *
+             * @instance
+             * @param {object} payload The details of the request
+             */
+            getSiteUsageReport: function alfresco_services_ReportService__getSiteUsageReport(payload) {
+               var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_USAGE_REPORT";
+               var url = AlfConstants.PROXY_URI + "pentaho/content/cda/doQuery?path=solution/cda/file.cda&dataAccessId=1";
+               url += "/stats?facet=content.creator";
+               if (payload.startDate)
+               {
+                  url += "&paramStartDate=" + encodeURIComponent(payload.startDate);
+               }
+               if (payload.activityType)
+               {
+                  url += "&paramActivityType=" + encodeURIComponent(payload.activityType);
+               }
+               var config = {
+                  alfTopic: alfTopic,
+                  url: url,
+                  method: "GET",
+                  successCallback: this.publishSiteUsageReport,
+                  callbackScope: this
+               };
+               //this.serviceXhr(config);
+               // WA Hard-code response data for now until the services are there
+               this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
+                  requestConfig: requestConfig,
+                  response: {
+                     data: [],
+                     dataDescriptor: {
+                        crosstabMode: false,
+                        seriesInRows: false
+                     }
+                  }
+               });
+            },
+
+            publishSiteUsageReport: function alfresco_services_ReportService__publishSiteUsageReport(response, requestConfig) {
+               this.alfPublish(requestConfig.alfTopic + "_SUCCESS", {
+                  requestConfig: requestConfig,
+                  response: {
+                     data: response
                   }
                });
             }
