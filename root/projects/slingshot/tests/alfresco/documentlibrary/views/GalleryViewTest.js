@@ -104,6 +104,7 @@ define(["intern!object",
 
             .findByCssSelector(".alfresco-documentlibrary-AlfGalleryViewSlider")
                .then(null, function() {
+                  TestCommon.log(testname, "Finding slider...");
                   assert(false, "Test #0a - The gallery view slider was not found");
                })
                .end()
@@ -126,6 +127,7 @@ define(["intern!object",
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Folder 1"))
                .then(function(elements) {
+                  TestCommon.log(testname, "Tabbed and selected first document...");
                   assert(elements.length == 1, "Test #1b - The wrong document was selected");
                })
                .end()
@@ -138,6 +140,7 @@ define(["intern!object",
             .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitleBar > span")
                .getVisibleText()
                .then(function(text) {
+                  TestCommon.log(testname, "Displaying More Info dialog...");
                   assert(text === "Folder 1", "Test #2a - The More Info dialog was not displayed");
                })
                .end()
@@ -154,17 +157,20 @@ define(["intern!object",
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Wiki Page"))
                .then(function(elements) {
+                  TestCommon.log(testname, "Selected second document...");
                   assert(elements.length == 1, "Test #3a - The wrong document was selected");
                })
                .end()
 
             .sleep(alfPause)
             .pressKeys(keys.ARROW_LEFT)
+            .sleep(alfPause)
             .pressKeys(keys.TAB)
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Calendar Event"))
                .then(function(elements) {
+                  TestCommon.log(testname, "Selected third document");
                   assert(elements.length == 1, "Test #3b - The wrong document was selected");
                })
                .end()
@@ -177,6 +183,7 @@ define(["intern!object",
             .pressKeys(keys.SPACE)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_SELECTED", "value", "displayName", "Folder 4"))
                .then(function(elements) {
+                  TestCommon.log(testname, "Selected fourth document");
                   assert(elements.length == 1, "Test #3c - The wrong document was selected");
                })
                .end()
@@ -190,6 +197,7 @@ define(["intern!object",
             .sleep(alfPause)
             .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("ALF_DOCLIST_DOCUMENT_DESELECTED", "value", "displayName", "Folder 1"))
                .then(function(elements) {
+                  TestCommon.log(testname, "Selected fifth document");
                   assert(elements.length == 1, "Test #3d - The wrong document was selected");
                })
                .end()  
