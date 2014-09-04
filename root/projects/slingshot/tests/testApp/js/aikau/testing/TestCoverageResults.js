@@ -28,7 +28,7 @@
  * node-coverage is a Node.js application and the widgets will be running on a JEE stack)
  * it is necessary to use a form POST to submit the data cross-origin.
  *
- * @module alfresco/testing/TestCoverageResults
+ * @module aikauTesting/TestCoverageResults
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
  * @mixes dijit/_OnDijitClickMixin

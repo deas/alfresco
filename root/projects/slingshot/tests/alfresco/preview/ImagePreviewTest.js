@@ -56,7 +56,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-testing-MockXhr table tbody tr:first-child td.mx-url")
             .getVisibleText()
             .then(function(text) {
-               var result = (text.indexOf("/share/service/components/documentlibrary/data/node/workspace/SpacesStore/62e6c83c-f239-4f85-b1e8-6ba0fd50fac4?view=browse&noCache") !== -1);
+               var result = (text.indexOf("/aikau/service/components/documentlibrary/data/node/workspace/SpacesStore/62e6c83c-f239-4f85-b1e8-6ba0fd50fac4?view=browse&noCache") !== -1);
                assert(result, "Test #2b - AlfDocument didn't request node details: " + text);
             })
             .end()

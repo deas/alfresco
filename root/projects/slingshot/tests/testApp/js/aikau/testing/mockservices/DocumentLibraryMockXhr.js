@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/DocumentLibraryMockXhr
+ * @module aikauTesting/DocumentLibraryMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/DocumentLibrary/rootFolderTemplate.json",
         "dojo/text!./responseTemplates/DocumentLibrary/folder1Template.json",
         "dojo/text!./responseTemplates/DocumentLibrary/folder2Template.json",
@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
        */
       // loadBinaryData: function alfresco_testing_mockservices_DocumentLibraryMockXhr__loadBinaryData() {
       //    var oReq = new XMLHttpRequest();
-      //    oReq.open("GET", "http://localhost:8081/share/res/js/alfresco/testing/mockservices/responseTemplates/DocumentLibrary/imgpreview.png", true);
+      //    oReq.open("GET", "http://localhost:8081/share/res/js/aikauTesting/mockservices/responseTemplates/DocumentLibrary/imgpreview.png", true);
       //    oReq.responseType = "arraybuffer";
 
       //    var _this = this;

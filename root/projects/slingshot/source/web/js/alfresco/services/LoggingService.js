@@ -31,7 +31,7 @@ define(["dojo/_base/declare",
         "dijit/registry",
         "alfresco/dialogs/AlfDialog",
         "alfresco/buttons/AlfButton",
-        "alfresco/testing/SubscriptionLog",
+        "alfresco/logging/SubscriptionLog",
         "alfresco/debug/CoreDataDebugger"],
         function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, sniff, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
    
@@ -101,7 +101,7 @@ define(["dojo/_base/declare",
                title: this.message("logging.pubSubLog.title"),
                widgetsContent: [
                   {
-                     name: "alfresco/testing/SubscriptionLog"
+                     name: "alfresco/logging/SubscriptionLog"
                   }
                ]
             });

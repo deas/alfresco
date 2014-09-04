@@ -22,7 +22,7 @@
  * events. Secondly it provides a tool for use in unit testing that Selenium WebDriver can use to capture events
  * that occur to validate correct widget behaviour.
  *
- * @module alfresco/testing/CssOverrides
+ * @module aikauTesting/CssOverrides
  * @extends dijit/_WidgetBase
  * @author Dave Draper
  */

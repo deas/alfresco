@@ -93,16 +93,16 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/mockservices/HeaderMockXhr",
+         name: "aikauTesting/mockservices/HeaderMockXhr",
          config: {
             location: "NON_SITE"
          }
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };

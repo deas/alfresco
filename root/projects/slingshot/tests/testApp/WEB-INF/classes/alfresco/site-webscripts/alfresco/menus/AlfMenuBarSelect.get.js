@@ -108,7 +108,7 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       },
       {
          name: "alfresco/buttons/AlfButton",
@@ -133,7 +133,7 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 }

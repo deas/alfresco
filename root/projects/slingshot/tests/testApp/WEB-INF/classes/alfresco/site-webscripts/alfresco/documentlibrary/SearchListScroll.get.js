@@ -32,13 +32,13 @@ model.jsonModel = {
          name: "alfresco/documentlibrary/AlfDocumentListInfiniteScroll"
       },
       {
-         name: "alfresco/testing/mockservices/SearchScrollMockXhr"
+         name: "aikauTesting/mockservices/SearchScrollMockXhr"
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };

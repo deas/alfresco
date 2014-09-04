@@ -50,7 +50,7 @@ define(["dojo/_base/declare",
       /**
        * This has been added purely to prevent any object that inherits from this mixin from being
        * iterated over in the pub/sub log. It aims to prevent infinite loops (although there is protection
-       * for this in the [SubscriptionLog]{@link module:alfresco/testing/SubscriptionLog}) module). It should
+       * for this in the [SubscriptionLog]{@link module:alfresco/logging/SubscriptionLog}) module). It should
        * also ensure that only useful information is displayed in the log.
        *
        * @instance

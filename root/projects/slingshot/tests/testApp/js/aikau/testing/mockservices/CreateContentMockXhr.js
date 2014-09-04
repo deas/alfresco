@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/CreateContentMockXhr
+ * @module aikauTesting/CreateContentMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/CreateContentTest/node_templates.json",
         "dojo/text!./responseTemplates/CreateContentTest/space_templates.json"], 
         function(declare, MockXhr, nodeTemplates, spaceTemlates) {

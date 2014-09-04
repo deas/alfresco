@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/mockservices/SocialTestService
+ * @module aikauTesting/mockservices/SocialTestService
  * @extends module:alfresco/core/Core
  * @author Dave Draper
  */

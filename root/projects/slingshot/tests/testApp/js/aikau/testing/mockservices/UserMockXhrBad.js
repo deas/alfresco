@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/UserMockXhr
+ * @module aikauTesting/UserMockXhr
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/UserTest/XhrUserStatusResponseBad.json"], 
         function(declare, MockXhr, xhrUserStatusResponseBad) {
 

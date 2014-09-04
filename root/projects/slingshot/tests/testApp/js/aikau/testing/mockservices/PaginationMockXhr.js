@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/PaginationMockXhr
+ * @module aikauTesting/PaginationMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/PaginationTest/page1.json",
         "dojo/text!./responseTemplates/PaginationTest/page2.json"], 
         function(declare, MockXhr, page1, page2) {

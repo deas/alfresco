@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/WaitForMockXhrService
+ * @module aikauTesting/WaitForMockXhrService
  * @extends module:alfresco/core/ProcessWidgets
  * @author Dave Draper
  */

@@ -4,7 +4,7 @@ model.jsonModel = {
    ],
    widgets: [
       {
-         name: "alfresco/testing/CssOverrides"
+         name: "aikauTesting/CssOverrides"
       },
       {
          name: "alfresco/accessibility/AccessibilityMenu",
@@ -28,10 +28,10 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };

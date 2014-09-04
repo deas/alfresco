@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/mockservices/DojoSelectTestOptions
+ * @module aikauTesting/mockservices/DojoSelectTestOptions
  * @extends module:alfresco/core/Core
  * @author Dave Draper
  */

@@ -416,10 +416,10 @@
                     <scanTargetPattern>
                         <directory>tests/testApp</directory>
                         <includes>
-                          <include>js/aiku/**/*.js</include>
-                          <include>js/aiku/**/*.css</include>
-                          <include>js/aiku/**/*.html</include>
-                          <include>js/aiku/**/*.properties</include>
+                          <include>js/aikau/**/*.js</include>
+                          <include>js/aikau/**/*.css</include>
+                          <include>js/aikau/**/*.html</include>
+                          <include>js/aikau/**/*.properties</include>
                           <include>WEB-INF/classes/alfresco/site-webscripts/**</include>
                         </includes>
                     </scanTargetPattern>

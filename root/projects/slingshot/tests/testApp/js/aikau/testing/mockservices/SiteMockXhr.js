@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/SiteMockXhr
+ * @module aikauTesting/SiteMockXhr
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/SiteTest/GetSites.json",
         "dojo/text!./responseTemplates/SiteTest/GetAdminSites.json",
         "dojo/text!./responseTemplates/SiteTest/GetSite.json",

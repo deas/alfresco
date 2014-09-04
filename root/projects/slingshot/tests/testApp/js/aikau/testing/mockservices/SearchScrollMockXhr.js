@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/mockservices/SearchScrollMockXhr
+ * @module aikauTesting/mockservices/SearchScrollMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/SearchScrollTest/page1.json",
         "dojo/text!./responseTemplates/SearchScrollTest/page2.json",
         "dojo/text!./responseTemplates/SearchScrollTest/page3.json"], 

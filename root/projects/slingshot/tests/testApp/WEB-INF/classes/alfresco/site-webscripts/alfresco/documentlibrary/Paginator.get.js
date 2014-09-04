@@ -95,10 +95,10 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/mockservices/PaginationMockXhr"
+         name: "aikauTesting/mockservices/PaginationMockXhr"
       },
       {
-         name: "alfresco/testing/SubscriptionLog",
+         name: "alfresco/logging/SubscriptionLog",
          config: {
             topicsToIgnore: [
                "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS",
@@ -107,7 +107,7 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };

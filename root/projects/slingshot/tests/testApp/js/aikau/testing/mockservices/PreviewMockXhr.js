@@ -22,11 +22,11 @@
  * [AlfDocumentPreview]{@link module:alfresco/preview/AlfDocumentPreview} and the [Image Plugin]
  * {@link module:alfresco/preview/Image}.
  * 
- * @module alfresco/testing/mockservices/PreviewMockXhr
+ * @module aikauTesting/mockservices/PreviewMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/previews/Image.json"], 
         function(declare, MockXhr, imageNode) {
    
@@ -39,7 +39,7 @@ define(["dojo/_base/declare",
        */
       loadBinaryData: function alfresco_testing_mockservices_PreviewMockXhr__loadBinaryData() {
          var oReq = new XMLHttpRequest();
-         oReq.open("GET", "http://localhost:8081/share/res/js/alfresco/testing/mockservices/responseTemplates/previews/Image.jpg", true);
+         oReq.open("GET", "http://localhost:8089/aikau/res/js/aikau/testing/mockservices/responseTemplates/previews/Image.jpg", true);
          oReq.responseType = "arraybuffer";
 
          var _this = this;

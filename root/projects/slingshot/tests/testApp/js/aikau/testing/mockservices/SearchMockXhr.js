@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/SearchMockXhr
+ * @module aikauTesting/SearchMockXhr
  * @author Richard Smith
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/SearchTest/XhrSearchResponse.json"], 
         function(declare, MockXhr, xhrSearchResponse) {
    

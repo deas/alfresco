@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/mockservices/MockCrudService
+ * @module aikauTesting/mockservices/MockCrudService
  * @extends module:alfresco/core/Core
  * @author Dave Draper
  */

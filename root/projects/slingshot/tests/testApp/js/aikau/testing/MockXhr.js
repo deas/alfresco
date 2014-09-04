@@ -19,7 +19,7 @@
 
 /**
  *
- * @module alfresco/testing/MockXhr
+ * @module aikauTesting/MockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
@@ -29,20 +29,7 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/aspect",
-        "sinon/sinon/match",
-        "sinon/sinon/test_case",
-        "sinon/sinon/test",
-        "sinon/sinon/sandbox",
-        "sinon/sinon/assert",
-        "sinon/sinon/collection",
-        "sinon/sinon/mock",
-        "sinon/sinon/stub",
-        "sinon/sinon/behavior",
-        "sinon/sinon/call",
-        "sinon/sinon/spy",
-        "sinon/sinon",
-        "sinon/sinon-server-1.10.3"], 
+        "dojo/aspect"], 
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, lang, domConstruct, aspect) {
    
    return declare([ _WidgetBase, _TemplatedMixin, AlfCore], {
@@ -85,8 +72,8 @@ define(["dojo/_base/declare",
       /**
        * This is an extension point function intended to be overridden by extending mock xhr services.
        * The extension should load binary data before the XMLHttpRequest object is overridden by Sinon
-       * and the data loading call backs should call the [waitForServer]{@link module:alfresco/testing/MockXhr#waitForServer}
-       * function which will in turn call [setupServerWithBinaryData]{@link module:alfresco/testing/MockXhr#setupServerWithBinaryData}
+       * and the data loading call backs should call the [waitForServer]{@link module:aikauTesting/MockXhr#waitForServer}
+       * function which will in turn call [setupServerWithBinaryData]{@link module:aikauTesting/MockXhr#setupServerWithBinaryData}
        * when the fake Sinon server is ready for configuring.
        *
        * @instance
@@ -96,8 +83,8 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This should be called from [loadBinaryData]{@link module:alfresco/testing/MockXhr#loadBinaryData} once
-       * binary data is loaded. It will call [setupServerWithBinaryData]{@link module:alfresco/testing/MockXhr#setupServerWithBinaryData}
+       * This should be called from [loadBinaryData]{@link module:aikauTesting/MockXhr#loadBinaryData} once
+       * binary data is loaded. It will call [setupServerWithBinaryData]{@link module:aikauTesting/MockXhr#setupServerWithBinaryData}
        * once the fake Sinon server is ready to be configured to return the binary data.
        *
        * @instance
@@ -118,7 +105,7 @@ define(["dojo/_base/declare",
    
       /**
        * This is an extension point function intended to be overridden by extending mock xhr services. It
-       * is called from [waitForServer]{@link module:alfresco/testing/MockXhr#waitForServer} and indicates that
+       * is called from [waitForServer]{@link module:aikauTesting/MockXhr#waitForServer} and indicates that
        * both the binary data and the fake Sinon server are ready to use. 
        *
        * @instance

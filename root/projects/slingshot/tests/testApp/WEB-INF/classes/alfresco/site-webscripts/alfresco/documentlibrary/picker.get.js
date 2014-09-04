@@ -184,7 +184,7 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       }
    ]
 }

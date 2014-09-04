@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/mockservices/FormControlValidationTestService
+ * @module aikauTesting/mockservices/FormControlValidationTestService
  * @extends module:alfresco/core/Core
  * @author Dave Draper
  */

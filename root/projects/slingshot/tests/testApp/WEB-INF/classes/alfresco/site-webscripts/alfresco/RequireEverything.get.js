@@ -1,7 +1,7 @@
 model.jsonModel = {
    services: [
       {
-         name: "alfresco/testing/RequireEverything"
+         name: "aikauTesting/RequireEverything"
       },
       "alfresco/services/ErrorReporter"
    ],
@@ -14,7 +14,7 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };

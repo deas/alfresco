@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/mockservices/DocumentPickerTestService
+ * @module aikauTesting/mockservices/DocumentPickerTestService
  * @extends module:alfresco/core/Core
  * @author Dave Draper
  */
@@ -55,7 +55,7 @@ define(["dojo/_base/declare",
          var alfTopic = (payload.alfResponseTopic != null) ? (payload.alfResponseTopic + "_SUCCESS") : "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS";
          // var alfTopic = payload.alfResponseTopic + "_SUCCESS";
          var template = payload.nodeRef.replace(/\//g, "_").replace(/:/g, "");
-         var url = dojo.moduleUrl("alfresco/testing/mockservices/responseTemplates/DocumentPickerTest/" + template).slice(0, -1) + ".json";
+         var url = dojo.moduleUrl("aikauTesting/mockservices/responseTemplates/DocumentPickerTest/" + template).slice(0, -1) + ".json";
          require(["dojo/text!" + url], function(responseTemplate) {
             _this.alfPublish(alfTopic, {
                response: dojoJson.parse(responseTemplate)

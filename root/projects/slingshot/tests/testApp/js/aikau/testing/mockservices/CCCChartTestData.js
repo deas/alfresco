@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/mockservices/CCCChartTestData
+ * @module aikauTesting/mockservices/CCCChartTestData
  * @extends module:alfresco/core/Core
  * @author Erik Winlöf
  */

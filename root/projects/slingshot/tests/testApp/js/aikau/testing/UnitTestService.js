@@ -18,7 +18,7 @@
  */
 
 /**
- * @module alfresco/testing/UnitTestService
+ * @module aikauTesting/UnitTestService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreXhr
  * @author Dave Draper
@@ -34,7 +34,7 @@ define(["dojo/_base/declare",
       
       /**
        * Sets up a subscription for processing unit test requests. This is hitched to the
-       * [requestUnitTest]{@link module:alfresco/testing/UnitTestService#requestUnitTest}
+       * [requestUnitTest]{@link module:aikauTesting/UnitTestService#requestUnitTest}
        * function that will POST the supplied model to the Unit Test WebScript (this should
        * save the test model in the HTTP Session and then redirect to the unit test page
        * renderer)

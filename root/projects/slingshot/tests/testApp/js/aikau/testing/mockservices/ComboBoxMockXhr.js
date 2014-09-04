@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/mockservices/ComboBoxMockXhr
+ * @module aikauTesting/mockservices/ComboBoxMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/ComboBoxTest/tags.json",
         "dojo/text!./responseTemplates/ComboBoxTest/properties.json"], 
         function(declare, MockXhr, tags, properties) {

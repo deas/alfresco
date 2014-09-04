@@ -9,7 +9,7 @@ model.jsonModel = {
             }
          }
       },
-      "alfresco/testing/mockservices/MockCrudService",
+      "aikauTesting/mockservices/MockCrudService",
       "alfresco/services/ErrorReporter"
    ],
    widgets:[
@@ -96,10 +96,10 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };

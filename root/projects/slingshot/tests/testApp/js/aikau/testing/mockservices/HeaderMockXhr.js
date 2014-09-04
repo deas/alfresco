@@ -19,11 +19,11 @@
 
 /**
  *
- * @module alfresco/testing/HeaderMockXhr
+ * @module aikauTesting/HeaderMockXhr
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/testing/MockXhr",
+        "aikauTesting/MockXhr",
         "dojo/text!./responseTemplates/HeaderTest/SitesRequest_NonSite.json",
         "dojo/text!./responseTemplates/HeaderTest/SitesRequest_FavouriteSite.json",
         "dojo/text!./responseTemplates/HeaderTest/SitesRequest_NonFavouriteSite.json",

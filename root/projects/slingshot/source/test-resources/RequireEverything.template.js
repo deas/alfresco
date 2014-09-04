@@ -21,7 +21,7 @@
  * This widget is used for obtaining optimum code coverage results. It places a dependency
  * on all the modules in the package.
  *
- * @module alfresco/testing/RequireEverything
+ * @module aikauTesting/RequireEverything
  * @author Richard Smith
  */
 define(["dojo/_base/declare",{0}],

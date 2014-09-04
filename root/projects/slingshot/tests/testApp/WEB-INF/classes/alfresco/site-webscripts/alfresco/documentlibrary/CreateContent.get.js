@@ -149,13 +149,13 @@ model.jsonModel = {
          }
       },
       {
-         name: "alfresco/testing/mockservices/CreateContentMockXhr"
+         name: "aikauTesting/mockservices/CreateContentMockXhr"
       },
       {
-         name: "alfresco/testing/SubscriptionLog"
+         name: "alfresco/logging/SubscriptionLog"
       },
       {
-         name: "alfresco/testing/TestCoverageResults"
+         name: "aikauTesting/TestCoverageResults"
       }
    ]
 };
