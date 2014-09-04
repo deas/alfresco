@@ -153,6 +153,7 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
         uploadFiles(docPage, numberOfJpgFiles, ".jpg");
         uploadFiles(docPage, numberOfPdfFiles, ".pdf");
         
+        
         //add dashlet
         ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_CONTENT_REPORT);
         siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
@@ -287,8 +288,7 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
     /**
      * 1) Test user (site creator) logs in
      * 2) Test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
-     * 3) Test user (site creator) selects all the options from the calendar and
-     * 4) Verifies for each calendar option that the chart is not displayed and No data found message is shown     
+     * 3) Verifies for each calendar option that the chart is not displayed and No data found message is shown     
      */
     @Test(groups = { "SiteContentBreakdownReport" })
     public void AONE_16016()
@@ -303,7 +303,83 @@ public class SiteContentBreakdownReportTest extends AbstractUtils
         ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_CONTENT_REPORT);
         SiteContentBreakdownDashlet siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
       
-        //Verify chart is not displayed and No data found message is shown - Last 30 Days
+        //Verify chart is not displayed and No data found message is shown 
+        siteContentBreakdownDashlet.clickOnChart();
+        Assert.assertTrue(siteContentBreakdownDashlet.isNoDataFoundDisplayed());
+
+    }   
+    
+    
+    /**
+     * 1) Test user is created
+     * 2) Test user creates a private site
+     * 3) Test user uploads 5 txt files, 4 docx files, 2 html files, 3 jpg files and 9 pdf files
+     * 4) Test user logs out
+     */
+    @Test(groups = { "DataPrepSiteContentBreakdownReport" })
+    public void dataPrep_SiteContentBreakdownReport_AONE_16017() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+        
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+
+        // Login as created user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Create site
+        SiteDashboardPage siteDashboard = ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
+
+        //upload files
+        DocumentLibraryPage docPage = siteDashboard.getSiteNav().selectSiteDocumentLibrary().render();
+        uploadFiles(docPage, numberOfTxtFiles, ".txt");
+        uploadFiles(docPage, numberOfDocxFiles, ".docx");
+        uploadFiles(docPage, numberOfHtmlFiles, ".html");
+        uploadFiles(docPage, numberOfJpgFiles, ".jpg");
+        uploadFiles(docPage, numberOfPdfFiles, ".pdf");
+        
+        ShareUser.logout(drone);
+        
+             
+    }
+    
+    /**
+     * 1) Test user (site creator) logs in
+     * 2) Test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+     * 
+     * 
+     * 3) Verifies for each calendar option that the chart is not displayed and No data found message is shown     
+     */
+    @Test(groups = { "SiteContentBreakdownReport" })
+    public void AONE_16017() throws Exception
+    {
+        // test user (site creator) logs in
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String siteName = getSiteName(testName);
+        ShareUser.login(drone, testUser, testPassword);
+
+        // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_CONTENT_REPORT);
+        SiteContentBreakdownDashlet siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
+       
+        //verify files are displayed correctly
+        verifyDashletData(siteContentBreakdownDashlet, testName, 1);
+  
+        //remove dashlet from the dashboard
+        ShareUserDashboard.removeDashlet(drone, Dashlets.SITE_CONTENT_REPORT, siteName);
+        ShareUser.openDocumentLibrary(drone);
+        //delete all the files from site's document library
+        ShareUser.deleteAllContentFromDocumentLibrary(drone);
+         
+        //add the dashlet to the site's document library
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_CONTENT_REPORT);
+        siteContentBreakdownDashlet = ShareUserDashboard.getSiteContentBreakdownDashlet(drone, siteName);
+        
+        //Verify chart is not displayed and No data found message is shown 
         siteContentBreakdownDashlet.clickOnChart();
         Assert.assertTrue(siteContentBreakdownDashlet.isNoDataFoundDisplayed());
 

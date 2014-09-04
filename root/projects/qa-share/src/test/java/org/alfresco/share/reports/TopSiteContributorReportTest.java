@@ -546,8 +546,201 @@ public class TopSiteContributorReportTest extends AbstractUtils
 
     }   
     
+    /**
+     * 1) Create test user
+     * 2) Login as test user
+     * 3) Create site
+     * 4) Create user1
+     * 5) Add user1 with write permissions to write to the site
+     * 6) Test user logs out
+     * 7) User1 logs in
+     * 8) User1 creates txt files
+     * 9) User1 logs out
+     * 10) Steps 2,4,5,6,7,8,9 repeated for user2, user3, user4 and user5
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "DataPrepTopSiteContributorReport" })
+    public void dataPrep_TopSiteContributor_AONE_16018() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // test user creates site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
+
+        // first user
+        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String[] testUserInfo1 = new String[] { testUser1 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo1);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+        
+        // add user with write permissions to write to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // first user creates files
+        createUsersAndUploadFiles(firstNumberOfFiles, siteName);
+
+        // first user logs out
+        ShareUser.logout(drone);
+
+        // second user
+        String testUser2 = getUserNameForDomain(testName + "-2", DOMAIN_FREE);
+        String[] testUserInfo2 = new String[] { testUser2 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo2);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // add user with write permissions to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser2, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+
+        // second user creates files
+        createUsersAndUploadFiles(secondNumberOfFiles, siteName);
+
+        // second user logs out
+        ShareUser.logout(drone);
+
+        // third user
+        String testUser3 = getUserNameForDomain(testName + "-3", DOMAIN_FREE);
+        String[] testUserInfo3 = new String[] { testUser3 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo3);
+
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+        
+        // add user with write permissions to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser3, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser3, DEFAULT_PASSWORD);
+
+        // first user creates files
+        createUsersAndUploadFiles(thirdNumberOfFiles, siteName);
+
+        // third user logs out
+        ShareUser.logout(drone);
+
+        // fourth user
+        String testUser4 = getUserNameForDomain(testName + "-4", DOMAIN_FREE);
+        String[] testUserInfo4 = new String[] { testUser4 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo4);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // add user with write permissions to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser4, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser4, DEFAULT_PASSWORD);
+
+        // fourth user creates files
+        createUsersAndUploadFiles(fourthNumberOfFiles, siteName);
+
+        // fourth user logs out
+        ShareUser.logout(drone);
+
+        // fifth user
+        String testUser5 = getUserNameForDomain(testName + "-5", DOMAIN_FREE);
+        String[] testUserInfo5 = new String[] { testUser5 };
+
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo5);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // add user with write permissions to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser5, siteName, UserRole.COLLABORATOR);
+
+        // Inviting user logs out
+        ShareUser.logout(drone);
+
+        // Invited User logs in
+        ShareUser.login(drone, testUser5, DEFAULT_PASSWORD);
+
+        // first user creates files
+        createUsersAndUploadFiles(fifthNumberOfFiles, siteName);
+
+        // first user logs out
+        ShareUser.logout(drone);
+
+    }    
     
-    
+    /**
+     * 1) Test user (site creator) logs in
+     * 2) Test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+     * 3) Checks the number of top site contributors is correct
+     * 4) Remove dashlet from the dashboard
+     * 5) Delete all files from site's document library
+     * 6) Add the dashlet to the site's document library
+     * 7) Verify chart is not displayed and No data found message is shown 
+     *  
+     */
+    @Test(groups = { "TopSiteContributorReport" })
+    public void AONE_16018() throws Exception
+    {
+        // test user (site creator) logs in
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String siteName = getSiteName(testName);
+        ShareUser.login(drone, testUser, testPassword);
+
+        // test user (site creator) adds Top Site Contributor Dashlet to site's dashboard
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.TOP_SITE_CONTRIBUTOR_REPORT);
+             
+        //Checks the number of top site contributors is correct
+        TopSiteContributorDashlet topSiteContributorDashlet = ShareUserDashboard.getTopSiteContributorDashlet(drone, siteName);
+        verifyDashletData(topSiteContributorDashlet, testName);
+        
+        //remove dashlet from the dashboard
+        ShareUserDashboard.removeDashlet(drone, Dashlets.TOP_SITE_CONTRIBUTOR_REPORT, siteName);
+        ShareUser.openDocumentLibrary(drone);
+        
+        //delete all the files from site's document library
+        ShareUser.deleteAllContentFromDocumentLibrary(drone);
+         
+        //add the dashlet to the site's document library
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.TOP_SITE_CONTRIBUTOR_REPORT);
+        topSiteContributorDashlet = ShareUserDashboard.getTopSiteContributorDashlet(drone, siteName);
+        
+        //Verify chart is not displayed and No data found message is shown 
+        topSiteContributorDashlet.clickOnChart();
+        Assert.assertTrue(topSiteContributorDashlet.isNoDataFoundDisplayed());
+
+    }
     
     /**
      * Uploads files to site's document library
