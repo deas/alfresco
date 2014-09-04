@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "FooterTest";
          return TestCommon.loadTestWebScript(this.remote, "/Footer", testname)
 
-         .end()
-
          // This isn't the most comprehenive set of tests...
          // 1) It's not obvious how to test that the footer is stuck to the bottom without visually checking
          // 2) Some of the config could be further tested

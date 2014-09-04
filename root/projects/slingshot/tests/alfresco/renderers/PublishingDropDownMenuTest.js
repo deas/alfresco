@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "PublishingDropDownMenuTest";
          return TestCommon.loadTestWebScript(this.remote, "/PublishingDropDownMenu", testname)
 
-         .end()
-
          // Check there are 3 drop down menus as described in the model
          .findAllByCssSelector("div.alfresco-renderers-PublishingDropDownMenu")
             .then(function (dropdowns) {

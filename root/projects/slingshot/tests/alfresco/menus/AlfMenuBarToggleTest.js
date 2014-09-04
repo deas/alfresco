@@ -37,7 +37,8 @@ define(["intern!object",
       'Basic tests': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
+         var testName = "Menu Bar Toggle Test (basic)";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuBarToggle", testName)
 
          // Check the initial labels are correctly displayed...
          .findById("BASIC_MENU_BAR_TOGGLE_text")
@@ -76,7 +77,8 @@ define(["intern!object",
       'Mouse tests': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
+         var testName = "Menu Bar Toggle Test (mouse)";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuBarToggle", testName)
 
          .findById("BASIC_MENU_BAR_TOGGLE_text")
             .click()
@@ -151,13 +153,13 @@ define(["intern!object",
          var alfPause = 200;
          var browser = this.remote;
          var testname = "AlfMenuBarToggle Test - Keyboard tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
-
-         .sleep(alfPause)
-         .pressKeys(keys.TAB)
-         .sleep(alfPause)
-         .pressKeys(keys.SPACE)
-         .end()
+         var testName = "Menu Bar Toggle Test (Keyboard)";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuBarToggle", testName)
+            .sleep(alfPause)
+            .pressKeys(keys.TAB)
+            .sleep(alfPause)
+            .pressKeys(keys.SPACE)
+            .end()
 
          .findByCssSelector(TestCommon.topicSelector("ALF_WIDGETS_READY", "publish", "last"))
             .then(null, function() {
@@ -243,11 +245,11 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "AlfMenuBarToggle Test - Set state tests";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarToggle_TestPage.json")
-
-         .findById("TEST_BUTTON_ASC")
-            .click()
-            .end()
+         var testName = "Menu Bar Toggle Test (Set State)";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuBarToggle", testName)
+            .findById("TEST_BUTTON_ASC")
+               .click()
+               .end()
 
          .findById("BASIC_MENU_BAR_TOGGLE_text")
             .getVisibleText()

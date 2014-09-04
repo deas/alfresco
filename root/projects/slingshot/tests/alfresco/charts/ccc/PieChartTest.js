@@ -33,8 +33,8 @@ define(["intern!object",
             'alfresco/charts/ccc/PieChart': function () {
 
                var browser = this.remote;
-               return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/charts/ccc/page_models/PieChart_TestPage.json")
-                     .end()
+               var testName = "Pie Chart Test";
+               return TestCommon.loadTestWebScript(this.remote, "/PieChart", testName)
 
                   // Test #1
                   // Check pie slices

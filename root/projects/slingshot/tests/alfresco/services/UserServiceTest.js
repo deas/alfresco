@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "UserServiceTest - Success";
          return TestCommon.loadTestWebScript(this.remote, "/UserServiceSuccess", testname)
 
-         .end()
-
          .findByCssSelector("#HEADER_USER_STATUS > div.lastUpdate")
             .getVisibleText()
             .then(function (text){

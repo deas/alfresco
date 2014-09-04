@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "PublishPayloadMixinOnActionsTest";
          return TestCommon.loadTestWebScript(this.remote, "/PublishPayloadMixinOnActions", testname)
 
-         .end()
-
          // Check there are 3 action menus as described in the model
          .findAllByCssSelector("div.alfresco-menus-AlfMenuBar")
             .then(function (actionmenus) {

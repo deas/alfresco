@@ -36,9 +36,7 @@ define(["intern!object",
          var browser = this.remote;
          if(args.doCoverage === "true")
          {
-            return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/page_models/RequireEverything.json")
-
-               .end()
+            return TestCommon.loadTestWebScript(this.remote, "/RequireEverything")
 
                .findByCssSelector("#LABEL")
                   .getVisibleText()
@@ -51,7 +49,6 @@ define(["intern!object",
                .then(function() {
                   TestCommon.postCoverageResults(browser);
                })
-               .end();
           }
           else
           {

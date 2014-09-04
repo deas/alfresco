@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "Image Preview Test";
          return TestCommon.loadTestWebScript(this.remote, "/ImagePreview", testname)
 
-         .end()
-
          // A long sleep is required to wait for the binary data to be loaded.
          // However, it's worth noting that the binary data is *not* actually used because
          // the image preview creates an <img> element rather than making an XHR request.

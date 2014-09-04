@@ -39,66 +39,64 @@ define(["intern!object",
          var testname = "CategoryTest";
          return TestCommon.loadTestWebScript(this.remote, "/Category", testname)
 
-         .end()
-
          .findAllByCssSelector("span.alfresco-renderers-Category")
-         .then(function (categories){
-            TestCommon.log(testname,"Check there are the expected number of categories successfully rendered");
-            expect(categories).to.have.length(6, "There should be 6 categories successfully rendered");
-         })
-         .end()
+            .then(function (categories){
+               TestCommon.log(testname,"Check there are the expected number of categories successfully rendered");
+               expect(categories).to.have.length(6, "There should be 6 categories successfully rendered");
+            })
+            .end()
 
          // Click the first link of category 6
          .findByCssSelector("#CATEGORY_6 a.alfresco-navigation-Link:first-of-type")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published as expected")},
-            function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published as expected")},
+               function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "HASH"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-            function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
+               function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "filter=category|english/English"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-            function(){assert(false, "The link did not publish the payload with 'url' as 'filter=category|english/English'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
+               function(){assert(false, "The link did not publish the payload with 'url' as 'filter=category|english/English'")}
+            )
+            .end()
 
          // Click the last link of category 6
          .findByCssSelector("#CATEGORY_6 a.alfresco-navigation-Link:last-of-type")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published as expected")},
-            function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published as expected")},
+               function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "HASH"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-            function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
+               function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "filter=category|spanish/Spanish"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-            function(){assert(false, "The link did not publish the payload with 'url' as 'filter=category|spanish/Spanish'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
+               function(){assert(false, "The link did not publish the payload with 'url' as 'filter=category|spanish/Spanish'")}
+            )
+            .end()
 
          // Post the coverage results...
          .then(function() {

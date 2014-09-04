@@ -38,54 +38,52 @@ define(["intern!object",
          var testname = "LabelTest";
          return TestCommon.loadTestWebScript(this.remote, "/Label", testname)
 
-         .end()
-
          // Has label with correct phrase
          .findById("TEST_LABEL")
-         .getVisibleText()
-         .then(function (label) {
-            TestCommon.log(testname,"Check the label is shown with the correct text to begin with");
-            expect(label).to.equal("This is a test label", "The label should contain 'This is a test label'");
-         })
-         .end()
+            .getVisibleText()
+            .then(function (label) {
+               TestCommon.log(testname,"Check the label is shown with the correct text to begin with");
+               expect(label).to.equal("This is a test label", "The label should contain 'This is a test label'");
+            })
+            .end()
 
          // Label has appropriate css class
          .findByCssSelector("#TEST_LABEL.bold")
-         .then(
-            function(){TestCommon.log(testname,"Check the label has the class 'bold' when rendered");},
-            function(){assert(false, "The label should have css class 'bold'");}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the label has the class 'bold' when rendered");},
+               function(){assert(false, "The label should have css class 'bold'");}
+            )
+            .end()
 
          // Has subscribed to appropriate topic
          .findByCssSelector(TestCommon.topicSelector("NOT_A_REAL_TOPIC", "subscribe", "any"))
-         .then(
-            function(){TestCommon.log(testname,"Check the label has subscribed to topic 'NOT_A_REAL_TOPIC'");},
-            function(){assert(false, "The label should have subscribed to topic 'NOT_A_REAL_TOPIC'");}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the label has subscribed to topic 'NOT_A_REAL_TOPIC'");},
+               function(){assert(false, "The label should have subscribed to topic 'NOT_A_REAL_TOPIC'");}
+            )
+            .end()
          
          // Click button to publish topic
          .findById("TEST_BUTTON")
-         .click()
-         .end()
+            .click()
+            .end()
 
          // Has published to appropriate topic
          .findByCssSelector(TestCommon.topicSelector("NOT_A_REAL_TOPIC", "publish", "any"))
-         .then(
-            function(){TestCommon.log(testname,"Check the button has published to topic 'NOT_A_REAL_TOPIC'");},
-            function(){assert(false, "The button should have published to topic 'NOT_A_REAL_TOPIC'");}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the button has published to topic 'NOT_A_REAL_TOPIC'");},
+               function(){assert(false, "The button should have published to topic 'NOT_A_REAL_TOPIC'");}
+            )
+            .end()
 
          // Label copy has changed appropriately
          .findById("TEST_LABEL")
-         .getVisibleText()
-         .then(function (label) {
-            TestCommon.log(testname,"Check the label is now shown with the text from the topic publish payload");
-            expect(label).to.equal("Label is updated", "The label should contain 'Label is updated'");
-         })
-         .end()
+            .getVisibleText()
+            .then(function (label) {
+               TestCommon.log(testname,"Check the label is now shown with the text from the topic publish payload");
+               expect(label).to.equal("Label is updated", "The label should contain 'Label is updated'");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {

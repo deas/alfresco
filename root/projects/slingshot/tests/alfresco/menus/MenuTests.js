@@ -39,10 +39,9 @@ define(["intern!object",
       //       not it's safe to proceed before the next action without needing the sleep
       var alfPause = 250;
       var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/BasicMenuTestPage.json")
+      var testName = "Menus Test";
+         return TestCommon.loadTestWebScript(this.remote, "/BasicMenuTestPage", testName)
             
-            .end()
-         
             // Test #1 
             // Open the drop-down menu and select the FIRST menut item using the space bar...
             .pressKeys(keys.TAB)

@@ -34,11 +34,10 @@ define(["intern!object",
       'alfresco/menus/AlfMenuItemWrapper': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuItemWrapper_TestPage.json")
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuItemWrapper")
 
             // Test #1
             // Check that keyboard navigation works
-            .end()
             .pressKeys(keys.TAB)
             .pressKeys(keys.ARROW_DOWN) // Opens the drop-down
             .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button

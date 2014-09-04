@@ -38,14 +38,12 @@ define(["intern!object",
          var testname = "IndicatorsTest";
          return TestCommon.loadTestWebScript(this.remote, "/Indicators", testname)
 
-         .end()
-
          .findAllByCssSelector("a.indicator-action")
-         .then(function (actions){
-            TestCommon.log(testname,"Check there are the expected number of actions (across several indicators)");
-            expect(actions).to.have.length(14, "There should be 14 actions rendered (across several indicators)");
-         })
-         .end()
+            .then(function (actions){
+               TestCommon.log(testname,"Check there are the expected number of actions (across several indicators)");
+               expect(actions).to.have.length(14, "There should be 14 actions rendered (across several indicators)");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {

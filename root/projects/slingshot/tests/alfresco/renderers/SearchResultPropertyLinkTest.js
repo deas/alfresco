@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "SearchResultPropertyLinkTest";
          return TestCommon.loadTestWebScript(this.remote, "/SearchResultPropertyLink", testname)
 
-         .end()
-
          // 1. Check that there are 4 anchors
          .findAllByCssSelector("a.alfresco-navigation-_HtmlAnchorMixin")
             .then(function(elements) {

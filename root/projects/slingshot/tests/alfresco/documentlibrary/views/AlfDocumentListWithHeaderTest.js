@@ -38,7 +38,7 @@ define(["intern!object",
 
          var alfPause = 150;
          var browser = this.remote;
-         var testname = "AlfDocumentListWithHeaderTest";
+         var testname = "AlfDocumentListWithHeaderTest (keyboard)";
          return TestCommon.loadTestWebScript(this.remote, "/AlfDocumentListWithHeader", testname)
             
             .sleep(alfPause)
@@ -192,8 +192,8 @@ define(["intern!object",
       },
       'Mouse Tests': function () {
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/documentlibrary/views/page_models/AlfDocumentListWithHeader_TestPage.json")
-            .end()
+         var testname = "AlfDocumentListWithHeaderTest (mouse)";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfDocumentListWithHeader", testname)
 
             .findByCssSelector("#COLUMN1_HEADER > span")
                .then(null, function() {

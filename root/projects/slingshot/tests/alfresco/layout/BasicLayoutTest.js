@@ -39,7 +39,6 @@ define(["intern!object",
 
             // Test #1
             // Check margins in vertical widgets...
-            .end()
             .findByCssSelector("#SURF_LOGO1")
                .getAttribute("style")
                .then(function(style) {

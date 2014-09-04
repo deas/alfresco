@@ -33,7 +33,7 @@ define(["intern!object",
       'Check Setup': function () {
 
          var testname = "Test ComboBox Setup";
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/ComboBox_TestPage.json")
+         return TestCommon.loadTestWebScript(this.remote, "/ComboBox", testname)
 
             // Open the tags combo and count the available options...
             .findByCssSelector("#TAGS .dijitArrowButtonInner")

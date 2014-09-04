@@ -34,7 +34,8 @@ define(["intern!object",
       'alfresco/menus/AlfCheckableMenuItem': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfCheckableMenuItem_TestPage.json")
+         var testName = "Checkable Menu Item Test";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfCheckableMenuItem", testName)
 
             // Test #1
             // Count the number of subscriptions to for the grouped checkable items, there should be 

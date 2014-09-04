@@ -35,65 +35,63 @@ define(["intern!object",
          var testname = "DateLinkTest";
          return TestCommon.loadTestWebScript(this.remote, "/DateLink", testname)
 
-         .end()
-
          // Test that the dates are rendered as expected. The model uses a very old ISO date which should ensure
          // that we get a relative date in the form "Modified over X years ago" so we're going to use a regular
          // expression that should continue to work in the future as the date gets further into the past
          .findByCssSelector("#CUSTOM_PROPS .value")
-         .getVisibleText()
-         .then(function(resultText) {
-            TestCommon.log(testname,"Check the first date is rendered correctly");
-            assert(/(Modified over \d+ years ago by Brian Griffin)/g.test(resultText), "Test #1 - Custom property not rendered correctly: " + resultText);
-         })
-         .end()
+            .getVisibleText()
+            .then(function(resultText) {
+               TestCommon.log(testname,"Check the first date is rendered correctly");
+               assert(/(Modified over \d+ years ago by Brian Griffin)/g.test(resultText), "Test #1 - Custom property not rendered correctly: " + resultText);
+            })
+            .end()
 
          .findByCssSelector("#STANDARD_PROPS .value")
-         .getVisibleText()
-         .then(function(resultText) {
-            TestCommon.log(testname,"Check the second date is rendered correctly");
-            assert(/(Modified over \d+ years ago by Chris Griffin)/g.test(resultText), "Test #2 - Standard property not rendered correctly: " + resultText);
-         })
-         .end()
+            .getVisibleText()
+            .then(function(resultText) {
+               TestCommon.log(testname,"Check the second date is rendered correctly");
+               assert(/(Modified over \d+ years ago by Chris Griffin)/g.test(resultText), "Test #2 - Standard property not rendered correctly: " + resultText);
+            })
+            .end()
 
          // Click the first date
          .findByCssSelector("#CUSTOM_PROPS .value")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
-         .then(
-            function(){TestCommon.log(testname,"Check the date click published as expected")},
-            function(){assert(false, "The datelink did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the date click published as expected")},
+               function(){assert(false, "The datelink did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "SHARE_PAGE_RELATIVE"))
-         .then(
-            function(){TestCommon.log(testname,"Check the date click published the payload as expected")},
-            function(){assert(false, "The datelink did not publish the payload with 'type' as 'SHARE_PAGE_RELATIVE'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the date click published the payload as expected")},
+               function(){assert(false, "The datelink did not publish the payload with 'type' as 'SHARE_PAGE_RELATIVE'")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "/1/2/3/4/5"))
-         .then(
-            function(){TestCommon.log(testname,"Check the date click published the payload as expected")},
-            function(){assert(false, "The datelink did not publish the payload with 'url' as '/1/2/3/4/5'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the date click published the payload as expected")},
+               function(){assert(false, "The datelink did not publish the payload with 'url' as '/1/2/3/4/5'")}
+            )
+            .end()
 
          // Click the other dates for coverage testing
          .findByCssSelector("#STANDARD_PROPS .value")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector("#BROKEN_1 .value")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector("#BROKEN_2 .value")
-         .click()
-         .end()
+            .click()
+            .end()
 
          // Post the coverage results...
          .then(function() {

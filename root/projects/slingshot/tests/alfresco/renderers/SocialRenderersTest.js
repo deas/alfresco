@@ -41,8 +41,6 @@ define(["intern!object",
 
          return TestCommon.loadTestWebScript(this.remote, "/SocialRenderers", testname)
 
-         .end()
-         
          // Check the initial state of the LIKE widget...
          .findByCssSelector(toggleSelector("LIKES", "processing"))
             .isDisplayed()

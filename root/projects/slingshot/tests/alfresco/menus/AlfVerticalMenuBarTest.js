@@ -34,9 +34,8 @@ define(["intern!object",
       'alfresco/menus/AlfVerticalMenuBar': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfVerticalMenuBar_TestPage.json")
-
-            .end()
+         var testName = "Vertical Menu Bar Test";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfVerticalMenuBar", testName)
 
             // TODO: This test has not yet been written because the vertical menu bar is still in beta and needs to be completed
 

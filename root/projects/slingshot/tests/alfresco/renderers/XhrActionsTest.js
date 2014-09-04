@@ -39,22 +39,22 @@ define(["intern!object",
                // 1: Check dropdown element exists
 
                .findByCssSelector(".alfresco-menus-AlfMenuBar span:first-child")
-               .getVisibleText()
-               .then(function(resultText) {
-                  TestCommon.log(testname,"Check Actions menu was rendered");
-                  assert(resultText == "Actions", "Test #1- Actions should be rendered as a menu: " + resultText);
-               })
+                  .getVisibleText()
+                  .then(function(resultText) {
+                     TestCommon.log(testname,"Check Actions menu was rendered");
+                     assert(resultText == "Actions", "Test #1- Actions should be rendered as a menu: " + resultText);
+                  })
 
                // 2: Click on it. Check event triggered: ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST
 
-               .click()
-               .end()
+                  .click()
+                  .end()
                .findAllByCssSelector(TestCommon.topicSelector("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", "publish", "any"))
-               .then(function(elements) {
-                  TestCommon.log(testname,"Check that document request event was triggered");
-                  assert(elements.length == 1, "Test #2 - Retrieve single doc request not triggered");
-               })
-               .end()
+                  .then(function(elements) {
+                     TestCommon.log(testname,"Check that document request event was triggered");
+                     assert(elements.length == 1, "Test #2 - Retrieve single doc request not triggered");
+                  })
+                  .end()
 
                // TODO: 3: Trigger response event with data
                // TODO: 4: See if response is rendered

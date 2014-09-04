@@ -33,9 +33,8 @@ define(["intern!object",
       'alfresco/forms/controls/DojoSelect': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/DojoSelect_TestPage.json")
-            // .end()
-
+         var testName = "Select Menu Test";
+         return TestCommon.loadTestWebScript(this.remote, "/DojoSelect", testName)
 
             // Get the options labels using:
             //    #FIXED_INVALID_CHANGES_TO_CONTROL_dropdown .dijitMenuItemLabel

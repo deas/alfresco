@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "Header Widgets Test";
          return TestCommon.loadTestWebScript(this.remote, "/HeaderWidgets", testname)
 
-         .end()
-
          // Check that the header CSS is applied...
          .findByCssSelector(".alfresco-layout-LeftAndRight.alfresco-header-Header")
             .then(null, function() {

@@ -37,8 +37,6 @@ define(["intern!object",
          var startPos;
          return TestCommon.loadTestWebScript(this.remote, "/FormButtonDialog", testname)
 
-         .end()
-
          // Does the form exist?
          .findByCssSelector("DIV#TEST_FORM > FORM")
             .then(function(el1) {

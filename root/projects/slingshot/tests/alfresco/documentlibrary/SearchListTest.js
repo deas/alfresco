@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "AlfSearchListTest";
          return TestCommon.loadTestWebScript(this.remote, "/SearchList", testname)
 
-         .end()
-
          // Include a facet with no data...
          .findByCssSelector("#INCLUDE_FACET_0")
             .click()

@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "WarningTest";
          return TestCommon.loadTestWebScript(this.remote, "/Warning", testname)
 
-         .end()
-
          .findByCssSelector("#WARNINGS1 > div.warnings > div.info > span:last-child")
             .getVisibleText()
             .then(function (result1) {

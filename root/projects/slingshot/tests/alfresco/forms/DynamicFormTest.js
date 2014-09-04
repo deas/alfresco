@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "DynamicForm Test";
          return TestCommon.loadTestWebScript(this.remote, "/DynamicForm", testname)
 
-         .end()
-
          // 1. Check that the first form has been displayed...
          .findByCssSelector("#Form1_Field")
             .then(null, function() {

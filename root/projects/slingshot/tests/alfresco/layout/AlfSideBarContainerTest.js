@@ -36,8 +36,6 @@ define(["intern!object",
          var startSize;
          return TestCommon.loadTestWebScript(this.remote, "/AlfSideBarContainer", testname)
 
-         .end()
-
          // Test that the sidedbar container requests user preferences...
          .findAllByCssSelector(TestCommon.pubDataCssSelector("ALF_PREFERENCE_GET", "preference", "org.alfresco.share.sideBarWidth"))
             .then(function(elements) {

@@ -33,7 +33,8 @@ define(["intern!object",
       'Basic Test': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/AutoSet_TestPage.json")
+         var testName = "Auto Set Form Rules Test";
+         return TestCommon.loadTestWebScript(this.remote, "/AutoSet", testName)
 
             // Post the form, check the initial results...
             .findByCssSelector(".confirmationButton > span")

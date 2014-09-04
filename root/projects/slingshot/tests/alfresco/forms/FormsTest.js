@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "FormsTest";
          return TestCommon.loadTestWebScript(this.remote, "/Forms", testname)
 
-         .end()
-
          // 1. Test setting and getting the form value from the hash fragment
          .findByCssSelector("#HASH_TEXT_BOX_1 .dijitInputContainer input")
          .type("test1")

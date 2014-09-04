@@ -38,7 +38,8 @@ define(["intern!object",
       'alfresco/menus/AlfMenuTextForClipboard': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuTextForClipboard_TestPage.json")
+         var testName = "Menu Text For Clipboard Test";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuTextForClipboard", testName)
 
             // Test #1
             // Check the initial labels...

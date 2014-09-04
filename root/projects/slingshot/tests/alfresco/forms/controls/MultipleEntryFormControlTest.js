@@ -55,8 +55,6 @@ define(["intern!object",
          var testname = "MultipleEntryFormControlTest";
          return TestCommon.loadTestWebScript(this.remote, "/MultipleEntryFormControl", testname)
 
-         .end()
-
          // First save the form to check that the initialised results are posted correctly...
          .findByCssSelector(".confirmationButton > span")
             .click()

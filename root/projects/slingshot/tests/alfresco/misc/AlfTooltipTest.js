@@ -34,8 +34,6 @@ define(["intern!object",
          var testname = "AlfTooltipTest";
          return TestCommon.loadTestWebScript(this.remote, "/AlfTooltip", testname)
 
-         .end()
-
          // Does the test button exist?
          .findById("TEST_BUTTON")
          .then(function(el1) {

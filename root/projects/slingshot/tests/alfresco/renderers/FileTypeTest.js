@@ -38,14 +38,12 @@ define(["intern!object",
          var testname = "FileTypeTest";
          return TestCommon.loadTestWebScript(this.remote, "/FileType", testname)
 
-         .end()
-
          .findAllByCssSelector("div.alfresco-renderers-FileType")
-         .then(function (filetypes){
-            TestCommon.log(testname,"Check there are the expected number of filetypes");
-            expect(filetypes).to.have.length(6, "There should be 6 filetypes rendered");
-         })
-         .end()
+            .then(function (filetypes){
+               TestCommon.log(testname,"Check there are the expected number of filetypes");
+               expect(filetypes).to.have.length(6, "There should be 6 filetypes rendered");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {

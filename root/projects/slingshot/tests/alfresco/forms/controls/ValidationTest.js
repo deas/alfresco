@@ -33,7 +33,8 @@ define(["intern!object",
       'Basic Test': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/Validation_TestPage.json")
+         var testName = "Advanced Form Validation Test";
+         return TestCommon.loadTestWebScript(this.remote, "/Validation", testName)
 
             // Check that the form is initially invalid...
             .findAllByCssSelector(".confirmationButton.dijitDisabled")

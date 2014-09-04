@@ -36,14 +36,12 @@ define(["intern!object",
          var testname = "AlfSearchResult Test";
          return TestCommon.loadTestWebScript(this.remote, "/AlfSearchResult", testname)
 
-         .end()
-
          .findAllByCssSelector('#SEARCH_RESULTS table tbody tr')
-         .then(function (rows){
-            TestCommon.log(testname,"Check the correct number of rows is shown");
-            expect(rows).to.have.length(11, "There should be 11 search result rows shown");
-         })
-         .end()
+            .then(function (rows){
+               TestCommon.log(testname,"Check the correct number of rows is shown");
+               expect(rows).to.have.length(11, "There should be 11 search result rows shown");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {

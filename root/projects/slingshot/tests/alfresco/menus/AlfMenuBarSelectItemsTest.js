@@ -34,7 +34,8 @@ define(["intern!object",
       'alfresco/menus/AlfMenuBarSelectItems': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfMenuBarSelectItems_TestPage.json")
+         var testName = "Menu Bar Select Items Test";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfMenuBarSelectItems", testName)
 
             // Test #1
             // Check that the subscription is set-up correctly

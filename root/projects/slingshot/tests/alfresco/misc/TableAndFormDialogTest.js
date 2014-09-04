@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "Table and Form Dialog Test";
          return TestCommon.loadTestWebScript(this.remote, "/TableAndFormDialog", testname)
 
-         .end()
-
          // To get an entry in the table to click: "#TABLE_VIEW_ITEMS tr:nth-child(1) td:first-child span.inner"
          // To get the value of an entry in the table to click: "#TABLE_VIEW_ITEMS tr:nth-child(1) td:first-child span.inner span.value"
 

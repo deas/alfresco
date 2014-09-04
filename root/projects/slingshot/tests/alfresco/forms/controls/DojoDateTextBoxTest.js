@@ -35,7 +35,8 @@ define(["intern!object",
       'alfresco/forms/controls/DojoDateTextBox': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/DojoDateTextBox_TestPage.json")
+         var testName = "Date TextBox Test";
+         return TestCommon.loadTestWebScript(this.remote, "/DojoDateTextBox", testName)
 
             // TEST 1
             .findByCssSelector("#DOJODATETEXTBOX_CONTROL")

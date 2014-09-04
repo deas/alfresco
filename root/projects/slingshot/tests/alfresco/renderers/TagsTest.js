@@ -37,99 +37,97 @@ define(["intern!object",
          var testname = "TagsTest";
          return TestCommon.loadTestWebScript(this.remote, "/Tags", testname)
 
-         .end()
-
          .findAllByCssSelector("span.alfresco_renderers_InlineEditProperty.alfresco-renderers-Property")
-         .then(function (tagcontrols){
-            TestCommon.log(testname,"Check there are the expected number of tag controls successfully rendered");
-            expect(tagcontrols).to.have.length(4, "There should be 4 tag controls successfully rendered");
-         })
-         .end()
+            .then(function (tagcontrols){
+               TestCommon.log(testname,"Check there are the expected number of tag controls successfully rendered");
+               expect(tagcontrols).to.have.length(4, "There should be 4 tag controls successfully rendered");
+            })
+            .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-ReadOnlyTag")
-         .then(function (readonlytags){
-            TestCommon.log(testname,"Check there are the expected number of readonlytags successfully rendered");
-            expect(readonlytags).to.have.length(3, "There should be 3 readonlytags successfully rendered");
-         })
-         .end()
+            .then(function (readonlytags){
+               TestCommon.log(testname,"Check there are the expected number of readonlytags successfully rendered");
+               expect(readonlytags).to.have.length(3, "There should be 3 readonlytags successfully rendered");
+            })
+            .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag")
-         .then(function (edittags){
-            TestCommon.log(testname,"Check there are no edittags shown");
-            expect(edittags).to.have.length(0, "There should be 0 edittags shown");
-         })
-         .end()
+            .then(function (edittags){
+               TestCommon.log(testname,"Check there are no edittags shown");
+               expect(edittags).to.have.length(0, "There should be 0 edittags shown");
+            })
+            .end()
 
          // Click the first tag
          .findByCssSelector("#TAGS_4 span.alfresco-renderers-ReadOnlyTag:first-of-type a")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "ALF_NAVIGATE_TO_PAGE"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published as expected")},
-            function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published as expected")},
+               function(){assert(false, "The link did not publish on 'ALF_NAVIGATE_TO_PAGE' after mouse clicks")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "type", "HASH"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-            function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
+               function(){assert(false, "The link did not publish the payload with 'type' as 'HASH'")}
+            )
+            .end()
 
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "filter=tag|Test1"))
-         .then(
-            function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
-            function(){assert(false, "The link did not publish the payload with 'url' as 'filter=tag|Test1'")}
-         )
-         .end()
+            .then(
+               function(){TestCommon.log(testname,"Check the link click published the payload as expected")},
+               function(){assert(false, "The link did not publish the payload with 'url' as 'filter=tag|Test1'")}
+            )
+            .end()
 
          // Click the edit icon of the 4th tag control
          .findByCssSelector("#TAGS_4 > span.editIcon")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag")
-         .then(function (edittags){
-            TestCommon.log(testname,"Check there are the expected number of edittags now shown");
-            expect(edittags).to.have.length(3, "There should be 3 edittags now shown");
-         })
-         .end()
+            .then(function (edittags){
+               TestCommon.log(testname,"Check there are the expected number of edittags now shown");
+               expect(edittags).to.have.length(3, "There should be 3 edittags now shown");
+            })
+            .end()
 
          .findByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag:first-of-type")
-         .getVisibleText()
-         .then(function (edittagtext){
-            TestCommon.log(testname,"Check the first edit tag reads 'Test1'");
-            expect(edittagtext).to.contain("Test1", "Edit tag 1 should read 'Test1'");
-         })
-         .end()
+            .getVisibleText()
+            .then(function (edittagtext){
+               TestCommon.log(testname,"Check the first edit tag reads 'Test1'");
+               expect(edittagtext).to.contain("Test1", "Edit tag 1 should read 'Test1'");
+            })
+            .end()
 
          // Click the first tag delete
          .findByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag:first-of-type span.tagDelete")
-         .click()
-         .end()
+            .click()
+            .end()
 
          .findAllByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag")
-         .then(function (edittags){
-            TestCommon.log(testname,"Check there are the expected number of edittags now shown");
-            expect(edittags).to.have.length(2, "There should be 2 edittags now shown");
-         })
-         .end()
+            .then(function (edittags){
+               TestCommon.log(testname,"Check there are the expected number of edittags now shown");
+               expect(edittags).to.have.length(2, "There should be 2 edittags now shown");
+            })
+            .end()
 
          .findByCssSelector("#TAGS_4 span.alfresco-renderers-EditTag:first-of-type")
-         .getVisibleText()
-         .then(function (edittagtext){
-            TestCommon.log(testname,"Check the first edit tag now reads 'Test2'");
-            expect(edittagtext).to.contain("Test2", "Edit tag 1 should now read 'Test2'");
-         })
-         .end()
+            .getVisibleText()
+            .then(function (edittagtext){
+               TestCommon.log(testname,"Check the first edit tag now reads 'Test2'");
+               expect(edittagtext).to.contain("Test2", "Edit tag 1 should now read 'Test2'");
+            })
+            .end()
 
          // Click the cancel button
          .findByCssSelector("#TAGS_4 span.action:nth-of-type(2)")
-         .click()
-         .end()
+            .click()
+            .end()
 
          // Post the coverage results...
          .then(function() {

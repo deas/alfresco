@@ -34,7 +34,8 @@ define(["intern!object",
       'alfresco/menus/AlfContextMenu': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/menus/page_models/AlfContextMenu_TestPage.json")
+         var testName = "Context Menu Test";
+         return TestCommon.loadTestWebScript(this.remote, "/AlfContextMenu", testName)
 
             // TESTS COMMENTED OUT PENDING ANSWER POSTED HERE: https://github.com/theintern/intern/issues/191
             // .findByCssSelector("#LOGO")

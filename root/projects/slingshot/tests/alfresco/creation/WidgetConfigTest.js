@@ -31,7 +31,7 @@ define(["intern!object",
       'Basic Test': function () {
 
          var browser = this.remote;
-         var testname = "BasicTest";
+         var testname = "Page Creation Test";
          return TestCommon.loadTestWebScript(this.remote, "/WidgetConfig", testname)
 
          .end()

@@ -33,9 +33,8 @@ define(["intern!object",
       'alfresco/forms/controls/DojoValidationTextBox': function () {
 
          var browser = this.remote;
-         return TestCommon.bootstrapTest(this.remote, "./tests/alfresco/forms/controls/page_models/DojoValidationTextBox_TestPage.json")
-            // .end()
-
+         var testName = "Validation TextBox Test";
+         return TestCommon.loadTestWebScript(this.remote, "/DojoValidationTextBox", testName)
             // Test #1 
             // Check initial rendering...
             .end()

@@ -37,8 +37,6 @@ define(["intern!object",
          var testname = "SiteServiceTest";
          return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
 
-         .end()
-
          // Create and edit
          .findById("CREATE_SITE")
             .click()

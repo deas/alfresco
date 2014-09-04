@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "SingleTextFieldFormTest";
          return TestCommon.loadTestWebScript(this.remote, "/SingleTextFieldForm", testname)
 
-         .end()
-
          // 1. Test that enter won't submit without any data in the field...
          .findByCssSelector("#STFF1 .dijitInputContainer input")
             .pressKeys(keys.RETURN)

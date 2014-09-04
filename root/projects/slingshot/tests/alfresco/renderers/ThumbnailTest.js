@@ -38,14 +38,12 @@ define(["intern!object",
          var testname = "ThumbnailTest";
          return TestCommon.loadTestWebScript(this.remote, "/Thumbnail", testname)
 
-         .end()
-
          .findAllByCssSelector("span.alfresco-renderers-Thumbnail")
-         .then(function (thumbnails){
-            TestCommon.log(testname,"Check there are the expected number of thumbnails successfully rendered");
-            expect(thumbnails).to.have.length(12, "There should be 12 thumbnails successfully rendered");
-         })
-         .end()
+            .then(function (thumbnails){
+               TestCommon.log(testname,"Check there are the expected number of thumbnails successfully rendered");
+               expect(thumbnails).to.have.length(12, "There should be 12 thumbnails successfully rendered");
+            })
+            .end()
 
          // Post the coverage results...
          .then(function() {
