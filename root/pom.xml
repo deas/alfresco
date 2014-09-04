@@ -151,8 +151,7 @@
     <dependency.opencmis.version>0.10.0</dependency.opencmis.version>
     <dependency.antlr.version>3.5.2</dependency.antlr.version>
     <dependency.spring.version>3.2.10.RELEASE</dependency.spring.version>
-    <dependency.activiti.version>5.16.2-SNAPSHOT</dependency.activiti.version>
-	<dependency.activiti.explorer.ui.version>5.16.1</dependency.activiti.explorer.ui.version>
+    <dependency.activiti.version>5.16.1</dependency.activiti.version>
     <dependency.jackson2.version>2.3.2</dependency.jackson2.version>
     <dependency.poi.version>3.10-FINAL</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
@@ -839,20 +838,6 @@
     <profile>
         <id>enterprise</id>
         <repositories>
-
-		<!-- Temp inclusion for activiti snapshot version -->
-  <repository>
-   <id>sonatype-nexus-snapshots</id>
-   <name>Sonatype Nexus Snapshots</name>
-   <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-   <releases>
-    <enabled>false</enabled>
-   </releases>
-   <snapshots>
-    <enabled>true</enabled>
-   </snapshots>
-  </repository>
- 
             <repository>
                 <id>alfresco-internal</id>
                 <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
