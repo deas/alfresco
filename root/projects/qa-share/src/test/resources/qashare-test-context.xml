@@ -103,6 +103,7 @@
         <constructor-arg name="password" value="${test.hybrid.password}" />
         <constructor-arg name="alfrescoVersion" value="${share.hybrid.version}" />
         <constructor-arg name="cloudUrlForHybrid" value="" />
+        <constructor-arg name="pentahoUserConsoleUrl" value="${pentaho.user.console.target}" /> 
         <constructor-arg name="downloadDirectory"
             value="${webdrone.download.directory}" />
         <constructor-arg name="googleUserName" value="${googleUserName}" />
