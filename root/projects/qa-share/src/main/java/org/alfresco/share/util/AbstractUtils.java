@@ -103,6 +103,7 @@ public abstract class AbstractUtils
     protected static ApplicationContext ctx;
     protected static String shareUrl;
     protected static String cloudUrlForHybrid;
+    protected static String pentahoUserConsoleUrl;
     // Test Suite Admins
     public static final String advSearchAdmin = "advsearchtest";
     public static final String loginAdmin = "logintest";
@@ -258,6 +259,7 @@ public abstract class AbstractUtils
         testProperties = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = testProperties.getShareUrl();
         cloudUrlForHybrid = testProperties.getCloudUrlForHybrid();
+        pentahoUserConsoleUrl = testProperties.getPentahoUserConsoleUrl();
         username = testProperties.getUsername();
         password = testProperties.getPassword();
         alfrescoVersion = testProperties.getAlfrescoVersion();

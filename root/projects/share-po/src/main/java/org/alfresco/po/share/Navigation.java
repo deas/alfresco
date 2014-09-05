@@ -26,6 +26,7 @@ import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.adminconsole.TagManagerPage;
+import org.alfresco.po.share.reports.AdhocAnalyzerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.FacetedSearchConfigPage;
 import org.alfresco.po.share.search.FacetedSearchPage;
@@ -196,6 +197,44 @@ public class Navigation extends SharePage
         }
     }
 
+    /**
+     * Selects the "Reporting" icon on main navigation. As this link is created by
+     * Java script, a wait is implemented to ensure the link is rendered.
+     */
+    public void selectReportingDropdown()
+    {
+        try
+        {
+            WebElement reportingButton = drone.findAndWait(By.cssSelector("div#HEADER_PENTAHO"));
+            reportingButton.click();
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageOperationException("Exceeded time to find the Reporting dropdown css.", te);
+        }
+    }
+
+    
+    /**
+     * Select Analyze from Reporting dropdown.
+     * @return
+     */
+    public AdhocAnalyzerPage selectAnalyze()
+    {
+        try
+        {
+            selectReportingDropdown(); 
+            drone.findAndWait(By.cssSelector("td#HEADER_PENTAHO_ANALYZE_text a")).click();
+            return new AdhocAnalyzerPage(drone);
+        }
+        catch(TimeoutException toe)
+        {
+            logger.error("Analyze option is not found in the Reporting options", toe);
+        }
+        throw new PageOperationException("Analyze option is not found in the Reporting options");
+    }
+      
+       
     /**
      * Selects the user link on main navigation. As this link is created by Java
      * script, a wait is implemented to ensure the link is rendered.

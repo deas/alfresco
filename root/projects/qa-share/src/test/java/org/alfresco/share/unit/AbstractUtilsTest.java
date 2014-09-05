@@ -26,7 +26,7 @@ public class AbstractUtilsTest extends AbstractUtils
     {
         ShareTestProperty testProperties = new ShareTestProperty("https://my.alfresco.me/share", 
                 "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
-                AlfrescoVersion.Cloud.toString(), cloudUrlForHybrid, downloadDirectory, 
+                AlfrescoVersion.Cloud.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory, 
                 googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
                 0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
 
@@ -55,7 +55,7 @@ public class AbstractUtilsTest extends AbstractUtils
     {
         ShareTestProperty testProperties = new ShareTestProperty("http://localhost:8080/share", 
                 "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
-                AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, downloadDirectory, 
+                AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory, 
                 googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
                 0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
 
@@ -75,7 +75,7 @@ public class AbstractUtilsTest extends AbstractUtils
     {
         ShareTestProperty testProperties = new ShareTestProperty("http://localhost:8081/share", 
                 "http://localhost:8080/", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
-                AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, downloadDirectory, 
+                AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory, 
                 googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
                 0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
 

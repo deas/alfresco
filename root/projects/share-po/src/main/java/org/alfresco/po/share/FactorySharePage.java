@@ -26,6 +26,7 @@ import org.alfresco.po.share.dashlet.ConfigureSiteNoticeDialogBoxPage;
 import org.alfresco.po.share.dashlet.InsertOrEditLinkPage;
 import org.alfresco.po.share.dashlet.mydiscussions.CreateNewTopicPage;
 import org.alfresco.po.share.dashlet.mydiscussions.TopicDetailsPage;
+import org.alfresco.po.share.reports.AdhocAnalyzerPage;
 import org.alfresco.po.share.search.*;
 import org.alfresco.po.share.site.*;
 import org.alfresco.po.share.site.blog.BlogPage;
@@ -46,11 +47,10 @@ import org.alfresco.po.share.systemsummary.SystemSummaryPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.user.*;
-import org.alfresco.po.share.user.UserSitesPage;
-import org.alfresco.po.share.user.NotificationPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
+import org.alfresco.po.thirdparty.pentaho.PentahoUserConsolePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.PageFactory;
 import org.alfresco.webdrone.WebDrone;
@@ -170,6 +170,8 @@ public class FactorySharePage implements PageFactory
         pages.put("bulkfsimport", BulkImportPage.class);
         pages.put("status", StatusBulkImportPage.class);
         pages.put("inplace", InPlaceBulkImportPage.class);
+        pages.put("Home", PentahoUserConsolePage.class);
+        pages.put("analyze", AdhocAnalyzerPage.class);
     }
 
     public HtmlPage getPage(WebDrone drone)

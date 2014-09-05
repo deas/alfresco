@@ -69,6 +69,21 @@ public class ShareUtil
     }
 
     /**
+     * Logs user into share from the current page.
+     * 
+     * @param drone
+     * @param userInfo
+     * @return
+     */
+    public static HtmlPage logInAs(final WebDrone drone, final String... userInfo)
+    {
+        LoginPage lp = new LoginPage(drone).render();
+        lp.loginAs(userInfo[0], userInfo[1]);
+        return drone.getCurrentPage();
+    }
+    
+    
+    /**
      * A helper method to check the current running Alfresco version against the
      * required version.
      * 

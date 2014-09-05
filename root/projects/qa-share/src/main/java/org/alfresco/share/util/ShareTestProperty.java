@@ -35,6 +35,7 @@ public class ShareTestProperty
     private String shareUrl; // Not final to allow test AbstractUtilsTest to set this
     private final String apiUrl;
     private final String cloudUrlForHybrid;
+    private final String pentahoUserConsoleUrl;
     private final String gridUrl;
     private final String username;
     private final String password;
@@ -65,7 +66,7 @@ public class ShareTestProperty
     private final String maxWaitTimeCloudSync;
 
     public ShareTestProperty(final String shareUrl, final String apiUrl, final String gridUrl, final String username, final String password, String alfrescoVersion,
-            String cloudUrlForHybrid, final String downloadDirectory, final String googleUserName, final String googlePassword, final boolean hybridEnabled,
+            String cloudUrlForHybrid, final String pentahoUserConsoleUrl, final String downloadDirectory, final String googleUserName, final String googlePassword, final boolean hybridEnabled,
             final String uniqueTestRunName, final String domainFree, final String domainPremium, final String domainHybrid, final String domainLiveSearch, final String defaultUser,
             final String uniqueTestDataString, final String adminUsername, final String adminPassword, final String superadminUsername,
             final String superadminPassword, final int httpSecurePort, final String headerKey, final String mimeTypes, final String jmxrmiPort, final String jmxrmiUser, final String jmxrmiPassword, final String nodePort, final String licenseShare, final String maxWaitTimeCloudSync)
@@ -73,6 +74,7 @@ public class ShareTestProperty
         this.shareUrl = shareUrl;
         this.apiUrl = apiUrl;
         this.cloudUrlForHybrid = cloudUrlForHybrid;
+        this.pentahoUserConsoleUrl = pentahoUserConsoleUrl;
         this.gridUrl = gridUrl;
         this.username = username;
         this.password = password;
@@ -118,6 +120,11 @@ public class ShareTestProperty
         return shareUrl;
     }
 
+    public String getPentahoUserConsoleUrl()
+    {
+        return pentahoUserConsoleUrl;
+    }
+    
     public String getApiUrl()
     {
         return apiUrl;

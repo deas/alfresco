@@ -77,6 +77,7 @@ public abstract class AbstractTest
     private static Log logger = LogFactory.getLog(AbstractTest.class);
     private static ApplicationContext ctx;
     protected static String shareUrl;
+    protected static String pentahoUserConsoleUrl;
     protected static String hybridShareUrl;
     protected static String password;
     protected static String username;
@@ -125,6 +126,7 @@ public abstract class AbstractTest
 
         ShareTestProperty t = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = t.getShareUrl();
+        pentahoUserConsoleUrl = t.getPentahoUserConsoleUrl();
         username = t.getUsername();
         password = t.getPassword();
         googleusername = t.getGoogleUserName();
@@ -152,6 +154,7 @@ public abstract class AbstractTest
         {
             logger.trace("Alfresco version is" + alfrescoVersion);
             logger.trace("Alfresco shareUrl is" + shareUrl);
+            logger.trace("Pentaho user console is" + pentahoUserConsoleUrl);
         }
         anotherUser = (UserProfile) ctx.getBean("anotherUser");
         if(logger.isTraceEnabled())

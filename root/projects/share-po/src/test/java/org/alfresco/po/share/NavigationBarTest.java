@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
+import org.alfresco.po.share.reports.AdhocAnalyzerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -303,5 +304,25 @@ public class NavigationBarTest extends AbstractTest
     {   
         Assert.assertFalse(page.getNav().getRecentSitesPresent().size() > 0 ); 
     }
+    
+    /**
+     * Test for opening of Adhoc Analyze page under reporting menu by pentaho business analyst
+     * 
+     * Uncomment when pentaho is ready
+     * 
+     * @throws Exception
+     */
+    /**
+    @Test(groups= "Enterprise-only", priority=999)
+    public void navigateToAnalyze() throws Exception
+    {   
+        //logout as admin and log in as pentaho business analyst
+        ShareUtil.logout(drone);
+        SharePage page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
+        AdhocAnalyzerPage adhocAnalyzePage = page.getNav().selectAnalyze().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Adhoc Analyze");       
+        ShareUtil.logout(drone);
+    }
+    **/
     
  }
