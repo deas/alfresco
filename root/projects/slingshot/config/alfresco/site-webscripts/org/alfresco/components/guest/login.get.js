@@ -9,14 +9,14 @@ function main()
 
    model.loginUrl = url.context + "/page/dologin";
    var successUrl = context.properties["alfRedirectUrl"];
-   var error = "?error=true";
    if (successUrl === null)
    {
       successUrl = url.context;
    }
-   successUrl = successUrl.replace(error,"");
+   successUrl = successUrl.replace("?error=true","");
+   successUrl = successUrl.replace("&error=true","");
    model.successUrl = successUrl;
-   model.failureUrl = successUrl + error;
+   model.failureUrl = successUrl + (successUrl.indexOf("?") != -1 ? "&" : "?") + "error=true";
    model.lastUsername = context.properties["alfLastUsername"];
    model.errorDisplay = (args.errorDisplay !== null ? args.errorDisplay : "container");
    model.error = (args.error === "true");
