@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,16 +26,21 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+/**
+ * Page object for Adhoc Analyzer page
+ * 
+ * @author jcule
+ */
 public class AdhocAnalyzerPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(AdhocAnalyzerPage.class);
-    
+
     protected final static String ANALYZE_BUTTON = "span[id^='alfresco_menus_AlfMenuBarPopup']";
     protected final static String CONTENT_USER_ACITVITIES_BUTTON = "td[id^='alfresco_menus_AlfMenuItem']";
     protected final static String OPEN_BUTTON = "span[id^='alfresco_pentaho_menus_AnalysesMenuBarPopup']";
     protected final static String REPORT_TITLE = "div[id='RPT001ReportName']";
     protected final static String ALFRESCO_PENTAHO_IFRAME_ID = "iframe[id='alfrescoPentahoXAnalyzer']";
-    
+
     public AdhocAnalyzerPage(WebDrone drone)
     {
         super(drone);
@@ -65,8 +66,7 @@ public class AdhocAnalyzerPage extends SharePage
     {
         return render(new RenderTime(time));
     }
-    
-    
+
     /**
      * Checks if Open button displayed
      * 
@@ -85,8 +85,7 @@ public class AdhocAnalyzerPage extends SharePage
             throw new PageException("Unable to find Open button.", nse);
         }
     }
-    
-    
+
     /**
      * Clicks on Analyze button
      */
@@ -102,7 +101,7 @@ public class AdhocAnalyzerPage extends SharePage
             logger.error("Unable to find analyze button. " + te);
         }
     }
-    
+
     /**
      * Checks if Create Content, Users and Activities button displayed
      * 
@@ -121,9 +120,7 @@ public class AdhocAnalyzerPage extends SharePage
             throw new PageException("Unable to find Create Content, Users, Activities button.", nse);
         }
     }
-    
-    
-    
+
     /**
      * Clicks on Create button
      */
@@ -134,7 +131,7 @@ public class AdhocAnalyzerPage extends SharePage
             WebElement createButton = drone.findAndWait(By.cssSelector(CONTENT_USER_ACITVITIES_BUTTON));
             createButton.click();
             return new CreateEditAdhocReportPage(drone);
-         
+
         }
         catch (TimeoutException te)
         {
@@ -142,7 +139,7 @@ public class AdhocAnalyzerPage extends SharePage
         }
         throw new PageException("Unable to find create button element.");
     }
-    
+
     /**
      * Clicks on Open button
      */
@@ -153,7 +150,7 @@ public class AdhocAnalyzerPage extends SharePage
             WebElement openButton = drone.findAndWait(By.cssSelector(OPEN_BUTTON));
             openButton.click();
             return new CreateEditAdhocReportPage(drone);
-         
+
         }
         catch (TimeoutException te)
         {
@@ -182,7 +179,7 @@ public class AdhocAnalyzerPage extends SharePage
             logger.error("No report title " + nse);
             throw new PageException("Unable to find report title.", nse);
         }
-    }   
+    }
 
     /**
      * Returns report title
@@ -201,5 +198,5 @@ public class AdhocAnalyzerPage extends SharePage
             logger.error("No analyzer iframe id " + nse);
             throw new PageException("Unable analyzer iframe id.", nse);
         }
-    }   
+    }
 }

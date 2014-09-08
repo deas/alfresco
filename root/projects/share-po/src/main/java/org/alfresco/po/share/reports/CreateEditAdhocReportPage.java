@@ -51,20 +51,6 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     // Number of events
     private final static String EVENTS_NUMBER = "div[formula='[Measures].[Number of Events]']";
 
-    /**
-     * //Rows
-     * private final static String ROWS_DROP_LEVEL = "//span[text()='Drop Level Here'][1]";
-     * //Columns
-     * private final static String COLUMNS_DROP_LEVEL = "//span[text()='Drop Level Here'][2]";
-     * //Measures
-     * private final static String MEASURES_DROP_LEVEL = "//span[text()='Drop Level Here'][3]";
-     * //
-     * private final static String VIEW_FIELD = "div[id='viewFieldOptions']";
-     * //
-     * private final static String SITES = "//div[text()='Sites']";
-     * //Add to Report option from context menu
-     * private final static String ADD_TO_REPORT = "div[id='cmdFieldAdd_text']";
-     **/
 
     /**
      * Constructor
@@ -98,14 +84,12 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     /**
      * Clicks on Save button
      */
-    // public HtmlPage clickOnSaveReportButton()
     public SaveAnalysisPage clickOnSaveReportButton()
     {
         try
         {
             WebElement saveButton = drone.findAndWait(By.cssSelector(SAVE_BUTTON));
             saveButton.click();
-            // return FactorySharePage.resolvePage(drone);
             return new SaveAnalysisPage(drone);
 
         }
