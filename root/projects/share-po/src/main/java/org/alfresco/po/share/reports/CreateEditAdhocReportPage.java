@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,8 +18,6 @@ package org.alfresco.po.share.reports;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
@@ -34,25 +28,44 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
- * 
  * Page object for Adhoc Analayzer page for creation/editing and saving of adhoc reports
  * 
  * @author jcule
- *
  */
 public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
 {
     private static Log logger = LogFactory.getLog(CreateEditAdhocReportPage.class);
-    
-    //save button
+
+    // save button
     private final static String SAVE_BUTTON = "span[id^='alfresco_buttons_AlfButton'] span[id^='alfresco_buttons_AlfButton']";
 
-    //Existing reports that can be opened
+    // Existing reports that can be opened
     private final static String EXISTING_REPORTS = "td[id^='uniqName'][id$='text']";
-    
-    //Activity - Event Type
-    private final static String ACTIVITY_EVENT_TYPE =  "div[formula='[Activity].[Event Type]']";
-    
+
+    // Site name
+    private final static String SITE_NAME = "div[formula='[Sites].[Name]']";
+
+    // Activity - Event Type
+    private final static String EVENT_TYPE = "div[formula='[Activity].[Event Type]']";
+
+    // Number of events
+    private final static String EVENTS_NUMBER = "div[formula='[Measures].[Number of Events]']";
+
+    /**
+     * //Rows
+     * private final static String ROWS_DROP_LEVEL = "//span[text()='Drop Level Here'][1]";
+     * //Columns
+     * private final static String COLUMNS_DROP_LEVEL = "//span[text()='Drop Level Here'][2]";
+     * //Measures
+     * private final static String MEASURES_DROP_LEVEL = "//span[text()='Drop Level Here'][3]";
+     * //
+     * private final static String VIEW_FIELD = "div[id='viewFieldOptions']";
+     * //
+     * private final static String SITES = "//div[text()='Sites']";
+     * //Add to Report option from context menu
+     * private final static String ADD_TO_REPORT = "div[id='cmdFieldAdd_text']";
+     **/
+
     /**
      * Constructor
      * 
@@ -62,8 +75,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     {
         super(drone);
     }
-    
-    
+
     /**
      * Checks if save button displayed
      * 
@@ -82,19 +94,20 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
             throw new PageException("Unable to find Save button.", nse);
         }
     }
-    
-    
+
     /**
      * Clicks on Save button
      */
-    public HtmlPage clickOnSaveReportButton()
+    // public HtmlPage clickOnSaveReportButton()
+    public SaveAnalysisPage clickOnSaveReportButton()
     {
         try
         {
             WebElement saveButton = drone.findAndWait(By.cssSelector(SAVE_BUTTON));
             saveButton.click();
-            return FactorySharePage.resolvePage(drone);
-         
+            // return FactorySharePage.resolvePage(drone);
+            return new SaveAnalysisPage(drone);
+
         }
         catch (TimeoutException te)
         {
@@ -102,7 +115,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find save button element.");
     }
-    
+
     /**
      * Returns the list of existing reports
      * 
@@ -129,10 +142,9 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
             logger.error("No existing reports " + nse);
             throw new PageException("Unable to find existing reports.", nse);
         }
-         
+
     }
-    
-    
+
     /**
      * Gets an existing report element from the existing reports list by name
      * 
@@ -142,8 +154,8 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     public WebElement getExistingReport(String existingReportName)
     {
         List<WebElement> existingReports = getExistingReports();
-        WebElement report = null; 
-        for (WebElement existingReport : existingReports )
+        WebElement report = null;
+        for (WebElement existingReport : existingReports)
         {
             if (existingReportName.equals(existingReport.getText().trim()))
             {
@@ -152,8 +164,8 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
             }
         }
         return report;
-    } 
-    
+    }
+
     /**
      * Gets an existing report by name
      * 
@@ -163,8 +175,8 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     public String getExistingReportName(String existingReportName)
     {
         List<WebElement> existingReports = getExistingReports();
-        String reportName = ""; 
-        for (WebElement existingReport : existingReports )
+        String reportName = "";
+        for (WebElement existingReport : existingReports)
         {
             if (existingReportName.equals(existingReport.getText().trim()))
             {
@@ -174,7 +186,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         return reportName;
     }
-   
+
     /**
      * Clicks on the existing report name
      * 
@@ -190,7 +202,6 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
             {
                 if (existingReportName.equals(existingReport.getText()))
                 {
-                    System.out.println("EEEEEE **** " + existingReport.getText());
                     existingReport.click();
                     return new CreateEditAdhocReportPage(drone);
                 }
@@ -203,4 +214,89 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
             throw new PageException("Not able to find a list of existing reports.", e);
         }
     }
+
+    /**
+     * Rightclicks on Site Name field
+     */
+    public CreateEditAdhocReportPage rightClickOnSiteNameField()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement siteNameButton = drone.findAndWait(By.cssSelector(SITE_NAME));
+            drone.rightClickOnElement(siteNameButton);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Site Name field. " + te);
+        }
+        throw new PageException("Unable to find Site Name field.");
+    }
+
+    /**
+     * Doubleclicks on Site Name field
+     */
+    public CreateEditAdhocReportPage doubleClickOnSiteNameField()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement siteName = drone.findAndWait(By.cssSelector(SITE_NAME));
+            drone.doubleClickOnElement(siteName);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Site Name field. " + te);
+        }
+        throw new PageException("Unable to find Site Name field.");
+    }
+
+    /**
+     * Doubleclicks on Event Type field
+     */
+    public CreateEditAdhocReportPage doubleClickOnEventTypeField()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement eventType = drone.findAndWait(By.cssSelector(EVENT_TYPE));
+            drone.doubleClickOnElement(eventType);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Event Type field. " + te);
+        }
+        throw new PageException("Unable to find Event Type field.");
+    }
+
+    /**
+     * Doubleclicks on Number of Events field
+     */
+    public CreateEditAdhocReportPage doubleClickOnNumberOfEventsField()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement numberOfEvents = drone.findAndWait(By.cssSelector(EVENTS_NUMBER));
+            drone.doubleClickOnElement(numberOfEvents);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Number of Events field. " + te);
+        }
+        throw new PageException("Unable to find Number of Events field.");
+    }
+
 }
