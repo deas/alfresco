@@ -6,7 +6,9 @@
    display: table;
    margin: 0 auto;
    padding-top: 4em;
+   padding-bottom: 4em;
 }
+
 .alfresco-integration-IFrame > div > div {
    padding-bottom: 1em;
 }
