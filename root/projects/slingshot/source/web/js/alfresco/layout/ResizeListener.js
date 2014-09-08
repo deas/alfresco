@@ -135,8 +135,8 @@ define(["dojo/_base/declare",
                            tmp = document.querySelector(c.selector);
 
                            // Function
-                           if (c["function"] == "rect") {
-                              tmp = tmp.getBoundingClientRect();
+                           if (this.functions[c["function"]]) {
+                              tmp = this.functions[c["function"]].call(this, tmp);
                            }
 
                            // Property
@@ -156,6 +156,14 @@ define(["dojo/_base/declare",
                   }
                   this.alfPublish(this.resizeTopic, payload);
                }
+            },
+
+            functions: {
+
+               marginBox: function(tmp){
+                  return domGeom.getMarginBox(tmp);
+               }
+
             }
 
          });
