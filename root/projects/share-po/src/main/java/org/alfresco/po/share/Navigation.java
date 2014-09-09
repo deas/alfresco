@@ -78,6 +78,7 @@ public class Navigation extends SharePage
     private static final String LINK_FAVOURITES= "#HEADER_SITES_MENU_FAVOURITES_text";
     private static final String SHARED_FILES_LINK = "//span[@id='HEADER_SHARED_FILES_text']/a";
     private static final String MY_FILES_LINK = "div#HEADER_MY_FILES";
+    private static final String REPORTING = "div#HEADER_PENTAHO";
 
     /**
      * Constructor
@@ -205,7 +206,7 @@ public class Navigation extends SharePage
     {
         try
         {
-            WebElement reportingButton = drone.findAndWait(By.cssSelector("div#HEADER_PENTAHO"));
+            WebElement reportingButton = drone.findAndWait(By.cssSelector(REPORTING));
             reportingButton.click();
         }
         catch (TimeoutException te)
@@ -214,6 +215,24 @@ public class Navigation extends SharePage
         }
     }
 
+    /**
+     * Checks if Reporting is displayed
+     * 
+     * @return
+     */
+    public boolean isReportingVisible()
+    {
+        try
+        {
+            WebElement documentTitle = drone.find(By.cssSelector(REPORTING));
+            return documentTitle.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Reporting menu in the header " + nse);
+            throw new PageException("Unable to find Reporting menu in the header.", nse);
+        }
+    }
     
     /**
      * Select Analyze from Reporting dropdown.

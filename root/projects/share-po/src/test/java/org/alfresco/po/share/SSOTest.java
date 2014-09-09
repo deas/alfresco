@@ -22,6 +22,7 @@ package org.alfresco.po.share;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.thirdparty.pentaho.PentahoUserConsolePage;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
@@ -41,6 +42,9 @@ public class SSOTest extends AbstractTest
     
     private static final String ADMINISTRATOR_DASHBOARD = "Administrator Dashboard";
     private static final long PENTAHO_PAGE_LOADING_TIME = 200000;
+    private String user1 = "User_" + System.currentTimeMillis() + "_" + 1;
+    private String user2 = "User_" + System.currentTimeMillis() + "_" + 2;
+    
     
     /**
      * Checks that admin user logged into share is logged into pentaho user console 
@@ -83,6 +87,7 @@ public class SSOTest extends AbstractTest
      * 
      * @throws Exception
      */
+    
     @Test(dependsOnMethods = "logInShare")
     public void logInPentahoUserConsole() throws Exception 
     {
@@ -93,7 +98,6 @@ public class SSOTest extends AbstractTest
         Assert.assertFalse(page.hasErrorMessage());
         PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, username, password).render();
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(PENTAHO_PAGE_LOADING_TIME));
-        //pentahoUserConsolePage.render();
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
         Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "admin");
         
@@ -117,6 +121,7 @@ public class SSOTest extends AbstractTest
      * 
      * @throws Exception
      */
+    
     @Test(dependsOnMethods = "logInPentahoUserConsole")
     public void logOutOfShare() throws Exception 
     {
@@ -136,7 +141,6 @@ public class SSOTest extends AbstractTest
         drone.navigateTo(pentahoUserConsoleUrl);
         PentahoUserConsolePage pentahoUserConsolePage = drone.getCurrentPage().render();
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(PENTAHO_PAGE_LOADING_TIME));
-        //pentahoUserConsolePage.render();
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
         Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "admin");
         
@@ -157,6 +161,7 @@ public class SSOTest extends AbstractTest
      * 
      * @throws Exception
      */
+    
     @Test(dependsOnMethods = "logOutOfShare")
     public void logOutOfPentahoUserConsole() throws Exception 
     {
@@ -167,7 +172,6 @@ public class SSOTest extends AbstractTest
         Assert.assertFalse(page.hasErrorMessage());
         PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, username, password).render();
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(PENTAHO_PAGE_LOADING_TIME));
-        //pentahoUserConsolePage.render();
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
         Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "admin");
                
@@ -189,7 +193,7 @@ public class SSOTest extends AbstractTest
         pentahoUserConsolePage.clickOnLoggedInUser();
         pentahoUserConsolePage.clickOnLogoutLink();
         
-        //verify user is actually logged out of pentaho - currently user dashboard page ????
+        //verify user is actually logged out of pentaho - currently user dashboard page - this will be fixed, change when fixed ????
         drone.navigateTo(shareUrl);
         dashboardPage = drone.getCurrentPage().render();
         dashboardPage.render();
@@ -208,5 +212,106 @@ public class SSOTest extends AbstractTest
         ShareUtil.logout(drone);
         
     }
+   
+    /**
+     * Login as alfresco user and checks that the user cannot create reports 
+     * 
+     * @throws Exception
+     */
+    
+    @Test(dependsOnMethods = "logOutOfPentahoUserConsole")
+    public void loginAsAlfrescoUser() throws Exception 
+    {
+        createEnterpriseUser(user1);
+        
+        drone.navigateTo(shareUrl);
+        LoginPage page = drone.getCurrentPage().render();
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+
+        //user1 logs in
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUtil.loginAs(drone, shareUrl, user1, UNAME_PASSWORD);
+        dashboardPage.render();
+        Assert.assertFalse(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        
+        //verify they cannot create reports in share
+        Navigation navigation = dashboardPage.getNav();
+
+        try
+        {
+            navigation.isReportingVisible();
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        }
+        catch (PageException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Unable to find Reporting menu in the header."));
+        }
+        
+        //open new tab and log in pentaho user console as admin 
+        drone.createNewTab();
+        drone.navigateTo(pentahoUserConsoleUrl);
+
+        //verify user1 is logged into pentaho user console and they cannot create reports
+        PentahoUserConsolePage pentahoUserConsolePage = drone.getCurrentPage().render();
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(PENTAHO_PAGE_LOADING_TIME));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), user1);
+        
+        pentahoUserConsolePage.clickOnFileMenu();
+        
+        try
+        {
+            pentahoUserConsolePage.isNewDisplayed();
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        }
+        catch (PageException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Unable to find New Menu."));
+        }
+        
+        //log out of share 
+        drone.navigateTo(shareUrl);
+        ShareUtil.logout(drone);
+        
+    }
+   
+    /**
+     * Login as nonexisting user and verify the error message is displayed on the login page 
+     * 
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = "loginAsAlfrescoUser")
+    public void loginAsNonexistingUser() throws Exception 
+    {
+        drone.navigateTo(shareUrl);
+        LoginPage page = drone.getCurrentPage().render();
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+
+        //user2 - nonexisting user logs in
+        page = ShareUtil.loginAs(drone, shareUrl, user2, UNAME_PASSWORD).render();
+        
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.isBrowserTitle("dashboard"));
+        Assert.assertFalse(page.isLoggedIn());
+        Assert.assertTrue(page.hasErrorMessage());
+        
+        //open new tab and and log in pentaho user console as nonexisting user 
+        drone.createNewTab();
+        drone.navigateTo(pentahoUserConsoleUrl);
+
+        //verify user1 is logged into pentaho user console
+        page = drone.getCurrentPage().render();
+        
+        page = ShareUtil.loginAs(drone, pentahoUserConsoleUrl, user2, UNAME_PASSWORD).render();
+        
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.isBrowserTitle("dashboard"));
+        Assert.assertFalse(page.isLoggedIn());
+        Assert.assertTrue(page.hasErrorMessage());
+        
+    }    
     
 }

@@ -47,6 +47,8 @@ public class PentahoUserConsolePage extends SharePage
     
     private static Log logger = LogFactory.getLog(PentahoUserConsolePage.class);
     
+    private final static String FILE_MENU = "td[id='filemenu']";
+    private final static String NEW_MENU = "td[id='newmenu']";
     private final static String HOME = "div[id='mantle-perspective-switcher'] table tbody tr td div[class='custom-dropdown-label']";
     private final static String USERNAME = "div[id='pucUserDropDown'] table tbody tr td div[class='custom-dropdown-label']";
     private final static String LOGOUT = "div[id='customDropdownPopupMinor'] td[id='gwt-uid-4']";
@@ -154,4 +156,41 @@ public class PentahoUserConsolePage extends SharePage
             logger.error("Unable to find logout link. " + te);
         }
     }
+    
+    /**
+     * Clicks on File Menu
+     */
+    public void clickOnFileMenu()
+    {
+        try
+        {
+            WebElement fileMenu = drone.findAndWait(By.cssSelector(FILE_MENU));
+            fileMenu.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find File Menu. " + te);
+        }
+    }
+    
+    /**
+     * Checks if New menu option is displayed
+     * 
+     * @return
+     */
+    public boolean isNewDisplayed()
+    {
+        try
+        {
+            WebElement newMenu = drone.find(By.cssSelector(NEW_MENU));
+            return newMenu.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No New Menu " + nse);
+            throw new PageException("Unable to find New Menu.", nse);
+        }
+    }
+
 }
