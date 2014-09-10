@@ -12,6 +12,16 @@ function getNoOfColumns(template)
    return noOfColumns;
 }
 
+function getUserGroups()
+{
+   var result = remote.connect("alfresco").get("/api/people/" + encodeURIComponent(user.name) + "?groups=true");
+   if (result.status == status.STATUS_OK)
+   {
+      return JSON.parse(result.response).groups.map(function(group){ return group.itemName; });
+   }
+   return [];
+}
+
 function main()
 {
    // Get available components of family/type dashlet
@@ -33,9 +43,10 @@ function main()
    {
       webscripts = webscripts.concat(tmp);
    }
-   
+
    // Transform the webscripts to easy-to-access dashlet items for the template
    var availableDashlets = [];
+   var usergroups;
    for (var i = 0; i < webscripts.length; i++)
    {
       var webscript = webscripts[i];
@@ -43,21 +54,45 @@ function main()
       var scriptId, scriptName, shortNameId, descriptionId;
       if (uris !== null && uris.length > 0 && webscript.shortName !== null)
       {
-         // Use the webscript ID to generate a message bundle ID
-         //
-         // This should really be retrieved from an explicit value but the web scripts framework does not provide
-         // a means for storing message bundle IDs, and the web framework is not being used here.
-         scriptId = webscript.id;
-         scriptName = scriptId.substring(scriptId.lastIndexOf("/") + 1, scriptId.lastIndexOf("."));
-         shortNameId = "dashlet." + scriptName + ".shortName";
-         descriptionId = "dashlet." + scriptName + ".description";
-         availableDashlets.push(
+         // Check if the webscript is limited to certain groups
+         var allowed = true;
+         for (var fi = 0; fi < webscript.familys.length; fi++)
+         {
+            if (webscript.familys[fi].indexOf("group:") == 0)
             {
-               url: uris[0],
-               // msg.get(key) returns key if no matching value
-               shortName: (msg.get(shortNameId) != shortNameId ? msg.get(shortNameId) : webscript.shortName),
-               description: (msg.get(descriptionId) != descriptionId ? msg.get(descriptionId) : webscript.description)
-            });
+               allowed = false;
+               var group = webscript.familys[fi].substring("group:".length).trim();
+               group += ""; // make it of type "string" rather than "object" so that indexOf works
+               if (!usergroups)
+               {
+                  usergroups = getUserGroups();
+               }
+               if (usergroups.indexOf(group) != -1)
+               {
+                  allowed = true;
+                  break;
+               }
+            }
+         }
+
+         if (allowed)
+         {
+            // Use the webscript ID to generate a message bundle ID
+            //
+            // This should really be retrieved from an explicit value but the web scripts framework does not provide
+            // a means for storing message bundle IDs, and the web framework is not being used here.
+            scriptId = webscript.id;
+            scriptName = scriptId.substring(scriptId.lastIndexOf("/") + 1, scriptId.lastIndexOf("."));
+            shortNameId = "dashlet." + scriptName + ".shortName";
+            descriptionId = "dashlet." + scriptName + ".description";
+            availableDashlets.push(
+               {
+                  url: uris[0],
+                  // msg.get(key) returns key if no matching value
+                  shortName: (msg.get(shortNameId) != shortNameId ? msg.get(shortNameId) : webscript.shortName),
+                  description: (msg.get(descriptionId) != descriptionId ? msg.get(descriptionId) : webscript.description)
+               });
+         }
       }
       // else skip this webscript since it lacks uri or shortName
    }
