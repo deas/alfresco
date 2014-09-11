@@ -134,6 +134,10 @@ public final class FactoryShareDashlet
             {
                 return new TopSiteContributorDashlet(drone);
             }
+            if ("adhoc-analyzer".equalsIgnoreCase(name))
+            {
+                return new AdhocAnalyzerDashlet(drone);
+            }
 
             throw new PageException(String.format("%s does not match any known dashlet name", name));
         }

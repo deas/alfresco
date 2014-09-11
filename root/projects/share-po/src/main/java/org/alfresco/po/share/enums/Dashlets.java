@@ -31,7 +31,8 @@ public enum Dashlets
     TOP_SITE_CONTRIBUTOR_REPORT("Site Contributor Breakdo..."),
     WEB_VIEW("Web View"),
     WELCOME_SITE("Welcome Site"),
-    WIKI("Wiki");
+    WIKI("Wiki"),
+    ADHOC_ANALYZER("Analyzer Report");
 
     private String dashletName;
 

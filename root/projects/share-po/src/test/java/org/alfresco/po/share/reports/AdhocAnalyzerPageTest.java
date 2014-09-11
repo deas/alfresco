@@ -16,7 +16,11 @@
 package org.alfresco.po.share.reports;
 
 import org.alfresco.po.share.AbstractTest;
+import org.alfresco.po.share.CustomiseUserDashboardPage;
+import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.dashlet.AdhocAnalyzerDashlet;
+import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +43,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
 
     private static final String ADHOC_ANALYZE = "Adhoc Analyze";
     private static final String UNSAVED_REPORT = "Unsaved Report";
+    private static final String ANALYZER_REPORT = "analyzer-report";
+    private static String reportName = null;
 
     private SharePage page = null;
     AdhocAnalyzerPage adhocAnalyzePage = null;
@@ -48,6 +54,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     public void loadFiles() throws Exception
     {
         page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
+        //create some users, sites and content first??????
         adhocAnalyzePage = page.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
 
@@ -73,7 +80,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
      * Test for Create, Save and Open saved report
      */
     @Test(dependsOnMethods = "testAnalyzeAndContentUsersActivitiesButton")
-    public void testCreateSaveOpenReport()
+    public void testCreateSaveOpenEditReport()
     {
         // create new report
         createEditAdhocReportPage.doubleClickOnSiteNameField();
@@ -87,7 +94,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         Assert.assertTrue(createEditAdhocReportPage.isSaveAnalysisDispalayed());
 
         // Enter report name
-        String reportName = "NewReport-" + System.currentTimeMillis();
+        reportName = "NewReport-" + System.currentTimeMillis();
         createEditAdhocReportPage.enterAnalisysName(reportName);
 
         // Click on Ok button to save report
@@ -125,6 +132,26 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         
+    }
+    
+    /**
+     * Verifies that existing adhoc report can be opened in Adhoc Analyzer dashlet 
+     */
+    @Test(dependsOnMethods = "testCreateSaveOpenEditReport")
+    public void testOpenReportInDashlet()
+    {
+        DashBoardPage dashboardPage = (DashBoardPage)createEditAdhocReportPage.getNav().selectMyDashBoard().render();
+        CustomiseUserDashboardPage customiseUserDashboardPage = dashboardPage.getNav().selectCustomizeUserDashboard().render();
+        
+        dashboardPage = customiseUserDashboardPage.addDashlet(Dashlets.ADHOC_ANALYZER, 1).render();
+        AdhocAnalyzerDashlet adhocAnalyzerDashlet = dashboardPage.getDashlet("adhoc-analyzer").render();
+        Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
+        Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
+        Assert.assertTrue(adhocAnalyzerDashlet.isDashletMessageDisplayed());
+        adhocAnalyzerDashlet.clickOnOpenDropdown();
+        adhocAnalyzerDashlet.clickOnExistingReport(reportName);
+        Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
+
     }
 
 }
