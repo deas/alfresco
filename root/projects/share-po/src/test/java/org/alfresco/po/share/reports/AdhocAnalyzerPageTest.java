@@ -56,6 +56,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     /**
      * Check if Adhoc Analyze page title is displayed correctly and test for Create Content, Users, Activities button
      */
+    
     @Test
     public void testAnalyzeAndContentUsersActivitiesButton()
     {
@@ -80,26 +81,50 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
 
         // click on Save button
-        SaveAnalysisPage saveAnalysisPage = createEditAdhocReportPage.clickOnSaveReportButton().render();
+        createEditAdhocReportPage.clickOnSaveReportButton();
+        
+        //check popup is displayed
+        Assert.assertTrue(createEditAdhocReportPage.isSaveAnalysisDispalayed());
 
         // Enter report name
         String reportName = "NewReport-" + System.currentTimeMillis();
-        saveAnalysisPage = saveAnalysisPage.enterAnalisysName(reportName).render();
+        createEditAdhocReportPage.enterAnalisysName(reportName);
 
         // Click on Ok button to save report
-        createEditAdhocReportPage = saveAnalysisPage.clickOnSaveAnalisysOkButton();
+        createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
 
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+        
         // Click on open button to open saved report
-        createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
-
+        createEditAdhocReportPage = createEditAdhocReportPage.clickOnOpenReportButton();
         createEditAdhocReportPage.clickOnExistingReport(reportName);
+        
+        //edit existing report, save it and check that report is updated
+        createEditAdhocReportPage.doubleClickOnDayField();
+        createEditAdhocReportPage.clickOnSaveReportButton();
 
+        String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
+               
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isDayDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+        
+        
+        Assert.assertEquals(tableStatusBarElements[0].trim(), "Rows:");
+        Assert.assertEquals(tableStatusBarElements[3].trim(), "Cols:");
+        Assert.assertTrue(Integer.parseInt(tableStatusBarElements[1].trim()) > 0);
+        Assert.assertTrue(Integer.parseInt(tableStatusBarElements[4].trim()) > 0);
+        
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
         Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
 
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
+        
     }
 
 }
