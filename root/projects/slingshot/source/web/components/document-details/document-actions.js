@@ -495,7 +495,8 @@
             nodeRef: complete.successful[0].nodeRef
 
         }, function() {
-        	window.location = mydocumentDetailsUrl;
+            window.location = mydocumentDetailsUrl;
+            window.location.reload();
         }); 
 
       },
