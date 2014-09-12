@@ -244,6 +244,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     /**
      * Rightclicks on Site Name field
      */
+    /**
     public CreateEditAdhocReportPage rightClickOnSiteNameField()
     {
         try
@@ -261,7 +262,8 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Site Name field.");
     }
-
+    **/
+    
     /**
      * Doubleclicks on Site Name field
      */
