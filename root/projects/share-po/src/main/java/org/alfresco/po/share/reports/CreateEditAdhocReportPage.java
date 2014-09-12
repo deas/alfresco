@@ -265,6 +265,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     /**
      * Doubleclicks on Site Name field
      */
+    /**
     public CreateEditAdhocReportPage doubleClickOnSiteNameField()
     {
         try
@@ -282,10 +283,11 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Site Name field.");
     }
-
+**/
     /**
      * Doubleclicks on Event Type field
      */
+    /**
     public CreateEditAdhocReportPage doubleClickOnEventTypeField()
     {
         try
@@ -303,10 +305,12 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Event Type field.");
     }
+    **/
 
     /**
      * Doubleclicks on Day field
      */
+    /**
     public CreateEditAdhocReportPage doubleClickOnDayField()
     {
         try
@@ -324,11 +328,12 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Day field.");
     }
-    
+    **/
     
     /**
      * Doubleclicks on Number of Events field
      */
+    /**
     public CreateEditAdhocReportPage doubleClickOnNumberOfEventsField()
     {
         try
@@ -346,7 +351,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Number of Events field.");
     }
-    
+    **/
     
     /**
      * Clicks on Switch to chart
