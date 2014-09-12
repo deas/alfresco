@@ -66,11 +66,11 @@ define(["dojo/_base/declare",
              */
             getSiteContentReport: function alfresco_services_ReportService__getSiteContentReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_SITE_CONTENT_REPORT";
-               var url = AlfConstants.PROXY_URI + "api/solr";
+               var url = AlfConstants.PROXY_URI + "api/solrstats";
                if (payload.site) {
                   url += "/site/" + encodeURIComponent(payload.site);
                }
-               url += "/stats?facet=content.mimetype";
+               url += "?facet=content.mimetype";
                var config = {
                   alfTopic: alfTopic,
                   url: url,
@@ -102,12 +102,12 @@ define(["dojo/_base/declare",
              */
             getTopSiteContributorReport: function alfresco_services_ReportService__getTopSiteContributorReport(payload) {
                var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : "ALF_RETRIEVE_TOP_SITE_CONTRIBUTOR_REPORT";
-               var url = AlfConstants.PROXY_URI + "api/solr";
+               var url = AlfConstants.PROXY_URI + "api/solrstats";
                if (payload.site)
                {
                   url += "/site/" + encodeURIComponent(payload.site);
                }
-               url += "/stats?facet=content.creator";
+               url += "?facet=content.creator";
                if (payload.startDate)
                {
                   url += "&startDate=" + encodeURIComponent(payload.startDate);
