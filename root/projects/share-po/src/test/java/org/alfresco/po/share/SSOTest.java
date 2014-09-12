@@ -24,6 +24,7 @@ import org.alfresco.po.thirdparty.pentaho.PentahoUserConsolePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.Cookie;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -276,13 +277,66 @@ public class SSOTest extends AbstractTest
         ShareUtil.logout(drone);
         
     }
+    
+    /**
+     * Verifies that user is logged out of pentaho user console after share session expired 
+     * 
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = "loginAsAlfrescoUser")
+    public void logInShareAfterSessionExpired() throws Exception 
+    {
+        drone.navigateTo(shareUrl);
+        LoginPage page = drone.getCurrentPage().render();
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+
+        //admin logs in
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUtil.loginAs(drone, shareUrl, username, password);
+        dashboardPage.render();
+        Assert.assertFalse(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        
+        //open new tab and log in pentaho user console as admin 
+        drone.createNewTab();
+        drone.navigateTo(pentahoUserConsoleUrl);
+        PentahoUserConsolePage pentahoUserConsolePage = drone.getCurrentPage().render();
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(PENTAHO_PAGE_LOADING_TIME));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), username);
+        drone.closeTab();
+        
+        //verify user is logged out of share after share session had expired
+        Cookie cookie = drone.getCookie("JSESSIONID");
+        logger.info("Cookie path to delete " + cookie.getPath());
+        if("/share/".equals(cookie.getPath()))
+        {
+            drone.deleteCookie(cookie);
+            logger.info("Deleted cookie path " + cookie.getPath());
+        }
+        
+        drone.navigateTo(shareUrl);
+        page = drone.getCurrentPage().render();
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+ 
+        //go to pentaho user console and verify user is logged out
+        drone.navigateTo(pentahoUserConsoleUrl);
+        page = drone.getCurrentPage().render();
+        
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+        
+        
+    }
    
     /**
      * Login as nonexisting user and verify the error message is displayed on the login page 
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "loginAsAlfrescoUser")
+    @Test(dependsOnMethods = "logInShareAfterSessionExpired")
     public void loginAsNonexistingUser() throws Exception 
     {
         drone.navigateTo(shareUrl);

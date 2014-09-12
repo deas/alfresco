@@ -83,11 +83,9 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     public void testCreateSaveOpenEditReport()
     {
         // create new report - commenting out temporarily until new webdrone release
-        /**
         createEditAdhocReportPage.doubleClickOnSiteNameField();
         createEditAdhocReportPage.doubleClickOnEventTypeField();
         createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
-        **/
         
         // click on Save button
         createEditAdhocReportPage.clickOnSaveReportButton();
@@ -111,7 +109,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         createEditAdhocReportPage.clickOnExistingReport(reportName);
         
         //edit existing report, save it and check that report is updated
-        //createEditAdhocReportPage.doubleClickOnDayField();
+        createEditAdhocReportPage.doubleClickOnDayField();
         createEditAdhocReportPage.clickOnSaveReportButton();
 
         String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
@@ -145,7 +143,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         DashBoardPage dashboardPage = (DashBoardPage)createEditAdhocReportPage.getNav().selectMyDashBoard().render();
         CustomiseUserDashboardPage customiseUserDashboardPage = dashboardPage.getNav().selectCustomizeUserDashboard().render();
         
-        dashboardPage = customiseUserDashboardPage.addDashlet(Dashlets.ADHOC_ANALYZER, 1).render();
+        dashboardPage = customiseUserDashboardPage.addDashlet(Dashlets.ADHOC_ANALYZER, 2).render();
         AdhocAnalyzerDashlet adhocAnalyzerDashlet = dashboardPage.getDashlet("adhoc-analyzer").render();
         Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
         Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
@@ -153,6 +151,9 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         adhocAnalyzerDashlet.clickOnOpenDropdown();
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
 
     }
 
