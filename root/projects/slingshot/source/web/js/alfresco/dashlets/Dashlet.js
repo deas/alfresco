@@ -39,11 +39,21 @@ define(["dojo/_base/declare",
    "dojo/_base/array",
    "dojo/dom-construct",
    "dojo/dom-class",
+   "dojo/dom-style",
    "dijit/registry"],
       function(declare, _WidgetBase, _TemplatedMixin, template,
-               AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, registry) {
+               AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domClass, domStyle, registry) {
 
          return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
+
+            /**
+             * Id that will be used to store properties for this dashlet
+             * i.e. the dashlet height when using the resizer.
+             *
+             * @instance
+             * @type {string}
+             */
+            componentId: null,
 
             /**
              * The base css class to use for this widget
@@ -53,6 +63,16 @@ define(["dojo/_base/declare",
              * @default "alfresco-dashlets-Dashlet"
              */
             baseClass: "alfresco-dashlets-Dashlet",
+
+            /**
+             * A second css class for sub classes of this widget to use to be able to target
+             * specifics in such dashlets.
+             *
+             * @instance
+             * @type {string}
+             * @default ""
+             */
+            subClass: "",
 
             /**
              * The i18n scope to use for this widget
@@ -79,6 +99,14 @@ define(["dojo/_base/declare",
              * @default [{cssFile:"./css/Dashlet.css"}]
              */
             cssRequirements: [{cssFile:"./css/Dashlet.css"}],
+
+            /**
+             * We use the DashletResizer to handle the resizing.
+             *
+             * @instance
+             * @type {array}
+             */
+            nonAmdDependencies: ["/js/share.js"],
 
             /**
              * The HTML template to use for the widget.
@@ -182,6 +210,14 @@ define(["dojo/_base/declare",
             bodyNode: null,
 
             /**
+             * Explicit height in pixels of the dsahlet body, if such has been set before, i.e. from being resized.
+             *
+             * @instance
+             * @type {number}
+             */
+            bodyHeight: null,
+
+            /**
              * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
              * This allows files to be dragged and dropped from the operating system directly into the browser
              * and uploaded to the location represented by the document list.
@@ -192,7 +228,11 @@ define(["dojo/_base/declare",
                this.processContainer(this.widgetsForTitleBarActions, this.titleBarActionsNode);
                this.processContainer(this.widgetsForToolbar, this.toolbarNode);
                this.processContainer(this.widgetsForToolbar2, this.toolbar2Node);
+               if (this.bodyHeight) {
+                  domStyle.set(this.bodyNode, "height", this.bodyHeight + "px");
+               }
                this.processContainer(this.widgetsForBody, this.bodyNode);
+               new Alfresco.widget.DashletResizer(this.domNode.parentNode.id, this.componentId);
             },
 
             /**

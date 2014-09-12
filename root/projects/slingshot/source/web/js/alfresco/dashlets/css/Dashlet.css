@@ -8,3 +8,7 @@
 .alfresco-dashlets-Dashlet--widgets {
    display: block;
 }
+
+.alfresco-dashlets-Dashlet--body {
+   overflow: hidden;
+}
