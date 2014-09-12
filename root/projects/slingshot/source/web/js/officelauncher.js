@@ -148,8 +148,6 @@ function EmbeddedOfficeLauncher()
         var control = getControl();
         if(control)
         {
-            var encodedUrl = encodeUrl(url);
-            log().log('encodedUrl = ',encodedUrl);
             try
             {
                 var result;
@@ -161,7 +159,7 @@ function EmbeddedOfficeLauncher()
                     }
                     else
                     {
-                        result = control.ViewDocument(encodedUrl);
+                        result = control.ViewDocument(url);
                     }
                 }
                 else
@@ -172,7 +170,7 @@ function EmbeddedOfficeLauncher()
                     }
                     else
                     {
-                        result = control.EditDocument(encodedUrl);
+                        result = control.EditDocument(url);
                     }
                 }
                 m_lastControlResult = result;
