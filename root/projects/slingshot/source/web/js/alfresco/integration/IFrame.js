@@ -166,8 +166,7 @@ define(["dojo/_base/declare",
             },
 
             _onResize: function(){
-               var height = this.resolveDomCalculation(this.heightConfig);
-               this._setHeight(height);
+               this._setHeight();
             },
 
             /**
@@ -177,6 +176,7 @@ define(["dojo/_base/declare",
              */
             _setSrc: function alfresco_integration_IFrame___setSrc(src)  {
                if (src != null) {
+                  this._setHeight();
                   domAttr.set(this.iFrameNode, "src", src);
                   domStyle.set(this.iFrameNode, "display", "");
                   domStyle.set(this.messagesNode, "display", "none");
@@ -196,9 +196,13 @@ define(["dojo/_base/declare",
              * @private
              */
             _setHeight: function alfresco_integration_IFrame___setHeight(height) {
-               if (height != null) {
-                  domAttr.set(this.iFrameNode, "height", height);
+               if (height == null) {
+                  height = this.height;
+                  if (this.heightConfig != null) {
+                     height = this.resolveDomCalculation(this.heightConfig);
+                  }
                }
+               domAttr.set(this.iFrameNode, "height", height);
             }
 
          });
