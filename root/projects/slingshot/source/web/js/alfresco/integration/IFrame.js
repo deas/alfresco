@@ -34,13 +34,14 @@ define(["dojo/_base/declare",
    "dojo/text!./templates/IFrame.html",
    "alfresco/core/Core",
    "alfresco/core/CoreWidgetProcessing",
+   "alfresco/core/ResizeMixin",
    "alfresco/core/DomElementUtils",
    "dojo/_base/lang",
    "dojo/dom-attr",
    "dojo/dom-style"],
-      function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, DomElementUtils, lang, domAttr, domStyle) {
+      function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, ResizeMixin, DomElementUtils, lang, domAttr, domStyle) {
 
-         return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, DomElementUtils], {
+         return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, ResizeMixin, DomElementUtils], {
 
             /**
              * The base css class to use for this widget
@@ -74,7 +75,7 @@ define(["dojo/_base/declare",
             messages: [],
 
             /**
-             * Thi stopic will be subscribed to for new src information
+             * This topic will be subscribed to for new src information
              *
              * @instance
              * @type {string}
@@ -100,21 +101,20 @@ define(["dojo/_base/declare",
             width: "100%",
 
             /**
-             * The topic to publish when requesting chart data
-             *
-             * @instance
-             * @type {string}
-             */
-            heightTopic: null,
-
-            /**
-             * The height in pixels.
+             * The initial static height in pixels.
              *
              * @instance
              * @type {number}
              * @default 600
              */
             height: 600,
+
+            /**
+             * If height is required to change it can be set to a calculated value instead based on the Dom.
+             * Config shall be set to match the expectation of the config attribute of
+             * [DomElementUtils]{@link module:alfresco/core/DomElementUtils}'s resolveDomCalculation method.
+             */
+            heightConfig: null,
 
             /**
              * An array of the CSS files to use with this widget.
@@ -144,9 +144,6 @@ define(["dojo/_base/declare",
                if (this.srcTopic) {
                   this.alfSubscribe(this.srcTopic, lang.hitch(this, this._setSrc));
                }
-               if (this.heightTopic) {
-                  this.alfSubscribe(this.heightTopic, lang.hitch(this, this._setHeight));
-               }
             },
 
             /**
@@ -162,6 +159,15 @@ define(["dojo/_base/declare",
                   messageEl.appendChild(document.createTextNode(this.messages[i]));
                   this.messagesNode.appendChild(messageEl);
                }
+               // Update the height as the window changes...
+               if (this.heightConfig) {
+                  this.alfSetupResizeSubscriptions(this._onResize, this);
+               }
+            },
+
+            _onResize: function(){
+               var height = this.resolveDomCalculation(this.heightConfig);
+               this._setHeight(height);
             },
 
             /**

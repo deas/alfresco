@@ -27,8 +27,9 @@ define(["dojo/_base/declare",
    "dojo/dom-style",
    "dojo/_base/lang",
    "dojo/_base/array",
+   "dojo/dom-geometry",
    "dojo/json"],
-        function(declare, domStyle, lang, array, json) {
+        function(declare, domStyle, lang, array, domGeom, json) {
 
    var stylePropertiesCache = {};
 
@@ -145,6 +146,88 @@ define(["dojo/_base/declare",
                doc.offsetHeight,
                doc.clientHeight
          );
+      },
+
+      /**
+       * Returns the result of a calculation applied to an initial value.
+       *
+       * Use i.e. by [IFrame]{@link module:alfresco/integration/IFrame} to be able to set a dynamic height of the
+       * iframe where the value of heightConfig would get passed into this method:
+       *
+       * "heightConfig": {
+       *    "initialValue": 0,
+       *    "domCalculation": [
+       *      { "operator": "+", "selector": "body",                         "function": "marginBox", "property": "h" },
+       *      { "operator": "-", "selector": ".footerContent",               "function": "marginBox", "property": "h" },
+       *      { "operator": "-", "selector": ".alfresco-integration-IFrame", "function": "marginBox", "property": "t" }
+       *   ]
+       * }
+       *
+       * @instance
+       * @param config {object}
+       * @param config.initialValue {object}
+       * @param config.domCalculation {array}
+       * @returns {*}
+       */
+      resolveDomCalculation: function(config) {
+         var result = config.initialValue;
+         if (config.domCalculation) {
+            var c, tmp;
+            for (var i = 0, il = config.domCalculation.length; i < il; i++) {
+               c = config.domCalculation[i];
+
+               // Find element
+               tmp = document.querySelector(c.selector);
+
+               // Function
+               if (this.domCalculationFunctions[c["function"]]) {
+                  tmp = this.domCalculationFunctions[c["function"]].call(this, tmp);
+               }
+               else
+               {
+                  throw new Error("Failed calculation due to missing function " + c["function"]);
+               }
+
+               // Property
+               if (c.property) {
+                  tmp = tmp[c.property];
+               }
+
+               // Operator
+               if (this.domCalculationOperators[c["operator"]]) {
+                  result = this.domCalculationOperators[c["operator"]].call(this, result, tmp);
+               }
+               else {
+                  throw new Error("Failed calculation due to missing operator " + c["operator"]);
+               }
+            }
+         }
+         return result;
+      },
+
+      /**
+       * The functions that can be used form a domCalculation.
+       *
+       * @instance
+       */
+      domCalculationFunctions: {
+         "marginBox": function(tmp) {
+            return domGeom.getMarginBox(tmp);
+         }
+      },
+
+      /**
+       * The operators that can be used form a domCalculation.
+       *
+       * @instance
+       */
+      domCalculationOperators: {
+         "+": function(result, value) {
+            return result + value;
+         },
+         "-": function(result, value) {
+            return result - value;
+         }
       },
 
       /**
