@@ -152,10 +152,38 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         adhocAnalyzerDashlet.clickOnOpenDropdown();
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
+ 
+        int counter = 0;
+        int waitInMilliSeconds = 8000;
+        while (counter < 3)
+        {
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(waitInMilliSeconds);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+            if (createEditAdhocReportPage.isSiteNameDisplayed())
+            {
+                break;
+            }
+            else
+            {
+                counter++;
+                drone.refresh();
+            }
+            // double wait time  
+            waitInMilliSeconds = (waitInMilliSeconds * 2);
+
+        }
         Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
 
     }
-
-}
+    
+   }
