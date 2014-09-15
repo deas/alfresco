@@ -21,7 +21,7 @@ public class AdhocAnalyzerDashlet extends AbstractDashlet implements Dashlet
     private static final String DASHLET_TITLE = "div[class='alfresco-dashlets-Dashlet--title title']";
     private static final String DASHLET_OPEN_DROPDOWN = "//span[text()='Open...']";
     private static final String DASHLET_MESSAGE = "//div[text()='Click the menu to display an analysis you have previously created.']";
-    
+    protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(There are no analyses)']";
     
     protected AdhocAnalyzerDashlet(WebDrone drone)
     {
@@ -107,6 +107,26 @@ public class AdhocAnalyzerDashlet extends AbstractDashlet implements Dashlet
             throw new PageException("Unable to find 'Click the menu to display an analysis you have previously created.' in Adhoc Analyzer dashlet.", nse);
         }
     } 
+    
+    /**
+     * Checks if (There are no analyses) message is displayed
+     * 
+     * @return
+     */
+    public boolean isThereAreNoAnalysesDisplayed()
+    {
+        try
+        {
+            WebElement noAnalyses = drone.find(By.xpath(THERE_ARE_NO_ANALYSES));
+            return noAnalyses.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No (There are no analyses) message " + nse);
+            throw new PageException("Unable to find (There are no analyses) message.", nse);
+        }
+    }
+    
 
     /**
      * Clicks on Open... dropdown in Adhoc Analyzer dashlet

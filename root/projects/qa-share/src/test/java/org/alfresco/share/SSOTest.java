@@ -25,7 +25,6 @@ import org.alfresco.po.share.Navigation;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.util.FailedTestListener;
-import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.thirdparty.pentaho.PentahoUserConsolePage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -90,7 +89,8 @@ public class SSOTest extends AbstractUtils
     {
  
         // Login as created user
-        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, "user16010", testPassword).render();
+        String testUser = "user16010";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
         
@@ -114,7 +114,7 @@ public class SSOTest extends AbstractUtils
         //verify test user is logged into pentaho user console
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
-        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "user16010");
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), testUser);
         
         //verify test user cannot create reports
         pentahoUserConsolePage.clickOnFileMenu();        
@@ -158,13 +158,14 @@ public class SSOTest extends AbstractUtils
     {
         
         //log into pentaho user console as created test user
+        String testUser = "user16011";
         LoginPage page = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
         Assert.assertTrue(page.isBrowserTitle("login"));
         Assert.assertFalse(page.hasErrorMessage());
-        PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, "user16011", DEFAULT_PASSWORD).render();
+        PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, testUser, DEFAULT_PASSWORD).render();
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
-        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "user16011");
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), testUser);
         
         //verify created user cannot create reports
         pentahoUserConsolePage.clickOnFileMenu();
@@ -230,7 +231,8 @@ public class SSOTest extends AbstractUtils
     public void AONE_16012() throws Exception
     {
         //test user logs in
-        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, "user16012", DEFAULT_PASSWORD).render();
+        String testUser = "user16012";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, DEFAULT_PASSWORD).render();
         
         //verify test user is logged into share and cannot see Reporting menu in the header bar
         Assert.assertTrue(dashboardPage.isLoggedIn());
@@ -254,7 +256,7 @@ public class SSOTest extends AbstractUtils
         //verify admin is logged into pentaho user console and cannot create reports
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
-        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "user16012");
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), testUser);
         
         pentahoUserConsolePage.clickOnFileMenu();        
         try
@@ -308,13 +310,14 @@ public class SSOTest extends AbstractUtils
     public void AONE_16013() throws Exception
     {
         //log into pentaho user console as a test user and verify that new reports cannot be created
+        String testUser = "user16013";
         LoginPage page = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
         Assert.assertTrue(page.isBrowserTitle("login"));
         Assert.assertFalse(page.hasErrorMessage());
-        PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, "user16013", DEFAULT_PASSWORD).render();
+        PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, testUser, DEFAULT_PASSWORD).render();
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
-        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "user16013");
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), testUser);
         
         pentahoUserConsolePage.clickOnFileMenu();        
         try
@@ -352,7 +355,7 @@ public class SSOTest extends AbstractUtils
         pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
         pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
         Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
-        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "user16013");
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), testUser);
                
         pentahoUserConsolePage.clickOnLoggedInUser();
         pentahoUserConsolePage.clickOnLogoutLink();
@@ -384,7 +387,8 @@ public class SSOTest extends AbstractUtils
     public void AONE_16140() throws Exception
     {
         //nonexisting user logs into share
-        LoginPage page = (LoginPage) ShareUtil.loginAs(drone, shareUrl, "user1640", DEFAULT_PASSWORD).render();
+        String testUser = "user16141";
+        LoginPage page = (LoginPage) ShareUtil.loginAs(drone, shareUrl, testUser, DEFAULT_PASSWORD).render();
         
         //verify admin user is logged into share
         Assert.assertFalse(page.isLoggedIn());

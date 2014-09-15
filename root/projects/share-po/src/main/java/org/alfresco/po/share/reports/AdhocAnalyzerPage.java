@@ -40,6 +40,7 @@ public class AdhocAnalyzerPage extends SharePage
     protected final static String OPEN_BUTTON = "span[id^='alfresco_pentaho_menus_AnalysesMenuBarPopup']";
     protected final static String REPORT_TITLE = "div[id='RPT001ReportName']";
     protected final static String ALFRESCO_PENTAHO_IFRAME_ID = "iframe[id='alfrescoPentahoXAnalyzer']";
+    protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(There are no analyses)']"; 
 
     public AdhocAnalyzerPage(WebDrone drone)
     {
@@ -86,6 +87,25 @@ public class AdhocAnalyzerPage extends SharePage
         }
     }
 
+    /**
+     * Checks if (There are no analyses) message is displayed
+     * 
+     * @return
+     */
+    public boolean isThereAreNoAnalysesDisplayed()
+    {
+        try
+        {
+            WebElement noAnalyses = drone.find(By.xpath(THERE_ARE_NO_ANALYSES));
+            return noAnalyses.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No (There are no analyses) message " + nse);
+            throw new PageException("Unable to find (There are no analyses) message.", nse);
+        }
+    }
+    
     /**
      * Clicks on Analyze button
      */

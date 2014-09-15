@@ -43,7 +43,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
 
     private static final String ADHOC_ANALYZE = "Adhoc Analyze";
     private static final String UNSAVED_REPORT = "Unsaved Report";
-    private static final String ANALYZER_REPORT = "analyzer-report";
+    private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
+    private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
     private static String reportName = null;
 
     private SharePage page = null;
@@ -53,7 +54,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     @BeforeClass(alwaysRun = true)
     public void loadFiles() throws Exception
     {
-        page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
+        page = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
         //create some users, sites and content first??????
         adhocAnalyzePage = page.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
@@ -82,7 +83,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     @Test(dependsOnMethods = "testAnalyzeAndContentUsersActivitiesButton")
     public void testCreateSaveOpenEditReport()
     {
-        // create new report - commenting out temporarily until new webdrone release
+        // create new report
         createEditAdhocReportPage.doubleClickOnSiteNameField();
         createEditAdhocReportPage.doubleClickOnEventTypeField();
         createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
