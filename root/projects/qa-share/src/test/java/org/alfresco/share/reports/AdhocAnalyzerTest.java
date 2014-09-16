@@ -55,6 +55,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
     private static final String UNSAVED_REPORT = "Unsaved Report";
     private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
     private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
+    private static final String PENTAHO_BUSINESS_ANALYSTS_GROUP = "PENTAHO_BUSINESS_ANALYSTS";
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -66,14 +67,19 @@ public class AdhocAnalyzerTest extends AbstractUtils
         logger.info("Starting Tests: " + testName);
     }
 
+    /**
+     * Creates new test user 
+     * 
+     * @throws Exception
+     */
     @Test(groups = { "AdhocAnalyzer" })
     public void dataPrep_SSO_16006() throws Exception
     {
         String testUser = "user16006";
-        String[] testUserInfo = new String[] { testUser };
+        //String[] testUserInfo = new String[] { testUser };
 
         // Create user
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
 
         // Created user logs out
         ShareUser.logout(drone);
@@ -159,6 +165,43 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
 
     }
+    
+    /**
+     * Creates new test user member of pentaho business analyst group
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzer" })
+    public void dataPrep_SSO_16008() throws Exception
+    {
+        String testUser = "user16008";
+        //String[] testUserInfo = new String[] { testUser };
+
+        //Create test user as pentaho business analyst
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
+
+        //Created user logs into share and automatically into pentaho
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+
+        //go to pentaho user console and assign Read, Publish and Create Content permissions to created user
+        PentahoUserConsolePage pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
+
+        // verify test user is logged into pentaho user console
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+ 
+        pentahoUserConsolePage.clickOnHome();
+        pentahoUserConsolePage.clickOnAdministration();
+        pentahoUserConsolePage.clickOnManageRoles();
+        pentahoUserConsolePage.clickOnBusinessAnalyst();
+        pentahoUserConsolePage.clickOnReadContent();
+        pentahoUserConsolePage.clickOnPublishContent();
+        pentahoUserConsolePage.clickOnCreateContent();
+        
+    }   
+        
 
     /**
      * 1) Pentaho business analyst logs into share
@@ -173,8 +216,9 @@ public class AdhocAnalyzerTest extends AbstractUtils
     @Test(groups = { "AdhocAnalyzer" })
     public void AONE_16008() throws Exception
     {
-        // Login as pentaho business analyst into share and verify user dashboard is displayed
-        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD).render();
+        // Login as created user
+        String testUser = "user16008";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
 
@@ -186,9 +230,46 @@ public class AdhocAnalyzerTest extends AbstractUtils
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
 
-        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();       
         Assert.assertTrue(createEditAdhocReportPage.isThereAreNoAnalysesDisplayed());
     }
+    
+    /**
+     * Creates new test user member of pentaho business analyst group
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzer" })
+    public void dataPrep_SSO_16046() throws Exception
+    {
+        String testUser = "user16046";
+
+        //Create test user as pentaho business analyst
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
+
+        //Created user logs into share and automatically into pentaho
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+
+        //go to pentaho user console and assign Read, Publish and Create Content permissions to created user
+        PentahoUserConsolePage pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
+
+        // verify test user is logged into pentaho user console
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+ 
+        pentahoUserConsolePage.clickOnHome();
+        pentahoUserConsolePage.clickOnAdministration();
+        pentahoUserConsolePage.clickOnManageRoles();
+        pentahoUserConsolePage.clickOnBusinessAnalyst();
+        pentahoUserConsolePage.clickOnReadContent();
+        pentahoUserConsolePage.clickOnPublishContent();
+        pentahoUserConsolePage.clickOnCreateContent();
+        
+    }   
+    
+    
 
     /**
      * 1) Pentaho business analyst logs into share
@@ -199,8 +280,9 @@ public class AdhocAnalyzerTest extends AbstractUtils
     @Test(groups = { "AdhocAnalyzer" })
     public void AONE_16046() throws Exception
     {
-        // Login as pentaho business analyst into share and verify user dashboard is displayed
-        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD).render();
+        // Login as created user
+        String testUser = "user16008";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
 
@@ -219,14 +301,19 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(adhocAnalyzerDashlet.isThereAreNoAnalysesDisplayed());
     }
 
+    /**
+     * Creates new test user
+     * 
+     * @throws Exception
+     */
     @Test(groups = { "AdhocAnalyzer" })
     public void dataPrep_SSO_16144() throws Exception
     {
         String testUser = "user16144";
-        String[] testUserInfo = new String[] { testUser };
+        //String[] testUserInfo = new String[] { testUser };
 
         // Create user
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
 
         // Created user logs out
         ShareUser.logout(drone);

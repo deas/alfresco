@@ -22,8 +22,6 @@ package org.alfresco.po.thirdparty.pentaho;
 
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
-import java.util.concurrent.TimeUnit;
-
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -52,6 +50,13 @@ public class PentahoUserConsolePage extends SharePage
     private final static String HOME = "div[id='mantle-perspective-switcher'] table tbody tr td div[class='custom-dropdown-label']";
     private final static String USERNAME = "div[id='pucUserDropDown'] table tbody tr td div[class='custom-dropdown-label']";
     private final static String LOGOUT = "div[id='customDropdownPopupMinor'] td[id='gwt-uid-4']";
+    private final static String ADMINISTRATION = "//td[text()='Administration']";
+    private final static String MANAGE_ROLES = "//div[text()='Manage Roles']";
+    private final static String BUSINESS_ANALYST = ".//*[@id='admin-roles-panel']/tbody/tr/td[2]/table/tbody/tr[3]/td/select/option[3]";
+    private final static String READ_CONTENT = "//label[text()='Read Content']";
+    private final static String PUBLISH_CONTENT = "//label[text()='Publish Content']";
+    private final static String CREATE_CONTENT = "//label[text()='Create Content']";
+ 
     
     public PentahoUserConsolePage(WebDrone drone)
     {
@@ -193,4 +198,126 @@ public class PentahoUserConsolePage extends SharePage
         }
     }
 
+    /**
+     * Clicks on Home link
+     */
+    public void clickOnHome()
+    {
+        try
+        {
+            WebElement home = drone.findAndWait(By.cssSelector(HOME));
+            home.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Home link. " + te);
+        }
+    }
+    
+    
+    /**
+     * Clicks on Administration link
+     */
+    public void clickOnAdministration()
+    {
+        try
+        {
+            WebElement administration = drone.findAndWait(By.xpath(ADMINISTRATION));
+            administration.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Administration link. " + te);
+        }
+    }
+    
+    
+    /**
+     * Clicks on Manage Roles link
+     */
+    public void clickOnManageRoles()
+    {
+        try
+        {
+            WebElement manageRoles = drone.findAndWait(By.xpath(MANAGE_ROLES));
+            manageRoles.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Manage Roles link. " + te);
+        }
+    }
+    
+    /**
+     * Selects Business Analyst link
+     */
+    public void clickOnBusinessAnalyst()
+    {
+        try
+        {
+            WebElement businessAnalyst = drone.findAndWait(By.xpath(BUSINESS_ANALYST));
+            businessAnalyst.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Business Analyst link. " + te);
+        }
+    }
+    
+    /**
+     * Checks Read Content checkbox 
+     */
+    public void clickOnReadContent()
+    {
+        try
+        {
+            WebElement readContent = drone.findAndWait(By.xpath(READ_CONTENT));
+            readContent.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Read Content link. " + te);
+        }
+    }
+    
+    /**
+     * Checks Publish Content checkbox 
+     */
+    public void clickOnPublishContent()
+    {
+        try
+        {
+            WebElement publishContent = drone.findAndWait(By.xpath(PUBLISH_CONTENT));
+            publishContent.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Publish Content link. " + te);
+        }
+    }
+
+    /**
+     * Checks Create Content checkbox 
+     */
+    public void clickOnCreateContent()
+    {
+        try
+        {
+            WebElement createContent = drone.findAndWait(By.xpath(CREATE_CONTENT));
+            createContent.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Create Content link. " + te);
+        }
+    }
+
+    
 }
