@@ -76,7 +76,6 @@ public class AdhocAnalyzerTest extends AbstractUtils
     public void dataPrep_SSO_16006() throws Exception
     {
         String testUser = "user16006";
-        //String[] testUserInfo = new String[] { testUser };
 
         // Create user
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
@@ -163,19 +162,23 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+
 
     }
     
+    
     /**
-     * Creates new test user member of pentaho business analyst group
+     * Creates new test user member of pentaho business analyst group and new adhoc report
      * 
      * @throws Exception
      */
     @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_SSO_16008() throws Exception
+    public void dataPrep_SSO_16007() throws Exception
     {
-        String testUser = "user16008";
-        //String[] testUserInfo = new String[] { testUser };
+        String testUser = "user16007";
 
         //Create test user as pentaho business analyst
         CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
@@ -199,6 +202,134 @@ public class AdhocAnalyzerTest extends AbstractUtils
         pentahoUserConsolePage.clickOnReadContent();
         pentahoUserConsolePage.clickOnPublishContent();
         pentahoUserConsolePage.clickOnCreateContent();
+        
+        dashboardPage = (DashBoardPage) ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+        dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+        
+        // penatho business analyst can see reporting menu
+        Navigation navigation = dashboardPage.getNav();
+        Assert.assertTrue(navigation.isReportingVisible());
+
+        // penatho business analyst can see Adhoc Analyze page
+        AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        
+        
+        adhocAnalyzePage.clickOnAnalyzeButton();
+        Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
+        
+        //create new report
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
+        Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
+        createEditAdhocReportPage.doubleClickOnSiteNameField();
+        createEditAdhocReportPage.doubleClickOnEventTypeField();
+        createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
+        
+        // click on Save button to save created report
+        createEditAdhocReportPage.clickOnSaveReportButton();
+        
+        //check popup is displayed
+        Assert.assertTrue(createEditAdhocReportPage.isSaveAnalysisDispalayed());
+
+        // Enter report name
+        String testName = getTestName();
+        String reportName = "Report-" + testName;
+        createEditAdhocReportPage.enterAnalisysName(reportName);
+
+        // Click on Ok button to save report
+        createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
+
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+        
+    }   
+    
+    /**
+     * 1) Pentaho business analyst logs into share
+     * 2) Verify Pentaho business analyst is logged into share and can see Reporting in the header bar
+     * 3) Click on the Reporting menu in the header bar
+     * 4) Select Analyze from the dropdown
+     * 5) Click on the Open button on Adhoc Analyze page and verify the saved report name is displayed in the dropdown
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzer" })
+    public void AONE_16007() throws Exception
+    {
+
+        // Login as created user
+        String testUser = "user16007";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+        
+        // penatho business analyst can see reporting menu
+        Navigation navigation = dashboardPage.getNav();
+        Assert.assertTrue(navigation.isReportingVisible());
+
+        // penatho business analyst can see Adhoc Analyze page
+        AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        
+        
+        adhocAnalyzePage.clickOnAnalyzeButton();
+        
+        Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
+        Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
+
+        //click on open button to open saved report
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
+        String testName = getTestName();
+        String reportName = "Report-" + testName;
+        Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
+        
+     }    
+    
+    /**
+     * Creates new test user member of pentaho business analyst group
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzer" })
+    public void dataPrep_SSO_16008() throws Exception
+    {
+        String testUser = "user16008";
+
+        //Create test user as pentaho business analyst
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
+
+        //Created user logs into share and automatically into pentaho
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+
+        //go to pentaho user console and assign Read, Publish and Create Content permissions to created user
+        PentahoUserConsolePage pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
+
+        // verify test user is logged into pentaho user console
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+ 
+        pentahoUserConsolePage.clickOnHome();
+        pentahoUserConsolePage.clickOnAdministration();
+        pentahoUserConsolePage.clickOnManageRoles();
+        pentahoUserConsolePage.clickOnBusinessAnalyst();
+        pentahoUserConsolePage.clickOnReadContent();
+        pentahoUserConsolePage.clickOnPublishContent();
+        pentahoUserConsolePage.clickOnCreateContent();
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
         
     }   
         
@@ -232,7 +363,186 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();       
         Assert.assertTrue(createEditAdhocReportPage.isThereAreNoAnalysesDisplayed());
+    
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+
     }
+    
+    
+    /**
+     * Creates new test user member of pentaho business analyst group and 
+     * new report in the user home folder
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzer" })
+    public void dataPrep_SSO_16009() throws Exception
+    {
+        String testUser = "user16009";
+
+        //Create test user as pentaho business analyst
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
+
+        //Created user logs into share and automatically into pentaho
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+
+        //go to pentaho user console and assign Read, Publish and Create Content permissions to created user
+        PentahoUserConsolePage pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
+
+        // verify test user is logged into pentaho user console
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+ 
+        pentahoUserConsolePage.clickOnHome();
+        pentahoUserConsolePage.clickOnAdministration();
+        pentahoUserConsolePage.clickOnManageRoles();
+        pentahoUserConsolePage.clickOnBusinessAnalyst();
+        pentahoUserConsolePage.clickOnReadContent();
+        pentahoUserConsolePage.clickOnPublishContent();
+        pentahoUserConsolePage.clickOnCreateContent();
+
+        dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+        
+        // penatho business analyst can see reporting menu
+        Navigation navigation = dashboardPage.getNav();
+        Assert.assertTrue(navigation.isReportingVisible());
+
+        // penatho business analyst can see Adhoc Analyze page
+        AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        
+        
+        adhocAnalyzePage.clickOnAnalyzeButton();
+        Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
+
+        //create new report
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
+        Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
+        createEditAdhocReportPage.doubleClickOnSiteNameField();
+        createEditAdhocReportPage.doubleClickOnEventTypeField();
+        createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
+        
+        // click on Save button to save created report
+        createEditAdhocReportPage.clickOnSaveReportButton();
+        
+        //check popup is displayed
+        Assert.assertTrue(createEditAdhocReportPage.isSaveAnalysisDispalayed());
+
+        // Enter report name
+        String testName = getTestName();
+        String reportName = "Report-" + testName;
+        createEditAdhocReportPage.enterAnalisysName(reportName);
+
+        // Click on Ok button to save report
+        createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
+
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+        
+    }   
+    
+    /**
+     * 1) Pentaho business analyst logs into share
+     * 2) Verify Pentaho business analyst is logged into share and can see Reporting in the header bar
+     * 3) Click on the Reporting menu in the header bar
+     * 4) Select Analyze from the dropdown
+     * 5) Click on the Open button on Adhoc Analyze page and verify the saved report name is displayed in the dropdown
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzer" })
+    public void AONE_16009() throws Exception
+    {
+
+        // Login as created user
+        String testUser = "user16009";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+        
+        // penatho business analyst can see reporting menu
+        Navigation navigation = dashboardPage.getNav();
+        Assert.assertTrue(navigation.isReportingVisible());
+
+        // penatho business analyst can see Adhoc Analyze page
+        AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+          
+        adhocAnalyzePage.clickOnAnalyzeButton();
+        
+        Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
+        Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
+
+        //click on open button to open saved report
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
+        String testName = getTestName();
+        String reportName = "Report-" + testName;
+        Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
+        
+        createEditAdhocReportPage.clickOnExistingReport(reportName);
+        
+        int counter = 0;
+        int waitInMilliSeconds = 8000;
+        while (counter < 3)
+        {
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(waitInMilliSeconds);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+            if (reportName.equals(createEditAdhocReportPage.getReportTitle()))
+            {
+                break;
+            }
+            else
+            {
+                counter++;
+                refreshSharePage(drone);
+            }
+        }
+ 
+        String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
+        
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+        
+        
+        Assert.assertEquals(tableStatusBarElements[0].trim(), "Rows:");
+        Assert.assertEquals(tableStatusBarElements[3].trim(), "Cols:");
+        Assert.assertTrue(Integer.parseInt(tableStatusBarElements[1].trim()) > 0);
+        Assert.assertTrue(Integer.parseInt(tableStatusBarElements[4].trim()) > 0);
+        
+        // check that the name of the report is saved correctly
+        Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+
+        Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+        
+    }        
+    
+    
     
     /**
      * Creates new test user member of pentaho business analyst group
@@ -267,6 +577,9 @@ public class AdhocAnalyzerTest extends AbstractUtils
         pentahoUserConsolePage.clickOnPublishContent();
         pentahoUserConsolePage.clickOnCreateContent();
         
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+        
     }   
     
     
@@ -281,7 +594,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
     public void AONE_16046() throws Exception
     {
         // Login as created user
-        String testUser = "user16008";
+        String testUser = "user16046";
         DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
@@ -299,6 +612,10 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // verify appropriate message is displayed showing there are no existing reports:“(There are no analyses)”
         Assert.assertTrue(adhocAnalyzerDashlet.isThereAreNoAnalysesDisplayed());
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+
     }
 
     /**
@@ -310,7 +627,6 @@ public class AdhocAnalyzerTest extends AbstractUtils
     public void dataPrep_SSO_16144() throws Exception
     {
         String testUser = "user16144";
-        //String[] testUserInfo = new String[] { testUser };
 
         // Create user
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
@@ -346,6 +662,9 @@ public class AdhocAnalyzerTest extends AbstractUtils
             ShareUser.logout(drone);
 
         }
+        
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
 
     }
 

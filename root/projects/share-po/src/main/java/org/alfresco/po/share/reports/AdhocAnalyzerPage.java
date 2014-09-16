@@ -15,6 +15,9 @@
 
 package org.alfresco.po.share.reports;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -41,6 +44,7 @@ public class AdhocAnalyzerPage extends SharePage
     protected final static String REPORT_TITLE = "div[id='RPT001ReportName']";
     protected final static String ALFRESCO_PENTAHO_IFRAME_ID = "iframe[id='alfrescoPentahoXAnalyzer']";
     protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(There are no analyses)']"; 
+    private final static String EXISTING_REPORTS = "td[id^='uniqName'][id$='text']";
 
     public AdhocAnalyzerPage(WebDrone drone)
     {
@@ -179,6 +183,7 @@ public class AdhocAnalyzerPage extends SharePage
         throw new PageException("Unable to find open button element.");
     }
 
+    
     /**
      * Returns report title
      * 
@@ -219,4 +224,106 @@ public class AdhocAnalyzerPage extends SharePage
             throw new PageException("Unable analyzer iframe id.", nse);
         }
     }
+    
+    /**
+     * Returns the list of existing reports
+     * 
+     * @return
+     */
+   
+    public List<WebElement> getExistingReports()
+    {
+        try
+        {
+            List<WebElement> existingReports = new ArrayList<WebElement>();
+            try
+            {
+                existingReports = drone.findAll(By.cssSelector(EXISTING_REPORTS));
+
+            }
+            catch (NoSuchElementException nse)
+            {
+                logger.error("No existing reports " + nse);
+            }
+            return existingReports;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No existing reports " + nse);
+            throw new PageException("Unable to find existing reports.", nse);
+        }
+
+    }
+    
+    
+    /**
+     * Gets an existing report element from the existing reports list by name
+     * 
+     * @param existingReportName
+     * @return
+     */
+    public WebElement getExistingReport(String existingReportName)
+    {
+        List<WebElement> existingReports = getExistingReports();
+        WebElement report = null;
+        for (WebElement existingReport : existingReports)
+        {
+            if (existingReportName.equals(existingReport.getText().trim()))
+            {
+                return report;
+
+            }
+        }
+        return report;
+    }
+
+    /**
+     * Gets an existing report by name
+     * 
+     * @param existingReportName
+     * @return
+     */
+    public String getExistingReportName(String existingReportName)
+    {
+        List<WebElement> existingReports = getExistingReports();
+        String reportName = "";
+        for (WebElement existingReport : existingReports)
+        {
+            if (existingReportName.equals(existingReport.getText().trim()))
+            {
+                reportName = existingReport.getText().trim();
+                break;
+            }
+        }
+        return reportName;
+    }
+
+    /**
+     * Clicks on the existing report name
+     * 
+     * @param existingReportName
+     * @return
+     */
+    public CreateEditAdhocReportPage clickOnExistingReport(String existingReportName)
+    {
+        try
+        {
+            List<WebElement> existingReports = drone.findAll(By.cssSelector(EXISTING_REPORTS));
+            for (WebElement existingReport : existingReports)
+            {
+                if (existingReportName.equals(existingReport.getText()))
+                {
+                    existingReport.click();
+                    return new CreateEditAdhocReportPage(drone);
+                }
+            }
+            throw new PageException("Existing report cannot be found in the list of existing reports");
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("List of existing reports cannot be found");
+            throw new PageException("Not able to find a list of existing reports.", e);
+        }
+    }
+    
 }
