@@ -94,7 +94,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * click on Analyze button and Content, Users and Activities
      * 7) Verify Adhoc Analyzer iframe is displayed
      */
-    @Test(groups = { "AdhocAnalyzer" })
+    @Test(groups = { "AdhocAnalyzerTests" })
     public void AONE_16006() throws Exception
     {
 
@@ -171,7 +171,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
     
     
     /**
-     * Creates new test user member of pentaho business analyst group and new adhoc report
+     * Creates new test user member of pentaho business analyst group
      * 
      * @throws Exception
      */
@@ -205,7 +205,29 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         dashboardPage = (DashBoardPage) ShareUser.navigateToPage(drone, shareUrl).render();
         ShareUser.logout(drone);
-        dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+ 
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+       
+    }   
+    
+    /**
+     * 1) Pentaho business analyst logs into share
+     * 2) Verify Pentaho business analyst is logged into share and can see Reporting in the header bar
+     * 3) Click on the Reporting menu in the header bar
+     * 4) Select Analyze from the dropdown
+     * 5) Create new  report and save it
+     * 6) Click on the Open button on Adhoc Analyze page and verify the saved report name is displayed in the dropdown
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzerTests" })
+    public void AONE_16007() throws Exception
+    {
+
+        // Login as created user
+        String testUser = "user16007";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
         
@@ -217,10 +239,10 @@ public class AdhocAnalyzerTest extends AbstractUtils
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
         
-        
         adhocAnalyzePage.clickOnAnalyzeButton();
         Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
-        
+        Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
+
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
         Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
@@ -244,56 +266,12 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // Click on Ok button to save report
         createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
-
-        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
-        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
-        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
         
-        ShareUser.navigateToPage(drone, shareUrl).render();
-        ShareUser.logout(drone);
-        
-    }   
-    
-    /**
-     * 1) Pentaho business analyst logs into share
-     * 2) Verify Pentaho business analyst is logged into share and can see Reporting in the header bar
-     * 3) Click on the Reporting menu in the header bar
-     * 4) Select Analyze from the dropdown
-     * 5) Click on the Open button on Adhoc Analyze page and verify the saved report name is displayed in the dropdown
-     * 
-     * @throws Exception
-     */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void AONE_16007() throws Exception
-    {
-
-        // Login as created user
-        String testUser = "user16007";
-        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
-        Assert.assertTrue(dashboardPage.isLoggedIn());
-        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
-        
-        // penatho business analyst can see reporting menu
-        Navigation navigation = dashboardPage.getNav();
-        Assert.assertTrue(navigation.isReportingVisible());
-
-        // penatho business analyst can see Adhoc Analyze page
-        AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
-        
-        
-        adhocAnalyzePage.clickOnAnalyzeButton();
-        
-        Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
-        Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
-
         //click on open button to open saved report
-        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
-        String testName = getTestName();
-        String reportName = "Report-" + testName;
+        createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
         
-     }    
+    }    
     
     /**
      * Creates new test user member of pentaho business analyst group
@@ -344,7 +322,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * click on Open button
      * 7) Verify (There are no analyses) message is displayed
      */
-    @Test(groups = { "AdhocAnalyzer" })
+    @Test(groups = { "AdhocAnalyzerTests" })
     public void AONE_16008() throws Exception
     {
         // Login as created user
@@ -371,8 +349,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
     
     
     /**
-     * Creates new test user member of pentaho business analyst group and 
-     * new report in the user home folder
+     * Creates new test user member of pentaho business analyst group
      * 
      * @throws Exception
      */
@@ -404,7 +381,29 @@ public class AdhocAnalyzerTest extends AbstractUtils
         pentahoUserConsolePage.clickOnPublishContent();
         pentahoUserConsolePage.clickOnCreateContent();
 
-        dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        ShareUser.logout(drone);
+        
+    }   
+    
+    /**
+     * 1) Pentaho business analyst logs into share
+     * 2) Verify Pentaho business analyst is logged into share and can see Reporting in the header bar
+     * 3) Click on the Reporting menu in the header bar
+     * 4) Select Analyze from the dropdown
+     * 5) Create new  report and save it
+     * 6) Click on the Open button on Adhoc Analyze page and verify the saved report name is displayed in the dropdown
+     * 7) Click on the saved report nam ein the dropdown and verify report is displayed correctly
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "AdhocAnalyzerTests" })
+    public void AONE_16009() throws Exception
+    {
+
+        // Login as created user
+        String testUser = "user16009";
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
         
@@ -415,11 +414,17 @@ public class AdhocAnalyzerTest extends AbstractUtils
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
-        
-        
+          
         adhocAnalyzePage.clickOnAnalyzeButton();
+        
         Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
+        Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
 
+        //some share activity here
+        
+        //after share interaction, before report creation and asserts, fact_table_generation.kjb needs to be run to 
+        //populate the cube; should the test be split in two methods with different annotations?
+               
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
         Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
@@ -447,48 +452,10 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
-        
-        ShareUser.navigateToPage(drone, shareUrl).render();
-        ShareUser.logout(drone);
-        
-    }   
-    
-    /**
-     * 1) Pentaho business analyst logs into share
-     * 2) Verify Pentaho business analyst is logged into share and can see Reporting in the header bar
-     * 3) Click on the Reporting menu in the header bar
-     * 4) Select Analyze from the dropdown
-     * 5) Click on the Open button on Adhoc Analyze page and verify the saved report name is displayed in the dropdown
-     * 
-     * @throws Exception
-     */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void AONE_16009() throws Exception
-    {
 
-        // Login as created user
-        String testUser = "user16009";
-        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
-        Assert.assertTrue(dashboardPage.isLoggedIn());
-        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
-        
-        // penatho business analyst can see reporting menu
-        Navigation navigation = dashboardPage.getNav();
-        Assert.assertTrue(navigation.isReportingVisible());
-
-        // penatho business analyst can see Adhoc Analyze page
-        AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
-          
-        adhocAnalyzePage.clickOnAnalyzeButton();
-        
-        Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
-        Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
-
+   
         //click on open button to open saved report
-        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
-        String testName = getTestName();
-        String reportName = "Report-" + testName;
+        createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
         
         createEditAdhocReportPage.clickOnExistingReport(reportName);
@@ -534,9 +501,11 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
         Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
 
+        //verify chart type and data here
+        
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
-        
+                
         ShareUser.navigateToPage(drone, shareUrl).render();
         ShareUser.logout(drone);
         
@@ -582,7 +551,6 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
     }   
     
-    
 
     /**
      * 1) Pentaho business analyst logs into share
@@ -590,7 +558,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 3) Click on the Open drop down menu on the dashlet
      * 4) Verify appropriate message is displayed showing there are no existing reports:“(There are no analyses)”
      */
-    @Test(groups = { "AdhocAnalyzer" })
+    @Test(groups = { "AdhocAnalyzerTests" })
     public void AONE_16046() throws Exception
     {
         // Login as created user
@@ -639,7 +607,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 1) Test user logs into share
      * 2) Verify test user is logged into share and cannot add Analyzer Report dashlet to the user dashboard
      */
-    @Test(groups = { "AdhocAnalyzer" })
+    @Test(groups = { "AdhocAnalyzerTests" })
     public void AONE_16144() throws Exception
     {
 
