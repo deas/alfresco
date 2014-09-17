@@ -210,7 +210,7 @@ define(["dojo/_base/declare",
             bodyNode: null,
 
             /**
-             * Explicit height in pixels of the dsahlet body, if such has been set before, i.e. from being resized.
+             * Explicit height in pixels of the dashlet body, if such has been set before, i.e. from being resized.
              *
              * @instance
              * @type {number}
@@ -232,7 +232,12 @@ define(["dojo/_base/declare",
                   domStyle.set(this.bodyNode, "height", this.bodyHeight + "px");
                }
                this.processContainer(this.widgetsForBody, this.bodyNode);
-               new Alfresco.widget.DashletResizer(this.domNode.parentNode.id, this.componentId);
+               if (this.componentId)
+               {
+                  // Only make it resizable if a componentId has been provided,
+                  // otherwise it will not be persisted correctly
+                  new Alfresco.widget.DashletResizer(this.domNode.parentNode.id, this.componentId);
+               }
             },
 
             /**
