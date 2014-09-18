@@ -5,6 +5,7 @@
 
 .permissions .header-bar
 {
+   clear: both;
    border-bottom: 1px solid #ccc;
    min-height: 3em;
    padding: 0.5em 1em;
