@@ -86,7 +86,7 @@
 
 <#macro renderField field>
    <#if field.control?? && field.control.template??>
-      <#assign fieldHtmlId=args.htmlid?html + "_" + field.id >
+      <#assign fieldHtmlId=args.htmlid?html + "_" + field.id?html >
       <#include "${field.control.template}" />
    </#if>
 </#macro>
