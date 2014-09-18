@@ -112,6 +112,8 @@
     <db.master.url>jdbc:postgresql:template1</db.master.url>
     <db.username>alfresco</db.username>
     <db.password>alfresco</db.password>
+    <db.drop.command>drop database if exists ${db.name}</db.drop.command>
+    <db.create.command>create database ${db.name}</db.create.command>
     <test.working.dir>${project.build.directory}</test.working.dir>
     <dir.root>${test.working.dir}/alf_test_data</dir.root>
     <img.exe>convert</img.exe>
