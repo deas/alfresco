@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -37,6 +37,8 @@ public class AlfrescoRuntimeException extends RuntimeException
      * Serial version UUID
      */
     private static final long serialVersionUID = 3787143176461219632L;
+
+    private static final String MESSAGE_DELIMITER = " ";
 
     private String msgId;
     private transient Object[] msgParams = null;
@@ -140,6 +142,14 @@ public class AlfrescoRuntimeException extends RuntimeException
     }
 
     /**
+     * @return the numericalId
+     */
+    public String getNumericalId()
+    {
+        return getMessage().split(MESSAGE_DELIMITER)[0];
+    }
+
+    /**
      * Resolves the message id to the localised string.
      * <p>
      * If a localised message can not be found then the message Id is
@@ -181,7 +191,7 @@ public class AlfrescoRuntimeException extends RuntimeException
         padInt(buf, today.getMonth(), 2);
         padInt(buf, today.getDate(), 2);
         padInt(buf, errorCounter.getAndIncrement(), 4);
-        buf.append(' ');
+        buf.append(MESSAGE_DELIMITER);
         buf.append(message);
         return buf.toString();
     }
