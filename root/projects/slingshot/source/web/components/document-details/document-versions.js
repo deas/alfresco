@@ -107,12 +107,20 @@
 
       /**
        * A cached copy of the version history to limit duplicate calls.
-       * 
+       *
        * @property versionCache
        * @type {Object} XHR response object
        */
       versionCache: null,
-      
+
+      /**
+       * The data source URL stem
+       *
+       * @property dataSourceURLStem
+       * @type string
+       */
+      dataSourceURLStem: Alfresco.constants.PROXY_URI + "api/version",
+
       /**
        * Fired by YUI when parent element is available for scripting
        *
@@ -125,12 +133,12 @@
          {
             return;
          }
-         
+
          this.widgets.alfrescoDataTable = new Alfresco.util.DataTable(
          {
             dataSource:
             {
-               url: Alfresco.constants.PROXY_URI + "api/version?nodeRef=" + this.options.nodeRef,
+               url: this.dataSourceURLStem + "?nodeRef=" + this.options.nodeRef,
                doBeforeParseData: this.bind(function(oRequest, oFullResponse)
                {
                   // Versions are returned in an array but must be placed in an object to be able to be parse by yui
@@ -140,7 +148,7 @@
 
                   // Cache the version data for other components (e.g. HistoricPropertiesViewer)
                   this.versionCache = oFullResponse;
-                  
+
                   return (
                   {
                      "data" : oFullResponse
@@ -160,18 +168,18 @@
                }
             }
          });
-         
+
          this.widgets.alfrescoDataTable.getDataTable().subscribe("renderEvent", function()
          {
             this.resizeHistoryDetails();
          }, this, this);
-         
-         Event.addListener(window, "resize", function() 
-         { 
+
+         Event.addListener(window, "resize", function()
+         {
             this.resizeHistoryDetails();
          }, this, true);
       },
-      
+
       /**
        * Resize Event handler to resize the version history comment area dynamically
        * See MNT-9909 - to handle long comments without breaks in words.
@@ -185,7 +193,7 @@
          {
             nodes[i].style.width = width;
          }
-         
+
          // adjusts the version comment container DIV to a size relative to the container width
          width = (Dom.getViewportWidth() * 0.25 - 40) + "px",
          nodes = YAHOO.util.Selector.query('div.version-details-right', this.id + "-body");
@@ -227,7 +235,7 @@
             html += '   <a href="#" name=".onRevertVersionClick" rel="' + doc.label + '" class="' + this.id + ' revert" title="' + this.msg("label.revert") + '">&nbsp;</a>';
          }
          html += '      <a href="' + downloadURL + '" class="download" title="' + this.msg("label.download") + '">&nbsp;</a>';
-         html += '		<a href="#" name=".onViewHistoricPropertiesClick" rel="' + doc.nodeRef + '" class="' + this.id + ' historicProperties" title="' + this.msg("label.historicProperties") + '">&nbsp;</a>';
+         html += '      <a href="#" name=".onViewHistoricPropertiesClick" rel="' + doc.nodeRef + '" class="' + this.id + ' historicProperties" title="' + this.msg("label.historicProperties") + '">&nbsp;</a>';
          html += '   </span>';
          html += '   <div class="clear"></div>';
          html += '   <div class="version-details">';
@@ -311,9 +319,9 @@
          });
 
       },
-      
-      
-      
+
+
+
       /**
        * Called when the "onUploadNewVersionClick" link has been clicked.
        * Will display the upload dialog in new version mode.
