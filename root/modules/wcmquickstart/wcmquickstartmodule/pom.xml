@@ -3,10 +3,9 @@
     <artifactId>alfresco-wcmqs</artifactId>
     <name>Alfresco WCMQS AMP</name>
     <parent>
-        <artifactId>alfresco-parent</artifactId>
+        <artifactId>alfresco-wcmqs-parent</artifactId>
         <groupId>org.alfresco</groupId>
         <version>5.0.b-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
     </parent>
     <packaging>amp</packaging>
 
