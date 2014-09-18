@@ -12,6 +12,7 @@
 
     <modules>
         <module>distribution</module>
+        <module>wcmqs</module>
         <module>installer</module>
     </modules>
 
