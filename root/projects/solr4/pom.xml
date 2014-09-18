@@ -204,6 +204,9 @@
         <!-- Profile to enable securecomms -->
         <profile>
             <id>solr4-ssl</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <!-- We selected the SSL enabled default Solr packaging -->
                 <solr.war.exploded.folder>${solr.ssl.war.target.folder}</solr.war.exploded.folder>
