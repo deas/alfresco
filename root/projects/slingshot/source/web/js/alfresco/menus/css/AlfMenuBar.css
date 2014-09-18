@@ -27,7 +27,7 @@
 .alfresco-share .alfresco-menus-AlfMenuBar .dijitMenuBar .dijitMenuPassive .dijitMenuItemHover,
 .alfresco-share .alfresco-menus-AlfMenuBar .dijitMenuBar .dijitMenuItemHover,
 .alfresco-share .alfresco-menus-AlfMenuBar .dijitMenuBar .dijitMenuItemSelected {
-    background-color: #f0f0f0;
+    background-color: #ddd;
     background-image: none;
     background-repeat: no-repeat;
     border: none;
@@ -39,7 +39,7 @@
 .alfresco-share .alf-menu-group .dijitMenuItemSelected {
     background-image: none;
     background-repeat: no-repeat;
-    background-color: #f0f0f0;
+    background-color: #ddd;
     color: #717171;
 }
 
