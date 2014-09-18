@@ -16,11 +16,6 @@
             <artifactId>alfresco-remote-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>7.0.16</version>
-        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -41,37 +36,49 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <!-- Skip tests: they are not run in the Ant build, and they all fail... -->
-    <!-- Property to be able to run tests with -DskipTests=false -->
     <properties>
         <skipTests>true</skipTests>
     </properties>
+
     <build>
         <plugins>
+            <!-- Fetch version.properties in alfresco-repository -->
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>${skipTests}</skipTests>
-                </configuration>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>fetch-version-properties</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>alfresco-repository</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>alfresco/version.properties</includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>config</directory>
+            </resource>
+            <!-- Additional resource folder where version.properties was extracted -->
+            <resource>
+                <directory>${project.build.directory}/dependency/alfresco</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>

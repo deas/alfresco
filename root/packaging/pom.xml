@@ -11,8 +11,9 @@
     <name>Alfresco Packaging</name>
 
     <modules>
-        <module>distribution</module>
+        <module>file-transfer-receiver</module>
         <module>wcmqs</module>
+        <module>distribution</module>
         <module>installer</module>
     </modules>
 
