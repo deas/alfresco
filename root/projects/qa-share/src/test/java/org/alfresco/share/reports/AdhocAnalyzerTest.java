@@ -15,6 +15,10 @@
 
 package org.alfresco.share.reports;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.alfresco.po.share.CustomiseUserDashboardPage;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.Navigation;
@@ -65,6 +69,41 @@ public class AdhocAnalyzerTest extends AbstractUtils
         testName = this.getClass().getSimpleName();
         testUser = testName + "@" + DOMAIN_FREE;
         logger.info("Starting Tests: " + testName);
+    }
+    
+    public void schemasSetup() throws Exception
+    {
+        try 
+        {
+            //drop stagedmsg, dim and fact tables and recreating them
+            Process proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/SchemasSetup.bat");
+            BufferedReader read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            String line = null;
+            while ((line = read.readLine()) != null) {  
+                logger.info(line);
+            } 
+
+        } catch (IOException e) {
+            logger.error("Error during recreating schemas " + e);
+        }       
+    }
+    
+    
+    public void factTableGeneration() throws Exception
+    {
+        try 
+        {
+            //transfers data from stagedmsg into fact and dim tables
+            Process proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/FactTableGeneration.bat");
+            BufferedReader read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            String line = null;
+            while ((line = read.readLine()) != null) {  
+                logger.info(line);
+            } 
+
+        } catch (IOException e) {
+            logger.error("Error during fact table generation " + e);
+        }       
     }
 
     /**
@@ -424,6 +463,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         //after share interaction, before report creation and asserts, fact_table_generation.kjb needs to be run to 
         //populate the cube; should the test be split in two methods with different annotations?
+        
+        factTableGeneration();
                
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
