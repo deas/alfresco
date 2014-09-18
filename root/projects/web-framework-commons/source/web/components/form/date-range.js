@@ -84,6 +84,7 @@
       {
          var toDate = new Date();
          var fromDate = new Date();
+         var fromISO8601 = Alfresco.util.fromISO8601;
          fromDate.setMonth(toDate.getMonth() - 1);
          
          if (Dom.get(this.valueHtmlId).value)
@@ -93,18 +94,16 @@
             {
                // Use Date.parse to support non ISO8601 date defaults
                fullDate[0] = Alfresco.util.toISO8601(Date.parse(fullDate[0])) || fullDate[0];
-               var fromDateText = fullDate[0].split("T")[0];
-               fromDateText = fromDateText.split("-");
-               Dom.get(this.id + "-date-from").value = fromDateText[2] + "/" + fromDateText[1] + "/" + fromDateText[0];
+               var fromDateText = Alfresco.util.fromISO8601(fullDate[0]).toString(this.msg("form.control.date-picker.entry.date.format"));
+               Dom.get(this.id + "-date-from").value = fromDateText;			 
                this.currentFromDate = fullDate[0];
             }
             if (fullDate[1])
             {
                // Use Date.parse to support non ISO8601 date defaults
                fullDate[1] = Alfresco.util.toISO8601(Date.parse(fullDate[1])) || fullDate[1];
-               var toDateText = fullDate[1].split("T")[0];
-               toDateText = toDateText.split("-");
-               Dom.get(this.id + "-date-to").value = toDateText[2] + "/" + toDateText[1] + "/" + toDateText[0];
+               var toDateText = Alfresco.util.fromISO8601(fullDate[1]).toString(this.msg("form.control.date-picker.entry.date.format"));
+               Dom.get(this.id + "-date-to").value = toDateText;
                this.currentToDate = fullDate[1];
             }
             // Write output back (as ISO8601)
