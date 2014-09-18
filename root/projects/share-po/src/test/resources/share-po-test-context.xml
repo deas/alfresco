@@ -14,7 +14,7 @@
           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
    <import resource="classpath:share-po-context.xml"/>
-   <import resource="classpath:*-testContext.xml"/>
+   <import resource="classpath*:*-testContext.xml"/>
    <bean id="shareProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" >
       <property name="locations">
          <list>
