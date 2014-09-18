@@ -260,8 +260,8 @@ public class ShareUtils
                 "<template-instance>dashboard-2-columns-wide-left</template-instance>\n" +
                 "<authentication>user</authentication>\n" + 
                 "<properties>\n" +
-                    "<sitePages>[ {\"pageId\":\"documentlibrary\"}, {\"pageId\":\"links\"}," +
-                    " {\"pageId\":\"data-lists\"} ]</sitePages>\n" +
+                    "<sitePages>[ {\"pageId\":\"documentlibrary\"}, {\"pageId\":\"links\"} ]" +
+                    "</sitePages>\n" +
                 "</properties>\n" +
             "</page>";
         }
