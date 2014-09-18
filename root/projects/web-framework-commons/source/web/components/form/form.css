@@ -186,6 +186,7 @@
 .form-container .viewmode-field
 {
    margin-bottom: 0.7em;
+   word-wrap: break-word;
 }
 
 .form-container .viewmode-label
