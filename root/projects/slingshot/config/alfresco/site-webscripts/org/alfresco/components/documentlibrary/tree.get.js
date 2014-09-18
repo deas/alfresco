@@ -17,6 +17,8 @@ function main()
          evaluateChildFolders = tmp != null ? tmp : "true";
          tmp = tree.getChildValue("maximum-folder-count");
          maximumFolderCount = tmp != null ? tmp : "-1";
+         tmp = tree.getChildValue("apply-drop-targets");
+         applyDropTargets = tmp != null ? tmp : "true";
       }
    }
 
@@ -28,7 +30,7 @@ function main()
          containerId : template.properties.container != null ? template.properties.container : "documentLibrary",
          evaluateChildFolders : (evaluateChildFolders == "true"),
          maximumFolderCount : parseInt(maximumFolderCount),
-         setDropTargets : true
+         setDropTargets : (applyDropTargets == "true")
       }
    };
    model.widgets = [docListTree];

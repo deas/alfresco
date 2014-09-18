@@ -374,7 +374,7 @@
                      }
                      Dom.addClass(currEl, "documentDragOverHighlight");
                      
-                     var folderCell = dropTargetEl.parentNode.children[dropTargetEl.parentNode.children.length - 2];
+                     var folderCell = dropTargetEl.children[dropTargetEl.children.length - 2];
                      while (folderCell.children.length == 1)
                      {
                         var arrowSpan = document.createElement("span");
@@ -432,7 +432,7 @@
                      currEl = currEl.parentNode;
                   }
                   Dom.removeClass(currEl, "documentDragOverHighlight");
-                  var folderCell = dropTargetEl.parentNode.children[dropTargetEl.parentNode.children.length - 2];
+                  var folderCell = dropTargetEl.children[dropTargetEl.children.length - 2];
                   while (folderCell.children.length > 1)
                   {
                      folderCell.removeChild(Dom.getLastChild(folderCell));
@@ -513,7 +513,7 @@
             new YAHOO.util.DDTarget(rootEl);
             Dom.addClass(rootEl, "documentDroppableHighlights");
             
-            var dndTargets = Dom.getElementsByClassName("ygtvcell", "td", rootEl);
+            var dndTargets = Dom.getElementsByClassName("ygtvrow", "tr", rootEl);
             for (var i = 0, j = dndTargets.length; i < j; i++)
             {
                new YAHOO.util.DDTarget(dndTargets[i]);
