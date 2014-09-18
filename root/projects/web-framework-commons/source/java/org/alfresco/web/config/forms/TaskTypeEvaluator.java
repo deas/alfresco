@@ -60,7 +60,14 @@ public class TaskTypeEvaluator extends ServiceBasedEvaluator
     {
         boolean result = false;
 
-        if (obj instanceof String)
+        if (condition == null)
+        {
+            if (getLogger().isWarnEnabled())
+            {
+                getLogger().warn("Expected 'condition' (task type) but was passed null value. Please check config for errors.");
+            }
+        }
+        else if (obj instanceof String)
         {
             String taskId = (String)obj;
             
