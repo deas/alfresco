@@ -246,7 +246,7 @@ tokens
             state.text = null;
             if ( input.LA(1)==CharStream.EOF ) 
             {
-                  return getEOFToken();
+                return getEOFToken();
             }
             try 
             {
