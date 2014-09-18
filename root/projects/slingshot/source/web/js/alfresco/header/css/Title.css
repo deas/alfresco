@@ -1,6 +1,7 @@
 .alfresco-share h1.alfresco-header-Title {
    margin-top: 20px;
    font-weight: normal;
+   font-size: 185%;
 }
 
 .alfresco-share h1.alfresco-header-Title > .text {

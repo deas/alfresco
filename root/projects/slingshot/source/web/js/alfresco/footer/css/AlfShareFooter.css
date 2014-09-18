@@ -2,7 +2,7 @@
 .footer
 {
    background-color: #fafafa;
-   border-top: 1px solid #eee;
+   border-top: 1px solid #ccc;
    text-align: center;
    padding: 0;
 }
@@ -14,7 +14,7 @@
 
 .footer .copyright
 {
-   font-size: 77%;
+   font-size: 9px;
 }
 
 .footer-ent .copyright
