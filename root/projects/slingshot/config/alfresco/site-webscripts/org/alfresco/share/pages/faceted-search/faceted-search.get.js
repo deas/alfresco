@@ -34,7 +34,8 @@ var services = getHeaderServices(),
 var rootWidgetId = "FCTSRCH_";
 
 // Insert a configuration page link if the user has the appropriate permissions...
-if (_processedUserData.groups["GROUP_ALFRESCO_ADMINISTRATORS"] == true ||
+if (user.isAdmin == true ||
+    _processedUserData.groups["GROUP_ALFRESCO_ADMINISTRATORS"] == true ||
     _processedUserData.groups["GROUP_ALFRESCO_SEARCH_ADMINISTRATORS"] == true ||
     _processedUserData.isNetworkAdmin == true)
 {

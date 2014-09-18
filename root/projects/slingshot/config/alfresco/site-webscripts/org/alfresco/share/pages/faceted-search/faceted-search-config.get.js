@@ -454,6 +454,10 @@ var main = {
                renderFilterMethod: "ALL",
                renderFilter: [
                   {
+                     property: "user.isAdmin",
+                     values: [false]
+                  },
+                  {
                      property: "user.groups.GROUP_ALFRESCO_SEARCH_ADMINISTRATORS",
                      renderOnAbsentProperty: true,
                      values: [false]
@@ -485,6 +489,10 @@ var main = {
             config: {
                renderFilterMethod: "ANY",
                renderFilter: [
+                  {
+                     property: "user.isAdmin",
+                     values: [true]
+                  },
                   {
                      property: "user.groups.GROUP_ALFRESCO_ADMINISTRATORS",
                      values: [true]
