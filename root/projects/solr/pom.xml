@@ -142,6 +142,8 @@
                                 <exclude>WEB-INF/lib/commons-codec-*.jar</exclude>
                                 <exclude>WEB-INF/lib/slf4j-*.jar</exclude>
                                 <exclude>WEB-INF/lib/log4j-*.jar</exclude>
+								<!-- MNT-11746 -->
+                                <exclude>WEB-INF/classes/log4j.properties</exclude>
                             </excludes>
                         </overlay>
                     </overlays>
