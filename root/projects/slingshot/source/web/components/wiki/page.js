@@ -467,8 +467,6 @@
                   text: '<span class="wait">' + $html(this.msg("message.saving", this.name)) + '</span>',
                   noEscape: true
                });
-               //  there is encoded uri in form.action attribute. however we should to double-encode % character. see MNT-11577
-               form.action = form.action.replace(/%25/g,"%2525");
                
                // Put the HTML back into the text area
                this.pageEditor.save();

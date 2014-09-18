@@ -1857,9 +1857,7 @@ Alfresco.util.encodeHTML.div.appendChild(Alfresco.util.encodeHTML.text);
  */
 Alfresco.util.encodeURIPath = function(text)
 {
-   // NOTE: the %2525 double encoding madness is to cope with the fail of urlrewrite filter to correctly cope with encoded paths
-   // see urlrewrite.xml - it decodes the path of the URL early - before the container gets a chance to process it - which is FAIL.
-   return encodeURIComponent(text).replace(/%2F/g, "/").replace(/%25/g,"%2525");
+   return encodeURIComponent(text).replace(/%2F/g, "/");
 };
 
 /**

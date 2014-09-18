@@ -295,10 +295,7 @@ function itemPageUrl(activity, summary)
       var splitted = localPage.split(splitter, 2);
       if (splitted.length == 2)
       {
-         // generate path URL argument - encode path
-         // NOTE: the %2525 double encoding madness is to cope with the fail of urlrewrite filter to correctly cope with encoded paths
-         // see urlrewrite.xml
-         localPage = splitted[0] + splitter + encodeURIComponent(splitted[1]).replace(/%25/g, "%2525");
+         localPage = splitted[0] + splitter + encodeURIComponent(splitted[1]);
       }
    }
    else
