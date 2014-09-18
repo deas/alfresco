@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -188,6 +188,10 @@ public class VtiServer extends AbstractLifecycleBean
       server = new Server();
       server.setStopAtShutdown(true);
       server.setConnectors(new Connector[] { connector });
+      if(hashSessionIdManager.getWorkerName().indexOf('.') >= 0)
+      {
+          logger.warn("A dot is not allowed in the vti.server.sessionIdManager.workerName configuration parameter. Sticky sessions will fail!");
+      }
       server.setSessionIdManager(hashSessionIdManager);
 
       Context context = new Context(server, "/", Context.SESSIONS);
