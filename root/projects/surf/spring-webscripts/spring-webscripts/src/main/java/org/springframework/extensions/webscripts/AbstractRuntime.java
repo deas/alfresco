@@ -520,7 +520,6 @@ public abstract class AbstractRuntime implements Runtime
      */
     private static class RuntimeSession implements WebScriptSession
     {
-        private static final String NAMESPACE = "org.springframework.extensions.session.";
         private static final WebScriptSession NOOP_WEBSCRIPTSESSION = new NOOPWebScriptSession();
         private WebScriptSessionFactory sessionFactory;
         private WebScriptSession session;
@@ -537,17 +536,17 @@ public abstract class AbstractRuntime implements Runtime
         
         public Object getValue(String name)
         {
-            return getSession().getValue(NAMESPACE + name);
+            return getSession().getValue(name);
         }
 
         public void removeValue(String name)
         {
-            getSession().removeValue(NAMESPACE + name);
+            getSession().removeValue(name);
         }
 
         public void setValue(String name, Object value)
         {
-            getSession().setValue(NAMESPACE + name, value);
+            getSession().setValue(name, value);
         }
         
         private WebScriptSession getSession()
