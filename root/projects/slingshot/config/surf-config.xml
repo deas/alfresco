@@ -37,7 +37,9 @@
                <list>
                   <value>GET</value>
                   <value>HEAD</value>
+                  <value>PUT</value>
                   <value>POST</value>
+                  <value>DELETE</value>
                   <value>OPTIONS</value>
                </list>
             </property>
