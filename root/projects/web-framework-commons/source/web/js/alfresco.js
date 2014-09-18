@@ -10153,6 +10153,9 @@ Alfresco.util.RichEditor = function(editorName,id,config)
             config.language = lang;
          }
 
+         // MNT-11113
+         config.theme_advanced_resize_horizontal = false;
+
          ed.init(id,config);
       }
       return ed;
