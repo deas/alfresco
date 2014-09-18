@@ -12,9 +12,7 @@
     <fileSets>
         <fileSet>
             <directory>${solr.nossl.instance.target.folder}</directory>
-            <includes>
-                <include>**</include>
-            </includes>
+            <outputDirectory/>
         </fileSet>
     </fileSets>
 </assembly>
