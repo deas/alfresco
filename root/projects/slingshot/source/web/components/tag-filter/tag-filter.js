@@ -166,9 +166,13 @@
          }
          else
          {
-            url = YAHOO.lang.substitute(Alfresco.constants.PROXY_URI + "api/tagscopes/node/{np}/tags",
+            // Use the collaboration REST API (from Office add-in)
+            url = YAHOO.lang.substitute(Alfresco.constants.PROXY_URI + "collaboration/tagQuery?d={d}&m={m}&s={s}&n={n}",
             {
-               np: this.options.rootNode.replace(/:\//g,"")
+               d: new Date().getTime(),
+               m: this.options.numTags,
+               s: "count",
+               n: encodeURIComponent(this.options.rootNode)
             });
          }
          
