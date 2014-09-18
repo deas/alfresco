@@ -20,6 +20,7 @@ package org.alfresco.repo.cache;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 import org.alfresco.api.AlfrescoPublicApi;
 
@@ -63,6 +64,12 @@ public interface SimpleCache<K extends Serializable, V extends Object>
     public V get(K key);
     
     /**
+     * Set the value to store for a given key.
+     * <p/>
+     * Be sure to use {@link #remove(Serializable) remove} if cache entries need to be removed
+     * as the cache implementations must treat a <tt>null</tt> value as a first class object
+     * in exactly the same way as a {@link Map} will allow storage and retrieval of <tt>null</tt> values.
+     * 
      * @param key       the key against which to store the value
      * @param value     the value to store.  <tt>null</tt> is allowed.
      */
