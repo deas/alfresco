@@ -1,12 +1,10 @@
 /* Footer Component */
 .footer
 {
-   background-color: #f2f2f2;
-   border-bottom: 1px solid #dfdfdf;
-   border-top: 1px solid #dfdfdf;
-   padding-top: 8px;
-   padding-bottom: 8px;
+   background-color: #fafafa;
+   border-top: 1px solid #eee;
    text-align: center;
+   padding: 0;
 }
 
 .footer .links
@@ -26,18 +24,8 @@
    display: block;
 }
 
-.footer-com,
-.footer-ent,
-.footer-team
-{
-   padding: 0;
-}
-
 .footer-com .copyright
 {
-   background-color: #fff;
-   border-left: 1px solid #dfdfdf;
-   border-right: 1px solid #dfdfdf;
    display: inline-block;
    line-height: 22px;
    padding: 2px;
@@ -45,19 +33,7 @@
 
 .footer-ent .copyright
 {
-   background-color: #fff;
-   border-left: 1px solid #dfdfdf;
-   border-right: 1px solid #dfdfdf;
    padding: 14px 1.5em;
-}
-
-.footer-team .copyright
-{
-   background-color: #fff;
-   border-left: 1px solid #dfdfdf;
-   border-right: 1px solid #dfdfdf;
-   line-height: 47px;
-   padding: 17px 25px 17px 0.5em;
 }
 
 .footer-ent .licenseHolder
@@ -81,18 +57,12 @@
    padding-right: 1em;
 }
 
-.footer-team .copyright img
-{
-   vertical-align: middle;
-}
-
 .footer-com .copyright span
 {
    display: inline-block;
 }
 
-.footer-ent .copyright span,
-.footer-team .copyright span
+.footer-ent .copyright span
 {
    position: relative;
 }
