@@ -4481,7 +4481,7 @@ top: -1px;
 position: relative;
 }
 .yui-skin-lightTheme .yui-navset .yui-nav .selected a,.yui-skin-lightTheme .yui-navset .yui-nav .selected a:focus,.yui-skin-lightTheme .yui-navset .yui-nav .selected a:hover {
-background-color: #F6F6F6;
+background-color: #fafafa;
 color: #000;
 }
 .yui-skin-lightTheme .yui-navset .yui-nav a:hover,.yui-skin-lightTheme .yui-navset .yui-nav a:focus {
@@ -4495,7 +4495,7 @@ padding: 0.35em 0.75em;
 border-color: #ccc;
 }
 .yui-skin-lightTheme .yui-navset .yui-content {
-background: #F6F6F6;
+background: #fafafa;
 }
 .yui-skin-lightTheme .yui-navset .yui-content,.yui-skin-lightTheme .yui-navset .yui-navset-top .yui-content {
 border: 1px solid #ccc;
