@@ -111,6 +111,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/assembly/ftr-distribution.xml</descriptor>
                     </descriptors>
