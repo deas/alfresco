@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2010 Alfresco Software Limited.
+ * Copyright (C) 2006-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -59,6 +59,15 @@ public class PseudoFileList {
    */
   public final int numberOfFiles() {
     return m_list.size();
+  }
+
+  /**
+   * Returns true if the list is empty
+   *
+   * @return boolean
+   */
+  public final boolean isEmpty() {
+    return m_list.isEmpty();
   }
 
   /**
