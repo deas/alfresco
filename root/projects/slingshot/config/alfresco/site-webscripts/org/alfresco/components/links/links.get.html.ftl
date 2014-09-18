@@ -36,7 +36,9 @@
                   </div>
                </div>
             </div>
+            <@markup id="rssAction">
             <div class="rss-feed"><button id="${el}-rss-feed" name="rss-feed">${msg("header.rssFeed")}</button></div>
+            </@>
          </div>
          
          <div id="${el}-links-titleBar" class="links-titlebar theme-bg-color-2">

@@ -150,8 +150,11 @@
             type: "link"
          });
 
-         // initialize rss feed link
-         this._generateRSSFeedUrl();
+         if (this.widgets.rssFeedButton !== null)
+         {
+            // initialize rss feed link
+            this._generateRSSFeedUrl();
+         }
       },
 
       /**

@@ -824,8 +824,10 @@
          {
             type: "link"
          });
-
-         this.widgets.rssFeed.set("href", this._generateRSSFeedUrl());
+         if (this.widgets.rssFeed !== null)
+         {
+            this.widgets.rssFeed.set("href", this._generateRSSFeedUrl());
+         }
       },
 
       /**

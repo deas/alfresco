@@ -18,8 +18,7 @@
 .toolbar .addEvent button
 {
    background: transparent url(images/add-event-16-2.png) no-repeat 7px 6px;
-   *background-position:7px 5px;
-   padding-left:22px;
+   padding-left: 28px;
 }
 
 .toolbar div.first
@@ -60,24 +59,34 @@ div.separator
    padding: 0.5em 0.5em 0 10px;
 }
 
-.toolbar div.yui-u div.addEvent, .toolbar div.yui-u div.separator {
-    float:left;
+.toolbar div.yui-u div.addEvent {
+   float: left;
+   margin-left: 4px;
 }
+
+.toolbar div.yui-u div.separator {
+   float: left;
+}
+
 .toolbar div.flat-button {
-    padding:0.5em 0;
+   padding:0.5em 0;
 }
+
 .calendar-bar .yui-u.first {
-  padding:0.5em 0 0.5em 0.5em;
+   padding:0.5em 0 0.5em 0.5em;
 }
+
 .toolbar .yui-button,
 div.toolbar .yui-radio-button-checked.yui-button-disabled,
 div.toolbar .yui-checkbox-button-checked.yui-button-disabled
 {
   background: url(images/toolbar-unchecked-gradient.gif) 0 0;
 }
+
 .toolbar .yui-button, .toolbar .yui-button .first-child {
   border-color:#b7b7b7;
 }
+
 .toolbar .yui-radio-button-checked, .toolbar .yui-checkbox-button-checked {
   background: url(images/toolbar-checked-gradient.gif) 0 0;
 }

@@ -37,11 +37,13 @@
             <div class="separator" ${hide}>&nbsp;</div>
             <div class="rename-page" ${hide}><button id="${args.htmlid}-rename-button">${msg("button.rename")}</button></div>
          </div>
+         <@markup id="rssAction">
          <div class="rss-feed">
             <div>
-         <a id="${args.htmlid}-rssFeed-button" href="#">${msg("message.rssfeed")}</a>
+               <a id="${args.htmlid}-rssFeed-button" href="#">${msg("message.rssfeed")}</a>
             </div>
          </div>
+         </@>
          <div id="${args.htmlid}-renamepanel" class="rename-panel">
             <div class="hd"><label for="${args.htmlid}-renameTo">${msg("panel.rename.title")}</label></div>
             <div class="bd">

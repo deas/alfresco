@@ -150,7 +150,10 @@
          });
 
          // initialize rss feed link
-         this._generateRSSFeedUrl();
+         if (this.widgets.rssFeedButton !== null)
+         {
+            this._generateRSSFeedUrl();
+         }
       },
 
       /**

@@ -183,11 +183,14 @@
          {
             type: "link"
          });
-         var url = YAHOO.lang.substitute(Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/wiki/rss?site={site}",
-             {
-                 site: this.options.siteId
-             });
-         this.widgets.rssFeedButton.set("href", url);
+         if (this.widgets.rssFeedButton !== null)
+         {
+            var url = YAHOO.lang.substitute(Alfresco.constants.URL_FEEDSERVICECONTEXT + "components/wiki/rss?site={site}",
+                {
+                    site: this.options.siteId
+                });
+            this.widgets.rssFeedButton.set("href", url);
+         }
          
          // Create the rename panel
          var renamePanel = Dom.get(this.id + "-renamepanel"),

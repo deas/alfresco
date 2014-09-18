@@ -29,11 +29,13 @@
             <div class="separator">&nbsp;</div>
             <div class="configure-blog"><button id="${args.htmlid}-configure-button" name="postlist-configure-button">${msg("button.configure")}</button></div>
          </div>
+         <@markup id="rssAction">
          <div class="rss-feed">
             <div>
                <a id="${args.htmlid}-rssFeed-button" href="#">${msg("button.rssfeed")}</a>
             </div>
          </div>
+         </@>
       </div>
       <div class="clear"></div>
    </@>

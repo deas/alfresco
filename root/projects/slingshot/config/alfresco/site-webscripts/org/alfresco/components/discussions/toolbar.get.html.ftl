@@ -25,11 +25,13 @@
          <div class="action-bar theme-bg-1">
             <div class="new-topic"><button id="${args.htmlid}-create-button">${msg("button.create")}</button></div>
          </div>
+         <@markup id="rssAction">
          <div class="rss-feed">
             <div>
                <a id="${args.htmlid}-rssFeed-button" href="${url.context}/proxy/alfresco-feed/slingshot/wiki/pages/${page.url.templateArgs["site"]}?format=rss">${msg("button.rssfeed")}</a>
             </div>
          </div>
+         </@>
       </div>
       <div class="clear"></div>
    </@>
