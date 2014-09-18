@@ -65,12 +65,6 @@
         <@outputJavaScript> and <@outputCSS> directives. -->
    ${head}
 
-   <@markup id="ieStylesheets">
-   <!-- MSIE CSS fix overrides -->
-   <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/ie6.css"/>'/><![endif]-->
-   <!--[if IE 7]><link rel="stylesheet" type="text/css" href='<@checksumResource src="${url.context}/res/css/ie7.css"/>'/><![endif]-->
-   </@markup>
-
    <@markup id="ipadStylesheets">
    <#assign tabletCSS><@checksumResource src="${url.context}/res/css/tablet.css"/></#assign>
    <!-- Android & iPad CSS overrides -->

@@ -4,12 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="/wcmqs/css/index.css" type="text/css" rel="stylesheet" />
 <link rel="stylesheet" href="/wcmqs/css/slimbox2.css" type="text/css" media="screen" />
-<!--[if IE 6]>
-    <link href="/wcmqs/css/ie6.css" type="text/css" rel="stylesheet" />
-
-    <script src="/wcmqs/js/dd_belated_png.js"></script>
-    <script>DD_belatedPNG.fix('#logo a, .h-box-1 img, .h-box-2 img, .brochure img, .slide-txt');</script>  
-<![endif]-->
 <script type="text/javascript" src="/wcmqs/js/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/wcmqs/js/jqueryslidemenu.js"></script>
 <script type="text/javascript" src="/wcmqs/js/jquery-ui-1.7.2.custom.min.js"></script>
