@@ -80,7 +80,7 @@
                   <#if isContainer>
                      <img src="${url.context}/res/components/images/filetypes/generic-folder-48.png"
                           title="${displayName}" class="node-thumbnail" width="48" />
-                  <#else>
+                     <#else>
                      <img src="${url.context}/res/components/images/filetypes/${fileExt}-file-48.png"
                           onerror="this.src='${url.context}/res/components/images/filetypes/generic-file-48.png'"
                           title="${displayName}" class="node-thumbnail" width="48" />
@@ -90,39 +90,39 @@
                      ${displayName}<#if !isContainer && !isWorkingCopy><span id="document-version" class="document-version">${item.version}</span></#if>
                   </h1>
                   <!-- Modified & Social -->
-                  <div>
+                  <div class="node-social">
                      <span class="item-modifier">
                               <#assign modifyUser = node.properties["cm:modifier"]>
                               <#assign modifyDate = node.properties["cm:modified"]>
                               <#assign modifierLink = userProfileLink(modifyUser.userName, modifyUser.displayName, 'class="theme-color-1"') >
                               ${msg(modifyLabel, modifierLink, "<span id='${id}-modifyDate'>${modifyDate.iso8601}</span>")}
                      </span>
-                     <#if showFavourite == "true">
+                  <#if showFavourite == "true">
                      <span id="${id}-favourite" class="item item-separator"></span>
-                     </#if>
-                     <#if showLikes == "true">
+                  </#if>
+                  <#if showLikes == "true">
                      <span id="${id}-like" class="item item-separator"></span>
-                     </#if>
-                     <#if showComments == "true">
+                  </#if>
+                  <#if showComments == "true">
                      <span class="item item-separator item-social">
                         <a href="#" name="@commentNode" rel="${item.nodeRef?html}" class="theme-color-1 comment<#if commentCount??> hasComments</#if> ${id}" title="${msg("comment.${itemType}.tip")}" tabindex="0">${msg("comment.${itemType}.label")}</a><#if commentCount??><span class="comment-count">${commentCount}</span></#if>
                      </span>
-                     </#if>
-                     <#if showQuickShare == "true">
+                  </#if>
+                  <#if showQuickShare == "true">
                      <span id="${id}-quickshare" class="item item-separator"></span>
-                     </#if>
-                     </div>
-                  </div>
-                  <div class="node-action">
-                  <#if showDownload == "true" && node.contentURL??>
-                     <!-- Download Button -->
-                     <span class="yui-button yui-link-button onDownloadDocumentClick">
-                        <span class="first-child">
-                           <a href="${url.context}/proxy/alfresco${node.contentURL?html}?a=true" tabindex="0">${msg("button.download")}</a>
-                        </span>
-                     </span>
                   </#if>
                   </div>
+               </div>
+               <div class="node-action">
+                  <#if showDownload == "true" && node.contentURL??>
+                  <!-- Download Button -->
+                  <span class="yui-button yui-link-button onDownloadDocumentClick">
+                     <span class="first-child">
+                        <a href="${url.context}/proxy/alfresco${node.contentURL?html}?a=true" tabindex="0">${msg("button.download")}</a>
+                     </span>
+                  </span>
+                  </#if>
+               </div>
                </#if>
                <div class="clear"></div>
             </div>

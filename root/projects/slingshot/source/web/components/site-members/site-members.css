@@ -1,7 +1,7 @@
 .site-members
 {
    color: #000;
-   margin: 1em 1em 1em;
+   margin: 0 1em 1em 1em;
 }
 
 .site-members .title
@@ -24,8 +24,9 @@
 
 .site-members .links
 {
-   text-align: right;
-   float: right;
+   position: absolute;
+   right: 32px;
+   padding-top: 45px;
 }
 
 .site-members .links a:hover

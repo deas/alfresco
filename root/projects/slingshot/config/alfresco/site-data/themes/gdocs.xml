@@ -12,6 +12,7 @@
          @docListDndHighlight: #0082ca;
 
          // General palette
+         @primary-title-color: #fff;
          @primary-theme-color: #eeeeee;
 
          // Layout settings...

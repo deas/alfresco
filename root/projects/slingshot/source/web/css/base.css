@@ -32,7 +32,7 @@ blockquote
 
 #bd
 {
-   padding-bottom: 2em;
+   padding-bottom: 1em;
 }
 
 #alf-full-width
@@ -111,6 +111,7 @@ blockquote
 #share-header
 {
    min-height: 96px;
+   margin: 0 -10px;
 }
 
 .alfresco-share .sticky-wrapper p,
@@ -802,11 +803,6 @@ div.dashlet div.hdr
 .dashlet .titleBarActions .rss
 {
    background-image: url(../components/images/feed-icon-16.png);
-}
-
-.dcolumn
-{
-   margin-top: -16px;
 }
 
 .yui-g.grid,

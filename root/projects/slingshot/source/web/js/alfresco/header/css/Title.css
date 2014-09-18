@@ -1,5 +1,5 @@
 .alfresco-share h1.alfresco-header-Title {
-   margin-top: 18px;
+   margin-top: 20px;
    font-weight: normal;
 }
 
@@ -7,4 +7,12 @@
    font-family: Open Sans Condensed, Arial, sans-serif;
    color: #333 !important;
    text-decoration: none;
+}
+
+.alfresco-share .share-header-title {
+   border-bottom: 1px solid #ccc;
+}
+
+.alfresco-share .share-header-title > div {
+   background-color: #fafafa;
 }

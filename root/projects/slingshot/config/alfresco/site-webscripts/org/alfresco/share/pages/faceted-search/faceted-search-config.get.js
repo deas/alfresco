@@ -444,8 +444,7 @@ var main = {
             id: "SEARCH_CONFIG_VSPACER",
             name: "alfresco/html/Spacer",
             config: {
-               height: "20px",
-               additionalCssClasses: "top-border-beyond-gutters"
+               height: "14px"
             }
          },
          {

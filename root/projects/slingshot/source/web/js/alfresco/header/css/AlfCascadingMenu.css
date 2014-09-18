@@ -14,14 +14,13 @@
 .alfresco-share .dijitPopup.Popup .alfresco-header-AlfCascadingMenu {
   border: 1px solid #4D4D4D;
   background-color: #4D4D4D;
-  border-radius: 0 10px 10px 0;
   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
   padding: 5px;
 }
 
 /* This ensures that the menu text color is white */
 .alfresco-share .dijitPopup.Popup .alfresco-header-AlfCascadingMenu .dijitMenuItem {
-  color: #FFFFFF;
+  color: #fff;
   background-color: #4D4D4D;
 }
 
@@ -33,14 +32,13 @@
   background-color: #717171;
   background-image: none;
   background-repeat: no-repeat;
-  color: #ffffff;
+  color: #fff;
 }
 
 /* More specific rule for properly grouped items */
 .dijitPopup.Popup .alfresco-header-AlfCascadingMenu .alf-menu-group.dijitMenu .alf-menu-group-items .alf-dropdown-menu {
   border: 1px solid #4D4D4D;
   background-color: #4D4D4D;
-  border-radius: 0 10px 10px 0;
   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
   padding: 5px;
 }
@@ -51,4 +49,3 @@
   box-shadow: none;
   padding: 0;
 }
-

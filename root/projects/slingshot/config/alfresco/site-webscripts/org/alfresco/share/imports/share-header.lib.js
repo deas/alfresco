@@ -1523,6 +1523,7 @@ function getHeaderModel(pageTitle) {
    {
       id: "HEADER_TITLE_BAR",
       name: "alfresco/layout/LeftAndRight",
+      className: "share-header-title",
       config:
       {
          semanticWrapper: "header",

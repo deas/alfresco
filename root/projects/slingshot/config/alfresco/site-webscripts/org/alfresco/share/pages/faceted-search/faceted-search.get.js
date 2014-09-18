@@ -497,7 +497,7 @@ var main = {
          {
             name: "alfresco/html/Spacer",
             config: {
-               height: "4px"
+               height: "14px"
             }
          },
          headingForSearchForm,

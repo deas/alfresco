@@ -1,3 +1,13 @@
+h1.sub-title
+{
+   margin: 0 10px;
+}
+
+.customise-pages
+{
+   margin: 0 10px;
+}
+
 .customise-pages .page-list-tooltip
 {
    border-bottom: none !important;

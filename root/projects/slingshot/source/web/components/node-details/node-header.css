@@ -1,8 +1,3 @@
-.node-header
-{
-    min-height: 6.5em;
-}
-
 .node-header h1
 {
    padding: 0.5em 0 0.3em;
@@ -26,7 +21,6 @@
 {
    padding-bottom: 0.5em;
    padding-top: 1em;
-   margin-left: -1.2em;
 }
 
 .node-header .node-path .folder-link
@@ -34,6 +28,11 @@
    background-position: left 50%;
    background-repeat: no-repeat;
    padding: 2px 0 2px 20px;
+}
+
+.node-header .node-path .folder-link:first-child
+{
+   margin-left: -16px;
 }
 
 .node-header .node-path .folder-open
@@ -109,4 +108,10 @@
 .node-header span.item-social
 {
    margin-left: 0.8em;
+}
+
+.node-header .node-social
+{
+   padding-left: 6px;
+   min-height: 24px;
 }

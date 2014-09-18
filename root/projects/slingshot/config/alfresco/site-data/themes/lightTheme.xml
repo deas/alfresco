@@ -12,7 +12,8 @@
          @docListDndHighlight: #0082ca;
 
          // General palette
-         @primary-theme-color: #eeeeee;
+         @primary-title-color: #fff;
+         @primary-theme-color: #eee;
 
          // Layout settings...
          // This is used to control the overall layout of the page. Line-heights will be a multiple of
@@ -25,7 +26,7 @@
          // Font Colours
          @general-font-color: #333;
          @emphasized-font-color: #000;
-         @de-emphasized-font-color: #999999;
+         @de-emphasized-font-color: #999;
          @highlighted-font-color: #fff;
 
          // Backgrounds

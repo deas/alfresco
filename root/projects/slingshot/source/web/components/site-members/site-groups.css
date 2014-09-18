@@ -1,7 +1,7 @@
 .site-groups
 {
    color: #000;
-   margin: 1em 1em 1em;
+   margin: 0 1em 1em 1em;
 }
 
 .site-groups .title
@@ -24,8 +24,9 @@
 
 .site-groups .add-groups
 {
-   text-align: right;
-   float: right;
+   position: absolute;
+   right: 32px;
+   padding-top: 45px;
 }
 
 .site-groups .add-groups a:hover

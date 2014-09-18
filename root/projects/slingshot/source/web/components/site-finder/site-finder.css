@@ -1,8 +1,3 @@
-/* Ensures that with the new header there isn't additional space above the menu bar */
-.alfresco-share .site-finder {
-  margin: 0;
-}
-
 .site-finder 
 {
    margin: 1em 0 0;

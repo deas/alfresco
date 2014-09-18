@@ -345,7 +345,7 @@ h4 .lighter
 .yui-skin-lightTheme .yui-panel .hd
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 230%;
+   font-size: 185%;
    font-weight: normal;
    border-bottom: 1px solid #ccc;
    border-top-left-radius: 6px;
@@ -676,16 +676,6 @@ span.navigation-separator-alt
    border-right: none;
 }
 
-.share-form .form-manager
-{
-   padding-top: 0.25em !important;
-}
-
-.share-form .form-manager h1
-{
-   margin-bottom: 0.5em !important;
-}
-
 .form-element-background-color
 {
    background-color: #fff;
@@ -694,7 +684,7 @@ span.navigation-separator-alt
 .create-content-mgr .heading
 {
    font-family: Open Sans Condensed, Arial, sans-serif;
-   font-size: 230% !important;
+   font-size: 185% !important;
    padding: 0.5em 0.2em 0 !important;
 }
 
@@ -972,8 +962,6 @@ body.yui-skin-lightTheme .yuimenu .bd
    border: 1px solid #ccc;
    padding: 3px;
    font-size: 109%;
-   border-bottom-left-radius: 6px;
-   border-bottom-right-radius: 6px;
 }
 
 body.yui-skin-lightTheme .yuimenu .bd a:focus
@@ -988,7 +976,6 @@ body.yui-skin-lightTheme .yuimenu.quickshare-action-menu .bd a:focus
 {
    outline: 1px dotted;
 }
-
 
 .yui-skin-lightTheme .yui-menu-shadow-visible
 {
@@ -1058,12 +1045,6 @@ body.yui-skin-lightTheme .yuimenu .bd ul li.yuimenuitem .yuimenuitemlabel-disabl
 /* end Location*/
 
 /* Doclist */
-
-body.yui-skin-lightTheme #alfresco-documentlibrary
-{
-   border-top: 1px solid #ccc;
-}
-
 body.yui-skin-lightTheme .doclist .more-actions a:active,
 body.yui-skin-lightTheme .doclist .more-actions a:hover
 {
@@ -1074,8 +1055,6 @@ body.yui-skin-lightTheme .doclist .more-actions a:hover
 body.yui-skin-lightTheme .doclist div.more-actions
 {
    border: 1px solid #ccc;
-   border-bottom-left-radius: 6px;
-   border-bottom-right-radius: 6px;
 }
 
 body.yui-skin-lightTheme .doclist .action-set a:active,
@@ -1663,9 +1642,14 @@ body.alfresco-guest
    padding-top: 6px;
 }
 
+.node-header
+{
+   padding-top: 6px;
+}
+
 .node-header h1
 {
-   padding: 0 0 0.3em !important;
+   padding: 4px 0 0.3em !important;
 }
 
 .node-header .node-path
@@ -1746,12 +1730,6 @@ body.alfresco-guest
 {
    font-family: Open Sans Bold, Arial, sans-serif;
    font-weight: normal !important;
-}
-
-/* only target the user profile toolbar - not others e.g. doclib */
-.toolbar.userprofile
-{
-   padding: 0 0 10px !important;
 }
 
 .search .itemname a
@@ -1880,11 +1858,6 @@ body.alfresco-guest
 .alfresco-share div.calendar-currentMonth .yui-button-checked
 {
    background: none repeat scroll 0 0 #ccc !important;
-}
-
-#alfresco-repository, #alfresco-mytasks, #alfresco-myworkflows
-{
-   border-top: 1px solid #ccc;
 }
 
 .usedDashlet
