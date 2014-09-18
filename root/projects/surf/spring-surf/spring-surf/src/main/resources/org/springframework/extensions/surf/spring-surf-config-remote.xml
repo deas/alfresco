@@ -8,37 +8,7 @@
 
     <config evaluator="string-compare" condition="Remote">
 
-        <remote>
-
-            <!-- Include the alfresco.com unauthenticated endpoint -->
-            <endpoint>
-                <id>alfresco.com</id>
-                <name>alfresco.com website</name>
-                <description>The alfresco.com website</description>
-                <connector-id>http</connector-id>
-                <endpoint-url>http://www.alfresco.com</endpoint-url>
-                <identity>none</identity>
-            </endpoint>
-
-            <!-- Include the Alfresco Network unauthenticated endpoint -->
-            <endpoint>
-                <id>alfresco-network</id>
-                <name>Alfresco Network</name>
-                <description>Alfresco Network</description>
-                <connector-id>http</connector-id>
-                <endpoint-url>http://network.alfresco.com</endpoint-url>
-                <identity>none</identity>
-            </endpoint>
-            
-			<!-- Define the Alfresco Web Studio endpoint -->
-			<endpoint>
-				<id>web-studio</id>
-				<name>Spring Web Studio</name>
-				<description>Spring Web Studio Server</description>
-				<connector-id>http</connector-id>
-				<endpoint-url>http://localhost:8080/spring-webstudio</endpoint-url>
-				<identity>none</identity>
-			</endpoint>            
+        <remote>        
 
             <!-- Include a generic HTTP access endpoint for RSS feeds - it is marked
                 as 'unsecure' so it cannot be access via user generated proxy URLs -->

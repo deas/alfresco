@@ -1,21 +1,3 @@
 <alfresco-config>
 
-	<config evaluator="string-compare" condition="Remote">
-
-		<remote>
-		
-			<!-- Define the endpoint for share.alfresco.com -->
-			<endpoint>
-				<id>share.alfresco.com</id>
-				<name>share.alfresco.com website</name>
-				<description>The share.alfresco.com website</description>
-				<connector-id>http</connector-id>
-				<endpoint-url>http://share.alfresco.com</endpoint-url>
-				<identity>none</identity>
-			</endpoint>
-
-		</remote>
-
-	</config>
-
 </alfresco-config>
