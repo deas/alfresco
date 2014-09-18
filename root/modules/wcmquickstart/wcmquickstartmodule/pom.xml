@@ -1,25 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>alfresco-wcmqs</artifactId>
-    <name>Alfresco WCMQS</name>
+    <name>Alfresco WCMQS AMP</name>
     <parent>
         <artifactId>alfresco-parent</artifactId>
         <groupId>org.alfresco</groupId>
         <version>5.0.b-SNAPSHOT</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
+    <packaging>amp</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-remote-api</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco</artifactId>
             <classifier>classes</classifier>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test dependencies -->
@@ -84,7 +87,20 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>source/amp</directory>
+                <targetPath>../${project.build.finalName}</targetPath>
+            </resource>
+        </resources>
+
         <plugins>
+            <plugin>
+                <groupId>org.alfresco.maven.plugin</groupId>
+                <artifactId>alfresco-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+
             <!-- Extract test resources, because they need to be seen as files, not in a jar -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>

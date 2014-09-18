@@ -88,9 +88,7 @@
     <module>projects/system-build-test</module>
     -->
     <module>modules/sharepoint/amp</module>
-    <module>modules/wcmquickstart/wcmquickstartmodule</module>
-    <module>modules/wcmquickstart/wcmquickstartclientapi</module>
-    <module>modules/wcmquickstart/wcmquickstartwebsite</module>
+    <module>modules/wcmquickstart</module>
     <module>projects/web-editor-samples/customer-site</module>
     <module>projects/mmt</module>
     <module>projects/sdk/alfresco-platform-distribution</module>
