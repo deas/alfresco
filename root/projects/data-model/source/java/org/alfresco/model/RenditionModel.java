@@ -18,12 +18,14 @@
  */
 package org.alfresco.model;
 
+import org.alfresco.api.AlfrescoPublicApi;     
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 
 /**
  * Rendition Model Constants
  */
+@AlfrescoPublicApi
 public interface RenditionModel
 {
     static final QName ASPECT_RENDITION = QName.createQName(NamespaceService.RENDITION_MODEL_1_0_URI, "rendition");
