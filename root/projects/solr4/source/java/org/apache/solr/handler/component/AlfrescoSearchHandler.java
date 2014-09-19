@@ -281,16 +281,16 @@ public class AlfrescoSearchHandler extends RequestHandlerBase implements SolrCor
             }
             
             // Fill in the Results context
-//            NamedList values = rsp.getValues();
-//            ResultContext response = (ResultContext)values.get("response");
-//            SolrDocumentList newResponse = new SolrDocumentList();
-//            DocList docs = response.docs;
-//            for(DocIterator it = docs.iterator(); it.hasNext(); /**/)
-//            {
-//                newResponse.add(toSolrDocument(req.getSearcher().doc(it.nextDoc()), req.getSchema()));
-//            }
-//            values.remove("response");
-//            values.add("response", newResponse);
+            NamedList values = rsp.getValues();
+            ResultContext response = (ResultContext)values.get("response");
+            SolrDocumentList newResponse = new SolrDocumentList();
+            DocList docs = response.docs;
+            for(DocIterator it = docs.iterator(); it.hasNext(); /**/)
+            {
+                newResponse.add(toSolrDocument(req.getSearcher().doc(it.nextDoc()), req.getSchema()));
+            }
+            values.remove("response");
+            values.add("response", newResponse);
             
         }
         else
