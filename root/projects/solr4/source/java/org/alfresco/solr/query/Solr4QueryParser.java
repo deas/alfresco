@@ -477,6 +477,10 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 return createIdQuery(queryText);
             }
+            else if (field.equals(FIELD_SOLR4_ID))
+            {
+                return createSolr4IdQuery(queryText);
+            }
             else if (field.equals(FIELD_DBID))
             {
                 return createDbidQuery(queryText);
@@ -3979,6 +3983,10 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
     }
     
+    protected Query createSolr4IdQuery(String queryText)
+    {
+        return createTermQuery(FIELD_SOLR4_ID, queryText);
+    }
     
     // Previous SOLR
     

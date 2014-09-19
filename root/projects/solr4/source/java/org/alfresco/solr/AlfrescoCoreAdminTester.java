@@ -6267,7 +6267,7 @@ public class AlfrescoCoreAdminTester
                     10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
     }
 
-    @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void testQueryByHandler(NamedList report, SolrCore core, String handler, String query, int count,
                 String sort, int[] sorted, Locale locale, Integer rows, Integer start, String... filters)
                 throws IOException
@@ -6975,27 +6975,25 @@ public class AlfrescoCoreAdminTester
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Internal", report);
-// TODO What to do about leaf and aux?  Replace the query param with the solr4 id : the actual id we expect.  See caller
+        final Long aclId = new Long(1);
         for (int i = 1; i < 16; i++)
         {
-            testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":LEAF-" + i, 1, null, null, null,
+            Long dbId = new Long(i);
+            String id = AlfrescoSolrDataModel.getNodeDocumentId(AlfrescoSolrDataModel.DEFAULT_TENANT, aclId, dbId);
+            testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":" + id, 1, null, null, null,
                         null, null, (String) null);
-            testQueryByHandler(report, core, "/afts", FIELD_ID + ":AUX-" + i, 1, null, null, null, null,
-                        null, (String) null);
         }
-        testQueryByHandler(report, core, "/afts", FIELD_ID + ":LEAF-*", 16, null, null, null, null,
-                    null, (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_ID + ":AUX-*", 16, null, null, null, null, null,
-                    (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_ID + ":ACL-*", 1, null, null, null, null, null,
-                    (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_ID + ":ACLTX-*", 1, null, null, null, null,
-                    null, (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_ID + ":TX-*", 1, null, null, null, null, null,
-                    (String) null);
+        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_NODE, 
+                    16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_ACL, 
+                    1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_ACL_TX, 
+                    1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_TX,
+                    1, null, null, null, null, null, (String) null);
 
         // LID is used internally via ID if a node ref is provided
-        testQueryByHandler(report, core, "/afts", FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":\"" + nodeRef + "\"", 1, null, null,
                     null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/afts", FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2011 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -60,6 +60,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(QueryConstants.FIELD_PATH);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_TEXT);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ID);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_SOLR4_ID);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ISROOT);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ISNODE);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_TX);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -73,7 +73,7 @@ public class SearchLanguageConversionTest extends TestCase
                 "\\) _ \\{ \\} \\[ \\] " +
                 "@ # \\~ ' \\: ; " +
                 ", . < > \\+ \\? " +
-                "/ \\\\\\\\ \\\\\\* \\\\\\? \\\\_",
+                "\\/ \\\\\\\\ \\\\\\* \\\\\\? \\\\_",
                 good);
     }
     
@@ -99,7 +99,7 @@ public class SearchLanguageConversionTest extends TestCase
                 "\\) ? \\{ \\} \\[ \\] " +
                 "@ # \\~ ' \\: ; " +
                 ", . < > \\+ \\? " +
-                "/ \\\\ \\* \\? _",
+                "\\/ \\\\ \\* \\? _",
                 good);
     }
     

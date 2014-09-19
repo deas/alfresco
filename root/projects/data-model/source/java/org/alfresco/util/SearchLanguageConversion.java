@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -327,11 +327,11 @@ public class SearchLanguageConversion
     
     /**
      * We have to escape lucene query strings outside of lucene - as we do not depend on any given version of lucene
-     * The escaping here is taken from lucene 1.4.3
+     * The escaping here is taken from lucene 4.9.0
      *  
      * The reserved (and escaped characters) are: 
      *  
-     *  \ + - ! ( ) : ^ [ ] " { } ~ * ? | &
+     *  \ + - ! ( ) : ^ [ ] " { } ~ * ? | & /
      *  
      *  The escape character is \
      *  
@@ -346,7 +346,7 @@ public class SearchLanguageConversion
             // These characters are part of the query syntax and must be escaped
             if (c == '\\' || c == '+' || c == '-' || c == '!' || c == '(' || c == ')' || c == ':'
                     || c == '^' || c == '[' || c == ']' || c == '\"' || c == '{' || c == '}' || c == '~'
-                    || c == '*' || c == '?' || c == '|' || c == '&') {
+                    || c == '*' || c == '?' || c == '|' || c == '&' || c == '/') {
                 sb.append('\\');
             }
             sb.append(c);
