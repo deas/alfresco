@@ -413,7 +413,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
         HashSet<Transaction> txsIndexed = new HashSet<>(); 
         TrackerState state = this.getTrackerState();
-
+        long totalUpdatedDocs = 0;
+        
         do
         {
             int docCount = 0;
@@ -506,9 +507,13 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 }
                 txBatch.clear();
             }
+            
+            totalUpdatedDocs += docCount;
         }
         while ((transactions.getTransactions().size() > 0) && (upToDate == false));
 
+        log.info("total number of docs with metadata updated: " + totalUpdatedDocs);
+        
         if (indexed)
         {
             indexTransactionsAfterAsynchronous(txsIndexed, state);

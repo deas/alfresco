@@ -383,7 +383,7 @@ public class AclTracker extends AbstractTracker
                 else if (setSize == 1)
                 {
                     state.setCheckedFirstTransactionTime(true);
-                    log.info("Verified first transaction and timetsamp in index");
+                    log.info("Verified first transaction and timestamp in index");
                 }
                 else
                 {
@@ -852,6 +852,7 @@ public class AclTracker extends AbstractTracker
         BoundedDeque<AclChangeSet> changeSetsFound = new BoundedDeque<AclChangeSet>(100);
         HashSet<AclChangeSet> changeSetsIndexed = new HashSet<AclChangeSet>();
         TrackerState state = super.getTrackerState();
+        long totalAclCount = 0;
         
         do
         {
@@ -939,9 +940,13 @@ public class AclTracker extends AbstractTracker
                 }
                 changeSetBatch.clear();
             }
+            
+            totalAclCount += aclCount;
         }
         while ((aclChangeSets.getAclChangeSets().size() > 0) && (upToDate == false));
 
+        log.info("total number of acls updated: " + totalAclCount);
+        
         if (indexed)
         {
             indexAclChangeSetAfterAsynchronous(changeSetsIndexed, state);

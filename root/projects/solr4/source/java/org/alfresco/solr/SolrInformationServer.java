@@ -102,8 +102,6 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.common.util.FastInputStream;
-import org.apache.solr.common.util.FastOutputStream;
 import org.apache.solr.common.util.JavaBinCodec;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
@@ -115,6 +113,7 @@ import org.apache.solr.response.ResultContext;
 import org.apache.solr.response.SolrQueryResponse;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
+import org.apache.solr.search.DocList;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
@@ -135,7 +134,6 @@ import org.springframework.util.FileCopyUtils;
  */
 public class SolrInformationServer implements InformationServer, QueryConstants
 {
-   
     private static final String DOC_TYPE_NODE = "Node";
     private static final String DOC_TYPE_UNINDEXED_NODE = "UnindexedNode";
     private static final String DOC_TYPE_ERROR_NODE = "ErrorNode";
@@ -143,12 +141,13 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     private static final String DOC_TYPE_TX = "Tx";
     private static final String DOC_TYPE_ACL_TX = "AclTx";
     private static final String DOC_TYPE_STATE = "State";
+    private static final int NO_MORE_SET_BITS = -1;
     
-    
-    
+    private static final String AND = " AND ";
     private static final String OR = " OR ";
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
+    private Cloud cloud;
     private TrackerStats trackerStats = new TrackerStats(this);
     private AlfrescoSolrDataModel dataModel;
     private SolrContentStore solrContentStore;
@@ -164,6 +163,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     private boolean skipDescendantAuxDocsForSpecificTypes;
     private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
     private BooleanQuery skippingDocsQuery;
+    private String skippingDocsQueryString;
     private SOLRAPIClient repositoryClient;
     
     protected final static Logger log = LoggerFactory.getLogger(SolrInformationServer.class);
@@ -189,6 +189,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     {
         this.adminHandler = adminHandler;
         this.core = core;
+        this.cloud = new Cloud();
         this.repositoryClient = repositoryClient;
         this.solrContentStore = solrContentStore;
 
@@ -202,16 +203,14 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         holeRetention = Integer.parseInt(p.getProperty("alfresco.hole.retention", "3600000"));
         
         dataModel = AlfrescoSolrDataModel.getInstance();
-        
 
         skipDescendantAuxDocsForSpecificTypes = Boolean.parseBoolean(p.getProperty("alfresco.metadata.skipDescendantAuxDocsForSpecificTypes", "false"));
 
         if (skipDescendantAuxDocsForSpecificTypes)
         {
             int i = 0;
-            skippingDocsQuery = new BooleanQuery();
-            for (String key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(i).toString(); p.containsKey(key); key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(++i)
-                    .toString())
+            for (String key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(i).toString(); p.containsKey(key); 
+                        key = new StringBuilder(PROP_PREFIX_PARENT_TYPE).append(++i).toString())
             {
                 String qName = p.getProperty(key);
                 if ((null != qName) && !qName.isEmpty())
@@ -221,10 +220,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     if (null != type)
                     {
                         typesForSkippingDescendantAuxDocs.add(typeQName);
-                        skippingDocsQuery.add(new TermQuery(new Term(FIELD_TYPE, typeQName.toString())), Occur.SHOULD);
                     }
                 }
             }
+            
+            skippingDocsQueryString = this.cloud.getQuery(FIELD_TYPE, OR, typesForSkippingDescendantAuxDocs);
         }
     }
 
@@ -245,8 +245,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         try
         {
             RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
-
-            refCounted = core.getSearcher(false, true, null);
             if (refCounted == null)
             {
                 return aclReport;
@@ -343,32 +341,26 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
             String query = FIELD_FTSSTATUS + ":" + FTSStatus.Dirty + " OR " + FIELD_FTSSTATUS + ":" + FTSStatus.New;
             params.set("q", query).set("fl", "id").set("rows", "" + rows).set("start", "" + start);
-            ResultContext rc = cloudSelect(request, params);
+            ResultContext rc = cloud.select(core, request, params);
             
             List<TenantAndDbId> docs = new ArrayList<>();
-            if (rc != null)
+
+            if (rc.docs instanceof BitDocSet)
             {
-                for(DocIterator it = rc.docs.iterator(); it.hasNext(); /**/)
+                BitDocSet source = (BitDocSet) rc.docs;
+                FixedBitSet bits = source.getBits();
+                int docId = NO_MORE_SET_BITS;
+                while ((docId = bits.nextSetBit(docId + 1)) != NO_MORE_SET_BITS)
                 {
-                    int docID = it.nextDoc();
-                    BytesRef tenant = new BytesRef();
-                    request.getSearcher().getAtomicReader().getSortedDocValues(FIELD_TENANT).get(docID, tenant);
-
-                    BytesRef dbid = new BytesRef();
-                    SortedSetDocValues ssdv = request.getSearcher().getAtomicReader().getSortedSetDocValues(FIELD_DBID);
-                    ssdv.setDocument(docID);
-                    long ordinal = ssdv.nextOrd();
-                    if(ordinal == SortedSetDocValues.NO_MORE_ORDS)
-                    {
-                        continue;
-                    }
-                    ssdv.lookupOrd(ordinal, dbid);
-
-                    TenantAndDbId tenantAndDbId = new TenantAndDbId();
-                    tenantAndDbId.tenant = tenant.utf8ToString();
-                    tenantAndDbId.dbId = NumericUtils.prefixCodedToLong(dbid);
-
-                    docs.add(tenantAndDbId);
+                    addTenantAndDbId(request, docs, docId);
+                }
+            }
+            else
+            {
+                for (DocIterator it = rc.docs.iterator(); it.hasNext(); /**/)
+                {
+                    int docId = it.nextDoc();
+                    addTenantAndDbId(request, docs, docId);
                 }
             }
             return docs;
@@ -378,34 +370,21 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             if(request != null){request.close();}
         }
     }
-    
-    private ResultContext cloudSelect(SolrQueryRequest request, SolrParams params)
-    {
-        SolrRequestHandler requestHandler = core.getRequestHandler("/select");
-        request.setParams(params);
-        log.info("Running query " + params.get("q"));
-        SolrQueryResponse solrRsp = new SolrQueryResponse();
-        requestHandler.handleRequest(request, solrRsp);
-        ResultContext rc = (ResultContext) solrRsp.getValues().get("response");
-        
-        return rc;
-    }
-        
-    private boolean cloudSelectReturnsDoc(SolrQueryRequest request, String query)
-    {
-        ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
-        params.set("q", query).set("fl", "id").set("rows", "1");
-        ResultContext rc = this.cloudSelect(request, params);
 
-        if (rc != null)
+    private void addTenantAndDbId(SolrQueryRequest request, List<TenantAndDbId> docs, int docId)
+                throws IOException
+    {
+        BytesRef dbId = new BytesRef();
+        boolean dbIdSet = cloud.populateFieldResult(request, FIELD_DBID, docId, dbId);
+        if (dbIdSet)
         {
-            if (rc.docs != null)
-            {
-                return rc.docs.iterator().hasNext();
-            }
+            BytesRef tenant = new BytesRef();
+            request.getSearcher().getAtomicReader().getSortedDocValues(FIELD_TENANT).get(docId, tenant);
+            TenantAndDbId tenantAndDbId = new TenantAndDbId();
+            tenantAndDbId.tenant = tenant.utf8ToString();
+            tenantAndDbId.dbId = NumericUtils.prefixCodedToLong(dbId);
+            docs.add(tenantAndDbId);
         }
-            
-        return false;
     }
     
     @Override
@@ -1191,7 +1170,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 }
                 else
                 {
-                    nodeMetaDatas =  repositoryClient.getNodesMetaData(nmdp, Integer.MAX_VALUE);
+                    nodeMetaDatas = repositoryClient.getNodesMetaData(nmdp, Integer.MAX_VALUE);
                 }
                 
                 NodeMetaData nodeMetaData = null;
@@ -1201,7 +1180,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     if (!(nodeMetaData.getTxnId() > node.getTxnId()))
                     {
                         LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                        //TODO: updateDescendantDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
+                        DocList skippingDocs = cloud.getDocList(core, request, skippingDocsQueryString);
+                        updateDescendantAuxDocs(nodeMetaData, overwrite, request, processor, visited, skippingDocs);
                     }
                     // else, the node has moved on to a later transaction, and it will be indexed later
                 }
@@ -1233,7 +1213,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     {
                         if (mayHaveChildren(nodeMetaData))
                         {
-                            cascadeUpdate(nodeMetaData);
+                            cascadeUpdate(nodeMetaData, overwrite, request, processor);
                         }
                     }
                     // else, the node has moved on to a later transaction, and it will be indexed later
@@ -1259,9 +1239,9 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                             return;
                         }
                     }
-
+                    
                     // Make sure any unindexed or error doc is removed.
-                    log.debug(".. deleting");
+                    log.debug(".. deleting node " + node.getId());
                     deleteNode(processor, request, node);
                     
                     SolrInputDocument doc = createNewDoc(nodeMetaData, DOC_TYPE_NODE);
@@ -1288,7 +1268,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             addDocCmd.overwrite = overwrite;
 
             SolrInputDocument doc = new SolrInputDocument();
-            // TODO: Error doc
             doc.addField("id", "ERROR-" + node.getId());
             doc.addField("_version_", "0");
             doc.addField(FIELD_DBID, node.getId());
@@ -1320,48 +1299,298 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             if(request != null) {request.close();}
         }
     }
+    
 
-    /**
-     * Checks if a cascade update is necessary, and then updates descendants
-     * @param nodeMetaData the metadata for the current node
-     */
-    private void cascadeUpdate(NodeMetaData nodeMetaData)
+    private void updateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
+                SolrQueryRequest request, UpdateRequestProcessor processor, LinkedHashSet<Long> stack, DocSet skippingDocs) 
+                            throws AuthenticationException, IOException, JSONException
     {
-        log.info(".. checking for path change");
-
-        LocalSolrQueryRequest request = null;
-        try
+        if (stack.contains(parentNodeMetaData.getId()))
         {
-            request = new LocalSolrQueryRequest(core, new NamedList<>());
-            String query = FIELD_DBID + ":" + nodeMetaData.getId() + " AND " + FIELD_PARENT_ASSOC_CRC + ":"
-                        + nodeMetaData.getParentAssocsCrc();
-            boolean nodeHasSamePathAsBefore = cloudSelectReturnsDoc(request, query);
-            if (nodeHasSamePathAsBefore)
+            log.warn("Found aux data loop for node id " + parentNodeMetaData.getId());
+            log.warn("... stack to node =" + stack);
+            return;
+        }
+        else
+        {
+            try
             {
-                log.debug("... found match");
+                stack.add(parentNodeMetaData.getId());
+                doUpdateDescendantAuxDocs(parentNodeMetaData, overwrite, request, processor, stack, skippingDocs);
             }
-            else
+            finally
             {
-                query = FIELD_DBID + ":" + nodeMetaData.getId();
-                boolean nodeHasBeenIndexed = cloudSelectReturnsDoc(request, query);
-                if (nodeHasBeenIndexed)
+                stack.remove(parentNodeMetaData.getId());
+            }
+        }
+    }
+
+    private void doUpdateDescendantAuxDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
+                SolrQueryRequest request, UpdateRequestProcessor processor, LinkedHashSet<Long> stack, DocSet skippingDocs) 
+                            throws AuthenticationException, IOException, JSONException
+    {
+        if (skipDescendantAuxDocsForSpecificTypes 
+                    && typesForSkippingDescendantAuxDocs.contains(parentNodeMetaData.getType()))
+        {
+            return;
+        }
+        
+        HashSet<Long> childIds = new HashSet<Long>();
+
+        if (parentNodeMetaData.getChildIds() != null)
+        {
+            childIds.addAll(parentNodeMetaData.getChildIds());
+        }
+
+        String query = FIELD_PARENT + ":" + parentNodeMetaData.getNodeRef();
+        ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
+        params.set("q", query).set("fl", "id");
+        ResultContext rc = cloud.select(core, request, params);
+
+        if (rc.docs instanceof BitDocSet)
+        {
+            BitDocSet source = (BitDocSet) rc.docs;
+            FixedBitSet bits = source.getBits();
+            int docId = NO_MORE_SET_BITS;
+            while ((docId = bits.nextSetBit(docId + 1)) != NO_MORE_SET_BITS)
+            {
+                addDbId(request, skippingDocs, childIds, docId);
+            }
+        }
+        else
+        {
+            for (DocIterator it = rc.docs.iterator(); it.hasNext(); /**/)
+            {
+                int docId = it.nextDoc();
+                addDbId(request, skippingDocs, childIds, docId);
+            }
+        }
+        
+//        BooleanQuery bQuery = new BooleanQuery();
+//        bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_PARENT, parentNodeMetaData.getNodeRef().toString())),
+//                    Occur.MUST);
+//        DocSet docSet = solrIndexSearcher.getDocSet(bQuery);
+//        ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) solrIndexSearcher
+//                    .cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE,
+//                                AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
+//        if (docSet instanceof BitDocSet)
+//        {
+//            BitDocSet source = (BitDocSet) docSet;
+//            FixedBitSet openBitSet = source.getBits();
+//            int current = -1;
+//            while ((current = openBitSet.nextSetBit(current + 1)) != -1)
+//            {
+//                if (!skippingDocs.exists(current))
+//                {
+//                    CacheEntry entry = indexedByDocId.get(current);
+//                    childIds.add(entry.getDbid());
+//                }
+//            }
+//        }
+//        else
+//        {
+//            for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+//            {
+//                int current = it.nextDoc();
+//                if (!skippingDocs.exists(current))
+//                {
+//                    CacheEntry entry = indexedByDocId.get(current);
+//                    childIds.add(entry.getDbid());
+//                }
+//            }
+//        }
+
+        for (Long childId : childIds)
+        {
+            if (!shouldElementBeIgnored(childId, request, skippingDocs))
+            {
+                NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+                nmdp.setFromNodeId(childId);
+                nmdp.setToNodeId(childId);
+                nmdp.setIncludeAclId(true);
+                nmdp.setIncludeAspects(true);
+                nmdp.setIncludeChildAssociations(false);
+                nmdp.setIncludeChildIds(true);
+                nmdp.setIncludeNodeRef(true);
+                nmdp.setIncludeOwner(true);
+                nmdp.setIncludeParentAssociations(true);
+                nmdp.setIncludePaths(true);
+                nmdp.setIncludeProperties(false);
+                nmdp.setIncludeType(true);
+                nmdp.setIncludeTxnId(true);
+                // Gets only one 
+                List<NodeMetaData> nodeMetaDatas = repositoryClient.getNodesMetaData(nmdp, 1);
+                
+                if (!nodeMetaDatas.isEmpty())
                 {
-                    log.debug("... cascade updating docs");
-                    LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                    // TODO: updateDescendantAuxDocs(nodeMetaData, overwrite, solrIndexSearcher, visited,
-                    // solrIndexSearcher.getDocSet(skippingDocsQuery));
-                }
-                else
-                {
-                    log.debug("... no doc to update");
+                    NodeMetaData nodeMetaData = nodeMetaDatas.get(0);
+                    if (mayHaveChildren(nodeMetaData))
+                    {
+                        updateDescendantAuxDocs(nodeMetaData, overwrite, request, processor, stack, skippingDocs);
+                    }
+    
+                    // Avoid adding aux docs for stuff yet to be indexed or unindexed (via the index control aspect)
+                    log.info(".. checking aux doc exists in index before we update it");
+//                    Query query = new TermQuery(new Term(QueryConstants.FIELD_ID, "AUX-" + childId));
+//                    DocSet auxSet = solrIndexSearcher.getDocSet(query);
+//                    if (auxSet.size() > 0)
+                    String auxDocExistsQuery = FIELD_ID + ":AUX-" + childId;
+                    boolean exists = cloud.selectReturnsDoc(core, request, auxDocExistsQuery);
+                    if (exists)
+                    {
+                        log.debug("... cascade update aux doc " + childId);
+    
+                        SolrInputDocument aux = createAuxDoc(nodeMetaData);
+                        AddUpdateCommand auxDocCmd = new AddUpdateCommand(request);
+                        auxDocCmd.overwrite = overwrite;
+                        auxDocCmd.solrDoc = aux;
+                        
+                        processor.processAdd(auxDocCmd);
+                    }
+                    else
+                    {
+                        log.debug("... no aux doc found to update " + childId);
+                    }
                 }
             }
         }
-        finally
+    }
+
+    private void addDbId(SolrQueryRequest request, DocSet skippingDocs, HashSet<Long> childIds, int docId)
+                throws IOException
+    {
+        if (!skippingDocs.exists(docId))
         {
-            if (request != null)
+            BytesRef dbId = new BytesRef();
+            boolean dbIdSet = cloud.populateFieldResult(request, FIELD_DBID, docId, dbId);
+            if (dbIdSet)
             {
-                request.close();
+                childIds.add(NumericUtils.prefixCodedToLong(dbId));
+            }
+        }
+    }
+    
+    private boolean shouldElementBeIgnored(long dbId, SolrQueryRequest request, DocSet skippingDocs) throws IOException
+    {
+        boolean result = false;
+
+        if (skipDescendantAuxDocsForSpecificTypes && !typesForSkippingDescendantAuxDocs.isEmpty())
+        {
+//            BooleanQuery query = new BooleanQuery();
+//            query.add(new TermQuery(new Term(QueryConstants.FIELD_DBID, NumericEncoder.encode(dbId))), Occur.MUST);
+//
+//            DocSet docSet = solrIndexSearcher.getDocSet(query);
+            String query = FIELD_DBID + ":" + NumericEncoder.encode(dbId);
+            DocList docList = this.cloud.getDocList(core, request, query);
+            
+            final int NOT_SET = -1;
+            int index = NOT_SET;
+            
+            if (docList instanceof BitDocSet)
+            {
+                BitDocSet source = (BitDocSet) docList;
+                FixedBitSet openBitSet = source.getBits();
+                index = openBitSet.nextSetBit(index + 1);
+            }
+            else
+            {
+                DocIterator it = docList.iterator();
+                if (it.hasNext())
+                {
+                    index = it.nextDoc();
+                }
+            }
+
+            result = (NOT_SET != index) && skippingDocs.exists(index);
+        }
+
+        return result;
+    }
+
+    private SolrInputDocument createAuxDoc(NodeMetaData nodeMetaData)
+    {
+        SolrInputDocument aux = new SolrInputDocument();
+        aux.addField(QueryConstants.FIELD_ID, "AUX-" + nodeMetaData.getId());
+        aux.addField(QueryConstants.FIELD_DBID, nodeMetaData.getId());
+        aux.addField(QueryConstants.FIELD_ACLID, nodeMetaData.getAclId());
+        aux.addField(QueryConstants.FIELD_INTXID, nodeMetaData.getTxnId());
+
+        for (Pair<String, QName> path : nodeMetaData.getPaths())
+        {
+            aux.addField(QueryConstants.FIELD_PATH, path.getFirst());
+        }
+
+        if (nodeMetaData.getOwner() != null)
+        {
+            aux.addField(QueryConstants.FIELD_OWNER, nodeMetaData.getOwner());
+        }
+        aux.addField(QueryConstants.FIELD_PARENT_ASSOC_CRC, nodeMetaData.getParentAssocsCrc());
+
+        StringBuilder qNameBuffer = new StringBuilder(64);
+        StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
+        if (nodeMetaData.getParentAssocs() != null)
+        {
+            for (ChildAssociationRef childAssocRef : nodeMetaData.getParentAssocs())
+            {
+                if (qNameBuffer.length() > 0)
+                {
+                    qNameBuffer.append(";/");
+                    assocTypeQNameBuffer.append(";/");
+                }
+                qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
+                assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                aux.addField(QueryConstants.FIELD_PARENT, childAssocRef.getParentRef());
+
+                if (childAssocRef.isPrimary())
+                {
+                    aux.addField(QueryConstants.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME,
+                                ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+
+                }
+            }
+            aux.addField(QueryConstants.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+            aux.addField(QueryConstants.FIELD_QNAME, qNameBuffer.toString());
+        }
+        if (nodeMetaData.getAncestors() != null)
+        {
+            for (NodeRef ancestor : nodeMetaData.getAncestors())
+            {
+                aux.addField(QueryConstants.FIELD_ANCESTOR, ancestor.toString());
+            }
+        }
+        return aux;
+    }
+
+    /**
+     * Checks if a cascade update is necessary, and then updates descendants
+     */
+    private void cascadeUpdate(NodeMetaData nodeMetaData, boolean overwrite, SolrQueryRequest request, 
+                UpdateRequestProcessor processor) throws AuthenticationException, IOException, JSONException
+    {
+        log.info(".. checking for path change");
+        String query = FIELD_DBID + ":" + nodeMetaData.getId() + AND + FIELD_PARENT_ASSOC_CRC + ":"
+                    + nodeMetaData.getParentAssocsCrc();
+        boolean nodeHasSamePathAsBefore = cloud.selectReturnsDoc(core, request, query);
+        if (nodeHasSamePathAsBefore)
+        {
+            log.debug("... found match");
+        }
+        else
+        {
+            query = FIELD_DBID + ":" + nodeMetaData.getId();
+            boolean nodeHasBeenIndexed = cloud.selectReturnsDoc(core, request, query);
+            if (nodeHasBeenIndexed)
+            {
+                log.debug("... cascade updating docs");
+                LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
+                DocList skippingDocs = cloud.getDocList(core, request, skippingDocsQueryString);
+                updateDescendantAuxDocs(nodeMetaData, overwrite, request, processor, visited, skippingDocs);
+            }
+            else
+            {
+                log.debug("... no doc to update");
             }
         }
     }
@@ -1438,13 +1667,13 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                         continue;
                     }
                     LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                    //TODO: updateDescendantDocs(nodeMetaData, overwrite, solrIndexSearcher, visited, solrIndexSearcher.getDocSet(skippingDocsQuery));
+                    DocList skippingDocs = cloud.getDocList(core, request, skippingDocsQueryString);
+                    updateDescendantAuxDocs(nodeMetaData, overwrite, request, processor, visited, skippingDocs);
                 }
 
                 log.debug(".. deleting");
                 DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(request);
-                @SuppressWarnings("unchecked")
-                String query = this.getNodeIdQuery(FIELD_DBID, OR, deletedNodeIds, unknownNodeIds);
+                String query = this.cloud.getQuery(FIELD_DBID, OR, deletedNodeIds, unknownNodeIds);
                 delDocCmd.setQuery(query);
                 processor.processDelete(delDocCmd);
             }
@@ -1476,7 +1705,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
 
                     if (mayHaveChildren(nodeMetaData))
                     {
-                        cascadeUpdate(nodeMetaData);
+                        cascadeUpdate(nodeMetaData, overwrite, request, processor);
                     }
                     
                     // check index control
@@ -1504,11 +1733,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     SolrInputDocument doc = createNewDoc(nodeMetaData, DOC_TYPE_NODE);
                     addToNewDocAndCache(nodeMetaData, doc);
                     addDocCmd.solrDoc = doc;
-
                     processor.processAdd(addDocCmd);
-                    
                 } // Ends iteration over nodeMetadatas
-
             } // Ends checking for the existence of updated or unknown node ids 
             long end = System.nanoTime();
             this.trackerStats.addNodeTime(end - start);
@@ -1592,7 +1818,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     doc.addField(FIELD_PRIMARYASSOCTYPEQNAME,
                                 ISO9075.getXPathName(childAssocRef.getTypeQName()));
                     doc.addField(FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
-
                 }
             }
             doc.addField(FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
@@ -1701,22 +1926,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return isContentIndexed;
     }
     
-    @SuppressWarnings("unchecked")
-    private String getNodeIdQuery(String fieldName, String operator, Collection<Long> ... nodeIdLists) 
-    {
-        StringBuilder query = new StringBuilder();
-        for (Collection<Long> nodeIdList : nodeIdLists)
-        {
-            for (Long nodeId : nodeIdList)
-            {
-                query.append(fieldName).append(":").append(nodeId).append(operator);
-            }
-        }
-        query.delete(query.length() - operator.length(), query.length());
-        
-        return query.toString();
-    }
-    
     /**
      * @param list
      * @return
@@ -1765,7 +1974,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
         return fieldName;
     }
-
 
     private void addContentPropertyMetadata(SolrInputDocument doc, QName propertyQName, 
                 AlfrescoSolrDataModel.ContentFieldType type, GetTextContentResponse textContentResponse)
@@ -1823,7 +2031,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             }
         }
     }
-    
     
     private void addContentPropertyToDocUsingCache(SolrInputDocument newDoc, SolrInputDocument cachedDoc, 
                 QName propertyQName, ContentPropertyValue contentPropertyValue)
@@ -1931,7 +2138,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     
     private void addContentToCachedDoc(SolrInputDocument cachedDoc, long dbId) throws UnsupportedEncodingException, AuthenticationException, IOException
     {
-        for (String fieldName : cachedDoc.deepCopy().getFieldNames())
+        Collection<String> fieldNames = cachedDoc.deepCopy().getFieldNames(); 
+        for (String fieldName : fieldNames)
         {
             if (fieldName.startsWith(AlfrescoSolrDataModel.CONTENT_S_LOCALE_PREFIX))
             {
@@ -2055,7 +2263,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         SolrInputDocument cachedDoc = null;
         if(reader.exists())
         {
-
             // try-with-resources statement closes all these InputStreams
             try (
                     InputStream contentInputStream = reader.getContentInputStream();
@@ -2070,8 +2277,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return cachedDoc;
     }
     
-    
-
     private void addMLTextPropertyToDoc(SolrInputDocument doc, FieldInstance field, MLTextPropertyValue mlTextPropertyValue) throws IOException
     {   
         if(field.isLocalised())
@@ -2111,12 +2316,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 doc.addField(field.getField(), mlTextPropertyValue.getValue(locale));
             }
         }
-
     }
     
     private void addStringPropertyToDoc(SolrInputDocument doc, FieldInstance field, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
     {
-
         if(field.isLocalised())
         {
             Locale locale = null;
@@ -2144,7 +2347,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         { 
             doc.addField(field.getField(), stringPropertyValue.getValue());
         }
-
     }
     
     private boolean mayHaveChildren(NodeMetaData nodeMetaData)
@@ -2163,7 +2365,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return false;
     }
     
-
     @Override
     public void indexTransaction(Transaction info, boolean overwrite) throws IOException
     {
