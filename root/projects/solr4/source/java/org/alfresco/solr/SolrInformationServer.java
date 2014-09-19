@@ -250,7 +250,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     {
         // TODO This can be local
         
-        return null;
+        return new IndexHealthReport(this);
     }
     
     @Override

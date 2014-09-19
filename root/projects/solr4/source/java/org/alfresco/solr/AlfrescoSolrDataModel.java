@@ -148,7 +148,7 @@ public class AlfrescoSolrDataModel implements QueryConstants
 
     private static final String  TX = "TX";
     
-    private static final String DEFAULT_TENANT = "_DEFAULT_";
+    public static final String DEFAULT_TENANT = "_DEFAULT_";
     
     private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 

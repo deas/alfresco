@@ -78,7 +78,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
     public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
     {
         // TODO Auto-generated method stub
-        return null;
+        return new IndexHealthReport(infoSrv);
     }
 
 }

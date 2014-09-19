@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -43,8 +42,10 @@ import org.alfresco.service.cmr.repository.datatype.Duration;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.tracker.AclTracker;
+import org.alfresco.solr.tracker.ContentTracker;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.MetadataTracker;
+import org.alfresco.solr.tracker.ModelTracker;
 import org.alfresco.solr.tracker.SolrTrackerScheduler;
 import org.alfresco.solr.tracker.Tracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
@@ -158,15 +159,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             if (a.equalsIgnoreCase("TEST"))
             {
-                new AlfrescoCoreAdminTester(req).runTests(req, rsp);
+                new AlfrescoCoreAdminTester(req, this).runTests(req, rsp);
             }
             else if (a.equalsIgnoreCase("AUTHTEST"))
             {
-                new AlfrescoCoreAdminTester(req).runAuthTest(req, rsp);
+                new AlfrescoCoreAdminTester(req, this).runAuthTest(req, rsp);
             }
             else if (a.equalsIgnoreCase("CMISTEST"))
             {
-                new AlfrescoCoreAdminTester(req).runCmisTests(req, rsp);
+                new AlfrescoCoreAdminTester(req, this).runCmisTests(req, rsp);
             }
             else if (a.equalsIgnoreCase("newCore"))
             {
@@ -951,100 +952,114 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
                 InformationServer srv, NamedList<Object> report) throws IOException
     {
         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
-// TODO: Needs testing if the cast is ok. Used to be (Map<String, Object>)
         coreSummary.addAll((SimpleOrderedMap<Object>) srv.getCoreStats());
         
         MetadataTracker metaTrkr = trackerRegistry.getTrackerForCore(cname, MetadataTracker.class);
-        long lastIndexTxCommitTime = metaTrkr.getTrackerState().getLastIndexedTxCommitTime();
+        TrackerState metadataTrkrState = metaTrkr.getTrackerState();
+        long lastIndexTxCommitTime = metadataTrkrState.getLastIndexedTxCommitTime();
         
-////        long lastIndexedTxId = srv.getTrackerState().getLastIndexedTxId();
-////        long lastTxCommitTimeOnServer = srv.getTrackerState().getLastTxCommitTimeOnServer();
-////        long lastTxIdOnServer = srv.getTrackerState().getLastTxIdOnServer();
-////        Date lastIndexTxCommitDate = new Date(lastIndexTxCommitTime);
-////        Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
-////        long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
-////        if (transactionsToDo < 0)
-////        {
-////            transactionsToDo = 0;
-////        }
-////
-////        long lastIndexChangeSetCommitTime = srv.getTrackerState().getLastIndexedChangeSetCommitTime();
-////        long lastIndexedChangeSetId = srv.getTrackerState().getLastIndexedChangeSetId();
-////        long lastChangeSetCommitTimeOnServer = srv.getTrackerState().getLastChangeSetCommitTimeOnServer();
-////        long lastChangeSetIdOnServer = srv.getTrackerState().getLastChangeSetIdOnServer();
-//        Date lastIndexChangeSetCommitDate = new Date(lastIndexChangeSetCommitTime);
-//        Date lastChangeSetOnServerDate = new Date(lastChangeSetCommitTimeOnServer);
-//        long changeSetsToDo = lastChangeSetIdOnServer - lastIndexedChangeSetId;
-//        if (changeSetsToDo < 0)
-//        {
-//            changeSetsToDo = 0;
-//        }
-//
-//        long remainingTxTimeMillis = (long) (transactionsToDo * srv.getTrackerStats().getMeanDocsPerTx()
-//                    * srv.getTrackerStats().getMeanNodeIndexTime() / srv.getTrackerStats()
-//                    .getNodeIndexingThreadCount());
-//        Date now = new Date();
-//        Date end = new Date(now.getTime() + remainingTxTimeMillis);
-//        Duration remainingTx = new Duration(now, end);
-//
-//        long remainingChangeSetTimeMillis = (long) (changeSetsToDo
-//                    * srv.getTrackerStats().getMeanAclsPerChangeSet()
-//                    * srv.getTrackerStats().getMeanAclIndexTime() / srv.getTrackerStats()
-//                    .getNodeIndexingThreadCount());
-//        now = new Date();
-//        end = new Date(now.getTime() + remainingChangeSetTimeMillis);
-//        Duration remainingChangeSet = new Duration(now, end);
-//
-//        Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
-//        if (lastIndexTxCommitDate.compareTo(lastTxOnServerDate) > 0)
-//        {
-//            txLag = new Duration();
-//        }
-//        long txLagSeconds = (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000;
-//        if (txLagSeconds < 0)
-//        {
-//            txLagSeconds = 0;
-//        }
-//
-//        Duration changeSetLag = new Duration(lastIndexChangeSetCommitDate, lastChangeSetOnServerDate);
-//        if (lastIndexChangeSetCommitDate.compareTo(lastChangeSetOnServerDate) > 0)
-//        {
-//            changeSetLag = new Duration();
-//        }
-//        long changeSetLagSeconds = (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000;
-//        if (txLagSeconds < 0)
-//        {
-//            txLagSeconds = 0;
-//        }
-//
-//        coreSummary.add("Active", srv.getTrackerState().isRunning());
-//
-//        // TX
-//
-//        coreSummary.add("Last Index TX Commit Time", lastIndexTxCommitTime);
-//        coreSummary.add("Last Index TX Commit Date", lastIndexTxCommitDate);
-//        coreSummary.add("TX Lag", txLagSeconds + " s");
-//        coreSummary.add("TX Duration", txLag.toString());
-//        coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
-//        coreSummary.add("Date for last TX on server", lastTxOnServerDate);
-//        coreSummary.add("Id for last TX on server", lastTxIdOnServer);
-//        coreSummary.add("Id for last TX in index", lastIndexedTxId);
-//        coreSummary.add("Approx transactions remaining", transactionsToDo);
-//        coreSummary.add("Approx transaction indexing time remaining", remainingTx.largestComponentformattedString());
-//
-//        // Change set
-//
-//        coreSummary.add("Last Index Change Set Commit Time", lastIndexChangeSetCommitTime);
-//        coreSummary.add("Last Index Change Set Commit Date", lastIndexChangeSetCommitDate);
-//        coreSummary.add("Change Set Lag", changeSetLagSeconds + " s");
-//        coreSummary.add("Change Set Duration", changeSetLag.toString());
-//        coreSummary.add("Timestamp for last Change Set on server", lastChangeSetCommitTimeOnServer);
-//        coreSummary.add("Date for last Change Set on server", lastChangeSetOnServerDate);
-//        coreSummary.add("Id for last Change Set on server", lastChangeSetIdOnServer);
-//        coreSummary.add("Id for last Change Set in index", lastIndexedChangeSetId);
-//        coreSummary.add("Approx change sets remaining", changeSetsToDo);
-//        coreSummary.add("Approx change set indexing time remaining",
-//                    remainingChangeSet.largestComponentformattedString());
+        long lastIndexedTxId = metadataTrkrState.getLastIndexedTxId();
+        long lastTxCommitTimeOnServer = metadataTrkrState.getLastTxCommitTimeOnServer();
+        long lastTxIdOnServer = metadataTrkrState.getLastTxIdOnServer();
+        Date lastIndexTxCommitDate = new Date(lastIndexTxCommitTime);
+        Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
+        long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
+        if (transactionsToDo < 0)
+        {
+            transactionsToDo = 0;
+        }
+
+        AclTracker aclTrkr = trackerRegistry.getTrackerForCore(cname, AclTracker.class);
+        TrackerState aclTrkrState = aclTrkr.getTrackerState();
+        long lastIndexChangeSetCommitTime = aclTrkrState.getLastIndexedChangeSetCommitTime();
+        long lastIndexedChangeSetId = aclTrkrState.getLastIndexedChangeSetId();
+        long lastChangeSetCommitTimeOnServer = aclTrkrState.getLastChangeSetCommitTimeOnServer();
+        long lastChangeSetIdOnServer = aclTrkrState.getLastChangeSetIdOnServer();
+        Date lastIndexChangeSetCommitDate = new Date(lastIndexChangeSetCommitTime);
+        Date lastChangeSetOnServerDate = new Date(lastChangeSetCommitTimeOnServer);
+        long changeSetsToDo = lastChangeSetIdOnServer - lastIndexedChangeSetId;
+        if (changeSetsToDo < 0)
+        {
+            changeSetsToDo = 0;
+        }
+
+        long remainingTxTimeMillis = (long) (transactionsToDo * srv.getTrackerStats().getMeanDocsPerTx()
+                    * srv.getTrackerStats().getMeanNodeIndexTime() / srv.getTrackerStats()
+                    .getNodeIndexingThreadCount());
+        Date now = new Date();
+        Date end = new Date(now.getTime() + remainingTxTimeMillis);
+        Duration remainingTx = new Duration(now, end);
+
+        long remainingChangeSetTimeMillis = (long) (changeSetsToDo
+                    * srv.getTrackerStats().getMeanAclsPerChangeSet()
+                    * srv.getTrackerStats().getMeanAclIndexTime() / srv.getTrackerStats()
+                    .getNodeIndexingThreadCount());
+        now = new Date();
+        end = new Date(now.getTime() + remainingChangeSetTimeMillis);
+        Duration remainingChangeSet = new Duration(now, end);
+
+        Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
+        if (lastIndexTxCommitDate.compareTo(lastTxOnServerDate) > 0)
+        {
+            txLag = new Duration();
+        }
+        long txLagSeconds = (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000;
+        if (txLagSeconds < 0)
+        {
+            txLagSeconds = 0;
+        }
+
+        Duration changeSetLag = new Duration(lastIndexChangeSetCommitDate, lastChangeSetOnServerDate);
+        if (lastIndexChangeSetCommitDate.compareTo(lastChangeSetOnServerDate) > 0)
+        {
+            changeSetLag = new Duration();
+        }
+        long changeSetLagSeconds = (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000;
+        if (txLagSeconds < 0)
+        {
+            txLagSeconds = 0;
+        }
+
+        ContentTracker contentTrkr = trackerRegistry.getTrackerForCore(cname, ContentTracker.class);
+        TrackerState contentTrkrState = contentTrkr.getTrackerState();
+        // Leave ModelTracker out of this check, because it is common
+        boolean aTrackerIsRunning = aclTrkrState.isRunning() || metadataTrkrState.isRunning()
+                    || contentTrkrState.isRunning();
+        coreSummary.add("Active", aTrackerIsRunning);
+        
+        ModelTracker modelTrkr = trackerRegistry.getModelTracker();
+        TrackerState modelTrkrState = modelTrkr.getTrackerState();
+        coreSummary.add("ModelTracker Active", modelTrkrState.isRunning());
+        coreSummary.add("ContentTracker Active", contentTrkrState.isRunning());
+        coreSummary.add("MetadataTracker Active", metadataTrkrState.isRunning());
+        coreSummary.add("AclTracker Active", aclTrkrState.isRunning());
+
+        // TX
+
+        coreSummary.add("Last Index TX Commit Time", lastIndexTxCommitTime);
+        coreSummary.add("Last Index TX Commit Date", lastIndexTxCommitDate);
+        coreSummary.add("TX Lag", txLagSeconds + " s");
+        coreSummary.add("TX Duration", txLag.toString());
+        coreSummary.add("Timestamp for last TX on server", lastTxCommitTimeOnServer);
+        coreSummary.add("Date for last TX on server", lastTxOnServerDate);
+        coreSummary.add("Id for last TX on server", lastTxIdOnServer);
+        coreSummary.add("Id for last TX in index", lastIndexedTxId);
+        coreSummary.add("Approx transactions remaining", transactionsToDo);
+        coreSummary.add("Approx transaction indexing time remaining", remainingTx.largestComponentformattedString());
+
+        // Change set
+
+        coreSummary.add("Last Index Change Set Commit Time", lastIndexChangeSetCommitTime);
+        coreSummary.add("Last Index Change Set Commit Date", lastIndexChangeSetCommitDate);
+        coreSummary.add("Change Set Lag", changeSetLagSeconds + " s");
+        coreSummary.add("Change Set Duration", changeSetLag.toString());
+        coreSummary.add("Timestamp for last Change Set on server", lastChangeSetCommitTimeOnServer);
+        coreSummary.add("Date for last Change Set on server", lastChangeSetOnServerDate);
+        coreSummary.add("Id for last Change Set on server", lastChangeSetIdOnServer);
+        coreSummary.add("Id for last Change Set in index", lastIndexedChangeSetId);
+        coreSummary.add("Approx change sets remaining", changeSetsToDo);
+        coreSummary.add("Approx change set indexing time remaining",
+                    remainingChangeSet.largestComponentformattedString());
 
         // Stats
 
@@ -1058,7 +1073,7 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         coreSummary.add("Doc Transformation time (ms)", srv.getTrackerStats().getDocTransformationTimes()
                     .getNamedList(detail, hist, values));
 
-        // Modela
+        // Model
 
         Map<String, Set<String>> modelErrors = srv.getModelErrors();
         if (modelErrors.size() > 0)

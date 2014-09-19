@@ -18,6 +18,8 @@
  */
 package org.alfresco.solr;
 
+import org.alfresco.solr.AlfrescoSolrDataModel;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -163,8 +165,9 @@ public class AlfrescoCoreAdminTester
 
     long guid = System.nanoTime();
 
-    AlfrescoCoreAdminTester(SolrQueryRequest req)
+    AlfrescoCoreAdminTester(SolrQueryRequest req, AlfrescoCoreAdminHandler adminHandler)
     {
+        this.adminHandler = adminHandler;
         this.solrQueryRequest = req;
     }
 
@@ -288,7 +291,6 @@ public class AlfrescoCoreAdminTester
             rsp.add("Before", before);
 
             CoreDescriptor dcore = new CoreDescriptor(adminHandler.getCoreContainer(), name, newCore.toString());
-//            dcore.setCoreProperties(null);
             SolrCore core = adminHandler.getCoreContainer().create(dcore);
             adminHandler.getCoreContainer().register(name, core, false);
             before.add("core", core.getName());
@@ -898,7 +900,6 @@ public class AlfrescoCoreAdminTester
 
                 HashMap<QName, PropertyValue> baseFolderProperties = new HashMap<QName, PropertyValue>();
                 baseFolderProperties.put(ContentModel.PROP_NAME, new StringPropertyValue("Base Folder"));
-                // TODO: This variable is never used. Please verify that it is not needed.
                 HashMap<QName, String> baseFolderContent = new HashMap<QName, String>();
                 NodeRef baseFolderNodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
                 QName baseFolderQName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "baseFolder");
@@ -912,7 +913,6 @@ public class AlfrescoCoreAdminTester
 
                 HashMap<QName, PropertyValue> folder00Properties = new HashMap<QName, PropertyValue>();
                 folder00Properties.put(ContentModel.PROP_NAME, new StringPropertyValue("Folder 0"));
-                // TODO: This variable is never used. Please see if we even need it.
                 HashMap<QName, String> folder00Content = new HashMap<QName, String>();
                 NodeRef folder00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
                 QName folder00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Folder 0");
@@ -3366,7 +3366,6 @@ public class AlfrescoCoreAdminTester
         Date date0 = cal.getTime();
         cal.add(Calendar.DAY_OF_MONTH, 2);
         Date date2 = cal.getTime();
-        // TODO: This variable is never used. Please see if we even need it.
         StringPropertyValue d0 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date0));
         StringPropertyValue d1 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date1));
         StringPropertyValue d2 = new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date2));
@@ -6280,17 +6279,6 @@ public class AlfrescoCoreAdminTester
                     10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
     }
 
-    /**
-     * @param core
-     * @param locale TODO
-     * @param rows TODO
-     * @param start TODO
-     * @param filter TODO
-     * @param req
-     * @param rsp
-     * @param dataModel
-     * @throws IOException
-     */
     @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
     private void testQueryByHandler(NamedList report, SolrCore core, String handler, String query, int count,
                 String sort, int[] sorted, Locale locale, Integer rows, Integer start, String... filters)
@@ -6340,11 +6328,11 @@ public class AlfrescoCoreAdminTester
             newParams.set("fq", filters);
             queryReport.add("Filters", filters);
         }
+// TODO Why is this setting the fq when it may have already been set above?
         // newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
         solrReq.setParams(newParams);
-        // TODO: This variable is never used. Please see if we even need it.
         ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
-        // streams.add(new ContentStreamBase.StringStream("json"));
+//         streams.add(new ContentStreamBase.StringStream("json"));
         // solrReq.setContentStreams(streams);
 
         afts.handleRequest(solrReq, solrRsp);
@@ -8146,28 +8134,11 @@ public class AlfrescoCoreAdminTester
                 ChildAssociationRef[] parentAssocs, NodeRef[] ancestors, String[] paths, NodeRef nodeRef, boolean commit)
                 throws IOException
     {
-        AddUpdateCommand leafDocCmd = new AddUpdateCommand(solrQueryRequest);
-        leafDocCmd.overwrite = true;
-        leafDocCmd.solrDoc = createLeafDocument(dataModel, txid, dbid, nodeRef, type, aspects, properties, content);
-//        leafDocCmd.doc = LegacySolrInformationServer.toDocument(leafDocCmd.getSolrInputDocument(), core.getLatestSchema(),
-//                    dataModel);
-
-        AddUpdateCommand auxDocCmd = new AddUpdateCommand(solrQueryRequest);
-        auxDocCmd.overwrite = true;
-//        auxDocCmd.overwriteCommitted = true;
-//        auxDocCmd.overwritePending = true;
-        auxDocCmd.solrDoc = createAuxDocument(txid, dbid, aclid, paths, owner, parentAssocs, ancestors);
-//        auxDocCmd.doc = LegacySolrInformationServer.toDocument(auxDocCmd.getSolrInputDocument(), core.getLatestSchema(),
-//                    dataModel);
-
-//        if (leafDocCmd.doc != null)
-//        {
-            core.getUpdateHandler().addDoc(leafDocCmd);
-//        }
-//        if (auxDocCmd.doc != null)
-//        {
-            core.getUpdateHandler().addDoc(auxDocCmd);
-//        }
+        AddUpdateCommand addDocCmd = new AddUpdateCommand(solrQueryRequest);
+        addDocCmd.overwrite = true;
+        addDocCmd.solrDoc = createDocument(dataModel, new Long(txid), new Long(dbid), nodeRef, type, aspects, 
+                    properties, content, new Long(aclid), paths, owner, parentAssocs, ancestors);
+        core.getUpdateHandler().addDoc(addDocCmd);
 
         if (commit)
         {
@@ -8177,30 +8148,26 @@ public class AlfrescoCoreAdminTester
         return nodeRef;
     }
 
-    private void addAcl(SolrCore core, AlfrescoSolrDataModel dataModel, int acltxid, int aclid, int maxReader,
+    private void addAcl(SolrCore core, AlfrescoSolrDataModel dataModel, int acltxid, int aclId, int maxReader,
                 int totalReader) throws IOException
     {
         AddUpdateCommand aclTxCmd = new AddUpdateCommand(solrQueryRequest);
         aclTxCmd.overwrite = true;
-//        aclTxCmd.overwriteCommitted = true;
-//        aclTxCmd.overwritePending = true;
         SolrInputDocument aclTxSol = new SolrInputDocument();
-        aclTxSol.addField(QueryConstants.FIELD_ID, "ACLTX-" + acltxid);
+        String aclTxId = AlfrescoSolrDataModel.getAclChangeSetDocumentId(new Long(acltxid));
+        aclTxSol.addField(QueryConstants.FIELD_SOLR4_ID, aclTxId);
         aclTxSol.addField(QueryConstants.FIELD_ACLTXID, acltxid);
         aclTxSol.addField(QueryConstants.FIELD_INACLTXID, acltxid);
         aclTxSol.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
         aclTxCmd.solrDoc = aclTxSol;
-//        aclTxCmd.doc = LegacySolrInformationServer.toDocument(aclTxCmd.getSolrInputDocument(), core.getLatestSchema(),
-//                    dataModel);
         core.getUpdateHandler().addDoc(aclTxCmd);
 
         AddUpdateCommand aclCmd = new AddUpdateCommand(solrQueryRequest);
         aclCmd.overwrite = true;
-//        aclCmd.overwriteCommitted = true;
-//        aclCmd.overwritePending = true;
         SolrInputDocument aclSol = new SolrInputDocument();
-        aclSol.addField(QueryConstants.FIELD_ID, "ACL-" + aclid);
-        aclSol.addField(QueryConstants.FIELD_ACLID, aclid);
+        String aclDocId = AlfrescoSolrDataModel.getAclDocumentId(AlfrescoSolrDataModel.DEFAULT_TENANT, new Long(aclId));
+        aclSol.addField(QueryConstants.FIELD_SOLR4_ID, aclDocId);
+        aclSol.addField(QueryConstants.FIELD_ACLID, aclId);
         aclSol.addField(QueryConstants.FIELD_INACLTXID, "" + acltxid);
         aclSol.addField(QueryConstants.FIELD_READER, "GROUP_EVERYONE");
         aclSol.addField(QueryConstants.FIELD_READER, "pig");
@@ -8209,7 +8176,6 @@ public class AlfrescoCoreAdminTester
             aclSol.addField(QueryConstants.FIELD_READER, "READER-" + (totalReader - i));
         }
         aclCmd.solrDoc = aclSol;
-//        aclCmd.doc = LegacySolrInformationServer.toDocument(aclCmd.getSolrInputDocument(), core.getLatestSchema(), dataModel);
         core.getUpdateHandler().addDoc(aclCmd);
 
     }
@@ -8222,62 +8188,93 @@ public class AlfrescoCoreAdminTester
     private void addStoreRoot(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef, int txid, int dbid,
                 int acltxid, int aclid) throws IOException
     {
-        AddUpdateCommand leafDocCmd = new AddUpdateCommand(solrQueryRequest);
-        leafDocCmd.overwrite = true;
-//        leafDocCmd.overwriteCommitted = true;
-//        leafDocCmd.overwritePending = true;
-        leafDocCmd.solrDoc = createLeafDocument(dataModel, txid, dbid, rootNodeRef, ContentModel.TYPE_STOREROOT,
-                    new QName[] { ContentModel.ASPECT_ROOT }, null, null);
-//        leafDocCmd.doc = LegacySolrInformationServer.toDocument(leafDocCmd.getSolrInputDocument(), core.getLatestSchema(),
-//                    dataModel);
-
-        AddUpdateCommand auxDocCmd = new AddUpdateCommand(solrQueryRequest);
-        auxDocCmd.overwrite = true;
-//        auxDocCmd.overwriteCommitted = true;
-//        auxDocCmd.overwritePending = true;
-        auxDocCmd.solrDoc = createAuxDocument(txid, dbid, aclid, new String[] { "/" }, "system", null, null);
-//        auxDocCmd.doc = LegacySolrInformationServer.toDocument(auxDocCmd.getSolrInputDocument(), core.getLatestSchema(),
-//                    dataModel);
-
-//        if (leafDocCmd.doc != null)
-//        {
-            core.getUpdateHandler().addDoc(leafDocCmd);
-//        }
-//        if (auxDocCmd.doc != null)
-//        {
-            core.getUpdateHandler().addDoc(auxDocCmd);
-//        }
-
+        AddUpdateCommand addDocCmd = new AddUpdateCommand(solrQueryRequest);
+        addDocCmd.overwrite = true;
+        addDocCmd.solrDoc = createDocument(dataModel, new Long(txid), new Long(dbid), rootNodeRef, 
+                    ContentModel.TYPE_STOREROOT, new QName[] { ContentModel.ASPECT_ROOT }, null, null, new Long(aclid),
+                    new String[] { "/" }, "system", null, null);
+        core.getUpdateHandler().addDoc(addDocCmd);
         addAcl(core, dataModel, acltxid, aclid, 0, 0);
 
         AddUpdateCommand txCmd = new AddUpdateCommand(solrQueryRequest);
         txCmd.overwrite = true;
-//        txCmd.overwriteCommitted = true;
-//        txCmd.overwritePending = true;
         SolrInputDocument input = new SolrInputDocument();
+        // TODO fix as MetadataTracker
         input.addField(QueryConstants.FIELD_ID, "TX-" + txid);
         input.addField(QueryConstants.FIELD_TXID, txid);
         input.addField(QueryConstants.FIELD_INTXID, txid);
         input.addField(QueryConstants.FIELD_TXCOMMITTIME, (new Date()).getTime());
         txCmd.solrDoc = input;
-//        txCmd.doc = LegacySolrInformationServer.toDocument(txCmd.getSolrInputDocument(), core.getLatestSchema(), dataModel);
         core.getUpdateHandler().addDoc(txCmd);
 
         core.getUpdateHandler().commit(new CommitUpdateCommand(solrQueryRequest, false));
     }
 
-    private SolrInputDocument createLeafDocument(AlfrescoSolrDataModel dataModel, int txid, int dbid, NodeRef nodeRef,
-                QName type, QName[] aspects, Map<QName, PropertyValue> properties, Map<QName, String> content)
+    private SolrInputDocument createDocument(AlfrescoSolrDataModel dataModel, Long txid, Long dbid, NodeRef nodeRef,
+                QName type, QName[] aspects, Map<QName, PropertyValue> properties, Map<QName, String> content, 
+                Long aclId, String[] paths, String owner, ChildAssociationRef[] parentAssocs, NodeRef[] ancestors)
                 throws IOException
     {
         SolrInputDocument doc = new SolrInputDocument();
-        doc.addField(QueryConstants.FIELD_ID, "LEAF-" + dbid);
+        doc.addField(QueryConstants.FIELD_SOLR4_ID, AlfrescoSolrDataModel.getNodeDocumentId(
+                    AlfrescoSolrDataModel.DEFAULT_TENANT, aclId, dbid));
         doc.addField(QueryConstants.FIELD_DBID, "" + dbid);
         doc.addField(QueryConstants.FIELD_LID, nodeRef);
         doc.addField(QueryConstants.FIELD_INTXID, "" + txid);
+        doc.addField(QueryConstants.FIELD_ACLID, "" + aclId);
+        
+        if (paths != null)
+        {
+            for (String path : paths)
+            {
+                doc.addField(QueryConstants.FIELD_PATH, path);
+            }
+        }
 
+        if (owner != null)
+        {
+            doc.addField(QueryConstants.FIELD_OWNER, owner);
+        }
+        doc.addField(QueryConstants.FIELD_PARENT_ASSOC_CRC, "0");
+
+        StringBuilder qNameBuffer = new StringBuilder(64);
+        StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
+        if (parentAssocs != null)
+        {
+            for (ChildAssociationRef childAssocRef : parentAssocs)
+            {
+                if (qNameBuffer.length() > 0)
+                {
+                    qNameBuffer.append(";/");
+                    assocTypeQNameBuffer.append(";/");
+                }
+                qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
+                assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                doc.addField(QueryConstants.FIELD_PARENT, childAssocRef.getParentRef());
+
+                if (childAssocRef.isPrimary())
+                {
+                    doc.addField(QueryConstants.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    doc.addField(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME,
+                                ISO9075.getXPathName(childAssocRef.getTypeQName()));
+                    doc.addField(QueryConstants.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                }
+            }
+            doc.addField(QueryConstants.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+            doc.addField(QueryConstants.FIELD_QNAME, qNameBuffer.toString());
+        }
+
+        if (ancestors != null)
+        {
+            for (NodeRef ancestor : ancestors)
+            {
+                doc.addField(QueryConstants.FIELD_ANCESTOR, ancestor.toString());
+            }
+        }
+        
         if (properties != null)
         {
+            // TODO: Do like the informationserver.addPropertiesToDoc
             for (Map.Entry<QName, PropertyValue> entry : properties.entrySet())
             {
                 QName propertyQname = entry.getKey();
@@ -8338,8 +8335,8 @@ public class AlfrescoCoreAdminTester
             }
         }
         doc.addField(QueryConstants.FIELD_ISNODE, "T");
-        doc.addField(QueryConstants.FIELD_FTSSTATUS, "Clean");
-        doc.addField(QueryConstants.FIELD_TENANT, "_DEFAULT_");
+        doc.addField(QueryConstants.FIELD_FTSSTATUS, SolrInformationServer.FTSStatus.Clean);
+        doc.addField(QueryConstants.FIELD_TENANT, AlfrescoSolrDataModel.DEFAULT_TENANT);
 
         return doc;
     }
@@ -8347,7 +8344,7 @@ public class AlfrescoCoreAdminTester
     private void addStringPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName,
                 StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
     {
-        PropertyDefinition propertyDefinition = null; // dataModel.getPropertyDefinition(propertyQName);
+        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
         {
             if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
@@ -8427,13 +8424,6 @@ public class AlfrescoCoreAdminTester
         doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding",
                     contentPropertyValue.getEncoding());
 
-        // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
-        // ".transformationStatus", response.getStatus());
-        // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
-        // ".transformationTime", response.getTransformDuration());
-        // doc.addField(AbstractLuceneQueryParser.PROPERTY_FIELD_PREFIX + propertyQName.toString() +
-        // ".transformationException", response.getTransformException());
-
         String value = "";
         if (content != null)
         {
@@ -8462,7 +8452,7 @@ public class AlfrescoCoreAdminTester
     private void addMLTextPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName,
                 MLTextPropertyValue mlTextPropertyValue) throws IOException
     {
-        PropertyDefinition propertyDefinition = null; // dataModel.getPropertyDefinition(propertyQName);
+        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
         if (propertyDefinition != null)
         {
             StringBuilder sort = new StringBuilder();
@@ -8512,66 +8502,6 @@ public class AlfrescoCoreAdminTester
 
     }
 
-    private SolrInputDocument createAuxDocument(int txid, int dbid, int aclid, String[] paths, String owner,
-                ChildAssociationRef[] parentAssocs, NodeRef[] ancestors)
-    {
-        SolrInputDocument aux = new SolrInputDocument();
-        aux.addField(QueryConstants.FIELD_ID, "AUX-" + dbid);
-        aux.addField(QueryConstants.FIELD_DBID, "" + dbid);
-        aux.addField(QueryConstants.FIELD_ACLID, "" + aclid);
-        aux.addField(QueryConstants.FIELD_INTXID, "" + txid);
-
-        if (paths != null)
-        {
-            for (String path : paths)
-            {
-                aux.addField(QueryConstants.FIELD_PATH, path);
-            }
-        }
-
-        if (owner != null)
-        {
-            aux.addField(QueryConstants.FIELD_OWNER, owner);
-        }
-        aux.addField(QueryConstants.FIELD_PARENT_ASSOC_CRC, "0");
-
-        StringBuilder qNameBuffer = new StringBuilder(64);
-        StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
-        if (parentAssocs != null)
-        {
-            for (ChildAssociationRef childAssocRef : parentAssocs)
-            {
-                if (qNameBuffer.length() > 0)
-                {
-                    qNameBuffer.append(";/");
-                    assocTypeQNameBuffer.append(";/");
-                }
-                qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
-                assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                aux.addField(QueryConstants.FIELD_PARENT, childAssocRef.getParentRef());
-
-                if (childAssocRef.isPrimary())
-                {
-                    aux.addField(QueryConstants.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
-                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME,
-                                ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                    aux.addField(QueryConstants.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
-
-                }
-            }
-            aux.addField(QueryConstants.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-            aux.addField(QueryConstants.FIELD_QNAME, qNameBuffer.toString());
-        }
-        if (ancestors != null)
-        {
-            for (NodeRef ancestor : ancestors)
-            {
-                aux.addField(QueryConstants.FIELD_ANCESTOR, ancestor.toString());
-            }
-        }
-        return aux;
-    }
-
     private static SolrInputDocument createRootAclDocument()
     {
         SolrInputDocument doc = new SolrInputDocument();
@@ -8590,44 +8520,4 @@ public class AlfrescoCoreAdminTester
             super(core, new MultiMapSolrParams(Collections.<String, String[]> emptyMap()));
         }
     }
-
-    public static void main(String[] args)
-    {
-// In order to run a real test, we will need an instance of the SolrQueryRequest
-        AlfrescoCoreAdminTester handler = new AlfrescoCoreAdminTester(null);
-        String[] toSort = handler.orderLocalisedNames;
-        Collator collator = Collator.getInstance(Locale.ENGLISH);
-        Arrays.sort(toSort, collator);
-        System.out.println(Locale.ENGLISH);
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-        collator = Collator.getInstance(Locale.FRENCH);
-        Arrays.sort(toSort, collator);
-        System.out.println(Locale.FRENCH);
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-        collator = Collator.getInstance(Locale.GERMAN);
-        Arrays.sort(toSort, collator);
-        System.out.println(Locale.GERMAN);
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-        collator = Collator.getInstance(new Locale("sv"));
-        Arrays.sort(toSort, collator);
-        System.out.println(new Locale("sv"));
-        for (int i = 0; i < toSort.length; i++)
-        {
-            System.out.println(toSort[i]);
-        }
-
-    }
-
 }
