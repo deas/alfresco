@@ -154,7 +154,7 @@
     <dependency.tomcat.version>7.0.53</dependency.tomcat.version>
     <dependency.activiti.version>5.16.2</dependency.activiti.version>
     <dependency.jackson2.version>2.3.2</dependency.jackson2.version>
-    <dependency.poi.version>3.10-FINAL</dependency.poi.version>
+    <dependency.poi.version>3.10.1</dependency.poi.version>
     <dependency.dojo.version>1.8.3</dependency.dojo.version>
     <dependency.mysql.version>5.1.31</dependency.mysql.version>
     <dependency.postgresql.version>9.3-1102-jdbc41</dependency.postgresql.version>
