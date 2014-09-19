@@ -20,6 +20,8 @@ package org.alfresco.web.evaluator;
 
 import org.json.simple.JSONObject;
 
+import org.alfresco.api.AlfrescoPublicApi;     
+
 /**
  * Contract supported by all classes that provide dynamic evaluation for a UI element.
  * <p>
@@ -30,6 +32,7 @@ import org.json.simple.JSONObject;
  *
  * @author: mikeh
  */
+@AlfrescoPublicApi
 public interface Evaluator
 {
     /**

@@ -21,6 +21,7 @@ package org.alfresco.service.namespace;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.alfresco.api.AlfrescoPublicApi;     
 
 /**
  * Provides matching between {@link org.alfresco.service.namespace.QName qnames} using
@@ -33,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Derek Hulley
  */
+@AlfrescoPublicApi
 public class RegexQNamePattern implements QNamePattern
 {
     private static final Log logger = LogFactory.getLog(RegexQNamePattern.class);

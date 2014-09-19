@@ -18,6 +18,7 @@
  */
 package org.alfresco.web.evaluator;
 
+import org.alfresco.api.AlfrescoPublicApi;     
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,6 +35,7 @@ import java.util.HashMap;
  *
  * @author: mikeh
  */
+@AlfrescoPublicApi
 public abstract class BaseEvaluator implements Evaluator
 {
     private static final String PORTLET_HOST = "portletHost";

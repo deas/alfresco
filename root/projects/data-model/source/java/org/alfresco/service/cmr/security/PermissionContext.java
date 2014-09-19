@@ -24,8 +24,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.alfresco.api.AlfrescoPublicApi;  
 import org.alfresco.service.namespace.QName;
 
+@AlfrescoPublicApi
 public class PermissionContext 
 {
     private QName type;

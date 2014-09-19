@@ -18,6 +18,8 @@
  */
 package org.alfresco.service.cmr.repository;
 
+import org.alfresco.api.AlfrescoPublicApi;   
+
 /**
  * This exception should be thrown when a content operation could not be performed due to
  * a transient condition and where it is possible that a subsequent request to execute the
@@ -30,6 +32,7 @@ package org.alfresco.service.cmr.repository;
  * @author Neil Mc Erlean
  * @since 4.0.1
  */
+@AlfrescoPublicApi
 public class ContentServiceTransientException extends ContentIOException
 {
     private static final long serialVersionUID = 3258130249983276087L;

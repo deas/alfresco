@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.alfresco.api.AlfrescoPublicApi;  
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -49,6 +50,7 @@ import org.joda.time.DateTimeZone;
  *   <li>TZD    Time zone designator (either Z for Zulu, i.e. UTC, or +hh:mm or -hh:mm, i.e. an offset from UTC)</li>
  * </ul>
  */
+@AlfrescoPublicApi
 public class ISO8601DateFormat
 {
     private static ThreadLocal<Map<TimeZone, Calendar>> calendarThreadLocal = new ThreadLocal<Map<TimeZone, Calendar>>();

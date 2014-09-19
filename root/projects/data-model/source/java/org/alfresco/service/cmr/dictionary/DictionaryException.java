@@ -18,6 +18,7 @@
  */
 package org.alfresco.service.cmr.dictionary;
 
+import org.alfresco.api.AlfrescoPublicApi;   
 import org.alfresco.error.AlfrescoRuntimeException;
 
 /**
@@ -25,6 +26,7 @@ import org.alfresco.error.AlfrescoRuntimeException;
  * 
  * @author David Caruana
  */
+@AlfrescoPublicApi
 public class DictionaryException extends AlfrescoRuntimeException
 {
     private static final long serialVersionUID = 3257008761007847733L;

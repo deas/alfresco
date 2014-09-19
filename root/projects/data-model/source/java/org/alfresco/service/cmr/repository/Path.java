@@ -329,6 +329,7 @@ public final class Path implements Iterable<Path.Element>, Serializable
          * @param tenantService
          * @return
          */
+        @AlfrescoPublicApi
         public abstract Element getBaseNameElement(TenantService tenantService);
 
         /**
@@ -353,6 +354,7 @@ public final class Path implements Iterable<Path.Element>, Serializable
      * Represents a qualified path between a parent and a child node,
      * including the sibling to retrieve e.g. <b>/{namespace}name[5]</b> 
      */
+    @AlfrescoPublicApi
     public static class ChildAssocElement extends Element
     {
         private static final long serialVersionUID = 3689352104636790840L;

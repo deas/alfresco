@@ -18,6 +18,7 @@
  */
 package org.alfresco.util;
 
+import org.alfresco.api.AlfrescoPublicApi;     
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.util.bean.BooleanBean;
 import org.apache.commons.logging.Log;
@@ -35,6 +36,7 @@ import org.springframework.scheduling.quartz.JobDetailAwareTrigger;
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public abstract class AbstractTriggerBean implements InitializingBean, JobDetailAwareTrigger, BeanNameAware, DisposableBean
 {
 

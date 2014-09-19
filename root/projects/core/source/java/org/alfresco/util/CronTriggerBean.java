@@ -20,6 +20,7 @@ package org.alfresco.util;
 
 import java.util.Date;
 
+import org.alfresco.api.AlfrescoPublicApi;     
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
@@ -31,6 +32,7 @@ import org.quartz.Trigger;
  * 
  * @author Andy Hind
  */
+@AlfrescoPublicApi
 public class CronTriggerBean extends AbstractTriggerBean       
 {
 	private static final long MILLISECONDS_PER_MINUTE = 60L * 1000L;

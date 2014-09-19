@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.alfresco.api.AlfrescoPublicApi;   
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.service.cmr.repository.AssociationRef;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -70,6 +71,7 @@ import org.springframework.extensions.surf.util.I18NUtil;
  * @author andyh
  * 
  */
+@AlfrescoPublicApi
 public class DefaultTypeConverter extends TypeConverter
 {
     /**

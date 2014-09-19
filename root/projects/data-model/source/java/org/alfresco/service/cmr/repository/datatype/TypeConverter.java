@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.alfresco.api.AlfrescoPublicApi;  
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryException;
 import org.springframework.extensions.surf.util.ParameterCheck;
@@ -36,6 +37,7 @@ import org.springframework.extensions.surf.util.ParameterCheck;
  * Direct conversion and two stage conversions via Number are supported. We do
  * not support conversion by any route at the moment
  */
+@AlfrescoPublicApi
 public class TypeConverter
 {
 
@@ -529,6 +531,7 @@ public class TypeConverter
      * @param <F> From type
      * @param <T> To type
      */
+    @AlfrescoPublicApi
     public interface Converter<F, T>
     {
         public T convert(F source);
@@ -543,6 +546,7 @@ public class TypeConverter
      * @param <I> Intermediate type
      * @param <T> To Type
      */
+    @AlfrescoPublicApi
     public static class TwoStageConverter<F, I, T> implements Converter<F, T>
     {
         Converter<F, I> first;
@@ -570,6 +574,7 @@ public class TypeConverter
      * @param <I> Intermediate type
      * @param <T> To Type
      */
+    @AlfrescoPublicApi
     protected class DynamicTwoStageConverter<F, I, T> implements Converter<F, T>
     {
         Class<F> from;

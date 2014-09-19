@@ -20,6 +20,8 @@ package org.alfresco.util;
 
 import org.apache.commons.logging.Log;
 
+import org.alfresco.api.AlfrescoPublicApi;     
+
 /**
  * Utility class to adapt a {@link Log} class.
  * 
@@ -27,6 +29,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alan Davis
  */
+@AlfrescoPublicApi
 public abstract class LogAdapter implements Log
 {
     final protected Log log;

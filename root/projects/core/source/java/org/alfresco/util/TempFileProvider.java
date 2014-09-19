@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.alfresco.api.AlfrescoPublicApi;     
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,6 +56,7 @@ import org.quartz.JobExecutionException;
  * @author derekh
  * @author mrogers
  */
+@AlfrescoPublicApi
 public class TempFileProvider
 {
     private static final int BUFFER_SIZE = 40 * 1024;
@@ -341,6 +343,7 @@ public class TempFileProvider
      * 
      * @author Derek Hulley
      */
+    @AlfrescoPublicApi
     public static class TempFileCleanerJob implements Job
     {
         public static final String KEY_PROTECT_HOURS = "protectHours";
