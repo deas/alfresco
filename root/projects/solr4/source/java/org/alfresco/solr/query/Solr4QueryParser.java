@@ -2341,13 +2341,11 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         // FIELD_TYPE uses the default
         if (isPropertyField(field))
         {
-            String fieldName = null;
-            PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field.substring(1));
-            if (propertyDef == null)
-            {
-                fieldName = expandAttributeFieldName(field);
-            }
+            Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(field);
 
+            String expandedFieldName = null;
+            QName propertyQName;
+            PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, fieldNameAndEnding.getFirst());
             IndexTokenisationMode tokenisationMode = IndexTokenisationMode.TRUE;
             if (propertyDef != null)
             {
@@ -2356,8 +2354,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 {
                     tokenisationMode = IndexTokenisationMode.TRUE;
                 }
+                propertyQName = propertyDef.getName();
             }
-
+            else
+            {
+                expandedFieldName = expandAttributeFieldName(field);
+                propertyQName = QName.createQName(fieldNameAndEnding.getFirst());
+            }
+            
             if (propertyDef != null)
             {
                 // LOWER AND UPPER
@@ -2390,7 +2394,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         }
                         for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                         {
-                            addLocaleSpecificUntokenisedTextRangeFunction(fieldName, propertyDef, part1, part2, includeLower, includeUpper, luceneFunction, booleanQuery, mlAnalysisMode,
+                            addLocaleSpecificUntokenisedTextRangeFunction(expandedFieldName, propertyDef, part1, part2, includeLower, includeUpper, luceneFunction, booleanQuery, mlAnalysisMode,
                                     locale, tokenisationMode);
                         }
                         return booleanQuery;
@@ -2407,7 +2411,33 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT))
                 {
-                    throw new UnsupportedOperationException("Range is not supported against content");
+                    if (fieldNameAndEnding.getSecond().equals(FIELD_SIZE_SUFFIX))
+                    {
+                        String solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), ContentFieldType.SIZE, FieldUse.ID).getFields().get(0).getField();
+                        String start = null;
+                        try
+                        {
+                            analyzeMultitermTerm(solrField, part1, null);
+                            start = part1;
+                        }
+                        catch(Exception e)
+                        {
+                            
+                        }
+                        String end = null;
+                        try
+                        {
+                            analyzeMultitermTerm(solrField, part2, null);
+                            end = part2;
+                        }
+                        catch(Exception e)
+                        {
+                            
+                        }
+                        
+                        
+                        return newRangeQuery(solrField, start, end, includeLower, includeUpper);   
+                    }
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
                 {
@@ -2421,7 +2451,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                     {
 
-                        addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, fieldName, propertyDef, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                        addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
 
                     }
                     return booleanQuery;
@@ -2449,7 +2479,29 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 else
                 {
                     String solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.ID).getFields().get(0).getField();
-                    return newRangeQuery(solrField, part1, part2, includeLower, includeUpper);
+                          
+                    String start = null;
+                    try
+                    {
+                        analyzeMultitermTerm(solrField, part1, null);
+                        start = part1;
+                    }
+                    catch(Exception e)
+                    {
+                        
+                    }
+                    String end = null;
+                    try
+                    {
+                        analyzeMultitermTerm(solrField, part2, null);
+                        end = part2;
+                    }
+                    catch(Exception e)
+                    {
+                        
+                    }
+                    
+                    return newRangeQuery(solrField, start, end, includeLower, includeUpper); 
                 }
             }
             else

@@ -114,7 +114,7 @@ public class RewriteFacetParametersComponent extends SearchComponent
         for(Iterator<String> it = params.getParameterNamesIterator(); it.hasNext(); /**/)
         {
             String name = it.next();
-            if(name.startsWith("f.") || name.startsWith("facet.") || name.startsWith("stats."))
+            if(name.startsWith("f.") || name.startsWith("facet.field") || name.startsWith("facet.date") || name.startsWith("facet.range") || name.startsWith("facet.pivot") || name.startsWith("facet.interval")|| name.startsWith("stats."))
             {
                 // Already done 
                 continue;
