@@ -276,6 +276,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                         }
                     }
                 }
+                
                 DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("ACLTXID", "*")));
                 for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
                 {
@@ -284,7 +285,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     IndexableField fieldable = document.getField("ACLTXID");
                     if (fieldable != null)
                     {
-
                         if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc().longValue()))
                         {
                             String value = fieldable.stringValue();
@@ -456,143 +456,53 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             if(request != null) {request.close();}
         }
     }
-
+    
+    private void deleteById(String field, Long id) throws IOException
+    {
+        String query = field + ":" + NumericEncoder.encode(id);
+        deleteByQuery(query);
+    }
+    
     @Override
     public void deleteByAclChangeSetId(Long aclChangeSetId) throws IOException
     {
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-
-            Query query = new TermQuery(new Term(FIELD_INACLTXID, NumericEncoder.encode(aclChangeSetId)));
-            deleteByQuery(solrIndexSearcher, query);
-        }
-        finally
-        {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
-        }
+        deleteById(FIELD_INACLTXID, aclChangeSetId);
     }
     
-
-    private void deleteByQuery(SolrIndexSearcher solrIndexSearcher, Query query) throws IOException
+    @Override
+    public void deleteByAclId(Long aclId) throws IOException
     {
-        HashSet<String> idsToDelete = new HashSet<String>();
-
-        DocSet docSet = solrIndexSearcher.getDocSet(query);
-        if (docSet instanceof BitDocSet)
-        {
-            BitDocSet source = (BitDocSet) docSet;
-            FixedBitSet openBitSet = source.getBits();
-            int current = -1;
-            while ((current = openBitSet.nextSetBit(current + 1)) != -1)
-            {
-                Document doc = solrIndexSearcher.doc(current, Collections.singleton(FIELD_ID));
-                IndexableField fieldable = doc.getField(FIELD_ID);
-                if (fieldable != null)
-                {
-                    idsToDelete.add(fieldable.stringValue());
-                }
-
-            }
-        }
-        else
-        {
-            for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
-            {
-                Document doc = solrIndexSearcher.doc(it.nextDoc(), Collections.singleton(FIELD_ID));
-                IndexableField fieldable = doc.getField(FIELD_ID);
-                if (fieldable != null)
-                {
-                    idsToDelete.add(fieldable.stringValue());
-                }
-            }
-        }
-
-        UpdateRequestProcessor processor = null;
+        deleteById(FIELD_ACLID, aclId);
+    }
+    
+    @Override
+    public void deleteByNodeId(Long nodeId) throws IOException
+    {
+        deleteById(FIELD_DBID, nodeId);
+    }
+    
+    @Override
+    public void deleteByTransactionId(Long transactionId) throws IOException
+    {
+        deleteById(FIELD_INTXID, transactionId);
+    }
+    
+    private void deleteByQuery(String query) throws IOException
+    {
         SolrQueryRequest request = null;
+        UpdateRequestProcessor processor = null;
         try
         {
             request = getLocalSolrQueryRequest();
             processor = this.core.getUpdateProcessingChain(null).createProcessor(request, new SolrQueryResponse());
-            for (String idToDelete : idsToDelete)
-            {
-                DeleteUpdateCommand docCmd = new DeleteUpdateCommand(request);
-                docCmd.setId(idToDelete);
-                processor.processDelete(docCmd);
-            }  
+            DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(request);
+            delDocCmd.setQuery(query);
+            processor.processDelete(delDocCmd);
         }
         finally
         {
             if(processor != null) {processor.finish();}
             if(request != null) {request.close();}
-        }
-
-    }
-
-    @Override
-    public void deleteByAclId(Long aclId) throws IOException
-    {
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-
-            Query query = new TermQuery(new Term(FIELD_ACLID, NumericEncoder.encode(aclId)));
-            deleteByQuery(solrIndexSearcher, query);
-        }
-        finally
-        {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
-        }
-    }
-
-    @Override
-    public void deleteByNodeId(Long nodeId) throws IOException
-    {
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-
-            Query query = new TermQuery(new Term(FIELD_DBID, NumericEncoder.encode(nodeId)));
-            deleteByQuery(solrIndexSearcher, query);
-        }
-        finally
-        {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
-        }
-    }
-
-    @Override
-    public void deleteByTransactionId(Long transactionId) throws IOException
-    {
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-            Query query = new TermQuery(new Term(FIELD_INTXID, NumericEncoder.encode(transactionId)));
-            deleteByQuery(solrIndexSearcher, query);
-        }
-        finally
-        {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
         }
     }
 
