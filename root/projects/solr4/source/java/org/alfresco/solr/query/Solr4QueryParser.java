@@ -84,6 +84,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.MultiPhraseQuery;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.TermQuery;
@@ -95,6 +96,9 @@ import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
+import org.apache.solr.schema.FieldType;
+import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.SchemaField;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.base.XPathReader;
 import org.springframework.extensions.surf.util.I18NUtil;
@@ -112,13 +116,16 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
      * @param f
      * @param a
      */
-    public Solr4QueryParser(Version matchVersion, String f, Analyzer a)
+    public Solr4QueryParser(IndexSchema schema, Version matchVersion, String f, Analyzer a)
     {
         super(matchVersion, f, a);
+        this.schema = schema;
         setAllowLeadingWildcard(true);
         setAnalyzeRangeTerms(true);
     }
 
+    IndexSchema schema;
+    
     @SuppressWarnings("unused")
     private static Log s_logger = LogFactory.getLog(Solr4QueryParser.class);
 
@@ -2439,8 +2446,13 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                             
                         }
                         
+                        SchemaField sf = schema.getField(solrField);
+                        return sf.getType().getRangeQuery(null, sf, start, end, includeLower, includeUpper);
                         
-                        return newRangeQuery(solrField, start, end, includeLower, includeUpper);   
+                    }
+                    else 
+                    {
+                        throw new UnsupportedOperationException("Range is not supported against content");
                     }
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT))
@@ -2472,7 +2484,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         String start = dateAndResolution1 == null ? part1 : (includeLower ? getDateStart(dateAndResolution1) : getDateEnd(dateAndResolution1) );
                         String end = dateAndResolution2 == null ? part2 : (includeUpper ? getDateEnd(dateAndResolution2) : getDateStart(dateAndResolution2) );
 
-                        Query query =  newRangeQuery(instance.getField(), start, end, includeLower, includeUpper);
+                        SchemaField sf = schema.getField(instance.getField());
+                        
+                        Query query =  sf.getType().getRangeQuery(null, sf, start, end, includeLower, includeUpper);
                         if(query != null)
                         {
                             bQuery.add(query,Occur.SHOULD);
@@ -2505,7 +2519,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         
                     }
                     
-                    return newRangeQuery(solrField, start, end, includeLower, includeUpper); 
+                    SchemaField sf = schema.getField(solrField);
+                    return sf.getType().getRangeQuery(null, sf, start, end, includeLower, includeUpper);
                 }
             }
             else
@@ -2565,8 +2580,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
     }
 
-    
-   
+
     private String expandAttributeFieldName(String field)
     {
         return PROPERTY_FIELD_PREFIX + QueryParserUtils.expandQName(searchParameters.getNamespace(), namespacePrefixResolver, field.substring(1));
