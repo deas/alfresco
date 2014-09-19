@@ -134,7 +134,6 @@ public class MetadataTrackerTest
         assertNotNull(nodeReport);
         assertEquals(DB_ID, nodeReport.getDbid());
         assertEquals(TX_ID, nodeReport.getDbTx());
-        verify(srv).checkNodeCommon(nodeReport);
     }
 
     private List<Node> getNodes()
@@ -155,7 +154,6 @@ public class MetadataTrackerTest
         assertNotNull(nodeReport);
         assertEquals(DB_ID, nodeReport.getDbid());
         assertEquals(TX_ID, nodeReport.getDbTx());
-        verify(srv).checkNodeCommon(nodeReport);
     }
 
     private Node getNode()

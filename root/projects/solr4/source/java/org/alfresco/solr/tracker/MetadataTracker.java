@@ -658,8 +658,6 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             nodeReport.setDbTx(-4l);
         }
 
-        this.infoSrv.checkNodeCommon(nodeReport);
-
         return nodeReport;
     }
 
@@ -670,8 +668,6 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 
         nodeReport.setDbNodeStatus(node.getStatus());
         nodeReport.setDbTx(node.getTxnId());
-
-        this.infoSrv.checkNodeCommon(nodeReport);
 
         return nodeReport;
     }

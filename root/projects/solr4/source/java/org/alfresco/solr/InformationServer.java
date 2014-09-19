@@ -69,8 +69,6 @@ public interface InformationServer
     
     void indexNodes(List<Node> nodes, boolean overwrite) throws IOException, AuthenticationException, JSONException;
 
-    NodeReport checkNodeCommon(NodeReport nodeReport);
-
     long indexAcl(List<AclReaders> aclReaderList, boolean overwrite) throws IOException;
 
     TrackerState getTrackerInitialState();

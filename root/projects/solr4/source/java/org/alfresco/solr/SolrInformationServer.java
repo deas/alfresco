@@ -19,6 +19,7 @@
 
 package org.alfresco.solr;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -85,18 +86,13 @@ import org.alfresco.solr.content.SolrContentUrlBuilder;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.TrackerStats;
 import org.alfresco.util.ISO9075;
-import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
-import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexCommit;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
@@ -104,13 +100,13 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.JavaBinCodec;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
+import org.apache.solr.core.IndexDeletionPolicyWrapper;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrInfoMBean;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.SolrQueryResponse;
-import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocList;
 import org.apache.solr.search.DocSet;
@@ -243,66 +239,51 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     @Override
     public AclReport checkAclInIndex(Long aclid, AclReport aclReport)
     {
+        SolrQueryRequest request = null;
         try
         {
-            RefCounted<SolrIndexSearcher> refCounted = core.getSearcher(false, true, null);
-            if (refCounted == null)
+            request = getLocalSolrQueryRequest();
+            String query = FIELD_ACLID + ":" + aclid + AND + FIELD_DOC_TYPE + ":" + DOC_TYPE_ACL;
+            List<TenantAclIdDbId> docIds = new ArrayList<>();
+            DocList docList = cloud.getDocList(selectRequestHandler, request, query);
+            if (docList != null)
             {
-                return aclReport;
-            }
-
-            try
-            {
-                SolrIndexSearcher solrIndexSearcher = refCounted.get();
-
-                String aclIdString = NumericEncoder.encode(aclid);
-                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(FIELD_ACLID, aclIdString)));
-                // should find leaf and aux
-                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
+                DocIterator it = docList.iterator();
+// TODO This used to be a for-loop.  Why is that?  We would just set the same field over and over again.
+                if (it.hasNext())
                 {
-                    int doc = it.nextDoc();
-
-                    Document document = solrIndexSearcher.doc(doc);
-                    IndexableField fieldable = document.getField("ID");
-                    if (fieldable != null)
-                    {
-                        String value = fieldable.stringValue();
-                        if (value != null)
-                        {
-                            if (value.startsWith("ACL-"))
-                            {
-                                aclReport.setIndexAclDoc(Long.valueOf(doc));
-                            }
-                        }
-                    }
+                    int docId = it.nextDoc();
+                    aclReport.setIndexAclDoc(Long.valueOf(docId));
                 }
-                
-                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("ACLTXID", "*")));
-                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
+            }
+            
+            query = FIELD_ACLTXID + ":" + '*' + AND + FIELD_DOC_TYPE + ":" + DOC_TYPE_ACL_TX;
+            ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
+            params.set("q", query)
+                .set("fl", FIELD_ACLTXID)
+                .set("rows", Integer.MAX_VALUE);
+            SolrDocumentList solrDocumentList = cloud.getSolrDocumentList(selectRequestHandler, request, params);
+            if (solrDocumentList != null)
+            {
+                for (SolrDocument doc : solrDocumentList)
                 {
-                    int doc = it.nextDoc();
-                    Document document = solrIndexSearcher.doc(doc);
-                    IndexableField fieldable = document.getField("ACLTXID");
-                    if (fieldable != null)
+                    String aclTxId = (String) doc.getFieldValue(FIELD_ACLTXID);
+                    if (aclTxId != null)
                     {
-                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc().longValue()))
+// TODO It was comparing a solr-specific doc id to an alfresco-specific AclTxId, so I removed the second part.
+//                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc()))
+                        if (aclReport.getIndexAclDoc() == null)
                         {
-                            String value = fieldable.stringValue();
-                            long acltxid = Long.parseLong(value);
-                            aclReport.setIndexAclTx(acltxid);
+                            aclReport.setIndexAclTx(Long.parseLong(aclTxId));
+                            //TODO should there be a break here?  Now that we have set it, should we set it again?
                         }
                     }
                 }
             }
-            finally
-            {
-                refCounted.decref();
-            }
-
         }
-        catch (IOException e)
+        finally
         {
-
+            if(request != null){request.close();}
         }
 
         return aclReport;
@@ -360,84 +341,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
         return id;
     }
-    
-    @Override
-    public NodeReport checkNodeCommon(NodeReport nodeReport)
-    {
-        long dbid = nodeReport.getDbid();
-        RefCounted<SolrIndexSearcher> refCounted = null;
-
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            if (refCounted == null) { return nodeReport; }
-
-            try
-            {
-                SolrIndexSearcher solrIndexSearcher = refCounted.get();
-
-                String dbidString = NumericEncoder.encode(dbid);
-                DocSet docSet = solrIndexSearcher.getDocSet(new TermQuery(new Term(FIELD_DBID, dbidString)));
-                // should find leaf and aux
-                for (DocIterator it = docSet.iterator(); it.hasNext(); /* */)
-                {
-                    int doc = it.nextDoc();
-                    Document document = solrIndexSearcher.doc(doc);
-                    IndexableField fieldable = document.getField("ID");
-                    if (fieldable != null)
-                    {
-                        String value = fieldable.stringValue();
-                        if (value != null)
-                        {
-                            if (value.startsWith("LEAF-"))
-                            {
-                                nodeReport.setIndexLeafDoc(Long.valueOf(doc));
-                            }
-                            // TODO there are no more aux docs
-                            else if (value.startsWith("AUX-"))
-                            {
-                                nodeReport.setIndexAuxDoc(Long.valueOf(doc));
-                            }
-                        }
-                    }
-                }
-
-                DocSet txDocSet = solrIndexSearcher.getDocSet(new WildcardQuery(new Term("TXID", "*")));
-                for (DocIterator it = txDocSet.iterator(); it.hasNext(); /* */)
-                {
-                    int doc = it.nextDoc();
-                    Document document = solrIndexSearcher.doc(doc);
-                    IndexableField fieldable = document.getField("TXID");
-                    if (fieldable != null)
-                    {
-
-                        if ((nodeReport.getIndexLeafDoc() == null) || (doc < nodeReport.getIndexLeafDoc().longValue()))
-                        {
-                            String value = fieldable.stringValue();
-                            long txid = Long.parseLong(value);
-                            nodeReport.setIndexLeafTx(txid);
-                        }
-                        if ((nodeReport.getIndexAuxDoc() == null) || (doc < nodeReport.getIndexAuxDoc().longValue()))
-                        {
-                            String value = fieldable.stringValue();
-                            long txid = Long.parseLong(value);
-                            nodeReport.setIndexAuxTx(txid);
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                refCounted.decref();
-            }
-        }
-        catch (IOException e)
-        {
-            // TODO: do what here?
-        }
-
-        return nodeReport;
-    }
 
     @Override
     public void commit() throws IOException
@@ -459,7 +362,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     
     private void deleteById(String field, Long id) throws IOException
     {
-        String query = field + ":" + NumericEncoder.encode(id);
+        String query = field + ":" + id;
         deleteByQuery(query);
     }
     
@@ -520,16 +423,12 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         DecimalFormat df = new DecimalFormat("###,###.######");
 
         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
-//        RefCounted<SolrIndexSearcher> refCounted = null;
+        RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
-//            refCounted = core.getSearcher(false, true, null);
-//            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-//            OpenBitSet allLeafDocs = (OpenBitSet) solrIndexSearcher.cacheLookup(
-//                        AlfrescoSolrEventListener.ALFRESCO_CACHE, AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
-//            long count = allLeafDocs.cardinality();
-//            coreSummary.add("Alfresco Nodes in Index", count);
-//            coreSummary.add("Searcher", solrIndexSearcher.getStatistics());
+            refCounted = core.getSearcher(false, true, null);
+            SolrIndexSearcher solrIndexSearcher = refCounted.get();
+            coreSummary.add("Searcher", solrIndexSearcher.getStatistics());
             Map<String, SolrInfoMBean> infoRegistry = core.getInfoRegistry();
             for (String key : infoRegistry.keySet())
             {
@@ -565,7 +464,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             }
 
             // Find searchers and do memory use for each .. and add them all up
-
             long memory = 0L;
             int searcherIndex = 0;
             List<SolrIndexSearcher> searchers = getRegisteredSearchers();
@@ -578,38 +476,46 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             coreSummary.add("Number of Searchers", searchers.size());
             coreSummary.add("Total Searcher Cache (GB)", df.format(memory / 1024.0f / 1024.0f / 1024.0f));
 
-//            IndexDeletionPolicyWrapper delPolicy = core.getDeletionPolicy();
-//            IndexCommit indexCommit = delPolicy.getLatestCommit();
+            IndexDeletionPolicyWrapper delPolicy = core.getDeletionPolicy();
+            IndexCommit indexCommit = delPolicy.getLatestCommit();
             // race?
-//            if (indexCommit == null)
-//            {
-//                indexCommit = solrIndexSearcher.getReader().getIndexCommit();
-//            }
-//            if (indexCommit != null)
-//            {
-//                delPolicy.setReserveDuration(indexCommit.getVersion(), 20000);
-//                Long fileSize = 0L;
-//
-//                File dir = new File(solrIndexSearcher.getIndexDir());
-//                for (String name : (Collection<String>) indexCommit.getFileNames())
-//                {
-//                    File file = new File(dir, name);
-//                    if (file.exists())
-//                    {
-//                        fileSize += file.length();
-//                    }
-//                }
-//
-//                coreSummary.add("On disk (GB)", df.format(fileSize / 1024.0f / 1024.0f / 1024.0f));
-//                coreSummary.add("Per node B", count > 0 ? fileSize / count : 0);
-//            }
+            if (indexCommit == null)
+            {
+                indexCommit = solrIndexSearcher.getIndexReader().getIndexCommit();
+            }
+            if (indexCommit != null)
+            {
+                delPolicy.setReserveDuration(solrIndexSearcher.getIndexReader().getVersion(), 20000);
+                Long fileSize = 0L;
+
+                File dir = new File(solrIndexSearcher.getPath());
+                for (String name : (Collection<String>) indexCommit.getFileNames())
+                {
+                    File file = new File(dir, name);
+                    if (file.exists())
+                    {
+                        fileSize += file.length();
+                    }
+                }
+
+                coreSummary.add("On disk (GB)", df.format(fileSize / 1024.0f / 1024.0f / 1024.0f));
+            }
+            
+            /* TODO 
+             * if we had doc type a count of nodes, txs, acls, and change sets would be good
+             * https://localhost:8446/solr4/alfresco/select?q=*%3A*&fl=DOC_TYPE&wt=json&indent=true&facet=true&facet.field=DOC_TYPE
+             * There will be a "facet_counts" NamedValues<Object> in the named values - like "results"
+             * See org.alfresco.solr.component.RewriteFacetCountsComponent
+             * This renames some of the objects ()to match what people though they were asking for 
+             */
+            
         }
         finally
         {
-//            if (refCounted != null)
-//            {
-//                refCounted.decref();
-//            }
+            if (refCounted != null)
+            {
+                refCounted.decref();
+            }
         }
 
         return coreSummary;
@@ -659,28 +565,9 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     
     private long addSearcherStats(NamedList<Object> coreSummary, SolrIndexSearcher solrIndexSearcher, int index)
     {
-//        DecimalFormat df = new DecimalFormat("###,###.######");
-//
-//        OpenBitSet allLeafDocs = (OpenBitSet) solrIndexSearcher.cacheLookup(AlfrescoSolrEventListener.ALFRESCO_CACHE,
-//                    AlfrescoSolrEventListener.KEY_ALL_LEAF_DOCS);
-//        long count = allLeafDocs.cardinality();
-//
-//        ResizeableArrayList<CacheEntry> indexedByDocId = (ResizeableArrayList<CacheEntry>) solrIndexSearcher
-//                    .cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE,
-//                                AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_DOC_ID);
-//        ResizeableArrayList<CacheEntry> indexedOderedByAclIdThenDoc = (ResizeableArrayList<CacheEntry>) solrIndexSearcher
-//                    .cacheLookup(AlfrescoSolrEventListener.ALFRESCO_ARRAYLIST_CACHE,
-//                                AlfrescoSolrEventListener.KEY_DBID_LEAF_PATH_BY_ACL_ID_THEN_LEAF);
-//
-//        long memory = (count * 40) + (indexedByDocId.size() * 8 * 4) + (indexedOderedByAclIdThenDoc.size() * 8 * 2);
-//        memory += (filterCacheSize + pathCacheSize + authorityCacheSize) * indexedByDocId.size() / 8;
-//        NamedList<Object> details = new SimpleOrderedMap<Object>();
-//        details.add("Searcher", solrIndexSearcher.getStatistics());
-//        details.add("Size", indexedByDocId.size());
-//        details.add("Node Count", count);
-//        details.add("Memory (GB)", df.format(memory / 1024.0f / 1024.0f / 1024.0f));
-//        coreSummary.add("Searcher-" + index, details);
-//        return memory;
+        NamedList<Object> details = new SimpleOrderedMap<Object>();
+        details.add("Searcher", solrIndexSearcher.getStatistics());
+        coreSummary.add("Searcher-" + index, details);
         return 0;
     }
     
@@ -886,210 +773,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             if(request != null) {request.close();}
         }
     }
-    
-
-//    //@Override
-//    public TrackerState getTrackerInitialStateOld() throws IOException
-//    {
-//        TrackerState state = new TrackerState();
-//
-//        RefCounted<SolrIndexSearcher> refCounted = null;
-//        try
-//        {
-//            refCounted = core.getSearcher(false, true, null);
-//            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-//            IndexReader reader = solrIndexSearcher.getIndexReader();
-//
-//            if (state.getLastIndexedTxCommitTime() == 0)
-//            {
-//                state.setLastIndexedTxCommitTime(getLargestTermValue(reader, FIELD_TXCOMMITTIME, -1L));
-//            }
-//
-//            if (state.getLastIndexedTxId() == 0)
-//            {
-//                state.setLastIndexedTxId(getLargestTermValue(reader, FIELD_TXID, -1L));
-//            }
-//
-//            if (state.getLastIndexedChangeSetCommitTime() == 0)
-//            {
-//                state.setLastIndexedChangeSetCommitTime(getLargestTermValue(reader, FIELD_ACLTXCOMMITTIME, -1L));
-//            }
-//
-//            if (state.getLastIndexedChangeSetId() == 0)
-//            {
-//                state.setLastIndexedChangeSetId(getLargestTermValue(reader, FIELD_ACLTXID, -1L));
-//            }
-//
-//            long startTime = System.currentTimeMillis();
-//            state.setTimeToStopIndexing(startTime - lag);
-//            state.setTimeBeforeWhichThereCanBeNoHoles(startTime - holeRetention);
-//
-//            long timeBeforeWhichThereCanBeNoTxHolesInIndex = state.getLastIndexedTxCommitTime() - holeRetention;
-//            state.setLastGoodTxCommitTimeInIndex(getLargestTermValue(reader, FIELD_TXCOMMITTIME, timeBeforeWhichThereCanBeNoTxHolesInIndex));
-//
-//            long timeBeforeWhichThereCanBeNoChangeSetHolesInIndex = state.getLastIndexedChangeSetCommitTime()
-//                        - holeRetention;
-//            state.setLastGoodChangeSetCommitTimeInIndex(getLargestTermValue(reader, FIELD_ACLTXCOMMITTIME, timeBeforeWhichThereCanBeNoChangeSetHolesInIndex));
-//
-//            if (state.getLastGoodTxCommitTimeInIndex() > 0)
-//            {
-//                if (state.getLastIndexedTxIdBeforeHoles() == -1)
-//                {
-//                    state.setLastIndexedTxIdBeforeHoles(getStoredLongByLongTerm(reader, FIELD_TXCOMMITTIME, FIELD_TXID, state.getLastGoodTxCommitTimeInIndex()));
-//                            
-//                }
-//                else
-//                {
-//                    long currentBestFromIndex = getStoredLongByLongTerm(reader, FIELD_TXCOMMITTIME, FIELD_TXID, state.getLastGoodTxCommitTimeInIndex());
-//                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
-//                    {
-//                        state.setLastIndexedTxIdBeforeHoles(currentBestFromIndex);
-//                    }
-//                }
-//            }
-//
-//            if (state.getLastGoodChangeSetCommitTimeInIndex() > 0)
-//            {
-//                if (state.getLastIndexedChangeSetIdBeforeHoles() == -1)
-//                {
-//                    state.setLastIndexedChangeSetIdBeforeHoles(getStoredLongByLongTerm(reader, FIELD_ACLTXCOMMITTIME, FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex()));
-//                }
-//                else
-//                {
-//                    long currentBestFromIndex = getStoredLongByLongTerm(reader, FIELD_ACLTXCOMMITTIME, FIELD_ACLTXID, state.getLastGoodTxCommitTimeInIndex());
-//                    if (currentBestFromIndex > state.getLastIndexedTxIdBeforeHoles())
-//                    {
-//                        state.setLastIndexedChangeSetIdBeforeHoles(currentBestFromIndex);
-//                    }
-//                }
-//            }
-//        }
-//        finally
-//        {
-//            if (refCounted != null)
-//            {
-//                refCounted.decref();
-//            }
-//        }
-//
-//        // Sets the trackerState only after it has been fully initialized
-//        this.trackerState = state;
-//        
-//        return this.trackerState;
-//    }
-
-//    /*
-//     * Find the largest numeric long term value in the given index field
-//     */
-//    private long getLargestTermValue(IndexReader reader, String fieldName, long limit)
-//    {
-//        long largestValue = 0;
-//        long value;
-//        
-//        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
-//        {
-//            value = getLargestTermValue(atomicReaderContext.reader(), fieldName, limit);
-//            if(value > largestValue)
-//            {
-//                largestValue = value;
-//            }
-//        }
-//        return largestValue;
-//      
-//    }
-//    
-//    /*
-//     * Find the last numeric long term value
-//     * -1 indicates not found
-//     */
-//    private long getLargestTermValue(AtomicReader atomicReader, String fieldName, long limit)
-//    {
-//        long largestValue = -1;
-//        try
-//        {
-//            Terms terms = atomicReader.terms(fieldName);
-//            if(terms != null)
-//            {
-//                TermsEnum termEnum = terms.iterator(null);
-//                BytesRef bytesRef;
-//                while((bytesRef = termEnum.next()) != null)
-//                {
-//                    long value = NumericUtils.prefixCodedToLong(bytesRef);
-//                    if(limit > -1)
-//                    {
-//                        if(value < limit)
-//                        {
-//                            if(value > largestValue)
-//                            {
-//                                largestValue = value;
-//                            }
-//                        }
-//                        else
-//                        {
-//                            return largestValue;
-//                        }
-//                    }
-//                    else
-//                    {
-//                        if(value > largestValue)
-//                        {
-//                            largestValue = value;
-//                        }
-//                    }
-//
-//                }
-//            }
-//        }
-//        catch (IOException e1)
-//        {
-//            // do nothing
-//        }
-//        return largestValue;
-//    }
-//    
-//
-//    private long getStoredLongByLongTerm(IndexReader reader, String term, String fieldable, Long value) throws IOException
-//    {
-//        long storedValue = 0;
-//        
-//        for(AtomicReaderContext atomicReaderContext  : reader.leaves())
-//        {
-//            storedValue = getStoredLongByLongTerm(atomicReaderContext.reader(), term, fieldable, value);
-//            if(storedValue > 0L)
-//            {
-//                return storedValue;
-//            }
-//        }
-//        return storedValue;
-//    }
-//    
-//    private long getStoredLongByLongTerm(AtomicReader atomicReader, String term, String fieldable, Long value) throws IOException
-//    {
-//        long storedLong = -1L;
-//        if (value != -1L)
-//        {
-//            DocsEnum docsEnum = atomicReader.termDocsEnum(AlfrescoSolrDataModel.getLongTerm(term, value));
-//            if(docsEnum != null)
-//            {
-//                int docId = -1;
-//                while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS)
-//                {
-//                    Document doc = atomicReader.document(docId);
-//                    IndexableField field = doc.getField(fieldable);
-//                    if (field != null)
-//                    {
-//                        long curentStoredLong = field.numericValue().longValue();
-//                        if (curentStoredLong > storedLong)
-//                        {
-//                            storedLong = curentStoredLong;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return storedLong;
-//    }
-    
     
     @Override
     public long indexAcl(List<AclReaders> aclReaderList, boolean overwrite) throws IOException
@@ -1417,7 +1100,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             childIds.addAll(parentNodeMetaData.getChildIds());
         }
 
-        String query = FIELD_PARENT + ":" + parentNodeMetaData.getNodeRef();
+// TODO test me .getId() ?
+        String query = FIELD_PARENT + ":" + parentNodeMetaData.getNodeRef().getId();
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         params.set("q", query).set("fl", FIELD_SOLR4_ID);
         SolrDocumentList docs = cloud.getSolrDocumentList(selectRequestHandler, request, params);
@@ -1504,7 +1188,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
 
         if (skipDescendantDocsForSpecificTypes && !typesForSkippingDescendantDocs.isEmpty())
         {
-            String query = FIELD_DBID + ":" + NumericEncoder.encode(dbId);
+            String query = FIELD_DBID + ":" + dbId;
             DocList docList = this.cloud.getDocList(selectRequestHandler, request, query);
             
             final int NOT_SET = -1;
