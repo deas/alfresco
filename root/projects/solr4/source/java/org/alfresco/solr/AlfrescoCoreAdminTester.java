@@ -60,6 +60,7 @@ import org.alfresco.util.CachingDateFormat.SimpleDateFormatAndResolution;
 import org.alfresco.util.GUID;
 import org.alfresco.util.ISO8601DateFormat;
 import org.alfresco.util.ISO9075;
+import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
@@ -70,6 +71,7 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.MultiMapSolrParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.ContentStream;
+import org.apache.solr.common.util.ContentStreamBase;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreDescriptor;
@@ -633,7 +635,6 @@ public class AlfrescoCoreAdminTester
             checkType(before, core, dataModel);
             checkText(before, core, dataModel);
             checkMLText(before, core, dataModel);
-            checkAll(before, core, dataModel);
             checkDataType(before, core, dataModel);
             checkNullAndUnset(before, core, dataModel);
             checkNonField(before, core, dataModel);
@@ -756,7 +757,6 @@ public class AlfrescoCoreAdminTester
             checkType(after, core, dataModel);
             checkText(after, core, dataModel);
             checkMLText(after, core, dataModel);
-            checkAll(after, core, dataModel);
             checkDataType(after, core, dataModel);
             checkNullAndUnset(after, core, dataModel);
             checkNonField(after, core, dataModel);
@@ -798,9 +798,10 @@ public class AlfrescoCoreAdminTester
     /**
      * @param req
      * @param rsp
+     * @throws org.apache.lucene.queryparser.classic.ParseException 
      */
     @SuppressWarnings("unused")
-    void runAuthTest(SolrQueryRequest req, SolrQueryResponse rsp)
+    void runAuthTest(SolrQueryRequest req, SolrQueryResponse rsp) throws org.apache.lucene.queryparser.classic.ParseException
     {
 
         try
@@ -975,7 +976,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkAuth(SolrQueryResponse rsp, SolrCore core, AlfrescoSolrDataModel dataModel, long count)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         rsp.add("Auth", report);
@@ -1029,9 +1030,10 @@ public class AlfrescoCoreAdminTester
      * @param solrIndexSearcher
      * @throws ParseException
      * @throws IOException
+     * @throws org.apache.lucene.queryparser.classic.ParseException 
      */
     private void buildAndRunAuthQuery(AlfrescoSolrDataModel dataModel, long count, NamedList<Object> report,
-                SolrIndexSearcher solrIndexSearcher, int loop) throws IOException
+                SolrIndexSearcher solrIndexSearcher, int loop) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         StringBuilder builder = new StringBuilder();
         for (int i = 1; i <= loop; i++)
@@ -6284,6 +6286,7 @@ public class AlfrescoCoreAdminTester
         SolrRequestHandler afts = core.getRequestHandler(handler);
 
         ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
+        newParams.set("defType", handler.substring("/".length()));
         newParams.set("q", query);
         if (rows != null)
         {
@@ -6314,12 +6317,11 @@ public class AlfrescoCoreAdminTester
             newParams.set("fq", filters);
             queryReport.add("Filters", filters);
         }
-// TODO Why is this setting the fq when it may have already been set above?
-        // newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
+        newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
         solrReq.setParams(newParams);
         ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
-//         streams.add(new ContentStreamBase.StringStream("json"));
-        // solrReq.setContentStreams(streams);
+        streams.add(new ContentStreamBase.StringStream("json"));
+        solrReq.setContentStreams(streams);
 
         afts.handleRequest(solrReq, solrRsp);
 
@@ -6633,7 +6635,7 @@ public class AlfrescoCoreAdminTester
 
             testQuery(dataModel, report, solrIndexSearcher,
                         "TEXT:fox AND TYPE:\"" + ContentModel.PROP_CONTENT.toString() + "\"", 1);
-            testQuery(dataModel, report, solrIndexSearcher, "TEXT:fox cm\\:name:fox", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "TEXT:fox @cm\\:name:fox", 1);
             testQuery(dataModel, report, solrIndexSearcher,
                         "TEXT:fo AND TYPE:\"" + ContentModel.PROP_CONTENT.toString() + "\"", 0);
 
@@ -6796,32 +6798,6 @@ public class AlfrescoCoreAdminTester
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"alf* tut*\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"*co *al\"", 1);
 
-        }
-        finally
-        {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
-        }
-    }
-
-    private void checkAll(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryparser.classic.ParseException
-    {
-        NamedList<Object> report = new SimpleOrderedMap<Object>();
-        before.add("ALL", report);
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
-        {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-
-            testQuery(dataModel, report, solrIndexSearcher, "ALL:\"fox\"", 1, null, null, null);
-            testQuery(dataModel, report, solrIndexSearcher, "ALL:\"fox\"", 0, null, null, new String[] { "@"
-                        + ContentModel.PROP_NAME.toString() });
-            testQuery(dataModel, report, solrIndexSearcher, "ALL:\"fox\"", 1, null, null, new String[] {
-                        "@" + ContentModel.PROP_NAME.toString(), "@" + ContentModel.PROP_CONTENT.toString() });
-            testQuery(dataModel, report, solrIndexSearcher, "ALL:\"5.6\"", 1, null, null, null);
         }
         finally
         {
@@ -6999,10 +6975,10 @@ public class AlfrescoCoreAdminTester
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Internal", report);
-// TODO What to do about leaf and aux?
+// TODO What to do about leaf and aux?  Replace the query param with the solr4 id : the actual id we expect.  See caller
         for (int i = 1; i < 16; i++)
         {
-            testQueryByHandler(report, core, "/afts", FIELD_ID + ":LEAF-" + i, 1, null, null, null,
+            testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":LEAF-" + i, 1, null, null, null,
                         null, null, (String) null);
             testQueryByHandler(report, core, "/afts", FIELD_ID + ":AUX-" + i, 1, null, null, null, null,
                         null, (String) null);
@@ -8024,10 +8000,11 @@ public class AlfrescoCoreAdminTester
                 searchParameters.addAllAttribute(allAttribute);
             }
         }
-//         Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
+
         long start = System.nanoTime();
         Query query = dataModel.getLuceneQueryParser(searchParameters, this.solrQueryRequest).parse(queryString);
-//        dataModel.getLuceneQueryParser(searchParameters, solrIndexSearcher.getIndexReader()).parse(queryString);
+//        Query query =dataModel.getFTSQuery(new Pair<SearchParameters, Boolean>(searchParameters, Boolean.FALSE),
+//                    this.solrQueryRequest);
         TopDocs docs = solrIndexSearcher.search(query, count * 2 + 10);
 
         NamedList<Object> subReport = new SimpleOrderedMap<Object>();
@@ -8050,7 +8027,7 @@ public class AlfrescoCoreAdminTester
 
     private void testFTSQuery(AlfrescoSolrDataModel dataModel, NamedList<Object> report,
                 SolrIndexSearcher solrIndexSearcher, String queryString, Integer count, Locale locale,
-                String[] textAttributes, String[] allAttributes, String... name) throws IOException
+                String[] textAttributes, String[] allAttributes, String... name) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setQuery(queryString);
@@ -8072,12 +8049,10 @@ public class AlfrescoCoreAdminTester
                 searchParameters.addAllAttribute(allAttribute);
             }
         }
-// TODO fix query     
-        // Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
+
         long start = System.nanoTime();
-        Query query = null;
-//                        dataModel.getFTSQuery(new Pair<SearchParameters, Boolean>(searchParameters, Boolean.FALSE),
-//                    solrIndexSearcher.getIndexReader());
+        Query query =dataModel.getFTSQuery(new Pair<SearchParameters, Boolean>(searchParameters, Boolean.FALSE),
+                    this.solrQueryRequest);
         TopDocs docs = solrIndexSearcher.search(query, count * 2 + 10);
 
         NamedList<Object> subReport = new SimpleOrderedMap<Object>();
