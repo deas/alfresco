@@ -113,4 +113,6 @@ public interface InformationServer
     List<TenantAclIdDbId> getDocsWithUncleanContent(int start, int rows) throws IOException;
 
     void updateContentToIndexAndCache(long dbId, String tenant) throws Exception;
+
+    void addCommonNodeReportInfo(NodeReport nodeReport);
 }
