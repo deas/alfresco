@@ -148,6 +148,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     private static final String DOC_TYPE_TX = "Tx";
     private static final String DOC_TYPE_ACL_TX = "AclTx";
     private static final String DOC_TYPE_STATE = "State";
+    private static final String PREFIX_ID = "<id:";
     
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
@@ -352,9 +353,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     private String getSolr4id(SolrDocument doc)
     {
         String id = String.valueOf(doc.getFieldValue(FIELD_SOLR4_ID));
-        
-        // Gets the important part from "blahBlahBlah<id:_DEFAULT_!800000000000000d!8000000000000177>"
-        id = id.substring(id.indexOf("<id:"), id.length() -1);
+        if (id.contains(PREFIX_ID) && id.endsWith(">"))
+        {
+            // Gets the important part from "blahBlahBlah<id:_DEFAULT_!800000000000000d!8000000000000177>"
+            id = id.substring(id.indexOf(PREFIX_ID) + PREFIX_ID.length(), id.length() -1);
+        }
         return id;
     }
     
