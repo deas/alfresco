@@ -134,15 +134,15 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     public static final String REQUEST_HANDLER_GET = "/get";
     public static final String RESPONSE_DEFAULT = "response";
     
-    private static final String PREFIX_ERROR = "ERROR-";
+    public static final String PREFIX_ERROR = "ERROR-";
     
-    private static final String DOC_TYPE_NODE = "Node";
-    private static final String DOC_TYPE_UNINDEXED_NODE = "UnindexedNode";
-    private static final String DOC_TYPE_ERROR_NODE = "ErrorNode";
-    private static final String DOC_TYPE_ACL = "Acl";
-    private static final String DOC_TYPE_TX = "Tx";
-    private static final String DOC_TYPE_ACL_TX = "AclTx";
-    private static final String DOC_TYPE_STATE = "State";
+    public static final String DOC_TYPE_NODE = "Node";
+    public static final String DOC_TYPE_UNINDEXED_NODE = "UnindexedNode";
+    public static final String DOC_TYPE_ERROR_NODE = "ErrorNode";
+    public static final String DOC_TYPE_ACL = "Acl";
+    public static final String DOC_TYPE_TX = "Tx";
+    public static final String DOC_TYPE_ACL_TX = "AclTx";
+    public static final String DOC_TYPE_STATE = "State";
     
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
@@ -1344,7 +1344,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         {
             cachedDoc = retrieveDocFromSolrContentStore(fixedTenantDomain, nodeMetaData.getId());
         }
-        addPropertiesToDoc(nodeMetaData, isContentIndexedForNode, newDoc, cachedDoc);
+        Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
+        addPropertiesToDoc(properties, isContentIndexedForNode, newDoc, cachedDoc, transformContent);
         if (isContentIndexedForNode)
         {
             // Now that the new doc is fully updated and is about to go to the Solr index, cache it.
@@ -1416,11 +1417,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
     }
 
-    private void addPropertiesToDoc(NodeMetaData nodeMetaData, boolean isContentIndexedForNode, 
-                SolrInputDocument newDoc, SolrInputDocument cachedDoc) 
-                throws IOException, AuthenticationException
+    static void addPropertiesToDoc(Map<QName, PropertyValue> properties, boolean isContentIndexedForNode, 
+                SolrInputDocument newDoc, SolrInputDocument cachedDoc, boolean transformContentFlag) 
+                throws IOException
     {
-        Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
         for (QName propertyQName : properties.keySet())
         {
             PropertyValue value = properties.get(propertyQName);
@@ -1445,7 +1445,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 {
                     if (isContentIndexedForNode)
                     {
-                        addContentPropertyToDocUsingCache(newDoc, cachedDoc, propertyQName, (ContentPropertyValue) value);
+                        addContentPropertyToDocUsingCache(newDoc, cachedDoc, propertyQName, 
+                                    (ContentPropertyValue) value, transformContentFlag);
                     }
                 }
                 else if (value instanceof MultiPropertyValue)
@@ -1475,7 +1476,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                             if (isContentIndexedForNode)
                             {
                                 addContentPropertyToDocUsingCache(newDoc, cachedDoc, propertyQName,
-                                            (ContentPropertyValue) singleValue);
+                                            (ContentPropertyValue) singleValue, transformContentFlag);
                             }
                         }
                     }
@@ -1543,7 +1544,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
      * @param type the content property field type, i.e. DOCID
      * @return a String representing the name of the field in Solr or null if not found
      */
-    private String getSolrFieldNameForContentPropertyMetadata(QName propertyQName, AlfrescoSolrDataModel.ContentFieldType type)
+    private static String getSolrFieldNameForContentPropertyMetadata(QName propertyQName, AlfrescoSolrDataModel.ContentFieldType type)
     {
         IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldForContentPropertyMetadata(propertyQName, type);
         List<FieldInstance> fields = indexedField.getFields();
@@ -1585,7 +1586,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
     }
 
-    private void addContentPropertyMetadata(SolrInputDocument doc, QName propertyQName, 
+    private static void addContentPropertyMetadata(SolrInputDocument doc, QName propertyQName, 
                 ContentPropertyValue contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType type)
     {
         IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldForContentPropertyMetadata(
@@ -1616,9 +1617,9 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
     }
     
-    private void addContentPropertyToDocUsingCache(SolrInputDocument newDoc, SolrInputDocument cachedDoc, 
-                QName propertyQName, ContentPropertyValue contentPropertyValue)
-                    throws AuthenticationException, IOException
+    private static void addContentPropertyToDocUsingCache(SolrInputDocument newDoc, SolrInputDocument cachedDoc, 
+                QName propertyQName, ContentPropertyValue contentPropertyValue, boolean transformContentFlag)
+                    throws IOException
     {
         addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.DOCID);
         addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.SIZE);
@@ -1626,7 +1627,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.MIMETYPE);
         addContentPropertyMetadata(newDoc, propertyQName, contentPropertyValue, AlfrescoSolrDataModel.ContentFieldType.ENCODING);
         
-        if (false == transformContent) 
+        if (false == transformContentFlag) 
         {
             // Marks it as Clean so we do not get the actual content
             markFTSStatus(newDoc,  FTSStatus.Clean);
@@ -1715,7 +1716,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
     }
 
-    private void markFTSStatus(SolrInputDocument doc, FTSStatus status)
+    private static void markFTSStatus(SolrInputDocument doc, FTSStatus status)
     {
         doc.removeField(FIELD_FTSSTATUS);
         doc.addField(FIELD_FTSSTATUS, status.toString());
@@ -1860,7 +1861,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return cachedDoc;
     }
     
-    private void addMLTextPropertyToDoc(SolrInputDocument doc, FieldInstance field, MLTextPropertyValue mlTextPropertyValue) throws IOException
+    private static void addMLTextPropertyToDoc(SolrInputDocument doc, FieldInstance field, MLTextPropertyValue mlTextPropertyValue) throws IOException
     {   
         if(field.isLocalised())
         {
@@ -1901,7 +1902,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
     }
     
-    private void addStringPropertyToDoc(SolrInputDocument doc, FieldInstance field, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
+    private static void addStringPropertyToDoc(SolrInputDocument doc, FieldInstance field, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
     {
         if(field.isLocalised())
         {

@@ -159,15 +159,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         {
             if (a.equalsIgnoreCase("TEST"))
             {
-                new AlfrescoCoreAdminTester(req, this).runTests(req, rsp);
+                new AlfrescoCoreAdminTester(this).runTests(req, rsp);
             }
             else if (a.equalsIgnoreCase("AUTHTEST"))
             {
-                new AlfrescoCoreAdminTester(req, this).runAuthTest(req, rsp);
+                new AlfrescoCoreAdminTester(this).runAuthTest(req, rsp);
             }
             else if (a.equalsIgnoreCase("CMISTEST"))
             {
-                new AlfrescoCoreAdminTester(req, this).runCmisTests(req, rsp);
+                new AlfrescoCoreAdminTester(this).runCmisTests(req, rsp);
             }
             else if (a.equalsIgnoreCase("newCore"))
             {

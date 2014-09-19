@@ -18,17 +18,14 @@
  */
 package org.alfresco.solr;
 
-import org.alfresco.solr.AlfrescoSolrDataModel;
+import static org.alfresco.repo.search.adaptor.lucene.QueryConstants.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.text.Collator;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -43,10 +40,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.servlet.http.HttpServletRequest;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.dictionary.IndexTokenisationMode;
-import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
-import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
-import org.alfresco.service.cmr.dictionary.PropertyDefinition;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Period;
@@ -54,6 +47,7 @@ import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.datatype.DefaultTypeConverter;
 import org.alfresco.service.cmr.repository.datatype.Duration;
 import org.alfresco.service.cmr.search.SearchParameters;
+import org.alfresco.service.namespace.InvalidQNameException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.client.ContentPropertyValue;
@@ -80,7 +74,6 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
-import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequestBase;
 import org.apache.solr.request.SolrRequestHandler;
@@ -91,7 +84,6 @@ import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.util.RefCounted;
-import org.springframework.extensions.surf.util.I18NUtil;
 //import org.alfresco.repo.search.impl.lucene.MultiReader;
 
 public class AlfrescoCoreAdminTester
@@ -165,10 +157,9 @@ public class AlfrescoCoreAdminTester
 
     long guid = System.nanoTime();
 
-    AlfrescoCoreAdminTester(SolrQueryRequest req, AlfrescoCoreAdminHandler adminHandler)
+    AlfrescoCoreAdminTester(AlfrescoCoreAdminHandler adminHandler)
     {
         this.adminHandler = adminHandler;
-        this.solrQueryRequest = req;
     }
 
     private String createGUID()
@@ -249,8 +240,9 @@ public class AlfrescoCoreAdminTester
     /**
      * @param req
      * @param rsp
+     * @throws org.apache.lucene.queryparser.classic.ParseException 
      */
-    void runTests(SolrQueryRequest req, SolrQueryResponse rsp)
+    void runTests(SolrQueryRequest req, SolrQueryResponse rsp) throws org.apache.lucene.queryparser.classic.ParseException
     {
         orderDate = new Date();
 
@@ -295,10 +287,10 @@ public class AlfrescoCoreAdminTester
             adminHandler.getCoreContainer().register(name, core, false);
             before.add("core", core.getName());
 
-            SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-//            String id = loader.getInstanceDir();
             AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance();
-//            dataModel.setCMDefaultUri();
+
+            this.solrQueryRequest = new SolrServletRequest(core, null);
+            this.solrQueryRequest.setParams(req.getParams());
             // add data
 
             // Root
@@ -847,9 +839,7 @@ public class AlfrescoCoreAdminTester
                         core = adminHandler.getCoreContainer().getCore(coreName);
                         name = coreName;
 
-                        SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-//                        String id = loader.getInstanceDir();
-                        dataModel = AlfrescoSolrDataModel.getInstance(/*id Apparently no longer needed*/);
+                        dataModel = AlfrescoSolrDataModel.getInstance();
                         break;
                     }
                 }
@@ -879,15 +869,13 @@ public class AlfrescoCoreAdminTester
                 // add core
 
                 CoreDescriptor dcore = new CoreDescriptor(adminHandler.getCoreContainer(), name, newCore.toString());
-//                dcore.setCoreProperties(null);
                 core = adminHandler.getCoreContainer().create(dcore);
                 adminHandler.getCoreContainer().register(name, core, false);
                 rsp.add("core", core.getName());
 
-                SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-//                String id = loader.getInstanceDir();
                 dataModel = AlfrescoSolrDataModel.getInstance();
-//                dataModel.setCMDefaultUri();
+                this.solrQueryRequest = new SolrServletRequest(core, null);
+                this.solrQueryRequest.setParams(req.getParams());
                 // add data
 
                 // Root
@@ -1106,15 +1094,13 @@ public class AlfrescoCoreAdminTester
             // add core
 
             CoreDescriptor dcore = new CoreDescriptor(adminHandler.getCoreContainer(), name, newCore.toString());
-//            dcore.setCoreProperties(null);
             SolrCore core = adminHandler.getCoreContainer().create(dcore);
             adminHandler.getCoreContainer().register(name, core, false);
             rsp.add("core", core.getName());
 
-            SolrResourceLoader loader = core.getLatestSchema().getResourceLoader();
-//            String id = loader.getInstanceDir();
             AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance();
-//            dataModel.setCMDefaultUri();
+            this.solrQueryRequest = new SolrServletRequest(core, null);
+            this.solrQueryRequest.setParams(req.getParams());
             // add data
 
             // Root
@@ -6418,9 +6404,10 @@ public class AlfrescoCoreAdminTester
      * @param core
      * @param dataModel
      * @throws IOException
+     * @throws org.apache.lucene.queryparser.classic.ParseException 
      */
     private void testChildNameEscaping(NamedList<Object> after, SolrCore core, AlfrescoSolrDataModel dataModel,
-                NodeRef rootNodeRef) throws IOException
+                NodeRef rootNodeRef) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         String COMPLEX_LOCAL_NAME = "\u0020\u0060\u00ac\u00a6\u0021\"\u00a3\u0024\u0025\u005e\u0026\u002a\u0028\u0029\u002d\u005f\u003d\u002b\t\n\\\u0000\u005b\u005d\u007b\u007d\u003b\u0027\u0023\u003a\u0040\u007e\u002c\u002e\u002f\u003c\u003e\u003f\\u007c\u005f\u0078\u0054\u0036\u0035\u0041\u005f";
         String NUMERIC_LOCAL_NAME = "12Woof12";
@@ -6536,7 +6523,7 @@ public class AlfrescoCoreAdminTester
 
 
     private void checkRootNode(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("RootNode", report);
@@ -6559,7 +6546,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkQNames(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("QNames", report);
@@ -6585,7 +6572,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkType(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Type", report);
@@ -6634,7 +6621,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkText(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Text", report);
@@ -6819,7 +6806,7 @@ public class AlfrescoCoreAdminTester
         }
     }
 
-    private void checkAll(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException
+    private void checkAll(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("ALL", report);
@@ -6846,7 +6833,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkDataType(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("DataType", report);
@@ -6871,7 +6858,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkNullAndUnset(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, InvalidQNameException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("ISNULL/ISUNSET/ISNOTNULL", report);
@@ -6910,7 +6897,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkNonField(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("NonField", report);
@@ -6979,7 +6966,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkRanges(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Ranges", report);
@@ -7012,237 +6999,237 @@ public class AlfrescoCoreAdminTester
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Internal", report);
-
+// TODO What to do about leaf and aux?
         for (int i = 1; i < 16; i++)
         {
-            testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":LEAF-" + i, 1, null, null, null,
+            testQueryByHandler(report, core, "/afts", FIELD_ID + ":LEAF-" + i, 1, null, null, null,
                         null, null, (String) null);
-            testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":AUX-" + i, 1, null, null, null, null,
+            testQueryByHandler(report, core, "/afts", FIELD_ID + ":AUX-" + i, 1, null, null, null, null,
                         null, (String) null);
         }
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":LEAF-*", 16, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ID + ":LEAF-*", 16, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":AUX-*", 16, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ID + ":AUX-*", 16, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":ACL-*", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ID + ":ACL-*", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":ACLTX-*", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ID + ":ACLTX-*", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":TX-*", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ID + ":TX-*", 1, null, null, null, null, null,
                     (String) null);
 
         // LID is used internally via ID if a node ref is provided
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ID + ":\"" + nodeRef + "\"", 1, null, null,
                     null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null,
                     null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_LINKASPECT is not used for SOLR
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ANCESTOR + ":\"" + nodeRef + "\"", 10, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ANCESTOR + ":\"" + nodeRef + "\"", 10, null,
                     null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_ISCONTAINER is not used for SOLR
         // AbstractLuceneQueryParser.FIELD_ISCATEGORY is not used for SOLR
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:one\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:one\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:two\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:two\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:three\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:three\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:four\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:four\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:five\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:five\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:six\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:six\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:seven\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:seven\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eight-0\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:eight-0\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eight-1\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:eight-1\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eight-2\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:eight-2\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:nine\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:nine\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:ten\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:ten\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:eleven\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:eleven\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:twelve\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:twelve\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:thirteen\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:thirteen\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:fourteen\"", 2, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:fourteen\"", 2, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:fifteen\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:fifteen\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:common\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:common\"", 1, null, null, null,
                     null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_QNAME + ":\"cm:link\"", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_QNAME + ":\"cm:link\"", 1, null, null, null,
                     null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:one\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:one\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:two\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:two\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:three\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:three\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:four\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:four\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:five\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:five\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:six\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:six\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:seven\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:seven\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-0\"", 0, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-0\"", 0, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-1\"", 0, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-1\"", 0, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-2\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:eight-2\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:nine\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:nine\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:ten\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:ten\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:eleven\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:eleven\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:twelve\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:twelve\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:thirteen\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:thirteen\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:fourteen\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:fourteen\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:fifteen\"", 1, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:fifteen\"", 1, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:common\"", 0, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:common\"", 0, null,
                     null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCQNAME + ":\"cm:link\"", 0, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCQNAME + ":\"cm:link\"", 0, null,
                     null, null, null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_ISROOT is not used in SOLR
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME + ":\""
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYASSOCTYPEQNAME + ":\""
                     + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 4, null, null,
                     null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ISNODE + ":T", 16, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ISNODE + ":T", 16, null, null, null, null, null,
                     (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ASSOCTYPEQNAME + ":\""
+        testQueryByHandler(report, core, "/afts", FIELD_ASSOCTYPEQNAME + ":\""
                     + ContentModel.ASSOC_CHILDREN.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 5, null, null,
                     null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PRIMARYPARENT + ":\"" + nodeRef + "\"", 2, null,
                     null, null, null, null, (String) null);
 
         // TYPE and ASPECT is covered in other tests
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null,
                     null, null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":1", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":1", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":2", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":2", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":3", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":3", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":4", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":4", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":5", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":5", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":6", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":6", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":7", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":7", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":8", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":8", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":9", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":9", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":10", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":10", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":11", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":11", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":12", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":12", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":13", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":13", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":14", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":14", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":15", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":15", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":16", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":16", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_DBID + ":17", 0, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_DBID + ":17", 0, null, null, null, null, null,
                     (String) null);
         // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":*", 16, null, null, (String)
         // null);
         // testQueryByHandler(report, core, "/afts", AbstractLuceneQueryParser.FIELD_DBID+":[3 TO 4]", 2, null, null,
         // null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_TXID + ":1", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_TXID + ":1", 1, null, null, null, null, null,
                     (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_INTXID + ":1", 33, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_INTXID + ":1", 33, null, null, null, null, null,
                     (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ACLTXID + ":1", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ACLTXID + ":1", 1, null, null, null, null, null,
                     (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_INACLTXID + ":1", 2, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_INACLTXID + ":1", 2, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_INACLTXID + ":2", 0, null, null, null, null,
-                    null, (String) null);
-
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_INACLTXID + ":2", 0, null, null, null, null,
                     null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null,
+                    null, (String) null);
+
+        testQueryByHandler(report, core, "/afts", FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null,
                     null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE
         // addNonDictionaryField(AbstractLuceneQueryParser.FIELD_EXCEPTION_STACK
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_ACLID + ":1", 17, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_ACLID + ":1", 17, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_READER + ":\"GROUP_EVERYONE\"", 16, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_READER + ":\"GROUP_EVERYONE\"", 16, null, null,
                     null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":andy", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":andy", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":bob", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":bob", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":cid", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":cid", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":dave", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":dave", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":eoin", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":eoin", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":fred", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":fred", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":gail", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":gail", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":hal", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":hal", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":ian", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":ian", 1, null, null, null, null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":jake", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":jake", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":kara", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":kara", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":loon", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":loon", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":mike", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":mike", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":noodle", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":noodle", 1, null, null, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_OWNER + ":ood", 1, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_OWNER + ":ood", 1, null, null, null, null, null,
                     (String) null);
 
-        testQueryByHandler(report, core, "/afts", QueryConstants.FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_PARENT_ASSOC_CRC + ":0", 16, null, null, null,
                     null, null, (String) null);
     }
 
@@ -7346,7 +7333,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkMLText(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("MLText", report);
@@ -7544,7 +7531,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void checkPropertyTypes(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel,
-                Date testDate, String n01NodeRef) throws IOException
+                Date testDate, String n01NodeRef) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("PropertyTypes", report);
@@ -7926,7 +7913,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private String checkPaths(NamedList<Object> before, SolrCore core, AlfrescoSolrDataModel dataModel)
-                throws IOException
+                throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Paths", report);
@@ -8015,7 +8002,7 @@ public class AlfrescoCoreAdminTester
 
     private void testQuery(AlfrescoSolrDataModel dataModel, NamedList<Object> report,
                 SolrIndexSearcher solrIndexSearcher, String queryString, Integer count, Locale locale,
-                String[] textAttributes, String[] allAttributes, String... name) throws IOException
+                String[] textAttributes, String[] allAttributes, String... name) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setQuery(queryString);
@@ -8037,11 +8024,10 @@ public class AlfrescoCoreAdminTester
                 searchParameters.addAllAttribute(allAttribute);
             }
         }
-        // Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
+//         Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
         long start = System.nanoTime();
-        Query query = null;
-//                            dataModel.getLuceneQueryParser(searchParameters, solrIndexSearcher.getIndexReader()).parse(
-//                    queryString);
+        Query query = dataModel.getLuceneQueryParser(searchParameters, this.solrQueryRequest).parse(queryString);
+//        dataModel.getLuceneQueryParser(searchParameters, solrIndexSearcher.getIndexReader()).parse(queryString);
         TopDocs docs = solrIndexSearcher.search(query, count * 2 + 10);
 
         NamedList<Object> subReport = new SimpleOrderedMap<Object>();
@@ -8086,6 +8072,7 @@ public class AlfrescoCoreAdminTester
                 searchParameters.addAllAttribute(allAttribute);
             }
         }
+// TODO fix query     
         // Query query = dataModel.getFTSQuery(searchParameters, solrIndexSearcher.getIndexReader());
         long start = System.nanoTime();
         Query query = null;
@@ -8124,7 +8111,7 @@ public class AlfrescoCoreAdminTester
     }
 
     private void testQuery(AlfrescoSolrDataModel dataModel, NamedList<Object> report,
-                SolrIndexSearcher solrIndexSearcher, String queryString, int count) throws IOException
+                SolrIndexSearcher solrIndexSearcher, String queryString, int count) throws IOException, org.apache.lucene.queryparser.classic.ParseException
     {
         testQuery(dataModel, report, solrIndexSearcher, queryString, count, null, null, null);
     }
@@ -8155,10 +8142,12 @@ public class AlfrescoCoreAdminTester
         aclTxCmd.overwrite = true;
         SolrInputDocument aclTxSol = new SolrInputDocument();
         String aclTxId = AlfrescoSolrDataModel.getAclChangeSetDocumentId(new Long(acltxid));
-        aclTxSol.addField(QueryConstants.FIELD_SOLR4_ID, aclTxId);
-        aclTxSol.addField(QueryConstants.FIELD_ACLTXID, acltxid);
-        aclTxSol.addField(QueryConstants.FIELD_INACLTXID, acltxid);
-        aclTxSol.addField(QueryConstants.FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
+        aclTxSol.addField(FIELD_SOLR4_ID, aclTxId);
+        aclTxSol.addField(FIELD_VERSION, "0");
+        aclTxSol.addField(FIELD_ACLTXID, acltxid);
+        aclTxSol.addField(FIELD_INACLTXID, acltxid);
+        aclTxSol.addField(FIELD_ACLTXCOMMITTIME, (new Date()).getTime());
+        aclTxSol.addField(FIELD_DOC_TYPE, SolrInformationServer.DOC_TYPE_ACL_TX);
         aclTxCmd.solrDoc = aclTxSol;
         core.getUpdateHandler().addDoc(aclTxCmd);
 
@@ -8166,29 +8155,27 @@ public class AlfrescoCoreAdminTester
         aclCmd.overwrite = true;
         SolrInputDocument aclSol = new SolrInputDocument();
         String aclDocId = AlfrescoSolrDataModel.getAclDocumentId(AlfrescoSolrDataModel.DEFAULT_TENANT, new Long(aclId));
-        aclSol.addField(QueryConstants.FIELD_SOLR4_ID, aclDocId);
-        aclSol.addField(QueryConstants.FIELD_ACLID, aclId);
-        aclSol.addField(QueryConstants.FIELD_INACLTXID, "" + acltxid);
-        aclSol.addField(QueryConstants.FIELD_READER, "GROUP_EVERYONE");
-        aclSol.addField(QueryConstants.FIELD_READER, "pig");
+        aclSol.addField(FIELD_SOLR4_ID, aclDocId);
+        aclSol.addField(FIELD_VERSION, "0");
+        aclSol.addField(FIELD_ACLID, aclId);
+        aclSol.addField(FIELD_INACLTXID, "" + acltxid);
+        aclSol.addField(FIELD_READER, "GROUP_EVERYONE");
+        aclSol.addField(FIELD_READER, "pig");
         for (int i = 0; i <= maxReader; i++)
         {
-            aclSol.addField(QueryConstants.FIELD_READER, "READER-" + (totalReader - i));
+            aclSol.addField(FIELD_READER, "READER-" + (totalReader - i));
         }
+        aclSol.addField(FIELD_DENIED, "something");
+        aclSol.addField(FIELD_DOC_TYPE, SolrInformationServer.DOC_TYPE_ACL);
         aclCmd.solrDoc = aclSol;
         core.getUpdateHandler().addDoc(aclCmd);
 
     }
 
-    /**
-     * @param i
-     * @param j
-     * @throws IOException
-     */
-    private void addStoreRoot(SolrCore core, AlfrescoSolrDataModel dataModel, NodeRef rootNodeRef, int txid, int dbid,
-                int acltxid, int aclid) throws IOException
+    private void addStoreRoot(SolrCore core, AlfrescoSolrDataModel dataModel, 
+                NodeRef rootNodeRef, int txid, int dbid, int acltxid, int aclid) throws IOException
     {
-        AddUpdateCommand addDocCmd = new AddUpdateCommand(solrQueryRequest);
+        AddUpdateCommand addDocCmd = new AddUpdateCommand(this.solrQueryRequest);
         addDocCmd.overwrite = true;
         addDocCmd.solrDoc = createDocument(dataModel, new Long(txid), new Long(dbid), rootNodeRef, 
                     ContentModel.TYPE_STOREROOT, new QName[] { ContentModel.ASPECT_ROOT }, null, null, new Long(aclid),
@@ -8196,18 +8183,20 @@ public class AlfrescoCoreAdminTester
         core.getUpdateHandler().addDoc(addDocCmd);
         addAcl(core, dataModel, acltxid, aclid, 0, 0);
 
-        AddUpdateCommand txCmd = new AddUpdateCommand(solrQueryRequest);
+        AddUpdateCommand txCmd = new AddUpdateCommand(this.solrQueryRequest);
         txCmd.overwrite = true;
         SolrInputDocument input = new SolrInputDocument();
-        // TODO fix as MetadataTracker
-        input.addField(QueryConstants.FIELD_ID, "TX-" + txid);
-        input.addField(QueryConstants.FIELD_TXID, txid);
-        input.addField(QueryConstants.FIELD_INTXID, txid);
-        input.addField(QueryConstants.FIELD_TXCOMMITTIME, (new Date()).getTime());
+        String id = AlfrescoSolrDataModel.getTransactionDocumentId(new Long(txid));
+        input.addField(FIELD_SOLR4_ID, id);
+        input.addField(FIELD_VERSION, "0");
+        input.addField(FIELD_TXID, txid);
+        input.addField(FIELD_INTXID, txid);
+        input.addField(FIELD_TXCOMMITTIME, (new Date()).getTime());
+        input.addField(FIELD_DOC_TYPE, SolrInformationServer.DOC_TYPE_TX);
         txCmd.solrDoc = input;
         core.getUpdateHandler().addDoc(txCmd);
 
-        core.getUpdateHandler().commit(new CommitUpdateCommand(solrQueryRequest, false));
+        core.getUpdateHandler().commit(new CommitUpdateCommand(this.solrQueryRequest, false));
     }
 
     private SolrInputDocument createDocument(AlfrescoSolrDataModel dataModel, Long txid, Long dbid, NodeRef nodeRef,
@@ -8216,26 +8205,28 @@ public class AlfrescoCoreAdminTester
                 throws IOException
     {
         SolrInputDocument doc = new SolrInputDocument();
-        doc.addField(QueryConstants.FIELD_SOLR4_ID, AlfrescoSolrDataModel.getNodeDocumentId(
-                    AlfrescoSolrDataModel.DEFAULT_TENANT, aclId, dbid));
-        doc.addField(QueryConstants.FIELD_DBID, "" + dbid);
-        doc.addField(QueryConstants.FIELD_LID, nodeRef);
-        doc.addField(QueryConstants.FIELD_INTXID, "" + txid);
-        doc.addField(QueryConstants.FIELD_ACLID, "" + aclId);
+        String id = AlfrescoSolrDataModel.getNodeDocumentId(AlfrescoSolrDataModel.DEFAULT_TENANT, aclId, dbid);
+        doc.addField(FIELD_SOLR4_ID, id);
+        doc.addField(FIELD_VERSION, 0);
+        doc.addField(FIELD_DBID, "" + dbid);
+        doc.addField(FIELD_LID, nodeRef);
+        doc.addField(FIELD_INTXID, "" + txid);
+        doc.addField(FIELD_ACLID, "" + aclId);
+        doc.addField(FIELD_DOC_TYPE, SolrInformationServer.DOC_TYPE_NODE);
         
         if (paths != null)
         {
             for (String path : paths)
             {
-                doc.addField(QueryConstants.FIELD_PATH, path);
+                doc.addField(FIELD_PATH, path);
             }
         }
 
         if (owner != null)
         {
-            doc.addField(QueryConstants.FIELD_OWNER, owner);
+            doc.addField(FIELD_OWNER, owner);
         }
-        doc.addField(QueryConstants.FIELD_PARENT_ASSOC_CRC, "0");
+        doc.addField(FIELD_PARENT_ASSOC_CRC, "0");
 
         StringBuilder qNameBuffer = new StringBuilder(64);
         StringBuilder assocTypeQNameBuffer = new StringBuilder(64);
@@ -8250,268 +8241,49 @@ public class AlfrescoCoreAdminTester
                 }
                 qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
                 assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                doc.addField(QueryConstants.FIELD_PARENT, childAssocRef.getParentRef());
+                doc.addField(FIELD_PARENT, childAssocRef.getParentRef());
 
                 if (childAssocRef.isPrimary())
                 {
-                    doc.addField(QueryConstants.FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
-                    doc.addField(QueryConstants.FIELD_PRIMARYASSOCTYPEQNAME,
+                    doc.addField(FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    doc.addField(FIELD_PRIMARYASSOCTYPEQNAME,
                                 ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                    doc.addField(QueryConstants.FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
+                    doc.addField(FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
                 }
             }
-            doc.addField(QueryConstants.FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
-            doc.addField(QueryConstants.FIELD_QNAME, qNameBuffer.toString());
+            doc.addField(FIELD_ASSOCTYPEQNAME, assocTypeQNameBuffer.toString());
+            doc.addField(FIELD_QNAME, qNameBuffer.toString());
         }
 
         if (ancestors != null)
         {
             for (NodeRef ancestor : ancestors)
             {
-                doc.addField(QueryConstants.FIELD_ANCESTOR, ancestor.toString());
+                doc.addField(FIELD_ANCESTOR, ancestor.toString());
             }
         }
         
         if (properties != null)
         {
-            // TODO: Do like the informationserver.addPropertiesToDoc
-            for (Map.Entry<QName, PropertyValue> entry : properties.entrySet())
-            {
-                QName propertyQname = entry.getKey();
-//                if (dataModel.isIndexedOrStored(propertyQname))
-                {
-                    PropertyValue value = entry.getValue();
-                    if (value != null)
-                    {
-                        if (value instanceof ContentPropertyValue)
-                        {
-                            addContentPropertyToDoc(doc, propertyQname, (ContentPropertyValue) value, content);
-
-                        }
-                        else if (value instanceof MLTextPropertyValue)
-                        {
-                            addMLTextPropertyToDoc(dataModel, doc, propertyQname, (MLTextPropertyValue) value);
-                        }
-                        else if (value instanceof MultiPropertyValue)
-                        {
-                            MultiPropertyValue typedValue = (MultiPropertyValue) value;
-                            for (PropertyValue singleValue : typedValue.getValues())
-                            {
-                                if (singleValue instanceof ContentPropertyValue)
-                                {
-                                    addContentPropertyToDoc(doc, propertyQname, (ContentPropertyValue) singleValue,
-                                                content);
-                                }
-                                else if (singleValue instanceof MLTextPropertyValue)
-                                {
-                                    addMLTextPropertyToDoc(dataModel, doc, propertyQname,
-                                                (MLTextPropertyValue) singleValue);
-
-                                }
-                                else if (singleValue instanceof StringPropertyValue)
-                                {
-                                    addStringPropertyToDoc(dataModel, doc, propertyQname,
-                                                (StringPropertyValue) singleValue, properties);
-                                }
-                            }
-                        }
-                        else if (value instanceof StringPropertyValue)
-                        {
-                            addStringPropertyToDoc(dataModel, doc, propertyQname, (StringPropertyValue) value,
-                                        properties);
-                        }
-
-                    }
-                }
-            }
+            final boolean isContentIndexedForNode = true;
+            final SolrInputDocument cachedDoc = null;
+            final boolean transformContentFlag = true;
+            SolrInformationServer.addPropertiesToDoc(properties, isContentIndexedForNode, doc, cachedDoc, transformContentFlag);
         }
 
-        doc.addField(QueryConstants.FIELD_TYPE, type);
+        doc.addField(FIELD_TYPE, type);
         if (aspects != null)
         {
             for (QName aspect : aspects)
             {
-                doc.addField(QueryConstants.FIELD_ASPECT, aspect);
+                doc.addField(FIELD_ASPECT, aspect);
             }
         }
-        doc.addField(QueryConstants.FIELD_ISNODE, "T");
-        doc.addField(QueryConstants.FIELD_FTSSTATUS, SolrInformationServer.FTSStatus.Clean);
-        doc.addField(QueryConstants.FIELD_TENANT, AlfrescoSolrDataModel.DEFAULT_TENANT);
+        doc.addField(FIELD_ISNODE, "T");
+        doc.addField(FIELD_TENANT, AlfrescoSolrDataModel.DEFAULT_TENANT);
 
         return doc;
     }
-
-    private void addStringPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName,
-                StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
-    {
-        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
-        if (propertyDefinition != null)
-        {
-            if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.DATETIME))
-            {
-                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(),
-                            stringPropertyValue.getValue());
-                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort",
-                            stringPropertyValue.getValue());
-            }
-            else if (propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
-            {
-                Locale locale = null;
-
-                PropertyValue localePropertyValue = properties.get(ContentModel.PROP_LOCALE);
-                if (localePropertyValue != null)
-                {
-                    locale = DefaultTypeConverter.INSTANCE.convert(Locale.class,
-                                ((StringPropertyValue) localePropertyValue).getValue());
-                }
-
-                if (locale == null)
-                {
-                    locale = I18NUtil.getLocale();
-                }
-
-                StringBuilder builder;
-                builder = new StringBuilder();
-                builder.append("\u0000").append(locale.toString()).append("\u0000")
-                            .append(stringPropertyValue.getValue());
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE)
-                            || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__",
-                                builder.toString());
-                }
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                            || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u",
-                                builder.toString());
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u",
-                                builder.toString());
-                }
-
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                            || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort",
-                                builder.toString());
-                }
-
-            }
-            else
-            {
-                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(),
-                            stringPropertyValue.getValue());
-            }
-
-        }
-        else
-        {
-            doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(),
-                        stringPropertyValue.getValue());
-        }
-    }
-
-    private void addContentPropertyToDoc(SolrInputDocument doc, QName propertyQName,
-                ContentPropertyValue contentPropertyValue, Map<QName, String> content) throws IOException
-    {
-        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".size",
-                    contentPropertyValue.getLength());
-        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".locale",
-                    contentPropertyValue.getLocale());
-        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".mimetype",
-                    contentPropertyValue.getMimetype());
-        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".encoding",
-                    contentPropertyValue.getEncoding());
-
-        String value = "";
-        if (content != null)
-        {
-            value = content.get(propertyQName);
-            if (value == null)
-            {
-                value = "";
-            }
-        }
-        StringReader isr = new StringReader(value);
-        StringBuilder builder = new StringBuilder();
-        builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
-        StringReader prefix = new StringReader(builder.toString());
-//        Reader multiReader = new MultiReader(prefix, isr);
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), multiReader);
-
-        isr = new StringReader(value);
-        builder = new StringBuilder();
-        builder.append("\u0000").append(contentPropertyValue.getLocale().toString()).append("\u0000");
-        prefix = new StringReader(builder.toString());
-//        multiReader = new MultiReader(prefix, isr);
-//        doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__", multiReader);
-
-    }
-
-    private void addMLTextPropertyToDoc(AlfrescoSolrDataModel dataModel, SolrInputDocument doc, QName propertyQName,
-                MLTextPropertyValue mlTextPropertyValue) throws IOException
-    {
-        PropertyDefinition propertyDefinition = dataModel.getPropertyDefinition(propertyQName);
-        if (propertyDefinition != null)
-        {
-            StringBuilder sort = new StringBuilder();
-            for (Locale locale : mlTextPropertyValue.getLocales())
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.append("\u0000").append(locale.toString()).append("\u0000")
-                            .append(mlTextPropertyValue.getValue(locale));
-
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE)
-                            || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(), builder.toString());
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__",
-                                builder.toString());
-                }
-                if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                            || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-                {
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".u",
-                                builder.toString());
-                    doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".__.u",
-                                builder.toString());
-                }
-
-                if (sort.length() > 0)
-                {
-                    sort.append("\u0000");
-                }
-                sort.append(builder.toString());
-            }
-
-            if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                        || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
-            {
-                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString() + ".sort", sort.toString());
-            }
-        }
-        else
-        {
-            for (Locale locale : mlTextPropertyValue.getLocales())
-            {
-                doc.addField(QueryConstants.PROPERTY_FIELD_PREFIX + propertyQName.toString(),
-                            mlTextPropertyValue.getValue(locale));
-            }
-        }
-
-    }
-
-    private static SolrInputDocument createRootAclDocument()
-    {
-        SolrInputDocument doc = new SolrInputDocument();
-        doc.addField("ACLID", "1");
-        doc.addField("READER", "ROLE_ALL");
-        doc.addField("READER", "ROLE_JUST_ROOT");
-        doc.addField("ID", "ACL-1");
-        return doc;
-    }
-
 
     class SolrServletRequest extends SolrQueryRequestBase
     {
