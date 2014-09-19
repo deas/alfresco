@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.model.ContentModel;
@@ -1356,6 +1358,12 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         for (QName aspect : nodeMetaData.getAspects())
         {
             doc.addField(FIELD_ASPECT, aspect.toString());
+            if(aspect.equals(ContentModel.ASPECT_GEOGRAPHIC))
+            {
+                String lat = ((StringPropertyValue)nodeMetaData.getProperties().get(ContentModel.PROP_LATITUDE)).getValue();
+                String lon = ((StringPropertyValue)nodeMetaData.getProperties().get(ContentModel.PROP_LONGITUDE)).getValue();
+                doc.addField(FIELD_GEO, lat + ", " + lon);
+            }
         }
         doc.addField(FIELD_ISNODE, "T");
         // FIELD_FTSSTATUS is set when adding content properties to indicate whether or not the cache is clean.
@@ -1815,12 +1823,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         try (
                     OutputStream contentOutputStream = writer.getContentOutputStream();
                     // Compresses the document
-                    //GZIPOutputStream gzip = new GZIPOutputStream(contentOutputStream);
-                    //FastOutputStream fos = new FastOutputStream(contentOutputStream);
+                    GZIPOutputStream gzip = new GZIPOutputStream(contentOutputStream);
             )
         {
             JavaBinCodec codec = new JavaBinCodec(resolver);
-            codec.marshal(doc, contentOutputStream);
+            codec.marshal(doc, gzip);
         }
     }
 
@@ -1843,11 +1850,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             try (
                     InputStream contentInputStream = reader.getContentInputStream();
                     // Uncompresses the document
-                    //GZIPInputStream gzip = new GZIPInputStream(contentInputStream);
-                    //FastInputStream fis = new FastInputStream(contentInputStream)
+                    GZIPInputStream gzip = new GZIPInputStream(contentInputStream);
                     )
                     { 
-                cachedDoc = (SolrInputDocument) new JavaBinCodec(resolver).unmarshal(contentInputStream);
+                cachedDoc = (SolrInputDocument) new JavaBinCodec(resolver).unmarshal(gzip);
                     }
         }
         return cachedDoc;

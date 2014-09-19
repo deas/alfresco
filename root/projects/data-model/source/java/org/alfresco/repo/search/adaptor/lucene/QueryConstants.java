@@ -172,6 +172,7 @@ public interface QueryConstants
 
     public static final String FIELD_SITE = "SITE";
     
+    public static final String FIELD_GEO = "GEO";
+   
     public static final String FIELD_VERSION = "_version_";
-    
 }

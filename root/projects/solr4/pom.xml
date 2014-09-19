@@ -92,7 +92,23 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            </dependency>
+        </dependency>
+        <dependency>
+	    <groupId>com.spatial4j</groupId>
+	    <artifactId>spatial4j</artifactId>
+	    <version>0.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>1.13</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <!-- War dependency on the Vanilla Solr WAR -->
         <dependency>

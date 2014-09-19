@@ -48,6 +48,13 @@
          <analyzer class="org.alfresco.repo.search.impl.lucene.analysis.PathAnalyzer" />
       </fieldType>
 
+      <fieldType name="location_rpt"   class="solr.SpatialRecursivePrefixTreeFieldType"
+               spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory"
+               autoIndex="true"
+               distErrPct="0.025"
+               maxDistErr="0.000009"
+               units="degrees" />
+
 
       <fieldType name="site" class="solr.TextField" >
          <analyzer type="index">
@@ -601,6 +608,10 @@
       <!-- SOLR doc type -->
       <field name="DOC_TYPE"   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
 
+      <!-- GEO -->
+      <field name="GEO"  type="location_rpt"  indexed="true" stored="false"  multiValued="false" /> 
+
+
 
       <!-- Suggestion -->
       <field name="suggest"               type="text_shingle"    indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
@@ -608,6 +619,9 @@
 
       <!-- example pluggable field -->
       <field name="SITE" type="site" indexed="true" omitNorms="true" stored="false" multiValued="true" />
+      <!--
+      <field name="TAG"  type="tag"  indexed="true" omitNorms="true" stored="false" multiValued="true" />
+       -->
 
 
       <!-- Single value indexed  -->
