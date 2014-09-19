@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -111,7 +111,7 @@ define(["dojo/_base/declare",
 
          // Create a new UUID to pass on to the widgets that are dropped into this instance
          // this is done so that this instance can subscribe to requests from it's direct dropped items
-         this.childPubSubScope = this.generateUuid()
+         this.childPubSubScope = this.generateUuid();
          
          // Capture wrappers being selected...
          aspect.after(this.previewTarget, "onMouseDown", lang.hitch(this, "onWidgetSelected"), true);
@@ -146,7 +146,7 @@ define(["dojo/_base/declare",
             // this.previewTarget.insertNodes(false, items, false, null);
          }
 
-         if (this.value != null && this.value != "")
+         if (this.value != null && this.value !== "")
          {
             array.forEach(this.value, function(widget, i) {
                var data = {
@@ -232,7 +232,7 @@ define(["dojo/_base/declare",
             this.previewTarget.delItem(evt.target.id);
             
             // If the last item has just been deleted the add the dashed border back...
-            if (this.previewTarget.getAllNodes().length == 0)
+            if (this.previewTarget.getAllNodes().length === 0)
             {
                domClass.remove(this.previewNode, "containsItems");
             }
@@ -262,7 +262,7 @@ define(["dojo/_base/declare",
             var myNode = array.some(this.previewTarget.getAllNodes(), function(node, i) {
                return payload.node.id == node.id;
             });
-            if (myNode == true)
+            if (myNode === true)
             {
                this.alfLog("log", "Updating item", payload);
 
@@ -299,7 +299,7 @@ define(["dojo/_base/declare",
                   }
 
                   // Set additional config...
-                  for (var key in payload.updatedConfig.additionalConfig)
+                  for (key in payload.updatedConfig.additionalConfig)
                   {
                      var v = payload.updatedConfig.additionalConfig[key];
                      config.widgetConfig[key] = v;
@@ -386,7 +386,7 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Creating", item, hint);
          
          var node = domConstruct.create("div");
-         if (item.module != null && item.module != "")
+         if (item.module != null && item.module !== "")
          {
             // Clone the supplied item... there are several potential possibilities for this
             // creator being called. Either an avatrar is required (should actually be handled
@@ -424,9 +424,9 @@ define(["dojo/_base/declare",
                }
 
                // Initialise widgets for display...
-               if (clonedItem.previewWidget == true || 
+               if (clonedItem.previewWidget === true || 
                    clonedItem.widgetsForDisplay == null ||
-                   clonedItem.widgetsForDisplay.length == 0)
+                   clonedItem.widgetsForDisplay.length === 0)
                {
                   widgets = [
                      {
@@ -597,13 +597,14 @@ define(["dojo/_base/declare",
 
          var items = [];
          array.forEach(myConfig.children, function (item, index) {
-            var item = this.alfGetData(item);
-            items.push(item);
+            var itemData = this.alfGetData(item);
+            items.push(itemData);
          }, this);
          myConfig.widgetsForDisplay = [
             {
                name: "alfresco/creation/DropZone",
                config: {
+                  attributeKey: (this.attributeKey != null) ? this.attributeKey : "widgets",
                   horizontal: this.horizontal,
                   widgetsForNestedConfig: this.widgetsForNestedConfig,
                   initialItems: items

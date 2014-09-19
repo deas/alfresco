@@ -138,7 +138,37 @@ define(["alfresco/forms/controls/BaseFormControl",
          if (childConfig.widgetConfig != null)
          {
             var itemConfigKey = (childConfig.itemConfigKey != null) ? childConfig.itemConfigKey : "config";
-            childConfig.widgetConfig[itemConfigKey].widgets = subChildData;
+            // Check to see how the configuration should be mixed in...
+            // In some circumstances the dropped items should be mixed directly into the configuration,
+            // for example when dropping a publication into a button or menu item we want the publishTopic
+            // and publishPayload attributes to be direct attributes of config and not config.widgets.
+            if (childConfig.mixDroppedItemsIntoConfig === true)
+            {
+               array.forEach(subChildData, function(subChild) {
+                  lang.mixin(childConfig.widgetConfig[itemConfigKey], subChild);
+               }, this);
+            }
+            else
+            {
+               // Check the target attribute for dropped children. By default it will be set to widgets
+               // since this is the most common attribute, however there may be other circumstances
+               // where alternatives are required...
+               var subChildDataAttribute = lang.getObject("widgetsForDisplay.0.config.attributeKey", false, childConfig);
+               if (subChildDataAttribute != null && lang.trim(subChildDataAttribute) !== "")
+               {
+                  // No action required. Retrieved key from drop zone
+               }
+               else
+               {
+                  // Get item key from config
+                  subChildDataAttribute = childConfig.droppedItemsConfigAttribute;
+                  if (subChildDataAttribute == null || lang.trim(subChildDataAttribute) === "")
+                  {
+                     subChildDataAttribute = "widgets";
+                  }
+               }
+               childConfig.widgetConfig[itemConfigKey][subChildDataAttribute] = subChildData;
+            }
             childData.push(childConfig.widgetConfig);
          }
       }

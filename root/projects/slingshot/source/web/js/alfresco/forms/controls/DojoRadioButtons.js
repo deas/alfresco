@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -128,23 +128,24 @@ define(["alfresco/forms/controls/BaseFormControl",
          rb.placeAt(this.containerNode);
          this.options.push(option);
          this.optionToWidget[option.value] = rb;
-         rb._radioButton.on("change", lang.hitch(this, this.onButtonChange));
+         rb._radioButton.on("change", lang.hitch(this, this.onButtonChange, rb));
       },
 
       /**
        * @instance
+       * @param {object} radioButton The individual Radio Button that has changed state
        * @param {boolean} isChecked Indicates whether or not the button has been checked or not.
        */
-      onButtonChange: function alfresco_forms_controls_DojoRadioButton_RadioButtons__onButtonChange(isChecked) {
+      onButtonChange: function alfresco_forms_controls_DojoRadioButton_RadioButtons__onButtonChange(radioButton, isChecked) {
          if (isChecked)
          {
-            this.currentValue = this.value;
-            this.control.formControlValueChange(name, this.lastValue, this.currentValue);
+            this.currentValue = radioButton.value;
+            this.control.formControlValueChange(this.name, this.lastValue, this.currentValue);
             this.control.validate();
          }
          else
          {
-            this.lastValue = this.value;
+            this.lastValue = radioButton.value;
          }
       },
       
@@ -205,7 +206,7 @@ define(["alfresco/forms/controls/BaseFormControl",
       getWidgetConfig: function alfresco_forms_controls_DojoRadioButton__getWidgetConfig() {
          // Return the configuration for the widget
          return {
-            id : this.generateUuid(),
+            id : this.id + "_CONTROL",
             name: this.name,
             value: this.value,
             options: (this.options != null) ? this.options : [],

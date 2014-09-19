@@ -180,6 +180,71 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This is the message to display when no view is selected. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default 
+       */
+      noViewSelectedMessage: "alflist.no.view.message",
+
+      /**
+       * This is the message to display when no view is selected. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default 
+       */
+      
+      noDataMessage: "alflist.no.data.message",
+
+      /**
+       * This is the message to display when no data is available. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default 
+       */
+      
+      fetchingDataMessage: "alflist.loading.data.message",
+
+      /**
+       * This is the message to display whilst data is being loaded. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default 
+       */
+      
+      renderingViewMessage: "alflist.rendering.data.message",
+
+      /**
+       * This is the message to display when an error occurs rendering data. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default 
+       */
+      
+      fetchingMoreDataMessage: "alflist.loading.data.message",
+
+      /**
+       * This is the message to display when data cannot be loaded Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default 
+       */
+      
+      dataFailureMessage: "alflist.data.failure.message",
+
+      /**
        * This function should be overridden as necessary to change the messages displayed for various states
        * of the list, e.g.
        * <ul><li>When no view is configured</li>
@@ -191,12 +256,12 @@ define(["dojo/_base/declare",
        * @instance
        */
       setDisplayMessages: function alfresco_lists_AlfList__setDisplayMessages() {
-         this.noViewSelectedMessage = this.message("alflist.no.view.message");
-         this.noDataMessage = this.message("alflist.no.data.message");
-         this.fetchingDataMessage = this.message("alflist.loading.data.message");
-         this.renderingViewMessage = this.message("alflist.rendering.data.message");
-         this.fetchingMoreDataMessage = this.message("alflist.loading.data.message");
-         this.dataFailureMessage = this.message("alflist.data.failure.message");
+         this.noViewSelectedMessage = this.message(this.noViewSelectedMessage);
+         this.noDataMessage = this.message(this.noDataMessage);
+         this.fetchingDataMessage = this.message(this.fetchingDataMessage);
+         this.renderingViewMessage = this.message(this.renderingViewMessage);
+         this.fetchingMoreDataMessage = this.message(this.fetchingMoreDataMessage);
+         this.dataFailureMessage = this.message(this.dataFailureMessage);
       },
 
       /**

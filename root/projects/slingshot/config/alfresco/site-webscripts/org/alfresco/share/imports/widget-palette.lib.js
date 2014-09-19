@@ -1251,7 +1251,7 @@ function getDialogRequestPublication() {
             }
          },
          {
-            name: "alfresco/forms/controls/DojoRadioButtons",
+            name: "alfresco/forms/controls/DojoSelect",
             config: {
                name: "defaultConfig.formSubmissionTopic",
                label: "Dialog Confirmation Topic",
@@ -1259,10 +1259,7 @@ function getDialogRequestPublication() {
                postWhenHiddenOrDisabled: false,
                noValueUpdateWhenHiddenOrDisabled: true,
                optionsConfig: {
-                  fixed: [
-                     {label:"Create content",value:"ALF_CREATE_CONTENT_REQUEST"},
-                     {label:"Update content",value:"ALF_UPDATE_CONTENT_REQUEST"}
-                  ]
+                  fixed: getCommonTopics()
                }
             }
          }
@@ -1783,6 +1780,7 @@ function getButtonWidget() {
       type: ["widget"],
       name: "Button",
       module: "alfresco/buttons/AlfButton",
+      mixDroppedItemsIntoConfig: true,
       // This is the initial configuration that will be provided when the widget
       // is dropped into the drop-zone...
       defaultConfig: {
@@ -1794,18 +1792,98 @@ function getButtonWidget() {
             name: "alfresco/forms/controls/DojoValidationTextBox",
             config: {
                name: "defaultConfig.label",
-               label: "",
+               label: "Button Label",
+               description: "Enter the label to be displayed on the button",
                value: ""
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoRadioButtons",
+            config: {
+               fieldId: "BUTTON_TYPE",
+               name: "buttonType",
+               label: "Button Type",
+               description: "Select the type of button required (custom or form request)",
+               value: "CUSTOM",
+               optionsConfig: {
+                  fixed: [
+                     { label: "Custom", value: "CUSTOM"},
+                     { label: "Dialog Form Request", value: "REQUEST_FORM"}
+                  ]
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoRadioButtons",
+            config: {
+               fieldId: "TOPIC_TYPE",
+               name: "topicType",
+               label: "Publish Topic Type",
+               description: "Select the type of button required (custom or form request)",
+               value: "CUSTOM",
+               optionsConfig: {
+                  fixed: [
+                     { label: "Custom Topic", value: "CUSTOM"},
+                     { label: "Well Known Topic", value: "WELL_KNOWN"}
+                  ]
+               },
+               visibilityConfig: {
+                  initialValue: false,
+                  rules: [
+                     {
+                        targetId: "BUTTON_TYPE",
+                        is: ["CUSTOM"]
+                     }
+                  ]
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.publishTopic",
+               label: "Custom Publish Topic",
+               description: "Enter the topic that will be published on when the button is clicked",
+               value: "",
+               postWhenHiddenOrDisabled: false,
+               visibilityConfig: {
+                  initialValue: false,
+                  rules: [
+                     {
+                        targetId: "TOPIC_TYPE",
+                        is: ["CUSTOM"]
+                     },
+                     {
+                        targetId: "BUTTON_TYPE",
+                        is: ["CUSTOM"]
+                     }
+                  ]
+               }
             }
          },
          {
             name: "alfresco/forms/controls/DojoSelect",
             config: {
                name: "defaultConfig.publishTopic",
-               label: "",
+               label: "Publish Topic",
+               description: "Select the topic that will be published when the button is clicked",
                value: "",
+               postWhenHiddenOrDisabled: false,
                optionsConfig: {
                   fixed: getCommonTopics()
+               },
+               visibilityConfig: {
+                  initialValue: false,
+                  rules: [
+                     {
+                        targetId: "TOPIC_TYPE",
+                        is: ["WELL_KNOWN"]
+                     },
+                     {
+                        targetId: "BUTTON_TYPE",
+                        is: ["CUSTOM"]
+                     }
+                  ]
                }
             }
          }
@@ -1815,9 +1893,9 @@ function getButtonWidget() {
       // This is the widget structure to use to display the widget.
       widgetsForDisplay: [
          {
-            name: "alfresco/html/Label",
+            name: "alfresco/creation/PublicationDropZone",
             config: {
-               label: "Button"
+               horizontal: false
             }
          }
       ]
@@ -2032,15 +2110,25 @@ function getAbstractDocListViewWidget() {
       type: ["widget"],
       name: "Abstract Document List View",
       module: "alfresco/documentlibrary/views/AlfDocumentListView",
-      // This is the initial configuration that will be provided when the widget
-      // is dropped into the drop-zone...
       defaultConfig: {},
-      // These are the widgets used to configure the dropped widget.
-      widgetsForConfig: [],
-      // If set to true, then the actual widget will be previewed...
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoRadioButtons",
+            config: {
+               name: "defaultConfig.additionalCssClasses",
+               label: "Additional Style",
+               description: "Select an additional style to apply to the view.",
+               value: "",
+               optionsConfig: {
+                  fixed: [
+                     {label:"None",value:""},
+                     {label:"Borders",value:"bordered"}
+                  ]
+               }
+            }
+         },
+      ],
       previewWidget: false,
-
-      // This is the widget structure to use to display the widget.
       widgetsForDisplay: [
          {
             name: "alfresco/creation/DropZone",
@@ -2119,6 +2207,7 @@ function getDocListCellWidget() {
             config: {
                name: "defaultConfig.width",
                label: "Width",
+               description: "Please provide a width (in pixels) for the cell",
                value: ""
             }
          }
@@ -2155,17 +2244,61 @@ function getPropertyWidget() {
       // These are the widgets used to configure the dropped widget.
       widgetsForConfig: [
          {
+            name: "alfresco/forms/controls/DojoRadioButtons",
+            config: {
+               fieldId: "PROPERTY_TYPE",
+               label: "Property Type",
+               description: "Do you want to configure a custom property or a well-known Document property",
+               value: "DOCUMENT",
+               optionsConfig: {
+                  fixed: [
+                     {label:"Document Property",value:"DOCUMENT"},
+                     {label:"Custom",value:"CUSTOM"},
+                  ]
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               label: "Property Name",
+               description: "Enter the property to be displayed",
+               name: "defaultConfig.propertyToRender",
+               postWhenHiddenOrDisabled: false,
+               requirementConfig: {
+                  initialValue: true
+               },
+               visibilityConfig: {
+                  rules: [
+                     {
+                        targetId: "PROPERTY_TYPE",
+                        is: ["CUSTOM"]
+                     }
+                  ]
+               }
+            }
+         },
+         {
             name: "alfresco/forms/controls/DojoSelect",
             config: {
                name: "defaultConfig.propertyToRender",
                label: "Property to render",
                value: "node.properties.cm:name",
+               postWhenHiddenOrDisabled: false,
                optionsConfig: {
                   fixed: [
                      {label:"Name",value:"node.properties.cm:name"},
                      {label:"Title",value:"node.properties.cm:title"},
                      {label:"Description",value:"node.properties.cm:description"},
                      {label:"Version",value:"node.properties.cm:versionLabel"}
+                  ]
+               },
+               visibilityConfig: {
+                  rules: [
+                     {
+                        targetId: "PROPERTY_TYPE",
+                        is: ["DOCUMENT"]
+                     }
                   ]
                }
             }
@@ -2176,12 +2309,21 @@ function getPropertyWidget() {
                name: "defaultConfig.postParam",
                label: "Parameter to post",
                value: "prop_cm_name",
+               postWhenHiddenOrDisabled: false,
                optionsConfig: {
                   fixed: [
                      {label:"Name",value:"prop_cm_name"},
                      {label:"Title",value:"prop_cm_title"},
                      {label:"Description",value:"prop_cm_description"},
                      {label:"Version",value:"prop_cm_versionLabel"}
+                  ]
+               },
+               visibilityConfig: {
+                  rules: [
+                     {
+                        targetId: "PROPERTY_TYPE",
+                        is: ["DOCUMENT"]
+                     }
                   ]
                }
             }
@@ -2248,6 +2390,7 @@ function getConfigPropertyWidget() {
             config: {
                name: "defaultConfig.propertyToRender",
                label: "Property to render",
+               description: "Enter the property to be rendered. Dot-notation properties are allowed",
                value: ""
             }
          }
@@ -2701,7 +2844,17 @@ function getQuaddsListWidget() {
          {
             name: "alfresco/forms/controls/DojoValidationTextBox",
             config: {
+               name: "defaultConfig.noDataMessage",
+               label: "No items message",
+               description: "Enter a message to display when no items are available",
+               value: "No data available"
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
                name: "defaultConfig.quadds",
+               description: "Enter the name of the QuADDS that you wish to retrieve data from",
                label: "QuADDS",
                value: "quadds",
             }
@@ -2953,7 +3106,7 @@ function getMenuItemWidget() {
       type: ["widget"],
       name: "Menu Item",
       module: "alfresco/menus/AlfMenuItem",
-      itemDroppedMixinKey: "0",
+      mixDroppedItemsIntoConfig: true,
       // This is the initial configuration that will be provided when the widget
       // is dropped into the drop-zone...
       defaultConfig: {
