@@ -1511,7 +1511,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         log.info(".. checking for path change");
         String query = FIELD_DBID + ":" + nodeMetaData.getId() + AND + FIELD_PARENT_ASSOC_CRC + ":"
                     + nodeMetaData.getParentAssocsCrc();
-        boolean nodeHasSamePathAsBefore = cloud.selectReturnsDoc(core, request, query);
+        boolean nodeHasSamePathAsBefore = cloud.exists(core, request, query);
         if (nodeHasSamePathAsBefore)
         {
             log.debug("... found match");
@@ -1519,7 +1519,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         else
         {
             query = FIELD_DBID + ":" + nodeMetaData.getId();
-            boolean nodeHasBeenIndexed = cloud.selectReturnsDoc(core, request, query);
+            boolean nodeHasBeenIndexed = cloud.exists(core, request, query);
             if (nodeHasBeenIndexed)
             {
                 log.debug("... cascade updating docs");

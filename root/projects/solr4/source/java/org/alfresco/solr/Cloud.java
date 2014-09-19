@@ -76,7 +76,7 @@ public class Cloud
      * @param query the string that specifies the doc
      * @return <code>true</code> if the specified query returns a doc
      */
-    boolean selectReturnsDoc(SolrCore core, SolrQueryRequest request, String query)
+    boolean exists(SolrCore core, SolrQueryRequest request, String query)
     {
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         // Sets 1 because this is effectively a boolean query to see if there exists a single match

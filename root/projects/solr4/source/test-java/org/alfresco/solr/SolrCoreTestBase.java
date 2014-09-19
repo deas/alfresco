@@ -73,6 +73,7 @@ public abstract class SolrCoreTestBase
     protected CoreContainer coreContainer;
     protected RequestHandlers reqHandlers;
     protected @Mock SolrRequestHandler selectRequestHandler;
+    protected @Mock SolrRequestHandler aftsRequestHandler;
     protected Map<String, SolrInfoMBean> infoRegistry;
     
     @Before
@@ -90,6 +91,7 @@ public abstract class SolrCoreTestBase
         FieldUtils.writeField(core, "infoRegistry", infoRegistry, true);
         reqHandlers = new RequestHandlers(core);
         reqHandlers.register("/select", selectRequestHandler);
+        reqHandlers.register("/afts", aftsRequestHandler);
         FieldUtils.writeField(core, "reqHandlers", reqHandlers, true);
 
         Map<String, UpdateRequestProcessorChain> map = new HashMap<>();

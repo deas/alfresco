@@ -101,22 +101,22 @@ public class CloudTest extends SolrCoreTestBase
     }
     
     @Test
-    public void testSelectReturnsDoc()
+    public void testExists()
     {
-        boolean exists = cloud.selectReturnsDoc(core, request, QUERY);
+        boolean exists = cloud.exists(core, request, QUERY);
         assertFalse(exists);
     }
 
     @Test
     public void testGetDocList()
     {
-        // The response is created in the getDocList method, and the selectRequestHandler is simply mocked.
+        // The response is created in the getDocList method, and the aftsRequestHandler is simply mocked.
         // Therefore nothing is expected to be on the response for tests, so this verifies behavior.
         DocList docList = cloud.getDocList(core, request, QUERY);
         assertNull(docList);
         
         ArgumentCaptor<SolrQueryResponse> response = ArgumentCaptor.forClass(SolrQueryResponse.class);
-        verify(super.selectRequestHandler).handleRequest(eq(request), response.capture()); 
+        verify(super.aftsRequestHandler).handleRequest(eq(request), response.capture()); 
         assertNotNull(response.getValue());
     }
 
