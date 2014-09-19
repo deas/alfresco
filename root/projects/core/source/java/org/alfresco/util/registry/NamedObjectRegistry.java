@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.alfresco.api.AlfrescoPublicApi;   
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +37,7 @@ import org.springframework.extensions.surf.util.ParameterCheck;
  * @author Derek Hulley
  * @since 3.2
  */
+@AlfrescoPublicApi
 public class NamedObjectRegistry<T>
 {
     private static final Log logger = LogFactory.getLog(NamedObjectRegistry.class);
