@@ -36,6 +36,7 @@ public class CacheConstants
     public static String ALFRESCO_OWNERLOOKUP_CACHE = "alfrescoOwnerCache";
     public static String ALFRESCO_READER_CACHE = "alfrescoReaderCache";
     public static String ALFRESCO_DENIED_CACHE = "alfrescoDeniedCache";
+    public static String ALFRESCO_PATH_CACHE = "alfrescoPathCache";
     
     // Cache keys
     public static String KEY_GLOBAL_READERS = "KEY_GLOBAL_READERS";

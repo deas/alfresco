@@ -587,6 +587,13 @@
               autowarmCount="0"
               />
               
+    <cache name="alfrescoPathCache"
+              class="solr.LRUCache"
+              size="4096"
+              initialSize="1024"
+              autowarmCount="0"
+              />
+              
     <!-- Lazy Field Loading
 
          If true, stored fields that are not requested will be loaded

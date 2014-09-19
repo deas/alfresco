@@ -3936,8 +3936,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         reader.parse(queryText);
         SolrPathQuery pathQuery = handler.getQuery();
         pathQuery.setRepeats(withRepeats);
-        // TODO - cache
-        return pathQuery;
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     protected Query createQNameQuery(String queryText) throws SAXPathException
@@ -3949,8 +3948,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         reader.setXPathHandler(handler);
         reader.parse("//" + queryText);
         SolrPathQuery pathQuery = handler.getQuery();
-        // TODO - cache
-        return pathQuery;
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     protected Query createPrimaryAssocQNameQuery(String queryText) throws SAXPathException
@@ -3963,8 +3961,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         reader.parse("//" + queryText);
         SolrPathQuery pathQuery = handler.getQuery();
         pathQuery.setPathField(FIELD_PRIMARYASSOCQNAME);
-        // TODO - cache
-        return pathQuery;
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     protected Query createPrimaryAssocTypeQNameQuery(String queryText) throws SAXPathException
@@ -3977,8 +3974,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         reader.parse("//" + queryText);
         SolrPathQuery pathQuery = handler.getQuery();
         pathQuery.setPathField(FIELD_PRIMARYASSOCTYPEQNAME);
-        // TODO - cache
-        return pathQuery;
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     protected Query createAssocTypeQNameQuery(String queryText) throws SAXPathException
@@ -3991,8 +3987,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         reader.parse("//" + queryText);
         SolrPathQuery pathQuery = handler.getQuery();
         pathQuery.setPathField(FIELD_ASSOCTYPEQNAME);
-        // TODO - cache
-        return pathQuery;
+        return new SolrCachingPathQuery(pathQuery);
     }
 
     /**
