@@ -404,7 +404,7 @@ public abstract class TransactionSupportUtil
         	Set<TransactionListener> ret = new LinkedHashSet<TransactionListener>();
         	Set<Entry<Integer, Set<TransactionListener>>> entries = priorityLookup.entrySet();
         	
-        	for(Entry entry : entries)
+        	for(Entry<Integer, Set<TransactionListener>> entry : entries)
         	{
         		ret.addAll((Set<TransactionListener>)entry.getValue());
         	}

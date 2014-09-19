@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -16,27 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alfresco.repo.transaction;
+package org.alfresco.util.transaction;
 
 /**
  * NO-OP listener.
  * 
- * @deprecated              Since 5.0, use {@link org.alfresco.util.transaction.TransactionListenerAdapter}
  * @author Derek Hulley
+ * @since 5.0
  */
-@Deprecated
 public abstract class TransactionListenerAdapter implements TransactionListener
 {
     /**
      * {@inheritDoc}
      */
-    public void flush()
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void beforeCommit(boolean readOnly)
     {
     }
@@ -44,6 +37,7 @@ public abstract class TransactionListenerAdapter implements TransactionListener
     /**
      * {@inheritDoc}
      */
+    @Override
     public void beforeCompletion()
     {
     }
@@ -51,6 +45,7 @@ public abstract class TransactionListenerAdapter implements TransactionListener
     /**
      * {@inheritDoc}
      */
+    @Override
     public void afterCommit()
     {
     }
@@ -58,6 +53,7 @@ public abstract class TransactionListenerAdapter implements TransactionListener
     /**
      * {@inheritDoc}
      */
+    @Override
     public void afterRollback()
     {
     }
