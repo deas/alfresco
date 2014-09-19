@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -48,6 +48,7 @@ define(["dojo/_base/declare",
          lang.mixin(this, args);
          this.alfSubscribe("ALF_SEARCH_REQUEST", lang.hitch(this, this.onSearchRequest));
          this.alfSubscribe("ALF_STOP_SEARCH_REQUEST", lang.hitch(this, this.onStopRequest));
+         this.alfSubscribe("ALF_AUTO_SUGGEST_SEARCH", lang.hitch(this, this.onAutoSuggest));
       },
 
       /**
@@ -156,7 +157,7 @@ define(["dojo/_base/declare",
             if (payload.query == null)
             {
                var queryAttributes = {};
-               for (key in payload)
+               for (var key in payload)
                {
                   switch(key) {
                      case "alfTopic":
@@ -191,7 +192,7 @@ define(["dojo/_base/declare",
             }
 
             var sort = "";
-            if (payload.sortField != null && payload.sortField == "")
+            if (payload.sortField != null && payload.sortField === "")
             {
                // No action required - leave as the empty string which is relevance - no direction can be applied
             }
@@ -228,6 +229,31 @@ define(["dojo/_base/declare",
                callbackScope: this
             };
             this.serviceXhr(config);
+         }
+      },
+
+      /**
+       * Retrieves a list of suggested search terms based on the supplied search term.
+       *
+       * @instance
+       * @param {object} payload The auto-suggest payload. Should contain the current search term
+       */
+      onAutoSuggest: function alfresco_services_SearchService__onAutoSuggest(payload) {
+         // Create the root URL...
+         var url = AlfConstants.PROXY_URI + "service/slingshot/auto-suggest";
+         var options = {
+            t: ""
+         };
+         if (payload.query != null)
+         {
+            options.t = payload.query;
+         }
+         if (url !== null)
+         {
+            this.serviceXhr({url: url,
+                             query: options,
+                             alfTopic: (payload.alfResponseTopic ? payload.alfResponseTopic : null),
+                             method: "GET"});
          }
       }
    });

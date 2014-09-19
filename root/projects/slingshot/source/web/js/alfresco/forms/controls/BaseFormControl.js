@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -1125,6 +1125,12 @@ define(["dojo/_base/declare",
          {
             this.initialConfig.disabled = this._disabled;
          }
+
+         if (this.additionalCssClasses != null)
+         {
+            domClass.add(this.domNode, this.additionalCssClasses);
+         }
+
          this.wrappedWidget = this.createFormControl(this.initialConfig);
          
          // Check to see if the widget is "promised" or is expected to be returned immediately. If promised then

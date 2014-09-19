@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -112,7 +112,7 @@ define(["dojo/_base/declare",
                   additionalCssClasses: (this.textBoxCssClasses != null) ? this.textBoxCssClasses : ""
                }
             }
-         ]
+         ];
       },
 
       /**
@@ -133,12 +133,11 @@ define(["dojo/_base/declare",
        * @param {array} widgets The widgets instantiated
        */
       allWidgetsProcessed: function alfresco_forms_SingleTextFieldForm__allWidgetsProcessed(widgets) {
-         this.inherited(arguments)
-
+         this.inherited(arguments);
          on(this.entryField, "keyup", lang.hitch(this, function(evt) {
             if (evt.keyCode == 13)
             {
-               if (this.okButton && this.okButton.get("disabled") == false)
+               if (this.okButton && this.okButton.get("disabled") === false)
                {
                   this.okButton.onClick();
                }

@@ -104,6 +104,7 @@ var headingForResultsList = {
 // Compose the search form model
 var searchForm = {
    id: "FCTSRCH_SEARCH_FORM",
+   // name: "alfresco/forms/SingleComboBoxForm",
    name: "alfresco/forms/SingleTextFieldForm",
    config: {
       useHash: true,
@@ -115,7 +116,12 @@ var searchForm = {
       textFieldName: "searchTerm",
       textBoxIconClass: "alf-search-icon",
       textBoxCssClasses: "long hiddenlabel",
-      textBoxLabel: msg.get("faceted-search.search-form.search-field-label")
+      textBoxLabel: msg.get("faceted-search.search-form.search-field-label"),
+      queryAttribute: "term",
+      optionsPublishTopic: "ALF_AUTO_SUGGEST_SEARCH",
+      optionsPublishPayload: {
+         resultsProperty: "response.suggestions"
+      }
    }
 };
 
@@ -670,7 +676,8 @@ services.push("alfresco/services/NavigationService",
               "alfresco/services/RatingsService",
               "alfresco/services/CrudService",
               "alfresco/services/NotificationService",
-              "alfresco/services/ContentService");
+              "alfresco/services/ContentService",
+              "alfresco/services/TagService");
 
 // Add in the search form and search doc lib...
 widgets.unshift(accessMenu);
