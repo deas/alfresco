@@ -28,7 +28,7 @@ import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.service.namespace.QName;
-import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
+import org.alfresco.solr.AlfrescoSolrDataModel.TenantAclIdDbId;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.adapters.ISimpleOrderedMap;
 import org.alfresco.solr.client.AclChangeSet;
@@ -79,9 +79,7 @@ public interface InformationServer
 
     int getRegisteredSearcherCount();
 
-    void checkCache() throws IOException;
-
-    boolean isInIndex(String fieldType, long id) throws IOException;
+    boolean isInIndex(String ids) throws IOException;
 
     Set<Long> getErrorDocIds() throws IOException;
 
@@ -114,7 +112,7 @@ public interface InformationServer
     IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
                 IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException;
 
-    List<TenantAndDbId> getDocsWithUncleanContent(int start, int rows) throws IOException;
+    List<TenantAclIdDbId> getDocsWithUncleanContent(int start, int rows) throws IOException;
 
     void updateContentToIndexAndCache(long dbId, String tenant) throws Exception;
 }

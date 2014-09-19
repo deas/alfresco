@@ -320,11 +320,12 @@ public class AclTracker extends AbstractTracker
 
         checkShutdown();
 
-        // check index state
-        if (state.isCheck())
-        {
-            this.infoSrv.checkCache();
-        }
+        //TODO: There is no cache to check anymore.  Is anything needed here?
+//        // check index state
+//        if (state.isCheck())
+//        {
+//            this.infoSrv.checkCache();
+//        }
     }
 
 
@@ -887,7 +888,7 @@ public class AclTracker extends AbstractTracker
             ArrayList<AclChangeSet> changeSetBatch = new ArrayList<AclChangeSet>();
             for (AclChangeSet changeSet : aclChangeSets.getAclChangeSets())
             {
-                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()), 0);
+                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
                 if (isInIndex) 
                 {
                     changeSetsFound.add(changeSet);

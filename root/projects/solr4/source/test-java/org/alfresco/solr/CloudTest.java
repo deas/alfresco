@@ -103,7 +103,7 @@ public class CloudTest extends SolrCoreTestBase
     @Test
     public void testExists()
     {
-        boolean exists = cloud.exists(core, request, QUERY);
+        boolean exists = cloud.exists(super.selectRequestHandler, request, QUERY);
         assertFalse(exists);
     }
 
@@ -112,7 +112,7 @@ public class CloudTest extends SolrCoreTestBase
     {
         // The response is created in the getDocList method, and the aftsRequestHandler is simply mocked.
         // Therefore nothing is expected to be on the response for tests, so this verifies behavior.
-        DocList docList = cloud.getDocList(core, request, QUERY);
+        DocList docList = cloud.getDocList(super.aftsRequestHandler, request, QUERY);
         assertNull(docList);
         
         ArgumentCaptor<SolrQueryResponse> response = ArgumentCaptor.forClass(SolrQueryResponse.class);
@@ -124,7 +124,7 @@ public class CloudTest extends SolrCoreTestBase
     public void testSelect()
     {
         SolrParams params = new ModifiableSolrParams(request.getParams());
-        ResultContext rc = cloud.handleRequest(core, request, params);
+        ResultContext rc = cloud.getResultContext(super.aftsRequestHandler, request, params);
         assertNull(rc);
     }
 

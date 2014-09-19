@@ -121,11 +121,12 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         checkShutdown();
         trackTransactions();
 
-        // check index state
-        if (state.isCheck())
-        {
-            this.infoSrv.checkCache();
-        }
+        //TODO: There is no cache to check anymore.  Is anything needed here?
+//        // check index state
+//        if (state.isCheck())
+//        {
+//            this.infoSrv.checkCache();
+//        }
     }
 
     private void checkRepoAndIndexConsistency(TrackerState state) throws AuthenticationException, IOException, JSONException
@@ -451,7 +452,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             ArrayList<Transaction> txBatch = new ArrayList<>();
             for (Transaction info : transactions.getTransactions())
             {
-                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()), 0);
+                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
                 if (isInIndex)
                 {
                     txnsFound.add(info);

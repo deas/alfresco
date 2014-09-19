@@ -21,8 +21,8 @@
 import java.util.List;
 import java.util.Properties;
 
+import org.alfresco.solr.AlfrescoSolrDataModel.TenantAclIdDbId;
 import org.alfresco.solr.InformationServer;
-import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,10 +56,10 @@ public class ContentTracker extends AbstractTracker implements Tracker
         final int ROWS = 300;
         int start = 0;
         long totalDocs = 0l;
-        List<TenantAndDbId> buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
+        List<TenantAclIdDbId> buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
         while (!buckets.isEmpty())
         {
-            for (TenantAndDbId bucket : buckets)
+            for (TenantAclIdDbId bucket : buckets)
             {
                 // update the content
                 this.infoSrv.updateContentToIndexAndCache(bucket.dbId, bucket.tenant);

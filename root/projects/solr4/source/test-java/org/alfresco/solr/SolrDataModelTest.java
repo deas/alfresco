@@ -26,6 +26,7 @@ import java.io.InputStream;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
+import org.alfresco.solr.AlfrescoSolrDataModel.TenantAclIdDbId;
 import org.junit.Test;
 
 /**
@@ -41,6 +42,19 @@ public class SolrDataModelTest
     private static final QName NAME = QName.createQName("{http://www.alfresco.org/model/cmis/1.0/cs01}name");
     private static QName OBJECT_ID = QName.createQName("{http://www.alfresco.org/model/cmis/1.0/cs01}objectId");
 
+    @Test
+    public void testDecodeSolr4id()
+    {
+        String tenant = "TheTenant";
+        Long aclId = 987698769860l;
+        Long dbId = 9879987l;
+        String id = AlfrescoSolrDataModel.getNodeDocumentId(tenant, aclId, dbId);
+        TenantAclIdDbId ids = AlfrescoSolrDataModel.decodeSolr4id(id);
+        assertEquals(tenant,ids.tenant);
+        assertEquals(aclId, ids.alcId);
+        assertEquals(dbId, ids.dbId);
+    }
+    
     @Test
     public void smokeTestCMISModel()
     {

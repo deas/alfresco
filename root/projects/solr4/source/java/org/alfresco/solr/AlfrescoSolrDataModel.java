@@ -44,11 +44,9 @@ import org.alfresco.opencmis.search.CMISQueryOptions;
 import org.alfresco.opencmis.search.CMISQueryOptions.CMISQueryMode;
 import org.alfresco.opencmis.search.CMISQueryParser;
 import org.alfresco.opencmis.search.CmisFunctionEvaluationContext;
-import org.alfresco.repo.cache.MemoryCache;
 import org.alfresco.repo.dictionary.CompiledModelsCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
-import org.alfresco.repo.dictionary.DictionaryRegistry;
 import org.alfresco.repo.dictionary.Facetable;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
@@ -262,10 +260,11 @@ public class AlfrescoSolrDataModel
     }
     
     /**
-     * 
+     * Returns the Solr 4 id
      * @param tenant
      * @param aclId
-     * @return <TENANT>:<ACLID>: D-<DBID>
+     * @param dbid
+     * @return <TENANT>!<ACLID>!<DBID>
      */
     public static String getNodeDocumentId(String tenant, Long aclId, Long dbid)
     {
@@ -276,6 +275,26 @@ public class AlfrescoSolrDataModel
         builder.append("!");
         builder.append(NumericEncoder.encode(dbid));
         return builder.toString();
+    }
+    
+    public static class TenantAclIdDbId
+    {
+        public String tenant;
+        public Long alcId;
+        public Long dbId;
+    }
+    
+    public static TenantAclIdDbId decodeSolr4id(String id)
+    {
+        TenantAclIdDbId ids = new TenantAclIdDbId();
+        String[] split = id.split("!");
+        if (split.length > 0)
+            ids.tenant = split[0];
+        if (split.length > 1)
+            ids.alcId = NumericEncoder.decodeLong(split[1]);
+        if (split.length > 2)
+            ids.dbId = NumericEncoder.decodeLong(split[2]);
+        return ids;
     }
     
     /**

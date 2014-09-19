@@ -21,9 +21,10 @@ package org.alfresco.solr;
 
 import java.util.Collection;
 
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.core.SolrCore;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.ResultContext;
@@ -39,6 +40,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Cloud
 {
+    public static final String RESPONSE_SOLR_DOCUMENT_LIST = "responseSolrDocumentList";
+    public static final String PARAM_GET_SOLR_DOCUMENT_LIST = "alfresco.getSolrDocumentList";
     protected final static Logger log = LoggerFactory.getLogger(Cloud.class);
 
     /**
@@ -71,17 +74,17 @@ public class Cloud
 
     /**
      * Returns whether or not a doc exists that satisfies the specified query
-     * @param core the core to run the query against
+     * @param requestHandler the handler that handles the request
      * @param request the request object to put the query on
      * @param query the string that specifies the doc
      * @return <code>true</code> if the specified query returns a doc
      */
-    boolean exists(SolrCore core, SolrQueryRequest request, String query)
+    boolean exists(SolrRequestHandler requestHandler, SolrQueryRequest request, String query)
     {
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         // Sets 1 because this is effectively a boolean query to see if there exists a single match
         params.set("q", query).set("fl", "id").set("rows", "1");
-        ResultContext rc = this.handleRequest(core, request, params);
+        ResultContext rc = this.getResultContext(requestHandler, request, params);
 
         if (rc != null)
         {
@@ -93,35 +96,63 @@ public class Cloud
 
     /**
      * Returns the doc list resulting from running the query
-     * @param core the core to run the query against
+     * @param requestHandler the handler that handles the request
      * @param request the request object to put the query on
      * @param query the string that specifies the docs
      * @return the docs that come back from the query
      */
-    DocList getDocList(SolrCore core, SolrQueryRequest request, String query)
+    DocList getDocList(SolrRequestHandler requestHandler, SolrQueryRequest request, String query)
     {
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         // Sets MAX_VALUE to get all the rows
-        params.set("q", query).set("fl", "id").set("rows", Integer.MAX_VALUE);
-        ResultContext rc = this.handleRequest(core, request, params);
+        params.set("q", query).set("fl", QueryConstants.FIELD_SOLR4_ID).set("rows", Integer.MAX_VALUE);
+        ResultContext rc = this.getResultContext(requestHandler, request, params);
         return rc != null ? rc.docs : null;
     }
 
     /**
-     * @param core the core to run the query against
+     * @param requestHandler the handler that handles the request
      * @param request the request object to put the params on
      * @param params Solr parameters
      * @return the result context from the handled request
      */
-    ResultContext handleRequest(SolrCore core, SolrQueryRequest request, SolrParams params)
+    ResultContext getResultContext(SolrRequestHandler requestHandler, SolrQueryRequest request, SolrParams params)
     {
-        SolrRequestHandler requestHandler = core.getRequestHandler("/afts");
+        SolrQueryResponse solrRsp = getResponse(requestHandler, request, params);
+        ResultContext rc = (ResultContext) solrRsp.getValues().get("response");
+        return rc;
+    }
+    
+    /**
+     * Returns the SolrDocumentList from the response, assuming that the specified request handler uses the 
+     * AlfrescoSearchHandler which puts it on the response values. 
+     * @param requestHandler the handler that handles the request
+     * @param request the request object to put the params on
+     * @param params Solr parameters
+     * @return the result context from the handled request
+     */
+    SolrDocumentList getSolrDocumentList(SolrRequestHandler requestHandler, SolrQueryRequest request, 
+                ModifiableSolrParams params)
+    {
+        // Tells the AlfrescoSearchHandler to get the SolrDocumentList from the default results and add to response
+        params.set(PARAM_GET_SOLR_DOCUMENT_LIST, true);
+        SolrQueryResponse solrRsp = getResponse(requestHandler, request, params);
+        SolrDocumentList docs = (SolrDocumentList) solrRsp.getValues().get(RESPONSE_SOLR_DOCUMENT_LIST);
+        return docs;
+    }
+    
+    /**
+     * @param requestHandler the handler that handles the request
+     * @param request the request object to put the params on
+     * @param params Solr parameters
+     * @return the response
+     */
+    SolrQueryResponse getResponse(SolrRequestHandler requestHandler, SolrQueryRequest request, SolrParams params)
+    {
         request.setParams(params);
         log.info("Running query " + params.get("q"));
         SolrQueryResponse solrRsp = new SolrQueryResponse();
         requestHandler.handleRequest(request, solrRsp);
-        ResultContext rc = (ResultContext) solrRsp.getValues().get("response");
-
-        return rc;
+        return solrRsp;
     }
 }

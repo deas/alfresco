@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.alfresco.solr.AlfrescoSolrDataModel.TenantAclIdDbId;
 import org.alfresco.solr.SolrInformationServer;
-import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,9 +67,9 @@ public class ContentTrackerTest
     @Test
     public void doTrackWithContentUpdatesContent() throws Exception
     {
-        List<TenantAndDbId> buckets = new ArrayList<>();
-        List<TenantAndDbId> buckets2 = new ArrayList<>();
-        TenantAndDbId bucket = this.srv.new TenantAndDbId();
+        List<TenantAclIdDbId> buckets = new ArrayList<>();
+        List<TenantAclIdDbId> buckets2 = new ArrayList<>();
+        TenantAclIdDbId bucket = new TenantAclIdDbId();
         bucket.dbId = 0l;
         bucket.tenant = "";
         buckets.add(bucket);
