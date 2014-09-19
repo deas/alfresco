@@ -143,8 +143,8 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     private static final String DOC_TYPE_STATE = "State";
     private static final int NO_MORE_SET_BITS = -1;
     
-    private static final String AND = " AND ";
-    private static final String OR = " OR ";
+    public static final String AND = " AND ";
+    public static final String OR = " OR ";
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
     private Cloud cloud;
