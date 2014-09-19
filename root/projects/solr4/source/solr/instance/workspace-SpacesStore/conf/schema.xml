@@ -6,13 +6,12 @@
    - Currency ?
    - (default facetting configuration)
 -->
-
 <schema name="Alfresco V2.0" version="1.5">
    <types>
       <!-- ID and version to support SOLR cloud -->
 
       <fieldType name="identifier" class="solr.StrField" sortMissingLast="true" />
-      <fieldType name="version" class="solr.TrieLongField" precisionStep="64" positionIncrementGap="0" docValuesFormat="Disk"/>
+      <fieldType name="version" class="solr.TrieLongField" precisionStep="64" positionIncrementGap="0" />
 
 
       <fieldType name="lowercase_id" class="solr.TextField" sortMissingLast="true" omitNorms="true">
@@ -673,7 +672,7 @@
       <dynamicField name="text@s___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
       <dynamicField name="text@s__sort@*"        type="collatedROOT"      indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
 
-      <dynamicField name="text@sd__@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" docValues="true" />
+      <dynamicField name="text@sd___@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" docValues="true" />
 
       <dynamicField name="text@m____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="text@m__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />

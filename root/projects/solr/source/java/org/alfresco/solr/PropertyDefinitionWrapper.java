@@ -21,6 +21,7 @@ package org.alfresco.solr;
 import java.util.List;
 import java.util.Locale;
 
+import org.alfresco.repo.dictionary.Facetable;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.ConstraintDefinition;
@@ -151,6 +152,15 @@ public class PropertyDefinitionWrapper implements PropertyDefinition
     public String resolveAnalyserClassName()
     {
         return delegate.resolveAnalyserClassName();
+    }
+
+    /* (non-Javadoc)
+     * @see org.alfresco.service.cmr.dictionary.PropertyDefinition#getFacetable()
+     */
+    @Override
+    public Facetable getFacetable()
+    {
+       return delegate.getFacetable();
     }
 
   

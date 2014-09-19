@@ -49,6 +49,7 @@ import org.alfresco.repo.dictionary.CompiledModelsCache;
 import org.alfresco.repo.dictionary.DictionaryComponent;
 import org.alfresco.repo.dictionary.DictionaryDAOImpl;
 import org.alfresco.repo.dictionary.DictionaryRegistry;
+import org.alfresco.repo.dictionary.Facetable;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.M2ModelDiff;
@@ -475,7 +476,7 @@ public class AlfrescoSolrDataModel
             builder.append('@');
             // TODO wher we support multi value propertis correctly .... builder.append(propertyDefinition.isMultiValued() ? "m" : "s");
             builder.append('s');
-            builder.append(hasDocValues(propertyDefinition.getName()) ? "d" : "_");
+            builder.append("_");
             builder.append('_');
             switch (type)
             {
@@ -759,7 +760,14 @@ public class AlfrescoSolrDataModel
                     {
                         indexedField.addField(getFieldForText(false, false, true, propertyDefinition), false, true);
                     }
-                }   
+                }
+                else if (!isIdentifierTextProperty(propertyDefinition.getName()))
+                {
+                    if(propertyDefinition.getFacetable() == Facetable.TRUE)
+                    {
+                        indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+                    }
+                }
             }
             
             if(dataTypeDefinition.getName().equals(DataTypeDefinition.MLTEXT))
@@ -832,13 +840,44 @@ public class AlfrescoSolrDataModel
         return propertyQName.equals(ContentModel.PROP_NAME) || propertyQName.equals(ContentModel.PROP_TITLE) || propertyQName.equals(ContentModel.PROP_DESCRIPTION);
     }
     
-    private boolean hasDocValues(QName propertyQName)
+    private boolean hasDocValues(PropertyDefinition propertyDefinition)
     {
-        if(propertyQName == null)
+
+        if(isTextField(propertyDefinition))
         {
-            return false;
+            // We only call this if text is untokenised and localised 
+            if(propertyDefinition.getFacetable() == Facetable.FALSE)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
-        return propertyQName.equals(ContentModel.PROP_CREATED) || propertyQName.equals(ContentModel.PROP_MODIFIED); 
+        else
+        {
+            if(propertyDefinition.getFacetable() == Facetable.FALSE)
+            {
+                return false;
+            }
+            else if(propertyDefinition.getFacetable() == Facetable.TRUE)
+            {
+                return true;
+            }
+            else
+            {
+                if(propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.TRUE)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
     }
     
     private String getFieldForNonText(PropertyDefinition propertyDefinition)
@@ -848,7 +887,7 @@ public class AlfrescoSolrDataModel
         builder.append(qName.getLocalName());
         builder.append("@");
         builder.append(propertyDefinition.isMultiValued() ? "m" : "s");
-        builder.append(hasDocValues(propertyDefinition.getName()) ? "d" : "_");
+        builder.append(hasDocValues(propertyDefinition) ? "d" : "_");
         builder.append("@");
         builder.append(propertyDefinition.getName().toString());
         return builder.toString();
@@ -873,13 +912,13 @@ public class AlfrescoSolrDataModel
         {
             builder.append(propertyDefinition.isMultiValued() ? "m" : "s");
         }
-        if(!sort && (localised || tokenised))
+        if(sort || localised || tokenised || propertyDataTypeQName.equals(DataTypeDefinition.CONTENT) ||  propertyDataTypeQName.equals(DataTypeDefinition.MLTEXT))
         {
             builder.append('_');
         }
         else
         {
-            builder.append(hasDocValues(propertyDefinition.getName()) ? "d" : "_");
+            builder.append(hasDocValues(propertyDefinition) ? "d" : "_");
         }
         builder.append('_');
         if(!sort)

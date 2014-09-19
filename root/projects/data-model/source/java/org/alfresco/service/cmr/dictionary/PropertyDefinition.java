@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.alfresco.api.AlfrescoPublicApi;
+import org.alfresco.repo.dictionary.Facetable;
 import org.alfresco.repo.dictionary.IndexTokenisationMode;
 import org.alfresco.service.cmr.i18n.MessageLookup;
 import org.alfresco.service.namespace.QName;
@@ -120,6 +121,11 @@ public interface PropertyDefinition extends ClassAttributeDefinition
      *         stored value will not be tokenised)
      */
     public IndexTokenisationMode getIndexTokenisationMode();
+    
+    /**
+     * @return if this field shoul be faceted
+     */
+    public Facetable getFacetable();
 
     /**
      * All non atomic properties will be indexed at the same time.

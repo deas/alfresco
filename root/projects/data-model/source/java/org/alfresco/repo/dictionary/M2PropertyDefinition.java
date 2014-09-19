@@ -443,6 +443,25 @@ import org.springframework.util.StringUtils;
             return m2Property.getIndexTokenisationMode();
         }
     }
+    
+    public Facetable getFacetable()
+    {
+        if(m2Property.isFacetable() == null)
+        {
+            return Facetable.UNSET;
+        }
+        else
+        {
+            if(m2Property.isFacetable().booleanValue())
+            {
+                return Facetable.TRUE;
+            }
+            else
+            {
+                return Facetable.FALSE;
+            }
+        }
+    }
 
     
     /* (non-Javadoc)
