@@ -532,6 +532,9 @@
                         <dir.root>${dir.root}</dir.root>
                         <img.exe>${img.exe}</img.exe>
                         <swf.exe>${swf.exe}</swf.exe>
+                        <!-- BDE-91 -->
+                        <alfresco.rmi.services.retries>30</alfresco.rmi.services.retries>
+                        <alfresco.rmi.services.retryInterval>2000</alfresco.rmi.services.retryInterval>
                     </systemPropertyVariables>
                     <enableAssertions>false</enableAssertions>
                 </configuration>
