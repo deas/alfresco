@@ -68,11 +68,12 @@ public class ContentTrackerTest
     public void doTrackWithContentUpdatesContent() throws Exception
     {
         List<TenantAndDbId> buckets = new ArrayList<>();
+        List<TenantAndDbId> buckets2 = new ArrayList<>();
         TenantAndDbId bucket = this.srv.new TenantAndDbId();
         bucket.dbId = 0l;
         bucket.tenant = "";
         buckets.add(bucket);
-        when(this.srv.getDocsWithUncleanContent(anyInt(), anyInt())).thenReturn(buckets).thenReturn(null);
+        when(this.srv.getDocsWithUncleanContent(anyInt(), anyInt())).thenReturn(buckets).thenReturn(buckets2);
         this.contentTracker.doTrack();
         
         verify(srv).updateContentToIndexAndCache(anyLong(), anyString());
