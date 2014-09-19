@@ -44,6 +44,8 @@
       
       <fieldType name="alfrescoFieldType" class="org.alfresco.solr.AlfrescoFieldType" />
 
+      <fieldType name="alfrescoCollatableMLTextFieldType" class="org.alfresco.solr.AlfrescoCollatableMLTextFieldType" sortMissingLast="true" />
+
       <fieldType name="path" class="solr.TextField" >
          <analyzer class="org.alfresco.repo.search.impl.lucene.analysis.PathAnalyzer" />
       </fieldType>
@@ -103,13 +105,14 @@
 
 
       <!-- Cross locale generic collation -->
+      <!-- TODO: Consider a mix of language specific collation and ROOT collation by extending TextField as we do for ML Text -->
 
-      <fieldType name="collatedROOT" class="solr.TextField">
-         <analyzer>
-            <tokenizer class="solr.KeywordTokenizerFactory"/>
-            <filter class="solr.CollationKeyFilterFactory"  language=""  strength="primary" />
-         </analyzer>
-      </fieldType>
+
+      <fieldType name="collatedROOT" class="solr.ICUCollationField"
+           locale=""
+           strength="primary" />
+
+      <fieldType name="alfrescoCollatableTextFieldType" class="org.alfresco.solr.AlfrescoCollatableTextFieldType" sortMissingLast="true" />
 
       <!--                                                                                                     -->
       <!-- Field types that are only used to define language specific analysis (generally ordered by ISO code) -->
@@ -684,7 +687,7 @@
       <dynamicField name="text@s__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
       <dynamicField name="text@s__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
       <dynamicField name="text@s___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
-      <dynamicField name="text@s__sort@*"        type="collatedROOT"      indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="text@s__sort@*"        type="alfrescoCollatableTextFieldType"      indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
 
       <dynamicField name="text@sd___@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" docValues="true" />
 
@@ -699,7 +702,7 @@
       <dynamicField name="mltext@m__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="mltext@m__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="mltext@m___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="mltext@m__sort@*"        type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="mltext@m__sort@*"        type="alfrescoCollatableMLTextFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
 
       <dynamicField name="content@s__size@*"             type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
       <dynamicField name="content@s__locale@*"           type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
