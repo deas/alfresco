@@ -436,6 +436,10 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
    
+    protected Query getFieldQuery(String field, String queryText, boolean quoted) throws ParseException
+    {
+        return getFieldQuery(field, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+    }
 
     /**
      * @param field
