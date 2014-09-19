@@ -115,16 +115,22 @@ public interface QueryConstants
     public static final String FIELD_AUTHORITYSET = "AUTHSET";
 
     public static final String FIELD_TXID = "TXID";
+    public static final String FIELD_S_TXID = "S_TXID";
 
     public static final String FIELD_INTXID = "INTXID";
+    public static final String FIELD_S_INTXID = "S_INTXID";
 
     public static final String FIELD_ACLTXID = "ACLTXID";
+    public static final String FIELD_S_ACLTXID = "S_ACLTXID";
 
     public static final String FIELD_INACLTXID = "INACLTXID";
+    public static final String FIELD_S_INACLTXID = "S_INACLTXID";
 
     public static final String FIELD_TXCOMMITTIME = "TXCOMMITTIME";
+    public static final String FIELD_S_TXCOMMITTIME = "S_TXCOMMITTIME";
 
     public static final String FIELD_ACLTXCOMMITTIME = "ACLTXCOMMITTIME";
+    public static final String FIELD_S_ACLTXCOMMITTIME = "S_ACLTXCOMMITTIME";
 
     public static final String FIELD_LINKASPECT = "LINKASPECT";
 
@@ -165,5 +171,7 @@ public interface QueryConstants
     public static final String FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX = ".__";
 
     public static final String FIELD_SITE = "SITE";
+    
+    public static final String FIELD_VERSION = "_version_";
     
 }

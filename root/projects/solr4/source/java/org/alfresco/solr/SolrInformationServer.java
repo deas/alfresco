@@ -89,9 +89,6 @@ import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.apache.lucene.index.IndexCommit;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.BytesRef;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -106,10 +103,8 @@ import org.apache.solr.core.SolrInfoMBean;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrRequestHandler;
+import org.apache.solr.response.ResultContext;
 import org.apache.solr.response.SolrQueryResponse;
-import org.apache.solr.search.DocIterator;
-import org.apache.solr.search.DocList;
-import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
@@ -136,7 +131,9 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     public static final String REQUEST_HANDLER_ALFRESCO = "/alfresco";
     public static final String REQUEST_HANDLER_GET = "/get";
     public static final String RESPONSE_DEFAULT = "response";
+    
     private static final String PREFIX_ERROR = "ERROR-";
+    
     private static final String DOC_TYPE_NODE = "Node";
     private static final String DOC_TYPE_UNINDEXED_NODE = "UnindexedNode";
     private static final String DOC_TYPE_ERROR_NODE = "ErrorNode";
@@ -144,7 +141,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     private static final String DOC_TYPE_TX = "Tx";
     private static final String DOC_TYPE_ACL_TX = "AclTx";
     private static final String DOC_TYPE_STATE = "State";
-    private static final String PREFIX_ID = "<id:";
     
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
@@ -167,7 +163,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     
     protected final static Logger log = LoggerFactory.getLogger(SolrInformationServer.class);
     protected enum FTSStatus {New, Dirty, Clean}; //TODO store this somewhere common
-    
     
     // write a BytesRef as a byte array
     JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver() {
@@ -239,53 +234,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     @Override
     public AclReport checkAclInIndex(Long aclid, AclReport aclReport)
     {
-        SolrQueryRequest request = null;
-        try
-        {
-            request = getLocalSolrQueryRequest();
-            String query = FIELD_ACLID + ":" + aclid + AND + FIELD_DOC_TYPE + ":" + DOC_TYPE_ACL;
-            List<TenantAclIdDbId> docIds = new ArrayList<>();
-            DocList docList = cloud.getDocList(selectRequestHandler, request, query);
-            if (docList != null)
-            {
-                DocIterator it = docList.iterator();
-// TODO This used to be a for-loop.  Why is that?  We would just set the same field over and over again.
-                if (it.hasNext())
-                {
-                    int docId = it.nextDoc();
-                    aclReport.setIndexAclDoc(Long.valueOf(docId));
-                }
-            }
-            
-            query = FIELD_ACLTXID + ":" + '*' + AND + FIELD_DOC_TYPE + ":" + DOC_TYPE_ACL_TX;
-            ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
-            params.set("q", query)
-                .set("fl", FIELD_ACLTXID)
-                .set("rows", Integer.MAX_VALUE);
-            SolrDocumentList solrDocumentList = cloud.getSolrDocumentList(selectRequestHandler, request, params);
-            if (solrDocumentList != null)
-            {
-                for (SolrDocument doc : solrDocumentList)
-                {
-                    String aclTxId = (String) doc.getFieldValue(FIELD_ACLTXID);
-                    if (aclTxId != null)
-                    {
-// TODO It was comparing a solr-specific doc id to an alfresco-specific AclTxId, so I removed the second part.
-//                        if ((aclReport.getIndexAclDoc() == null) || (doc < aclReport.getIndexAclDoc()))
-                        if (aclReport.getIndexAclDoc() == null)
-                        {
-                            aclReport.setIndexAclTx(Long.parseLong(aclTxId));
-                            //TODO should there be a break here?  Now that we have set it, should we set it again?
-                        }
-                    }
-                }
-            }
-        }
-        finally
-        {
-            if(request != null){request.close();}
-        }
-
+        String query = FIELD_ACLID + ":" + aclid + AND + FIELD_DOC_TYPE + ":" + DOC_TYPE_ACL;
+        int count = this.getDocListSize(query);
+        aclReport.setIndexedAclDocCount(new Long(count));
+        
+        // TODO Could add INACLTXID later
         return aclReport;
     }
 
@@ -317,7 +270,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             {
                 for (SolrDocument doc : docList)
                 {
-                    String id = getSolr4id(doc);
+                    String id = getFieldValueString(doc, FIELD_SOLR4_ID);
                     TenantAclIdDbId tenantAndDbId = AlfrescoSolrDataModel.decodeSolr4id(id);
                     docIds.add(tenantAndDbId);
                 }
@@ -331,17 +284,31 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
     }
 
-    private String getSolr4id(SolrDocument doc)
+    private String getFieldValueString(SolrDocument doc, String fieldName)
     {
-        String id = String.valueOf(doc.getFieldValue(FIELD_SOLR4_ID));
-        if (id.contains(PREFIX_ID) && id.endsWith(">"))
+        IndexableField field = (IndexableField)doc.getFieldValue(fieldName);
+        String value = null;
+        if (field != null)
         {
-            // Gets the important part from "blahBlahBlah<id:_DEFAULT_!800000000000000d!8000000000000177>"
-            id = id.substring(id.indexOf(PREFIX_ID) + PREFIX_ID.length(), id.length() -1);
+            value = field.stringValue();
         }
-        return id;
+        return value;
+    }
+    
+    private long getFieldValueLong(SolrDocument doc, String fieldName)
+    {
+        return Long.parseLong(getFieldValueString(doc, fieldName));
     }
 
+    @Override
+    public void addCommonNodeReportInfo(NodeReport nodeReport)
+    {
+        long dbId = nodeReport.getDbid();
+        String query = FIELD_DBID + ":" + dbId + AND + FIELD_DOC_TYPE + ":" + DOC_TYPE_NODE;
+        int count = this.getDocListSize(query);
+        nodeReport.setIndexedNodeDocCount(new Long(count));
+    }
+    
     @Override
     public void commit() throws IOException
     {
@@ -415,17 +382,49 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return this.dataModel.getAlfrescoModels();
     }
 
-    @SuppressWarnings("unchecked")
+    private int getSafeCount(NamedList docTypeCounts, String docType)
+    {
+        Integer count = (Integer) docTypeCounts.get(docType);
+        return (count == null ? 0 : count.intValue());
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Iterable<Entry<String, Object>> getCoreStats() throws IOException
     {
-        //TODO This will be local, not cloud
-        DecimalFormat df = new DecimalFormat("###,###.######");
-
+        // This is still local, not totally cloud-friendly
+        // TODO Make this cloud-friendly by aggregating the stats across the cloud
+        
+        SolrQueryRequest request = null;
         NamedList<Object> coreSummary = new SimpleOrderedMap<Object>();
         RefCounted<SolrIndexSearcher> refCounted = null;
         try
         {
+            request = getLocalSolrQueryRequest();
+            ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
+            params.set("q", "*:*")
+                .set("rows", 0)
+                .set("facet", true)
+                .set("facet.field", FIELD_DOC_TYPE);
+            SolrQueryResponse response = cloud.getResponse(selectRequestHandler, request, params);
+            NamedList facetCounts = (NamedList) response.getValues().get("facet_counts");
+            NamedList facetFields = (NamedList) facetCounts.get("facet_fields");
+            NamedList docTypeCounts = (NamedList) facetFields.get(FIELD_DOC_TYPE);
+            int aclCount = getSafeCount(docTypeCounts, DOC_TYPE_ACL);
+            coreSummary.add("Alfresco Acls in Index", aclCount);
+            int nodeCount = getSafeCount(docTypeCounts, DOC_TYPE_NODE);
+            coreSummary.add("Alfresco Nodes in Index", nodeCount);
+            int txCount = getSafeCount(docTypeCounts, DOC_TYPE_TX);
+            coreSummary.add("Alfresco Transactions in Index", txCount);
+            int aclTxCount = getSafeCount(docTypeCounts, DOC_TYPE_ACL_TX);
+            coreSummary.add("Alfresco Acl Transactions in Index", aclTxCount);
+            int stateCount = getSafeCount(docTypeCounts, DOC_TYPE_STATE);
+            coreSummary.add("Alfresco States in Index", stateCount);
+            int unindexedNodeCount = getSafeCount(docTypeCounts, DOC_TYPE_UNINDEXED_NODE);
+            coreSummary.add("Alfresco Unindexed Nodes", unindexedNodeCount);
+            int errorNodeCount = getSafeCount(docTypeCounts, DOC_TYPE_ERROR_NODE);
+            coreSummary.add("Alfresco Error Nodes in Index", errorNodeCount);
+            
             refCounted = core.getSearcher(false, true, null);
             SolrIndexSearcher solrIndexSearcher = refCounted.get();
             coreSummary.add("Searcher", solrIndexSearcher.getStatistics());
@@ -435,6 +434,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 SolrInfoMBean infoMBean = infoRegistry.get(key);
                 if (key.equals("/alfresco"))
                 {
+// TODO Do we really need to fixStats in solr4?
                     coreSummary.add("/alfresco", fixStats(infoMBean.getStatistics()));
                 }
                 if (key.equals("/afts"))
@@ -463,18 +463,20 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 }
             }
 
-            // Find searchers and do memory use for each .. and add them all up
-            long memory = 0L;
+            // Adds detailed stats for each registered searcher
             int searcherIndex = 0;
             List<SolrIndexSearcher> searchers = getRegisteredSearchers();
             for (SolrIndexSearcher searcher : searchers)
             {
-                memory += addSearcherStats(coreSummary, searcher, searcherIndex);
+                NamedList<Object> details = new SimpleOrderedMap<Object>();
+                details.add("Searcher", searcher.getStatistics());
+                coreSummary.add("Searcher-" + searcherIndex, details);
                 searcherIndex++;
             }
 
             coreSummary.add("Number of Searchers", searchers.size());
-            coreSummary.add("Total Searcher Cache (GB)", df.format(memory / 1024.0f / 1024.0f / 1024.0f));
+            // This is zero for Solr4, whereas we had some local caches before
+            coreSummary.add("Total Searcher Cache (GB)", 0);
 
             IndexDeletionPolicyWrapper delPolicy = core.getDeletionPolicy();
             IndexCommit indexCommit = delPolicy.getLatestCommit();
@@ -485,6 +487,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             }
             if (indexCommit != null)
             {
+                // Tells Solr to stop deleting things for 20 seconds so we can get a snapshot of all the files on the index
                 delPolicy.setReserveDuration(solrIndexSearcher.getIndexReader().getVersion(), 20000);
                 Long fileSize = 0L;
 
@@ -498,17 +501,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     }
                 }
 
+                DecimalFormat df = new DecimalFormat("###,###.######");
                 coreSummary.add("On disk (GB)", df.format(fileSize / 1024.0f / 1024.0f / 1024.0f));
+                coreSummary.add("Per node B", nodeCount > 0 ? fileSize / nodeCount : 0);
             }
-            
-            /* TODO 
-             * if we had doc type a count of nodes, txs, acls, and change sets would be good
-             * https://localhost:8446/solr4/alfresco/select?q=*%3A*&fl=DOC_TYPE&wt=json&indent=true&facet=true&facet.field=DOC_TYPE
-             * There will be a "facet_counts" NamedValues<Object> in the named values - like "results"
-             * See org.alfresco.solr.component.RewriteFacetCountsComponent
-             * This renames some of the objects ()to match what people though they were asking for 
-             */
-            
         }
         finally
         {
@@ -541,34 +537,23 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         return namedList;
     }
 
-    protected List<SolrIndexSearcher> getRegisteredSearchers()
+    private List<SolrIndexSearcher> getRegisteredSearchers()
     {
         List<SolrIndexSearcher> searchers = new ArrayList<SolrIndexSearcher>();
-        for (String key : core.getInfoRegistry().keySet())
+        for (Entry<String, SolrInfoMBean> entry : core.getInfoRegistry().entrySet())
         {
-            SolrInfoMBean mBean = core.getInfoRegistry().get(key);
-            if (mBean != null)
+            if (entry.getValue() != null)
             {
-                if (mBean.getName().equals(SolrIndexSearcher.class.getName()))
+                if (entry.getValue().getName().equals(SolrIndexSearcher.class.getName()))
                 {
-                    if (!key.equals("searcher"))
+                    if (!entry.getKey().equals("searcher"))
                     {
-                        searchers.add((SolrIndexSearcher) mBean);
+                        searchers.add((SolrIndexSearcher) entry.getValue());
                     }
-
                 }
             }
         }
-
         return searchers;
-    }
-    
-    private long addSearcherStats(NamedList<Object> coreSummary, SolrIndexSearcher solrIndexSearcher, int index)
-    {
-        NamedList<Object> details = new SimpleOrderedMap<Object>();
-        details.add("Searcher", solrIndexSearcher.getStatistics());
-        coreSummary.add("Searcher-" + index, details);
-        return 0;
     }
     
     @Override
@@ -580,24 +565,26 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     @Override
     public int getDocSetSize(String targetTxId, String targetTxCommitTime) throws IOException
     {
-        RefCounted<SolrIndexSearcher> refCounted = null;
-        try
+        return getDocListSize(FIELD_TXID + ":" + targetTxId + AND + FIELD_TXCOMMITTIME + ":" + targetTxCommitTime);
+    }
+    
+    private int getDocListSize(String query)
+    {
+        SolrQueryRequest request = null;
+        try 
         {
-            refCounted = core.getSearcher(false, true, null);
-            SolrIndexSearcher solrIndexSearcher = refCounted.get();
-            BooleanQuery query = new BooleanQuery();
-            query.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_TXID, targetTxId)), Occur.MUST);
-            query.add(new TermQuery(AlfrescoSolrDataModel.getLongTerm(FIELD_TXCOMMITTIME, targetTxCommitTime)), Occur.MUST);
-            DocSet set = solrIndexSearcher.getDocSet(query);
-
-            return set.size();
+            request = this.getLocalSolrQueryRequest();
+            ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
+            params.set("q", query);
+            // Sets the rows to zero, because we actually just want the count
+            params.set("rows", 0);
+            ResultContext resultContext = cloud.getResultContext(selectRequestHandler, request, params);
+            int matches = resultContext.docs.matches();
+            return matches;
         }
         finally
         {
-            if (refCounted != null)
-            {
-                refCounted.decref();
-            }
+            if (request != null) { request.close(); }
         }
     }
 
@@ -610,7 +597,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         try 
         {
             request = this.getLocalSolrQueryRequest();
-            String query = FIELD_SOLR4_ID + ":" + PREFIX_ERROR + '*';
+            String query = FIELD_DOC_TYPE + ":" + DOC_TYPE_ERROR_NODE;
             ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
             // Sets MAX_VALUE to get all the rows
             params.set("q", query)
@@ -619,8 +606,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             SolrDocumentList docs = cloud.getSolrDocumentList(selectRequestHandler, request , params);
             for (SolrDocument doc : docs)
             {
-// TODO test me
-                String id = String.valueOf(doc.getFieldValue(FIELD_SOLR4_ID));
+                String id = getFieldValueString(doc, FIELD_SOLR4_ID);
                 if (id.startsWith(PREFIX_ERROR))
                 {
                     String nodeId = id.substring(PREFIX_ERROR.length());
@@ -671,26 +657,9 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     @Override
     public int getRegisteredSearcherCount()
     {
-        HashSet<String> keys = new HashSet<String>();
-
-        for (String key : core.getInfoRegistry().keySet())
-        {
-            SolrInfoMBean mBean = core.getInfoRegistry().get(key);
-            if (mBean != null)
-            {
-                if (mBean.getName().equals(SolrIndexSearcher.class.getName()))
-                {
-                    if (!key.equals("searcher"))
-                    {
-                        keys.add(key);
-                    }
-                }
-            }
-        }
-
-        log.info(".... registered Searchers for " + core.getName() + " = " + keys.size());
-        return keys.size();
-
+        int count = getRegisteredSearchers().size();
+        log.info(".... registered Searchers for " + core.getName() + " = " + count);
+        return count;
     }
 
     @Override
@@ -733,12 +702,12 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 acl = response.get(0);
                 if (state.getLastIndexedChangeSetCommitTime() == 0)
                 {
-                    state.setLastIndexedChangeSetCommitTime(Long.parseLong( ((IndexableField)acl.getFieldValue("S_ACLTXCOMMITTIME")).stringValue()));
+                    state.setLastIndexedChangeSetCommitTime(getFieldValueLong(acl, FIELD_S_ACLTXCOMMITTIME));
                 }
 
                 if (state.getLastIndexedChangeSetId() == 0)
                 {
-                    state.setLastIndexedChangeSetId(Long.parseLong( ((IndexableField)acl.getFieldValue("S_ACLTXID")).stringValue()));
+                    state.setLastIndexedChangeSetId(getFieldValueLong(acl, FIELD_S_ACLTXID));
                 }
             }
             if(response.getNumFound() > 1)
@@ -746,11 +715,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 tx = response.get(1);
                 if (state.getLastIndexedTxCommitTime() == 0)
                 {
-                    state.setLastIndexedTxCommitTime(Long.parseLong( ((IndexableField)tx.getFieldValue("S_TXCOMMITTIME")).stringValue()));
+                    state.setLastIndexedTxCommitTime(getFieldValueLong(tx, FIELD_S_TXCOMMITTIME));
                 }
                 if (state.getLastIndexedTxId() == 0)
                 {
-                    state.setLastIndexedTxId(Long.parseLong( ((IndexableField)tx.getFieldValue("S_TXID")).stringValue()));
+                    state.setLastIndexedTxId(getFieldValueLong(tx, FIELD_S_TXID));
                 }
             }
             
@@ -793,8 +762,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                 SolrInputDocument input = new SolrInputDocument();
                 String id = AlfrescoSolrDataModel.getAclDocumentId(aclReaders.getTenantDomain(), aclReaders.getId());
                 input.addField(FIELD_SOLR4_ID, id);
-                // TODO Do we need to get this right - the version stamp from the DB? 
-                input.addField("_version_", "0");
+                input.addField(FIELD_VERSION, "0");
                 input.addField(FIELD_ACLID, aclReaders.getId());
                 input.addField(FIELD_INACLTXID, aclReaders.getAclChangeSetId());
                 String tenant = aclReaders.getTenantDomain();
@@ -872,7 +840,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             cmd.overwrite = overwrite;
             SolrInputDocument input = new SolrInputDocument();
             input.addField(FIELD_SOLR4_ID, AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
-            input.addField("_version_", "0");
+            input.addField(FIELD_VERSION, "0");
             input.addField(FIELD_ACLTXID, changeSet.getId());
             input.addField(FIELD_INACLTXID, changeSet.getId());
             input.addField(FIELD_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
@@ -894,10 +862,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         cmd.overwrite = true;
         SolrInputDocument input = new SolrInputDocument();
         input.addField(FIELD_SOLR4_ID, "TRACKER!STATE!ACLTX");
-        input.addField("_version_", "0");
-        input.addField("S_ACLTXID", changeSet.getId());
-        input.addField("S_INACLTXID", changeSet.getId());
-        input.addField("S_ACLTXCOMMITTIME", changeSet.getCommitTimeMs());
+        input.addField(FIELD_VERSION, "0");
+        input.addField(FIELD_S_ACLTXID, changeSet.getId());
+        input.addField(FIELD_S_INACLTXID, changeSet.getId());
+        input.addField(FIELD_S_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
         input.addField(FIELD_DOC_TYPE, DOC_TYPE_STATE);
         cmd.solrDoc = input;
         processor.processAdd(cmd);
@@ -939,8 +907,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     if (!(nodeMetaData.getTxnId() > node.getTxnId()))
                     {
                         LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                        DocList skippingDocs = cloud.getDocList(selectRequestHandler, request, skippingDocsQueryString);
-                        updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited, skippingDocs);
+                        updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited);
                     }
                     // else, the node has moved on to a later transaction, and it will be indexed later
                 }
@@ -1014,9 +981,6 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
         catch (Exception e)
         {
-            // generic recovery
-            // Add failed node marker to try later
-            // TODO: add to reporting
             // TODO: retry failed
 
             log.debug(".. deleting on exception");
@@ -1027,7 +991,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
 
             SolrInputDocument doc = new SolrInputDocument();
             doc.addField(FIELD_SOLR4_ID, PREFIX_ERROR + node.getId());
-            doc.addField("_version_", "0");
+            doc.addField(FIELD_VERSION, "0");
             doc.addField(FIELD_DBID, node.getId());
             doc.addField(FIELD_INTXID, node.getTxnId());
             doc.addField(FIELD_EXCEPTION_MESSAGE, e.getMessage());
@@ -1060,7 +1024,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     
 
     private void updateDescendantDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
-                SolrQueryRequest request, UpdateRequestProcessor processor, LinkedHashSet<Long> stack, DocSet skippingDocs) 
+                SolrQueryRequest request, UpdateRequestProcessor processor, LinkedHashSet<Long> stack) 
                             throws AuthenticationException, IOException, JSONException
     {
         if (stack.contains(parentNodeMetaData.getId()))
@@ -1074,7 +1038,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             try
             {
                 stack.add(parentNodeMetaData.getId());
-                doUpdateDescendantDocs(parentNodeMetaData, overwrite, request, processor, stack, skippingDocs);
+                doUpdateDescendantDocs(parentNodeMetaData, overwrite, request, processor, stack);
             }
             finally
             {
@@ -1084,7 +1048,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     }
 
     private void doUpdateDescendantDocs(NodeMetaData parentNodeMetaData, boolean overwrite,
-                SolrQueryRequest request, UpdateRequestProcessor processor, LinkedHashSet<Long> stack, DocSet skippingDocs) 
+                SolrQueryRequest request, UpdateRequestProcessor processor, LinkedHashSet<Long> stack) 
                             throws AuthenticationException, IOException, JSONException
     {
         if (skipDescendantDocsForSpecificTypes 
@@ -1100,113 +1064,81 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             childIds.addAll(parentNodeMetaData.getChildIds());
         }
 
-// TODO test me .getId() ?
-        String query = FIELD_PARENT + ":" + parentNodeMetaData.getNodeRef().getId();
+        String query = FIELD_PARENT + ":\"" + parentNodeMetaData.getNodeRef() + "\"";
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
-        params.set("q", query).set("fl", FIELD_SOLR4_ID);
+        params.set("q", query).set("fl", FIELD_SOLR4_ID).set("fq", "NOT ( " + skippingDocsQueryString + " )");
         SolrDocumentList docs = cloud.getSolrDocumentList(selectRequestHandler, request, params);
         for (SolrDocument doc : docs)
         {
-            String id = getSolr4id(doc);
+            String id = getFieldValueString(doc, FIELD_SOLR4_ID);
             TenantAclIdDbId ids = AlfrescoSolrDataModel.decodeSolr4id(id);
             childIds.add(ids.dbId);
         }
         
         for (Long childId : childIds)
         {
-            if (!shouldElementBeIgnored(childId, request, skippingDocs))
+            NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
+            nmdp.setFromNodeId(childId);
+            nmdp.setToNodeId(childId);
+            nmdp.setIncludeAclId(false);
+            nmdp.setIncludeAspects(false);
+            nmdp.setIncludeChildAssociations(false);
+            nmdp.setIncludeChildIds(false);
+            nmdp.setIncludeNodeRef(false);
+            nmdp.setIncludeOwner(false);
+            nmdp.setIncludeParentAssociations(false);
+            // We only care about the path and ancestors (which is included) for this case
+            nmdp.setIncludePaths(true);
+            nmdp.setIncludeProperties(false);
+            nmdp.setIncludeType(false);
+            nmdp.setIncludeTxnId(false);
+            // Gets only one 
+            List<NodeMetaData> nodeMetaDatas = repositoryClient.getNodesMetaData(nmdp, 1);
+            
+            if (!nodeMetaDatas.isEmpty())
             {
-                NodeMetaDataParameters nmdp = new NodeMetaDataParameters();
-                nmdp.setFromNodeId(childId);
-                nmdp.setToNodeId(childId);
-                nmdp.setIncludeAclId(false);
-                nmdp.setIncludeAspects(false);
-                nmdp.setIncludeChildAssociations(false);
-                nmdp.setIncludeChildIds(false);
-                nmdp.setIncludeNodeRef(false);
-                nmdp.setIncludeOwner(false);
-                nmdp.setIncludeParentAssociations(false);
-                // We only care about the path and ancestors (which is included) for this case
-                nmdp.setIncludePaths(true);
-                nmdp.setIncludeProperties(false);
-                nmdp.setIncludeType(false);
-                nmdp.setIncludeTxnId(false);
-                // Gets only one 
-                List<NodeMetaData> nodeMetaDatas = repositoryClient.getNodesMetaData(nmdp, 1);
+                NodeMetaData nodeMetaData = nodeMetaDatas.get(0);
+                if (mayHaveChildren(nodeMetaData))
+                {
+                    updateDescendantDocs(nodeMetaData, overwrite, request, processor, stack);
+                }
                 
-                if (!nodeMetaDatas.isEmpty())
+                log.debug("... cascade update child doc " + childId);
+                // Gets the document that we have from the content store and updates it 
+                String fixedTenantDomain = AlfrescoSolrDataModel.getTenantId(nodeMetaData.getTenantDomain());
+                SolrInputDocument cachedDoc = retrieveDocFromSolrContentStore(fixedTenantDomain, nodeMetaData.getId());
+                
+                if (cachedDoc != null)
                 {
-                    NodeMetaData nodeMetaData = nodeMetaDatas.get(0);
-                    if (mayHaveChildren(nodeMetaData))
+                    for (Pair<String, QName> path : nodeMetaData.getPaths())
                     {
-                        updateDescendantDocs(nodeMetaData, overwrite, request, processor, stack, skippingDocs);
+                        cachedDoc.removeField(FIELD_PATH);
+                        cachedDoc.addField(FIELD_PATH, path.getFirst());
                     }
                     
-                    log.debug("... cascade update child doc " + childId);
-                    // Gets the document that we have from the content store and updates it 
-                    String fixedTenantDomain = AlfrescoSolrDataModel.getTenantId(nodeMetaData.getTenantDomain());
-                    SolrInputDocument cachedDoc = retrieveDocFromSolrContentStore(fixedTenantDomain, nodeMetaData.getId());
-                    
-                    if (cachedDoc != null)
+                    if (nodeMetaData.getAncestors() != null)
                     {
-                        for (Pair<String, QName> path : nodeMetaData.getPaths())
-                        {
-                            cachedDoc.removeField(FIELD_PATH);
-                            cachedDoc.addField(FIELD_PATH, path.getFirst());
-                        }
-                        
-                        if (nodeMetaData.getAncestors() != null)
-                        {
 // TODO: How many ancestors does one node have?  Should this be a for loop?
-                            for (NodeRef ancestor : nodeMetaData.getAncestors())
-                            {
-                                cachedDoc.removeField(FIELD_ANCESTOR);
-                                cachedDoc.addField(FIELD_ANCESTOR, ancestor.toString());
-                            }
+                        for (NodeRef ancestor : nodeMetaData.getAncestors())
+                        {
+                            cachedDoc.removeField(FIELD_ANCESTOR);
+                            cachedDoc.addField(FIELD_ANCESTOR, ancestor.toString());
                         }
-                        
-                        AddUpdateCommand addDocCmd = new AddUpdateCommand(request);
-                        addDocCmd.overwrite = overwrite;
-                        addDocCmd.solrDoc = cachedDoc;
-                        
-                        processor.processAdd(addDocCmd);
-                        storeDocOnSolrContentStore(fixedTenantDomain, nodeMetaData.getId(), cachedDoc);
                     }
-                    else
-                    {
-                        log.debug("... no child doc found to update " + childId);
-                    }
+                    
+                    AddUpdateCommand addDocCmd = new AddUpdateCommand(request);
+                    addDocCmd.overwrite = overwrite;
+                    addDocCmd.solrDoc = cachedDoc;
+                    
+                    processor.processAdd(addDocCmd);
+                    storeDocOnSolrContentStore(fixedTenantDomain, nodeMetaData.getId(), cachedDoc);
                 }
-            }
-        }
-    }
-
-    
-    private boolean shouldElementBeIgnored(long dbId, SolrQueryRequest request, DocSet skippingDocs) throws IOException
-    {
-        boolean result = false;
-
-        if (skipDescendantDocsForSpecificTypes && !typesForSkippingDescendantDocs.isEmpty())
-        {
-            String query = FIELD_DBID + ":" + dbId;
-            DocList docList = this.cloud.getDocList(selectRequestHandler, request, query);
-            
-            final int NOT_SET = -1;
-            int index = NOT_SET;
-            
-            if (docList != null)
-            {
-                DocIterator it = docList.iterator();
-                if (it.hasNext())
+                else
                 {
-                    index = it.nextDoc();
+                    log.debug("... no child doc found to update " + childId);
                 }
             }
-
-            result = (NOT_SET != index) && skippingDocs.exists(index);
         }
-
-        return result;
     }
 
     /**
@@ -1231,8 +1163,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             {
                 log.debug("... cascade updating docs");
                 LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                DocList skippingDocs = cloud.getDocList(selectRequestHandler, request, skippingDocsQueryString);
-                updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited, skippingDocs);
+                updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited);
             }
             else
             {
@@ -1256,7 +1187,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         SolrInputDocument doc = new SolrInputDocument();
         doc.addField(FIELD_SOLR4_ID, AlfrescoSolrDataModel.getNodeDocumentId(nodeMetaData.getTenantDomain(), 
                     nodeMetaData.getAclId(), nodeMetaData.getId()));
-        doc.addField("_version_", 0);
+        doc.addField(FIELD_VERSION, 0);
         doc.addField(FIELD_DBID, nodeMetaData.getId());
         doc.addField(FIELD_LID, nodeMetaData.getNodeRef());
         doc.addField(FIELD_INTXID, nodeMetaData.getTxnId());
@@ -1313,8 +1244,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                         continue;
                     }
                     LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
-                    DocList skippingDocs = cloud.getDocList(selectRequestHandler, request, skippingDocsQueryString);
-                    updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited, skippingDocs);
+                    updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited);
                 }
 
                 log.debug(".. deleting");
@@ -2025,7 +1955,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             cmd.overwrite = overwrite;
             SolrInputDocument input = new SolrInputDocument();
             input.addField(FIELD_SOLR4_ID, AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
-            input.addField("_version_", 0);
+            input.addField(FIELD_VERSION, 0);
             input.addField(FIELD_TXID, info.getId());
             input.addField(FIELD_INTXID, info.getId());
             input.addField(FIELD_TXCOMMITTIME, info.getCommitTimeMs());
@@ -2055,10 +1985,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         cmd.overwrite = true;
         SolrInputDocument input = new SolrInputDocument();
         input.addField(FIELD_SOLR4_ID, "TRACKER!STATE!TX");
-        input.addField("_version_", 0);
-        input.addField("S_TXID", info.getId());
-        input.addField("S_INTXID", info.getId());
-        input.addField("S_TXCOMMITTIME", info.getCommitTimeMs());
+        input.addField(FIELD_VERSION, 0);
+        input.addField(FIELD_S_TXID, info.getId());
+        input.addField(FIELD_S_INTXID, info.getId());
+        input.addField(FIELD_S_TXCOMMITTIME, info.getCommitTimeMs());
         input.addField(FIELD_DOC_TYPE, DOC_TYPE_STATE);
         cmd.solrDoc = input;
         processor.processAdd(cmd);

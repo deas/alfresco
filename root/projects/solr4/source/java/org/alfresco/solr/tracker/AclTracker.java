@@ -317,15 +317,6 @@ public class AclTracker extends AbstractTracker
 
         checkShutdown();
         trackAclChangeSets();
-
-        checkShutdown();
-
-        //TODO: There is no cache to check anymore.  Is anything needed here?
-//        // check index state
-//        if (state.isCheck())
-//        {
-//            this.infoSrv.checkCache();
-//        }
     }
 
 
@@ -515,96 +506,96 @@ public class AclTracker extends AbstractTracker
     }
 
 
-
-    QName expandQName(String qName)
-    {
-        String expandedQName = qName;
-        if (qName.startsWith("@"))
-        {
-            return expandQName(qName.substring(1));
-        }
-        else if (qName.startsWith("{"))
-        {
-            expandedQName = expandQNameImpl(qName);
-        }
-        else if (qName.contains(":"))
-        {
-            expandedQName = expandQNameImpl(qName);
-        }
-        // TODO: field has gone, check correct course of action
-//        else if (AlfrescoSolrDataModel.nonDictionaryFields.get(qName) == null)
+//
+//    QName expandQName(String qName)
+//    {
+//        String expandedQName = qName;
+//        if (qName.startsWith("@"))
+//        {
+//            return expandQName(qName.substring(1));
+//        }
+//        else if (qName.startsWith("{"))
 //        {
 //            expandedQName = expandQNameImpl(qName);
 //        }
-        return QName.createQName(expandedQName);
-
-    }
-
-    String expandQNameImpl(String q)
-    {
-        String eq = q;
-        // Check for any prefixes and expand to the full uri
-        if (q.charAt(0) != '{')
-        {
-            int colonPosition = q.indexOf(':');
-            if (colonPosition == -1)
-            {
-                // use the default namespace
-                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI("") + "}" + q;
-            }
-            else
-            {
-                // find the prefix
-                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI(q.substring(0, colonPosition)) + "}" + q.substring(colonPosition + 1);
-            }
-        }
-        return eq;
-    }
-
-    String expandName(String qName)
-    {
-        String expandedQName = qName;
-        if (qName.startsWith("@"))
-        {
-            return expandName(qName.substring(1));
-        }
-        else if (qName.startsWith("{"))
-        {
-            expandedQName = expandQNameImpl(qName);
-        }
-        else if (qName.contains(":"))
-        {
-            expandedQName = expandQNameImpl(qName);
-        }
-     // TODO: field has gone, check correct course of action
-//        else if (AlfrescoSolrDataModel.nonDictionaryFields.get(qName) == null)
+//        else if (qName.contains(":"))
 //        {
 //            expandedQName = expandQNameImpl(qName);
 //        }
-        return expandedQName;
+//        // TODO: field has gone, check correct course of action
+////        else if (AlfrescoSolrDataModel.nonDictionaryFields.get(qName) == null)
+////        {
+////            expandedQName = expandQNameImpl(qName);
+////        }
+//        return QName.createQName(expandedQName);
+//
+//    }
+//
+//    String expandQNameImpl(String q)
+//    {
+//        String eq = q;
+//        // Check for any prefixes and expand to the full uri
+//        if (q.charAt(0) != '{')
+//        {
+//            int colonPosition = q.indexOf(':');
+//            if (colonPosition == -1)
+//            {
+//                // use the default namespace
+//                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI("") + "}" + q;
+//            }
+//            else
+//            {
+//                // find the prefix
+//                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI(q.substring(0, colonPosition)) + "}" + q.substring(colonPosition + 1);
+//            }
+//        }
+//        return eq;
+//    }
+//
+//    String expandName(String qName)
+//    {
+//        String expandedQName = qName;
+//        if (qName.startsWith("@"))
+//        {
+//            return expandName(qName.substring(1));
+//        }
+//        else if (qName.startsWith("{"))
+//        {
+//            expandedQName = expandQNameImpl(qName);
+//        }
+//        else if (qName.contains(":"))
+//        {
+//            expandedQName = expandQNameImpl(qName);
+//        }
+//     // TODO: field has gone, check correct course of action
+////        else if (AlfrescoSolrDataModel.nonDictionaryFields.get(qName) == null)
+////        {
+////            expandedQName = expandQNameImpl(qName);
+////        }
+//        return expandedQName;
+//
+//    }
 
-    }
-
-    String expandNameImpl(String q)
-    {
-        String eq = q;
-        // Check for any prefixes and expand to the full uri
-        if (q.charAt(0) != '{')
-        {
-            int colonPosition = q.indexOf(':');
-            if (colonPosition == -1)
-            {
-                // use the default namespace
-                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI("") + "}" + q;
-            }
-            else
-            {
-                // find the prefix
-                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI(q.substring(0, colonPosition)) + "}" + q.substring(colonPosition + 1);
-            }
-        }
-        return eq;
-    }
+//    String expandNameImpl(String q)
+//    {
+//        String eq = q;
+//        // Check for any prefixes and expand to the full uri
+//        if (q.charAt(0) != '{')
+//        {
+//            int colonPosition = q.indexOf(':');
+//            if (colonPosition == -1)
+//            {
+//                // use the default namespace
+//                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI("") + "}" + q;
+//            }
+//            else
+//            {
+//                // find the prefix
+//                eq = "{" + this.infoSrv.getNamespaceDAO().getNamespaceURI(q.substring(0, colonPosition)) + "}" + q.substring(colonPosition + 1);
+//            }
+//        }
+//        return eq;
+//    }
 
     /**
      * @param acl

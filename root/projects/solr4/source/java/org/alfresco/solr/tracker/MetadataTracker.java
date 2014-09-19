@@ -120,13 +120,6 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 
         checkShutdown();
         trackTransactions();
-
-        //TODO: There is no cache to check anymore.  Is anything needed here?
-//        // check index state
-//        if (state.isCheck())
-//        {
-//            this.infoSrv.checkCache();
-//        }
     }
 
     private void checkRepoAndIndexConsistency(TrackerState state) throws AuthenticationException, IOException, JSONException
@@ -657,6 +650,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             nodeReport.setDbNodeStatus(SolrApiNodeStatus.UNKNOWN);
             nodeReport.setDbTx(-4l);
         }
+        
+        this.infoSrv.addCommonNodeReportInfo(nodeReport);
 
         return nodeReport;
     }
@@ -669,6 +664,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         nodeReport.setDbNodeStatus(node.getStatus());
         nodeReport.setDbTx(node.getTxnId());
 
+        this.infoSrv.addCommonNodeReportInfo(nodeReport);
+        
         return nodeReport;
     }
 
