@@ -1821,14 +1821,16 @@
      <str name="defType">alfresco</str>
     </lst>
     <arr name="components">
-      <!-- <str>setLocale</str> -->
+      <str>setLocale</str>
+      <str>rewriteFacetParameters</str>
       <str>query</str>
       <str>facet</str>
       <str>mlt</str>
       <str>highlight</str>
       <str>stats</str>
       <str>debug</str>
-      <!-- <str>clearLocale</str> -->
+      <str>clearLocale</str>
+      <str>rewriteFacetCounts</str>
       <!-- <str>addTxId</str> -->
     </arr>
   </requestHandler>
@@ -1839,14 +1841,16 @@
      <str name="defType">afts</str>
     </lst>
     <arr name="components">
-      <!-- <str>setLocale</str> -->
+      <str>setLocale</str>
+      <str>rewriteFacetParameters</str>
       <str>query</str>
-      <!--<str>facet</str>-->
+      <str>facet</str>
       <str>mlt</str>
       <str>highlight</str>
       <str>stats</str>
       <str>debug</str>
-      <!-- <str>clearLocale</str> -->
+      <str>clearLocale</str>
+      <str>rewriteFacetCounts</str>
       <!-- <str>addTxId</str> -->
     </arr>
   </requestHandler>
@@ -1856,14 +1860,16 @@
      <str name="defType">cmis</str>
     </lst>
     <arr name="components">
-      <!-- <str>setLocale</str> -->
+      <str>setLocale</str>
+      <str>rewriteFacetParameters</str>
       <str>query</str>
       <str>facet</str>
       <str>mlt</str>
       <str>highlight</str>
       <str>stats</str>
       <str>debug</str>
-      <!--<str>clearLocale</str>-->
+      <str>clearLocale</str>
+      <str>rewriteFacetCounts</str>
       <!--<str>addTxId</str>-->
     </arr>
   </requestHandler>
@@ -1872,5 +1878,11 @@
   <queryParser name="alfresco" class="org.alfresco.solr.query.AlfrescoLuceneQParserPlugin"/>
   <queryParser name="afts" class="org.alfresco.solr.query.AlfrescoFTSQParserPlugin"/>
   <queryParser name="cmis" class="org.alfresco.solr.query.CmisQParserPlugin"/>
+
+  <searchComponent name="setLocale"     class="org.alfresco.solr.component.SetLocaleComponent" />
+  <searchComponent name="clearLocale"   class="org.alfresco.solr.component.ClearLocaleComponent" />
+  <searchComponent name="rewriteFacetParameters"     class="org.alfresco.solr.component.RewriteFacetParametersComponent" />
+  <searchComponent name="rewriteFacetCounts"     class="org.alfresco.solr.component.RewriteFacetCountsComponent" />
+
 
 </config>

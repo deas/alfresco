@@ -99,6 +99,7 @@ public class CmisFunctionEvaluationContext implements FunctionEvaluationContext
         EXPOSED_FIELDS.add(QueryConstants.FIELD_TAG);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_TENANT);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ANCESTOR);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_SITE);
         
         
         EXPOSED_FIELDS.add("d:"+DataTypeDefinition.ANY.getLocalName());

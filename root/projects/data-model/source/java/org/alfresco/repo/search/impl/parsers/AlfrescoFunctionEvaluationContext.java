@@ -101,6 +101,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(QueryConstants.FIELD_EXCEPTION_STACK);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_LID);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_PARENT_ASSOC_CRC);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_SITE);
     }
 
     /**

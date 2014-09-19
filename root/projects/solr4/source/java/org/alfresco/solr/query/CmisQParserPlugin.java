@@ -130,7 +130,7 @@ public class CmisQParserPlugin extends QParserPlugin
                             if(propertyDef != null)
                             {
 
-                                IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
+                                IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(),  AlfrescoSolrDataModel.getInstance().getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
                                 if(fields.getFields().size() > 0)
                                 {
                                     solrSortField = fields.getFields().get(0).getField();
@@ -138,7 +138,7 @@ public class CmisQParserPlugin extends QParserPlugin
                             }
                             else
                             {
-                                solrSortField = mapNonPropertyFields(luceneField);
+                                solrSortField =  AlfrescoSolrDataModel.getInstance().mapNonPropertyFields(luceneField);
                             }
                             if(sortParameter.length() > 0)
                             {

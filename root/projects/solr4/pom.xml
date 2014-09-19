@@ -53,13 +53,13 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
-            <version>4.8.1</version>
+            <version>4.9.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
-            <version>4.8.1</version>
+            <version>4.9.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-analysis-extras</artifactId>
-            <version>4.8.1</version>
+            <version>4.9.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.eclipse.jetty.orbit</groupId>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr</artifactId>
-            <version>4.8.1</version>
+            <version>4.9.0</version>
             <type>war</type>
         </dependency>
 

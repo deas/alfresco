@@ -54,6 +54,8 @@ import org.alfresco.repo.dictionary.M2ModelDiff;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.repo.i18n.StaticMessageLookup;
 import org.alfresco.repo.search.MLAnalysisMode;
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.repo.search.impl.QueryParserUtils;
 import org.alfresco.repo.search.impl.parsers.AlfrescoFunctionEvaluationContext;
 import org.alfresco.repo.search.impl.parsers.FTSParser;
 import org.alfresco.repo.search.impl.parsers.FTSQueryParser;
@@ -111,7 +113,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
  * @author Andy
  *
  */
-public class AlfrescoSolrDataModel
+public class AlfrescoSolrDataModel implements QueryConstants
 {
     public static enum FieldUse
     {
@@ -1394,7 +1396,7 @@ public class AlfrescoSolrDataModel
           if (values[slot] == null) {
             values[slot] = new BytesRef();
           }
-          termsIndex.lookupOrd(ord, values[slot]);
+          //termsIndex.lookupOrd(ord, values[slot]);
         }
         ords[slot] = ord;
         readerGen[slot] = currentReaderGen;
@@ -2026,5 +2028,86 @@ public class AlfrescoSolrDataModel
          ContextAwareQuery contextAwareQuery = new ContextAwareQuery(luceneQuery, Boolean.TRUE.equals(isFilter) ? null : searchParameters);
          return contextAwareQuery;
      }
+     
+     /**
+      * @param builder
+      * @param propertyBuilder
+      * @param c
+      * @return
+      */
+     public String  mapProperty(String  potentialProperty,  FieldUse fieldUse)
+     {
+         AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(getNamespaceDAO(),  getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
 
+         String luceneField =  functionContext.getLuceneFieldName(potentialProperty);
+
+         Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(luceneField);
+         PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(NamespaceService.CONTENT_MODEL_1_0_URI, getNamespaceDAO(), getDictionaryService(CMISStrictDictionaryService.DEFAULT), fieldNameAndEnding.getFirst());
+         
+         String solrSortField = null;
+         if(propertyDef != null)
+         {
+
+             IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), getTextField(fieldNameAndEnding.getSecond()), fieldUse);
+             if(fields.getFields().size() > 0)
+             {
+                 solrSortField = fields.getFields().get(0).getField();
+             }
+             else
+             {
+                 solrSortField = mapNonPropertyFields(luceneField);
+             }
+         }
+         else
+         {
+             solrSortField = mapNonPropertyFields(luceneField);
+         }
+         return solrSortField;
+       
+     }
+     /**
+      * @param luceneField
+      * @return
+      */
+     public String mapNonPropertyFields(String queryField)
+     {
+         switch(queryField)
+         {
+         case "ID":
+             return "LID";
+         case "EXACTTYPE":
+             return "TYPE";
+         default:
+             return queryField;
+                   
+         }
+     }
+
+     /**
+      * @param second
+      * @param sort
+      * @return
+      */
+     public ContentFieldType getTextField(String ending)
+     {
+         switch(ending)
+         {
+         case FIELD_MIMETYPE_SUFFIX:
+             return ContentFieldType.MIMETYPE;
+         case FIELD_SIZE_SUFFIX:
+             return ContentFieldType.SIZE;
+         case FIELD_LOCALE_SUFFIX:
+             return ContentFieldType.LOCALE;
+         case FIELD_ENCODING_SUFFIX:
+             return ContentFieldType.ENCODING;
+         case FIELD_TRANSFORMATION_STATUS_SUFFIX:
+         case FIELD_TRANSFORMATION_TIME_SUFFIX:
+         case FIELD_TRANSFORMATION_EXCEPTION_SUFFIX:
+         default:
+             return null;
+                 
+         }
+         
+     }
+     
 }

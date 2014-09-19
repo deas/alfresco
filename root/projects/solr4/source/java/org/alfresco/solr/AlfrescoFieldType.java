@@ -73,8 +73,8 @@ public class AlfrescoFieldType extends FieldType
         
         // TODO: Wire up localised analysis driven from the schema
         // for now we do something basic
-        analyzer = new AlfrescoAnalyzerWrapper(schema);
-        queryAnalyzer = new AlfrescoAnalyzerWrapper(schema);
+        setIndexAnalyzer(new AlfrescoAnalyzerWrapper(schema));
+        setQueryAnalyzer(new AlfrescoAnalyzerWrapper(schema));
         AlfrescoSolrDataModel.getInstance().setAlfrescoFieldType(this);
     }
 
@@ -112,21 +112,9 @@ public class AlfrescoFieldType extends FieldType
     }
 
     @Override
-    public void setAnalyzer(Analyzer analyzer)
-    {
-        this.analyzer = analyzer;
-    }
-
-    @Override
-    public void setQueryAnalyzer(Analyzer analyzer)
-    {
-        this.queryAnalyzer = analyzer;
-    }
-
-    @Override
     public Query getRangeQuery(QParser parser, SchemaField field, String part1, String part2, boolean minInclusive, boolean maxInclusive)
     {
-        Analyzer multiAnalyzer = constructMultiTermAnalyzer(getAnalyzer());
+        Analyzer multiAnalyzer = constructMultiTermAnalyzer(getQueryAnalyzer());
         BytesRef lower = analyzeMultiTerm(field.getName(), part1, multiAnalyzer);
         BytesRef upper = analyzeMultiTerm(field.getName(), part2, multiAnalyzer);
         return new TermRangeQuery(field.getName(), lower, upper, minInclusive, maxInclusive);
@@ -278,27 +266,9 @@ public class AlfrescoFieldType extends FieldType
         UnicodeUtil.UTF16toUTF8(stringVal, 0, stringVal.length(), spare);
         return spare;
     }
-
-    /* (non-Javadoc)
-     * @see org.apache.solr.schema.FieldType#getAnalyzer()
-     */
-    @Override
-    public Analyzer getAnalyzer()
-    {
-        // TODO Auto-generated method stub
-        return super.getAnalyzer();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.solr.schema.FieldType#getQueryAnalyzer()
-     */
-    @Override
-    public Analyzer getQueryAnalyzer()
-    {
-        // TODO Auto-generated method stub
-        return super.getQueryAnalyzer();
-    }
     
-    
-
+    protected boolean supportsAnalyzers() 
+    {
+        return true;
+    }
 }

@@ -163,5 +163,7 @@ public interface QueryConstants
     public static final String FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX = ".__.u";
     
     public static final String FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX = ".__";
+
+    public static final String FIELD_SITE = "SITE";
     
 }
