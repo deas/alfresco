@@ -127,13 +127,13 @@ public abstract class AbstractSolrCachingScorer extends Scorer
     @Override
     public int freq() throws IOException
     {
-        throw new UnsupportedOperationException();
+        return 1;
     }
 
     // TODO: implement
     @Override
     public long cost()
     {
-        throw new UnsupportedOperationException();
+       return matches.size();
     }
 }
