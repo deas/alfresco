@@ -167,7 +167,7 @@ public class LegacySolrInformationServer implements CloseHook, InformationServer
     // Metadata pulling control
     private boolean skipDescendantAuxDocsForSpecificTypes;
     private Set<QName> typesForSkippingDescendantAuxDocs = new HashSet<QName>();
-    private BooleanQuery skippingDocsQuery;
+    private BooleanQuery skippingDocsQuery = new BooleanQuery();
 
     public LegacySolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core)
     {
