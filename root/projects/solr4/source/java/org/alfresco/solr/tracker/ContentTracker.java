@@ -57,7 +57,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
         int start = 0;
         long totalDocs = 0l;
         List<TenantAndDbId> buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
-        while (buckets != null && !buckets.isEmpty())
+        while (!buckets.isEmpty())
         {
             for (TenantAndDbId bucket : buckets)
             {

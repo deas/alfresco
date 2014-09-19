@@ -124,7 +124,7 @@ public class CloudTest extends SolrCoreTestBase
     public void testSelect()
     {
         SolrParams params = new ModifiableSolrParams(request.getParams());
-        ResultContext rc = cloud.select(core, request, params);
+        ResultContext rc = cloud.handleRequest(core, request, params);
         assertNull(rc);
     }
 

@@ -19,11 +19,8 @@
 
 package org.alfresco.solr;
 
-import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.lucene.index.SortedSetDocValues;
-import org.apache.lucene.util.BytesRef;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.core.SolrCore;
@@ -44,6 +41,13 @@ public class Cloud
 {
     protected final static Logger log = LoggerFactory.getLogger(Cloud.class);
 
+    /**
+     * Creates a query to select docs with any of the specified field values
+     * @param fieldName the name of the field in the condition
+     * @param operator currently only OR makes sense. To add AND, fieldName must become a list of fields. 
+     * @param valueLists a bunch of possible values for the field
+     * @return the resulting query string
+     */
     @SuppressWarnings("rawtypes")
     String getQuery(String fieldName, String operator, Collection... valueLists)
     {
@@ -65,12 +69,19 @@ public class Cloud
         return query.toString();
     }
 
+    /**
+     * Returns whether or not a doc exists that satisfies the specified query
+     * @param core the core to run the query against
+     * @param request the request object to put the query on
+     * @param query the string that specifies the doc
+     * @return <code>true</code> if the specified query returns a doc
+     */
     boolean selectReturnsDoc(SolrCore core, SolrQueryRequest request, String query)
     {
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         // Sets 1 because this is effectively a boolean query to see if there exists a single match
         params.set("q", query).set("fl", "id").set("rows", "1");
-        ResultContext rc = this.select(core, request, params);
+        ResultContext rc = this.handleRequest(core, request, params);
 
         if (rc != null)
         {
@@ -80,41 +91,31 @@ public class Cloud
         return false;
     }
 
+    /**
+     * Returns the doc list resulting from running the query
+     * @param core the core to run the query against
+     * @param request the request object to put the query on
+     * @param query the string that specifies the docs
+     * @return the docs that come back from the query
+     */
     DocList getDocList(SolrCore core, SolrQueryRequest request, String query)
     {
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         // Sets MAX_VALUE to get all the rows
         params.set("q", query).set("fl", "id").set("rows", Integer.MAX_VALUE);
-        ResultContext rc = this.select(core, request, params);
+        ResultContext rc = this.handleRequest(core, request, params);
         return rc != null ? rc.docs : null;
     }
 
     /**
-     * Populates a BytesRef field result with the field value.
-     * @param request a live solr request
-     * @param field the name of the field
-     * @param docId the id of the solr doc
-     * @param result the reference to the bytes to hold the field value
-     * @return <code>true</code> if the field result is populated
-     * @throws IOException
+     * @param core the core to run the query against
+     * @param request the request object to put the params on
+     * @param params Solr parameters
+     * @return the result context from the handled request
      */
-    boolean populateFieldResult(SolrQueryRequest request, String field, int docId, BytesRef result) throws IOException
+    ResultContext handleRequest(SolrCore core, SolrQueryRequest request, SolrParams params)
     {
-        SortedSetDocValues ssdv = request.getSearcher().getAtomicReader().getSortedSetDocValues(field);
-        ssdv.setDocument(docId);
-        long ordinal = ssdv.nextOrd();
-        boolean populateResult = ordinal != SortedSetDocValues.NO_MORE_ORDS;
-        if (populateResult)
-        {
-            ssdv.lookupOrd(ordinal, result);
-        }
-
-        return populateResult;
-    }
-
-    ResultContext select(SolrCore core, SolrQueryRequest request, SolrParams params)
-    {
-        SolrRequestHandler requestHandler = core.getRequestHandler("/select");
+        SolrRequestHandler requestHandler = core.getRequestHandler("/afts");
         request.setParams(params);
         log.info("Running query " + params.get("q"));
         SolrQueryResponse solrRsp = new SolrQueryResponse();

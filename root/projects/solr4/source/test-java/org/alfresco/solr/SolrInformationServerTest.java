@@ -20,8 +20,7 @@
 package org.alfresco.solr;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,14 +29,24 @@ import java.util.Collection;
 import java.util.List;
 
 import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.solr.SolrInformationServer.TenantAndDbId;
 import org.alfresco.solr.client.AclReaders;
 import org.alfresco.util.NumericEncoder;
+import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.lucene.util.BytesRef;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.SolrParams;
+import org.apache.solr.core.SolrCore;
+import org.apache.solr.request.SolrQueryRequest;
+import org.apache.solr.response.ResultContext;
+import org.apache.solr.search.DocIterator;
+import org.apache.solr.search.DocList;
 import org.apache.solr.update.AddUpdateCommand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
@@ -49,6 +58,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class SolrInformationServerTest extends SolrCoreTestBase
 {
     private SolrInformationServer infoServer;
+    @Mock
+    Cloud cloud;
 
     @Before
     public void setUp() throws Exception
