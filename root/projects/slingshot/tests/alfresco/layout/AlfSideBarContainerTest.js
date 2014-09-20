@@ -204,13 +204,14 @@ define(["intern!object",
 
          .releaseMouseButton()
             .catch(function(err) {
-               TestCommon.log(testname, "Caught error cleaning up button release");
+               TestCommon.log(testname, "Caught error cleaning up button release:", err);
             })
 
          .findById("yui-gen1")
             .then(function(element) {
                browser.moveMouseTo(element);
             })
+            .click()
             .pressMouseButton()
             .moveMouseTo(200, 0)
             .sleep(500)
