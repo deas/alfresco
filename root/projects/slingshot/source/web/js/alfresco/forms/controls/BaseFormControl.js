@@ -513,12 +513,12 @@ define(["dojo/_base/declare",
                if (typeof callback === "function")
                {
                   this.options = callback(config);
-                  array.forEach(this.options, lang.hitch(this, "processOptionLabel"));
+                  array.forEach(this.options, lang.hitch(this, this.processOptionLabel));
                }
                else if (ObjectTypeUtils.isString(callback) && typeof this[callback] === "function")
                {
                   this.options = this[callback](config);
-                  array.forEach(this.options, lang.hitch(this, "processOptionLabel"));
+                  array.forEach(this.options, lang.hitch(this, this.processOptionLabel));
                }
                else
                {
@@ -531,7 +531,7 @@ define(["dojo/_base/declare",
                if (ObjectTypeUtils.isArray(fixed))
                {
                   this.options = fixed;
-                  array.forEach(this.options, lang.hitch(this, "processOptionLabel"));
+                  array.forEach(this.options, lang.hitch(this, this.processOptionLabel));
                   this.setOptionsValue(this.options);
                }
                else
@@ -550,14 +550,19 @@ define(["dojo/_base/declare",
        * @param {object} option The option configuration
        * @param {number} index The index of the option
        */
-      processOptionLabel: function alfresco_forms_controls_BaseFormControl__processOptionLabels(option, index) {
-         if (option.label)
+      processOptionLabel: function alfresco_forms_controls_BaseFormControl__processOptionLabel(option, index) {
+         // Get the option label and value attributes...
+         // These are the values to look up in each item of the the options data array...
+         // They default to "label" and "value" if not specified
+         var labelAttribute = this.optionsConfig.labelAttribute ? this.optionsConfig.labelAttribute : "label";
+         var valueAttribute = this.optionsConfig.valueAttribute ? this.optionsConfig.valueAttribute : "value";
+         if (option[labelAttribute])
          {
-            option.label = this.message(option.label);
+            option.label = this.message(option[labelAttribute]);
          }
-         else if (option.value)
+         else if (option[valueAttribute])
          {
-            option.label = option.value;
+            option.label = option[valueAttribute];
          }
          else
          {
@@ -739,12 +744,12 @@ define(["dojo/_base/declare",
             if (currentOptions && typeof this.wrappedWidget.removeOption === "function")
             {
                // Remove all the current options...
-               array.forEach(currentOptions, lang.hitch(this, "removeOption"));
+               array.forEach(currentOptions, lang.hitch(this, this.removeOption));
             }
             if (typeof this.wrappedWidget.addOption === "function")
             {
                // Add all the new options...
-               array.forEach(options, lang.hitch(this, "addOption"));
+               array.forEach(options, lang.hitch(this, this.addOption));
             }
          }
          this.setOptionsValue(options);

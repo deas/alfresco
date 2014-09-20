@@ -79,34 +79,64 @@ define(["dojo/_base/declare",
        */
       fixed: null,
 
+      /**
+       * This function is called to retrieve an item from the store. If the store uses fixed options
+       * then these are checked and if an XHR request is required then a deferred item will be
+       * returned pending a callback to the 
+       * [onGetOptions function]{@link module:alfresco/forms/controls/utilities/ServiceStore#onGetOptions}.
+       * 
+       * @instance
+       * @param {string} id The id of the item to retrieve from the store
+       * @param {object} options Options for finding the item
+       * @returns Either the item or a promise of the item
+       */
       get: function alfresco_forms_controls_utilities_ServiceStore__get(id, options){
-         var response = new Deferred();
-         var responseTopic = this.generateUuid();
-         var payload = lang.clone(this.publishPayload);
-         if (payload == null)
+         var response = null;
+         if (this.publishTopic != null)
          {
-            payload = {};
+            // If a publishTopic has been specified then publish on it to request the options
+            // to search through for the item...
+            response = new Deferred();
+            var responseTopic = this.generateUuid();
+            var payload = lang.clone(this.publishPayload);
+            if (payload == null)
+            {
+               payload = {};
+            }
+            payload.alfResponseTopic = responseTopic;
+            var resultsProperty = (this.publishPayload.resultsProperty != null) ? this.publishPayload.resultsProperty : "response";
+            this._getOptionsHandle = [];
+            this._getOptionsHandle.push(this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onGetOptions", response, resultsProperty, id), true));
+            this.alfPublish(this.publishTopic, payload, true);
          }
-         payload.alfResponseTopic = responseTopic;
-         var resultsProperty = (this.publishPayload.resultsProperty != null) ? this.publishPayload.resultsProperty : "response";
-         this._getOptionsHandle = [];
-         this._getOptionsHandle.push(this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onGetOptions", response, resultsProperty, id), true));
-         this.alfPublish(this.publishTopic, payload, true);
+         else if (this.fixed != null)
+         {
+            // ...otherwise search any fixed options that have been supplied...
+            response = this.getOption(lang.clone(this.fixed), id);
+         }
+         else
+         {
+            this.alfLog("warn", "A ServiceStore was set up without 'publishTopic' or 'fixed' attributes to use to retrieve options", this);
+            response = "";
+         }
          return response;
       },
 
+      /**
+       * This is the callback function that is hitched to the request for 
+       * 
+       * @instance
+       * @param {obejct} dfd The deferred object to resolve.
+       * @param {string} resultsProperty A dot-notation address in the payload that should contain the list of options.
+       * @param {string} id The id of the item to retrieve
+       * @param {object} payload The options to use
+       */
       onGetOptions: function alfresco_forms_controls_utilities_ServiceStore__onGetOptions(dfd, resultsProperty, id, payload) {
          this.alfUnsubscribeSaveHandles([this._getOptionsHandle]);
          var results = lang.getObject(resultsProperty, false, payload);
          if (results != null)
          {
-            var target = "";
-            array.forEach(results, function(item, i) {
-               if (item[this.valueAttribute] == id)
-               {
-                  target = item;
-               }
-            }, this);
+            var target = this.getOption(results, id);
             dfd.resolve(target);
          }
          else
@@ -117,7 +147,28 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Iterates over the supplied results array to try and find an item where it's 
+       * valueAttribute matches the supplied id.
        * 
+       * @instance
+       * @param {array} results The results to iterate over
+       * @param {string} id The id of the item to find
+       * @returns {object} The found item (or the empty string if the item cannot be found)
+       */
+      getOption: function alfresco_forms_controls_utilities_ServiceStore__getOption(results, id) {
+         var target = "";
+         array.forEach(results, function(item, i) {
+            if (item[this.valueAttribute] == id)
+            {
+               target = item;
+            }
+         }, this);
+         return target;
+      },
+
+      /**
+       * This function is used to actually query the results (either from a pub/sub request or 
+       * defined in a fixed list of options).
        *
        * @instance
        * @param {array} results The results to query.
@@ -187,7 +238,7 @@ define(["dojo/_base/declare",
       /**
        * Makes a request for data by publishing a request on a specific topic. This returns a 
        * Deferred object which is resolved by the 
-       * [onOptions]{@link module:alfresco/forms/controls/utilities/ServiceStore#onOptions} 
+       * [onQueryOptions]{@link module:alfresco/forms/controls/utilities/ServiceStore#onQueryOptions} 
        * function.
        *
        * @instance
@@ -214,8 +265,8 @@ define(["dojo/_base/declare",
          payload.query = query[(this.queryAttribute != null) ? this.queryAttribute : "name"];
 
          this._optionsHandle = [];
-         this._optionsHandle.push(this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onOptions", response, query, resultsProperty), true));
-         this._optionsHandle.push(this.alfSubscribe(responseTopic, lang.hitch(this, "onOptions", response, query, resultsProperty), true));
+         this._optionsHandle.push(this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onQueryOptions", response, query, resultsProperty), true));
+         this._optionsHandle.push(this.alfSubscribe(responseTopic, lang.hitch(this, "onQueryOptions", response, query, resultsProperty), true));
          this.alfPublish(this.publishTopic, payload, true);
          return response;
       },
@@ -229,7 +280,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} query The query to use for retrieving objects from the store.
        * @param {object} options The optional arguments to apply to the resultset.
-       * @returns {object} The r{@link module:alfresco/forms/controls/utilities/ServiceStore#onOptions} esults of the query, extended with iterative methods.
+       * @returns {object} The r{@link module:alfresco/forms/controls/utilities/ServiceStore#onQueryOptions} esults of the query, extended with iterative methods.
        */
       query: function alfresco_forms_controls_utilities_ServiceStore__query(query, options){
          var response = null;
@@ -259,7 +310,7 @@ define(["dojo/_base/declare",
        * @param {string} resultsProperty A dot-notation address in the payload that should contain the list of options.
        * @param {object} payload The options to use
        */
-      onOptions: function alfresco_forms_controls_utilities_ServiceStore__onOptions(dfd, query, resultsProperty, payload) {
+      onQueryOptions: function alfresco_forms_controls_utilities_ServiceStore__onQueryOptions(dfd, query, resultsProperty, payload) {
          this.alfUnsubscribeSaveHandles([this._optionsHandle]);
          var results = lang.getObject(resultsProperty, false, payload);
          if (results != null)

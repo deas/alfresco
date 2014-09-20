@@ -203,16 +203,19 @@ function getFormDefinition(canEditFilterId) {
                      label: "faceted-search-config.facetQName.label",
                      description: "faceted-search-config.facetQName.description",
                      optionsConfig: {
-                        // fixed: facetetableProperties,
+                        fixed: facetetableProperties,
                         queryAttribute: "displayName",
                         labelAttribute: "displayName",
                         valueAttribute: "longqname",
-                        publishTopic: "ALF_CRUD_GET_ALL",
-                        publishPayload: {
-                           url: "api/facet/facetable-properties?maxItems=0",
-                           resultsProperty: "response.data.properties",
-                           itemsAttribute: "data.properties"
-                        }
+                        // publishTopic: "ALF_CRUD_GET_ALL",
+                        // publishPayload: {
+                        //    url: "api/facet/facetable-properties?maxItems=0&locale=" + locale,
+                        //    resultsProperty: "response.data.properties",
+                        //    itemsAttribute: "data.properties"
+                        // }
+                     },
+                     requirementConfig: {
+                        initialValue: true
                      }
                   }
                },

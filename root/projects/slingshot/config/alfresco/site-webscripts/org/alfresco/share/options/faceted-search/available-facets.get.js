@@ -3,19 +3,18 @@
 // from Solr...
 function getAvailableFacetProperties() {
    var availableFacets = [];
-   var result = remote.call("/api/facet/facetable-properties");
+   var result = remote.call("/api/facet/facetable-properties?maxItems=0&locale=" + locale);
    if (result.status.code == status.STATUS_OK)
    {
       var rawData = JSON.parse(result);
       if (rawData && rawData.data && rawData.data.properties)
       {
+         availableFacets = rawData.data.properties;
          var properties = rawData.data.properties;
          for (var i=0; i<properties.length; i++)
          {
-            availableFacets.push({
-               value: properties[i].longqname,
-               label: properties[i].displayName
-            });
+            properties[i].value = properties[i].longqname;
+            properties[i].label = properties[i].displayName;
          }
       }
    }
