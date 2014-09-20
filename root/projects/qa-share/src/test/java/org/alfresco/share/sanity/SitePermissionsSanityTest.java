@@ -6,7 +6,6 @@ import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.*;
 import org.alfresco.po.share.site.blog.BlogPage;
-import org.alfresco.po.share.site.blog.ConfigureBlogPage;
 import org.alfresco.po.share.site.blog.PostViewPage;
 import org.alfresco.po.share.site.calendar.CalendarPage;
 import org.alfresco.po.share.site.calendar.InformationEventForm;
@@ -273,8 +272,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         assertTrue(documentDetailsPage.isDocumentActionPresent(START_WORKFLOW), "Start Workflow action isn't available");
         assertTrue(documentDetailsPage.isDocumentActionPresent(MANAGE_PERMISSION_DOC), "Manage Permissions action isn't available");
         assertTrue(documentDetailsPage.isDocumentActionPresent(MANAGE_ASPECTS), "Manage aspects action isn't available");
-        assertTrue(documentDetailsPage.isDocumentActionPresent(CHNAGE_TYPE), "Change type action isn't available");
-        assertTrue(documentDetailsPage.isDocumentActionPresent(PUBLISH_ACTION), "Publish action isn't available");
+        assertTrue(documentDetailsPage.isDocumentActionPresent(CHNAGE_TYPE), "Change type action isn't available");       
 
         //Verify icons near document section
         assertTrue(documentDetailsPage.isEditPropertiesIconDisplayed(), "Edit properties icon isn't displayed");
@@ -359,10 +357,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
         String url = "alfrescoqacloud.wordpress.com";
         String blogUsername = "alfrescoqaauto";
         String blogPassword = "parkh0use";
-
-        //Configure External Blog
-        blogPage.configureExternalBlog(ConfigureBlogPage.TypeOptions.WORDPRESS, testName, testName, url, blogUsername, blogPassword);
-
+      
+        // Removed Configure blog page since ACE-2094 and need to update the test
         //Create a Blog post
         blogPage.createPostInternally(testName, testName).render();
 
@@ -530,7 +526,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         assertTrue(documentDetailsPage.isDocumentActionPresent(MANAGE_PERMISSION_DOC), "Manage Permissions action isn't available");
         assertTrue(documentDetailsPage.isDocumentActionPresent(MANAGE_ASPECTS), "Manage aspects action isn't available");
         assertTrue(documentDetailsPage.isDocumentActionPresent(CHNAGE_TYPE), "Change type action isn't available");
-        assertTrue(documentDetailsPage.isDocumentActionPresent(PUBLISH_ACTION), "Publish action isn't available");
+        
 
         //Verify icons near document section
         assertTrue(documentDetailsPage.isEditPropertiesIconDisplayed(), "Edit properties icon isn't displayed");
@@ -616,8 +612,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
         String blogUsername = "alfrescoqaauto";
         String blogPassword = "parkh0use";
 
-        //Configure External Blog
-        blogPage.configureExternalBlog(ConfigureBlogPage.TypeOptions.WORDPRESS, testName, testName, url, blogUsername, blogPassword);
+        
+        // Removed Configure blog page since ACE-2094 and need to update the test
 
         //Create a Blog post
         blogPage.createPostInternally(testName, testName).render();
@@ -790,8 +786,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         assertTrue(documentDetailsPage.isDocumentActionPresent(MANAGE_PERMISSION_DOC), "Manage Permissions action isn't available");
         assertTrue(documentDetailsPage.isDocumentActionPresent(MANAGE_ASPECTS), "Manage aspects action isn't available");
         assertTrue(documentDetailsPage.isDocumentActionPresent(CHNAGE_TYPE), "Change type action isn't available");
-        assertTrue(documentDetailsPage.isDocumentActionPresent(PUBLISH_ACTION), "Publish action isn't available");
-
+        
         //Verify icons near document section
         assertTrue(documentDetailsPage.isEditPropertiesIconDisplayed(), "Edit properties icon isn't displayed");
         assertTrue(documentDetailsPage.isTagIconDisplayed(), "Edit tags icon isn't displayed");
@@ -873,7 +868,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         BlogPage blogPage = dashBoard.getSiteNav().selectBlogPage().render();
 
         //Verify Configure External Blog is disabled
-        assertFalse(blogPage.isConfigureBlogDisplayed(), "Configure Blog button is enabled");
+        // Removed Configure blog page since ACE-2094 and need to update the test
 
         //Create a Blog post
         blogPage.createPostInternally(testName, testName).render();
@@ -1023,8 +1018,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         assertTrue(detailsPage.isDocumentActionPresent(DOWNLOAD_DOCUMENT), "Download action isn't available");
         assertTrue(detailsPage.isDocumentActionPresent(VIEW_IN_EXLPORER), "View in Browser isn't available");
         assertTrue(detailsPage.isDocumentActionPresent(START_WORKFLOW), "Start Workflow action isn't available");
-        assertTrue(detailsPage.isDocumentActionPresent(PUBLISH_ACTION), "Publish action isn't available");
-
+       
         //Verify icons near document section
         assertTrue(detailsPage.isStartWorkflowIconDisplayed(), "Start Workflow icon isn't visible");
 
@@ -1086,7 +1080,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
 
         //Verify Configure External Blog is disabled
         BlogPage blogPage = dashBoard.getSiteNav().selectBlogPage().render();
-        assertFalse(blogPage.isConfigureBlogDisplayed(), "Configure External Blog button is available");
+        
+        // Removed Configure blog page since ACE-2094 and need to update the test accordingly
 
         //It's not possible to create a post
         assertFalse(blogPage.isNewPostEnabled(), "New Post button is enabled");
