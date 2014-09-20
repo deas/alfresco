@@ -3674,80 +3674,131 @@ function getForm() {
             config: {
                fieldId: "showFormButtons",
                name: "defaultConfig.displayButtons",
-               label: "Display Buttons",
+               label: "Display Buttons?",
+               description: "Controls whether or not any buttons are displayed in the form.",
                value: true
             }
          },
          {
-            name: "alfresco/forms/controls/DojoCheckBox",
+            name: "alfresco/forms/ControlRow",
             config: {
-               fieldId: "showOkButton",
-               name: "defaultConfig.showOkButton",
-               label: "Display OK Button",
-               value: true,
-               postWhenHiddenOrDisabled: false,
-               noValueUpdateWhenHiddenOrDisabled: true,
-               visibilityConfig: {
-                  initialValue: true,
-                  rules: [
-                     {
-                        targetId: "showFormButtons",
-                        is: [true]
+               widgets: [
+                  {
+                     name: "alfresco/forms/controls/DojoCheckBox",
+                     config: {
+                        fieldId: "showOkButton",
+                        name: "defaultConfig.showOkButton",
+                        label: "Display Confirmation Button?",
+                        description: "Controls whether or not the 'confirmation' button is displayed for the form or not",
+                        value: false,
+                        postWhenHiddenOrDisabled: false,
+                        noValueUpdateWhenHiddenOrDisabled: true,
+                        visibilityConfig: {
+                           initialValue: true,
+                           rules: [
+                              {
+                                 targetId: "showFormButtons",
+                                 is: [true]
+                              }
+                           ]
+                        }
                      }
-                  ]
-               }
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        name: "defaultConfig.okButtonLabel",
+                        label: "Confirmation Button Label",
+                        description: "The label to show on the 'confirmation' button",
+                        value: "OK",
+                        postWhenHiddenOrDisabled: false,
+                        noValueUpdateWhenHiddenOrDisabled: true,
+                        visibilityConfig: {
+                           initialValue: true,
+                           rules: [
+                              {
+                                 targetId: "showFormButtons",
+                                 is: [true]
+                              },
+                              {
+                                 targetId: "showOkButton",
+                                 is: [true]
+                              }
+                           ]
+                        },
+                        requirementConfig: {
+                           initialValue: true,
+                           rules: [
+                              {
+                                 targetId: "showFormButtons",
+                                 is: [true]
+                              }
+                           ]
+                        }
+                     }
+                  }
+               ]
             }
          },
          {
-            name: "alfresco/forms/controls/DojoCheckBox",
+            name: "alfresco/forms/ControlRow",
             config: {
-               fieldId: "showCancelButton",
-               name: "defaultConfig.showCancelButton",
-               label: "Display Cancel Button",
-               value: true,
-               postWhenHiddenOrDisabled: false,
-               noValueUpdateWhenHiddenOrDisabled: true,
-               visibilityConfig: {
-                  initialValue: true,
-                  rules: [
-                     {
-                        targetId: "showFormButtons",
-                        is: [true]
+               widgets: [
+                  {
+                     name: "alfresco/forms/controls/DojoCheckBox",
+                     config: {
+                        fieldId: "showCancelButton",
+                        name: "defaultConfig.showCancelButton",
+                        label: "Display Cancel Button",
+                        description: "Controls whether or not the 'cancellation' button is displayed for the form or not",
+                        value: false,
+                        postWhenHiddenOrDisabled: false,
+                        noValueUpdateWhenHiddenOrDisabled: true,
+                        visibilityConfig: {
+                           initialValue: true,
+                           rules: [
+                              {
+                                 targetId: "showFormButtons",
+                                 is: [true]
+                              }
+                           ]
+                        }
                      }
-                  ]
-               }
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               name: "defaultConfig.okButtonLabel",
-               label: "Confirmation Button Label",
-               value: "OK",
-               postWhenHiddenOrDisabled: false,
-               noValueUpdateWhenHiddenOrDisabled: true,
-               visibilityConfig: {
-                  initialValue: true,
-                  rules: [
-                     {
-                        targetId: "showFormButtons",
-                        is: [true]
-                     },
-                     {
-                        targetId: "showOkButton",
-                        is: [true]
+                  },
+                  {
+                     name: "alfresco/forms/controls/DojoValidationTextBox",
+                     config: {
+                        name: "defaultConfig.cancelButtonLabel",
+                        label: "Cancellation Button Label",
+                        description: "The label to show on the 'cancellation' button",
+                        value: "Cancel",
+                        postWhenHiddenOrDisabled: false,
+                        noValueUpdateWhenHiddenOrDisabled: true,
+                        visibilityConfig: {
+                           initialValue: true,
+                           rules: [
+                              {
+                                 targetId: "showFormButtons",
+                                 is: [true]
+                              },
+                              {
+                                 targetId: "showCancelButton",
+                                 is: [true]
+                              }
+                           ]
+                        },
+                        requirementConfig: {
+                           initialValue: true,
+                           rules: [
+                              {
+                                 targetId: "showFormButtons",
+                                 is: [true]
+                              }
+                           ]
+                        }
                      }
-                  ]
-               },
-               requirementConfig: {
-                  initialValue: true,
-                  rules: [
-                     {
-                        targetId: "showFormButtons",
-                        is: [true]
-                     }
-                  ]
-               }
+                  }
+               ]
             }
          },
          {
@@ -3755,6 +3806,7 @@ function getForm() {
             config: {
                name: "defaultConfig.okButtonPublishTopic",
                label: "Confirmation Button Topic",
+               description: "This is the topic to publish when the 'confirmation' button is pressed. The value of the form will be published as the payload",
                value: "",
                postWhenHiddenOrDisabled: false,
                noValueUpdateWhenHiddenOrDisabled: true,
@@ -3790,17 +3842,8 @@ function getForm() {
             config: {
                name: "defaultConfig.okButtonPublishGlobal",
                label: "Global Publish",
-               value: true
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               name: "defaultConfig.cancelButtonLabel",
-               label: "Cancellation Button Label",
-               value: "Cancel",
-               postWhenHiddenOrDisabled: false,
-               noValueUpdateWhenHiddenOrDisabled: true,
+               description: "Controls whether the topic is published globally or not. Most services subscribe to globally published topics",
+               value: true,
                visibilityConfig: {
                   initialValue: true,
                   rules: [
@@ -3809,16 +3852,7 @@ function getForm() {
                         is: [true]
                      },
                      {
-                        targetId: "showCancelButton",
-                        is: [true]
-                     }
-                  ]
-               },
-               requirementConfig: {
-                  initialValue: true,
-                  rules: [
-                     {
-                        targetId: "showFormButtons",
+                        targetId: "showOkButton",
                         is: [true]
                      }
                   ]
@@ -4610,16 +4644,7 @@ function getRadioButtonsField() {
             ]
          }
       },
-      widgetsForConfig: getCommonFormControlConfigWidgets().concat([
-         {
-            name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
-            config: {
-               name: "defaultConfig.optionsConfig.fixed",
-               label: "Options",
-               description: "Create the list of radio buttons to display"
-            }
-         }
-      ]),
+      widgetsForConfig: getCommonFormControlConfigWidgets().concat(getCommonOptionsWidgetsForConfig()),
       previewWidget: false,
       widgetsForDisplay: [
          {
