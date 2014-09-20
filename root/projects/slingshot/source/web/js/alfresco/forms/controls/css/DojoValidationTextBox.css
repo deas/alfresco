@@ -6,16 +6,6 @@
    float: left;
 }
 
-.alfresco-forms-controls-DojoValidationTextBox div.dijitInputField span.alf-icon.alf-search-icon {
-   background-image: url("./images/20x20-search-icon.png");
-   background-position: 3px 1px;
-   height: 20px;
-}
-
-.alfresco-forms-controls-DojoValidationTextBox span.alf-icon + input.dijitInputInner {
-   width: calc(100% - 30px) !important;
-}
-
 .alfresco-forms-controls-DojoValidationTextBox div.control div.dijitValidationTextBox {
    border-color: @standard-border-color;
 }
@@ -28,8 +18,4 @@
 
 .alfresco-forms-controls-DojoValidationTextBox div.control div.dijitValidationTextBox.dijitTextBoxFocused {
    border-color: @focused-border-color;
-}
-
-.alfresco-forms-controls-DojoValidationTextBox.long div.control div.dijitValidationTextBox {
-   width: 440px;
 }

@@ -28,13 +28,23 @@
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/BaseFormControl",
+        "alfresco/forms/controls/utilities/IconMixin",
         "dojo/_base/declare",
         "dijit/form/ComboBox",
         "alfresco/forms/controls/utilities/ServiceStore",
         "dojo/_base/lang"], 
-        function(BaseFormControl, declare, ComboBox, ServiceStore, lang) {
+        function(BaseFormControl, IconMixin, declare, ComboBox, ServiceStore, lang) {
 
-   return declare([BaseFormControl], {
+   return declare([BaseFormControl, IconMixin], {
+
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/ComboBox.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/ComboBox.css"}],
 
       /**
        * @instance
@@ -72,6 +82,7 @@ define(["alfresco/forms/controls/BaseFormControl",
             searchAttr: queryAttribute,
             queryExpr: "${0}"
          });
+         this.addIcon(comboBox);
          return comboBox;
       },
 

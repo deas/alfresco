@@ -90,3 +90,7 @@
 .unmargined .alfresco-forms-controls-BaseFormControl > .clear-both {
    height: 0;
 }
+
+.alfresco-forms-controls-BaseFormControl.long div.control > div {
+   width: 500px;
+}
