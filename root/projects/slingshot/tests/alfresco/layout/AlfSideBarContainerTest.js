@@ -45,7 +45,7 @@ define(["intern!object",
                },
                function(err) {
                   //browser.takeScreenshot().then(function(data) {fs.writeFileSync("AlfSideBarContainer.png", data, 'base64');}).end();
-                  assert(false, "Test #1a - User preferences were not requested")
+                  assert(false, "Test #1a - User preferences were not requested");
                })
             .end()
 
@@ -56,7 +56,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Looking for resize handle...");
                },
                function(err) {
-                  assert(false, "Test #1b - Couldn't find resize handle")
+                  assert(false, "Test #1b - Couldn't find resize handle");
                })
             .end()
 
@@ -67,7 +67,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking for logo in sidebar...");
                },
                function(err) {
-                  assert(false, "Test #1c - Sidebar logo wasn't placed correctly")
+                  assert(false, "Test #1c - Sidebar logo wasn't placed correctly");
                })
             .end()
 
@@ -77,7 +77,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking for logo in main panel...");
                },
                function() {
-                  assert(false, "Test #1d - Main logo wasn't placed correctly")
+                  assert(false, "Test #1d - Main logo wasn't placed correctly");
                })
             .end()
 
@@ -158,7 +158,7 @@ define(["intern!object",
                browser.moveMouseTo(element);
             })
             .pressMouseButton()
-            .moveMouseTo(null, 200, 0)
+            .moveMouseTo(200, 0)
             .releaseMouseButton()
             .end()
 
