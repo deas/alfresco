@@ -29,10 +29,10 @@ define(["intern!object",
         function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
-      name: 'ComboBox Test',
-      'Check Setup': function () {
+      name: 'ComboBoxTest',
+      'Check setup': function () {
 
-         var testname = "Test ComboBox Setup";
+         var testname = "ComboBoxTest - Check setup";
          return TestCommon.loadTestWebScript(this.remote, "/ComboBox", testname)
 
          // Open the tags combo and count the available options...
@@ -61,9 +61,9 @@ define(["intern!object",
 
       },
 
-      'Handles Input': function () {
+      'Handles input': function () {
 
-         var testname = "Handle Input Test";
+         var testname = "ComboBoxTest - Handles input";
          var browser = this.remote;
          return browser
 
@@ -106,6 +106,40 @@ define(["intern!object",
          .findAllByCssSelector(TestCommon.pubDataCssSelector("POST_FORM", "tag", "tag1"))
             .then(function(elements) {
                assert(elements.length === 1, "Test #1c - The tag value was not auto-completed and posted");
+            })
+            .end()
+
+         .then(function() {
+            TestCommon.postCoverageResults(browser);
+         });
+
+      },
+
+      'Down arrow test': function () {
+
+         var testname = "ComboBoxTest - Down arrow test";
+         var browser = this.remote;
+         return TestCommon.loadTestWebScript(this.remote, "/ComboBox", testname)
+
+         // Slightly convoluted way to leave a result stem in the #TAGS_CONTROL
+         .pressKeys(keys.TAB)
+         .pressKeys("ta")
+         .sleep(500)
+         .pressKeys(keys.BACKSPACE) // Because the combobox gives a longer suggestion
+         .pressKeys(keys.BACKSPACE) // Because the combobox gives a longer suggestion
+         .sleep(500)
+         .pressKeys(keys.TAB)
+         .sleep(500)
+         .pressKeys([keys.SHIFT, keys.TAB])
+         .pressKeys(keys.ARROW_DOWN)
+         .sleep(500)
+            .end()
+
+         // Test that clicking the down arrow gives results based on the stem left above
+         .findAllByCssSelector("#TAGS_CONTROL_popup .dijitMenuItem[item]")
+            .then(function(elements) {
+               TestCommon.log(testname, "Checking tag options are shown...");
+               assert(elements.length == 3, "Test 1a - Four tag options were expected, found: " + elements.length);
             })
             .end()
 
