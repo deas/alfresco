@@ -339,19 +339,22 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
             }
         }
 
-        index = propertyName.indexOf('_');
-        if (index != -1)
+        if (!EXPOSED_FIELDS.contains(propertyName))
         {
-            // Try as a property, if invalid pass through
-            QName fullQName = QName.createQName(propertyName.substring(0, index), propertyName.substring(index + 1), namespacePrefixResolver);
-            QName propertyQName = stripSuffixes(fullQName);
-            if (dictionaryService.getProperty(propertyQName) != null)
+            index = propertyName.indexOf('_');
+            if (index != -1)
             {
-                return QueryConstants.PROPERTY_FIELD_PREFIX + fullQName.toString();
-            }
-            else
-            {
-                throw new FTSQueryException("Unknown property: " + fullQName.toString());
+                // Try as a property, if invalid pass through
+                QName fullQName = QName.createQName(propertyName.substring(0, index), propertyName.substring(index + 1), namespacePrefixResolver);
+                QName propertyQName = stripSuffixes(fullQName);
+                if (dictionaryService.getProperty(propertyQName) != null)
+                {
+                    return QueryConstants.PROPERTY_FIELD_PREFIX + fullQName.toString();
+                }
+                else
+                {
+                    throw new FTSQueryException("Unknown property: " + fullQName.toString());
+                }
             }
         }
 

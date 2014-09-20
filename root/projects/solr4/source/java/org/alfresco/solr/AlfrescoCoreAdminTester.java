@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.search.impl.QueryParserUtils;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.Period;
@@ -7043,13 +7044,13 @@ public class AlfrescoCoreAdminTester
             testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":" + id, 1, null, null, null,
                         null, null, (String) null);
         }
-        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_NODE, 
+        testQueryByHandler(report, core, "/afts", SearchLanguageConversion.escapeLuceneQuery(FIELD_DOC_TYPE) + ":" + SolrInformationServer.DOC_TYPE_NODE, 
                     16, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_ACL, 
+        testQueryByHandler(report, core, "/afts", SearchLanguageConversion.escapeLuceneQuery(FIELD_DOC_TYPE) + ":" + SolrInformationServer.DOC_TYPE_ACL, 
                     1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_ACL_TX, 
+        testQueryByHandler(report, core, "/afts", SearchLanguageConversion.escapeLuceneQuery(FIELD_DOC_TYPE) + ":" + SolrInformationServer.DOC_TYPE_ACL_TX, 
                     1, null, null, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", FIELD_DOC_TYPE + ":" + SolrInformationServer.DOC_TYPE_TX,
+        testQueryByHandler(report, core, "/afts", SearchLanguageConversion.escapeLuceneQuery(FIELD_DOC_TYPE) + ":" + SolrInformationServer.DOC_TYPE_TX,
                     1, null, null, null, null, null, (String) null);
 
         // LID is used internally via ID if a node ref is provided
