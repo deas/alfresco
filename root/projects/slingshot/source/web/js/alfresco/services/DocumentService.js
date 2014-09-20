@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "alfresco/core/PathUtils",
         "alfresco/core/NodeUtils",
         "dojo/_base/lang",
-        "dojo/dom-construct"],
-        function(declare, AlfCore, CoreXhr, AlfConstants, PathUtils, NodeUtils, lang, domConstruct) {
+        "dojo/dom-construct",
+        "dojo/_base/array"],
+        function(declare, AlfCore, CoreXhr, AlfConstants, PathUtils, NodeUtils, lang, domConstruct, array) {
 
    return declare([AlfCore, CoreXhr, PathUtils], {
 
@@ -52,8 +53,19 @@ define(["dojo/_base/declare",
        * @instance
        * @type {String}
        * @default [AlfConstants.PROXY_URI + "api/internal/downloads"]
+       * @todo should this be parameterised?
        */
       downloadAPI: AlfConstants.PROXY_URI + "api/internal/downloads",
+
+      /**
+       * The URL used to cancel document editing
+       *
+       * @instance
+       * @type {String}
+       * @default [AlfConstants.PROXY_URI + "cancel-checkout/node/"]
+       * @todo should this be parameterised?
+       */
+      cancelEditAPI: AlfConstants.PROXY_URI + "slingshot/doclib/action/cancel-checkout/node/",
 
       /**
        * How many times should we retry a failed archive progress request?
@@ -142,6 +154,24 @@ define(["dojo/_base/declare",
       downloadNodeTopic: "ALF_DOWNLOAD_FILE",
 
       /**
+       * Event topic to trigger the cancel the editing of a checkout document
+       *
+       * @instance
+       * @type {String}
+       * @default "ALF_DOC_CANCEL_EDITING"
+       */
+      cancelEditTopic: "ALF_DOC_CANCEL_EDITING",
+
+      /**
+       * Event topic published when the cancel edit action has completed.
+       *
+       * @instance
+       * @type {String}
+       * @default "ALF_DOC_CANCEL_EDIT_SUCCESS"
+       */
+      cancelEditSuccessTopic: "ALF_DOC_CANCEL_EDIT_SUCCESS",
+
+      /**
        *
        * @instance
        * @param {array} args Constructor arguments
@@ -159,6 +189,8 @@ define(["dojo/_base/declare",
 
          //Bind to download topics:
          this.alfSubscribe(this.downloadNodeTopic, lang.hitch(this, this.onDownloadFile));
+
+         this.alfSubscribe(this.cancelEditTopic, lang.hitch(this, this.onCancelEdit));
 
       },
 
@@ -318,8 +350,7 @@ define(["dojo/_base/declare",
 
       // Archive and Download:
       // Init Archive:
-      onRequestArchive: function alfresco_services_DocumentService__onRequestArchive(payload)
-      {
+      onRequestArchive: function alfresco_services_DocumentService__onRequestArchive(payload) {
          var nodes = payload.nodes,
             responseTopic = this.generateUuid();
 
@@ -347,8 +378,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param payload
        */
-      onRequestArchiveSuccess: function alfresco_services_DocumentService__onRequestArchiveSuccess(payload)
-      {
+      onRequestArchiveSuccess: function alfresco_services_DocumentService__onRequestArchiveSuccess(payload) {
          this.alfLog("info", "Archive successfully requested");
 
          // Clean up listeners
@@ -381,8 +411,7 @@ define(["dojo/_base/declare",
        *
        * @param payload
        */
-      onRequestArchiveFailure: function alfresco_services_DocumentService__onRequestArchiveFailure(payload)
-      {
+      onRequestArchiveFailure: function alfresco_services_DocumentService__onRequestArchiveFailure(payload) {
          this.alfLog("error", "Unable to request archive");
       },
 
@@ -392,8 +421,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param payload
        */
-      onRequestArchiveProgress: function alfresco_services_DocumentService__onRequestArchiveProgress(payload)
-      {
+      onRequestArchiveProgress: function alfresco_services_DocumentService__onRequestArchiveProgress(payload) {
 
          // Payload varies depending on
          var progressRequestPayload = (payload.requestConfig) ? lang.getObject("requestConfig.progressRequestPayload", false, payload) : payload;
@@ -426,8 +454,7 @@ define(["dojo/_base/declare",
          });
       },
 
-      onRequestDelayedArchiveProgress: function alfresco_services_DocumentService__onRequestDelayedArchiveProgress(payload)
-      {
+      onRequestDelayedArchiveProgress: function alfresco_services_DocumentService__onRequestDelayedArchiveProgress(payload) {
          this.alfPublishDelayed(this.requestArchiveProgressTopic, payload, this.archiveProgressUpdateInterval);
       },
 
@@ -438,8 +465,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param payload
        */
-      onActionRequestArchiveProgressSuccess: function alfresco_services_DocumentService__onActionRequestArchiveProgressSuccess(payload)
-      {
+      onActionRequestArchiveProgressSuccess: function alfresco_services_DocumentService__onActionRequestArchiveProgressSuccess(payload) {
          // Remove subscriptionListeners
          if (payload.subscriptionHandles)
          {
@@ -499,8 +525,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param payload
        */
-      onActionRequestArchiveProgressFailure: function alfresco_services_DocumentService__onActionRequestArchiveProgressFailure(payload)
-      {
+      onActionRequestArchiveProgressFailure: function alfresco_services_DocumentService__onActionRequestArchiveProgressFailure(payload) {
          this.alfLog("warn", "Error getting archive progress: " + payload);
 
          // Remove subscriptionListeners
@@ -529,8 +554,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param payload
        */
-      onDeleteDownloadArchive: function alfresco_services_DocumentService__onDeleteDownloadArchive(payload)
-      {
+      onDeleteDownloadArchive: function alfresco_services_DocumentService__onDeleteDownloadArchive(payload) {
          // TODO: Error handling? Handle Success?
          this.serviceXhr({
             url: this.downloadAPI + "/" + payload.nodeRef.replace("://", "/"),
@@ -538,22 +562,19 @@ define(["dojo/_base/declare",
          });
       },
 
-      //  Download file:
-      //TODO: Does this really need to be this complicated? (Code is from previous implementation)
-      onDownloadFile: function alfresco_services_DocumentService__onDownloadFile(payload)
-      {
-         var nodeRef = payload.nodeRef;
-         if (!nodeRef)
-         {
-            this.alfLog("error", "NodeRef missing - unable to download.");
-            return;
-         }
+      /**
+       * Called to trigger an async file download.
+       *
+       * @param payload Payload supplied to the event
+       */
+      onDownloadFile: function alfresco_services_DocumentService__onDownloadFile(payload) {
+         var nodeRefObj = NodeUtils.processNodeRef(payload.nodeRef);
 
          var fileName = payload.fileName || this.message("services.DocumentService.archiveName") + ".zip";
 
          var form = domConstruct.create("form");
          form.method = "GET";
-         form.action = AlfConstants.PROXY_URI + "api/node/content/" + nodeRef.replace("://", "/") + "/" + encodeURIComponent(fileName);
+         form.action = AlfConstants.PROXY_URI + "api/node/content/" + nodeRefObj.uri + "/" + encodeURIComponent(fileName);
          domConstruct.place(form, document.body);
 
          var iframe = domConstruct.create("iframe");
@@ -567,6 +588,53 @@ define(["dojo/_base/declare",
 
          form.target = iframe.name;
          form.submit();
+      },
+
+      /**
+       * Called to cancel the editing of a checked out file.
+       *
+       * @param {object} payload The payload supplied when the event was triggered.
+       */
+      onCancelEdit: function alfresco_services_DocumentService__onCancelEdit(payload) {
+
+         if (!payload.documents) {
+            this.alfLog("error", "Uable to cancel editing: documents missing from payload.")
+         }
+
+         var nodes = NodeUtils.nodeRefArray(payload.documents);
+
+         array.forEach(nodes, lang.hitch(this, this.onCancelEditNode));
+
+      },
+
+      /**
+       * Call the repo API to cancel the editing.
+       *
+       * @param {String} nodeRef nodeRef to cancel the editing on.
+       */
+      onCancelEditNode: function alfresco_services_DocumentService_onCancelEditNode(nodeRef) {
+
+         var nodeRefObj = NodeUtils.processNodeRef(nodeRef);
+
+         var responseTopic = this.generateUuid();
+         var subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onCancelEditNodeSuccess));
+
+         this.serviceXhr({
+            alfTopic: responseTopic,
+            subscriptionHandles: subscriptionHandle,
+            url: this.cancelEditAPI + nodeRefObj.uri,
+            method: "POST",
+            data: {}
+         });
+      },
+
+      /**
+       * Triggered when the cancel edit call succeeds.
+       *
+       * @param payload The payload from the event trigger
+       */
+      onCancelEditNodeSuccess: function alfresco_services_DocumentService_onCancelEditNodeSuccess(payload) {
+         this.alfPublish(this.cancelEditSuccessTopic, payload);
       }
    });
 });
