@@ -38,7 +38,6 @@ define(["intern!object",
          // Open the tags combo and count the available options...
          .findByCssSelector("#TAGS .dijitArrowButtonInner")
             .click()
-            .sleep(10000)
             .end()
 
          .findAllByCssSelector("#TAGS_CONTROL_popup .dijitMenuItem[item]")
@@ -48,6 +47,12 @@ define(["intern!object",
             })
             .end()
 
+         // close the menu by clicking elsewhere
+         .findByCssSelector("#TAGS label.label")
+            .click()
+            .end()
+
+         // Open the properties combo and count the available options...
          .findByCssSelector("#PROPERTIES .dijitArrowButtonInner")
             .click()
             .end()
