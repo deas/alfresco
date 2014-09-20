@@ -177,6 +177,8 @@ public interface QueryConstants
     public static final String FIELD_NPATH = "NPATH";
     
     public static final String FIELD_PNAME = "PNAME";
+    
+    public static final String FIELD_SUGGEST = "suggest";
    
     public static final String FIELD_VERSION = "_version_";
 }
