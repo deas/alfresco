@@ -1,7 +1,7 @@
 #!/bin/sh
 
-SELENIUM_VERSION="selenium-server-standalone-2.42.2.jar"
-SELENIUM_VERSION_NUMBER="2.42"
+SELENIUM_VERSION="selenium-server-standalone-2.43.0.jar"
+SELENIUM_VERSION_NUMBER="2.43"
 PHANTOMJS_VERSION="phantomjs-1.9.7-linux-x86_64" #don't include .tar.bz2 ext.
 CHROMEDRIVER_VERSION="2.10"
 
