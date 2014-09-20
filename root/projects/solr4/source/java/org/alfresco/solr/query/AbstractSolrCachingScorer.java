@@ -42,7 +42,6 @@ public abstract class AbstractSolrCachingScorer extends Scorer
 
     FixedBitSet bitSet;
 
-    SolrIndexSearcher searcher;
     AtomicReaderContext context;
     
     AbstractSolrCachingScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
@@ -62,7 +61,6 @@ public abstract class AbstractSolrCachingScorer extends Scorer
             }
         }
         bitSet = matches.getBits();
-        this.searcher = searcher;
         this.context = context;
         doc = getBase() - 1;
     }
@@ -73,7 +71,7 @@ public abstract class AbstractSolrCachingScorer extends Scorer
         // TODO: this is breaking because sometimes a BitDocSet is passed in to the constructor
         // that is smaller than searcher.maxDoc()
         doc = bitSet.nextSetBit(doc+1);
-        return (doc != -1)  && (doc < (getBase()  + searcher.maxDoc()));
+        return (doc != -1)  && (doc < (getBase()  + context.reader().maxDoc()));
     }
     
     private int getBase()
