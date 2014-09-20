@@ -4,7 +4,7 @@
    <title-id>theme.default</title-id>
    <css-tokens>
 
-            <less-variables>
+      <less-variables>
          @docListBorderColour: #e5e5e5;
          @docListHeaderBgColour: #f5f5f5;
          @docListOddRowColour: #fff;
@@ -22,6 +22,8 @@
          @standard-column-width: 15px;
          // This is used when the columns need some breathing space.
          @standard-column-spacing: 5px;
+         // Used for e.g. the facets on the search page.
+         @sidebar-component-width: 320px;
 
          // Font Colours
          @general-font-color: #333;
@@ -49,28 +51,28 @@
 
          // This is the standard font style used throughout the application for regular text
          .standard-font {
-            font-family: @standard-font;
-            font-weight: normal;
-            color: @general-font-color;
+         font-family: @standard-font;
+         font-weight: normal;
+         color: @general-font-color;
          }
 
          // This is the bold font style - bold, but not necessarily emphasized (see below)
          .bold-font {
-            font-family: @bold-font;
-            font-weight: normal;
-            color: @general-font-color;
+         font-family: @bold-font;
+         font-weight: normal;
+         color: @general-font-color;
          }
 
          // Emphazied fonts are used to draw the user focus so should be bolder, darker and larger than normal
          .emphasized-font {
-            font-family: @bold-font;
-            color: @emphasized-font-color;
+         font-family: @bold-font;
+         color: @emphasized-font-color;
          }
 
          // De-emphasized fonts are intended to be less intrusive so should be lighter in colour
          .de-emphasized-font {
-            font-family: @standard-font;
-            color: @de-emphasized-font-color;
+         font-family: @standard-font;
+         color: @de-emphasized-font-color;
          }
 
          // Borders...
@@ -102,7 +104,7 @@
          // Shadows
          @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
          @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
-         
+
          // Generic colours for displaying collections of items
          @collectionColour1: #66ccff;
          @collectionColour2: #fff24d;

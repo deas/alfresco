@@ -1,46 +1,47 @@
-.alfresco-layout-Twister:first-child {
-  border-radius: 5px 5px 0 0;
-}
-
-.alfresco-layout-Twister:last-child {
-  border-radius: 0 0 5px 5px;
-  border-bottom: @standard-border;
-  margin-bottom: @standard-line-height;
+/* Apply this class to the parent of the twisters */
+.alfresco-Twister-container {
+    width: @sidebar-component-width;
+    border: @standard-border;
+    border-radius: @standard-line-height / 2;
+    margin-bottom: @standard-line-height * 2;
 }
 
 .alfresco-layout-Twister {
-   border: @standard-border;
-   width: 320px;
-   border-bottom: none;
-   display: block;
-   padding-top: @standard-line-height;
-}
+    border-top: @standard-border;
+    width: @sidebar-component-width;
+    display: block;
+    padding-top: @standard-line-height;
 
-.alfresco-layout-Twister.hidden {
-   display: none;
-}
+    &:first-child {
+        border: none;
+    }
 
-.alfresco-layout-Twister > div.alfresco-twister {
-   padding-left: 20px !important; /* Important is only required to override base.css use of important */
-   background-position: 0 3px !important;
-}
+    &.hidden {
+        display: none;
+    }
 
-.alfresco-layout-Twister > div.alfresco-twister-closed {
-   background-position: 0 3px !important;
-}
+    > div.alfresco-twister {
+        padding-left: 20px !important; /* Important is only required to override base.css use of important */
+        background-position: 0 3px !important;
+    }
 
-.alfresco-layout-Twister .label,
-.alfresco-layout-Twister .label h3 {
-   font-family: @bold-font;
-   color: @general-font-color;
-   font-size: @normal-font-size;
-   font-weight: normal;
-}
-.alfresco-layout-Twister .label {
-   margin-left: @standard-column-width;
-   padding-bottom: @standard-line-height - 2;
-}
+    > div.alfresco-twister-closed {
+        background-position: 0 3px !important;
+    }
 
-.alfresco-layout-Twister .content {
-  margin-left: 40px;
+    .label,
+    .label h3 {
+        font-family: @bold-font;
+        color: @general-font-color;
+        font-size: @normal-font-size;
+        font-weight: normal;
+    }
+    .label {
+        margin-left: @standard-column-width;
+        padding-bottom: @standard-line-height - 2;
+    }
+
+    .content {
+        margin-left: (@standard-column-width + @standard-column-spacing) * 2;
+    }
 }

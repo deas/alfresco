@@ -547,7 +547,8 @@ var main = {
                      widthPx: 340,
                      config: {
                         visibilityConfig: hideOnZeroResultsConfig,
-                        widgets: facets
+                        widgets: facets,
+                        additionalCssClasses: "alfresco-Twister-container"
                      }
                   },
                   {
