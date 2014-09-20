@@ -242,6 +242,10 @@ define(["dojo/_base/declare",
          else
          {
             domStyle.set(widget.domNode, "display", "");
+            if (typeof widget.alfPublishResizeEvent === "function")
+            {
+               widget.alfPublishResizeEvent(widget.domNode);
+            }
          }
       },
 

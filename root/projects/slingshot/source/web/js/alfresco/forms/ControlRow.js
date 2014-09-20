@@ -31,11 +31,22 @@
 define(["alfresco/layout/HorizontalWidgets",
         "dojo/_base/declare",
         "dojo/_base/lang",
-        "dojo/_base/array"], 
-        function(HorizontalWidgets, declare, lang, array) {
+        "dojo/_base/array",
+        "dojo/dom-construct",
+        "dojo/dom-class"], 
+        function(HorizontalWidgets, declare, lang, array, domConstruct, domClass) {
    
    return declare([HorizontalWidgets], {
       
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/ControlRow.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/ControlRow.css"}],
+
       /**
        * This is the size of margin (in pixels) that will appear to the left of every widget added. 
        *
@@ -53,6 +64,43 @@ define(["alfresco/layout/HorizontalWidgets",
        * @default null
        */
       widgetMarginRight: 30,
+
+      /**
+       * The title to display above the row of form controls. This can be used to break up groups of 
+       * form controls.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      title: null,
+
+      /**
+       * Extends the [inherited function]{@link module:alfresco/layout/HorizontalWidgets#postCreate} to add
+       * in a field set label if configured.
+       * 
+       * @instance
+       */
+      postCreate: function alfresco_forms_ControlRow__postCreate() {
+         this.inherited(arguments);
+         domClass.add(this.domNode, "alfresco-forms-ControlRow");
+         if (this.description != null)
+         {
+            this.description = this.message(this.description);
+            domConstruct.create("div", {
+               innerHTML: this.description,
+               className: "description border"
+            }, this.domNode, "first");
+         }
+         if (this.title != null)
+         {
+            this.title = this.message(this.title);
+            domConstruct.create("div", {
+               innerHTML: this.title,
+               className: "title" + (this.description == null ? " border" : "")
+            }, this.domNode, "first");
+         }
+      },
 
       /**
        * Iterates over the array of processed widgets and adds the value of each to the supplied object

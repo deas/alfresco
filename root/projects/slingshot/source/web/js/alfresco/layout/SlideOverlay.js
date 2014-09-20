@@ -38,6 +38,7 @@ define(["dojo/_base/declare",
         "dojo/text!./templates/SlideOverlay.html",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
+        "alfresco/core/ResizeMixin",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/on",
@@ -46,9 +47,10 @@ define(["dojo/_base/declare",
         "dojo/dom-style",
         "dojo/fx",
         "dojo/_base/fx"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, lang, array, on, domGeom, domClass, domStyle, coreFx, baseFx) {
+        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, ResizeMixin, 
+                 lang, array, on, domGeom, domClass, domStyle, coreFx, baseFx) {
    
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, ResizeMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -170,7 +172,6 @@ define(["dojo/_base/declare",
          // to update the height of the widget much more accurately...
          if (typeof MutationObserver === "function")
          {
-            var _this = this;
             var observer = new MutationObserver(lang.hitch(this, "adjustHeight")),
                 config = { attributes: true, childList: true, characterData: true, subtree: true };
             observer.observe(this.overlayNode, config);
@@ -219,6 +220,9 @@ define(["dojo/_base/declare",
       showOverlay: function alfresco_layout_SlideOverlay__showOverlay() {
          domClass.remove(this.overlayNode, "hide");
          this.overlayHidden = false;
+         window.setTimeout(lang.hitch(this, function() {
+            this.alfPublishResizeEvent(this.overlayNode);
+         }), 100);
       },
       
       /**
