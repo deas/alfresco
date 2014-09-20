@@ -25,7 +25,7 @@
  *
  * @module alfresco/dialogs/AlfDialogService
  * @extends module:alfresco/core/Core
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
 define(["dojo/_base/declare",
         "alfresco/core/Core",
@@ -80,14 +80,29 @@ define(["dojo/_base/declare",
       defaultFormDialogConfig: {
          dialogTitle: "",
          dialogConfirmationButtonTitle: "OK",
-         dialogCancellationButtonTitle: "Cancel",
+         dialogCancellationButtonTitle: "Cancel"
       },
 
       /**
        * Handles requests to create basic dialogs.
        *
+       * @typedef {Object} onCreateDialogRequestPayload
+       * @property {string} dialogTitle - Title
+       * @property {string} textContent - Any textual content for the dialog body?
+       * @property {array} widgetsContent - What should go in the dialog
+       * @property {Array} widgetsButtons - Any button widgets to display in the footer
+       * @property {String} [contentWidth=null] -
+       * @property {String} [contentHeight=null] -
+       * @property {Boolean} [handleOverflow=true] - Should the dialog expand to fill the content
+       * @property {Boolean} [fixedWidth=null] -
+       * @property {Array} [publishOnShow]
+       * @property {String} [hideTopic] - Topic to subscribe to to trigger a dialog hide.
+       *
+       * @todo This shouldn't destroy previous dialog, but should support stacked dialogs instead.
+       * @todo This should pass an ID and keep a map of dialogs created.
+       *
        * @instance
-       * @param {object} payload The details of the widgets and buttons for the dialog
+       * @param {onCreateDialogRequestPayload} payload The details of the widgets and buttons for the dialog
        */
       onCreateDialogRequest: function alfresco_dialogs_AlfDialogService__onCreateDialogRequest(payload) {
          if (this.dialog != null)
@@ -113,6 +128,11 @@ define(["dojo/_base/declare",
             array.forEach(payload.publishOnShow, lang.hitch(this, this.publishOnShow));
          }
          this.dialog.show();
+
+         if (payload.hideTopic)
+         {
+            this.alfSubscribe(payload.hideTopic, lang.hitch(this.dialog, this.dialog.hide));
+         }
       },
 
       /**
@@ -173,7 +193,7 @@ define(["dojo/_base/declare",
                lang.mixin(config, clonedPayload);
                config.pubSubScope = pubSubScope;
                config.parentPubSubScope = this.parentPubSubScope;
-               config.subcriptionTopic = subcriptionTopic; // Include the subcriptionTopic in the configuration the subscription can be cleaned up
+               config.subcriptionTopic = subcriptionTopic; // Include the subscriptionTopic in the configuration the subscription can be cleaned up
 
                // Construct the form widgets and then construct the dialog using that configuration...
                var formValue = (config.formValue != null) ? config.formValue: {};
@@ -194,6 +214,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} config
+       * @param {object} formConfig
        * @returns {object} The dialog configuration.
        */
       createDialogConfig: function alfresco_dialogs_AlfDialogService__createDialogConfig(config, formConfig) {
