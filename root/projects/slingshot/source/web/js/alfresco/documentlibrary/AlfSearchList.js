@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -471,59 +471,70 @@ define(["dojo/_base/declare",
                 }, true);
             }
 
-            this.alfPublish(this.requestInProgressTopic, {});
-            this.showLoadingMessage();
-
-            var filters = "";
-            for (var key in this.facetFilters)
-            {
-               filters = filters + key.replace(/\.__.u/g, "").replace(/\.__/g, "") + ",";
-            }
-            filters = filters.substring(0, filters.length - 1);
-
-            // Make sure the repo param is set appropriately...
-            // The repo instance variable trumps everything else...
-            var repo = this.repo === "true" || !(this.allSites === "true" || (this.siteId != null && this.siteId !== ""));
-
-            this.currentRequestId = this.generateUuid();
-            var searchPayload = {
-               term: this.searchTerm,
-               facetFields: this.facetFields,
-               filters: filters,
-               sortAscending: this.sortAscending,
-               sortField: this.sortField,
-               site: this.siteId,
-               rootNode: this.rootNode,
-               repo: repo,
-               requestId: this.currentRequestId
-            };
-
-            if (this.query)
-            {
-               delete this.query.alfTopic;
-
-               if(typeof this.query === "string")
-               {
-                  this.query = JSON.parse(this.query);
-               }
-
-               for (var key in this.query)
-               {
-                  searchPayload[key] = this.query[key];
-               }
-            }
-
             // InfiniteScroll uses pagination under the covers.
+            var startIndex = 0;
             if (this.useInfiniteScroll)
             {
                // Search API wants startIndex rather than page, so we need to convert here.
-               searchPayload.startIndex = (this.currentPage - 1) * this.currentPageSize;
-               searchPayload.pageSize = this.currentPageSize;
+               startIndex = (this.currentPage - 1) * this.currentPageSize;
             }
 
-            // Set a response topic that is scoped to this widget...
-            searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
-            this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
+            if (!this.useInfiniteScroll || 
+                this.currentData == null || 
+                this.currentData.totalRecordsUpper >= startIndex)
+            {
+               this.alfPublish(this.requestInProgressTopic, {});
+               this.showLoadingMessage();
+
+               var filters = "";
+               for (var key in this.facetFilters)
+               {
+                  filters = filters + key.replace(/\.__.u/g, "").replace(/\.__/g, "") + ",";
+               }
+               filters = filters.substring(0, filters.length - 1);
+
+               // Make sure the repo param is set appropriately...
+               // The repo instance variable trumps everything else...
+               var repo = this.repo === "true" || !(this.allSites === "true" || (this.siteId != null && this.siteId !== ""));
+
+               this.currentRequestId = this.generateUuid();
+               var searchPayload = {
+                  term: this.searchTerm,
+                  facetFields: this.facetFields,
+                  filters: filters,
+                  sortAscending: this.sortAscending,
+                  sortField: this.sortField,
+                  site: this.siteId,
+                  rootNode: this.rootNode,
+                  repo: repo,
+                  requestId: this.currentRequestId,
+                  pageSize: this.currentPageSize,
+                  startIndex: startIndex
+               };
+
+               if (this.query)
+               {
+                  delete this.query.alfTopic;
+
+                  if(typeof this.query === "string")
+                  {
+                     this.query = JSON.parse(this.query);
+                  }
+
+                  for (var key in this.query)
+                  {
+                     searchPayload[key] = this.query[key];
+                  }
+               }
+
+               // Set a response topic that is scoped to this widget...
+               searchPayload.alfResponseTopic = this.pubSubScope + "ALF_RETRIEVE_DOCUMENTS_REQUEST";
+               this.alfPublish("ALF_SEARCH_REQUEST", searchPayload, true);
+            }
+            else
+            {
+               this.alfLog("log", "No more data to to retrieve, cancelling search request", this);
+            }
          }
       },
 

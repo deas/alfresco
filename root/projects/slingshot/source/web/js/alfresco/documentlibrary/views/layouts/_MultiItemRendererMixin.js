@@ -183,7 +183,7 @@ define(["dojo/_base/declare",
             this.currentItem = this.currentData.items[this.currentIndex];
             
             // Add in the index...
-            if (this.currentItem.index == null)
+            if (this.currentItem && this.currentItem.index == null)
             {
                this.currentItem.index = this.currentIndex;
             }
