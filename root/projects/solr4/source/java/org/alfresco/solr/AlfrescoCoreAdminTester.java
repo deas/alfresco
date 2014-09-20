@@ -70,6 +70,7 @@ import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
 import org.alfresco.util.SearchLanguageConversion;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -6371,7 +6372,7 @@ public class AlfrescoCoreAdminTester
                     for (int i = 0; i < sz; i++)
                     {
                         SolrDocument doc = iterator.next();
-                        dbids[i] = Integer.valueOf(((String)doc.getFieldValue("DBID")));
+                        dbids[i] = Integer.valueOf(((StoredField)doc.getFirstValue("DBID")).stringValue());
 
                         if (ordered)
                         {
