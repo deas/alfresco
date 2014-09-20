@@ -412,6 +412,16 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Indicates whether or not the currentItem should be updated following a successful
+       * save event.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      refreshCurrentItem: false,
+
+      /**
        * Called following successful save attempts. This will update the read-only display using the requested save
        * data.
        * 
@@ -424,7 +434,15 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Property '" + this.propertyToRender + "' successfully updated for node: ", this.currentItem);
          this.originalRenderedValue = this.getFormWidget().getValue()[this.postParam];
          this.renderedValue = this.mapValueToDisplayValue(this.originalRenderedValue);
-         
+
+         // If requested, update the currentItem with the updated value. This is done in the
+         // case where the currentItem might be subsequently used elsewhere (e.g. in a 
+         // form, etc)
+         if (this.refreshCurrentItem === true)
+         {
+            lang.setObject(this.propertyToRender, this.originalRenderedValue, this.currentItem);
+         }
+
          // This is a bit ugly... there will be better ways to handle this...
          // Basically it's handling the situation where the prefix/suffix for cleared when data wasn't originally available...
          var prefix = (this.requestedValuePrefix) ? this.requestedValuePrefix : this.renderedValuePrefix;

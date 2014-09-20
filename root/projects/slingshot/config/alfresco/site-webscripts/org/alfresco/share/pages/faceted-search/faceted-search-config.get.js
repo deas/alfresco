@@ -666,6 +666,7 @@ var main = {
                                                                   name: "alfresco/renderers/InlineEditProperty",
                                                                   config: {
                                                                      propertyToRender: "displayName",
+                                                                     refreshCurrentItem: true,
                                                                      publishTopic: "ALF_CRUD_UPDATE",
                                                                      publishPayloadType: "PROCESS",
                                                                      publishPayloadModifiers: ["processCurrentItemTokens"],
@@ -692,6 +693,7 @@ var main = {
                                                                   name: "alfresco/renderers/InlineEditSelect",
                                                                   config: {
                                                                      propertyToRender: "facetQName",
+                                                                     refreshCurrentItem: true,
                                                                      publishTopic: "ALF_CRUD_UPDATE",
                                                                      publishPayloadType: "PROCESS",
                                                                      publishPayloadModifiers: ["processCurrentItemTokens"],
@@ -737,6 +739,7 @@ var main = {
                                                                   name: "alfresco/renderers/InlineEditSelect",
                                                                   config: {
                                                                      propertyToRender: "displayControl",
+                                                                     refreshCurrentItem: true,
                                                                      publishTopic: "ALF_CRUD_UPDATE",
                                                                      publishPayloadType: "PROCESS",
                                                                      publishPayloadModifiers: ["processCurrentItemTokens"],
@@ -767,6 +770,7 @@ var main = {
                                                                   name: "alfresco/renderers/InlineEditSelect",
                                                                   config: {
                                                                      propertyToRender: "isEnabled",
+                                                                     refreshCurrentItem: true,
                                                                      publishTopic: "ALF_CRUD_UPDATE",
                                                                      publishPayloadType: "PROCESS",
                                                                      publishPayloadModifiers: ["processCurrentItemTokens"],
