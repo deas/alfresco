@@ -591,7 +591,9 @@ define(["dojo/_base/declare",
             // Publish the number of search results found...
             this.alfPublish("ALF_SEARCH_RESULTS_COUNT", {
                count: resultsCount,
-               label: resultsCount
+               label: this.message("faceted-search.results-menu.results-found", {
+                  0: resultsCount
+               })
             });
          }
 

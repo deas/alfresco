@@ -329,15 +329,7 @@ var searchResultsMenuBar = {
             align: "left",
             config: {
                label: msg.get("faceted-search.results-menu.no"),
-               additionalCssClasses: "bold",
                subscriptionTopic: "ALF_SEARCH_RESULTS_COUNT"
-            }
-         },
-         {
-            name: "alfresco/html/Label",
-            align: "left",
-            config: {
-               label: msg.get("faceted-search.results-menu.results-found")
             }
          },
          headingForSortMenu,

@@ -1,6 +1,7 @@
 .alfresco-html-Label {
    vertical-align: sub;
 }
-.alfresco-html-Label.bold {
+.alfresco-html-Label > b {
    font-family: @bold-font;
+   font-weight: normal;
 }
