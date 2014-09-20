@@ -26,7 +26,7 @@
  *
  * @module alfresco/pickers/PickedItems
  * @extends module:alfresco/documentlibrary/views/AlfDocumentListView
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
 define(["dojo/_base/declare",
         "alfresco/documentlibrary/views/AlfDocumentListView",
@@ -53,6 +53,15 @@ define(["dojo/_base/declare",
           * @default [{i18nFile: "./i18n/PickedItems.properties"}]
           */
          i18nRequirements: [{i18nFile: "./i18n/PickedItems.properties"}],
+
+         /**
+          * If true, forces user to choose a single item only.
+          *
+          * @instance
+          * @type {Boolean}
+          * @default false
+          */
+         singleItemMode: false,
 
          /**
           * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
@@ -111,8 +120,17 @@ define(["dojo/_base/declare",
                var existingKey = this.findPickedItem(keyToAdd);
                if (existingKey == null)
                {
-                  this.currentData.items.push(payload);
-                  this.renderView(false);
+                  // Should the item to add be the only item selected?
+                  if (this.singleItemMode)
+                  {
+                     this.alfLog("info", "Removing all other selected items", payload, this);
+                     this.setPickedItems([payload]);
+                     this.renderView(false);
+                  }
+                  else {
+                     this.currentData.items.push(payload);
+                     this.renderView(false);
+                  }
                }
                else
                {
