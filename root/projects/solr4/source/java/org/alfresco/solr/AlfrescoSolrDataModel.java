@@ -2109,5 +2109,13 @@ public class AlfrescoSolrDataModel implements QueryConstants
          }
          
      }
+
+     public void setCMDefaultUri()
+     {
+         if(getNamespaceDAO().getURIs().contains(NamespaceService.CONTENT_MODEL_1_0_URI))
+         {
+             getNamespaceDAO().addPrefix("", NamespaceService.CONTENT_MODEL_1_0_URI);
+         }
+     }
      
 }

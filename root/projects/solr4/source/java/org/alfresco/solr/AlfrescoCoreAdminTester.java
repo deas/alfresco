@@ -290,6 +290,7 @@ public class AlfrescoCoreAdminTester
             before.add("core", core.getName());
 
             AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance();
+            dataModel.setCMDefaultUri();
 
             this.solrQueryRequest = new SolrServletRequest(core, null);
             this.solrQueryRequest.setParams(req.getParams());
@@ -875,6 +876,8 @@ public class AlfrescoCoreAdminTester
                 rsp.add("core", core.getName());
 
                 dataModel = AlfrescoSolrDataModel.getInstance();
+                dataModel.setCMDefaultUri();
+                
                 this.solrQueryRequest = new SolrServletRequest(core, null);
                 this.solrQueryRequest.setParams(req.getParams());
                 // add data
@@ -1101,6 +1104,8 @@ public class AlfrescoCoreAdminTester
             rsp.add("core", core.getName());
 
             AlfrescoSolrDataModel dataModel = AlfrescoSolrDataModel.getInstance();
+            dataModel.setCMDefaultUri();
+            
             this.solrQueryRequest = new SolrServletRequest(core, null);
             this.solrQueryRequest.setParams(req.getParams());
             // add data
@@ -6274,131 +6279,140 @@ public class AlfrescoCoreAdminTester
     {
         // TODO: report to rsp
 
-        NamedList<Object> queryReport = new SimpleOrderedMap<Object>();
-        report.add(GUID.generate(), queryReport);
-        queryReport.add("Query", query);
+        SolrServletRequest solrReq = null;
+        try
+        {
+            NamedList<Object> queryReport = new SimpleOrderedMap<Object>();
+            report.add(GUID.generate(), queryReport);
+            queryReport.add("Query", query);
 
-        boolean passed = true;
-        boolean ordered = true;
+            boolean passed = true;
+            boolean ordered = true;
 
-        SolrServletRequest solrReq = new SolrServletRequest(core, null);
-        SolrQueryResponse solrRsp = new SolrQueryResponse();
-        SolrRequestHandler afts = core.getRequestHandler(handler);
+            solrReq = new SolrServletRequest(core, null);
+            SolrQueryResponse solrRsp = new SolrQueryResponse();
+            SolrRequestHandler afts = core.getRequestHandler(handler);
 
-        ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
-        newParams.set("defType", handler.substring("/".length()));
-        newParams.set("q", query);
-        if (rows != null)
-        {
-            newParams.set("rows", "" + rows);
-            queryReport.add("Rows", rows);
-        }
-        else
-        {
-            newParams.set("rows", "" + Integer.MAX_VALUE);
-        }
-        if (start != null)
-        {
-            newParams.set("start", "" + start);
-            queryReport.add("Start", start);
-        }
-        if (sort != null)
-        {
-            newParams.set("sort", sort);
-            queryReport.add("Sort", sort);
-        }
-        if (locale != null)
-        {
-            newParams.set("locale", locale.toString());
-            queryReport.add("Locale", locale.toString());
-        }
-        if (filters != null)
-        {
-            newParams.set("fq", filters);
-            queryReport.add("Filters", filters);
-        }
-        newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
-        solrReq.setParams(newParams);
-        ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
-        streams.add(new ContentStreamBase.StringStream("json"));
-        solrReq.setContentStreams(streams);
-
-        afts.handleRequest(solrReq, solrRsp);
-
-        DocSlice ds = (DocSlice) solrRsp.getValues().get("response");
-        if (ds != null)
-        {
-            if (ds.matches() != count)
+            ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
+            newParams.set("defType", handler.substring("/".length()));
+            newParams.set("q", query);
+            if (rows != null)
             {
-                passed = false;
-                ordered = false;
-                queryReport.add("Expected", count);
-                queryReport.add("Found", ds.matches());
+                newParams.set("rows", "" + rows);
+                queryReport.add("Rows", rows);
             }
             else
             {
-                queryReport.add("Found", ds.matches());
+                newParams.set("rows", "" + Integer.MAX_VALUE);
             }
-            int sz = ds.size();
-
-            if (sorted != null)
+            if (start != null)
             {
-                int[] dbids = new int[sz];
-                SolrIndexSearcher searcher = solrReq.getSearcher();
-                DocIterator iterator = ds.iterator();
-                for (int i = 0; i < sz; i++)
-                {
-                    int id = iterator.nextDoc();
-                    Document doc = searcher.doc(id);
-                    IndexableField dbidField = doc.getField("DBID");
-                    dbids[i] = Integer.valueOf(dbidField.stringValue());
+                newParams.set("start", "" + start);
+                queryReport.add("Start", start);
+            }
+            if (sort != null)
+            {
+                newParams.set("sort", sort);
+                queryReport.add("Sort", sort);
+            }
+            if (locale != null)
+            {
+                newParams.set("locale", locale.toString());
+                queryReport.add("Locale", locale.toString());
+            }
+            if (filters != null)
+            {
+                newParams.set("fq", filters);
+                queryReport.add("Filters", filters);
+            }
+            newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
+            solrReq.setParams(newParams);
+            ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
+            streams.add(new ContentStreamBase.StringStream("json"));
+            solrReq.setContentStreams(streams);
 
-                    if (ordered)
-                    {
-                        if (dbids[i] != sorted[i])
-                        {
+            afts.handleRequest(solrReq, solrRsp);
 
-                            ordered = false;
-                            queryReport.add("Sort at " + i + " expected", sorted[i]);
-                            queryReport.add("Sort at " + i + " found", dbids[i]);
-                        }
-                    }
-                }
-                if (ordered)
+            DocSlice ds = (DocSlice) solrRsp.getValues().get("response");
+            if (ds != null)
+            {
+                if (ds.matches() != count)
                 {
-                    queryReport.add("Order", "Passed");
+                    passed = false;
+                    ordered = false;
+                    queryReport.add("Expected", count);
+                    queryReport.add("Found", ds.matches());
                 }
                 else
                 {
-                    queryReport.add("Order", "FAILED");
-                    StringBuilder builder = new StringBuilder();
-                    for (int i = 0; i < dbids.length; i++)
-                    {
-                        if (builder.length() > 0)
-                        {
-                            builder.append(", ");
-                        }
-                        builder.append(dbids[i]);
-                    }
-                    queryReport.add("Sorted as ", builder.toString());
+                    queryReport.add("Found", ds.matches());
                 }
-            }
+                int sz = ds.size();
 
-            if (passed)
-            {
-                queryReport.add("Count", "Passed");
+                if (sorted != null)
+                {
+                    int[] dbids = new int[sz];
+                    SolrIndexSearcher searcher = solrReq.getSearcher();
+                    DocIterator iterator = ds.iterator();
+                    for (int i = 0; i < sz; i++)
+                    {
+                        int id = iterator.nextDoc();
+                        Document doc = searcher.doc(id);
+                        IndexableField dbidField = doc.getField("DBID");
+                        dbids[i] = Integer.valueOf(dbidField.stringValue());
+
+                        if (ordered)
+                        {
+                            if (dbids[i] != sorted[i])
+                            {
+
+                                ordered = false;
+                                queryReport.add("Sort at " + i + " expected", sorted[i]);
+                                queryReport.add("Sort at " + i + " found", dbids[i]);
+                            }
+                        }
+                    }
+                    if (ordered)
+                    {
+                        queryReport.add("Order", "Passed");
+                    }
+                    else
+                    {
+                        queryReport.add("Order", "FAILED");
+                        StringBuilder builder = new StringBuilder();
+                        for (int i = 0; i < dbids.length; i++)
+                        {
+                            if (builder.length() > 0)
+                            {
+                                builder.append(", ");
+                            }
+                            builder.append(dbids[i]);
+                        }
+                        queryReport.add("Sorted as ", builder.toString());
+                    }
+                }
+
+                if (passed)
+                {
+                    queryReport.add("Count", "Passed");
+                }
+                else
+                {
+                    queryReport.add("Count", "FAILED");
+                }
             }
             else
             {
-                queryReport.add("Count", "FAILED");
+                queryReport.add("Test", "ERROR");
             }
         }
-        else
+        finally
         {
-            queryReport.add("Test", "ERROR");
+            if(solrReq != null)
+            {
+                solrReq.close();
+            }
         }
-
-        solrReq.close();
     }
 
     /**
