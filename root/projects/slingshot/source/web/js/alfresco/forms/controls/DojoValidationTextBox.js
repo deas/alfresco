@@ -28,7 +28,7 @@ define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/lang",
         "dojo/dom-construct",
         "dojo/dom-class"], 
-        function(BaseFormControl, declare, ValidationTextBox, lang, domConstruct, domClass) {
+        function(BaseFormControl, declare, ValidationTextBox, lang, domClass) {
    
    return declare([BaseFormControl], {
       
