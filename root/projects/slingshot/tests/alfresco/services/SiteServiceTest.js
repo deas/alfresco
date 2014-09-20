@@ -31,6 +31,7 @@ define(["intern!object",
       name: 'Site Service Test',
       'SiteServiceTest - Create and edit site': function () {
 
+         var dialogDelay = 250;
          var browser = this.remote;
          var testname = "SiteServiceTest - Create and edit site";
          return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
@@ -45,14 +46,15 @@ define(["intern!object",
 
          .findById("EDIT_SITE")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_EDIT_SITE");
             })
-            .sleep(1000)
             .end()
 
          .findByCssSelector("div.yui-simple-dialog span.yui-button button")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          // Post the coverage results...
@@ -194,6 +196,7 @@ define(["intern!object",
 
       'SiteServiceTest - Site memberships': function () {
 
+         var dialogDelay = 250;
          var browser = this.remote;
          var testname = "SiteServiceTest - Site memberships";
          return TestCommon.loadTestWebScript(this.remote, "/SiteService", testname)
@@ -261,6 +264,7 @@ define(["intern!object",
          // Request site membership
          .findById("REQUEST_SITE_MEMBERSHIP")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_REQUEST_SITE_MEMBERSHIP");
             })
@@ -268,6 +272,7 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog div.footer span.dijitReset.dijitInline.dijitButtonNode")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          .findById("REQUEST_SITE_MEMBERSHIP_BAD1")
@@ -286,6 +291,7 @@ define(["intern!object",
 
          .findById("REQUEST_SITE_MEMBERSHIP_BAD3")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_REQUEST_SITE_MEMBERSHIP with a faulty payload 3");
             })
@@ -293,10 +299,12 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          .findById("REQUEST_SITE_MEMBERSHIP_BAD4")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_REQUEST_SITE_MEMBERSHIP with a faulty payload 4");
             })
@@ -304,6 +312,7 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          // Join site
@@ -338,6 +347,7 @@ define(["intern!object",
          // Leave site
          .findById("LEAVE_SITE")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_LEAVE_SITE");
             })
@@ -345,10 +355,12 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:last-of-type")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          .findById("LEAVE_SITE")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_LEAVE_SITE");
             })
@@ -356,10 +368,12 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:first-of-type")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          .findById("LEAVE_SITE_BAD1")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_LEAVE_SITE with a faulty payload 1");
             })
@@ -367,10 +381,12 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:last-of-type")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          .findById("LEAVE_SITE_BAD2")
             .click()
+            .sleep(dialogDelay)
             .then(function () {
                TestCommon.log(testname,"Test ALF_LEAVE_SITE with a faulty payload 2");
             })
@@ -378,6 +394,7 @@ define(["intern!object",
 
          .findByCssSelector("div.alfresco-dialog-AlfDialog:last-of-type div.footer span.dijitReset.dijitInline.dijitButtonNode:last-of-type")
             .click()
+            .sleep(dialogDelay)
             .end()
 
          // Post the coverage results...
