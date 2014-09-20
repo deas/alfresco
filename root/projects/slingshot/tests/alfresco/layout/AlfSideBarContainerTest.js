@@ -36,42 +36,49 @@ define(["intern!object",
          var testname = "AlfSideBarContainer Test";
          var startSize;
          return TestCommon.loadTestWebScript(this.remote, "/AlfSideBarContainer", testname)
-         
-         // .takeScreenshot()
-         //    .then(function(data) {
-         //       fs.writeFileSync("AlfSideBarContainer.png", data, 'base64');
-         //    })
-         //    .end()
 
-         .then(function(){
-            console.log("TODO: Failing test of 'ALF_PREFERENCE_GET' needs looking at");
-         })
-         // // Test that the sidedbar container requests user preferences...
-         // .findByCssSelector(TestCommon.pubDataCssSelector("ALF_PREFERENCE_GET", "preference", "org.alfresco.share.sideBarWidth"))
-         //    .then(function(elements) {
-         //       assert(elements.length == 1, "Test #1a - Sidebar container didn't request width preferences");
-         //    })
-         //    .end()
+         // Test that the sidedbar container requests user preferences...
+         .findByCssSelector(TestCommon.pubDataCssSelector("ALF_PREFERENCE_GET", "preference", "org.alfresco.share.sideBarWidth"))
+            .then(
+               function(element) {
+                  TestCommon.log(testname, "Check user preferences requested...");
+               },
+               function(err) {
+                  //browser.takeScreenshot().then(function(data) {fs.writeFileSync("AlfSideBarContainer.png", data, 'base64');}).end();
+                  assert(false, "Test #1a - User preferences were not requested")
+               })
+            .end()
 
+         // Find the resize handle
          .findByCssSelector(".yui-resize-handle.yui-resize-handle-r")
-            .then(null, function() {
-               TestCommon.log(testname, "Looking for resize handle...");
-               assert(false, "Test #1a - Couldn't find resize handle")
-            })
+            .then(
+               function(element) {
+                  TestCommon.log(testname, "Looking for resize handle...");
+               },
+               function(err) {
+                  assert(false, "Test #1b - Couldn't find resize handle")
+               })
             .end()
 
          // Check that the logo widgets have been placed in the correct positions...
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar #SIDEBAR_LOGO")
-            .then(null, function() {
-               TestCommon.log(testname, "Checking for logo in sidebar...");
-               assert(false, "Test #1b - Sidebar logo wasn't placed correctly")
-            })
+            .then(
+               function(element) {
+                  TestCommon.log(testname, "Checking for logo in sidebar...");
+               },
+               function(err) {
+                  assert(false, "Test #1c - Sidebar logo wasn't placed correctly")
+               })
             .end()
+
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .main #MAIN_LOGO")
-            .then(null, function() {
-               TestCommon.log(testname, "Checking for logo in main panel...");
-               assert(false, "Test #1c - Main logo wasn't placed correctly")
-            })
+            .then(
+               function(element) {
+                  TestCommon.log(testname, "Checking for logo in main panel...");
+               },
+               function() {
+                  assert(false, "Test #1d - Main logo wasn't placed correctly")
+               })
             .end()
 
          // Check the initial width...
@@ -79,7 +86,7 @@ define(["intern!object",
             .getComputedStyle("width")
             .then(function(width) {
                TestCommon.log(testname, "Checking width initialised correctly...");
-               assert(width == "150px", "Test #1d - The sidebar width wasn't initialised correctly");
+               assert(width == "150px", "Test #1e - The sidebar width wasn't initialised correctly");
             })
             .end()
 
@@ -90,6 +97,7 @@ define(["intern!object",
          .findByCssSelector(".yui-resize-handle > .yui-resize-handle-inner-r")
             .click()
             .end()
+
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
@@ -102,6 +110,7 @@ define(["intern!object",
          .findByCssSelector(".yui-resize-handle > .yui-resize-handle-inner-r")
             .click()
             .end()
+
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
@@ -114,6 +123,7 @@ define(["intern!object",
          .findByCssSelector("#HIDE_BUTTON")
             .click()
             .end()
+
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
@@ -126,6 +136,7 @@ define(["intern!object",
          .findByCssSelector("#SHOW_BUTTON")
             .click()
             .end()
+
          .findByCssSelector(".alfresco-layout-AlfSideBarContainer .sidebar")
             .getComputedStyle("width")
             .then(function(width) {
@@ -155,8 +166,8 @@ define(["intern!object",
             .getSize()
             .then(function(endSize) {
                TestCommon.log(testname, "Checking sizes after drag...");
-               expect(endSize.width).to.be.at.least(startSize.width, "The sidebar did not resize on the x axis");
-               expect(endSize.height).to.equal(startSize.height, "The sidebar should not have resized on the y axis");
+               expect(endSize.width).to.be.at.least(startSize.width, "Test #4a - The sidebar did not resize on the x axis");
+               expect(endSize.height).to.equal(startSize.height, "Test #4b - The sidebar should not have resized on the y axis");
             })
             .end()
 
