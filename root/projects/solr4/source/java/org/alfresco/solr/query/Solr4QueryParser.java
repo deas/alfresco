@@ -4083,7 +4083,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
      */
     protected Query createOwnerQuery(String queryText) throws ParseException
     {
-        return getFieldQueryImplWithIOExceptionWrapped(FIELD_OWNER, queryText, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+        return new SolrOwnerQuery(queryText);
     }
 
     /**
@@ -4092,9 +4092,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
      */
     protected Query createReaderQuery(String queryText) throws ParseException
     {
-        //return new SolrCachingReaderQuery(queryText);
-        // TODO: FIX
-        return new MatchAllDocsQuery();
+        return new SolrReaderQuery(queryText);
     }
 
     /**
@@ -4559,22 +4557,19 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
   
     protected Query createOwnerSetQuery(String queryText) throws ParseException
     {
-     // TODO: FIX
-        return new MatchAllDocsQuery();
+        return new SolrOwnerSetQuery(queryText);
     }
 
     
     protected Query createReaderSetQuery(String queryText) throws ParseException
     {
-     // TODO: FIX
-        return new MatchAllDocsQuery();
+        return new SolrReaderSetQuery(queryText);
     }
 
    
     protected Query createAuthoritySetQuery(String queryText) throws ParseException
     {
-        return new MatchAllDocsQuery();
-        //return new SolrAuthoritySetQuery(queryText);
+        return new SolrAuthoritySetQuery(queryText);
     }
 
 }
