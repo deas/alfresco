@@ -71,7 +71,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
 
     protected final static Logger log = LoggerFactory.getLogger(AbstractQParser.class);
 
-    private static final String ALFRESCO_JSON = "ALFRESCO_JSON";
+    public static final String ALFRESCO_JSON = "ALFRESCO_JSON";
 
     private static final String AUTHORITY_FILTER_FROM_JSON = "AUTHORITY_FILTER_FROM_JSON";
 

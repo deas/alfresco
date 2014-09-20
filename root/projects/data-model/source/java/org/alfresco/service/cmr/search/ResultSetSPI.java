@@ -181,4 +181,11 @@ public interface ResultSetSPI<ROW extends ResultSetRow, MD extends ResultSetMeta
      * @return Map of {@literal <requested facet query, count>}
      */
     public Map<String, Integer> getFacetQueries();
+
+    /**
+     * Gets the spell check result
+     * 
+     * @return
+     */
+    public SpellCheckResult getSpellCheckResult();
 }

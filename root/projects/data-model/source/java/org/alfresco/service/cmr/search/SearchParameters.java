@@ -174,6 +174,10 @@ public class SearchParameters implements BasicSearchParameters
     
     private Long sinceTxId;
     
+    private String searchTerm;
+    
+    private boolean spellCheck;
+
     /**
      * Default constructor
      */
@@ -215,6 +219,8 @@ public class SearchParameters implements BasicSearchParameters
         sp.queryConsistency = this.queryConsistency;
         sp.sinceTxId = this.sinceTxId;
         sp.facetQueries.addAll(this.facetQueries);
+        sp.searchTerm = this.searchTerm;
+        sp.spellCheck = this.spellCheck;
         return sp;
     }
     
@@ -934,6 +940,37 @@ public class SearchParameters implements BasicSearchParameters
         this.sinceTxId = sinceTxId;
     }
 
+    /**
+     * @return the searchTerm
+     */
+    public String getSearchTerm()
+    {
+        return this.searchTerm;
+    }
+
+    /**
+     * @param searchTerm the searchTerm to set
+     */
+    public void setSearchTerm(String searchTerm)
+    {
+        this.searchTerm = searchTerm;
+    }
+
+    /**
+     * @return the spellCheck
+     */
+    public boolean isSpellCheck()
+    {
+        return this.spellCheck;
+    }
+
+    /**
+     * @param spellCheck the spellCheck to set
+     */
+    public void setSpellCheck(boolean spellCheck)
+    {
+        this.spellCheck = spellCheck;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -972,6 +1009,8 @@ public class SearchParameters implements BasicSearchParameters
         result = prime * result + ((useInMemorySort == null) ? 0 : useInMemorySort.hashCode());
         result = prime * result + ((sinceTxId == null) ? 0 : sinceTxId.hashCode());
         result = prime * result + ((facetQueries.isEmpty()) ? 0 : facetQueries.hashCode());
+        result = prime * result + ((searchTerm == null) ? 0 : searchTerm.hashCode());
+        result = prime * result + (spellCheck ? 1231 : 1237);
         return result;
     }
 
@@ -1121,6 +1160,15 @@ public class SearchParameters implements BasicSearchParameters
             return false;
         if (!facetQueries.equals(other.facetQueries))
             return false;
+        if (searchTerm == null)
+        {
+            if (other.searchTerm != null)
+                return false;
+        }
+        else if (!searchTerm.equals(other.searchTerm))
+            return false;
+        if (spellCheck != other.spellCheck)
+            return false;
         return true;
     }
 
@@ -1155,7 +1203,8 @@ public class SearchParameters implements BasicSearchParameters
                     .append(", extraParameters=").append(this.extraParameters).append(", excludeTenantFilter=")
                     .append(this.excludeTenantFilter).append(", isBulkFetchEnabled=").append(this.isBulkFetchEnabled)
                     .append(", queryConsistency=").append(this.queryConsistency).append(", sinceTxId=")
-                    .append(this.sinceTxId).append("]");
+                    .append(this.sinceTxId).append(", searchTerm=").append(this.searchTerm)
+                    .append(", spellCheck=").append(this.spellCheck).append("]");
         return builder.toString();
     }
 
