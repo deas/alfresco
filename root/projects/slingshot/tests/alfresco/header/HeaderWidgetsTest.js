@@ -30,6 +30,7 @@ define(["intern!object",
 
    registerSuite({
       name: 'Header Widgets Test',
+
       'Basic Test': function () {
 
          var browser = this.remote;
@@ -38,7 +39,7 @@ define(["intern!object",
 
          // Check that the header CSS is applied...
          .findByCssSelector(".alfresco-layout-LeftAndRight.alfresco-header-Header")
-            .then(null, function() {
+            .then(function(element){}, function(err) {
                assert(false, "Test #1a - The header CSS was not applied correctly");
             })
             .end()
@@ -89,10 +90,11 @@ define(["intern!object",
          // Click on a status to display the update dialog...
          .findByCssSelector("#NO_STATUS > div.status")
             .click()
+            .sleep(500)
             .end()
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
-            .then(null, function() {
+            .then(function(element){}, function(err) {
                assert(false, "Test #2a - The update dialog was not displayed");
             })
             .end()
@@ -105,12 +107,12 @@ define(["intern!object",
 
          // Update the status...
          .findByCssSelector("#NO_STATUS_STATUS_TEXTAREA")
-            .sleep(250)
-            .pressKeys([keys.SHIFT, keys.HOME])
+            .clearValue()
             .type("Status Update")
-            .pressKeys([keys.SHIFT])
+            //.sleep(500)
             .pressKeys([keys.TAB])
             .pressKeys([keys.RETURN])
+            .sleep(250)
             .end()
 
          // Check that the status update was posted correctly...
@@ -195,6 +197,7 @@ define(["intern!object",
             TestCommon.postCoverageResults(browser);
          });
       },
+
       'Add Favourite Test': function() {
          var browser = this.remote;
          var testname = "Add Favourite";
@@ -204,9 +207,8 @@ define(["intern!object",
 
             .findByCssSelector("#SITES_MENU_text")
                .click()
+               .sleep(500)
                .end()
-               .sleep(2000)
-
 
             .findByCssSelector("#SITES_MENU_ADD_FAVOURITE_text")
                .click()
@@ -228,6 +230,7 @@ define(["intern!object",
                TestCommon.postCoverageResults(browser);
             });
       },
+
       'Remove Favourite Test': function() {
          var browser = this.remote;
          var testname = "Remove Favourite";
@@ -237,8 +240,8 @@ define(["intern!object",
             
             .findByCssSelector("#SITES_MENU_text")
                .click()
+               .sleep(500)
                .end()
-               .sleep(2000)
 
             .findByCssSelector("#SITES_MENU_REMOVE_FAVOURITE_text")
                .click()
