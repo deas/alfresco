@@ -1664,17 +1664,27 @@ public class SolrInformationServer implements InformationServer, QueryConstants
             // Gets the new content docid and compares to that of the cachedDoc to mark the content as clean/dirty
             String fldName = getSolrFieldNameForContentPropertyMetadata(propertyQName, 
                         AlfrescoSolrDataModel.ContentFieldType.DOCID);
-            long cachedDocContentDocid = Long.valueOf(String.valueOf(cachedDoc.getFieldValue(fldName)));
-            long currentContentDocid = contentPropertyValue.getId();
-            // If we have used out of date content we mark it as dirty
-            // Otherwise we leave it alone - it could already be marked as dirty/New and require an update
+            
             if(newDoc.getFieldValue(FIELD_FTSSTATUS) == null)
             {
                 newDoc.addField(FIELD_FTSSTATUS, cachedDoc.getFieldValue(FIELD_FTSSTATUS));
             }
-            if (cachedDocContentDocid != currentContentDocid)
+            
+            if(cachedDoc.getFieldValue(fldName) != null)
             {
-                // The cached content is out of date
+                long cachedDocContentDocid = Long.valueOf(String.valueOf(cachedDoc.getFieldValue(fldName)));
+                long currentContentDocid = contentPropertyValue.getId();
+                // If we have used out of date content we mark it as dirty
+                // Otherwise we leave it alone - it could already be marked as dirty/New and require an update
+                
+                if (cachedDocContentDocid != currentContentDocid)
+                {
+                    // The cached content is out of date
+                    markFTSStatus(newDoc, FTSStatus.Dirty);
+                }
+            }
+            else
+            {
                 markFTSStatus(newDoc, FTSStatus.Dirty);
             }
         }
