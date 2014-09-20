@@ -314,7 +314,7 @@ public class FacetedSearchPage extends SharePage implements SearchResultPage
      */
     public int getResultCount()
     {
-        String val = drone.find(By.cssSelector("#FCTSRCH_RESULTS_MENU_BAR span.alfresco-html-Label.bold")).getText();
+        String val = drone.find(By.cssSelector("#FCTSRCH_RESULTS_MENU_BAR>div>div>div>span>b")).getText();
         return Integer.valueOf(val).intValue();
     }
     /**

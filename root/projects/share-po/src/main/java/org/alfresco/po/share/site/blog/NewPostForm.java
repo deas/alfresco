@@ -31,8 +31,7 @@ public class NewPostForm extends AbstractPostForm
         elementRender(timer,
             getVisibleRenderElement(TITLE_FIELD),
             getVisibleRenderElement(DEFAULT_SAVE),
-            getVisibleRenderElement(PUBLISH_INTERNALLY),
-            getVisibleRenderElement(PUBLISH_INTERNALLY_EXTERNALLY),
+            getVisibleRenderElement(PUBLISH_INTERNALLY),            
             getVisibleRenderElement(CANCEL_BTN));
 
         return this;
@@ -68,23 +67,5 @@ public class NewPostForm extends AbstractPostForm
             throw new PageException("Unable to find Save button");
         }
     }
-
-    /**
-     * Method for clicking Publish Externally button
-     */
-    protected PostViewPage clickPublishExternally()
-    {
-        WebElement saveButton = drone.findAndWait(PUBLISH_INTERNALLY_EXTERNALLY);
-        try
-        {
-            saveButton.click();
-            waitUntilAlert(5);
-            return new PostViewPage(drone).render();
-        }
-        catch (NoSuchElementException e)
-        {
-            throw new PageException("Unable to find Save button");
-        }
-    }
-
+    
 }

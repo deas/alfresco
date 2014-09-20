@@ -32,7 +32,7 @@ public class PreViewPopUpPage extends SharePage
 	
 	@RenderWebElement	
 	private static final By PREVIEW_TITLE = By.cssSelector("div[class$='dijitDialogTitleBar']>span[class$=dijitDialogTitle]");	
-	private static final By PREVIEW_CLOSE_BUTTON = By.cssSelector("div[class$='dijitDialogTitleBar']>span[class$=dijitDialogTitle]");
+	private static final By PREVIEW_CLOSE_BUTTON = By.cssSelector("div[class='footer']>span>span>span>span[class='dijitReset dijitInline dijitButtonText']");
 	private static final Log logger = LogFactory.getLog(PreViewPopUpPage.class);	
 	
 	private WebElement closeButton;

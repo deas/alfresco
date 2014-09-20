@@ -6,10 +6,15 @@ import java.util.List;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -17,7 +22,7 @@ import org.openqa.selenium.WebElement;
  * This is still not completed since the development is in progress
  * @author Charu
  */
-public class FacetedSearchView
+public class FacetedSearchView  
 {
     /** Constants. */
     private static final By FACETED_SEARCH_RESULTS_MENU_BAR = By.cssSelector("div#FCTSRCH_RESULTS_MENU_BAR");
@@ -28,7 +33,9 @@ public class FacetedSearchView
     private static final By CONFIGURE_VIEW_ITEMS = By.cssSelector("div#DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP td[class='dijitReset dijitMenuItemLabel']");    
     private static final By SIMPLE_VIEW_RESULTS = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell");
     private static final By GALLERY_VIEW_RESULTS = By.cssSelector("div[class='displayName']");
-
+    private static final String DISPLAY_NAMES = ".displayName";    
+    private static final By GALLERY_VIEW_ICON = By.cssSelector("div[class='selectBar share-hidden']>div>div>div>div>div");
+    private static Log logger = LogFactory.getLog(FacetedSearchView.class);
     
     private WebDrone drone;
     private WebElement resultsElement;
@@ -37,7 +44,7 @@ public class FacetedSearchView
     private WebElement configureViewButton;
     private List<WebElement> menuElements = new ArrayList<WebElement>();
     private WebElement simpleViewResults;
-    private WebElement galleryViewResults;
+    private WebElement galleryViewResults;    
 
     /**
      * Instantiates a new faceted search View.
@@ -207,4 +214,43 @@ public class FacetedSearchView
         this.resultsElement.click();
         this.menuElements.clear();
     }
+    
+    /**
+     * Click on the GalleryIcon by name
+     *
+     * @param name
+     * @return GalleryViewPopupPage
+     */
+    public GalleryViewPopupPage clickGalleryIconByName(String name)
+    {
+        WebDroneUtil.checkMandotaryParam("Name", name);
+        
+    	try {
+        	List<WebElement> displayNames = drone.findAll(By.cssSelector(DISPLAY_NAMES));
+			{
+			    for(WebElement results : displayNames)
+			    {
+			        if (results.getText().equalsIgnoreCase(name))
+			        {			        	
+			        	drone.mouseOverOnElement(results);
+			            WebElement element = drone.findFirstDisplayedElement(GALLERY_VIEW_ICON);
+			            drone.mouseOver(element);
+			            element.click();
+			        	return new GalleryViewPopupPage(drone);
+			        }
+			    }
+			}
+		} 
+		catch (TimeoutException e)
+        {
+            logger.error("Unable to get the name : ", e);
+        }
+
+        throw new PageOperationException("Unable to get the name  : ");			
+        
+    }    
+    
+
 }
+
+ 

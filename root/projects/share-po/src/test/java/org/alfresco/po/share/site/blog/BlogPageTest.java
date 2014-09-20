@@ -14,8 +14,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import static org.alfresco.po.share.site.blog.ConfigureBlogPage.TypeOptions.WORDPRESS;
 import static org.testng.Assert.*;
 
 /**
@@ -70,16 +68,7 @@ public class BlogPageTest extends AbstractSiteDashletTest
         postViewPage = blogPage.createPostInternally(text, text).render();
         assertNotNull(postViewPage);
         assertTrue(postViewPage.verifyPostExists(text));
-    }
-
-    @Test(dependsOnMethods = "configureExternalWordpressBlog")
-    public void createBlogPostExternally()
-    {
-        assertTrue(blogPage.isNewPostEnabled());
-        postViewPage = blogPage.createPostExternally(externalTitle, externalMessage).render();
-        assertNotNull(postViewPage);
-        assertTrue(postViewPage.verifyPostExists(externalTitle));
-    }
+    }   
 
     @Test(dependsOnMethods = "addBlogPage", priority = 2)
     public void saveAsDraft()
@@ -97,15 +86,7 @@ public class BlogPageTest extends AbstractSiteDashletTest
         postViewPage = blogPage.openBlogPost(text).render();
         assertNotNull(postViewPage);
         assertTrue(postViewPage.verifyPostExists(text));
-    }
-
-    @Test(dependsOnMethods = "addBlogPage", priority = 1)
-    public void configureExternalWordpressBlog()
-    {
-        assertTrue(blogPage.isConfigureBlogDisplayed());
-        blogPage.configureExternalBlog(WORDPRESS, text, text, blogUrl, blogUsername, blogPassword);
-        assertNotNull(blogPage);
-    }
+    }   
 
     @Test(dependsOnMethods = "openPost", enabled=false)
     public void createPostComment()

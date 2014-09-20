@@ -23,8 +23,7 @@ public class EditPostForm extends AbstractPostForm
     {
         elementRender(timer,
             getVisibleRenderElement(TITLE_FIELD),
-            getVisibleRenderElement(DEFAULT_SAVE),
-            getVisibleRenderElement(PUBLISH_INTERNALLY_EXTERNALLY),
+            getVisibleRenderElement(DEFAULT_SAVE),           
             getVisibleRenderElement(CANCEL_BTN));
 
         return this;

@@ -191,25 +191,7 @@ public class BlogPage extends SitePage
             throw new ShareException("Unable to find the button");
         }
     }
-
-    /**
-     * Method to click Configure External Blog button
-     *
-     * @return Configure Blog page obj
-     */
-    private ConfigureBlogPage clickConfigureBlog()
-    {
-        try
-        {
-            drone.findAndWait(CONFIGURE_BLOG).click();
-            return new ConfigureBlogPage(drone).render();
-        }
-        catch (NoSuchElementException nse)
-        {
-            throw  new ShareException("Unable to find " + CONFIGURE_BLOG + " button");
-        }
-    }
-
+       
     /**
      * Method to Configure External Blog (wordpress, typepad)
      *
@@ -220,7 +202,7 @@ public class BlogPage extends SitePage
      * @param userName
      * @param password
      * @return Blog page
-     */
+     *//*
     public void configureExternalBlog(ConfigureBlogPage.TypeOptions option, String name, String desc, String url,
         String userName, String password)
     {
@@ -233,21 +215,6 @@ public class BlogPage extends SitePage
         configureBlogPage.inputPassword(password);
         configureBlogPage.clickOk();
         waitUntilAlert(7);
-    }
-
-    /**
-     * Method to verify whether configure External Blog is enabled
-     *
-     * @return true if displayed
-     */
-    public boolean isConfigureBlogDisplayed ()
-    {
-        String someButton = drone.findAndWait(CONFIGURE_BLOG).getAttribute("class");
-        if (someButton.contains("yui-button-disabled"))
-        {
-            return false;
-        }
-        else return true;
     }
 
     /**
@@ -285,23 +252,7 @@ public class BlogPage extends SitePage
             throw new ShareException("Unable to click the link");
         }
         return new PostViewPage(drone);
-    }
-
-    /**
-     * Method to create post externally
-     * @param titleField
-     * @param txtLines
-     * @return PostViewPage
-     */
-    public PostViewPage createPostExternally (String titleField, String txtLines)
-    {
-        BlogPage blogPage = new BlogPage(drone);
-        NewPostForm newPostForm = blogPage.clickNewPost();
-
-        newPostForm.setTitleField(titleField);
-        newPostForm.insertText(txtLines);
-        return newPostForm.clickPublishExternally();
-    }
+    }   
 
     /**
      * Method to retrieve the posts count
