@@ -252,7 +252,7 @@ public class SolrInformationServer implements InformationServer
             SolrQueryResponse response = cloud.getResponse(selectRequestHandler, request, params);
             NamedList facetCounts = (NamedList) response.getValues().get("facet_counts");
             NamedList facetFields = (NamedList) facetCounts.get("facet_fields");
-            NamedList<Long> ftsStatusCounts = (NamedList) facetFields.get(FIELD_FTSSTATUS);
+            NamedList<Integer> ftsStatusCounts = (NamedList) facetFields.get(FIELD_FTSSTATUS);
             long cleanCount = this.getSafeCount(ftsStatusCounts, FTSStatus.Clean.toString());
             report.add("Node count with FTSStatus Clean", cleanCount);
             
@@ -301,7 +301,7 @@ public class SolrInformationServer implements InformationServer
         try
         {
             request = getLocalSolrQueryRequest();
-            NamedList<Long> docTypeCounts = this.getFacets(request, "*:*", FIELD_DOC_TYPE, 0);
+            NamedList<Integer> docTypeCounts = this.getFacets(request, "*:*", FIELD_DOC_TYPE, 0);
 
             // TX
             IndexHealthReport report = new IndexHealthReport(this);
@@ -367,6 +367,7 @@ public class SolrInformationServer implements InformationServer
                         });
             long unindexedDocCountInIndex = getSafeCount(docTypeCounts, DOC_TYPE_UNINDEXED_NODE);
             report.setUnindexedDocCountInIndex(unindexedDocCountInIndex);
+            return report;
         }
         finally
         {
@@ -375,8 +376,6 @@ public class SolrInformationServer implements InformationServer
                 request.close();
             }
         }
-        
-        return new IndexHealthReport(this);
     }
 
     @Override
@@ -386,7 +385,7 @@ public class SolrInformationServer implements InformationServer
         try
         {
             request = getLocalSolrQueryRequest();
-            NamedList<Long> docTypeCounts = this.getFacets(request, "*:*", FIELD_DOC_TYPE, 0);
+            NamedList<Integer> docTypeCounts = this.getFacets(request, "*:*", FIELD_DOC_TYPE, 0);
             IndexHealthReport report = new IndexHealthReport(this);
             TransactionInfoReporter aclTxReporter = new TransactionInfoReporter(report)
             {
@@ -438,10 +437,10 @@ public class SolrInformationServer implements InformationServer
             while (batchStartId <= maxId)
             {
                 long iterationStart = batchStartId;
-                NamedList<Long> idCounts = this.getFacets(request, 
+                NamedList<Integer> idCounts = this.getFacets(request, 
                             field + ":[" + batchStartId + " TO " + batchEndId + "]", 
                             field, 1); // Min count of 1 ensures that the id returned is in the index
-                for (Map.Entry<String, Long> idCount : idCounts)
+                for (Map.Entry<String, Integer> idCount : idCounts)
                 {
                     long idInIndex = Long.valueOf(idCount.getKey());
                     
@@ -468,7 +467,7 @@ public class SolrInformationServer implements InformationServer
                             }
                         }
                         
-                        if (idCount.getValue() > 1)
+                        if (idCount.getValue().intValue() > 1)
                         {
                             reporter.reportDuplicatedIdInIndex(idInIndex);
                         }
@@ -504,8 +503,8 @@ public class SolrInformationServer implements InformationServer
                 SetDuplicatesCommand cmd)
     {
         // A mincount of 2 checks for duplicates in solr
-        NamedList<Long> dbIdCounts = getFacets(request, FIELD_DOC_TYPE + ":" + docType, FIELD_DBID, 2);
-        for (Map.Entry<String, Long> dbId : dbIdCounts)
+        NamedList<Integer> dbIdCounts = getFacets(request, FIELD_DOC_TYPE + ":" + docType, FIELD_DBID, 2);
+        for (Map.Entry<String, Integer> dbId : dbIdCounts)
         {
             Long duplicatedDbId = Long.parseLong(dbId.getKey());
             cmd.execute(report, duplicatedDbId);
@@ -513,7 +512,7 @@ public class SolrInformationServer implements InformationServer
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private NamedList<Long> getFacets(SolrQueryRequest request, String query, String field, int minCount)
+    private NamedList<Integer> getFacets(SolrQueryRequest request, String query, String field, int minCount)
     {
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         params.set("q", query)
@@ -524,7 +523,7 @@ public class SolrInformationServer implements InformationServer
         SolrQueryResponse response = cloud.getResponse(selectRequestHandler, request, params);
         NamedList facetCounts = (NamedList) response.getValues().get("facet_counts");
         NamedList facetFields = (NamedList) facetCounts.get("facet_fields");
-        NamedList<Long> counts = (NamedList) facetFields.get(field);
+        NamedList<Integer> counts = (NamedList) facetFields.get(field);
         return counts;
     }
     
@@ -664,9 +663,9 @@ public class SolrInformationServer implements InformationServer
         return this.dataModel.getAlfrescoModels();
     }
 
-    private long getSafeCount(NamedList<Long> counts, String countType)
+    private long getSafeCount(NamedList<Integer> counts, String countType)
     {
-        Long count = counts.get(countType);
+        Integer count = counts.get(countType);
         return (count == null ? 0 : count.longValue());
     }
     
