@@ -105,6 +105,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.pubDataCssSelector("POST_FORM", "tag", "tag1"))
             .then(function(elements) {
+               TestCommon.log(testname, "Check that tag value gets auto-completed and posted...");
                assert(elements.length === 1, "Test #1c - The tag value was not auto-completed and posted");
             })
             .end()
