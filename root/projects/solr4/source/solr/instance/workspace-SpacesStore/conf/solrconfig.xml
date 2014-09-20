@@ -458,7 +458,7 @@
          be based on the last SolrCore to be initialized.
          
       -->
-    <maxBooleanClauses>${solr.maxBooleanClauses}</maxBooleanClauses>
+    <maxBooleanClauses>${solr.maxBooleanClauses:10000}</maxBooleanClauses>
 
 
     <!-- Solr Internal Query Caches
@@ -493,9 +493,9 @@
                and old cache.  
       -->
     <filterCache class="solr.FastLRUCache"
-                 size="${solr.filterCache.size}"
-                 initialSize="${solr.filterCache.initialSize}"
-                 autowarmCount="${solr.filterCache.autowarmCount}"/>
+                 size="${solr.filterCache.size:64}"
+                 initialSize="${solr.filterCache.initialSize:64}"
+                 autowarmCount="${solr.filterCache.autowarmCount:128}"/>
 
     <!-- Query Result Cache
          
@@ -503,9 +503,9 @@
          (DocList) based on a query, a sort, and the range of documents requested.  
       -->
     <queryResultCache class="solr.LRUCache"
-                     size="${solr.queryResultCache.size}"
-                     initialSize="${solr.queryResultCache.initialSize}"
-                     autowarmCount="${solr.queryResultCache.autowarmCount}"/>
+                     size="${solr.queryResultCache.size:1024}"
+                     initialSize="${solr.queryResultCache.initialSize:1024}"
+                     autowarmCount="${solr.queryResultCache.autowarmCount:0}"/>
    
     <!-- Document Cache
 
@@ -514,9 +514,9 @@
          this cache will not be autowarmed.  
       -->
     <documentCache class="solr.LRUCache"
-                   size="${solr.documentCache.size}"
-                   initialSize="${solr.documentCache.initialSize}"
-                   autowarmCount="${solr.documentCache.autowarmCount}"/>
+                   size="${solr.documentCache.size:64}"
+                   initialSize="${solr.documentCache.initialSize:64}"
+                   autowarmCount="${solr.documentCache.autowarmCount:0}"/>
     
     <!-- custom cache currently used by block join --> 
     <cache name="perSegFilter"
@@ -561,37 +561,37 @@
 
     <cache name="alfrescoOwnerCache"
               class="solr.LRUCache"
-              size="${solr.ownerCache.size}"
-              initialSize="${solr.ownerCache.initialSize}"
-              autowarmCount="${solr.ownerCache.autowarmCount}"
+              size="${solr.ownerCache.size:4096}"
+              initialSize="${solr.ownerCache.initialSize:1024}"
+              autowarmCount="${solr.ownerCache.autowarmCount:0}"
               />
               
     <cache name="alfrescoReaderCache"
               class="solr.LRUCache"
-              size="${solr.readerCache.size}"
-              initialSize="${solr.readerCache.initialSize}"
-              autowarmCount="${solr.readerCache.autowarmCount}"
+              size="${solr.readerCache.size:4096}"
+              initialSize="${solr.readerCache.initialSize:1024}"
+              autowarmCount="${solr.readerCache.autowarmCount:0}"
               />
               
     <cache name="alfrescoDeniedCache"
               class="solr.LRUCache"
-              size="${solr.deniedCache.size}"
-              initialSize="${solr.deniedCache.initialSize}"
-              autowarmCount="${solr.deniedCache.autowarmCount}"
+              size="${solr.deniedCache.size:4096}"
+              initialSize="${solr.deniedCache.initialSize:1024}"
+              autowarmCount="${solr.deniedCache.autowarmCount:0}"
               />
               
     <cache name="alfrescoAuthorityCache"
               class="solr.LRUCache"
-              size="${solr.authorityCache.size}"
-              initialSize="${solr.authorityCache.initialSize}"
-              autowarmCount="${solr.authorityCache.autowarmCount}"
+              size="${solr.authorityCache.size:64}"
+              initialSize="${solr.authorityCache.initialSize:64}"
+              autowarmCount="${solr.authorityCache.autowarmCount:0}"
               />
               
     <cache name="alfrescoPathCache"
               class="solr.LRUCache"
-              size="${solr.pathCache.size}"
-              initialSize="${solr.pathCache.initialSize}"
-              autowarmCount="${solr.pathCache.autowarmCount}"
+              size="${solr.pathCache.size:64}"
+              initialSize="${solr.pathCache.initialSize:64}"
+              autowarmCount="${solr.pathCache.autowarmCount:128}"
               />
               
     <!-- Lazy Field Loading
@@ -630,12 +630,12 @@
         then documents 0 through 49 will be collected and cached.  Any further
         requests in that range can be satisfied via the cache.  
      -->
-   <queryResultWindowSize>${solr.queryResultWindowSize}</queryResultWindowSize>
+   <queryResultWindowSize>${solr.queryResultWindowSize:200}</queryResultWindowSize>
 
    <!-- Maximum number of documents to cache for any entry in the
         queryResultCache. 
      -->
-   <queryResultMaxDocsCached>${solr.queryResultMaxDocsCached}</queryResultMaxDocsCached>
+   <queryResultMaxDocsCached>${solr.queryResultMaxDocsCached:2000}</queryResultMaxDocsCached>
 
    <!-- Query Related Event Listeners
 

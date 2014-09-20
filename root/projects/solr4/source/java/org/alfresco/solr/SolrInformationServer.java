@@ -200,7 +200,7 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         this.solrContentStore = solrContentStore;
 
         Properties p = core.getResourceLoader().getCoreProperties();
-        alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
+        alfrescoVersion = p.getProperty("alfresco.version", "5.0.0");
         transformContent = Boolean.parseBoolean(p.getProperty("alfresco.index.transformContent", "true"));
         lag = Integer.parseInt(p.getProperty("alfresco.lag", "1000"));
         holeRetention = Integer.parseInt(p.getProperty("alfresco.hole.retention", "3600000"));

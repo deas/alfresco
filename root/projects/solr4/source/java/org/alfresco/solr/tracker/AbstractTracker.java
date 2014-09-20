@@ -77,7 +77,7 @@ public abstract class AbstractTracker implements Tracker
         this.coreName = coreName;
         this.infoSrv = informationServer;
 
-        storeRef = new StoreRef(p.getProperty("alfresco.stores"));
+        storeRef = new StoreRef(p.getProperty("alfresco.stores", "workspace://SpacesStore"));
         batchCount = Integer.parseInt(p.getProperty("alfresco.batch.count", "1000"));
         maxLiveSearchers =  Integer.parseInt(p.getProperty("alfresco.maxLiveSearchers", "2"));
         isSlave =  Boolean.parseBoolean(p.getProperty("enable.slave", "false"));
@@ -87,7 +87,7 @@ public abstract class AbstractTracker implements Tracker
         
         scheduler.schedule(this, coreName, p);
 
-        alfrescoVersion = p.getProperty("alfresco.version", "4.2.2");
+        alfrescoVersion = p.getProperty("alfresco.version", "5.0.0");
         log.info("Solr built for Alfresco version: " + alfrescoVersion);
     }
     
