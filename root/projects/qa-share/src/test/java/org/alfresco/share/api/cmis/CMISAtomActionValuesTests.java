@@ -235,42 +235,190 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
         applyACLTest(drone, thisFileName);
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Http Authentication is specified.
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/query
+     * 
+     * Put this in the Body:
+     * <?xml version="1.0" encoding="UTF-8" ?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/" xmlns:cmisra="http://docs.oasis-open.org/ns/cmis/restatom/200908/" xmlns:app="http://www.w3.org/2007/app">
+<cmis:statement>SELECT * FROM cmis:item</cmis:statement>
+</entry>
+     * 
+     * Expected:
+     * Header Status Code: 400 Bad Request
+     * Body contains CmisInvalidArgumentException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
     public void ALF_3073() 
     {
         super.cmisItemTypeShouldNotBeQueryable();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Http Authentication is specified.
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/query
+     * 
+     * Put this in the Body:
+     * <?xml version="1.0" encoding="UTF-8" ?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/" xmlns:cmisra="http://docs.oasis-open.org/ns/cmis/restatom/200908/" xmlns:app="http://www.w3.org/2007/app">
+<cmis:statement>SELECT * FROM cm:person</cmis:statement>
+</entry>
+     * 
+     * Expected:
+     * Header Status Code: 200 OK
+     * Body contains cm:homeFolder, abeecher, mjackson, admin, guest
+     */
     @Test
     public void ALF_3074()
     {
         super.cmPersonShouldFindPeople();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Http Authentication is specified.
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/query
+     * 
+     * Put this in the Body:
+     * <?xml version="1.0" encoding="UTF-8" ?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/" xmlns:cmisra="http://docs.oasis-open.org/ns/cmis/restatom/200908/" xmlns:app="http://www.w3.org/2007/app">
+<cmis:statement>SELECT * FROM cm:person where cm:userName like '%ee%'</cmis:statement>
+</entry>
+     * 
+     * Expected:
+     * Header Status Code: 200 OK
+     * Body contains contains abeecher for Enterprise and engineering for Cloud
+     */
     @Test
     public void ALF_3075()
     {
         super.cmPersonWithWhereClauseShouldFindPerson();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) PUT HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as abeecher,abeecher
+     * 5) Get the objectid and location of abeecher via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/entry?id=dc103838-645f-43c1-8a2a-bc187e13c343
+     * 
+     * Put this in the Body:
+     * <?xml version='1.0' encoding='UTF-8'?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/" xmlns:cmisra="http://docs.oasis-open.org/ns/cmis/restatom/200908/">
+<cmisra:object>
+<cmis:properties>
+<cmis:propertyString propertyDefinitionId="cm:location">
+<cmis:value>Tilbury, UK a change</cmis:value>
+</cmis:propertyString>
+</cmis:properties>
+</cmisra:object>
+</atom:entry>
+     * 
+     * Expected:
+     * Header Status Code: 200 OK
+     * Body contains the changed location "Tilbury, UK a change"
+     */
     @Test
     public void ALF_3076()
     {
         super.cmPersonCanBeUpdatedBySelf();
     }
-
+    
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) PUT HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as abeecher,abeecher
+     * 5) Get the objectid and location of admin via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/entry?id=c16a8bde-631d-4e0d-822d-c8fb267d7efb
+     * 
+     * Put this in the Body:
+     * <?xml version='1.0' encoding='UTF-8'?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/" xmlns:cmisra="http://docs.oasis-open.org/ns/cmis/restatom/200908/">
+<cmisra:object>
+<cmis:properties>
+<cmis:propertyString propertyDefinitionId="cm:location">
+<cmis:value>Tilbury, UK a change</cmis:value>
+</cmis:propertyString>
+</cmis:properties>
+</cmisra:object>
+</atom:entry>
+     * 
+     * Expected:
+     * Header Status Code: 400 Bad Request
+     * Body contains CmisUnauthorizedException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
     public void ALF_3077()
     {
         super.cmPersonCannotBeUpdatedByUnauthorizedUser();
     }
-
+    
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) DELETE HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as abeecher,abeecher
+     * 5) Get the objectid and location of admin via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/entry?id=c16a8bde-631d-4e0d-822d-c8fb267d7efb
+     * 
+     * Put nothing in the Body.
+     * 
+     * Expected:
+     * Header Status Code: 400 Bad Request
+     * Body contains CmisUnauthorizedException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
     public void ALF_3078()
     {
         super.cmPersonCannotBeDeletedByUnauthorizedUser();
     }
-    
+
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) DELETE HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as admin,admin
+     * 5) Get the objectid and location of abeecher via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom/entry?id=dc103838-645f-43c1-8a2a-bc187e13c343
+     * 
+     * Put nothing in the Body.
+     * 
+     * Expected:
+     * Header Status Code: 500 Internal Server Error
+     * Body contains CmisRuntimeException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
     public void ALF_3079() 
     {
