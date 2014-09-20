@@ -21,7 +21,7 @@
             <div class="finder-wrapper">
                <@markup id="searchBar">
                <div class="search-bar theme-bg-color-3">
-                  <div class="search-text"><input type="text" id="${el}-search-text" name="-" value="" maxlength="256" tabindex="0"/></div>
+                  <div class="search-text"><input type="text" id="${el}-search-text" name="-" value="" maxlength="256" tabindex="0" placeholder="${msg('help.title')}"/></div>
                   <div class="search-button">
                      <span id="${el}-search-button" class="yui-button yui-push-button"><span class="first-child"><button>${msg("button.search")}</button></span></span>
                   </div>
@@ -30,7 +30,6 @@
 
                <@markup id="searchHelp">
                <div id="${el}-help" class="yui-g theme-bg-color-2 help hidden">
-                  <span class="title">${msg("help.title")}</span>
                   <span>${msg("help.content")}</span>
                </div>
                </@markup>
