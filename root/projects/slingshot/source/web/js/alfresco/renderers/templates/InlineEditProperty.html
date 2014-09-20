@@ -1,6 +1,6 @@
 <span class="alfresco-renderers-InlineEditProperty ${renderedValueClass}" data-dojo-attach-event="onmouseover:showEditIcon,onmouseout:hideEditIcon">
    <span data-dojo-attach-point="renderedValueNode" data-dojo-attach-event="onkeypress:onKeyPress" class="${renderedValueClass}" tabindex="0">${renderedValuePrefix}${renderedValue}${renderedValueSuffix}</span>
-   <span data-dojo-attach-point="editNode" class="editor hidden" data-dojo-attach-event="onkeypress:onValueEntryKeyPress">
+   <span data-dojo-attach-point="editNode" class="editor hidden" data-dojo-attach-event="onkeypress:onValueEntryKeyPress,onclick:suppressFocusRequest">
       <span data-dojo-attach-point="formWidgetNode"></span>
       <span class="action save" data-dojo-attach-point="saveLinkNode" data-dojo-attach-event="ondijitclick:onSave" tabindex="0">${saveLabel}</span>
       <span class="action cancel" data-dojo-attach-event="ondijitclick:onCancel" tabindex="0">${cancelLabel}</span>

@@ -510,6 +510,22 @@ define(["dojo/_base/declare",
          this.getFormWidget().setValue(this.renderedValue);
          this.renderedValueNode.focus();
       },
+
+      /**
+       * A common use of this widget is to be placed inside a 
+       * [_MultiItemRendererMixin]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin}
+       * that listens for click events on any of the DOM elements inside each row so that it can focus
+       * on the correct item when clicked on. Therefore it is necessary to prevent focus being "stolen" whilst
+       * clicking on the edit control so this function handles click events and prevents them from bubbling
+       * any further out through the DOM.
+       *
+       * @instance
+       * @param {object} evt The click event
+       */
+      suppressFocusRequest: function alfresco_renderers_InlineEditProperty__suppressFocusRequest(evt) {
+         this.alfLog("log", "Suppress click event");
+         event.stop(evt);
+      },
       
       /**
        * TODO: Replace with CSS3
