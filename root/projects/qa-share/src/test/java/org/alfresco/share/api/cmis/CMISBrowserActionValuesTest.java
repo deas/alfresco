@@ -235,42 +235,163 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
     
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Http Authentication is specified.
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser?cmisaction=query
+     * 
+     * Put this in the Body:
+     * statement=SELECT * FROM cmis:item
+     * 
+     * Expected:
+     * Header Status Code: 400 Bad Request 
+     * Body contains CmisInvalidArgumentException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
     public void ALF_3131() 
     {
         super.cmisItemTypeShouldNotBeQueryable();
     }
-    
+
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Http Authentication is specified.
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser?cmisaction=query
+     * 
+     * Put this in the Body:
+     * statement=SELECT * FROM cm:person
+     * 
+     * Expected:
+     * Header Status Code: 200 OK
+     * Body contains cm:homeFolder, abeecher, mjackson, admin, guest
+     */
     @Test
     public void ALF_3132()
     {
         super.cmPersonShouldFindPeople();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Http Authentication is specified.
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser?cmisaction=query
+     * 
+     * Put this in the Body:
+     * statement=SELECT * FROM cm:person where cm:userName like '%25ee%25'
+     * 
+     * Expected:
+     * Header Status Code: 200 OK
+     * Body contains abeecher for Enterprise and engineering for Cloud
+     */
     @Test
     public void ALF_3133()
     {
         super.cmPersonWithWhereClauseShouldFindPerson();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as abeecher,abeecher
+     * 5) Get the objectid and location of abeecher via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser/root?cmisaction=update
+     * 
+     * Put this in the Body:
+     * objectid=dc103838-645f-43c1-8a2a-bc187e13c343&propertyId[0]=cm:location&propertyValue[0]=Tilbury, UK a change
+     * 
+     * Expected:
+     * Header Status Code: 200 OK
+     * Body contains the changed location "Tilbury, UK a change"
+     */
     @Test
     public void ALF_3134()
     {
         super.cmPersonCanBeUpdatedBySelf();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as abeecher,abeecher
+     * 5) Get the objectid and location of admin via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser/root?cmisaction=update
+     * 
+     * Put this in the Body:
+     * objectid=c16a8bde-631d-4e0d-822d-c8fb267d7efb&propertyId[0]=cm:location&propertyValue[0]=Tilbury, UK a change
+     * 
+     * Expected:
+     * Header Status Code: 400 Bad Request 
+     * Body contains CmisUnauthorizedException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
     public void ALF_3135()
     {
         super.cmPersonCannotBeUpdatedByUnauthorizedUser();
     }
 
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as mjackson,mjackson
+     * 5) Get the objectid and location of abeecher via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser/root?objectid=dc103838-645f-43c1-8a2a-bc187e13c343&cmisaction=delete
+     * 
+     * Put nothing in the Body.
+     * 
+     * Expected:
+     * Header Status Code: 400 Bad Request 
+     * Body contains CmisUnauthorizedException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
     public void ALF_3136()
     {
         super.cmPersonCannotBeDeletedByUnauthorizedUser();
     }
-    
+
+    /**
+     * Preconditions
+     * 1) Alfresco started
+     * 2) RESTClient is opened (for example, use Firefox RESTClient plugin).
+     * 3) POST HTTP method is specified.
+     * 4) Basic Authentication is specified, and user is logged in as admin,admin
+     * 5) Get the objectid and location of abeecher via a cmis query
+     * 
+     * Put this in the URL:
+     * http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser/root?objectid=dc103838-645f-43c1-8a2a-bc187e13c343&cmisaction=delete
+     * 
+     * Put nothing in the Body.
+     * 
+     * Expected:
+     * Header Status Code: 500 Internal Server Error 
+     * Body contains CmisRuntimeException
+     */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
     public void ALF_3137() 
     {
