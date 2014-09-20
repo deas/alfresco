@@ -119,7 +119,7 @@ define(["intern!object",
                   // Calculate what the width should be...
                   // 75% of the the width of the REMAINDER of the horizontal widget parent minus all the margins and the pixel width widget
                   var x = width.substring(0, width.lastIndexOf("px"));
-                  var shouldBe = (testableDimensions.horiz2 - 90 - 300 - 3) * 0.75;
+                  var shouldBe = (testableDimensions.horiz2 - 90 - 300 - 3 - 30) * 0.75;
                   TestCommon.log(testname,"Test width of horizontal element by remaining percentage");
                   assert(shouldBe == x, "Test #4c - The width was not set correctly by remaining percentage: " + x + " (should be: " + shouldBe + ")");
                })
@@ -144,7 +144,7 @@ define(["intern!object",
                .getComputedStyle("width")
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));
-                  var shouldBe = (testableDimensions.horiz3 - 2) * 0.5;
+                  var shouldBe = (testableDimensions.horiz3 - 2 - 30) * 0.5;
                   TestCommon.log(testname,"Test space is evenly divided");
                   assert(shouldBe == x, "Test #4e - The width was not set correctly by evenly dividing space, was: " + x + ", should be: " + shouldBe);
                })
@@ -154,7 +154,7 @@ define(["intern!object",
                .getComputedStyle("width")
                .then(function(width) {
                   var x = width.substring(0, width.lastIndexOf("px"));
-                  var shouldBe = (testableDimensions.horiz3 - 2) * 0.5;
+                  var shouldBe = (testableDimensions.horiz3 - 2 - 30) * 0.5;
                   TestCommon.log(testname,"Test space is evenly divided");
                   assert(shouldBe == x, "Test #4f - The width was not set correctly by evenly dividing space");
                })
