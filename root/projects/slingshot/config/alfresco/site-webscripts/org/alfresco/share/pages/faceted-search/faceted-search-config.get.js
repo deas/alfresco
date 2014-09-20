@@ -53,7 +53,7 @@ function getFormDefinition(canEditFilterId) {
          },
          {
             validation: "regex",
-            regex: "([\"\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)",
+            regex: "([\"\*\\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)",
             errorMessage: msg.get("faceted-search-config.filterId.error.invalid"),
             invertRule: true
          }
