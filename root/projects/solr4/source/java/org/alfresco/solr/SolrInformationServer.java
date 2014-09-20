@@ -138,7 +138,8 @@ public class SolrInformationServer implements InformationServer
     public static final String REQUEST_HANDLER_SELECT = "/select";
     public static final String REQUEST_HANDLER_ALFRESCO = "/alfresco";
     public static final String REQUEST_HANDLER_GET = "/get";
-    public static final String RESPONSE_DEFAULT = "response";
+    public static final String RESPONSE_DEFAULT_IDS = "response";
+    public static final String RESPONSE_DEFAULT_ID = "doc";
     
     public static final String PREFIX_ERROR = "ERROR-";
     
@@ -552,7 +553,7 @@ public class SolrInformationServer implements InformationServer
                 for (SolrDocument doc : docList)
                 {
                     String id = getFieldValueString(doc, FIELD_SOLR4_ID);
-                    TenantAclIdDbId tenantAndDbId = AlfrescoSolrDataModel.decodeSolr4id(id);
+                    TenantAclIdDbId tenantAndDbId = AlfrescoSolrDataModel.decodeNodeDocumentId(id);
                     docIds.add(tenantAndDbId);
                 }
             }
@@ -978,7 +979,7 @@ public class SolrInformationServer implements InformationServer
             
             @SuppressWarnings("rawtypes")
             NamedList values = rsp.getValues();
-            SolrDocumentList response = (SolrDocumentList)values.get(RESPONSE_DEFAULT);
+            SolrDocumentList response = (SolrDocumentList)values.get(RESPONSE_DEFAULT_IDS);
             SolrDocument acl = null;
             SolrDocument tx = null;
             if(response.getNumFound() > 0)
@@ -1147,19 +1148,14 @@ public class SolrInformationServer implements InformationServer
         try
         {
             request = getLocalSolrQueryRequest();
-            ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
-            params.set("q", FIELD_DOC_TYPE + ":" + DOC_TYPE_ACL_TX)
-                .set("sort", FIELD_ACLTXID + " desc")
-                .set("rows", 1);
-            SolrDocumentList solrDocumentList = cloud.getSolrDocumentList(selectRequestHandler, request, params);
-            AclChangeSet maxAclChangeSet;
-            if (solrDocumentList != null && !solrDocumentList.isEmpty())
+            SolrDocument aclState = getState(request, "TRACKER!STATE!ACLTX");
+            AclChangeSet maxAclChangeSet = null;
+            if (aclState != null)
             {
-                SolrDocument solrDocument = solrDocumentList.get(0);
-                long id = getFieldValueLong(solrDocument, FIELD_ACLTXID);
-                long commitTime = getFieldValueLong(solrDocument, FIELD_ACLTXCOMMITTIME);
+                long id = this.getFieldValueLong(aclState, FIELD_S_ACLTXID);
+                long commitTime = this.getFieldValueLong(aclState, FIELD_S_ACLTXCOMMITTIME);
                 int aclCount = -1; // Irrelevant for this method
-                maxAclChangeSet = new AclChangeSet(id, commitTime, aclCount);
+                maxAclChangeSet = new AclChangeSet(id, commitTime, aclCount );
             }
             else 
             {
@@ -1173,19 +1169,57 @@ public class SolrInformationServer implements InformationServer
         }
     }
     
+    private SolrDocument getState(SolrQueryRequest request, String id)
+    {
+        ModifiableSolrParams newParams = new ModifiableSolrParams(request.getParams());
+        newParams.set("id", id);
+        request.setParams(newParams);
+        SolrRequestHandler handler = core.getRequestHandler(REQUEST_HANDLER_GET);
+        SolrQueryResponse rsp = new SolrQueryResponse();
+        handler.handleRequest(request, rsp);
+        
+        @SuppressWarnings("rawtypes")
+        NamedList values = rsp.getValues();
+        SolrDocument state = (SolrDocument)values.get(RESPONSE_DEFAULT_ID);
+        return state;
+    }
+    
     public void putAclTransactionState(UpdateRequestProcessor processor, SolrQueryRequest request, AclChangeSet changeSet) throws IOException
     {
-        AddUpdateCommand cmd = new AddUpdateCommand(request);
-        cmd.overwrite = true;
-        SolrInputDocument input = new SolrInputDocument();
-        input.addField(FIELD_SOLR4_ID, "TRACKER!STATE!ACLTX");
-        input.addField(FIELD_VERSION, "0");
-        input.addField(FIELD_S_ACLTXID, changeSet.getId());
-        input.addField(FIELD_S_INACLTXID, changeSet.getId());
-        input.addField(FIELD_S_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
-        input.addField(FIELD_DOC_TYPE, DOC_TYPE_STATE);
-        cmd.solrDoc = input;
-        processor.processAdd(cmd);
+        String version;
+        SolrDocument aclState = getState(request, "TRACKER!STATE!ACLTX");
+        if (aclState != null)
+        {
+            long aclTxId = this.getFieldValueLong(aclState, FIELD_S_ACLTXID);
+            if (changeSet.getId() > aclTxId)
+            {
+                // Uses optimistic concurrency 
+                version = this.getFieldValueString(aclState, FIELD_VERSION);
+            }
+            else
+            {
+                version = null;  // Should not update in this case
+            }
+        }
+        else
+        {
+            version = "0";
+        }
+        
+        if (version != null)
+        {
+            AddUpdateCommand cmd = new AddUpdateCommand(request);
+            cmd.overwrite = true;
+            SolrInputDocument input = new SolrInputDocument();
+            input.addField(FIELD_SOLR4_ID, "TRACKER!STATE!ACLTX");
+            input.addField(FIELD_VERSION, version);
+            input.addField(FIELD_S_ACLTXID, changeSet.getId());
+            input.addField(FIELD_S_INACLTXID, changeSet.getId());
+            input.addField(FIELD_S_ACLTXCOMMITTIME, changeSet.getCommitTimeMs());
+            input.addField(FIELD_DOC_TYPE, DOC_TYPE_STATE);
+            cmd.solrDoc = input;
+            processor.processAdd(cmd);
+        }
     }
 
     @Override
@@ -1388,7 +1422,7 @@ public class SolrInformationServer implements InformationServer
         for (SolrDocument doc : docs)
         {
             String id = getFieldValueString(doc, FIELD_SOLR4_ID);
-            TenantAclIdDbId ids = AlfrescoSolrDataModel.decodeSolr4id(id);
+            TenantAclIdDbId ids = AlfrescoSolrDataModel.decodeNodeDocumentId(id);
             childIds.add(ids.dbId);
         }
         
@@ -2359,17 +2393,12 @@ public class SolrInformationServer implements InformationServer
         try
         {
             request = getLocalSolrQueryRequest();
-            ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
-            params.set("q", FIELD_DOC_TYPE + ":" + DOC_TYPE_TX)
-                .set("sort", FIELD_TXID + " desc")
-                .set("rows", 1);
-            SolrDocumentList solrDocumentList = cloud.getSolrDocumentList(selectRequestHandler, request, params);
-            Transaction maxTransaction;
-            if (solrDocumentList != null && !solrDocumentList.isEmpty())
+            SolrDocument aclState = getState(request, "TRACKER!STATE!TX");
+            Transaction maxTransaction = null;
+            if (aclState != null)
             {
-                SolrDocument solrDocument = solrDocumentList.get(0);
-                long id = getFieldValueLong(solrDocument, FIELD_TXID);
-                long commitTime = getFieldValueLong(solrDocument, FIELD_TXCOMMITTIME);
+                long id = this.getFieldValueLong(aclState, FIELD_S_TXID);
+                long commitTime = this.getFieldValueLong(aclState, FIELD_S_TXCOMMITTIME);
                 maxTransaction = new Transaction();
                 maxTransaction.setId(id);
                 maxTransaction.setCommitTimeMs(commitTime);
@@ -2387,25 +2416,48 @@ public class SolrInformationServer implements InformationServer
     }
     
     /**
-     * 
+     * Puts the latest transaction state onto the index
      * @param processor
      * @param request
-     * @param info
+     * @param tx
      * @throws IOException
      */
-    public void putTransactionState(UpdateRequestProcessor processor, SolrQueryRequest request, Transaction info) throws IOException
+    public void putTransactionState(UpdateRequestProcessor processor, SolrQueryRequest request, Transaction tx) throws IOException
     {
-        AddUpdateCommand cmd = new AddUpdateCommand(request);
-        cmd.overwrite = true;
-        SolrInputDocument input = new SolrInputDocument();
-        input.addField(FIELD_SOLR4_ID, "TRACKER!STATE!TX");
-        input.addField(FIELD_VERSION, 0);
-        input.addField(FIELD_S_TXID, info.getId());
-        input.addField(FIELD_S_INTXID, info.getId());
-        input.addField(FIELD_S_TXCOMMITTIME, info.getCommitTimeMs());
-        input.addField(FIELD_DOC_TYPE, DOC_TYPE_STATE);
-        cmd.solrDoc = input;
-        processor.processAdd(cmd);
+        String version;
+        SolrDocument txState = getState(request, "TRACKER!STATE!TX");
+        if (txState != null)
+        {
+            long txId = this.getFieldValueLong(txState, FIELD_S_TXID);
+            if (tx.getId() > txId)
+            {
+                // Uses optimistic concurrency 
+                version = this.getFieldValueString(txState, FIELD_VERSION);
+            }
+            else 
+            {
+                version = null; // Should not update in this case
+            }
+        }
+        else
+        {
+            version = "0";
+        }
+        
+        if (version != null)
+        {
+            AddUpdateCommand cmd = new AddUpdateCommand(request);
+            cmd.overwrite = true;
+            SolrInputDocument input = new SolrInputDocument();
+            input.addField(FIELD_SOLR4_ID, "TRACKER!STATE!TX");
+            input.addField(FIELD_VERSION, version);
+            input.addField(FIELD_S_TXID, tx.getId());
+            input.addField(FIELD_S_INTXID, tx.getId());
+            input.addField(FIELD_S_TXCOMMITTIME, tx.getCommitTimeMs());
+            input.addField(FIELD_DOC_TYPE, DOC_TYPE_STATE);
+            cmd.solrDoc = input;
+            processor.processAdd(cmd);
+        }
     }
 
     /**
@@ -2430,7 +2482,7 @@ public class SolrInformationServer implements InformationServer
 
             @SuppressWarnings("rawtypes")
             NamedList values = rsp.getValues();
-            SolrDocumentList response = (SolrDocumentList)values.get(RESPONSE_DEFAULT);
+            SolrDocumentList response = (SolrDocumentList)values.get(RESPONSE_DEFAULT_IDS);
             return response.getNumFound() > 0;
         }
         finally

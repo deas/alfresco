@@ -49,10 +49,28 @@ public class SolrDataModelTest
         Long aclId = 987698769860l;
         Long dbId = 9879987l;
         String id = AlfrescoSolrDataModel.getNodeDocumentId(tenant, aclId, dbId);
-        TenantAclIdDbId ids = AlfrescoSolrDataModel.decodeSolr4id(id);
+        TenantAclIdDbId ids = AlfrescoSolrDataModel.decodeNodeDocumentId(id);
         assertEquals(tenant,ids.tenant);
         assertEquals(aclId, ids.alcId);
         assertEquals(dbId, ids.dbId);
+    }
+    
+    @Test
+    public void testParseAclChangeSetId()
+    {
+        Long expectedAclChangeSetId = 94032903249l;
+        String aclChangeSetDocumentId = AlfrescoSolrDataModel.getAclChangeSetDocumentId(expectedAclChangeSetId);
+        Long actualAclChangeSetId = AlfrescoSolrDataModel.parseAclChangeSetId(aclChangeSetDocumentId);
+        assertEquals(expectedAclChangeSetId, actualAclChangeSetId);
+    }
+    
+    @Test
+    public void testParseTransactionId()
+    {
+        Long expectedId = 94032903249l;
+        String id = AlfrescoSolrDataModel.getTransactionDocumentId(expectedId);
+        Long actualId = AlfrescoSolrDataModel.parseTransactionId(id);
+        assertEquals(expectedId, actualId);
     }
     
     @Test

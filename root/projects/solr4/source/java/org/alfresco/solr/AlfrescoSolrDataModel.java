@@ -261,6 +261,25 @@ public class AlfrescoSolrDataModel implements QueryConstants
         return builder.toString();
     }
     
+    public static Long parseAclChangeSetId(String aclChangeSetDocumentId)
+    {
+        return parseIdFromDocumentId(aclChangeSetDocumentId);
+    }
+    
+    public static Long parseTransactionId(String transactionDocumentId)
+    {
+        return parseIdFromDocumentId(transactionDocumentId);
+    }
+    
+    private static Long parseIdFromDocumentId(String documentId)
+    {
+        String[] split = documentId.split("!");
+        if (split.length > 0)
+            return NumericEncoder.decodeLong(split[split.length - 1]);
+        else 
+            return null;
+    }
+    
     /**
      * Returns the Solr 4 id
      * @param tenant
@@ -286,7 +305,7 @@ public class AlfrescoSolrDataModel implements QueryConstants
         public Long dbId;
     }
     
-    public static TenantAclIdDbId decodeSolr4id(String id)
+    public static TenantAclIdDbId decodeNodeDocumentId(String id)
     {
         TenantAclIdDbId ids = new TenantAclIdDbId();
         String[] split = id.split("!");
