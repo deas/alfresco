@@ -864,6 +864,7 @@
         </repositories>
         <modules>
 			<module>enterpriseprojects/repository</module>
+            <module>enterpriseprojects/repository-crypto</module>
             <module>enterpriseprojects/remote-api</module>
             <module>enterpriseprojects/overlays</module>
             <module>enterpriseprojects/spring-encryptor</module>
