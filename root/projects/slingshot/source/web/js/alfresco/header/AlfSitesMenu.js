@@ -304,7 +304,7 @@ define(["dojo/_base/declare",
          array.forEach(this.popup.getChildren(), function(widget, index) {
             _this.popup.removeChild(widget);
          });
-         this.addMenuFailMessageItem()
+         this.addMenuFailMessageItem();
       },
       
       /**
@@ -592,7 +592,7 @@ define(["dojo/_base/declare",
                this.usefulGroup.addChild(this.favoritesCascade);
                
                // If the current page is associated with a site then add the add and remove favourite site options...
-               if (this.currentSite && this.currentSite != "" && this.currentUser && this.currentUser != "")
+               if (this.currentSite && this.currentSite !== "" && this.currentUser && this.currentUser !== "")
                {
                   // Always create the Add and Remove favourite menu items, but only add them if requested
                   // This is done so that we can add and remove the menu items easily upon request...
@@ -797,7 +797,7 @@ define(["dojo/_base/declare",
          
          // If we've just removed the last favourite then add a message menu item to indicate
          // that there are no favourites...
-         if (this.favouritesList && this.favouritesList.getChildren().length == 0)
+         if (this.favouritesList && this.favouritesList.getChildren().length === 0)
          {
             this.addNoFavouritesMessageItem();
          }

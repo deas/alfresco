@@ -78,6 +78,8 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          this.setupKeyboardNavigation();
          on(this.domNode, "onSuppressKeyNavigation", lang.hitch(this, this.onSuppressKeyNavigation));
+
+         on(this.domNode, "onItemFocused", lang.hitch(this, this.onItemFocused));
       },
 
       /**
@@ -148,6 +150,18 @@ define(["dojo/_base/declare",
        */
       _onContainerKeypress: function alfresco_documentlibrary_views_DocumentListRenderer___onContainerKeypress(evt) {
          if (this.suppressKeyNavigation === false) this.inherited(arguments);
+      },
+
+      /**
+       * Handles requests to focus a specific child item that has been clicked on. This is a custom
+       * event issued from a module mixing in the 
+       * [_MultiItemRendererMixin]{@link module:alfresco/documentlibrary/views/layouts/_MultiItemRendererMixin}.
+       *
+       * @instance
+       * @param {object} evt The click event
+       */
+      onItemFocused: function alfresco_documentlibrary_views_DocumentListRenderer__onItemFocused(evt) {
+         this.focusChild(evt.item);
       }
    });
 });

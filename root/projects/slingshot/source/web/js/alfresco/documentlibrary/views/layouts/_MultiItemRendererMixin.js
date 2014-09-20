@@ -39,8 +39,11 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "dojo/dom-style"], 
-        function(declare, CoreWidgetProcessing, ObjectTypeUtils, JsNode, _AlfDocumentListTopicMixin, domClass, array, lang, domStyle) {
+        "dojo/dom-style",
+        "dojo/on",
+        "dojo/_base/event"], 
+        function(declare, CoreWidgetProcessing, ObjectTypeUtils, JsNode, _AlfDocumentListTopicMixin, 
+                 domClass, array, lang, domStyle, on, event) {
    
    return declare([CoreWidgetProcessing, _AlfDocumentListTopicMixin], {
 
@@ -413,6 +416,23 @@ define(["dojo/_base/declare",
             config.config.currentItem = this.currentItem;
             this.inherited(arguments);
          }
+      },
+
+      /**
+       * This function has been added to that mixing modules can ensure that they request focus from
+       * their respective container. This ensures that focus is given to the correct item and is not
+       * just given to the first child in the container when focus returns to it.
+       * 
+       * @instance
+       * @param {object} evt The click event that gave focus.
+       */
+      onFocusClick: function alfresco_documentlibrary_views_layout__MultiItemRendererMixin__onFocusClick(evt) {
+         on.emit(this.domNode, "onItemFocused", {
+            bubbles: true,
+            cancelable: true,
+            item: this
+         });
+         event.stop(evt);
       }
    });
 });

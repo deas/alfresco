@@ -2,6 +2,10 @@
    background-color: #F5F5F5;
 }
 
+.alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item:focus {
+   background-color: #F5F5F5;
+}
+
 .alfresco-documentlibrary-views-layout-_MultiItemRendererMixin--item.alfresco-documentlibrary-views-layouts-Row {
    /* border-top: 15px solid transparent; */
 }
