@@ -10,9 +10,9 @@
     .picked-items > div {
         float: left;
         border: @standard-border;
-        margin: 0 2px;
-        padding: 2px 10px 2px 2px;
-        height: 200px;
+        margin: @standard-column-spacing @standard-column-spacing 0;
+        padding: @standard-column-spacing;
+        height: 270px;
         overflow-y: auto;
         min-width: 100px; /* avoid the box appearing very small. */
     }

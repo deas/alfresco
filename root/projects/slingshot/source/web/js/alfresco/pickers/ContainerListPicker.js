@@ -24,7 +24,7 @@
  *
  * @module alfresco/pickers/ContainerListPicker
  * @extends module:alfresco/pickers/DocumentListPicker
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  *
  * @todo Fix look and feel to match existing pickers
  * @todo Make folders tree based?

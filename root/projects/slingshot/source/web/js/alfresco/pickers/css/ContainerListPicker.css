@@ -1,9 +1,30 @@
 .alfresco-pickers-Picker {
     .sub-pickers {
+        /* Target only the first picker */
         & > .alfresco-menus-AlfMenuBar {
-            .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+            .dijitMenuBar .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
                 text-align: center;
+                padding: @standard-column-spacing @standard-column-width;
+                margin: @standard-column-spacing 0;
+                border: 1px solid transparent;
+
+                &.dijitMenuItemHover,
+                &.dijitMenuItemSelected {
+                    background: 0;
+                    border: @standard-border;
+                }
             }
+
         }
+        .dijitReset.dijitInline.dijitMenuItemLabel.dijitMenuItem {
+            margin: 0;
+        }
+        .alfresco-renderers-FileType {
+            padding-left: @standard-column-spacing;
+        }
+    }
+    .sub-picker-label {
+        float:left;
+        margin-top: -1.5em;
     }
 }

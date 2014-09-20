@@ -18,19 +18,36 @@
  */
 
 /**
- * 
+ *
  * @module alfresco/pickers/ContainerPicker
  * @extends module:alfresco/pickers/Picker
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/pickers/Picker"], 
+        "alfresco/pickers/Picker"],
         function(declare, Picker) {
-   
+
    return declare([Picker], {
 
       /**
-       * The default widgets for the picker. This can be overridden at instantiation based on what is required to be 
+       *
+       * @instance
+       */
+      postCreate: function alfresco_pickers_ContainerPicker__postCreate() {
+         // Instantiate this widget block after create so we can pass through the singleItemMode
+         this.widgetsForPickedItems = [{
+            name: "alfresco/pickers/PickedItems",
+            assignTo: "pickedItemsWidget",
+            config: {
+               singleItemMode: this.singleItemMode
+            }
+         }];
+
+         this.inherited(arguments);
+      },
+
+      /**
+       * The default widgets for the picker. This can be overridden at instantiation based on what is required to be
        * displayed in the picker.
        *
        * @instance
@@ -44,15 +61,55 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "picker.myFiles.label",
+                        label: "picker.recentSites.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
+                           pickerLabel: "Sites",
                            picker: {
-                              name: "alfresco/pickers/ContainerListPicker",
+                              name: "alfresco/pickers/SingleItemPicker",
                               config: {
-                                 nodeRef: "alfresco://user/home",
-                                 path: "/"
+                                 subPicker: "alfresco/pickers/ContainerListPicker",
+                                 currentPickerDepth: 1,
+                                 requestItemsTopic: "ALF_GET_RECENT_SITES"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfMenuBarItem",
+                     config: {
+                        label: "picker.favouriteSites.label",
+                        publishTopic: "ALF_ADD_PICKER",
+                        publishPayload: {
+                           currentPickerDepth: 0,
+                           pickerLabel: "Sites",
+                           picker: {
+                              name: "alfresco/pickers/SingleItemPicker",
+                              config: {
+                                 subPicker: "alfresco/pickers/ContainerListPicker",
+                                 currentPickerDepth: 1,
+                                 requestItemsTopic: "ALF_GET_FAVOURITE_SITES"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfMenuBarItem",
+                     config: {
+                        label: "picker.allSites.label",
+                        publishTopic: "ALF_ADD_PICKER",
+                        publishPayload: {
+                           currentPickerDepth: 0,
+                           pickerLabel: "Sites",
+                           picker: {
+                              name: "alfresco/pickers/SingleItemPicker",
+                              config: {
+                                 subPicker: "alfresco/pickers/ContainerListPicker",
+                                 currentPickerDepth: 1,
+                                 requestItemsTopic: "ALF_GET_SITES"
                               }
                            }
                         }
@@ -65,6 +122,7 @@ define(["dojo/_base/declare",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
+                           pickerLabel: "Path",
                            picker: {
                               name: "alfresco/pickers/ContainerListPicker",
                               config: {
@@ -84,6 +142,7 @@ define(["dojo/_base/declare",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
+                           pickerLabel: "Path",
                            picker: {
                               name: "alfresco/pickers/ContainerListPicker",
                               config: {
@@ -97,34 +156,16 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "picker.recentSites.label",
+                        label: "picker.myFiles.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
+                           pickerLabel: "Path",
                            picker: {
-                              name: "alfresco/pickers/SingleItemPicker",
+                              name: "alfresco/pickers/ContainerListPicker",
                               config: {
-                                 subPicker: "alfresco/pickers/ContainerListPicker",
-                                 currentPickerDepth: 1,
-                                 requestItemsTopic: "ALF_GET_RECENT_SITES"
-                              }
-                           }
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/menus/AlfMenuBarItem",
-                     config: {
-                        label: "picker.favouriteSites.label",
-                        publishTopic: "ALF_ADD_PICKER",
-                        publishPayload: {
-                           currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/SingleItemPicker",
-                              config: {
-                                 subPicker: "alfresco/pickers/ContainerListPicker",
-                                 currentPickerDepth: 1,
-                                 requestItemsTopic: "ALF_GET_FAVOURITE_SITES"
+                                 nodeRef: "alfresco://user/home",
+                                 path: "/"
                               }
                            }
                         }
@@ -144,10 +185,7 @@ define(["dojo/_base/declare",
        * @default
        */
       widgetsForPickedItems: [
-         {
-            name: "alfresco/pickers/PickedItems",
-            assignTo: "pickedItemsWidget"
-         }
+
       ]
    });
 });

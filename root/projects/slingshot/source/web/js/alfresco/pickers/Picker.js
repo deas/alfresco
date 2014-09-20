@@ -28,7 +28,7 @@
  * @mixes dijit/_TemplatedMixin
  * @mixes module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreWidgetProcessing
- * @author Dave Draper
+ * @author Dave Draper & David Webster
  */
 define(["dojo/_base/declare",
         "dijit/_WidgetBase",
@@ -258,59 +258,6 @@ define(["dojo/_base/declare",
                   {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
-                        label: "picker.myFiles.label",
-                        publishOnRender: true, // Topic will be published when the item is rendered.
-                        publishPayload: {
-                           currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/DocumentListPicker",
-                              config: {
-                                 nodeRef: "alfresco://user/home",
-                                 path: "/"
-                              }
-                           }
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/menus/AlfMenuBarItem",
-                     config: {
-                        label: "picker.sharedFiles.label",
-                        publishTopic: "ALF_ADD_PICKER",
-                        publishPayload: {
-                           currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/DocumentListPicker",
-                              config: {
-                                 nodeRef: "alfresco://company/shared",
-                                 filter: {
-                                    path: "/"
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/menus/AlfMenuBarItem",
-                     config: {
-                        label: "picker.repository.label",
-                        publishTopic: "ALF_ADD_PICKER",
-                        publishPayload: {
-                           currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/DocumentListPicker",
-                              config: {
-                                 nodeRef: "alfresco://company/home",
-                                 path: "/"
-                              }
-                           }
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/menus/AlfMenuBarItem",
-                     config: {
                         label: "picker.recentSites.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
@@ -341,6 +288,75 @@ define(["dojo/_base/declare",
                            }
                         }
                      }
+                  },                  {
+                     name: "alfresco/menus/AlfMenuBarItem",
+                     config: {
+                        label: "picker.allSites.label",
+                        publishTopic: "ALF_ADD_PICKER",
+                        publishPayload: {
+                           currentPickerDepth: 0,
+                           picker: {
+                              name: "alfresco/pickers/SingleItemPicker",
+                              config: {
+                                 currentPickerDepth: 1,
+                                 requestItemsTopic: "ALF_GET_SITES"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfMenuBarItem",
+                     config: {
+                        label: "picker.repository.label",
+                        publishTopic: "ALF_ADD_PICKER",
+                        publishPayload: {
+                           currentPickerDepth: 0,
+                           picker: {
+                              name: "alfresco/pickers/DocumentListPicker",
+                              config: {
+                                 nodeRef: "alfresco://company/home",
+                                 path: "/"
+                              }
+                           }
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfMenuBarItem",
+                     config: {
+                        label: "picker.sharedFiles.label",
+                        publishTopic: "ALF_ADD_PICKER",
+                        publishPayload: {
+                           currentPickerDepth: 0,
+                           picker: {
+                              name: "alfresco/pickers/DocumentListPicker",
+                              config: {
+                                 nodeRef: "alfresco://company/shared",
+                                 filter: {
+                                    path: "/"
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  },
+                  {
+                     name: "alfresco/menus/AlfMenuBarItem",
+                     config: {
+                        label: "picker.myFiles.label",
+                        publishOnRender: true, // Topic will be published when the item is rendered.
+                        publishPayload: {
+                           currentPickerDepth: 0,
+                           picker: {
+                              name: "alfresco/pickers/DocumentListPicker",
+                              config: {
+                                 nodeRef: "alfresco://user/home",
+                                 path: "/"
+                              }
+                           }
+                        }
+                     }
                   }
                ]
             }
@@ -362,7 +378,7 @@ define(["dojo/_base/declare",
          }
       ],
 
-      subPickersLabel: "Path",
-      pickedItemsLabel: "Picked Items"
+      subPickersLabel: "picker.subPickers.label",
+      pickedItemsLabel: "picker.pickedItems.label"
    });
 });

@@ -18,14 +18,14 @@
  */
 
 /**
- * 
+ *
  * @author Dave Draper
  */
 define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        "intern/dojo/node!leadfoot/keys"], 
+        "intern/dojo/node!leadfoot/keys"],
         function (registerSuite, assert, require, TestCommon, keys) {
 
    registerSuite({
@@ -45,19 +45,19 @@ define(["intern!object",
 
          // Check the picker is displayed...
          .findByCssSelector(".alfresco-pickers-Picker")
-            .then(null, function() {
+            .then(function(){}, function() {
                assert(false, "Test #1a - The dialog has NOT opened with the picker");
             })
             .end()
 
          // Select "Shared Files" (the results for this are mocked)
-         .findByCssSelector(".alfresco-pickers-Picker .sub-pickers > div:first-child .dijitMenuItem:nth-child(2)")
+         .findByCssSelector(".alfresco-pickers-Picker .sub-pickers > div:first-child .dijitMenuItem:nth-child(5)")
             .click()
             .end()
 
          // Check that a new results set are shown...
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView")
-            .then(null, function() {
+            .then(function(){}, function() {
                assert(false, "Test #1b - The Shared Files click did not yield any results");
             })
             .end()
@@ -72,7 +72,7 @@ define(["intern!object",
          // Check the first item has an ADD publish action image...
          // TODO: This could be more specific, e.g. to check the actual image source?
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction img")
-            .then(null, function() {
+            .then(function(){}, function() {
                assert(false, "Test #1d -The first shared files item did not have an ADD publish action image");
             })
             .end()
@@ -94,16 +94,16 @@ define(["intern!object",
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .alfresco-buttons-AlfButton:first-child > span")
             .click()
             .end()
-            
+
          // Count the selected items...
          .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
-               assert(elements.length == 1, "Test #1f - Only 1 results was expected for picked items after dialog close");
+               assert(elements.length == 5, "Test #1f - Only 1 results was expected for picked items after dialog close");
             })
             .end()
 
          .findByCssSelector("#DOCUMENT_PICKER .alfresco-layout-VerticalWidgets > span.alfresco-buttons-AlfButton.confirmationButton > span > span")
-            .then(null, function() {
+            .then(function(){}, function() {
                // TestCommon.log(testname,"Have we found the element? " + result);
             })
             .end()
@@ -121,7 +121,7 @@ define(["intern!object",
 
          // Check the remove item image exists...
          .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction img")
-            .then(null, function() {
+            .then(function(){}, function() {
                assert(false, "Test #1h - The remove item image could not be found");
             })
             .end()
@@ -135,7 +135,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .alfresco-buttons-AlfButton:first-child > span")
             .click()
             .end()
-            
+
          // Check the item was removed...
          .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
@@ -149,7 +149,7 @@ define(["intern!object",
             .end()
 
          // Select "Shared Files" option again...
-         .findByCssSelector(".alfresco-pickers-Picker .sub-pickers > div:first-child .dijitMenuItem:nth-child(2)")
+         .findByCssSelector(".alfresco-pickers-Picker .sub-pickers > div:first-child .dijitMenuItem:nth-child(5)")
             .click()
             .end()
 
@@ -181,7 +181,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .alfresco-buttons-AlfButton:first-child > span")
             .click()
             .end()
-            
+
          // Check there are now 2 items...
          .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
@@ -195,6 +195,7 @@ define(["intern!object",
          // TOOD: Check that folders don't have publish action images
          // TODO: Set up controls with invalid data
          // TODO: Click on a folder to get sub-results
+         // TODO: Check singleItemMode works.
 
          // Post the coverage results...
          .then(function() {
