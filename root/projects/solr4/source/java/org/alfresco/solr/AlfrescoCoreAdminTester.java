@@ -6333,10 +6333,13 @@ public class AlfrescoCoreAdminTester
             }
             if (filters != null)
             {
-                newParams.set("fq", filters);
+                for(String filter : filters)
+                {
+                    newParams.add("fq", filter);
+                }
                 queryReport.add("Filters", filters);
             }
-            newParams.set("fq", "{!afts}AUTHORITY_FILTER_FROM_JSON");
+            //newParams.add("fq", "{!afts}AUTHORITY_FILTER_FROM_JSON");
             solrReq.setParams(newParams);
             ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
             streams.add(new ContentStreamBase.StringStream("json"));
