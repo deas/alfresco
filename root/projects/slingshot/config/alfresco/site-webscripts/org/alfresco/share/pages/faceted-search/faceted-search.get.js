@@ -413,6 +413,7 @@ var searchDocLib = {
       rootNode: null,
       repo: true,
       additionalControlsTarget: "FCTSRCH_RESULTS_MENU_BAR",
+      additionalViewControlVisibilityConfig: hideOnZeroResultsConfig,
       widgets: [
          {
             id: "FCTSRCH_SEARCH_ADVICE_NO_RESULTS",

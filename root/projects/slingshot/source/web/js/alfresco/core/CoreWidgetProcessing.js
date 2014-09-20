@@ -147,32 +147,7 @@ define(["dojo/_base/declare",
                this._processedWidgets[index] = widget;
             }
 
-            // If the widget has dynamic visibility behaviour configured then we need to set up the necessary
-            // subscriptions to handle the rules that have been defined. We will set the initial visibility
-            // as requested and then set up the subcriptions...
-            if (widget.visibilityConfig !== undefined)
-            {
-               var initialValue = lang.getObject("visibilityConfig.initialValue", false, widget);
-               if (initialValue != null && initialValue === false)
-               {
-                  // Hide the widget if requested to initially...
-                  domStyle.set(widget.domNode, "display", "none");
-               }
-               var rules = lang.getObject("visibilityConfig.rules", false, widget);
-               if (rules != null)
-               {
-                  array.forEach(rules, function(rule, index) {
-                     var topic = rule.topic,
-                         attribute = rule.attribute,
-                         is = rule.is,
-                         isNot = rule.isNot;
-                     if (topic != null && attribute != null && (is != null || isNot != null))
-                     {
-                        widget.alfSubscribe(topic, lang.hitch(this, "processVisibility", widget, is, isNot, attribute));
-                     }
-                  }, this);
-               }
-            }
+            this.setupVisibilityConfigProcessing(widget);
          }
          else
          {
@@ -188,6 +163,41 @@ define(["dojo/_base/declare",
             }, this);
             this.allWidgetsProcessed(this._processedWidgets);
             this.widgetProcessingComplete = true;
+         }
+      },
+
+      /**
+       * Sets up the dynamic visibility handling for the supplied widget.
+       * 
+       * @instance
+       * @param {object} widget
+       */
+      setupVisibilityConfigProcessing: function alfresco_core_CoreWidgetProcessing__setupVisibilityConfigProcessing(widget) {
+         // If the widget has dynamic visibility behaviour configured then we need to set up the necessary
+         // subscriptions to handle the rules that have been defined. We will set the initial visibility
+         // as requested and then set up the subcriptions...
+         if (widget.visibilityConfig !== undefined)
+         {
+            var initialValue = lang.getObject("visibilityConfig.initialValue", false, widget);
+            if (initialValue != null && initialValue === false)
+            {
+               // Hide the widget if requested to initially...
+               domStyle.set(widget.domNode, "display", "none");
+            }
+            var rules = lang.getObject("visibilityConfig.rules", false, widget);
+            if (rules != null)
+            {
+               array.forEach(rules, function(rule, index) {
+                  var topic = rule.topic,
+                      attribute = rule.attribute,
+                      is = rule.is,
+                      isNot = rule.isNot;
+                  if (topic != null && attribute != null && (is != null || isNot != null))
+                  {
+                     widget.alfSubscribe(topic, lang.hitch(this, "processVisibility", widget, is, isNot, attribute));
+                  }
+               }, this);
+            }
          }
       },
 

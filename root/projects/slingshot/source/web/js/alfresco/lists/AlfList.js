@@ -358,7 +358,7 @@ define(["dojo/_base/declare",
             preference: this.viewPreferenceProperty
          });
 
-         if (this.waitForPageWidgets == true)
+         if (this.waitForPageWidgets === true)
          {
             // Create a subscription to listen out for all widgets on the page being reported
             // as ready (then we can start loading data)...
@@ -394,7 +394,7 @@ define(["dojo/_base/declare",
             {
                // Update the view message to be consistent with the configuration of the list...
                view.noItemsMessage = this.noDataMessage;
-               this.processView(view);
+               this.processView(view, index);
             }
          }
          else
@@ -409,8 +409,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} view The view to process
+       * @param {number} index The view index
        */
-      processView: function alfresco_lists_AlfList__processView(view) {
+      processView: function alfresco_lists_AlfList__processView(view, index) {
          var viewName = view.getViewName();
          if (viewName == null)
          {
@@ -469,6 +470,16 @@ define(["dojo/_base/declare",
       additionalControlsTarget: "DOCLIB_TOOLBAR",
 
       /**
+       * This is the dynacmic visibility configuration that should be applied
+       * to all additional controls added for a view.
+       *
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      additionalViewControlVisibilityConfig: null,
+
+      /**
        * Gets the additional controls for a view and publishes them.
        * 
        * @instance
@@ -486,6 +497,13 @@ define(["dojo/_base/declare",
          if (newAdditionalControls == null)
          {
             newAdditionalControls = view.getAdditionalControls();
+            if (this.additionalViewControlVisibilityConfig != null)
+            {
+               array.forEach(newAdditionalControls, function(control, index) {
+                  control.visibilityConfig = this.additionalViewControlVisibilityConfig;
+                  this.setupVisibilityConfigProcessing(control);
+               }, this);
+            }
             this.viewControlsMap[viewName] = newAdditionalControls;
          }
          
@@ -509,7 +527,7 @@ define(["dojo/_base/declare",
        * @return {boolean} Either true or false depending upon the validity of the supplied configuration.
        */
       isValidViewSelectionConfig: function alfresco_lists_AlfList__isValidViewSelectionConfig(viewSelectionConfig) {
-         return (viewSelectionConfig.label != null && viewSelectionConfig.label != "");
+         return (viewSelectionConfig.label != null && viewSelectionConfig.label !== "");
       },
       
       /**
