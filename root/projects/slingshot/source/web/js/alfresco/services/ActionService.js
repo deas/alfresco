@@ -522,10 +522,18 @@ define(["dojo/_base/declare",
        */
       createLinkContent: function alfresco_services_ActionService__createLinkContent(payload, document) {
          // Make a request to navigation to a the URL defined within the current window...
+         var url = lang.replace(payload.params.href, this.getActionUrls(document, this.siteId, this.repositoryUrl, this.replicationUrlMapping));
+         var indexOfTarget = url.indexOf("\" target=\"_blank");
+         var target = "CURRENT";
+         if (indexOfTarget != -1)
+         {
+            url = url.substring(0, indexOfTarget);
+            target = "NEW";
+         }
          this.alfPublish(this.navigateToPageTopic, {
             type: this.fullPath,
-            url: lang.replace(payload.params.href, this.getActionUrls(document, this.siteId, this.repositoryUrl, this.replicationUrlMapping)),
-            target: this.currentTarget
+            url: url,
+            target: target
          });
       },
 
