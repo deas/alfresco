@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfMenuGroup",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "service/constants/Default"], 
-        function(declare, _ActionsMixin, AlfMenuGroup, array, lang, AlfConstants) {
+        "service/constants/Default",
+        "dijit/popup"], 
+        function(declare, _ActionsMixin, AlfMenuGroup, array, lang, AlfConstants, popup) {
 
    return declare([_ActionsMixin], {
       
@@ -66,7 +67,7 @@ define(["dojo/_base/declare",
          if (this.actionsMenu.popup)
          {
             // Load the actions only when the user opens the Actions menu...
-            this.actionsMenu.popup.onOpen = dojo.hitch(this, "loadActions");
+            this.actionsMenu.popup.onOpen = dojo.hitch(this, this.loadActions);
          }
          else
          {
@@ -137,7 +138,14 @@ define(["dojo/_base/declare",
 
             this.clearLoadingItem();
             this.addXhrItems();
-            
+
+            // When we add in the XHR data there is a good chance that the new menu items will be wider
+            // that the original "Loading..." message, this can result in the popup being poorly placed,
+            // an example of this is on the search results page where the loaded actions are initially
+            // shown slightly off-screen. To work around this issue we will immediately close and then
+            // re-open the popup and leave dijit/popup to place the menu sensibly...
+            popup.close(this.actionsMenu.popup);
+            popup.open({popup:this.actionsMenu.popup,around:this.actionsMenu.domNode});
          }
          else
          {
