@@ -174,7 +174,6 @@ public class SolrInformationServer implements InformationServer
     // Metadata pulling control
     private boolean skipDescendantDocsForSpecificTypes;
     private Set<QName> typesForSkippingDescendantDocs = new HashSet<QName>();
-    private BooleanQuery skippingDocsQuery;
     private String skippingDocsQueryString;
     private SOLRAPIClient repositoryClient;
     
