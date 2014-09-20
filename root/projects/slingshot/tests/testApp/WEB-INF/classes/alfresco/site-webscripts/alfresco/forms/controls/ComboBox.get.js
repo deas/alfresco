@@ -33,7 +33,7 @@ model.jsonModel = {
                         queryAttribute: "name",
                         publishTopic: "ALF_RETRIEVE_CURRENT_TAGS",
                         publishPayload: {
-                           resultsProperty: "response.suggestions"
+                           resultsProperty: "response.data.suggestions"
                         }
                      }
                   }

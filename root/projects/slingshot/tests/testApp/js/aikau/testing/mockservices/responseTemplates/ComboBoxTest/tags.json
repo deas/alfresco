@@ -13,7 +13,7 @@
          "displayPath": "\/categories",
          "nodeRef": "workspace://SpacesStore/tag:tag-root"
       },
-      "items":
+      "suggestions":
       [
          {
             "type": "cm:category",
