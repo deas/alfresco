@@ -50,6 +50,33 @@ model.jsonModel = {
                         }
                      ]
                   }
+               },
+               {
+                  id: "TEST_CONTROL_INVERT",
+                  name: "alfresco/forms/controls/DojoValidationTextBox", 
+                  config: {
+                     label: "No illegal characters",
+                     name: "name",
+                     value: "",
+                     validationConfig: [
+                        {
+                           validation: "minLength",
+                           length: 1,
+                           errorMessage: "Too short"
+                        },
+                        {
+                           validation: "maxLength",
+                           length: 30,
+                           errorMessage: "Too long"
+                        },
+                        {
+                           validation: "regex",
+                           regex: "([\"\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)",
+                           errorMessage: "No illegal characters",
+                           invertRule: true
+                        }
+                     ]
+                  }
                }
             ]
          }

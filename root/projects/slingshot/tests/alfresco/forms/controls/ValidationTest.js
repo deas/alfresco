@@ -44,10 +44,17 @@ define(["intern!object",
                .end()
 
             // Check the initial error messages...
-            .findByCssSelector(".validation-message")
+            .findByCssSelector("#TEST_CONTROL .validation-message")
                .getVisibleText()
                .then(function(text) {
                   assert(text === "Too short, Letters only", "Test #1b - The initial error message is incorrect: " + text);
+               })
+               .end()
+
+            .findByCssSelector("#TEST_CONTROL_INVERT .validation-message")
+               .getVisibleText()
+               .then(function(text) {
+                  assert(text === "Too short", "Test #1c - The initial error message is incorrect: " + text);
                })
                .end()
 
@@ -55,12 +62,15 @@ define(["intern!object",
             .findByCssSelector(".validationInProgress")
                .isDisplayed()
                .then(function(result) {
-                  assert(result === false, "Test", "Test #1c - The in progress indicator is displayed incorrectly");
+                  assert(result === false, "Test", "Test #1d - The in progress indicator is displayed incorrectly");
                })
                .end()
 
-            // Add 3 letters (make sure errors are cleared and form can be posted)...
+            // Add 3 letters to both controls (make sure errors are cleared and form can be posted)...
             .findByCssSelector("#TEST_CONTROL .dijitInputContainer input")
+               .type("abc")
+               .end()
+            .findByCssSelector("#TEST_CONTROL_INVERT .dijitInputContainer input")
                .type("abc")
                .end()
             .findAllByCssSelector(".confirmationButton.dijitDisabled")
@@ -68,14 +78,20 @@ define(["intern!object",
                   assert(elements.length === 0, "Test #2a - The forms confirmation button should be enabled");
                })
                .end()
-            .findByCssSelector(".validation-message")
+            .findByCssSelector("#TEST_CONTROL .validation-message")
                .isDisplayed()
                .then(function(result) {
                   assert(result === false, "Test #2b - The error message was displayed incorrectly");
                })
                .end()
+            .findByCssSelector("#TEST_CONTROL_INVERT .validation-message")
+               .isDisplayed()
+               .then(function(result) {
+                  assert(result === false, "Test #2c - The error message was displayed incorrectly");
+               })
+               .end()
 
-            // Add 6 letters (make sure field is invalid and message is correct)...
+            // Add 6 letters to control 1 (make sure field is invalid and message is correct)...
             .findByCssSelector("#TEST_CONTROL .dijitInputContainer input")
                .clearValue()
                .type("abcdef")
@@ -85,14 +101,14 @@ define(["intern!object",
                   assert(elements.length === 1, "Test #3a - The forms confirmation button should be disabled");
                })
                .end()
-            .findByCssSelector(".validation-message")
+            .findByCssSelector("#TEST_CONTROL .validation-message")
                .getVisibleText()
                .then(function(text) {
                   assert(text === "Too long", "Test #3b - The initial error message is incorrect: " + text);
                })
                .end()
 
-            // Add numbers (make sure field is invalid and message is correct)...
+            // Add numbers to control 1 (make sure field is invalid and message is correct)...
             .findByCssSelector("#TEST_CONTROL .dijitInputContainer input")
                .clearValue()
                .type("123")
@@ -102,14 +118,14 @@ define(["intern!object",
                   assert(elements.length === 1, "Test #4a - The forms confirmation button should be disabled");
                })
                .end()
-            .findByCssSelector(".validation-message")
+            .findByCssSelector("#TEST_CONTROL .validation-message")
                .getVisibleText()
                .then(function(text) {
                   assert(text === "Letters only", "Test #4b - The initial error message is incorrect: " + text);
                })
                .end()
 
-            // Add a value that is used (make sure field is invalid and message is correct)...
+            // Add a value to control 1 that is used (make sure field is invalid and message is correct)...
             .findByCssSelector("#TEST_CONTROL .dijitInputContainer input")
                .clearValue()
                .type("One")
@@ -119,10 +135,27 @@ define(["intern!object",
                   assert(elements.length === 1, "Test #5a - The forms confirmation button should be disabled");
                })
                .end()
-            .findByCssSelector(".validation-message")
+            .findByCssSelector("#TEST_CONTROL .validation-message")
                .getVisibleText()
                .then(function(text) {
                   assert(text === "Already used", "Test #5b - The initial error message is incorrect: " + text);
+               })
+               .end()
+
+            // Add a value to control 2 that contains illegal characters (make sure field is invalid and message is correct)...
+            .findByCssSelector("#TEST_CONTROL_INVERT .dijitInputContainer input")
+               .clearValue()
+               .type("abc>def/")
+               .end()
+            .findAllByCssSelector(".confirmationButton.dijitDisabled")
+               .then(function(elements) {
+                  assert(elements.length === 1, "Test #6a - The forms confirmation button should be disabled");
+               })
+               .end()
+            .findByCssSelector("#TEST_CONTROL_INVERT .validation-message")
+               .getVisibleText()
+               .then(function(text) {
+                  assert(text === "No illegal characters", "Test #6b - The initial error message is incorrect: " + text);
                })
                .end()
 
@@ -139,7 +172,7 @@ define(["intern!object",
             .findByCssSelector(".validationInProgress")
                .isDisplayed()
                .then(function(result) {
-                  assert(result === true, "Test #6a - The in progress indicator isn't visible");
+                  assert(result === true, "Test #7a - The in progress indicator isn't visible");
                })
                .end()
             .findByCssSelector("#UNBLOCK_RESPONSE_label")
@@ -149,7 +182,7 @@ define(["intern!object",
             .findByCssSelector(".validationInProgress")
                .isDisplayed()
                .then(function(result) {
-                  assert(result === false, "Test #6b - The in progress indicator is visible");
+                  assert(result === false, "Test #7b - The in progress indicator is visible");
                })
                .end()
 
