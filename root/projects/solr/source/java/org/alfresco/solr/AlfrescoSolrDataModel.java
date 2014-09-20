@@ -378,6 +378,11 @@ public class AlfrescoSolrDataModel
 
 		File resourceDirectory = getResourceDirectory();
 		File filterContext = new File(resourceDirectory, "alfresco/model/opencmis-qnamefilter-context.xml");
+		if(!filterContext.exists())
+		{
+		    log.warn("Filter context not found at: " + filterContext);
+		    return qnameFilter;
+		}
 
     	try
     	{
@@ -396,7 +401,7 @@ public class AlfrescoSolrDataModel
 		}
 		finally
 		{
-			if(ctx != null && ctx.getBeanFactory() != null && ctx.isActive())
+			if(ctx != null &&  ctx.isActive())
 			{
 				ctx.close();
 			}
