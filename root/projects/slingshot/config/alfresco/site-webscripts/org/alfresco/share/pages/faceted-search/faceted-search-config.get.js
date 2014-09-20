@@ -50,6 +50,12 @@ function getFormDefinition(canEditFilterId) {
             publishPayload: {
                url: "api/facet/facet-config"
             }
+         },
+         {
+            validation: "regex",
+            regex: "([\"\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)",
+            errorMessage: msg.get("faceted-search-config.filterId.error.invalid"),
+            invertRule: true
          }
       ];
    }
