@@ -114,16 +114,97 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         TrackerState state = this.infoSrv.getTrackerInitialState();
 
         // Check we are tracking the correct repository
-        // Check the first TX time
         checkRepoAndIndexConsistency(state);
 
         checkShutdown();
         trackTransactions();
     }
 
+    /**
+     * Checks the first and last TX time
+     * @param state the state of this tracker
+     * @throws AuthenticationException
+     * @throws IOException
+     * @throws JSONException
+     */
     private void checkRepoAndIndexConsistency(TrackerState state) throws AuthenticationException, IOException, JSONException
     {
-        // TODO: Implement that which relates to metadata
+        Transactions firstTransactions = null;
+        if (state.getLastGoodTxCommitTimeInIndex() == 0) 
+        {
+            state.setCheckedLastTransactionTime(true);
+            state.setCheckedFirstTransactionTime(true);
+            log.info("No transactions found - no verification required");
+
+            firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
+            if (!firstTransactions.getTransactions().isEmpty())
+            {
+                Transaction firstTransaction = firstTransactions.getTransactions().get(0);
+                long firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
+                state.setLastGoodTxCommitTimeInIndex(firstTransactionCommitTime);
+                setLastTxCommitTimeAndTxIdInTrackerState(firstTransactions, state);
+            }
+        }
+        
+        if (!state.isCheckedFirstTransactionTime())
+        {
+            firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
+            if (!firstTransactions.getTransactions().isEmpty())
+            {
+                Transaction firstTransaction = firstTransactions.getTransactions().get(0);
+                long firstTxId = firstTransaction.getId();
+                long firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
+                int setSize = this.infoSrv.getTxDocsSize(""+firstTxId, ""+firstTransactionCommitTime);
+                
+                if (setSize == 0)
+                {
+                    log.error("First transaction was not found with the correct timestamp.");
+                    log.error("SOLR has successfully connected to your repository  however the SOLR indexes and repository database do not match."); 
+                    log.error("If this is a new or rebuilt database your SOLR indexes also need to be re-built to match the database."); 
+                    log.error("You can also check your SOLR connection details in solrcore.properties.");
+                    throw new AlfrescoRuntimeException("Initial transaction not found with correct timestamp");
+                }
+                else if (setSize == 1)
+                {
+                    state.setCheckedFirstTransactionTime(true);
+                    log.info("Verified first transaction and timestamp in index");
+                }
+                else
+                {
+                    log.warn("Duplicate initial transaction found with correct timestamp");
+                }
+            }
+        }
+
+        // Checks that the last TxId in solr is <= last TxId in repo
+        if (!state.isCheckedLastTransactionTime())
+        {
+            if (firstTransactions == null)
+            {
+                firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
+            }
+            
+            Long maxTxnCommitTimeInRepo = firstTransactions.getMaxTxnCommitTime();
+            Long maxTxnIdInRepo = firstTransactions.getMaxTxnId();
+            if (maxTxnCommitTimeInRepo != null && maxTxnIdInRepo != null)
+            {
+                Transaction maxTxInIndex = this.infoSrv.getMaxTransactionIdAndCommitTimeInIndex();
+                if (maxTxInIndex.getId() > maxTxnIdInRepo 
+                            || maxTxInIndex.getCommitTimeMs() > maxTxnCommitTimeInRepo)
+                {
+                    log.error("Last transaction was found in index with timestamp later than that of repository.");
+                    log.error("SOLR has successfully connected to your repository  however the SOLR indexes and repository database do not match."); 
+                    log.error("If this is a new or rebuilt database your SOLR indexes also need to be re-built to match the database.");
+                    log.error("You can also check your SOLR connection details in solrcore.properties.");
+                    throw new AlfrescoRuntimeException("Last transaction found in index with incorrect timestamp");
+                }
+                else
+                {
+                    state.setCheckedLastTransactionTime(true);
+                    log.info("Verified last transaction and timestamp in index less than or equal to that of repository.");
+                }
+            }
+        }
     }
     
     private void indexTransactions() throws IOException, AuthenticationException, JSONException

@@ -42,8 +42,6 @@ import org.alfresco.solr.client.AclReaders;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.SOLRAPIClient;
-import org.alfresco.solr.client.Transaction;
-import org.alfresco.solr.client.Transactions;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -312,81 +310,98 @@ public class AclTracker extends AbstractTracker
         TrackerState state = super.getTrackerState();
 
         // Check we are tracking the correct repository
-        // Check the first TX time
         checkRepoAndIndexConsistency(state);
 
         checkShutdown();
         trackAclChangeSets();
     }
-
-
     
+    /**
+     * Checks the first and last TX time
+     * @param state the state of this tracker
+     * @throws AuthenticationException
+     * @throws IOException
+     * @throws JSONException
+     */
     private void checkRepoAndIndexConsistency(TrackerState state) throws AuthenticationException, IOException, JSONException
     {
-        if(state.getLastGoodTxCommitTimeInIndex() == 0) 
-        {
-
-            state.setCheckedFirstTransactionTime(true);
-            log.info("No transactions found - no verification required");
-
-
-            // Fix up inital state
-            Transactions firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
-            if(firstTransactions.getTransactions().size() > 0)
-            {
-                Transaction firstTransaction = firstTransactions.getTransactions().get(0);
-                long firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
-                state.setLastGoodTxCommitTimeInIndex(firstTransactionCommitTime);
-            }
-        }
-
+        AclChangeSets firstChangeSets = null;
         if (state.getLastGoodChangeSetCommitTimeInIndex() == 0)
         {
-            AclChangeSets firstChangeSets = client.getAclChangeSets(null, 0L, null, 2000L, 1);
-            if(firstChangeSets.getAclChangeSets().size() > 0)
+            state.setCheckedLastAclTransactionTime(true);
+            state.setCheckedFirstAclTransactionTime(true);
+            log.info("No acl transactions found - no verification required");
+            
+            firstChangeSets = client.getAclChangeSets(null, 0L, null, 2000L, 1);
+            if (!firstChangeSets.getAclChangeSets().isEmpty())
             {
                 AclChangeSet firstChangeSet = firstChangeSets.getAclChangeSets().get(0);
-                long firstChangeSetCommitTimex = firstChangeSet.getCommitTimeMs();
-                state.setLastGoodChangeSetCommitTimeInIndex(firstChangeSetCommitTimex);
+                long firstChangeSetCommitTime = firstChangeSet.getCommitTimeMs();
+                state.setLastGoodChangeSetCommitTimeInIndex(firstChangeSetCommitTime);
+                setLastChangeSetIdAndCommitTimeInTrackerState(firstChangeSets, state);
             }
-
         }
-
-        if (!state.isCheckedFirstTransactionTime())
+        
+        if (!state.isCheckedFirstAclTransactionTime())
         {
-
-            // TODO: getFirstTransaction
-            Transactions firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
-            if (firstTransactions.getTransactions().size() > 0)
+            firstChangeSets = client.getAclChangeSets(null, 0l, null, 2000L, 1);
+            if (!firstChangeSets.getAclChangeSets().isEmpty())
             {
-                Transaction firstTransaction = firstTransactions.getTransactions().get(0);
-                long firstTxId = firstTransaction.getId();
-                long firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
-                int setSize = this.infoSrv.getAclTxDocsSize(""+firstTxId, ""+firstTransactionCommitTime);
+                AclChangeSet firstAclChangeSet= firstChangeSets.getAclChangeSets().get(0);
+                long firstAclTxId = firstAclChangeSet.getId();
+                long firstAclTxCommitTime = firstAclChangeSet.getCommitTimeMs();
+                int setSize = this.infoSrv.getAclTxDocsSize(""+firstAclTxId, ""+firstAclTxCommitTime);
                 
                 if (setSize == 0)
                 {
-                    log.error("First transaction was not found with the correct timestamp.");
+                    log.error("First acl transaction was not found with the correct timestamp.");
                     log.error("SOLR has successfully connected to your repository  however the SOLR indexes and repository database do not match."); 
                     log.error("If this is a new or rebuilt database your SOLR indexes also need to be re-built to match the database."); 
                     log.error("You can also check your SOLR connection details in solrcore.properties.");
-                    throw new AlfrescoRuntimeException("Initial transaction not found with correct timestamp");
+                    throw new AlfrescoRuntimeException("Initial acl transaction not found with correct timestamp");
                 }
                 else if (setSize == 1)
                 {
                     state.setCheckedFirstTransactionTime(true);
-                    log.info("Verified first transaction and timestamp in index");
+                    log.info("Verified first acl transaction and timestamp in index");
                 }
                 else
                 {
-                    log.warn("Duplicate initial transaction found with correct timestamp");
+                    log.warn("Duplicate initial acl transaction found with correct timestamp");
                 }
             }
+        }
 
+        // Checks that the last aclTxId in solr is <= last aclTxId in repo
+        if (!state.isCheckedLastAclTransactionTime())
+        {
+            if (firstChangeSets == null)
+            {
+                firstChangeSets = client.getAclChangeSets(null, 0l, null, 2000L, 1);
+            }
+            
+            Long maxChangeSetCommitTimeInRepo = firstChangeSets.getMaxChangeSetCommitTime();
+            Long maxChangeSetIdInRepo = firstChangeSets.getMaxChangeSetId();
+            if (maxChangeSetCommitTimeInRepo != null && maxChangeSetIdInRepo != null)
+            {
+                AclChangeSet maxAclTxInIndex = this.infoSrv.getMaxAclChangeSetIdAndCommitTimeInIndex();
+                if (maxAclTxInIndex.getId() > maxChangeSetIdInRepo 
+                            || maxAclTxInIndex.getCommitTimeMs() > maxChangeSetCommitTimeInRepo)
+                {
+                    log.error("Last acl transaction was found in index with timestamp later than that of repository.");
+                    log.error("SOLR has successfully connected to your repository  however the SOLR indexes and repository database do not match."); 
+                    log.error("If this is a new or rebuilt database your SOLR indexes also need to be re-built to match the database."); 
+                    log.error("You can also check your SOLR connection details in solrcore.properties.");
+                    throw new AlfrescoRuntimeException("Last acl transaction found in index with incorrect timestamp");
+                }
+                else
+                {
+                    state.setCheckedLastAclTransactionTime(true);
+                    log.info("Verified last acl transaction and timestamp in index less than or equal to that of repository.");
+                }
+            }
         }
     }
-
-
 
     /**
      * @param changeSetsFound
