@@ -299,15 +299,39 @@ public abstract class CollectionUtils
             }
         });
     }
-
+    
+    /**
+     * This method flattens the provided collection of collections of values into a single
+     * {@code List} object containing each of the elements from the provided sub-collections.
+     * <p/>
+     * For example, {@code flatten( [1, 2], [3], [], [4, 5, 6] )} would produce a List like {@code [1, 2, 3, 4, 5, 6]}.
+     * Here, "[]" represents any Java collection.
+     * 
+     * @param <T> the element type of the collections. Note that this must be the same for all collections.
+     * @param values a collection of collections of elements to be flattened.
+     * @return a List containing the flattened elements.
+     */
     public static <T> List<T> flatten(Collection<? extends Collection<? extends T>> values)
     {
         List<T> results = new ArrayList<T>();
         for (Collection<? extends T> collection : values)
         {
-            results.addAll(collection);
+            if (collection != null) { results.addAll(collection); }
         }
         return results;
+    }
+    
+    /**
+     * See {@link #flatten(Collection)
+     * @param collections a vararg of Collection objects to be flattened into a list.
+     * @return A flat List containing the elements of the provided collections.
+     * @since 5.0
+     */
+    @SafeVarargs
+    public static <T> List<T> flatten(Collection<? extends T>... collections)
+    {
+        List<Collection<? extends T>> listOfCollections = Arrays.asList(collections);
+        return CollectionUtils.flatten(listOfCollections);
     }
     
     public static <F, T> List<T> transformFlat(Collection<F> values, Function<? super F, ? extends Collection<? extends T>> transformer)

@@ -190,4 +190,14 @@ public class CollectionUtilsTest
         
         fail("Expected exception was not thrown.");
     }
+    
+    @Test public void flattenCollections() throws Exception
+    {
+        final List<String> list1 = CollectionUtils.toListOfStrings(stooges);
+        Collections.sort(list1);
+        final List<String> list2 = Arrays.asList(new String[] { "Hello", "World"});
+        
+        assertEquals(Arrays.asList(new String[] {"Curly", "Larry", "Moe", "Hello", "World"}),
+                     CollectionUtils.flatten(list1, list2));
+    }
 }
