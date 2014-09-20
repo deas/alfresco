@@ -19,7 +19,13 @@
 
 package org.alfresco.solr.tracker;
 
+import java.io.File;
 import java.util.Properties;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 
 import org.alfresco.opencmis.dictionary.CMISStrictDictionaryService;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
@@ -115,6 +121,43 @@ public class CoreWatcherJob implements Job
     private SolrContentStore getSolrContentStore(CoreContainer coreContainer) throws JobExecutionException
     {
         // TODO: Could specify the rootStr from a properties file.
-        return new SolrContentStore(coreContainer.getSolrHome() + "ContentStore" );
+        return new SolrContentStore(locateContentHome(coreContainer.getSolrHome()));
     }
+    
+    public static String locateContentHome(String solrHome) {
+
+        String contentDir = null;
+        // Try JNDI
+        try {
+          Context c = new InitialContext();
+          contentDir = (String)c.lookup("java:comp/env/solr/content/dir");
+          log.info("Using JNDI solr.content.dir: "+contentDir );
+        } catch (NoInitialContextException e) {
+          log.info("JNDI not configured for solr (NoInitialContextEx)");
+        } catch (NamingException e) {
+          log.info("No solr/content/dir in JNDI");
+        } catch( RuntimeException ex ) {
+          log.warn("Odd RuntimeException while testing for JNDI: " + ex.getMessage());
+        } 
+        
+        // Now try system property
+        if( contentDir == null ) {
+          String prop = "solr.solr.content.dir";
+          contentDir = System.getProperty(prop);
+          if( contentDir != null ) {
+            log.info("using system property "+prop+": " + contentDir );
+          }
+        }
+        
+        // if all else fails, try 
+        if( contentDir == null ) {
+            return solrHome  + "ContentStore";
+          
+        }
+        else
+        {
+            return contentDir;
+        }
+
+      }
 }

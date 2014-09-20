@@ -402,6 +402,8 @@
                                     <warDirectory>${solr.war.exploded.folder}</warDirectory>
                                     <systemProperties>
                                         <solr.solr.home>${solr.config.folder}</solr.solr.home>
+                                        <solr.solr.model.dir>${solr.config.folder}/alfrescoModels</solr.solr.model.dir>
+                                        <solr.solr.content.dir>@@ALFRESCO_SOLR4_CONTENT_DIR@@</solr.solr.content.dir>
                                     </systemProperties>
                                 </configuration>
                             </execution>
