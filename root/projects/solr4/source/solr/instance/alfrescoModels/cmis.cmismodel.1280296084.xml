@@ -72,7 +72,7 @@
                     <title>Name</title>
                     <description>Name</description>
                     <type>d:text</type>
-                    <mandatory>false</mandatory>
+                    <mandatory>true</mandatory>
                     <index enabled="true">
                         <tokenised>BOTH</tokenised>
                     </index>
@@ -132,6 +132,25 @@
                     <protected>true</protected>
                     <mandatory>false</mandatory>
                     <index enabled="false"/>
+                </property>
+                <property name="cmis:description">
+                    <title>Description</title>
+                    <description>Description</description>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <index enabled="true">
+                        <tokenised>TRUE</tokenised>
+                    </index>
+                </property>
+                <property name="cmis:secondaryObjectTypeIds">
+                    <title>Secondary Object Type Ids</title>
+                    <description>Ids of the secondary object types for the object</description>
+                    <type>cmis:id</type>
+                    <mandatory>false</mandatory>
+                    <multiple>true</multiple>
+                    <index enabled="true">
+                        <tokenised>TRUE</tokenised>
+                    </index>
                 </property>
             </properties>
             <associations/>
@@ -261,6 +280,14 @@
                     <mandatory>false</mandatory>
                     <index enabled="false"/>
                 </property>
+                <property name="cmis:isPrivateWorkingCopy">
+                    <title>Is private working copy</title>
+                    <description>Indicates if this instance is a private working copy</description>
+                    <type>d:boolean</type>
+                    <protected>true</protected>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
             </properties>
             <associations/>
             <overrides/>
@@ -343,6 +370,24 @@
                     <index enabled="false"/>
                 </property>
             </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="cmis:secondary">
+            <title>Secondary Type</title>
+            <description>Secondary Type</description>
+            <parent>cmisext:object</parent>
+            <properties/>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </type>
+        <type name="cmis:item">
+            <title>Item Type</title>
+            <description>CMIS Item</description>
+            <parent>cmisext:object</parent>
+            <properties/>
             <associations/>
             <overrides/>
             <mandatory-aspects/>

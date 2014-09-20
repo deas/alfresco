@@ -46,9 +46,10 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>BOTH</tokenised>
+                        <facetable>false</facetable>
                     </index>
                     <constraints>
-                        <constraint name="cm:name_anon_29" ref="cm:filename"/>
+                        <constraint name="cm:contentmodel_cmobject_name_anon_0" ref="cm:filename"/>
                     </constraints>
                 </property>
             </properties>
@@ -199,7 +200,7 @@
                     <mandatory>true</mandatory>
                     <index enabled="true"/>
                     <constraints>
-                        <constraint name="cm:userName_anon_30" ref="cm:userNameConstraint"/>
+                        <constraint name="cm:contentmodel_person_userName_anon_0" ref="cm:userNameConstraint"/>
                     </constraints>
                 </property>
                 <property name="cm:homeFolder">
@@ -230,7 +231,12 @@
                 <property name="cm:organizationId">
                     <type>d:text</type>
                     <mandatory>false</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:homeFolderProvider">
                     <type>d:text</type>
@@ -260,12 +266,22 @@
                 <property name="cm:jobtitle">
                     <type>d:text</type>
                     <mandatory>false</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:location">
                     <type>d:text</type>
                     <mandatory>false</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:persondescription">
                     <type>d:content</type>
@@ -362,7 +378,12 @@
                     <type>d:long</type>
                     <protected>true</protected>
                     <mandatory enforced="true">true</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:sizeQuota">
                     <type>d:long</type>
@@ -398,7 +419,7 @@
                     <mandatory>false</mandatory>
                     <index enabled="true"/>
                     <constraints>
-                        <constraint name="cm:authorityName_anon_28" ref="cm:authorityNameConstraint"/>
+                        <constraint name="cm:contentmodel_authorityContainer_authorityName_anon_0" ref="cm:authorityNameConstraint"/>
                     </constraints>
                 </property>
                 <property name="cm:authorityDisplayName">
@@ -661,6 +682,7 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>BOTH</tokenised>
+                        <facetable>true</facetable>
                     </index>
                 </property>
                 <property name="cm:creator">
@@ -668,7 +690,12 @@
                     <type>d:text</type>
                     <protected>true</protected>
                     <mandatory enforced="true">true</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:modified">
                     <title>Modified</title>
@@ -679,6 +706,7 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>BOTH</tokenised>
+                        <facetable>true</facetable>
                     </index>
                 </property>
                 <property name="cm:modifier">
@@ -686,7 +714,12 @@
                     <type>d:text</type>
                     <protected>true</protected>
                     <mandatory enforced="true">true</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:accessed">
                     <title>Accessed</title>
@@ -707,6 +740,14 @@
         <aspect name="cm:personDisabled">
             <title>Person Disabled</title>
             <description>Indicates that a cm:person type has been disabled.</description>
+            <properties/>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+        <aspect name="cm:annullable">
+            <title>Annullable</title>
+            <description>Indicates that a node can be deleted if a pending activity is cancelled</description>
             <properties/>
             <associations/>
             <overrides/>
@@ -803,7 +844,12 @@
                     <title>Owner</title>
                     <type>d:text</type>
                     <mandatory>false</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
             </properties>
             <associations/>
@@ -831,49 +877,64 @@
                 <property name="cm:publisher">
                     <title>Publisher</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <index enabled="true"/>
+                    <mandatory>false</mandatory>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:contributor">
                     <title>Contributor</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <index enabled="true"/>
+                    <mandatory>false</mandatory>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:type">
                     <title>Type</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <index enabled="true"/>
+                    <mandatory>false</mandatory>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:identifier">
                     <title>Identifier</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
+                    <mandatory>false</mandatory>
                     <index enabled="true"/>
                 </property>
                 <property name="cm:dcsource">
                     <title>Source</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
+                    <mandatory>false</mandatory>
                     <index enabled="true"/>
                 </property>
                 <property name="cm:coverage">
                     <title>Coverage</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
+                    <mandatory>false</mandatory>
                     <index enabled="true"/>
                 </property>
                 <property name="cm:rights">
                     <title>Rights</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
+                    <mandatory>false</mandatory>
                     <index enabled="true"/>
                 </property>
                 <property name="cm:subject">
                     <title>Subject</title>
                     <type>d:text</type>
-                    <mandatory>true</mandatory>
+                    <mandatory>false</mandatory>
                     <index enabled="true"/>
                 </property>
             </properties>
@@ -979,6 +1040,7 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>BOTH</tokenised>
+                        <facetable>true</facetable>
                     </index>
                 </property>
                 <property name="cm:to">
@@ -989,6 +1051,7 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>BOTH</tokenised>
+                        <facetable>true</facetable>
                     </index>
                 </property>
             </properties>
@@ -1059,6 +1122,7 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>FALSE</tokenised>
+                        <facetable>true</facetable>
                     </index>
                 </property>
                 <property name="cm:workingCopyMode">
@@ -1106,7 +1170,12 @@
                     <type>d:text</type>
                     <protected>true</protected>
                     <mandatory>false</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:versionType">
                     <title>Version Type</title>
@@ -1151,6 +1220,12 @@
                     <index enabled="true"/>
                 </property>
                 <property name="cm:lockType">
+                    <type>d:text</type>
+                    <protected>true</protected>
+                    <mandatory>false</mandatory>
+                    <index enabled="true"/>
+                </property>
+                <property name="cm:lockLifetime">
                     <type>d:text</type>
                     <protected>true</protected>
                     <mandatory>false</mandatory>
@@ -1363,7 +1438,12 @@
                     <title>Originator</title>
                     <type>d:text</type>
                     <mandatory>false</mandatory>
-                    <index enabled="true"/>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>TRUE</tokenised>
+                        <facetable>true</facetable>
+                    </index>
                 </property>
                 <property name="cm:addressee">
                     <title>Addressee</title>
@@ -1392,6 +1472,7 @@
                         <atomic>true</atomic>
                         <stored>false</stored>
                         <tokenised>BOTH</tokenised>
+                        <facetable>true</facetable>
                     </index>
                 </property>
             </properties>
@@ -1441,7 +1522,7 @@
                     <mandatory>true</mandatory>
                     <index enabled="true"/>
                     <constraints>
-                        <constraint name="cm:storeName_anon_31" ref="cm:storeSelectorConstraint"/>
+                        <constraint name="cm:contentmodel_storeSelector_storeName_anon_0" ref="cm:storeSelectorConstraint"/>
                     </constraints>
                 </property>
             </properties>
@@ -1587,6 +1668,21 @@
                     </target>
                 </child-association>
             </associations>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+        <aspect name="cm:thumbnailModification">
+            <title>Thumbnail Modification Data</title>
+            <properties>
+                <property name="cm:lastThumbnailModification">
+                    <title>Last thumbnail modifcation data</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <multiple>true</multiple>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
             <overrides/>
             <mandatory-aspects/>
         </aspect>
@@ -1780,6 +1876,21 @@
                     <type>d:boolean</type>
                     <mandatory>false</mandatory>
                     <default>true</default>
+                    <index enabled="true"/>
+                </property>
+            </properties>
+            <associations/>
+            <overrides/>
+            <mandatory-aspects/>
+        </aspect>
+        <aspect name="webdav:object">
+            <title>Webdav Object</title>
+            <properties>
+                <property name="webdav:deadproperties">
+                    <title>Webdav Dead Properties</title>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                    <multiple>true</multiple>
                     <index enabled="true"/>
                 </property>
             </properties>
