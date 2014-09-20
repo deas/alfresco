@@ -9,6 +9,7 @@ import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
+import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.OpCloudTestContext;
 import org.alfresco.share.util.ShareUser;
@@ -115,7 +116,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3251() throws Exception
+    public void AONE_16054() throws Exception
     {
         trace("Starting searchAndClickDownloadActionTest");        
         
@@ -123,7 +124,8 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String actionName2 = "View In Browser";
         String actionName3 = "Edit Offline";
         String actionName4 = "Delete Document";
-        String actionName5 = "Manage Permissions";
+        String actionName5 = "Manage Permissions";        
+
         
         String name = ("b-fs-test1.txt");
         String name1 = ("c-fs-test1.txt");
@@ -186,7 +188,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3252() throws Exception
+    public void ALF_16055() throws Exception
     {
         trace("Starting searchAndClickViewInBrowserActionTest");      
                 
@@ -232,7 +234,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3253() throws Exception
+    public void AONE_16056() throws Exception
     {
         trace("Starting searchAndClickEditOfflineActionTest");      
                 
@@ -282,7 +284,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3254() throws Exception
+    public void AONE_16057() throws Exception
     {
         trace("Starting searchAndClickDeleteDocumentActionTest");      
                 
@@ -347,7 +349,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3255() throws Exception
+    public void AONE_16058() throws Exception
     {
         trace("Starting searchAndClickManagePermissionsActionTest");      
                 
@@ -388,7 +390,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_3256() throws Exception
+    public void AONE_16059() throws Exception
     {
         trace("Starting searchAndVerifyFolderActionsTest");     
             
@@ -430,7 +432,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     // This test fails since Jira id ACE-1656 has been raised 
     
     @Test(groups = "Enterprise-only")
-    public void ALF_3257() throws Exception
+    public void AONE_16048() throws Exception
     {
         trace("Starting searchForContentInUserHomeFolderTest");        
         
@@ -509,7 +511,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     //This test is the verify only the same tenant user can view the file created by respective tenant
     
     @Test(groups = "CloudOnly")
-    public void ALF_3258() throws Exception
+    public void AONE_16066() throws Exception
     {
         trace("Starting searchAndVerifyMultiTenantTest");        
         
@@ -557,6 +559,136 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         trace("searchAndVerifyMultiTenantTest complete");
     }
+    
+    /*searchAndClickInlineEditTest
+    This test is to verify 'InlineEdit' action is displayed under actions for uploaded file for same user
+    Click on 'InlineEdit' link under actions by same user
+    Verify url is changed after clicking on InlineEdit link in search results page
+    Verify InlineEdit link is not displayed for a file under action for different user 
+    */
+    
+    @Test(groups = "alfresco-one")
+    public void AONE_16147() throws Exception
+    {
+        trace("Starting searchAndClickInlineEditTest");        
+        
+        String actionName1 = "Inline Edit";            
+
+        String name = "b-fs-test1.txt";
+        String name1 = "c-fs-test1.txt";        
+        
+        // Login as user1
+        userLogin1();
+
+        // Do a search 
+        doretrySearch(name);
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
+        
+        // Get the current url
+        String url = drone.getCurrentUrl();
+        
+        //Check Actions are displayed on Facet results page for folder
+        Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));        
+        
+        // Click the first action        
+        facetedSearchPage.getResultByName(name).getActions().clickActionByName(actionName1);
+
+        // Get the url again
+        String newUrl = drone.getCurrentUrl();
+
+        // We should be on the faceted search page
+        Assert.assertNotEquals(url, newUrl, "After clicking on action, the url should not have changed");       
+                
+        // Navigate back to the faceted search page
+        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+
+        // Logout
+        ShareUtil.logout(drone);
+        
+        //login as user2
+        userLogin2();
+        
+        //Do a search for the letter 'a'
+        doretrySearch(name1);     
+        
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");
+        
+        Assert.assertFalse(facetedSearchPage.getResultByName(name1).getActions().hasActionByName(actionName1));    
+        
+
+        trace("searchAndClickInlineEditTest complete" );
+    }
+    
+    /*searchAndClickStart WorkflowTest
+    This test is to verify 'Start Workflow' action is displayed under actions for uploaded file for same user
+    Click on 'Start Workflow' link under actions by same user
+    Verify url is changed after clicking on Start Workflow link in search results page
+    Verify Start Workflow link is displayed for a file under action for different user 
+    */
+    
+    @Test(groups = "alfresco-one")
+    public void AONE_16148() throws Exception
+    {
+        trace("Starting searchAndClickStart WorkflowTest");        
+        
+        String actionName1 = "Start Workflow";            
+
+        String name = "b-fs-test1.txt";
+        String name1 = "c-fs-test1.txt";        
+        
+        // Login as user1
+        userLogin1();
+
+        // Do a search 
+        doretrySearch(name);
+
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
+        
+        // Get the current url
+        //String url = drone.getCurrentUrl();
+        
+        //Check Actions are displayed on Facet results page for folder
+        Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));        
+        
+        // Click the first action        
+        facetedSearchPage.getResultByName(name).getActions().clickActionByName(actionName1);
+
+        //We should be on the faceted search page
+        StartWorkFlowPage startWorkFlowPage = (StartWorkFlowPage) drone.getCurrentPage();
+        Assert.assertTrue(startWorkFlowPage.getTitle().contains("Start Workflow"));
+        
+        //Open user dash board
+        ShareUser.openUserDashboard(drone);                  
+        
+        // Logout
+        ShareUtil.logout(drone);       
+                       
+        // Navigate back to the faceted search page
+        //facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+
+        // Logout
+        //ShareUtil.logout(drone);
+        
+        //login as user2
+        userLogin2();
+        
+        //Do a search for the letter 'a'
+        doretrySearch(name1);     
+        
+        // Check the results
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");
+        
+        Assert.assertTrue(facetedSearchPage.getResultByName(name1).getActions().hasActionByName(actionName1));    
+        
+
+        trace("searchAndClickStart WorkflowTest complete" );
+    }
+    
+    
    
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#tearDown()

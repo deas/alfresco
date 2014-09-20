@@ -58,7 +58,7 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test
-    public void ALF_3267() throws Exception
+    public void AONE_16064() throws Exception
     {
         trace("Starting renderFacetedSearchConfigTest");
 
@@ -77,7 +77,7 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
      * @throws Exception
      */
     @Test
-    public void ALF_3268() throws Exception
+    public void AONE_16065() throws Exception
     {
         trace("Starting disableAndEnableFacetTest");
 
@@ -139,6 +139,7 @@ public class FacetedSearchConfigPageTest extends AbstractUtils
     {
         trace("Starting tearDown");
 
+        
         // Logout
         ShareUser.logout(drone);
 

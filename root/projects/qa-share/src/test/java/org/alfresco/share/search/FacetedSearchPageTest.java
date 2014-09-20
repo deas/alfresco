@@ -627,7 +627,7 @@ public class FacetedSearchPageTest extends AbstractUtils
 
     
     @Test(groups = "Alfresco-One")
-    public void ALF_3266() throws Exception
+    public void AONE_16063() throws Exception
     {
         trace("Starting selectViewOptionAndVerifyResults");
 

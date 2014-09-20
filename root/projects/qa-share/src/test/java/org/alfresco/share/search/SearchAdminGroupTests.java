@@ -91,7 +91,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      */    
     
     @Test (groups = "EnterpriseOnly")
-    public void ALF_3261() throws Exception
+    public void AONE_16049() throws Exception
     {
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);      
                 
@@ -115,7 +115,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ALF_3262() throws Exception
+    public void AONE_16050() throws Exception
     {        
         String testname = getTestName();        
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -152,7 +152,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ALF_3263() throws Exception
+    public void AONE_16051() throws Exception
     {        
         String testname = getTestName();        
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -195,7 +195,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      */    
     
     @Test(groups = "EnterpriseOnly")
-    public void ALF_3264() throws Exception
+    public void AONE_16052() throws Exception
     {
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
@@ -255,7 +255,7 @@ public class SearchAdminGroupTests extends AbstractUtils
      * </ul>
      */    
     @Test(groups = "EnterpriseOnly")
-    public void ALF_3265() throws Exception
+    public void AONE_16053() throws Exception
     {
         String testname = getTestName();
         String fName = getUserNameFreeDomain(testname+ System.currentTimeMillis());
