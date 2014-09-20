@@ -166,7 +166,8 @@ define(["dojo/_base/declare",
                // Take a copy of the default configuration and mixin in the supplied config to override defaults
                // as appropriate...
                var config = lang.clone(this.defaultFormDialogConfig);
-               lang.mixin(config, payload);
+               var clonedPayload = lang.clone(payload);
+               lang.mixin(config, clonedPayload);
                config.pubSubScope = pubSubScope;
                config.parentPubSubScope = this.parentPubSubScope;
                config.subcriptionTopic = subcriptionTopic; // Include the subcriptionTopic in the configuration the subscription can be cleaned up
