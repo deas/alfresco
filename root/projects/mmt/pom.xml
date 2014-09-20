@@ -25,6 +25,11 @@
             <artifactId>truezip-file</artifactId>
             <version>7.5.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>3.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -56,6 +61,7 @@
                             <include>org.safehaus.jug:jug</include>
                             <include>org.springframework.extensions.surf:spring-surf-core</include>
                             <include>org.tukaani:xz</include>
+                            <include>org.apache.maven:maven-artifact</include>
                         </includes>
                     </artifactSet>
                     <filters>
@@ -67,6 +73,13 @@
                                 <include>org/alfresco/util/VersionNumber.class</include>
                             </includes>
                         </filter>
+                        <filter>
+                            <artifact>org.apache.maven:maven-artifact</artifact>
+                            <includes>
+                                <include>org/apache/maven/artifact/versioning/**/*.class</include>
+                            </includes>
+                        </filter>
+                        
                         <filter>
                             <artifact>org.alfresco:alfresco-repository</artifact>
                             <includes>
