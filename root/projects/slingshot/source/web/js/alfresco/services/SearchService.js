@@ -175,6 +175,7 @@ define(["dojo/_base/declare",
                      case "sortAscending":
                      case "sortField":
                      case "requestId":
+                     case "spellcheck":
                         break;
                      default:
                         queryAttributes[key] = payload[key];
@@ -218,7 +219,8 @@ define(["dojo/_base/declare",
                repo: (payload.repo != null) ? payload.repo : this.repo,
                query: query,
                pageSize: (payload.pageSize != null) ? payload.pageSize : this.pageSize,
-               noCache: new Date().getTime()
+               noCache: new Date().getTime(),
+               spellcheck: (payload.spellcheck != null) ? payload.spellcheck: false
             };
             var config = {
                requestId: payload.requestId,

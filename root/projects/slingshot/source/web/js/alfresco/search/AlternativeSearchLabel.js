@@ -191,9 +191,10 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event
        */
       onSearchInsteadFor: function alfresco_search_AlternativeSearchLabel__onSearchInsteadFor(evt) {
-          this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
+          this.alfPublish("ALF_SET_SEARCH_TERM", {
             type: "HASH",
-            url: "searchTerm=" + this.searchRequest
+            searchTerm: this.searchRequest,
+            spellcheck: false
          }, true);
       }
    });

@@ -65,11 +65,11 @@ define(["dojo/_base/declare",
        */
       setupSubscriptions: function alfrescdo_documentlibrary_AlfSearchList__setupSubscriptions() {
          this.inherited(arguments);
-         this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, "onSearchTermRequest"));
-         this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, "onIncludeFacetRequest"));
-         this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, "onApplyFacetFilter"));
-         this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, "onRemoveFacetFilter"));
-         this.alfSubscribe("ALF_SEARCHLIST_SCOPE_SELECTION", lang.hitch(this, "onScopeSelection"));
+         this.alfSubscribe("ALF_SET_SEARCH_TERM", lang.hitch(this, this.onSearchTermRequest));
+         this.alfSubscribe("ALF_INCLUDE_FACET", lang.hitch(this, this.onIncludeFacetRequest));
+         this.alfSubscribe("ALF_APPLY_FACET_FILTER", lang.hitch(this, this.onApplyFacetFilter));
+         this.alfSubscribe("ALF_REMOVE_FACET_FILTER", lang.hitch(this, this.onRemoveFacetFilter));
+         this.alfSubscribe("ALF_SEARCHLIST_SCOPE_SELECTION", lang.hitch(this, this.onScopeSelection));
          this.alfSubscribe("ALF_ADVANCED_SEARCH", lang.hitch(this, this.onAdvancedSearch));
          this.alfSubscribe(this.reloadDataTopic, lang.hitch(this, this.reloadData));
       },
@@ -89,6 +89,15 @@ define(["dojo/_base/declare",
          this.dataFailureMessage = this.message("searchlist.data.failure.message");
       },
 
+      /** 
+       * Include spell checking in search requests.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      spellcheck: true,
+
       /**
        * Extends the 
        * 
@@ -96,6 +105,7 @@ define(["dojo/_base/declare",
        */
       postMixInProperties: function alfresco_documentlibrary_AlfSearchList__postMixInProperties() {
          this.inherited(arguments);
+         this._suspendSpellCheck = false;
          this._cleanResettableVars();
       },
 
@@ -146,6 +156,11 @@ define(["dojo/_base/declare",
             }
             else
             {
+               if (payload.spellcheck != null && payload.spellcheck === false)
+               {
+                  this._suspendSpellCheck = true;
+               }
+               
                // If a request is NOT in progress then we need to manually request a new search, because re-setting 
                // the hash will not trigger the changeFilter function....
                // If the current hash includes a term from the resetHashTerms array, we need to clear those terms before 
@@ -508,7 +523,8 @@ define(["dojo/_base/declare",
                   repo: repo,
                   requestId: this.currentRequestId,
                   pageSize: this.currentPageSize,
-                  startIndex: startIndex
+                  startIndex: startIndex,
+                  spellcheck: this.spellcheck && !this._suspendSpellCheck
                };
 
                if (this.query)
@@ -549,6 +565,9 @@ define(["dojo/_base/declare",
          
          var newData = payload.response;
          this.currentData = newData; // Some code below expects this even if the view is null.
+
+         // Reset suspending the spell check...
+         this._suspendSpellCheck = false;
 
          // Re-render the current view with the new data...
          var view = this.viewMap[this._currentlySelectedView];
@@ -627,6 +646,9 @@ define(["dojo/_base/declare",
          {
             if (spellcheck.searchedFor != null)
             {
+               // Update the local state to reflect what was actually searched for...
+               // this.searchTerm = spellcheck.searchedFor;
+
                // This means that an alternative search term was used...
                this.alfPublish("ALF_SPELL_CHECK_SEARCH_TERM", {
                   searchRequest: spellcheck.searchRequest,

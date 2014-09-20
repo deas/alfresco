@@ -7,7 +7,7 @@
 
 .alfresco-search-AlternativeSearchLabel > div {
    color: @de-emphasized-font-color;
-   margin-bottom: @standard-line-height;
+   margin: @standard-column-spacing 0;
 }
 
 .alfresco-search-AlternativeSearchLabel > div.searched-for-term {
