@@ -4,11 +4,24 @@
 }
 
 .alfresco-creation-DragWidgetPalette.dragTemplate {
-   border: 1px solid #D3D3D3;
+   border: 1px solid #CCC;
    margin: 5px;
    padding: 5px;
    width: 150px;
    display: inline-block;
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
+   background-color: #fff;
+   background-image: none;
+}
+
+.alfresco-creation-DragWidgetPalette.dragTemplate.dojoDndItemAnchor {
+   background-color: #fff;
+   background-image: none;
+}
+
+.alfresco-creation-DragWidgetPalette.dragTemplate.dojoDndItemOver {
+   background-color: #eee;
+   background-image: none;
 }
 
 .alfresco-creation-DragWidgetPalette.dragTemplate span {

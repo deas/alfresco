@@ -3,13 +3,14 @@
 .alfresco-creation-DragZoneWrapper.dojoDndItemAnchor,
 .alfresco-creation-DragZoneWrapper.dojoDndItemSelected,
 .alfresco-creation-DragZoneWrapper.dojoDndItemOver {
-   background-color: inherit;
+   background-color: #EEE;
    background-image: none;
    padding: 5px;
-   margin: 2px;
-   border: 1px solid #EEE;
+   margin: 5px;
+   border: 1px solid #CCC;
    position: relative;
    min-width: 100px;
+   box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .alfresco-creation-DragZoneWrapper.dojoDndItemOver {
