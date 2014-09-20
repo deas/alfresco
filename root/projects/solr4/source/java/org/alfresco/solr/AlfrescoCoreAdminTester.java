@@ -7243,7 +7243,11 @@ public class AlfrescoCoreAdminTester
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Read Access", report);
 
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);        
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{!afts}|DENIED:andy");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{!afts}|DENYSET:\":andy:bob:cid\"");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
                 "{!afts}|OWNER:andy");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,

@@ -90,6 +90,8 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(QueryConstants.FIELD_OWNERSET);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_READERSET);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_AUTHORITYSET);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_DENIED);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_DENYSET);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_TXID);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ACLTXID);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_TXCOMMITTIME);

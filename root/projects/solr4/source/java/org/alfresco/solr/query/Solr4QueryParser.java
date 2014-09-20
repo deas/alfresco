@@ -509,6 +509,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 return createAuthoritySetQuery(queryText);
             }
+            else if (field.equals(FIELD_DENIED))
+            {
+                return createDeniedQuery(queryText);
+            }
+            else if (field.equals(FIELD_DENYSET))
+            {
+                return createDenySetQuery(queryText);
+            }
             else if (field.equals(FIELD_ISROOT))
             {
                 return createIsRootQuery(queryText);
@@ -4567,5 +4575,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     {
         return new SolrAuthoritySetQuery(queryText);
     }
+    
+    protected Query createDeniedQuery(String queryText) throws ParseException
+    {
+        return new SolrDeniedQuery(queryText);
+    }
 
+    protected Query createDenySetQuery(String queryText) throws ParseException
+    {
+        return new SolrDenySetQuery(queryText);
+    }
 }
