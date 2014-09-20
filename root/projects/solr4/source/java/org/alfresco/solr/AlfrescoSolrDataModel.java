@@ -663,8 +663,21 @@ public class AlfrescoSolrDataModel implements QueryConstants
    
     private void addFacetSearchFields( PropertyDefinition propertyDefinition , IndexedField indexedField)
     {
+        if(propertyDefinition.getDataType().getName().equals(DataTypeDefinition.TEXT))
+        {
+            if (!isIdentifierTextProperty(propertyDefinition.getName()))
+            {
+                if(propertyDefinition.getFacetable() == Facetable.TRUE)
+                {
+                    indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
+                }
+            }
+        }
+        
+        
         if ((propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.FALSE)
-                || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH))
+                || (propertyDefinition.getIndexTokenisationMode() == IndexTokenisationMode.BOTH)
+                || isIdentifierTextProperty(propertyDefinition.getName()))
         {
             
             indexedField.addField(getFieldForText(false, false, false, propertyDefinition), false, false);
