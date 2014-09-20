@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -72,6 +73,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.MultiMapSolrParams;
@@ -6301,6 +6304,7 @@ public class AlfrescoCoreAdminTester
             SolrRequestHandler afts = core.getRequestHandler(handler);
 
             ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
+            newParams.set("alfresco.getSolrDocumentList", true);
             newParams.set("defType", handler.substring("/".length()));
             newParams.set("q", query);
             if (rows != null)
@@ -6332,7 +6336,7 @@ public class AlfrescoCoreAdminTester
                 newParams.set("fq", filters);
                 queryReport.add("Filters", filters);
             }
-            newParams.set("fq", "AUTHORITY_FILTER_FROM_JSON");
+            newParams.set("fq", "{!afts}AUTHORITY_FILTER_FROM_JSON");
             solrReq.setParams(newParams);
             ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
             streams.add(new ContentStreamBase.StringStream("json"));
@@ -6340,19 +6344,19 @@ public class AlfrescoCoreAdminTester
 
             afts.handleRequest(solrReq, solrRsp);
 
-            DocSlice ds = (DocSlice) solrRsp.getValues().get("response");
+            SolrDocumentList ds = (SolrDocumentList) solrRsp.getValues().get("responseSolrDocumentList");
             if (ds != null)
             {
-                if (ds.matches() != count)
+                if (ds.size() != count)
                 {
                     passed = false;
                     ordered = false;
                     queryReport.add("Expected", count);
-                    queryReport.add("Found", ds.matches());
+                    queryReport.add("Found", ds.size());
                 }
                 else
                 {
-                    queryReport.add("Found", ds.matches());
+                    queryReport.add("Found", ds.size());
                 }
                 int sz = ds.size();
 
@@ -6360,13 +6364,11 @@ public class AlfrescoCoreAdminTester
                 {
                     int[] dbids = new int[sz];
                     SolrIndexSearcher searcher = solrReq.getSearcher();
-                    DocIterator iterator = ds.iterator();
+                    Iterator<SolrDocument> iterator = ds.iterator();
                     for (int i = 0; i < sz; i++)
                     {
-                        int id = iterator.nextDoc();
-                        Document doc = searcher.doc(id);
-                        IndexableField dbidField = doc.getField("DBID");
-                        dbids[i] = Integer.valueOf(dbidField.stringValue());
+                        SolrDocument doc = iterator.next();
+                        dbids[i] = Integer.valueOf(((String)doc.getFieldValue("DBID")));
 
                         if (ordered)
                         {
