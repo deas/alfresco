@@ -636,11 +636,40 @@ define(["dojo/_base/declare",
          var myUuid = this.getMyUuid();
          var myConfig = this.alfGetData(myUuid);
 
+         // It's necessary to ensure that the configuration accurately reflects the order of the
+         // widgets in the DropZone. To do this we need to build a map of the id of each dropped
+         // item to it's index in the DropZone
+         var sourceOrderMap = {};
+         var nodes = this.previewTarget.getAllNodes();
+         array.forEach(nodes, function(node, i) {
+            var item = this.previewTarget.getItem(node.id);
+            var id = lang.getObject("data.updatedConfig.defaultConfig.fieldId", false, item);
+            if (id == null)
+            {
+               id = lang.getObject("data.defaultConfig.fieldId", false, item);
+            }
+            sourceOrderMap[id] = i;
+         }, this);
+
+         // We now need to build the actual data represented by the items in the DropZone...
+         // We're going to get the data from the data store and then ensure that it's order
+         // matches the current order of the nodes representing each data item...
          var items = [];
+         var updatedChildren = [];
          array.forEach(myConfig.children, function (item, index) {
             var itemData = this.alfGetData(item);
-            items.push(itemData);
+            var id = lang.getObject("updatedConfig.defaultConfig.fieldId", false, itemData);
+            if (id == null)
+            {
+               id = lang.getObject("defaultConfig.fieldId", false, itemData);
+            }
+            var targetIndex = sourceOrderMap[id];
+            items[targetIndex] = itemData;
+            updatedChildren[targetIndex] = item;
          }, this);
+         myConfig.children = updatedChildren;
+
+         // Add the display widgets...
          myConfig.widgetsForDisplay = [
             {
                name: "alfresco/creation/DropZone",
