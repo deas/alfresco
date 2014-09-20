@@ -202,7 +202,10 @@ define(["intern!object",
             })
             .end()
 
-         // .releaseMouseButton()
+         .releaseMouseButton()
+            .catch(function(err) {
+               TestCommon.log(testname, "Caught error cleaning up button release");
+            })
 
          .findById("yui-gen1")
             .then(function(element) {
