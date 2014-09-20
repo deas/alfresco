@@ -51,6 +51,15 @@ define(["dojo/_base/declare",
        * @default [{cssFile:"./css/MoreInfo"}]
        */
       cssRequirements: [{cssFile:"./css/MoreInfo.css"}],
+
+      /**
+       * The array of file(s) containing internationalised strings.
+       *
+       * @instance
+       * @type {object}
+       * @default [{i18nFile: "./i18n/MoreInfo.properties"}]
+       */
+      i18nRequirements: [{i18nFile: "./i18n/MoreInfo.properties"}],
       
       /**
        * The HTML template to use for the widget.
@@ -100,9 +109,9 @@ define(["dojo/_base/declare",
          event.stop(evt);
          if (this.moreInfoDialog == null)
          {
-            if (this.xhrRequired == true)
+            if (this.xhrRequired === true)
             {
-               this.getXhrData()
+               this.getXhrData();
             }
             else
             {
@@ -223,7 +232,19 @@ define(["dojo/_base/declare",
                                           renderFilter: [{
                                              property: "node.permissions.user.Write",
                                              values: [true]
-                                          }]
+                                          }],
+                                          requirementConfig: {
+                                             initialValue: true
+                                          },
+                                          validationConfig: [
+                                             {
+                                                validation: "regex",
+                                                // NOTE: Ignore JSHint error on following line
+                                                regex: "([\"\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)",
+                                                errorMessage: "moreinfo.invalid.name",
+                                                invertRule: true
+                                             }
+                                          ]
                                        }
                                     },
                                     {

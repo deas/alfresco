@@ -240,7 +240,7 @@ define(["dojo/_base/declare",
                   {
                      this._validationErrorMessage += ", ";
                   }
-                  this._validationErrorMessage += validationConfig.errorMessage;
+                  this._validationErrorMessage += this.message(validationConfig.errorMessage);
                }
                
                // Update the validation message...
