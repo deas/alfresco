@@ -107,14 +107,12 @@ function getRenderFilterConfig() {
                      value: "GROUP_ALFRESCO_ADMINISTRATORS",
                      postWhenHiddenOrDisabled: false,
                      optionsConfig: {
-                        pubSub: {
-                           publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
-                           publishPayload: {
-                              url: url.context + "/proxy/alfresco/api/groups",
-                              itemsAttribute: "data",
-                              labelAttribute: "displayName",
-                              valueAttribute: "fullName"
-                           }
+                        publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                        publishPayload: {
+                           url: url.context + "/proxy/alfresco/api/groups",
+                           itemsAttribute: "data",
+                           labelAttribute: "displayName",
+                           valueAttribute: "fullName"
                         }
                         // ,
                         // fixed: [

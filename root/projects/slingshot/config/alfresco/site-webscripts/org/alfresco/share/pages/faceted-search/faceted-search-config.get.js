@@ -3,6 +3,11 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/options/faceted-search/available-facets-controls.get.js">
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/options/faceted-search/available-facets.get.js">
 
+// Currently we're importing a WebScript that can be used to get the list of facetable
+// properties. Because this data is used numerous times and involves post-processing of
+// the data we only want to load and process it once per facet request.
+var facetetableProperties = getAvailableFacetProperties();
+
 // Get the initial header services and widgets...
 var services = getHeaderServices(),
     widgets = getHeaderModel(msg.get("faceted-search-config.page.title"));
@@ -198,7 +203,7 @@ function getFormDefinition(canEditFilterId) {
                      label: "faceted-search-config.facetQName.label",
                      description: "faceted-search-config.facetQName.description",
                      optionsConfig: {
-                        fixed: getAvailableFacets()
+                        fixed: facetetableProperties
                      }
                   }
                },
@@ -708,9 +713,16 @@ var main = {
                                                                         successMessage: msg.get("faceted-search-config.update.successMessage")
                                                                      },
                                                                      optionsConfig: {
-                                                                        fixed: getAvailableFacets()
+                                                                        fixed: facetetableProperties
+                                                                        // publishTopic: "ALF_GET_FORM_CONTROL_OPTIONS",
+                                                                        // publishPayload: {
+                                                                        //    url: url.context + "/proxy/alfresco/api/facet/facetable-properties",
+                                                                        //    itemsAttribute: "data.properties",
+                                                                        //    labelAttribute: "displayName",
+                                                                        //    valueAttribute: "longqname"
+                                                                        // }
                                                                      },
-                                                                     valueDisplayMap: getAvailableFacets(),
+                                                                     valueDisplayMap: facetetableProperties,
                                                                      hiddenDataRules: [
                                                                         {
                                                                            name: "customProperties",
