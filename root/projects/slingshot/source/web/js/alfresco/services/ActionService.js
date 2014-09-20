@@ -1047,12 +1047,12 @@ define(["dojo/_base/declare",
 
          var dialog = new AlfDialog({
             generatePubSubScope: false,
-            title: "Confirm Delete",
-            // textContent: "Are you sure you want to delete '" + documents + "'?",
+            title: this.message("delete-dialog.title"),
             widgetsContent: [
                {
                   name: "alfresco/documentlibrary/views/AlfDocumentListView",
                   config: {
+                     additionalCssClasses: "no-highlight",
                      currentData: {
                         items: documents
                      },
@@ -1095,7 +1095,7 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/buttons/AlfButton",
                   config: {
-                     label: "Yes",
+                     label: this.message("services.ActionService.button.ok"),
                      publishTopic: responseTopic,
                      publishPayload: {
                         nodes: documents,
@@ -1106,7 +1106,7 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/buttons/AlfButton",
                   config: {
-                     label: "No",
+                     label: this.message("services.ActionService.button.cancel"),
                      publishTopic: "close"
                   }
                }

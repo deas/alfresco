@@ -9,6 +9,11 @@
    outline: none;
 }
 
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView.no-highlight tr:focus,
+.alfresco-documentlibrary-views-layouts-AlfDocumentListView.no-highlight tr:hover {
+   background-color: transparent;
+}
+
 .alfresco-documentlibrary-views-layouts-AlfDocumentListView > table > tbody > tr:nth-child(even) {
    /*background-color: @docListEvenRowColour;*/
 }
