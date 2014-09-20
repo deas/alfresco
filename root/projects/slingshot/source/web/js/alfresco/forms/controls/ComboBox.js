@@ -83,7 +83,23 @@ define(["alfresco/forms/controls/BaseFormControl",
             queryExpr: "${0}"
          });
          this.addIcon(comboBox);
+
+         // Override the standard "_startSearchAll" function. 
+         // PLEASE NOTE: Hitched scope is intentionally NOT "this"... 
+         comboBox._startSearchAll = lang.hitch(comboBox, this.searchAll);
          return comboBox;
+      },
+
+      /**
+       * This function is used to get all the available options based on the value
+       * currently entered into the ComboBox. It is used when the user clicks on the
+       * down arrow (without entering any text) and overrides the default Dojo ComboBox
+       * implementation which searches on the empty string.
+       *
+       * @instance
+       */
+      searchAll: function alfresco_forms_controls_ComboBox__searchAll() {
+         this._startSearch(this.getValue());
       },
 
       /**
