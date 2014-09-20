@@ -38,68 +38,79 @@ define(["intern!object",
    var okButtonSelector = ".alfresco-dialog-AlfDialog .footer > span:first-child > span";
    var cancelButtonSelector = ".alfresco-dialog-AlfDialog .footer > span:nth-child(2) > span";
 
+   var dialogDelay = 500;
+
    registerSuite({
       name: 'Upload Tests',
       'Upload Failure': function () {
 
-         // var browser = this.remote;
          return TestCommon.loadTestWebScript(this.remote, "/aikau-upload-failure-unit-test", testname)
 
          // Simulate providing a zero byte file and check the output...
          .findByCssSelector("#SINGLE_UPLOAD_label")
             .click()
-            .end()
+            .sleep(dialogDelay)
+         .end()
+
          .findAllByCssSelector(failedUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there is a failed upload");
                assert(elements.length === 1, "Test #1a - Wrong number of failed uploads, expected 1, found: " + elements.length);
             })
-            .end()
+         .end()
 
-         // Close the dialog
          .findByCssSelector(cancelButtonSelector)
             .click()
-            .end();
+            .sleep(dialogDelay)
+         .end();
+
       },
+
       'Bad File Data': function () {
 
-         // var browser = this.remote;
          return TestCommon.loadTestWebScript(this.remote, "/aikau-upload-unit-test", testname)
 
          // Simulate providing a zero byte file and check the output...
          .findByCssSelector("#BAD_FILE_DATA_label")
             .click()
-            .end()
+            .sleep(dialogDelay)
+         .end()
+
          .findAllByCssSelector(failedUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there is a failed upload");
                assert(elements.length === 1, "Test #1a - Wrong number of failed uploads, expected 1, found: " + elements.length);
             })
-            .end()
+         .end()
 
-         // Close the dialog
          .findByCssSelector(cancelButtonSelector)
             .click()
-            .end();
+            .sleep(dialogDelay)
+         .end();
+
       },
+
       'Single File Upload': function () {
-         // Post the coverage results...
+
          var browser = this.remote;
          return browser.findByCssSelector("#SINGLE_UPLOAD_label")
             .click()
-            .end()
+            .sleep(dialogDelay)
+         .end()
+
          .findAllByCssSelector(failedUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there are no failed uploads");
                assert(elements.length === 0, "Test #1a - Wrong number of failed uploads, expected 0, found: " + elements.length);
             })
-            .end()
+         .end()
+
          .findAllByCssSelector(successfulUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there is one successful upload");
                assert(elements.length === 1, "Test #1b - Wrong number of successful uploads, expected 1, found: " + elements.length);
             })
-            .end()
+         .end()
 
          .findByCssSelector(aggProgStatusSelector)
             .getVisibleText()
@@ -107,55 +118,66 @@ define(["intern!object",
                TestCommon.log(testname, "Checking the aggregate progress is 100%");
                assert(text === "100%", "Test #1b - The aggregate progress was not 100%: " + text);
             })
-            .end()
+         .end()
 
-         // Close the dialog
          .findByCssSelector(okButtonSelector)
             .click()
-            .end();
+            .sleep(dialogDelay)
+         .end();
+
       },
+
       'No Files Upload': function () {
-         // Post the coverage results...
+
          var browser = this.remote;
          return browser.findByCssSelector("#NO_FILES_UPLOAD_label")
             .click()
-            .end()
+            .sleep(dialogDelay)
+         .end()
+
          .findAllByCssSelector(failedUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there are no failed uploads");
                assert(elements.length === 0, "Test #1a - Wrong number of failed uploads, expected 0, found: " + elements.length);
             })
-            .end()
+         .end()
+
          .findAllByCssSelector(successfulUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there is one successful upload");
                assert(elements.length === 0, "Test #1b - Wrong number of successful uploads, expected 0, found: " + elements.length);
             })
-            .end()
+         .end()
 
-         // Close the dialog
          .findByCssSelector(okButtonSelector)
             .click()
-            .end();
+            .sleep(dialogDelay)
+         .end();
+
       },
+
       'Multi-File Upload': function () {
-         // Post the coverage results...
+
          var browser = this.remote;
+         
          return browser.findByCssSelector("#MULTI_UPLOAD_label")
             .click()
-            .end()
+            .sleep(dialogDelay)
+         .end()
+
          .findAllByCssSelector(failedUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there are no failed uploads");
                assert(elements.length === 0, "Test #1a - Wrong number of failed uploads, expected 0, found: " + elements.length);
             })
-            .end()
+         .end()
+
          .findAllByCssSelector(successfulUploadsSelector)
             .then(function(elements) {
                TestCommon.log(testname, "Checking that there is one successful upload");
                assert(elements.length === 4, "Test #1b - Wrong number of successful uploads, expected 4, found: " + elements.length);
             })
-            .end()
+         .end()
 
          .findByCssSelector(aggProgStatusSelector)
             .getVisibleText()
@@ -163,12 +185,14 @@ define(["intern!object",
                TestCommon.log(testname, "Checking the aggregate progress is 100%");
                assert(text === "100%", "Test #1b - The aggregate progress was not 100%: " + text);
             })
-            .end()
+         .end()
 
-         // Close the dialog
          .findByCssSelector(okButtonSelector)
             .click()
-            .end().alfPostCoverageResults(browser);
+            .sleep(dialogDelay)
+         .end()
+
+         .alfPostCoverageResults(browser);
       }
    });
 });
