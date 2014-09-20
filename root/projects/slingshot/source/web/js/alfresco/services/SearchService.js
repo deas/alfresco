@@ -192,7 +192,7 @@ define(["dojo/_base/declare",
             }
 
             var sort = "";
-            if (payload.sortField != null && payload.sortField === "")
+            if (payload.sortField != null && payload.sortField !== "null" && payload.sortField === "")
             {
                // No action required - leave as the empty string which is relevance - no direction can be applied
             }
