@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -96,6 +97,7 @@ import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.util.RefCounted;
+import org.apache.tika.io.IOUtils;
 //import org.alfresco.repo.search.impl.lucene.MultiReader;
 import org.springframework.util.FileCopyUtils;
 
@@ -6283,9 +6285,28 @@ public class AlfrescoCoreAdminTester
                     10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
+    private void testJSONAuthorityFilter(NamedList report, SolrCore core, String handler, String query, int count,
+                String sort, int[] sorted, Locale locale, Integer rows, Integer start, String json)
+                throws IOException
+    {
+        ContentStream stream = new ContentStreamBase.StringStream(json);
+        // Magic filter text to trigger usage of content stream.
+        String filter = "{!afts}AUTHORITY_FILTER_FROM_JSON";
+        testQueryByHandler(report, core, handler, query, count, sort, sorted, locale, rows, start, stream, filter);
+    }
+    
+    @SuppressWarnings({ "rawtypes" })
     private void testQueryByHandler(NamedList report, SolrCore core, String handler, String query, int count,
                 String sort, int[] sorted, Locale locale, Integer rows, Integer start, String... filters)
+                throws IOException
+    {
+        testQueryByHandler(report, core, handler, query, count, sort, sorted, locale, rows, start, null, filters);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void testQueryByHandler(NamedList report, SolrCore core, String handler, String query, int count,
+                String sort, int[] sorted, Locale locale, Integer rows, Integer start, ContentStream stream, String... filters)
                 throws IOException
     {
         // TODO: report to rsp
@@ -6343,11 +6364,20 @@ public class AlfrescoCoreAdminTester
                 }
                 queryReport.add("Filters", filters);
             }
-            //newParams.add("fq", "{!afts}AUTHORITY_FILTER_FROM_JSON");
             solrReq.setParams(newParams);
-            ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
-            streams.add(new ContentStreamBase.StringStream("json"));
-            solrReq.setContentStreams(streams);
+            
+            if (stream != null)
+            {                
+                ArrayList<ContentStream> streams = new ArrayList<ContentStream>();
+                streams.add(stream);
+                solrReq.setContentStreams(streams);
+                String streamStr = null;
+                try(Reader reader = stream.getReader())
+                {
+                    streamStr = IOUtils.toString(reader);
+                }
+                queryReport.add("Stream", streamStr);
+            }
 
             afts.handleRequest(solrReq, solrRsp);
 
@@ -7305,7 +7335,39 @@ public class AlfrescoCoreAdminTester
         // "something" is DENIED to all nodes (they all use ACL #1)
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
                     "{!afts}|DENIED:something");
+
+        // "something" would be able to read all nodes due to GROUP_EVERYONE, however something
+        // is DENIED access on all nodes as well. The DENIED trumps any other read access.
+        // In addition, something does not own any nodes.
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{ \"authorities\": [ \"something\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{ \"authorities\": [ \"something\" ], \"tenants\": [ \"\" ] }");
         
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{ \"authorities\": [ \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+        
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                    "{ \"authorities\": [ \"andy\" ], \"tenants\": [ \"\" ] }");
+        
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{ \"authorities\": [ \"andy\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+        
+        // Even though andy, bob, cid and GROUP_EVERYONE would return docs, "something" still denied.
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{ \"authorities\": [ \"andy\", \"bob\", \"cid\", \"something\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null,
+                    "{ \"authorities\": [ \"andy\", \"bob\", \"cid\" ], \"tenants\": [ \"\" ] }");
+        
+        // Check that generation of filter using AUTHORITY and DENIED works (no DENYSET/AUTHSET separator available)
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 2, null, null, null, null, null,
+                    "{ \"authorities\": [ \"strange:,-!+=;~/\", \"andy\", \"bob\" ], \"tenants\": [ \"\" ] }");
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{ \"authorities\": [ \"strange:,-!+=;~/\", \"andy\", \"something\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{ \"authorities\": [ \"strange:,-!+=;~/\", \"bob\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
         
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
                     "{!afts}|AUTHORITY:andy");
