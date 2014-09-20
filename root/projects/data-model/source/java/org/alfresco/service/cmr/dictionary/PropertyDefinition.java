@@ -62,9 +62,21 @@ public interface PropertyDefinition extends ClassAttributeDefinition
     public String getTitle(MessageLookup messageLookup);
 
     /**
+     * @return the human-readable class title in the specified Locale, if available.
+     * @since 5.0
+     */
+    public String getTitle(MessageLookup messageLookup, Locale locale);
+
+    /**
      * @return the human-readable class description
      */
     public String getDescription(MessageLookup messageLookup);
+
+    /**
+     * @return the human-readable class description in the specified Locale, if available.
+     * @since 5.0
+     */
+    public String getDescription(MessageLookup messageLookup, Locale locale);
 
     /**
      * @return the default value
