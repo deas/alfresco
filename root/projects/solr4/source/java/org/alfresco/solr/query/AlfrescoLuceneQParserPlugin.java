@@ -84,7 +84,8 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
             Query query;
             try
             {
-                query = qp.parse(searchParameters.getQuery());
+                // escape / not in a string and not already escaped
+                query = qp.parse(searchParameters.getQuery().replaceAll("([^\\\\])/(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)", "$1\\\\/"));
             }
             catch (ParseException pe)
             {
