@@ -19,7 +19,7 @@
 
 /**
  * This is the root list module.
- * 
+ *
  * @module alfresco/lists/AlfList
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
@@ -30,7 +30,7 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
+        "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dojo/text!./templates/AlfList.html",
         "alfresco/core/Core",
@@ -42,24 +42,24 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/dom-class"], 
+        "dojo/dom-class"],
         function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin,
                  DynamicWidgetProcessingTopics, AlfDocumentListView, AlfCheckableMenuItem, array, lang, domConstruct, domClass) {
-   
+
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, _AlfDocumentListTopicMixin, DynamicWidgetProcessingTopics], {
-      
+
       /**
        * An array of the i18n files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfList.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfList.properties"}],
-      
+
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance cssRequirements {Array}
        * @type {object[]}
        * @default [{cssFile:"./css/AlfList.css"}]
@@ -72,37 +72,37 @@ define(["dojo/_base/declare",
        * @type {String}
        */
       templateString: template,
-      
+
       /**
        * A map of views that the list can switch between.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       viewMap: null,
-      
+
       /**
        * A map of the additional controls that each view requires. This is map is populated as each view
        * is selected (so that the controls are only loaded once) but are then loaded from the map. This
        * allows the same controls to be added and removed as views are switched.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       viewControlsMap: null,
-      
+
       /**
        * The widgets processed by AlfDocumentList should all be instances of "alfresco/documentlibrary/AlfDocumentListView".
        * Any widget that is instantiated that does not inherit from that class will not be included as a view.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default
        */
       widgets: null,
-      
+
       /**
        * Is there currently a request in progress?
        *
@@ -152,7 +152,7 @@ define(["dojo/_base/declare",
 
       /**
        * Subscribe the document list topics.
-       * 
+       *
        * @instance
        */
       postMixInProperties: function alfresco_lists_AlfList__postMixInProperties() {
@@ -185,7 +185,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default 
+       * @default
        */
       noViewSelectedMessage: "alflist.no.view.message",
 
@@ -195,9 +195,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default 
+       * @default
        */
-      
+
       noDataMessage: "alflist.no.data.message",
 
       /**
@@ -206,9 +206,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default 
+       * @default
        */
-      
+
       fetchingDataMessage: "alflist.loading.data.message",
 
       /**
@@ -217,9 +217,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default 
+       * @default
        */
-      
+
       renderingViewMessage: "alflist.rendering.data.message",
 
       /**
@@ -228,9 +228,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default 
+       * @default
        */
-      
+
       fetchingMoreDataMessage: "alflist.loading.data.message",
 
       /**
@@ -239,9 +239,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @type {string}
-       * @default 
+       * @default
        */
-      
+
       dataFailureMessage: "alflist.data.failure.message",
 
       /**
@@ -274,11 +274,11 @@ define(["dojo/_base/declare",
             this.processWidgets(lang.clone(this.widgets));
          }
       },
-      
+
       /**
        * This indicates that the instance should wait for all widgets on the page to finish rendering before
        * making any attempt to load data. If this is set to true then loading can begin as soon as this instance
-       * has finished being created. This needs to be overridden in the case where the instance is created 
+       * has finished being created. This needs to be overridden in the case where the instance is created
        * dynamically after the page has loaded.
        *
        * @instance
@@ -289,11 +289,11 @@ define(["dojo/_base/declare",
 
       /**
        * This is updated by the [onPageWidgetsReady]{@link module:alfresco/lists/AlfList#onPageWidgetsReady}
-       * function to be true when all widgets on the page have been loaded. It is used to block loading of 
+       * function to be true when all widgets on the page have been loaded. It is used to block loading of
        * data until the page is completely setup. This is done to avoid multiple data loads as other widgets
        * on the page publish the details of their initial state (which would otherwise trigger a call to
        * [loadData]{@link module:alfresco/lists/AlfList#onPageWidgetsReady})
-       * 
+       *
        * @instance
        * @type {boolean}
        * @default false
@@ -326,7 +326,7 @@ define(["dojo/_base/declare",
       /**
        * The preference property to use for saving the current view. Initially defaulted to
        * the document library view preference but can be overridden if desired.
-       * 
+       *
        * @instance
        * @type {string}
        * @default "org.alfresco.share.documentList.viewRendererName"
@@ -336,7 +336,7 @@ define(["dojo/_base/declare",
       /**
        * Iterates over the widgets processed and calls the [registerView]{@link module:alfresco/lists/AlfList#registerView}
        * function with each one.
-       * 
+       *
        * @instance
        * @param {object[]} The created widgets
        */
@@ -371,12 +371,12 @@ define(["dojo/_base/declare",
             this.onPageWidgetsReady();
          }
       },
-      
+
       /**
        * This is called from [allWidgetsProcessed]{@link module:alfresco/lists/AlfList#allWidgetsProcessed} for
        * each widget defined. Only widgets that inherit from [AlfDocumentListView]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}
        * will be successfully registered.
-       * 
+       *
        * @instance
        * @param {object} view The view to register
        * @param {number} index
@@ -404,7 +404,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Processes a registered view. This function essentially adds the view to the 
+       * Processes a registered view. This function essentially adds the view to the
        * [viewMap]{@link module:alfresco/lists/AlfList#viewMap}.
        *
        * @instance
@@ -417,11 +417,11 @@ define(["dojo/_base/declare",
          {
             viewName = index;
          }
-         
+
          // Create a new new menu item using the supplied configuration...
          var viewSelectionConfig = view.getViewSelectionConfig();
          viewSelectionConfig.value = viewName;
-         
+
          // Check if this is the initially requested view...
          if (viewName == this.view)
          {
@@ -434,13 +434,13 @@ define(["dojo/_base/declare",
 
          // Publish the additional controls...
          this.publishAdditionalControls(viewName, view);
-         
+
          // Set the value of the publish topic...
          viewSelectionConfig.publishTopic = this.viewSelectionTopic;
          viewSelectionConfig.publishPayload = {
             preference: this.viewPreferenceProperty
          };
-        
+
          // Set a common group for the menu item...
          viewSelectionConfig.group = this.viewSelectionMenuItemGroup;
 
@@ -452,7 +452,7 @@ define(["dojo/_base/declare",
          // the selection on the topic defined by the "viewSelectionTopic" (to which this DocumentList instance subscribes) and the
          // new view will be rendered...
          var selectionMenuItem = new AlfCheckableMenuItem(viewSelectionConfig);
-         
+
          // If the view meets all the required criteria then we can add it for selection...
          this.alfPublish(this.selectionMenuItemTopic, {
             menuItem: selectionMenuItem
@@ -481,7 +481,7 @@ define(["dojo/_base/declare",
 
       /**
        * Gets the additional controls for a view and publishes them.
-       * 
+       *
        * @instance
        * @param {string} viewName The name of the view
        * @param {object} view The view to get the controls for.
@@ -506,7 +506,7 @@ define(["dojo/_base/declare",
             }
             this.viewControlsMap[viewName] = newAdditionalControls;
          }
-         
+
          // Publish the new additional controls for anyone wishing to display them...
          if (newAdditionalControls != null)
          {
@@ -517,11 +517,11 @@ define(["dojo/_base/declare",
             });
          }
       },
-      
+
       /**
        * By default this just ensures that a label has been provided. However this function could be overridden to provide
        * more complete validation if there are specific requirements for view selection configuration.
-       * 
+       *
        * @instance isValidViewSelectionConfig
        * @param {object} viewSelectionConfig The configuration to validate
        * @return {boolean} Either true or false depending upon the validity of the supplied configuration.
@@ -529,33 +529,33 @@ define(["dojo/_base/declare",
       isValidViewSelectionConfig: function alfresco_lists_AlfList__isValidViewSelectionConfig(viewSelectionConfig) {
          return (viewSelectionConfig.label != null && viewSelectionConfig.label !== "");
       },
-      
+
       /**
        * Use to keeps track of the [view]{@link module:alfresco/documentlibrary/views/AlfDocumentListView} that is currently selected.
-       * 
+       *
        * @instance
-       * @type {string} 
+       * @type {string}
        * @default null
        */
       _currentlySelectedView: null,
-      
+
       /**
        * Used to keep track of the current data for rendering by [views]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       currentData: null,
-      
+
       /**
-       * Handles requests to switch views. This is called whenever the [viewSelectionTopic]{@link module:alfresco/documentlibrary/_AlfDocumentListTopicMixin#viewSelectionTopic} 
-       * topic is published on and expects a payload containing an attribute "value" which should map to a registered 
-       * [view]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}. The views are mapped against the index they were configured 
+       * Handles requests to switch views. This is called whenever the [viewSelectionTopic]{@link module:alfresco/documentlibrary/_AlfDocumentListTopicMixin#viewSelectionTopic}
+       * topic is published on and expects a payload containing an attribute "value" which should map to a registered
+       * [view]{@link module:alfresco/documentlibrary/views/AlfDocumentListView}. The views are mapped against the index they were configured
        * with so the value is expected to be an integer.
-       * 
+       *
        * @instance
-       * @param {object} payload The payload published on the view selection topic. 
+       * @param {object} payload The payload published on the view selection topic.
        */
       onViewSelected: function alfresco_lists_AlfList__onViewSelected(payload) {
          if (this.currentData == null)
@@ -598,10 +598,10 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * Hides all the children of the supplied DOM node by applying the "share-hidden" CSS class to them.
-       * 
+       *
        * @instance
        * @param {Element} targetNode The DOM node to hide the children of.
        */
@@ -610,11 +610,11 @@ define(["dojo/_base/declare",
             domClass.add(node, "share-hidden");
          });
       },
-      
+
       /**
        * If there is no data to render a view with then this function will be called to update the DocumentList
        * view node with a message explaining the situation.
-       * 
+       *
        * @instance
        */
       showNoDataMessage: function alfresco_lists_AlfList__showNoDataMessage() {
@@ -636,9 +636,8 @@ define(["dojo/_base/declare",
       /**
        * This is called before a request to load more data is made so that the user is aware that data
        * is being asynchronously loaded.
-       * 
+       *
        * @instance
-       * @param force Boolean - Clear out the previous content before showing the message or not?
        */
       showLoadingMessage: function alfresco_lists_AlfList__showLoadingMessage() {
          if (!this.useInfiniteScroll)
@@ -655,7 +654,7 @@ define(["dojo/_base/declare",
       /**
        * This is called once data has been loaded but before the view rendering begins. This can be useful
        * when there is a lot of data and the view is complex to render so may not be instantaneous.
-       * 
+       *
        * @instance
        */
       showRenderingMessage: function alfresco_lists_AlfList__showRenderingMessage() {
@@ -665,7 +664,7 @@ define(["dojo/_base/declare",
             domClass.remove(this.renderingViewNode, "share-hidden");
          }
       },
-      
+
       /**
        * @instance
        * @param {object} view The view to show
@@ -676,22 +675,22 @@ define(["dojo/_base/declare",
          {
             this.viewsNode.removeChild(this.viewsNode.children[0]);
          }
-         
+
          // Add the new view...
          domConstruct.place(view.domNode, this.viewsNode);
          domClass.remove(this.viewsNode, "share-hidden");
-         
+
          // Tell the view that it's now on display...
          view.onViewShown();
       },
-      
+
       /**
-       * Makes a request to load data from the repository. If the request is successful then then the 
+       * Makes a request to load data from the repository. If the request is successful then then the
        * [onDataLoadSuccess]{@link module:alfresco/lists/AlfList#onDataLoadSuccess}
-       * function will be called. If the request fails then the 
-       * [onDataLoadFailure]{@link module:alfresco/lists/AlfList#onDataLoadFailure} 
+       * function will be called. If the request fails then the
+       * [onDataLoadFailure]{@link module:alfresco/lists/AlfList#onDataLoadFailure}
        * function will be called.
-       * 
+       *
        * @instance
        */
       loadData: function alfresco_lists_AlfList__loadData() {
@@ -714,7 +713,7 @@ define(["dojo/_base/declare",
             {
                payload = {};
             }
-            
+
             payload.alfResponseTopic = this.pubSubScope + this.loadDataPublishTopic;
             this.updateLoadDataPayload(payload);
             this.alfPublish(this.loadDataPublishTopic, payload, true);
@@ -736,7 +735,7 @@ define(["dojo/_base/declare",
       updateLoadDataPayload: function alfresco_lists_AlfList__updateLoadDataPayload(payload) {
          // Does nothing by default.
       },
-      
+
       /**
        * The property in the data response that is the attribute of items to render
        *
@@ -748,7 +747,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles successful calls to get data from the repository.
-       * 
+       *
        * @instance
        * @param {object} response The response object
        * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
@@ -777,7 +776,7 @@ define(["dojo/_base/declare",
                this.showDataLoadFailure();
             }
          }
-         
+
          if (foundItems)
          {
             this.processLoadedData(payload.response);
@@ -802,7 +801,7 @@ define(["dojo/_base/declare",
             view.setData(this.currentData);
             view.renderView(this.useInfiniteScroll);
             this.showView(view);
-            
+
             // Force a resize of the sidebar container to take the new height of the view into account...
             this.alfPublish("ALF_RESIZE_SIDEBAR", {});
          }
@@ -823,11 +822,11 @@ define(["dojo/_base/declare",
             totalDocuments: (response && response.totalRecords) ? response.totalRecords: this.currentData.items.length,
             startIndex: (response && response.startIndex) ? response.startIndex : 0
          });
-      }, 
-      
+      },
+
       /**
        * Handles failed calls to get data from the repository.
-       * 
+       *
        * @instance
        * @param {object} response The response object
        * @param {object} originalRequestConfig The configuration that was passed to the the [serviceXhr]{@link module:alfresco/core/CoreXhr#serviceXhr} function
@@ -838,9 +837,9 @@ define(["dojo/_base/declare",
          this.showDataLoadFailure();
          this.alfPublish(this.requestFinishedTopic, {});
       },
-      
+
       /**
-       * This is an extension point function that performs no action but can be overridden by 
+       * This is an extension point function that performs no action but can be overridden by
        * extending modules.
        *
        * @instance

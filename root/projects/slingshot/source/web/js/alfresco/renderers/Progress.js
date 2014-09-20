@@ -90,6 +90,8 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Progress__postCreate() {
 
+         this.labelNode.innerHTML = this.message("renderer.progress.creating");
+
          // Subscribe to Update Progress Action.
          this.alfSubscribe("ALF_CLOSE_DIALOG", lang.hitch(this, this.cleanUp));
          this.alfSubscribe(this.renderProgressUITopic, lang.hitch(this, this.onRenderUI));

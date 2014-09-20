@@ -1204,9 +1204,10 @@ define(["dojo/_base/declare",
        * @param {object} folder The folder
        */
       onActionFolderDownload: function alfresco_services_ActionService__onActionFolderDownload(payload, folder) {
-         var dialog = new AlfDialog({
+         this.alfPublish("ALF_CREATE_DIALOG_REQUEST", {
             generatePubSubScope: true,
-            title: this.message("services.ActionService.ActionFolderDownload.title"),
+            dialogTitle: this.message("services.ActionService.ActionFolderDownload.title"),
+            hideTopic: "ALF_CLOSE_DIALOG",
             widgetsContent: [
                {
                   name: "alfresco/renderers/Progress",
@@ -1226,12 +1227,9 @@ define(["dojo/_base/declare",
                      publishTopic: "ALF_CLOSE_DIALOG"
                   }
                }
-            ]
-         });
-
-         this.alfSubscribe("ALF_CLOSE_DIALOG", lang.hitch(dialog, dialog.hide));
-
-         dialog.show();
+            ],
+            handleOverflow: true
+         }, true);
       },
 
       /**
