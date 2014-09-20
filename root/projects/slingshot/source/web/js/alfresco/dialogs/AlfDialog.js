@@ -118,6 +118,18 @@ define(["dojo/_base/declare",
       postMixInProperties: function alfresco_dialogs_AlfDialog__postMixInProperties() {
          this.inherited(arguments);
       },
+
+      /**
+       * If this is set to true then the dialog will retain it's opening width regardless of what happens
+       * to it's contents. This is especially useful when the dialog contains widgets that resize themselves
+       * that could result in the dialog shrinking (this can occur when using
+       * [HorizontalWidgets]{@link module:alfresco/layout/HorizontalWidgets}.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      fixedWidth: false,
       
       /**
        * Extends the superclass implementation to process the widgets defined by 
@@ -199,10 +211,13 @@ define(["dojo/_base/declare",
             domStyle.set(this.bodyNode, "overflow", "auto");
          }
 
-         // Fix the width of the dialog - this has been done to prevent the dialog from shrinking
-         // as its contents are resized on window resize events. The issue here is that the dialog
-         // may become too big for the initial window, but that's preferable to shrinkage...
-         domStyle.set(this.domNode, "width", output.w + "px");
+         if (this.fixedWidth === true)
+         {
+            // Fix the width of the dialog - this has been done to prevent the dialog from shrinking
+            // as its contents are resized on window resize events. The issue here is that the dialog
+            // may become too big for the initial window, but that's preferable to shrinkage...
+            domStyle.set(this.domNode, "width", output.w + "px");
+         }
 
          this.alfPublishResizeEvent(this.domNode);
          // TODO: We could optionally reveal the dialog after resizing to prevent any resizing jumping?

@@ -103,7 +103,8 @@ define(["dojo/_base/declare",
             widgetsButtons: payload.widgetsButtons,
             contentWidth: payload.contentWidth ? payload.contentWidth : null,
             contentHeight: payload.contentHeight ? payload.contentHeight : null,
-            handleOverflow: (payload.handleOverflow != null) ? payload.handleOverflow: true
+            handleOverflow: (payload.handleOverflow != null) ? payload.handleOverflow: true,
+            fixedWidth: (payload.fixedWidth != null) ? payload.fixedWidth: false
          };
          this.dialog = new AlfDialog(dialogConfig);
 
@@ -200,6 +201,7 @@ define(["dojo/_base/declare",
             title: this.message(config.dialogTitle),
             pubSubScope: config.pubSubScope, // Scope the dialog content so that it doesn't pollute any other widgets,,
             handleOverflow: (config.handleOverflow != null) ? config.handleOverflow: true,
+            fixedWidth: (config.fixedWidth != null) ? config.fixedWidth: false,
             parentPubSubScope: config.parentPubSubScope,
             widgetsContent: [formConfig],
             widgetsButtons: [

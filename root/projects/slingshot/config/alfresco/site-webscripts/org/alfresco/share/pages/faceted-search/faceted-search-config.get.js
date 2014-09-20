@@ -418,6 +418,7 @@ var facetClickConfig = {
       dialogCancellationButtonTitle: msg.get("faceted-search-config.form.cancel.label"),
       formSubmissionTopic: "ALF_CRUD_UPDATE",
       widgets: getFormDefinition(false),
+      fixedWidth: true,
       formValue: "___AlfCurrentItem"
    }
 };
@@ -442,6 +443,7 @@ var createFacetButton = {
          dialogConfirmationButtonTitle: msg.get("faceted-search-config.form.save.label"),
          dialogCancellationButtonTitle: msg.get("faceted-search-config.form.cancel.label"),
          formSubmissionTopic: "ALF_CRUD_CREATE",
+         fixedWidth: true,
          widgets: getFormDefinition(true)
       }
    }

@@ -36,8 +36,6 @@ define(["intern!object",
          var testname = "DocumentPickerTest";
          return TestCommon.loadTestWebScript(this.remote, "/DocumentPicker", testname)
 
-         .end()
-
          // Open the dialog to select items...
          .findByCssSelector("#DOCUMENT_PICKER .alfresco-layout-VerticalWidgets > span > span > span")
             .click()
@@ -46,6 +44,7 @@ define(["intern!object",
          // Check the picker is displayed...
          .findByCssSelector(".alfresco-pickers-Picker")
             .then(function(){}, function() {
+               TestCommon.log(testname, "Check that the dialog has opened with the picker...");
                assert(false, "Test #1a - The dialog has NOT opened with the picker");
             })
             .end()
@@ -58,6 +57,7 @@ define(["intern!object",
          // Check that a new results set are shown...
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView")
             .then(function(){}, function() {
+               TestCommon.log(testname, "Check that clicking Shared Files shows some results...");
                assert(false, "Test #1b - The Shared Files click did not yield any results");
             })
             .end()
@@ -65,6 +65,7 @@ define(["intern!object",
          // Count the mocked results...
          .findAllByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Count the number of Shared Files results...");
                assert(elements.length == 4, "Test #1c - 4 results expected for Shared Files");
             })
             .end()
@@ -73,6 +74,7 @@ define(["intern!object",
          // TODO: This could be more specific, e.g. to check the actual image source?
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction img")
             .then(function(){}, function() {
+               TestCommon.log(testname, "Check that the first item in Shared Files has the icon for adding...");
                assert(false, "Test #1d -The first shared files item did not have an ADD publish action image");
             })
             .end()
@@ -86,6 +88,7 @@ define(["intern!object",
          // TODO: Could probably check that there were none picked when the dialog was first opened...
          .findAllByCssSelector(".picked-items tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that clicked item is shown in the list of picked items..");
                assert(elements.length == 1, "Test #1e - Only one result was expected for picked items");
             })
             .end()
@@ -98,6 +101,7 @@ define(["intern!object",
          // Count the selected items...
          .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that the picked item is now shown in the form control...");
                assert(elements.length == 5, "Test #1f - Only 1 results was expected for picked items after dialog close");
             })
             .end()
@@ -115,6 +119,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".picked-items tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that the previously picked item was preserved...");
                assert(elements.length == 1, "Test #1g - The previously selected item was not preserved");
             })
             .end()
@@ -122,6 +127,7 @@ define(["intern!object",
          // Check the remove item image exists...
          .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction img")
             .then(function(){}, function() {
+               TestCommon.log(testname, "Check that the remove item image is present...");
                assert(false, "Test #1h - The remove item image could not be found");
             })
             .end()
@@ -139,6 +145,7 @@ define(["intern!object",
          // Check the item was removed...
          .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that the removed item is not shown in the form control.");
                assert(elements.length === 0, "Test #1i - The previously selected item should have been removed");
             })
             .end()
@@ -162,6 +169,7 @@ define(["intern!object",
          // Count the number of picked items (there should now be 1 DESPITE clicking twice)...
          .findAllByCssSelector(".picked-items tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check an item can only be added once...");
                assert(elements.length == 1, "Test #1j - Only one results was expected for picked items");
             })
             .end()
@@ -173,6 +181,7 @@ define(["intern!object",
 
          .findAllByCssSelector(".picked-items tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that a second item has been added...");
                assert(elements.length == 2, "Test #1k - Two results were expected for picked items");
             })
             .end()
@@ -185,6 +194,7 @@ define(["intern!object",
          // Check there are now 2 items...
          .findAllByCssSelector("#DOCUMENT_PICKER .alfresco-documentlibrary-views-layouts-AlfDocumentListView tr")
             .then(function(elements) {
+               TestCommon.log(testname, "Check that the form control now shows two items...");
                assert(elements.length == 2, "Test #1l - Two items should have been picked");
             })
             .end()
