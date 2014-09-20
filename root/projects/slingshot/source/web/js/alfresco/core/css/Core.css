@@ -2,3 +2,8 @@
 {
    display: none !important;
 }
+
+/* Override user agent style sheet focus */ 
+.alfresco-share :focus {
+   outline: none;
+}
