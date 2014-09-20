@@ -15,6 +15,9 @@
 
 package org.alfresco.po.share.reports;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
@@ -87,6 +90,16 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     // Close Save Analysis
     private final static String CLOSE_SAVE_ANALYSIS = "span[title='Cancel']";
 
+    //pie chart slices
+    private static final String PIE_CHART_SLICES = "path[transform]";
+    
+    //pie chart tooltip
+    private static final String TOOLTIP_DATA = "//div[@original-title][1]";
+    //pie chart type
+    private final static String PIE_CHART_TYPE = "//td[text()='Pie']";
+    
+    //variable for original title attribute
+    private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";
     
     
     /**
@@ -498,4 +511,106 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Save Analisys Close button.");
     }
+    
+    /**
+     * 
+     * Changes chart type
+     * 
+     * @return
+     */
+    public CreateEditAdhocReportPage clickOnChangeChartType()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement selectChartType = drone.findAndWait(By.cssSelector(SELECT_ANOTHER_CHART_TYPE));
+            selectChartType.click();
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Change chart type button. " + te);
+        }
+        throw new PageException("Unable to find Change chart type button.");
+    }
+    
+    /**
+     * 
+     * Selects pie chart type
+     * 
+     * @return
+     */
+    public CreateEditAdhocReportPage clickOnPieChartType()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement selectPieChartType = drone.findAndWait(By.xpath(PIE_CHART_TYPE));
+            selectPieChartType.click();
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Pie chart type option. " + te);
+        }
+        throw new PageException("Unable to find Pie chart type option.");
+    }
+    
+    /**
+     * Gets the list of pie chart slices elements
+     * 
+     * @return
+     */
+    private List<WebElement> getPieChartSlices()
+    {
+        List<WebElement> pieChartSlices = new ArrayList<WebElement>();
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            pieChartSlices = drone.findAll(By.cssSelector(PIE_CHART_SLICES));
+            drone.switchToDefaultContent();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Adhoc Report pie chart slices " + nse);
+        }
+        return pieChartSlices;
+    }
+    
+    
+    /**
+     * Gets the tooltip data (event type and number of events) 
+     * @return
+     */
+    public List<String> getTooltipData() throws Exception
+    {
+        List<WebElement> pieChartSlices = getPieChartSlices();
+        List<String> toolTipData = new ArrayList<String>();
+        for (WebElement pieChartSlice : pieChartSlices)
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            drone.mouseOverOnElement(pieChartSlice);
+            WebElement tooltipElement = drone.findAndWait(By.xpath(TOOLTIP_DATA));
+            String [] items = tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE).split(":");
+            String eventTypeItem = items[2];
+            String eventCountsItem = items[3];
+            
+            String [] types = eventTypeItem.split("<br />");
+            String type = types[0];
+            String [] counts = eventCountsItem.trim().split(" ");
+            String count = counts[0];
+            
+            StringBuilder builder = new StringBuilder();
+            builder.append(type.trim()).append(":").append(count.trim());
+            toolTipData.add(builder.toString());
+ 
+            drone.switchToDefaultContent();
+
+        }   
+        return toolTipData;
+    }
+    
+    
 }

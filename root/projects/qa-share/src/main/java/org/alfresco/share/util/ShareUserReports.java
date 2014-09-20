@@ -1,18 +1,22 @@
 package org.alfresco.share.util;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.alfresco.events.types.ActivityEvent;
 import org.alfresco.events.types.Event;
+import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.contentrule.FolderRulesPage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPageWithRules;
 import org.alfresco.po.share.site.contentrule.createrules.CreateRulePage;
 import org.alfresco.po.share.site.contentrule.createrules.selectors.impl.ActionSelectorEnterpImpl;
+import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.camel.ProducerTemplate;
 import org.apache.log4j.Logger;
@@ -175,6 +179,89 @@ public class ShareUserReports extends AbstractUtils
                 
         }
         
-    }       
+    }  
+    
+    
+    public static void userShareInteractions(WebDrone drone, String testName) throws Exception
+    {
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        // Create test user
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        // test user creates site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        
+        //and a folder in sites document library
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+        
+        //add comment to folder
+        ShareUserSitePage.addComment(drone, folderName, "folderComment");
+        
+        
+        //create text file in the folder - file-previewed 
+        String fileName = getFileName(testName) + "-" + System.currentTimeMillis();
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(fileName);
+
+        ShareUserSitePage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, siteName, folderName);
+       
+        ShareUser.openDocumentLibrary(drone);
+        
+        //uploads a file in the folder
+        String fileName1 = getFileName(testName) + System.currentTimeMillis() + "_1" + ".txt";
+        File file1 = newFile(fileName1, fileName1);
+        ShareUserSitePage.uploadFile(drone, file1);
+       
+        //add comment to file - file-previewed
+        ShareUserSitePage.addComment(drone, fileName1, "fileComment");
+        
+        ShareUser.openDocumentLibrary(drone);
+        
+        //like file
+        ShareUserSitePage.likeContent(drone, fileName1);
+      
+        //share file
+        ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
+        
+        ContentDetails newContentDetails = new ContentDetails();
+        newContentDetails.setContent(testName);
+        
+        DocumentLibraryPage documentLibPage = ShareUser.openDocumentLibrary(drone);
+        
+        //edit document inline
+        ShareUserSitePage.editTextDocumentInLine(drone, fileName1, newContentDetails).render();
+      
+        //select all
+        documentLibPage.getNavigation().selectAll().render();
+
+        //delete all
+        ConfirmDeletePage confirmDeletePage = documentLibPage.getNavigation().selectDelete().render();
+        confirmDeletePage.selectAction(ConfirmDeletePage.Action.Delete).render();
+       
+        // add user with write permissions to write to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testName, siteName, UserRole.COLLABORATOR);
+        
+      
+        //change the user role
+        ShareUserMembers.assignRoleToSiteMember(drone, testName, siteName, UserRole.CONTRIBUTOR);
+        
+        // Inviting user logs out
+        ShareUser.logout(drone);
+        
+        //Invited User logs in
+        ShareUser.login(drone, testName, DEFAULT_PASSWORD);
+       
+        //user leaves site
+        ShareUserMembers.userRequestToLeaveSite(drone, siteName);
+        
+    }
     
 }

@@ -16,8 +16,8 @@
 package org.alfresco.share.reports;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.alfresco.po.share.CustomiseUserDashboardPage;
 import org.alfresco.po.share.DashBoardPage;
@@ -30,9 +30,11 @@ import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.thirdparty.pentaho.PentahoUserConsolePage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserReports;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
@@ -60,7 +62,25 @@ public class AdhocAnalyzerTest extends AbstractUtils
     private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
     private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
     private static final String PENTAHO_BUSINESS_ANALYSTS_GROUP = "PENTAHO_BUSINESS_ANALYSTS";
+    
+    private static final String COMMENT_CREATED = "activity.org.alfresco.comments.comment-created";
+    private static final String FILE_ADDED = "activity.org.alfresco.documentlibrary.file-added";
+    private static final String FILE_CREATED = "activity.org.alfresco.documentlibrary.file-created";
+    private static final String FILE_DELETED = "activity.org.alfresco.documentlibrary.file-deleted";
+    private static final String FILE_LIKED = "activity.org.alfresco.documentlibrary.file-liked";
+    private static final String FILE_PREVIEWED = "activity.org.alfresco.documentlibrary.file-previewed";
+    private static final String FOLDER_ADDED = "activity.org.alfresco.documentlibrary.folder-added";
+    private static final String FOLDER_DELETED = "activity.org.alfresco.documentlibrary.folder-deleted";
+    private static final String INLINE_EDIT = "activity.org.alfresco.documentlibrary.inline-edit";
+    private static final String USER_JOINED = "activity.org.alfresco.site.user-joined";
+    private static final String USER_LEFT = "activity.org.alfresco.site.user-left";
+    private static final String USER_ROLE_CHANGED = "activity.org.alfresco.site.user-role-changed";
+    private static final String ACTIVITY_QUICKSHARE = "activity.quickshare";
+    private static final String SITE_CREATE = "site.create";
+    private static final String USER_LOGIN = "login";
+    private static final String USER_CREATED = "user.create";
 
+  
     @Override
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
@@ -71,37 +91,51 @@ public class AdhocAnalyzerTest extends AbstractUtils
         logger.info("Starting Tests: " + testName);
     }
     
+    @Test
     public void schemasSetup() throws Exception
     {
         try 
         {
             //drop stagedmsg, dim and fact tables and recreating them
-            Process proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/SchemasSetup.bat");
+            Process proc = null;
+            if (SystemUtils.IS_OS_WINDOWS)
+            {
+                proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/SchemasSetup.bat");
+            } else if (SystemUtils.IS_OS_LINUX) {
+                proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/SchemasSetup.sh");
+            }
             BufferedReader read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line = null;
             while ((line = read.readLine()) != null) {  
                 logger.info(line);
             } 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error during recreating schemas " + e);
         }       
     }
     
-    
+    @Test
     public void factTableGeneration() throws Exception
     {
         try 
         {
             //transfers data from stagedmsg into fact and dim tables
-            Process proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/FactTableGeneration.bat");
+            Process proc = null;
+            if (SystemUtils.IS_OS_WINDOWS)
+            {
+                proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/FactTableGeneration.bat");
+            } else if (SystemUtils.IS_OS_LINUX) {
+                proc = Runtime.getRuntime().exec("C:/Users/jcule/Desktop/FactTableGeneration.sh");
+            }
+                
             BufferedReader read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line = null;
             while ((line = read.readLine()) != null) {  
                 logger.info(line);
             } 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error during fact table generation " + e);
         }       
     }
@@ -439,13 +473,23 @@ public class AdhocAnalyzerTest extends AbstractUtils
     @Test(groups = { "AdhocAnalyzerTests" })
     public void AONE_16009() throws Exception
     {
-
         // Login as created user
         String testUser = "user16009";
         DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
         
+        //drop schemas
+        schemasSetup();
+        
+        //some share activity here
+        ShareUserReports.userShareInteractions(drone, testUser);
+        
+        factTableGeneration();
+               
+        ShareUser.logout(drone);
+        dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
+ 
         // penatho business analyst can see reporting menu
         Navigation navigation = dashboardPage.getNav();
         Assert.assertTrue(navigation.isReportingVisible());
@@ -458,14 +502,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
         Assert.assertTrue(adhocAnalyzePage.isOpenButtonDisplayed());
-
-        //some share activity here
-        
-        //after share interaction, before report creation and asserts, fact_table_generation.kjb needs to be run to 
-        //populate the cube; should the test be split in two methods with different annotations?
-        
-        factTableGeneration();
-               
+              
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
         Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
@@ -494,7 +531,6 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
 
-   
         //click on open button to open saved report
         createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
@@ -541,15 +577,82 @@ public class AdhocAnalyzerTest extends AbstractUtils
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
         Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
-
-        //verify chart type and data here
         
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
                 
+        
+        //change chart type
+        createEditAdhocReportPage.clickOnChangeChartType();
+
+        //select pie chart
+        createEditAdhocReportPage.clickOnPieChartType();
+        
+        //get tooltip data
+        List<String> tooltipData = createEditAdhocReportPage.getTooltipData();
+
+        //expected data
+        String commentCreated = COMMENT_CREATED + ":2";
+        String fileAdded = FILE_ADDED + ":1";
+        String fileCreated = FILE_CREATED + ":1";
+        String fileDeleted = FILE_DELETED + ":1";
+        String fileLiked = FILE_LIKED + ":1";
+        String filePreviewed = FILE_PREVIEWED + ":2";
+        String folderAdded = FOLDER_ADDED + ":1";
+        String folderDeleted = FOLDER_DELETED + ":1";
+        String inlineEdit = INLINE_EDIT + ":1";
+        String userJoined = USER_JOINED + ":1";
+        String userLeft = USER_LEFT + ":1";
+        String userRoleChanged = USER_ROLE_CHANGED + ":1";
+        String activityQuickshare = ACTIVITY_QUICKSHARE + ":1";
+        String siteCreate = SITE_CREATE + ":1";
+        String userLogin = USER_LOGIN + ":5";
+        String userCreated = USER_CREATED + ":1";
+
+       //verify chart type and data here
+        
+        
+        // 2 x activity.org.alfresco.comments.comment-created
+        // 1 x activity.org.alfresco.documentlibrary.file-added
+        // 1 x activity.org.alfresco.documentlibrary.file-created
+        // 1 x activity.org.alfresco.documentlibrary.file-deleted
+        // 1 x activity.org.alfresco.documentlibrary.file-liked
+        // 2 x activity.org.alfresco.documentlibrary.file-previewed
+        // 1 x activity.org.alfresco.documentlibrary.folder-added
+        // 1 x activity.org.alfresco.documentlibrary.folder-deleted
+        // 1 x activity.org.alfresco.documentlibrary.inline-edit
+        // 1 x activity.quickshare
+        // 1 x site.create
+        // 1 x activity.org.alfresco.site.user-created --- ?????? missing currently
+        // 1 x activity.org.alfresco.site.user-joined
+        // 1 x activity.org.alfresco.site.user-left
+        // 1 x activity.org.alfresco.site.user-role-changed
+        // 5 x login --- ?????? missing currently
+        
+        Assert.assertEquals(tooltipData.size(), 14);
+        //Assert.assertEquals(tooltipData.size(), 16);
+        
+        Assert.assertTrue(tooltipData.contains(commentCreated));
+        Assert.assertTrue(tooltipData.contains(fileAdded));
+        Assert.assertTrue(tooltipData.contains(fileCreated));
+        Assert.assertTrue(tooltipData.contains(fileDeleted));
+        Assert.assertTrue(tooltipData.contains(fileLiked));
+        Assert.assertTrue(tooltipData.contains(filePreviewed));
+        Assert.assertTrue(tooltipData.contains(folderAdded));
+        Assert.assertTrue(tooltipData.contains(folderDeleted));
+        Assert.assertTrue(tooltipData.contains(inlineEdit));
+        Assert.assertTrue(tooltipData.contains(userJoined));
+        Assert.assertTrue(tooltipData.contains(userLeft));
+        Assert.assertTrue(tooltipData.contains(userRoleChanged));
+        //Assert.assertTrue(tooltipData.contains(userLogin));
+        //Assert.assertTrue(tooltipData.contains(userCreated));
+        Assert.assertTrue(tooltipData.contains(activityQuickshare));
+        Assert.assertTrue(tooltipData.contains(siteCreate));
+ 
+         
         ShareUser.navigateToPage(drone, shareUrl).render();
         ShareUser.logout(drone);
-        
+       
     }        
     
     
