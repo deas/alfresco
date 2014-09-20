@@ -760,6 +760,10 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
             {
                 return createTagQuery(queryText);
             }
+            else if (field.equals(FIELD_SITE))
+            {
+                return createSiteQuery(queryText);
+            }
             else if (field.equals(FIELD_TENANT))
             {
                 return createTenantQuery(queryText);
@@ -807,6 +811,29 @@ public abstract class AbstractLuceneQueryParser extends QueryParser implements Q
     protected Query createTagQuery(String tag) throws ParseException
     {
         return getFieldQuery(FIELD_PATH, "/cm:taggable/cm:" + ISO9075.encode(tag.toLowerCase()) + "/member");
+    }
+    
+    protected Query createSiteQuery(String site) throws ParseException
+    {
+        if(site.equals("_EVERYTHING_"))
+        {
+            return createTermQuery(FIELD_ISNODE, "T");
+        }
+        else if(site.equals("_ALL_SITES_"))
+        {
+            return getFieldQuery(FIELD_PATH, "/app:company_home/st:sites/*//*");
+        }
+        else if(site.equals("_REPOSITORY_"))
+        {
+            return createTermQuery(FIELD_ISNODE, "T");
+        }
+        else
+        {
+            return getFieldQuery(FIELD_PATH, "/app:company_home/st:sites/cm:" + ISO9075.encode(site)+"//*");
+        }
+        
+        
+       
     }
 
     /**
