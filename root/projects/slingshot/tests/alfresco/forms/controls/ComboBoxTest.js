@@ -125,9 +125,9 @@ define(["intern!object",
          .pressKeys(keys.TAB)
          .pressKeys("ta")
          .sleep(500)
-         .pressKeys(keys.BACKSPACE) // Because the combobox gives a longer suggestion
-         .pressKeys(keys.BACKSPACE) // Because the combobox gives a longer suggestion
-         .sleep(500)
+         //.pressKeys(keys.BACKSPACE) // Because the combobox gives a longer suggestion
+         //.pressKeys(keys.BACKSPACE) // Because the combobox gives a longer suggestion
+         //.sleep(500)
          .pressKeys(keys.TAB)
          .sleep(500)
          .pressKeys([keys.SHIFT, keys.TAB])
@@ -139,8 +139,11 @@ define(["intern!object",
          .findAllByCssSelector("#TAGS_CONTROL_popup .dijitMenuItem[item]")
             .then(function(elements) {
                TestCommon.log(testname, "Checking tag options are shown...");
-               assert(elements.length == 3, "Test 1a - Four tag options were expected, found: " + elements.length);
+               assert(elements.length == 3, "Test 1a - Three tag options were expected, found: " + elements.length);
             })
+            .end()
+
+         .pressKeys(keys.NULL)
             .end()
 
          // Post the coverage results...
