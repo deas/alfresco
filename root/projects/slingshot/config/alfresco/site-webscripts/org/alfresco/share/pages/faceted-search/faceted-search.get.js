@@ -551,10 +551,18 @@ var searchSuggestions = {
       },
       widgets: [
          {
+            id: "FCTSRCH_SEARCH_SUGGESTIONS_SPACER",
+            name: "alfresco/html/Spacer",
+            config: {
+               height: "10px"
+            }
+         },
+         {
             id: "FCTSRCH_SEARCH_SUGGESTIONS_LABEL",
             name: "alfresco/html/Label",
             config: {
-               label: msg.get("faceted-search.suggestions.label")
+               label: msg.get("faceted-search.suggestions.label"),
+               additionalCssClasses: "large de-emphasized"
             }
          },
          {
@@ -578,6 +586,7 @@ var searchSuggestions = {
                                        config: {
                                           useCurrentItemAsPayload: false,
                                           propertyToRender: "term",
+                                          renderSize: "large",
                                           publishTopic: "ALF_NAVIGATE_TO_PAGE",
                                           publishPayloadType: "PROCESS",
                                           publishPayloadModifiers: ["processCurrentItemTokens"],
