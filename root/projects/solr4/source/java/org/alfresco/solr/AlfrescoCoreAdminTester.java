@@ -7282,6 +7282,31 @@ public class AlfrescoCoreAdminTester
                 "{!afts}|OWNER:noodle");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
                 "{!afts}|OWNER:ood");
+        
+        // All nodes point to ACL with ID #1. The ACL explicitly lists "pig" as a READER,
+        // however, pig does not own any nodes.
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{!afts}|AUTHORITY:pig");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{!afts}|READER:pig");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{!afts}|OWNER:pig");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{!afts}|DENIED:pig");
+        // When using the fq parameter for AUTHORITY related filter queries, anyDenyDenies is
+        // NOT supported, captured by this test case: something is DENIED, however GROUP_EVERYONE allows it.
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{!afts}|AUTHORITY:something |AUTHORITY:GROUP_EVERYONE");
+        // "something" has no explicity READER or OWNER entries.
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{!afts}|READER:something");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{!afts}|OWNER:something");
+        // "something" is DENIED to all nodes (they all use ACL #1)
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{!afts}|DENIED:something");
+        
+        
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
                     "{!afts}|AUTHORITY:andy");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,

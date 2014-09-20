@@ -159,6 +159,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                         char separator = getSeparator(authorityList);
 
                         StringBuilder authQuery = new StringBuilder();
+                        StringBuilder denyQuery = new StringBuilder();
                         for (String tenant : tenantList)
                         {
                             for (String authority : authorityList)
@@ -168,11 +169,13 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                                     if (authQuery.length() > 0)
                                     {
                                         authQuery.append(" ");
+                                        denyQuery.append(" ");                                        
                                     }
                                     switch (AuthorityType.getAuthorityType(authority))
                                     {
                                     case USER:
                                         authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                        denyQuery.append("|DENIED:\"").append(authority).append("\"");
                                         break;
                                     case GROUP:
                                     case EVERYONE:
@@ -181,14 +184,17 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                                         {
                                             // Default tenant matches 4.0
                                             authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                            denyQuery.append("|DENIED:\"").append(authority).append("\"");
                                         }
                                         else
                                         {
                                             authQuery.append("|AUTHORITY:\"").append(authority).append("@").append(tenant).append("\"");
+                                            denyQuery.append("|DENIED:\"").append(authority).append("@").append(tenant).append("\"");
                                         }
                                         break;
                                     default:
                                         authQuery.append("|AUTHORITY:\"").append(authority).append("\"");
+                                        denyQuery.append("|DENIED:\"").append(authority).append("\"");
                                         break;
                                     }
                                 }
@@ -197,11 +203,13 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                                     if(authQuery.length() == 0)
                                     {
                                         authQuery.append("|AUTHSET:\"");
+                                        denyQuery.append("|DENYSET:\"");
                                     }
                                     switch (AuthorityType.getAuthorityType(authority))
                                     {
                                     case USER:
                                         authQuery.append(separator).append(authority);
+                                        denyQuery.append(separator).append(authority);
                                         break;
                                     case GROUP:
                                     case EVERYONE:
@@ -210,14 +218,17 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                                         {
                                             // Default tenant matches 4.0
                                             authQuery.append(separator).append(authority);
+                                            denyQuery.append(separator).append(authority);
                                         }
                                         else
                                         {
                                             authQuery.append(separator).append(authority).append("@").append(tenant);
+                                            denyQuery.append(separator).append(authority).append("@").append(tenant);
                                         }
                                         break;
                                     default:
                                         authQuery.append(separator).append(authority);
+                                        denyQuery.append(separator).append(authority);
                                         break;
                                     }
                                 }
@@ -227,10 +238,15 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                         if(separator != 0)
                         {
                             authQuery.append("\"");
+                            denyQuery.append("\"");
                         }
 
                         if (authQuery.length() > 0)
                         {
+                            authQuery.insert(0, "(").
+                                      append(") AND NOT (").
+                                      append(denyQuery).
+                                      append(")");
                             searchParameters.setQuery(authQuery.toString());
                         }
                     }
