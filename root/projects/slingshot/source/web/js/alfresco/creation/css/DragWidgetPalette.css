@@ -8,6 +8,7 @@
    margin: 5px;
    padding: 5px;
    width: 150px;
+   display: inline-block;
 }
 
 .alfresco-creation-DragWidgetPalette.dragTemplate span {

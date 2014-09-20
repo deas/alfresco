@@ -291,9 +291,10 @@ define(["dojo/_base/declare",
                   };
 
                   // Set the main config...
+                  var v;
                   for (var key in payload.updatedConfig.defaultConfig)
                   {
-                     var v = payload.updatedConfig.defaultConfig[key];
+                     v = payload.updatedConfig.defaultConfig[key];
                      config.widgetConfig[itemConfigKey][key] = v;
                      lang.setObject(key, v, config.updatedConfig.defaultConfig);
                   }
@@ -301,16 +302,21 @@ define(["dojo/_base/declare",
                   // Set additional config...
                   for (key in payload.updatedConfig.additionalConfig)
                   {
-                     var v = payload.updatedConfig.additionalConfig[key];
+                     v = payload.updatedConfig.additionalConfig[key];
                      config.widgetConfig[key] = v;
                      lang.setObject(key, v, config.updatedConfig.additionalConfig);
                   }
 
-                  for (var i=0; i<config.widgetsForConfig.length; i++)
-                  {
-                     // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
-                     config.widgetsForConfig[i].config.value = lang.getObject(config.widgetsForConfig[i].config.name, false, payload.updatedConfig);
-                  }
+                  array.forEach(config.widgetsForConfig, lang.hitch(this, this.updateWidgetConfig, payload.updatedConfig));
+                  // for (var i=0; i<config.widgetsForConfig.length; i++)
+                  // {
+                  //    // clonedConfig.widgetsForConfig[i].config.value = payload.updatedConfig[clonedConfig.widgetsForConfig[i].config.name];
+                  //    if (config.widgetsForConfig[i].config.name)
+                  //    {
+                  //       this.updateWidgetConfig(payload.updatedConfig, config.widgetsForConfig[i], 0);
+                  //       // config.widgetsForConfig[i].config.value = lang.getObject(config.widgetsForConfig[i].config.name, false, payload.updatedConfig);
+                  //    }
+                  // }
                }
                
                // Remove any existing widgets associated with the currently selected node,
@@ -457,33 +463,45 @@ define(["dojo/_base/declare",
                {
                   // Update the normal config values with the latest saved data...
                   array.forEach(clonedItem.originalConfigWidgets, function(widget, i) {
-                     var updatedValue = lang.getObject(widget.config.name, false, savedConfig.updatedConfig);
-                     if (updatedValue != null)
+                     if (widget.config.name)
                      {
-                        widget.config.value = updatedValue;
+                        this.updateWidgetConfig(savedConfig.updatedConfig, widget, 0);
+                        // var updatedValue = lang.getObject(widget.config.name, false, savedConfig.updatedConfig);
+                        // if (updatedValue != null)
+                        // {
+                        //    widget.config.value = updatedValue;
+                        // }
                      }
                   }, this);
 
                   // Update the additional config controls with the latest saved data...
-                  array.forEach(clonedWidgetsForNestedConfig, function(widget, i) {
-                     var updatedValue = lang.getObject(widget.config.name, false, savedConfig.updatedConfig.additionalConfig);
-                     if (updatedValue != null)
-                     {
-                        widget.config.value = updatedValue;
-                     }
-                  }, this);
+                  array.forEach(clonedWidgetsForNestedConfig, lang.hitch(this, this.updateWidgetConfig, savedConfig.updatedConfig.additionalConfig));
+                  // array.forEach(clonedWidgetsForNestedConfig, function(widget, i) {
+                  //    if (widget.config.name)
+                  //    {
+                  //       var updatedValue = lang.getObject(widget.config.name, false, savedConfig.updatedConfig.additionalConfig);
+                  //       if (updatedValue != null)
+                  //       {
+                  //          widget.config.value = updatedValue;
+                  //       }
+                  //    }
+                  // }, this);
                }
                else
                {
                   // Make sure that each of the additional widgets is set with an up-to-date value...
                   clonedItem.widgetsForConfig = clonedItem.originalConfigWidgets.concat(clonedWidgetsForNestedConfig);
-                  array.forEach(clonedItem.widgetsForConfig, function(widget, i) {
-                     var updatedValue = lang.getObject(widget.config.name, false, clonedItem);
-                     if (updatedValue != null)
-                     {
-                        widget.config.value = updatedValue;
-                     }
-                  }, this);
+                  array.forEach(clonedItem.widgetsForConfig, lang.hitch(this, this.updateWidgetConfig, clonedItem));
+                  // array.forEach(clonedItem.widgetsForConfig, function(widget, i) {
+                  //    if (widget && widget.config && widget.config.name)
+                  //    {
+                  //       var updatedValue = lang.getObject(widget.config.name, false, clonedItem);
+                  //       if (updatedValue != null)
+                  //       {
+                  //          widget.config.value = updatedValue;
+                  //       }
+                  //    }
+                  // }, this);
                }
             }
 
@@ -543,6 +561,29 @@ define(["dojo/_base/declare",
          return {node: widgetWrapper.domNode, data: clonedItem, type: ["widget"]};
       },
       
+      /**
+       *
+       *
+       * @instance
+       * @param {object} configToUpdateFrom The configuration to update the widget config from
+       * @param {object} widget The widget to update
+       * @param {number} i The index of the widget
+       */
+      updateWidgetConfig: function alfresco_creation_DropZone__updateValues(configToUpdateFrom, widget, i) {
+         if (widget.config.name)
+         {
+            var updatedValue = lang.getObject(widget.config.name, false, configToUpdateFrom);
+            if (updatedValue != null)
+            {
+               widget.config.value = updatedValue;
+            }
+         }
+         else if (widget.config.widgets)
+         {
+            array.forEach(widget.config.widgets, lang.hitch(this, this.updateWidgetConfig, configToUpdateFrom));
+         }
+      },
+
       /**
        * 
        *

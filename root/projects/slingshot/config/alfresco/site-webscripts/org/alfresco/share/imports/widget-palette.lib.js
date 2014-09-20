@@ -1382,6 +1382,30 @@ function getNavigationService() {
    };
 }
 
+function getOptionsService() {
+   return {
+      type: ["service"],
+      name: "Options Service",
+      module: "alfresco/services/OptionsService",
+      // This is the initial configuration that will be provided when the widget
+      // is dropped into the drop-zone...
+      defaultConfig: {},
+      // These are the widgets used to configure the dropped widget.
+      widgetsForConfig: [],
+      // If set to true, then the actual widget will be previewed...
+      previewWidget: false,
+      // This is the widget structure to use to display the widget.
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Options Service"
+            }
+         }
+      ]
+   };
+}
+
 function getActionService() {
    return {
       type: ["service"],
@@ -1673,6 +1697,7 @@ function getNotificationService() {
 function getAllServices() {
    return [
       getNavigationService(),
+      getOptionsService(),
       getActionService(),
       getContentService(),
       getDocumentService(),
@@ -3269,6 +3294,132 @@ function getVerticalLayoutWidget() {
    };
 }
 
+function getHorizontalLayoutWidgetsForConfig() {
+   return [
+      {
+         name: "alfresco/forms/ControlRow",
+         config: {
+            title: "Sub-Widget Margins",
+            description: "Configure the left and right margins for every widget added as a child of this.",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.widgetMarginLeft",
+                     label: "Widget margin left",
+                     description: "The number of pixels to place to the left of every nested widget.",
+                     unitsLabel: "px",
+                     value: "0",
+                     validationConfig: {
+                        regex: "^([0-9]+)$"
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.widgetMarginRight",
+                     label: "Widget margin right",
+                     description: "The number of pixels to place to the right of every nested widget.",
+                     unitsLabel: "px",
+                     value: "0",
+                     validationConfig: {
+                        regex: "^([0-9]+)$"
+                     }
+                  }
+               }
+            ]
+         }
+      }
+   ];
+}
+
+function getHorizontalLayoutWidgetsForNestedConfig() {
+   return [
+      {
+         name: "alfresco/forms/controls/DojoSelect",
+         config: {
+            fieldId: "widthType",
+            name: "widthType",
+            label: "Widget width",
+            description: "Choose how the width of this widget. Selecting 'Auto' will give the widget a fair share of any remaining horizontal space, selecting 'Size in Pixels' will allow a fixed width to be defined and selecting 'Size as percentage' will give the widget a percentage of any remaining space",
+            value: "AUTO",
+            optionsConfig: {
+               fixed: [
+                  {label:"Auto",value:"AUTO"},
+                  {label:"Size in pixels",value:"PIXELS"},
+                  {label:"Size as percentage",value:"PERCENTAGE"}
+               ]
+            }
+         }
+      },
+      {
+         name: "alfresco/forms/controls/DojoValidationTextBox",
+         config: {
+            name: "additionalConfig.widthPx",
+            label: "Widget width (in pixels)",
+            unitsLabel: "px",
+            value: "",
+            postWhenHiddenOrDisabled: false,
+            noValueUpdateWhenHiddenOrDisabled: true,
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "widthType",
+                     is: ["PIXELS"]
+                  }
+               ]
+            },
+            requirementConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "widthType",
+                     is: ["PIXELS"]
+                  }
+               ]
+            },
+            validationConfig: {
+               regex: "^([0-9]+)$"
+            }
+         }
+      },
+      {
+         name: "alfresco/forms/controls/DojoValidationTextBox",
+         config: {
+            name: "additionalConfig.widthPc",
+            label: "Widget width (as percentage)",
+            unitsLabel: "%",
+            value: "",
+            postWhenHiddenOrDisabled: false,
+            noValueUpdateWhenHiddenOrDisabled: true,
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "widthType",
+                     is: ["PERCENTAGE"]
+                  }
+               ]
+            },
+            requirementConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "widthType",
+                     is: ["PERCENTAGE"]
+                  }
+               ]
+            },
+            validationConfig: {
+               regex: "^([0-9]+)$"
+            }
+         }
+      }
+   ];
+}
+
 function getHorizontalLayoutWidget() {
    return {
       type: ["widget"],
@@ -3278,32 +3429,7 @@ function getHorizontalLayoutWidget() {
       // is dropped into the drop-zone...
       defaultConfig: {},
       // These are the widgets used to configure the dropped widget.
-      widgetsForConfig: [
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               name: "defaultConfig.widgetMarginLeft",
-               label: "Widget margin left",
-               unitsLabel: "px",
-               value: "0",
-               validationConfig: {
-                  regex: "^([0-9]+)$"
-               }
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               name: "defaultConfig.widgetMarginRight",
-               label: "Widget margin right",
-               unitsLabel: "px",
-               value: "0",
-               validationConfig: {
-                  regex: "^([0-9]+)$"
-               }
-            }
-         }
-      ],
+      widgetsForConfig: getHorizontalLayoutWidgetsForConfig(),
       // If set to true, then the actual widget will be previewed...
       previewWidget: false,
       // This is the widget structure to use to display the widget.
@@ -3312,88 +3438,7 @@ function getHorizontalLayoutWidget() {
             name: "alfresco/creation/DropZone",
             config: {
                horizontal: false,
-               widgetsForNestedConfig: [
-                  {
-                     name: "alfresco/forms/controls/DojoSelect",
-                     config: {
-                        fieldId: "widthType",
-                        name: "widthType",
-                        label: "Widget width",
-                        value: "AUTO",
-                        optionsConfig: {
-                           fixed: [
-                              {label:"Auto",value:"AUTO"},
-                              {label:"Size in pixels",value:"PIXELS"},
-                              {label:"Size as percentage",value:"PERCENTAGE"}
-                           ]
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/forms/controls/DojoValidationTextBox",
-                     config: {
-                        name: "additionalConfig.widthPx",
-                        label: "Widget width (in pixels)",
-                        unitsLabel: "px",
-                        value: "",
-                        postWhenHiddenOrDisabled: false,
-                        noValueUpdateWhenHiddenOrDisabled: true,
-                        visibilityConfig: {
-                           initialValue: false,
-                           rules: [
-                              {
-                                 targetId: "widthType",
-                                 is: ["PIXELS"]
-                              }
-                           ]
-                        },
-                        requirementConfig: {
-                           initialValue: false,
-                           rules: [
-                              {
-                                 targetId: "widthType",
-                                 is: ["PIXELS"]
-                              }
-                           ]
-                        },
-                        validationConfig: {
-                           regex: "^([0-9]+)$"
-                        }
-                     }
-                  },
-                  {
-                     name: "alfresco/forms/controls/DojoValidationTextBox",
-                     config: {
-                        name: "additionalConfig.widthPc",
-                        label: "Widget width (as percentage)",
-                        unitsLabel: "%",
-                        value: "",
-                        postWhenHiddenOrDisabled: false,
-                        noValueUpdateWhenHiddenOrDisabled: true,
-                        visibilityConfig: {
-                           initialValue: false,
-                           rules: [
-                              {
-                                 targetId: "widthType",
-                                 is: ["PERCENTAGE"]
-                              }
-                           ]
-                        },
-                        requirementConfig: {
-                           initialValue: false,
-                           rules: [
-                              {
-                                 targetId: "widthType",
-                                 is: ["PERCENTAGE"]
-                              }
-                           ]
-                        },
-                        validationConfig: {
-                           regex: "^([0-9]+)$"
-                        }
-                     }
-                  }
-               ]
+               widgetsForNestedConfig: getHorizontalLayoutWidgetsForNestedConfig()
             }
          }
       ]
@@ -4007,48 +4052,57 @@ function getCommonFormControlConfigWidgets() {
          }
       },
       {
-         name: "alfresco/forms/controls/DojoCheckBox",
+         name: "alfresco/forms/ControlRow",
          config: {
-            name: "defaultConfig.postWhenHiddenOrDisabled",
-            label: "Include value when hidden or disabled",
-            description: "If checked, the value of this field will always be included in the form value regardless of whether or not it is hidden or disabled. Uncheck the box to only include the value when displayed and enabled.",
-            value: true
+            title: "Data Settings",
+            description: "Configure the data settings for this form control.",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.name",
+                     label: "Post parameter",
+                     description: "This is will be used as the name of the request parameter when the form is posted.",
+                     value: "default"
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.value",
+                     label: "Initial Value",
+                     description: "The will be the value that is initially displayed when the control is first shown (if no other value is already set)",
+                     value: ""
+                  }
+               }
+            ]
          }
       },
       {
-         name: "alfresco/forms/controls/DojoCheckBox",
+         name: "alfresco/forms/ControlRow",
          config: {
-            name: "defaultConfig.noValueUpdateWhenHiddenOrDisabled",
-            label: "Update when hidden or disabled",
-            description: "If checked, this field will not be initially set with a value if it is hidden or disabled",
-            value: false
-         }
-      },
-      {
-         name: "alfresco/forms/controls/DojoValidationTextBox",
-         config: {
-            name: "defaultConfig.name",
-            label: "Post parameter",
-            description: "This is will be used as the name of the request parameter when the form is posted.",
-            value: "default"
-         }
-      },
-      {
-         name: "alfresco/forms/controls/DojoValidationTextBox",
-         config: {
-            name: "defaultConfig.value",
-            label: "Initial Value",
-            description: "The will be the value that is initially displayed when the control is first shown (if no other value is already set)",
-            value: ""
-         }
-      },
-      {
-         name: "alfresco/forms/controls/DojoValidationTextBox",
-         config: {
-            name: "defaultConfig.label",
-            label: "Label",
-            description: "This is a short description of what the form control is being used to capture (e.g.'Name')",
-            value: "Default Label"
+            title: "Labels",
+            description: "Configure the labels for this form control",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.label",
+                     label: "Label",
+                     description: "This is a short description of what the form control is being used to capture (e.g.'Name')",
+                     value: "Default Label"
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     name: "defaultConfig.unitsLabel",
+                     label: "Units Label",
+                     description: "This is a label that will be placed after the form control to indicate the type of data being captured (e.g. 'milliseconds', '%', 'miles', etc)",
+                     value: "units"
+                  }
+               }
+            ]
          }
       },
       {
@@ -4061,66 +4115,229 @@ function getCommonFormControlConfigWidgets() {
          }
       },
       {
-         name: "alfresco/forms/controls/DojoValidationTextBox",
-         config: {
-            name: "defaultConfig.unitsLabel",
-            label: "Units Label",
-            description: "This is a label that will be placed after the form control to indicate the type of data being captured (e.g. 'milliseconds', '%', 'miles', etc)",
-            value: "units"
-         }
-      },
-      {
          name: "alfresco/forms/controls/DojoCheckBox",
          config: {
-            name: "defaultConfig.visibilityConfig.initialValue",
-            label: "Initially visible",
-            description: "Check this box if the control should be initially visible when the form is first rendered",
-            value: true
-         }
-      },
-      {
-         name: "alfresco/forms/creation/FormRulesConfigControl",
-         config: {
-            name: "defaultConfig.visibilityConfig.rules",
-            label: "Dynamic visibility behaviour configuration",
-            description: "Set the visibility of this control to change based on the values of other controls within the same form. This makes it possible to make a control progressively closed as the user enters data. For example, selecting a specific field in a drop-down menu might reveal more fields.",
-         }
-      },
-      {
-         name: "alfresco/forms/controls/DojoCheckBox",
-         config: {
-            name: "defaultConfig.requirementConfig.initialValue",
-            label: "Initially required",
-            description: "Check this box if the field should be intially required when the form is first rendered. A required field must have a value in order for the form's submit button to be enabled",
+            fieldId: "SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+            name: "showDynamicBehaviourConfig",
+            label: "Configure dynamic behaviour",
+            description: "Check this box to configure the rules that control visibility, requirement and disablement",
             value: false
          }
       },
       {
-         name: "alfresco/forms/creation/FormRulesConfigControl",
+         name: "alfresco/forms/ControlRow",
          config: {
-            name: "defaultConfig.requirementConfig.rules",
-            label: "Dynamic requirement behaviour configuration",
-            description: "Create rules that change when the field must have a value entered. For example, a field may only be required when a specific value is selected from a drop-down menu."
+            title: "Visibility",
+            description: "Configure the visibility behaviour.",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoCheckBox",
+                  config: {
+                     name: "defaultConfig.visibilityConfig.initialValue",
+                     label: "Initially visible",
+                     description: "Check this box if the control should be initially visible when the form is first rendered",
+                     value: true
+                  }
+               },
+               {
+                  name: "alfresco/forms/creation/FormRulesConfigControl",
+                  config: {
+                     name: "defaultConfig.visibilityConfig.rules",
+                     label: "Dynamic visibility behaviour configuration",
+                     description: "Set the visibility of this control to change based on the values of other controls within the same form. This makes it possible to make a control progressively closed as the user enters data. For example, selecting a specific field in a drop-down menu might reveal more fields."
+                  }
+               }
+            ],
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     topic: "_valueChangeOf_SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                     attribute: "value",
+                     is: [true]
+                  }
+               ]
+            }
          }
       },
       {
-         name: "alfresco/forms/controls/DojoCheckBox",
+         name: "alfresco/forms/ControlRow",
          config: {
-            name: "defaultConfig.disablementConfig.initialValue",
-            label: "Initially disabled",
-            value: false,
-            description: "Check this box if the field should be initially disabled when the form is first rendered. A disabled field cannot have it's value changed."
+            title: "Requirement",
+            description: "Configure the requirement behaviour.",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoCheckBox",
+                  config: {
+                     name: "defaultConfig.requirementConfig.initialValue",
+                     label: "Initially required",
+                     description: "Check this box if the field should be intially required when the form is first rendered. A required field must have a value in order for the form's submit button to be enabled",
+                     value: false,
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                              is: [true]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/creation/FormRulesConfigControl",
+                  config: {
+                     name: "defaultConfig.requirementConfig.rules",
+                     label: "Dynamic requirement behaviour configuration",
+                     description: "Create rules that change when the field must have a value entered. For example, a field may only be required when a specific value is selected from a drop-down menu.",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                              is: [true]
+                           }
+                        ]
+                     }
+                  }
+               }
+            ],
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     topic: "_valueChangeOf_SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                     attribute: "value",
+                     is: [true]
+                  }
+               ]
+            }
          }
       },
       {
-         name: "alfresco/forms/creation/FormRulesConfigControl",
+         name: "alfresco/forms/ControlRow",
          config: {
-            name: "defaultConfig.disablementConfig.rules",
-            label: "Dynamic disablement behaviour configuration",
-            description: "Create rules that change when the field is disabled. A field might want to be disabled until other fields have been populated"
+            title: "Disablement",
+            description: "Configure the disablement behaviour.",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoCheckBox",
+                  config: {
+                     name: "defaultConfig.disablementConfig.initialValue",
+                     label: "Initially disabled",
+                     value: false,
+                     description: "Check this box if the field should be initially disabled when the form is first rendered. A disabled field cannot have it's value changed.",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                              is: [true]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/creation/FormRulesConfigControl",
+                  config: {
+                     name: "defaultConfig.disablementConfig.rules",
+                     label: "Dynamic disablement behaviour configuration",
+                     description: "Create rules that change when the field is disabled. A field might want to be disabled until other fields have been populated",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                              is: [true]
+                           }
+                        ]
+                     }
+                  }
+               }
+            ],
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     topic: "_valueChangeOf_SHOW_DYNAMIC_BEHAVIOUR_CONFIG",
+                     attribute: "value",
+                     is: [true]
+                  }
+               ]
+            }
+         }
+      },
+      {
+         name: "alfresco/forms/ControlRow",
+         config: {
+            title: "Advanced Settings",
+            description: "Configure when the values are posted and when they are updated",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoCheckBox",
+                  config: {
+                     name: "defaultConfig.postWhenHiddenOrDisabled",
+                     label: "Include value when hidden or disabled",
+                     description: "If checked, the value of this field will always be included in the form value regardless of whether or not it is hidden or disabled. Uncheck the box to only include the value when displayed and enabled.",
+                     value: true
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoCheckBox",
+                  config: {
+                     name: "defaultConfig.noValueUpdateWhenHiddenOrDisabled",
+                     label: "Update when hidden or disabled",
+                     description: "If checked, this field will not be initially set with a value if it is hidden or disabled",
+                     value: false
+                  }
+               }
+            ]
          }
       }
    ];
+}
+
+function getFormControlRow() {
+   return {
+      type: [ "widget" ],
+      name: "Form Control Row",
+      module: "alfresco/forms/ControlRow",
+      defaultConfig: {
+         title: "",
+         description: ""
+      },
+      widgetsForConfig: [
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.title",
+               label: "Title",
+               description: "This is the title for the row of form controls. Leave blank to have no title",
+               value: ""
+            }
+         },
+         {
+            name: "alfresco/forms/controls/DojoValidationTextBox",
+            config: {
+               name: "defaultConfig.description",
+               label: "Description",
+               description: "Adds a sub-title for the row of form controls. Leave blank to have no description.",
+               value: ""
+            }
+         }
+      ].concat(getHorizontalLayoutWidgetsForConfig()),
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/creation/DropZone",
+            config: {
+               horizontal: false,
+               widgetsForNestedConfig: getHorizontalLayoutWidgetsForNestedConfig()
+            }
+         }
+      ]
+   };
 }
 
 
@@ -4197,6 +4414,154 @@ function getTextArea() {
    };
 }
 
+function getCommonOptionsWidgetsForConfig() {
+   return [
+      {
+         name: "alfresco/forms/ControlRow",
+         config: {
+            title: "Options Configuration",
+            description: "Configure how the displayed options are retrieved for this form control",
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoRadioButtons",
+                  config: {
+                     fieldId: "OPTIONS_TYPE",
+                     name: "selectOptionType",
+                     label: "Options Type",
+                     description: "Select either to populate the form control with a fixed set of options or to dynamically retrieve them",
+                     value: "FIXED",
+                     optionsConfig: {
+                        fixed: [
+                           { label: "Fixed Options", value: "FIXED" },
+                           { label: "Dynamic Options", value: "DYNAMIC" }
+                        ]
+                     }
+                  }
+               }
+            ]
+         }
+      },
+      {
+         name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
+         config: {
+            name: "defaultConfig.optionsConfig.fixed",
+            label: "Fixed Options",
+            description: "Create the list of fixed options to be shown in the menu",
+            visibilityConfig: {
+               initialValue: false,
+               rules: [
+                  {
+                     targetId: "OPTIONS_TYPE",
+                     is: ["FIXED"]
+                  }
+               ]
+            }
+         }
+      },
+      {
+         name: "alfresco/forms/controls/DojoValidationTextBox",
+         config: {
+            label: "The topic to publish to retrieve options",
+            name: "defaultConfig.optionsConfig.publishTopic",
+            description: "Enter a topic that will be published to request options.",
+            value: "ALF_GET_FORM_CONTROL_OPTIONS",
+            visibilityConfig: {
+               initialValue: false
+            },
+            disablementConfig: {
+               initialValue: true
+            }
+         }
+      },
+      {
+         name: "alfresco/forms/ControlRow",
+         config: {
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "URL",
+                     name: "defaultConfig.optionsConfig.publishPayload.url",
+                     description: "The URL to retrieve options from",
+                     value: url.context + "/proxy/alfresco/api/groups",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "OPTIONS_TYPE",
+                              is: ["DYNAMIC"]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "Options Attribute",
+                     name: "defaultConfig.optionsConfig.publishPayload.itemsAttribute",
+                     description: "The attribute in the response body that identifies the options to display (can be in dot-notation form).",
+                     value: "data",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "OPTIONS_TYPE",
+                              is: ["DYNAMIC"]
+                           }
+                        ]
+                     }
+                  }
+               }
+            ]
+         }
+      },
+      {
+         name: "alfresco/forms/ControlRow",
+         config: {
+            widgets: [
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "Label Attribute",
+                     name: "defaultConfig.optionsConfig.publishPayload.labelAttribute",
+                     description: "The attribute each option object to use as the display label for that option.",
+                     value: "displayName",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "OPTIONS_TYPE",
+                              is: ["DYNAMIC"]
+                           }
+                        ]
+                     }
+                  }
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: "Value Attribute",
+                     name: "defaultConfig.optionsConfig.publishPayload.valueAttribute",
+                     description: "The attribute each option object to use as the value that option.",
+                     value: "fullName",
+                     visibilityConfig: {
+                        initialValue: false,
+                        rules: [
+                           {
+                              targetId: "OPTIONS_TYPE",
+                              is: ["DYNAMIC"]
+                           }
+                        ]
+                     }
+                  }
+               }
+            ]
+         }
+      }
+   ];
+}
+
 function getSelectField() {
    return {
       type: [ "widget" ],
@@ -4215,16 +4580,7 @@ function getSelectField() {
             ]
          }
       },
-      widgetsForConfig: getCommonFormControlConfigWidgets().concat([
-         {
-            name: "alfresco/forms/controls/MultipleKeyValuePairFormControl",
-            config: {
-               name: "defaultConfig.optionsConfig.fixed",
-               label: "Options",
-               description: "Create the list of options to be shown in the menu"
-            }
-         }
-      ]),
+      widgetsForConfig: getCommonFormControlConfigWidgets().concat(getCommonOptionsWidgetsForConfig()),
       previewWidget: false,
       widgetsForDisplay: [
          {
@@ -4403,18 +4759,43 @@ function getRandomValueControl() {
    };
 }
 
+function getDocumentPickerControl() {
+   return {
+      type: [ "widget" ],
+      name: "Document Picker",
+      module: "alfresco/forms/controls/DocumentPicker",
+      defaultConfig: {
+         visibilityConfig: {
+            initialValue: false
+         }
+      },
+      widgetsForConfig: getCommonFormControlConfigWidgets(),
+      previewWidget: false,
+      widgetsForDisplay: [
+         {
+            name: "alfresco/html/Label",
+            config: {
+               label: "Document Picker"
+            }
+         }
+      ]
+   };
+}
+
 function getAllFormWidgets() {
    return [
       getForm(),
       getCrudForm(),
       getSingleEntryForm(),
+      getFormControlRow(),
       getTextField(),
       getTextArea(),
       getSelectField(),
       getRadioButtonsField(),
       getCheckBox(),
-      getAceEditor(),
+      // getAceEditor(),
       getMultipleEntryFormControl(),
-      getRandomValueControl()
+      getRandomValueControl(),
+      getDocumentPickerControl()
    ];
 }

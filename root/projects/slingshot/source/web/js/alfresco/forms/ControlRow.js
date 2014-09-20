@@ -84,20 +84,22 @@ define(["alfresco/layout/HorizontalWidgets",
       postCreate: function alfresco_forms_ControlRow__postCreate() {
          this.inherited(arguments);
          domClass.add(this.domNode, "alfresco-forms-ControlRow");
-         if (this.description != null)
+         var hasDescription = false;
+         if (this.description != null && lang.trim(this.description) !== "")
          {
+            hasDescription = true;
             this.description = this.message(this.description);
             domConstruct.create("div", {
                innerHTML: this.description,
                className: "description border"
             }, this.domNode, "first");
          }
-         if (this.title != null)
+         if (this.title != null && lang.trim(this.title) !== "")
          {
             this.title = this.message(this.title);
             domConstruct.create("div", {
                innerHTML: this.title,
-               className: "title" + (this.description == null ? " border" : "")
+               className: "title" + (hasDescription ? "" : " border")
             }, this.domNode, "first");
          }
       },

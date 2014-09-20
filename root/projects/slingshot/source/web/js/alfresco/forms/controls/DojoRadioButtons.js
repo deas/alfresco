@@ -126,7 +126,6 @@ define(["alfresco/forms/controls/BaseFormControl",
          option.name = this.name; // Add the name to create the radio button "group" (TODO: Is this necessary for our purpose?)
          var rb = new RadioButton(option);
          rb.placeAt(this.containerNode);
-         this.options.push(option);
          this.optionToWidget[option.value] = rb;
          rb._radioButton.on("change", lang.hitch(this, this.onButtonChange, rb));
       },
