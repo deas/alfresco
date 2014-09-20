@@ -175,7 +175,7 @@ model.jsonModel = {
                                                    {
                                                       name: "alfresco/renderers/PublishingDropDownMenu",
                                                       config: {
-                                                         additionalCssClasses: "unmargined",
+                                                         additionalCssClasses: "unmargined no-title",
                                                          publishTopic: "ALF_UPDATE_SITE_DETAILS",
                                                          publishPayloadType: "BUILD",
                                                          publishPayload: {

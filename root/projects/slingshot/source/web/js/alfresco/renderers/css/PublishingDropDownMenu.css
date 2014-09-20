@@ -23,3 +23,6 @@
    background-image: url("./images/job-success-16.png");
 }
 
+.alfresco-renderers-PublishingDropDownMenu.no-title .alfresco-forms-controls-BaseFormControl div.title-row {
+   display: none;
+}
