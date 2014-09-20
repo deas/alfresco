@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,9 @@
  */
 
 /**
+ * This service should be used in conjunction with the [Like renderer]{@link module:alfresco/renderers/Like}
+ * to handle requests for liking and unliking nodes.
+ *
  * @module alfresco/services/RatingsService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreXhr
@@ -79,7 +82,6 @@ define(["dojo/_base/declare",
          {
             var url = this.getAddRatingsUrl(nodeRefUri);
             var data = {
-               nodeRefUri: nodeRefUri,
                rating: 1,
                ratingScheme: "likesRatingScheme"
             };
@@ -103,13 +105,9 @@ define(["dojo/_base/declare",
          if (nodeRefUri)
          {
             var url = this.getRemoveRatingsUrl(nodeRefUri);
-            var data = {
-               nodeRefUri: nodeRefUri,
-               ratingScheme: "likesRatingScheme"
-            };
             this.serviceXhr({url : url,
                              alfTopic: alfTopic,
-                             data: data,
+                             data: null,
                              method: "DELETE"});
          }
       }
