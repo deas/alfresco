@@ -48,7 +48,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       emitClosePopupEvent: function alfresco_menus__AlfPopupCloseMixin__emitClosePopupEvent() {
-         if (this.closeOnClick == true)
+         if (this.closeOnClick === true)
          {
             on.emit(this.domNode, "ALF_CLOSE_MENU", { bubbles: true, cancelable: true });
          }

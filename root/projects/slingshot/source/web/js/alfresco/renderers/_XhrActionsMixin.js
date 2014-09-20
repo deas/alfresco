@@ -144,8 +144,12 @@ define(["dojo/_base/declare",
             // an example of this is on the search results page where the loaded actions are initially
             // shown slightly off-screen. To work around this issue we will immediately close and then
             // re-open the popup and leave dijit/popup to place the menu sensibly...
-            popup.close(this.actionsMenu.popup);
-            popup.open({popup:this.actionsMenu.popup,around:this.actionsMenu.domNode});
+
+            // PLEASE NOTE: Temporarily commented out as although this performs the re-draw admirably,
+            //              the first time the menu items are clicked they have no effect
+            //              See: https://issues.alfresco.com/jira/browse/ACE-1865
+            // popup.close(this.actionsMenu.popup);
+            // popup.open({popup:this.actionsMenu.popup,around:this.actionsMenu.domNode});
          }
          else
          {
