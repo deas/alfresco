@@ -186,7 +186,7 @@ define(["dojo/_base/declare",
          array.forEach(results, lang.hitch(this, this.processResult, queryAttribute, labelAttribute, valueAttribute));
 
          var updatedQuery = {};
-         updatedQuery[this.queryAttribute] = new RegExp("^" + query[this.queryAttribute].toString() + ".*$");
+         updatedQuery[this.queryAttribute] = new RegExp("^" + query[this.queryAttribute].toString() + ".*$", "i");
 
          // NOTE: Ignore JSHint warnings on the following 2 lines...
          var queryEngine = SimpleQueryEngine(updatedQuery);

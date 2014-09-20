@@ -47,6 +47,17 @@ define(["alfresco/forms/controls/BaseFormControl",
       cssRequirements: [{cssFile:"./css/ComboBox.css"}],
 
       /**
+       * This determines whether or not the ComboBox will automatically copy the
+       * first matched item into the input field as the user is typing. Defaults
+       * to false.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      autoComplete: false,
+
+      /**
        * @instance
        */
       getWidgetConfig: function alfresco_forms_controls_ComboBox__getWidgetConfig() {
@@ -74,7 +85,8 @@ define(["alfresco/forms/controls/BaseFormControl",
             store: serviceStore,
             searchAttr: serviceStore.queryAttribute,
             labelAttribute: serviceStore.labelAttribute,
-            queryExpr: "${0}"
+            queryExpr: "${0}",
+            autoComplete: this.autoComplete
          });
          this.addIcon(comboBox);
          this.showOptionsBasedOnValue(comboBox);
