@@ -23,14 +23,14 @@
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/BaseFormControl",
+        "alfresco/forms/controls/utilities/IconMixin",
         "dojo/_base/declare",
         "dijit/form/ValidationTextBox",
         "dojo/_base/lang",
-        "dojo/dom-construct",
         "dojo/dom-class"], 
-        function(BaseFormControl, declare, ValidationTextBox, lang, domClass) {
+        function(BaseFormControl, IconMixin, declare, ValidationTextBox, lang, domClass) {
    
-   return declare([BaseFormControl], {
+   return declare([BaseFormControl, IconMixin], {
       
       /**
        * An array of the CSS files to use with this widget.
@@ -76,14 +76,7 @@ define(["alfresco/forms/controls/BaseFormControl",
             additionalCssClasses = this.additionalCssClasses;
          }
          domClass.add(this.domNode, "alfresco-forms-controls-DojoValidationTextBox " + additionalCssClasses);
-
-         if (config.iconClass != null && lang.trim(config.iconClass) != "")
-         {
-            domConstruct.create("span", {
-               "class": "alf-icon " + config.iconClass
-            }, textBox.focusNode, "before");
-         }
-
+         this.addIcon(textBox);
          return textBox;
       },
       
