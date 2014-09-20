@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocSet;
@@ -31,12 +32,12 @@ import org.apache.solr.search.SolrIndexSearcher;
 public class SolrReaderSetScorer extends AbstractSolrCachingScorer
 {
 
-    SolrReaderSetScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
+    SolrReaderSetScorer(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
     {
-        super(weight, in, context, searcher);
+        super(weight, in, context, acceptDocs, searcher);
     }
 
-    public static SolrReaderSetScorer createReaderSetScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
+    public static SolrReaderSetScorer createReaderSetScorer(Weight weight, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
     {
         String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
 
@@ -51,6 +52,6 @@ public class SolrReaderSetScorer extends AbstractSolrCachingScorer
         
         // TODO: cache the full set? e.g. searcher.cacheInsert(CacheConstants.ALFRESCO_READERSET_CACHE, authorities, readableDocSet)
         // plus check of course, for presence in cache at start of method.
-        return new SolrReaderSetScorer(weight, readableDocSet, context, searcher);
+        return new SolrReaderSetScorer(weight, readableDocSet, context, acceptDocs, searcher);
     }
 }

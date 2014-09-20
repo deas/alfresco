@@ -6336,7 +6336,10 @@ public class AlfrescoCoreAdminTester
             {
                 for(String filter : filters)
                 {
-                    newParams.add("fq", filter);
+                    if(filter != null)
+                    {
+                        newParams.add("fq", filter);
+                    }
                 }
                 queryReport.add("Filters", filters);
             }
@@ -7241,6 +7244,40 @@ public class AlfrescoCoreAdminTester
         before.add("Read Access", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:andy");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:bob");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:cid");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:dave");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:eoin");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:fred");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:andy");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:gail");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:hal");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:ian");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:andy");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:jake");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:kara");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:loon");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:mike");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:noodle");
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
+                "{!afts}|OWNER:ood");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
                     "{!afts}|AUTHORITY:andy");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,

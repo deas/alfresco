@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.alfresco.solr.cache.CacheConstants;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.Bits;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -33,18 +34,19 @@ import org.apache.solr.search.SolrIndexSearcher;
  */
 public class SolrCachingPathScorer extends AbstractSolrCachingScorer
 {
-    SolrCachingPathScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
+    SolrCachingPathScorer(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
     {
-        super(weight, in, context, searcher);
+        super(weight, in, context, acceptDocs, searcher);
     }
 
 
     /**
      * Factory method used to create {@link SolrCachingPathScorer} instances.
+     * @param acceptDocs 
      */
     public static SolrCachingPathScorer create(SolrCachingPathWeight weight,
                                                AtomicReaderContext context,
-                                               SolrIndexSearcher searcher,
+                                               Bits acceptDocs, SolrIndexSearcher searcher,
                                                SolrPathQuery wrappedPathQuery) throws IOException
     {
         DocSet results = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_PATH_CACHE, wrappedPathQuery);
@@ -55,6 +57,6 @@ public class SolrCachingPathScorer extends AbstractSolrCachingScorer
             searcher.cacheInsert(CacheConstants.ALFRESCO_PATH_CACHE, wrappedPathQuery, results);
         }
         
-        return new SolrCachingPathScorer(weight, results, context, searcher);
+        return new SolrCachingPathScorer(weight, results, context, acceptDocs, searcher);
     }
 }

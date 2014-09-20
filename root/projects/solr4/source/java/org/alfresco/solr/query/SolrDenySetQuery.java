@@ -72,7 +72,7 @@ public class SolrDenySetQuery extends AbstractAuthoritySetQuery
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
             AtomicReader reader = context.reader();
-            return SolrDenySetScorer.createDenySetScorer(this, context, searcher, authorities, reader);
+            return SolrDenySetScorer.createDenySetScorer(this, context, acceptDocs, searcher, authorities, reader);
         }
     }
 }

@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
@@ -44,9 +45,15 @@ public abstract class AbstractSolrCachingScorer extends Scorer
 
     AtomicReaderContext context;
     
-    AbstractSolrCachingScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
+    Bits acceptDocs;
+    
+    
+    AbstractSolrCachingScorer(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
     {
         super(weight);
+        this.context = context;
+        this.acceptDocs = acceptDocs;
+        
         if (in instanceof BitDocSet)
         {
             matches = (BitDocSet) in;
@@ -60,7 +67,7 @@ public abstract class AbstractSolrCachingScorer extends Scorer
             }
         }
         bitSet = matches.getBits();
-        this.context = context;
+        
         doc = getBase() - 1;
     }
 
@@ -86,11 +93,14 @@ public abstract class AbstractSolrCachingScorer extends Scorer
     @Override
     public int nextDoc() throws IOException
     {
-        if (!next())
+        while (next())
         {
-            return NO_MORE_DOCS;
+            if( (acceptDocs == null) || (acceptDocs.get(docID())) )
+            {
+                return docID();
+            }
         }
-        return docID();
+        return NO_MORE_DOCS;
     }
 
     
@@ -116,10 +126,13 @@ public abstract class AbstractSolrCachingScorer extends Scorer
     {
         while (next())
         {
-            final int doc = docID();
-            if (doc >= target)
+            final int current = docID();
+            if (current >= target)
             {
-                return doc;
+                if( (acceptDocs == null) || (acceptDocs.get(current)) )
+                {
+                    return current;
+                }
             }
         }
         return NO_MORE_DOCS;

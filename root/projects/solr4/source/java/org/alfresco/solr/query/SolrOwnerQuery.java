@@ -69,7 +69,7 @@ public class SolrOwnerQuery extends AbstractAuthorityQuery
         @Override
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
-            return SolrOwnerScorer.createOwnerScorer(this, context, searcher, SolrOwnerQuery.this.authority);
+            return SolrOwnerScorer.createOwnerScorer(this, context, acceptDocs, searcher, SolrOwnerQuery.this.authority);
         }
     }
 }

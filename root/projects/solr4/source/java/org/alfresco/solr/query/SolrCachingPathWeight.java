@@ -70,6 +70,6 @@ public class SolrCachingPathWeight extends Weight
     @Override
     public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
     {
-        return SolrCachingPathScorer.create(this, context, searcher, cachingPathQuery.pathQuery);
+        return SolrCachingPathScorer.create(this, context, acceptDocs, searcher, cachingPathQuery.pathQuery);
     }
 }

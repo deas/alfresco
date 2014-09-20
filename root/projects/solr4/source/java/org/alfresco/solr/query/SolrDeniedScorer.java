@@ -24,10 +24,13 @@ import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
 import org.alfresco.solr.cache.CacheConstants;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
+import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.BitDocSet;
 import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
@@ -40,12 +43,12 @@ import org.apache.solr.search.SolrIndexSearcher;
  */
 public class SolrDeniedScorer extends AbstractSolrCachingScorer
 {
-    SolrDeniedScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
+    SolrDeniedScorer(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
     {
-        super(weight, in, context, searcher);
+        super(weight, in, context, acceptDocs, searcher);
     }
 
-    public static SolrDeniedScorer createDenyScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authority) throws IOException
+    public static SolrDeniedScorer createDenyScorer(Weight weight, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher, String authority) throws IOException
     {     
         DocSet deniedDocs = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_DENIED_CACHE, authority);
 
@@ -63,9 +66,10 @@ public class SolrDeniedScorer extends AbstractSolrCachingScorer
                 int docID = it.nextDoc();
                 // Obtain the ACL ID for this ACL doc.
                 long aclID = searcher.getAtomicReader().getNumericDocValues(QueryConstants.FIELD_ACLID).get(docID);
-                BytesRef aclIDBytesRef = new BytesRef(Long.toString(aclID));
+                SchemaField schemaField = searcher.getSchema().getField(QueryConstants.FIELD_ACLID);
+                Query query = schemaField.getType().getFieldQuery(null, schemaField, Long.toString(aclID));
                 // Find real docs that match the ACL ID
-                DocSet docsForAclId = searcher.getDocSet(new TermQuery(new Term(QueryConstants.FIELD_ACLID, aclIDBytesRef)));                
+                DocSet docsForAclId = searcher.getDocSet(query);                
                 deniedDocs = deniedDocs.union(docsForAclId);
                 // Exclude the ACL docs from the results, we only want real docs that match.
                 // Probably not very efficient, what we really want is remove(docID)
@@ -74,6 +78,6 @@ public class SolrDeniedScorer extends AbstractSolrCachingScorer
             
             searcher.cacheInsert(CacheConstants.ALFRESCO_DENIED_CACHE, authority, deniedDocs);
         }
-        return new SolrDeniedScorer(weight, deniedDocs, context, searcher);
+        return new SolrDeniedScorer(weight, deniedDocs, context, acceptDocs, searcher);
     }
 }

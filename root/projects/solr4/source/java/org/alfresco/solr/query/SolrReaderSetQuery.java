@@ -60,7 +60,7 @@ public class SolrReaderSetQuery extends AbstractAuthoritySetQuery
         return stringBuilder.toString();
     }
 
-    class SolrReaderSetQueryWeight extends AbstractAuthorityQueryWeight
+    private class SolrReaderSetQueryWeight extends AbstractAuthorityQueryWeight
     {
         public SolrReaderSetQueryWeight(SolrIndexSearcher searcher, Query query, String readers) throws IOException
         {
@@ -71,7 +71,7 @@ public class SolrReaderSetQuery extends AbstractAuthoritySetQuery
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
             AtomicReader reader = context.reader();
-            return SolrReaderSetScorer.createReaderSetScorer(this, context, searcher, authorities, reader);
+            return SolrReaderSetScorer.createReaderSetScorer(this, context, acceptDocs, searcher, authorities, reader);
         }
     }
 }

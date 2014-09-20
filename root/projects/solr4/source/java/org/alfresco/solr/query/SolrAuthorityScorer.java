@@ -29,6 +29,7 @@ import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.Bits;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -39,12 +40,12 @@ import org.apache.solr.search.SolrIndexSearcher;
  */
 public class SolrAuthorityScorer extends AbstractSolrCachingScorer
 {
-    SolrAuthorityScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
+    SolrAuthorityScorer(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
     {
-        super(weight, in, context, searcher);
+        super(weight, in, context, acceptDocs, searcher);
     }
 
-    public static SolrAuthorityScorer createAuthorityScorer(Weight weight, AtomicReaderContext context, SolrIndexSearcher searcher, String authority) throws IOException
+    public static SolrAuthorityScorer createAuthorityScorer(Weight weight, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher, String authority) throws IOException
     {
         Properties p = searcher.getSchema().getResourceLoader().getCoreProperties();
         boolean doPermissionChecks = Boolean.parseBoolean(p.getProperty("alfresco.doPermissionChecks", "true"));
@@ -55,7 +56,7 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
         if(answer != null)
         {
             // Answer was in the cache, so return it.
-            return new SolrAuthorityScorer(weight, answer, context, searcher);
+            return new SolrAuthorityScorer(weight, answer, context, acceptDocs, searcher);
         }
         
         // Answer was not in cache, so build the results, cache and return.        
@@ -65,7 +66,7 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
         {
             // can read all
             DocSet allDocs = searcher.getDocSet(new MatchAllDocsQuery());
-            return new SolrAuthorityScorer(weight, allDocs, context, searcher);
+            return new SolrAuthorityScorer(weight, allDocs, context, acceptDocs, searcher);
         }
 
         // Docs for which the authority has explicit read access.
@@ -81,7 +82,7 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
             // Final set of docs that the authority can read.
             DocSet toCache = readableDocSet.andNot(deniedDocSet).union(authorityOwnedDocs);
             searcher.cacheInsert(CacheConstants.ALFRESCO_AUTHORITY_CACHE, key, toCache);
-            return new SolrAuthorityScorer(weight, toCache, context, searcher);
+            return new SolrAuthorityScorer(weight, toCache, context, acceptDocs, searcher);
         }
         else
         {
@@ -94,7 +95,7 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
             // Final set of docs that the authority can read.
             DocSet toCache = readableDocSet.andNot(deniedDocSet).union(docsAuthorityOwnsAndCanRead);
             searcher.cacheInsert(CacheConstants.ALFRESCO_AUTHORITY_CACHE, key, toCache);
-            return new SolrAuthorityScorer(weight, toCache, context, searcher);
+            return new SolrAuthorityScorer(weight, toCache, context, acceptDocs, searcher);
         }
     }
 }

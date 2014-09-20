@@ -70,7 +70,7 @@ public class SolrReaderQuery extends AbstractAuthorityQuery
         @Override
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
-            return SolrReaderScorer.createReaderScorer(this, context, searcher, authority);
+            return SolrReaderScorer.createReaderScorer(this, context, acceptDocs, searcher, authority);
         }   
     }
 }
