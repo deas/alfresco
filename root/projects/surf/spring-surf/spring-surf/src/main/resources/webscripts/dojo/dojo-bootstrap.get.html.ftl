@@ -13,7 +13,7 @@
                packages: [
                <#assign packages = webframeworkConfig.dojoPackages>
                <#list packages?keys as name>
-                  { name: "${name}", location: "${packages[name]}" }<#if name_has_next>,</#if>
+                  { name: "${name}", location: "${packages[name]}"<#if webframeworkConfig.dojoPackagesMain[name]??>, main: "${webframeworkConfig.dojoPackagesMain[name]}"</#if>}<#if name_has_next>,</#if>
                </#list>
                ]
             };

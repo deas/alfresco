@@ -1294,6 +1294,7 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
     public static final String DOJO_PACKAGE = "package";
     public static final String DOJO_PACKAGE_NAME = "name";
     public static final String DOJO_PACKAGE_LOCATION = "location";
+    public static final String DOJO_PACKAGE_MAIN = "main";
     public static final String DOJO_MESSAGES_OBJECT = "messages-object";
     public static final String DOJO_MESSAGES_DEFAULT_SCOPE = "default-messages-scope";
     
@@ -1308,6 +1309,7 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
     protected String  dojoMessagesObject = null;
     protected String  dojoMessagesDefaultScope = null;
     protected Map<String, String> dojoPackages = new HashMap<String, String>();
+    protected Map<String, String> dojoPackagesMain = new HashMap<String, String>();
     
     /*
      * ACCESSORS FOR THE DOJO CONFIGURATION
@@ -1339,6 +1341,11 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
     public Map<String, String> getDojoPackages()
     {
         return dojoPackages;
+    }
+    
+    public Map<String, String> getDojoPackagesMain()
+    {
+        return dojoPackagesMain;
     }
 
     public String getDojoMessagesObject()
@@ -1410,6 +1417,11 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
                         if (name != null && location != null)
                         {
                             configElement.dojoPackages.put(name, location);
+                            String main = packageEntry.attributeValue(DOJO_PACKAGE_MAIN);
+                            if (main != null)
+                            {
+                                configElement.dojoPackagesMain.put(name, main);
+                            }
                         }
                     }
                 }
@@ -1464,6 +1476,12 @@ public class WebFrameworkConfigElement extends ConfigElementAdapter implements W
         if (configElement.dojoPackages != null)
         {
             combinedElement.dojoPackages.putAll(configElement.dojoPackages);
+        }
+        
+        combinedElement.dojoPackagesMain = this.dojoPackagesMain;
+        if (configElement.dojoPackagesMain != null)
+        {
+            combinedElement.dojoPackagesMain.putAll(configElement.dojoPackagesMain);
         }
     }
 }
