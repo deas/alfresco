@@ -45,7 +45,7 @@ define(["intern!object",
                TestCommon.log(testname,"Check copyright text");
                expect(text).to.equal("SOME COPYRIGHT LABEL", "The copyright has not been set correctly");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-footer-AlfShareFooter .licenseHolder")
             .getVisibleText()
@@ -53,13 +53,8 @@ define(["intern!object",
                TestCommon.log(testname,"Check license text");
                expect(text).to.equal("Licensed To: SOME LICENSE LABEL", "The license label was not set correctly");
             })
-            .end()
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .end()
+         .alfPostCoverageResults(browser);
       }
    });
 });

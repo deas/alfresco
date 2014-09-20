@@ -59,10 +59,8 @@ define(["intern!object",
                // TODO: 3: Trigger response event with data
                // TODO: 4: See if response is rendered
 
-               // Post the coverage results...
-               .then(function() {
-                  TestCommon.postCoverageResults(browser);
-               });
+               
+               .alfPostCoverageResults(browser);
          }
       });
    });

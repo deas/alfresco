@@ -25,11 +25,13 @@ define(["intern!object",
         "intern/chai!assert",
         "require",
         "alfresco/TestCommon",
-        'intern/dojo/node!fs'], 
-        function (registerSuite, expect, assert, require, TestCommon, fs) {
+        'intern/dojo/node!fs',
+        "intern/dojo/node!leadfoot/helpers/pollUntil",
+        "intern/dojo/node!leadfoot/Command"], 
+        function (registerSuite, expect, assert, require, TestCommon, fs, pollUntil, Command) {
 
    var startSize;
-         
+
    registerSuite({
       name: 'AlfSideBarContainer Test',
       'Check Setup': function () {
@@ -59,12 +61,8 @@ define(["intern!object",
                function(err) {
                   assert(false, "Test #1b - Couldn't find resize handle");
                })
-            .end()
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .end()
+         .alfPostCoverageResults(browser);
       },
 
       'Check Logo Placement': function () {
@@ -92,12 +90,8 @@ define(["intern!object",
                function() {
                   assert(false, "Test #1d - Main logo wasn't placed correctly");
                })
-            .end()
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .end()
+         .alfPostCoverageResults(browser);
       },
 
       'Check Widths': function () {
@@ -115,10 +109,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'Check Show and Reveal': function () {
@@ -182,10 +173,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'Check Resize': function () {
@@ -227,10 +215,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

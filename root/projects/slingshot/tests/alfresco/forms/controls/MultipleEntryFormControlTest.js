@@ -61,12 +61,12 @@ define(["intern!object",
             .end()
          .findByCssSelector(TestCommon.pubDataNestedArrayValueCssSelector("FORM1SAVE_FORM_1","simpleWithValue","1","test1"))
             .then(null, function() {
-               assert(false, "Test #0a - Couldn't find simple data in initial form value publication")
+               assert(false, "Test #0a - Couldn't find simple data in initial form value publication");
             })
             .end()
          .findByCssSelector(TestCommon.pubDataNestedValueCssSelector("FORM1SAVE_FORM_1","complexWithValue","value","test4"))
             .then(null, function() {
-               assert(false, "Test #0b - Couldn't find complex data in initial form value publication")
+               assert(false, "Test #0b - Couldn't find complex data in initial form value publication");
             })
             .end()
 
@@ -132,7 +132,7 @@ define(["intern!object",
          // Check the new values...
          .findByCssSelector(TestCommon.pubDataNestedArrayValueCssSelector("FORM1SAVE_FORM_1","simpleWithValue","1","test2"))
             .then(null, function() {
-               assert(false, "Test #2a - Deletion of simple element not reflected in form post")
+               assert(false, "Test #2a - Deletion of simple element not reflected in form post");
             })
             .end()
          .findAllByCssSelector(TestCommon.pubDataNestedValueCssSelector("FORM1SAVE_FORM_1","complexWithValue","value","test4"))
@@ -182,7 +182,7 @@ define(["intern!object",
          // Check the new value...
          .findByCssSelector(TestCommon.pubDataNestedArrayValueCssSelector("FORM1SAVE_FORM_1","simpleWithValue","1","updated simple value"))
             .then(null, function() {
-               assert(false, "Test #3c - Edited value not included in form post")
+               assert(false, "Test #3c - Edited value not included in form post");
             })
             .end()
 
@@ -222,7 +222,7 @@ define(["intern!object",
          // Check that the discarded changes were NOT posted...
          .findByCssSelector(TestCommon.pubDataNestedArrayValueCssSelector("FORM1SAVE_FORM_1","simpleWithValue","1","updated simple value"))
             .then(null, function() {
-               assert(false, "Test #4c - Discarded changes were included in form post")
+               assert(false, "Test #4c - Discarded changes were included in form post");
             })
             .end()
 
@@ -243,7 +243,7 @@ define(["intern!object",
          // Make sure that the element wrapper has been removed...
          .findAllByCssSelector("#SIMPLE_NO_VALUE div.control div.entries > div")
             .then(function (elements) {
-               assert(elements.length == 0, "Test #5a - Cancelling creating a new entry didn't delete the element");
+               assert(elements.length === 0, "Test #5a - Cancelling creating a new entry didn't delete the element");
             })
             .end()
 
@@ -281,15 +281,11 @@ define(["intern!object",
          // Check that the discarded changes were NOT posted...
          .findByCssSelector(TestCommon.pubDataNestedArrayValueCssSelector("FORM1SAVE_FORM_1","simple","1","new entry"))
             .then(null, function() {
-               assert(false, "Test #5d - Added entry was not included in form post")
+               assert(false, "Test #5d - Added entry was not included in form post");
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       }
    });
 });

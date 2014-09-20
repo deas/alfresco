@@ -57,10 +57,7 @@ define(["intern!object",
             .sleep(dialogDelay)
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'SiteServiceTest - Site details': function () {
@@ -100,10 +97,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'SiteServiceTest - Favourite and recent sites': function () {
@@ -188,10 +182,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'SiteServiceTest - Site memberships': function () {
@@ -397,10 +388,7 @@ define(["intern!object",
             .sleep(dialogDelay)
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'SiteServiceTest - Update and delete site': function () {
@@ -438,10 +426,7 @@ define(["intern!object",
             .click()
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

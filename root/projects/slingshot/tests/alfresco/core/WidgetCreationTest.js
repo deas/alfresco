@@ -35,8 +35,6 @@ define(["intern!object",
          var testname = "WidgetCreationTest";
          return TestCommon.loadTestWebScript(this.remote, "/WidgetCreation", testname)
 
-         .end()
-
          // This isn't the optimal way of testing this - ideally we want to get each widget and then
          // check the IDs - however, it's not easily understood how to do this with mulitple selection and 
          // chaining of promises - this test should be sufficient but it would be nice to update at some
@@ -47,26 +45,22 @@ define(["intern!object",
                TestCommon.log(testname,"Count the number of Logo widgets");
                assert(els.length == 3, "An unexpected number of logo widgets found", els.length);
             })
-            .end()
+         .end()
 
          .findAllByCssSelector("#SPECIFIC_DOM_ID")
             .then(function (els) {
                TestCommon.log(testname,"Check for the Logo with the specific ID");
                assert(els.length == 1, "Couldn't find Logo with specific DOM id", els.length);
             })
-            .end()
+         .end()
          .findAllByCssSelector("#SPECIFIC_DOM_ID")
             .then(function (els) {
                TestCommon.log(testname,"Check for the Logo with the overridden ID");
                assert(els.length == 1, "Couldn't find Logo with overridden DOM id", els.length);
             })
-            .end()
+         .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       }
    });
 });

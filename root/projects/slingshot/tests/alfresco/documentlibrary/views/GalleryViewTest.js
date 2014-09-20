@@ -50,43 +50,43 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === true, "Test #1b - The gallery view slider was found but is not displayed");
                })
-               .end()
+            .end()
 
             // 2. Check that the page has been initialised with 4 items per row...
             .findAllByCssSelector("#DOCLIST .alfresco-documentlibrary-views-layouts-Grid > tr:first-child > td")
                .then(function(elements) {
                   assert(elements.length == 4, "Test #2a - The view initially displays an unexpected number of items per row: " + elements.length);
                })
-               .end()
+            .end()
 
             // 3. Increment the view size and check that the number of of items per row has decreased to 3....
             .findByCssSelector("#TOOLBAR .dijitSliderIncrementIconH")
                .click()
-               .end()
+            .end()
             .findAllByCssSelector("#DOCLIST .alfresco-documentlibrary-views-layouts-Grid > tr:first-child > td")
                .then(function(elements) {
                   assert(elements.length == 3, "Test #3a - The number of items per row was not decreased: " + elements.length);
                })
-               .end()
+            .end()
 
             // 4. Decrement the view size and check the number of items per row increases...
             .findByCssSelector("#TOOLBAR .dijitSliderDecrementIconH")
                .click()
                .click()
-               .end()
+            .end()
             .findAllByCssSelector("#DOCLIST .alfresco-documentlibrary-views-layouts-Grid > tr:first-child > td")
                .then(function(elements) {
                   assert(elements.length == 7, "Test #4a - The number of items per row was not increased: " + elements.length);
                })
-               .end()
+            .end()
             .findByCssSelector("#TOOLBAR .dijitSliderDecrementIconH")
                .click()
-               .end()
+            .end()
             .findAllByCssSelector("#DOCLIST .alfresco-documentlibrary-views-layouts-Grid > tr:first-child > td")
                .then(function(elements) {
                   assert(elements.length == 10, "Test #4b - The number of items per row was not increased: " + elements.length);
                })
-               .end()
+            .end()
 
             // 5. Check that the 2nd AlfGalleryViewSlider is hidden because there are no items...
             .findByCssSelector("#TOOLBAR_NO_ITEMS .alfresco-documentlibrary-AlfGalleryViewSlider")
@@ -97,13 +97,9 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === false, "Test #5b - The 'no-items' gallery view slider was found but should be hidden");
                })
-               .end()
+            .end()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .alfPostCoverageResults(browser);
       },
       'Keyboard Navigation': function () {
 
@@ -118,15 +114,15 @@ define(["intern!object",
                   TestCommon.log(testname, "Finding slider...");
                   assert(false, "Test #0a - The gallery view slider was not found");
                })
-               .end()
+            .end()
 
             // Increment and decrement the size... just making sure everything is ready for keyboard navigation...
             .findByCssSelector("#TOOLBAR .dijitSliderIncrementIconH")
                .click()
-               .end()
+            .end()
             .findByCssSelector("#TOOLBAR .dijitSliderDecrementIconH")
                .click()
-               .end()
+            .end()
 
             // 1. Focus on the first thumbnail...
             .pressKeys(keys.TAB) // Goes to first thumbnail...
@@ -141,7 +137,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Tabbed and selected first document...");
                   assert(elements.length == 1, "Test #1b - The wrong document was selected");
                })
-               .end()
+            .end()
 
             // 3. Display the More Info dialog...
             .pressKeys(keys.TAB)
@@ -154,7 +150,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Displaying More Info dialog...");
                   assert(text === "Folder 1", "Test #2a - The More Info dialog was not displayed");
                })
-               .end()
+            .end()
 
             .sleep(alfPause)
             .pressKeys(keys.ESCAPE)
@@ -171,7 +167,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Selected second document...");
                   assert(elements.length == 1, "Test #3a - The wrong document was selected");
                })
-               .end()
+            .end()
 
             .sleep(alfPause)
             .pressKeys(keys.ARROW_LEFT)
@@ -184,7 +180,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Selected third document");
                   assert(elements.length == 1, "Test #3b - The wrong document was selected");
                })
-               .end()
+            .end()
 
             .sleep(alfPause)
             .pressKeys(keys.ARROW_UP)
@@ -197,7 +193,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Selected fourth document");
                   assert(elements.length == 1, "Test #3c - The wrong document was selected");
                })
-               .end()
+            .end()
 
             .sleep(alfPause)
             .pressKeys(keys.ARROW_RIGHT)
@@ -211,13 +207,9 @@ define(["intern!object",
                   TestCommon.log(testname, "Selected fifth document");
                   assert(elements.length == 1, "Test #3d - The wrong document was selected");
                })
-               .end()  
-
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .end()
+            
+            .alfPostCoverageResults(browser);
       }
    });
 });

@@ -35,45 +35,38 @@ define(["intern!object",
          var testname = "SemanticWrapperMixinTest";
          return TestCommon.loadTestWebScript(this.remote, "/SemanticWrapperMixin", testname)
 
-         .end()
-
          .findByCssSelector("#NO_WRAPPER > span.copyright > span.licenseHolder")
          .getVisibleText()
-         .then(function (text) {
-            TestCommon.log(testname,"Check NO_WRAPPER dom is correct");
-            expect(text).to.equal("Licensed To: NO_WRAPPER licenseLabel", "The NO_WRAPPER dom must be incorrect");
-         })
+            .then(function (text) {
+               TestCommon.log(testname,"Check NO_WRAPPER dom is correct");
+               expect(text).to.equal("Licensed To: NO_WRAPPER licenseLabel", "The NO_WRAPPER dom must be incorrect");
+            })
          .end()
 
          .findByCssSelector("#GOOD_WRAPPER > footer > span.copyright > span.licenseHolder")
-         .getVisibleText()
-         .then(function (text) {
-            TestCommon.log(testname,"Check GOOD_WRAPPER dom is correct");
-            expect(text).to.equal("Licensed To: GOOD_WRAPPER licenseLabel", "The GOOD_WRAPPER dom must be incorrect");
-         })
+            .getVisibleText()
+            .then(function (text) {
+               TestCommon.log(testname,"Check GOOD_WRAPPER dom is correct");
+               expect(text).to.equal("Licensed To: GOOD_WRAPPER licenseLabel", "The GOOD_WRAPPER dom must be incorrect");
+            })
          .end()
 
          .findByCssSelector("#BAD_WRAPPER > span.copyright > span.licenseHolder")
-         .getVisibleText()
-         .then(function (text) {
-            TestCommon.log(testname,"Check BAD_WRAPPER dom is correct");
-            expect(text).to.equal("Licensed To: BAD_WRAPPER licenseLabel", "The BAD_WRAPPER dom must be incorrect");
-         })
+            .getVisibleText()
+            .then(function (text) {
+               TestCommon.log(testname,"Check BAD_WRAPPER dom is correct");
+               expect(text).to.equal("Licensed To: BAD_WRAPPER licenseLabel", "The BAD_WRAPPER dom must be incorrect");
+            })
          .end()
 
          .findByCssSelector("#LEFT_AND_RIGHT_WRAPPER > header > div > div.left-widgets")
-         .getVisibleText()
-         .then(function (text) {
-            TestCommon.log(testname,"Check LEFT_AND_RIGHT_WRAPPER dom is correct");
-            expect(text).to.equal("This is a title with a semantic wrapper", "The LEFT_AND_RIGHT_WRAPPER dom must be incorrect");
-         })
+            .getVisibleText()
+            .then(function (text) {
+               TestCommon.log(testname,"Check LEFT_AND_RIGHT_WRAPPER dom is correct");
+               expect(text).to.equal("This is a title with a semantic wrapper", "The LEFT_AND_RIGHT_WRAPPER dom must be incorrect");
+            })
          .end()
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       }
    });
 });

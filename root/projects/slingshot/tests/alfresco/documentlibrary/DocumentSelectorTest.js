@@ -57,34 +57,32 @@ define(["intern!object",
          var testname = "AlfDocumentListTest";
          return TestCommon.loadTestWebScript(this.remote, "/DocumentSelector", testname)
 
-         .end()
-
          // First lets count the rows...
          .findAllByCssSelector("#VIEW tr")
             .then(function(elements) {
                assert(elements.length == 3, "Test #1a - An unexpected number of rows were detected: " + elements.length);
             })
-            .end()
+         .end()
 
          // Count the unchecked selectors...
          .findAllByCssSelector(uncheckedSelectorSelector())
             .then(function(elements) {
                assert(elements.length == 3, "Test #1b - An unexpected number of UNCHECKED selectors were found: " + elements.length);
             })
-            .end()
+         .end()
           // Count the checked selectors...
          .findAllByCssSelector(checkedSelectorSelector())
             .then(function(elements) {
-               assert(elements.length == 0, "Test #1c - An unexpected number of CHECKED selectors were found: " + elements.length);
+               assert(elements.length === 0, "Test #1c - An unexpected number of CHECKED selectors were found: " + elements.length);
             })
-            .end()
+         .end()
 
          // Check that the overall selector indicates that none have been selected...
          .findByCssSelector("#SELECTED_ITEMS .alf-noneselected-icon")
             .then(null, function() {
                assert(false, "Test #1d - The selected items widget doesn't indicate that NO items are selected");
             })
-            .end()
+         .end()
 
          // Check the first selector...
          .findByCssSelector(selectorSelector(1))
@@ -94,78 +92,74 @@ define(["intern!object",
             .then(null, function() {
                assert(false, "Test #2a - The selected items widget doesn't indicate that SOME items are selected");
             })
-            .end()
+         .end()
 
          // Check the other two selectors...
          .findByCssSelector(selectorSelector(2))
             .click()
-            .end()
+         .end()
          .findByCssSelector(selectorSelector(3))
             .click()
-            .end()
+         .end()
          .findByCssSelector("#SELECTED_ITEMS .alf-allselected-icon")
             .then(null, function() {
                assert(false, "Test #2b - The selected items widget doesn't indicate that ALL items are selected");
             })
-            .end()
+         .end()
 
          // Uncheck the middle selector...
          .findByCssSelector(selectorSelector(2))
             .click()
-            .end()
+         .end()
          .findByCssSelector("#SELECTED_ITEMS .alf-someselected-icon")
             .then(null, function() {
                assert(false, "Test #2c - The selected items widget doesn't indicate that SOME items are selected");
             })
-            .end()
+         .end()
 
          // Open the menu and select documents...
          .findByCssSelector(".alf-menu-arrow")
             .click()
-            .end()
-            .sleep(150)
+         .end()
+         .sleep(150)
 
          .findByCssSelector(".dijitMenuItem:nth-child(4) > td.dijitMenuItemLabel")
             .click()
-            .end()
+         .end()
 
          .findByCssSelector(specificCheckedSelectorSelector(1))
             .then(null, function() {
-               assert(false, "Test #3a - First item was not checked when 'Documents' selected")
+               assert(false, "Test #3a - First item was not checked when 'Documents' selected");
             })
-            .end()
+         .end()
          .findByCssSelector(specificUncheckedSelectorSelector(2))
             .then(null, function() {
-               assert(false, "Test #3b - Second item was unexpectedly checked when 'Documents' selected")
+               assert(false, "Test #3b - Second item was unexpectedly checked when 'Documents' selected");
             })
-            .end()
+         .end()
 
          // Open the menu and select folders...
          .findByCssSelector(".alf-menu-arrow")
             .click()
-            .end()
-            .sleep(150)
+         .end()
+         .sleep(150)
 
          .findByCssSelector(".dijitMenuItem:nth-child(5) > td.dijitMenuItemLabel")
             .click()
-            .end()
+         .end()
 
          .findByCssSelector(specificCheckedSelectorSelector(2))
             .then(null, function() {
-               assert(false, "Test #3a - First item was unexpectedly checked when 'Folders' selected")
+               assert(false, "Test #3a - First item was unexpectedly checked when 'Folders' selected");
             })
-            .end()
+         .end()
          .findByCssSelector(specificUncheckedSelectorSelector(1))
             .then(null, function() {
-               assert(false, "Test #3b - Second item was not checked when 'Folders' selected")
+               assert(false, "Test #3b - Second item was not checked when 'Folders' selected");
             })
-            .end()
+         .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       }
    });
 });

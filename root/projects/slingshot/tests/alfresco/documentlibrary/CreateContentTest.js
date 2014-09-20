@@ -83,10 +83,7 @@ define(["intern!object",
             }, null)
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Create Content (deny permission)': function () {
 
@@ -171,10 +168,7 @@ define(["intern!object",
             }, null)
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Create Content (change path)': function () {
 
@@ -259,10 +253,7 @@ define(["intern!object",
             }, null)
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Create Templates': function () {
 
@@ -296,10 +287,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

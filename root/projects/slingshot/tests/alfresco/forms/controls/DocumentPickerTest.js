@@ -208,10 +208,7 @@ define(["intern!object",
          // TODO: Click on a folder to get sub-results
          // TODO: Check singleItemMode works.
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

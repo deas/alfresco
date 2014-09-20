@@ -102,7 +102,7 @@ define(["intern!object",
             // Check that a checked menu item has a tick displayed
             .findByCssSelector("tr#CHECKABLE_2>td.alf-selected-icon")
                .then(null, function() {
-                  assert(false, "Test #7 - A checked menu item should have the alf-selected-icon class applied to it")
+                  assert(false, "Test #7 - A checked menu item should have the alf-selected-icon class applied to it");
                })
                .end()
 
@@ -112,7 +112,7 @@ define(["intern!object",
                .then(
                   function() {
                      // FOUND == ERROR
-                     assert(false, "Test #8 - An UNCHECKED menu item should NOT have the alf-selected-icon class applied to it")
+                     assert(false, "Test #8 - An UNCHECKED menu item should NOT have the alf-selected-icon class applied to it");
                   },
                   function() {
                      // NOT FOUND == SUCCESS
@@ -270,11 +270,7 @@ define(["intern!object",
                })
                .end()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .alfPostCoverageResults(browser);
       }
    });
 });

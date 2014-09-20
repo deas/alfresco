@@ -45,31 +45,31 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("LIKES", "processing"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #1a - like PROCESSING image displayed incorrectly")
+               assert(result === false, "Test #1a - like PROCESSING image displayed incorrectly");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "on"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #1b - like ON image displayed incorrectly")
+               assert(result === false, "Test #1b - like ON image displayed incorrectly");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "off"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #1c - like OFF image was not displayed")
+               assert(result === true, "Test #1c - like OFF image was not displayed");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "warning"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #1d - like WARNING image displayed incorrectly")
+               assert(result === false, "Test #1d - like WARNING image displayed incorrectly");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "count"))
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "4", "Test #1e - like COUNT is incorrect: " + resultText)
+               assert(resultText == "4", "Test #1e - like COUNT is incorrect: " + resultText);
             })
             .end()
 
@@ -85,19 +85,19 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("LIKES", "on"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #2b - like ON image not displayed following like")
+               assert(result === true, "Test #2b - like ON image not displayed following like");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "off"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #2c - like OFF image displayed despite liking")
+               assert(result === false, "Test #2c - like OFF image displayed despite liking");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "count"))
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "5", "Test #2d - like COUNT is incorrect following liking: " + resultText)
+               assert(resultText == "5", "Test #2d - like COUNT is incorrect following liking: " + resultText);
             })
             .end()
 
@@ -113,19 +113,19 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("LIKES", "on"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #3b - like ON image displayed despite removing like")
+               assert(result === false, "Test #3b - like ON image displayed despite removing like");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "off"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #3c - like OFF image not displayed despite removing like")
+               assert(result === true, "Test #3c - like OFF image not displayed despite removing like");
             })
             .end()
          .findByCssSelector(toggleSelector("LIKES", "count"))
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "4", "Test #3d - like COUNT is incorrect following liking: " + resultText)
+               assert(resultText == "4", "Test #3d - like COUNT is incorrect following liking: " + resultText);
             })
             .end()
 
@@ -141,15 +141,11 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("LIKES", "warning"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #4b - like WARNING image not displayed following simulated failure")
+               assert(result === true, "Test #4b - like WARNING image not displayed following simulated failure");
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       },
       'Favourite Test': function () {
          var browser = this.remote;
@@ -168,25 +164,25 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("FAVOURITES", "processing"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #1a - favourite PROCESSING image displayed incorrectly")
+               assert(result === false, "Test #1a - favourite PROCESSING image displayed incorrectly");
             })
             .end()
          .findByCssSelector(toggleSelector("FAVOURITES", "on"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #1b - favourite ON image displayed incorrectly")
+               assert(result === false, "Test #1b - favourite ON image displayed incorrectly");
             })
             .end()
          .findByCssSelector(toggleSelector("FAVOURITES", "off"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #1c - favourite OFF image was not displayed")
+               assert(result === true, "Test #1c - favourite OFF image was not displayed");
             })
             .end()
          .findByCssSelector(toggleSelector("FAVOURITES", "warning"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #1d - favourite WARNING image displayed incorrectly")
+               assert(result === false, "Test #1d - favourite WARNING image displayed incorrectly");
             })
             .end()
          
@@ -202,13 +198,13 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("FAVOURITES", "on"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #2b - favourite ON image not displayed following favourite")
+               assert(result === true, "Test #2b - favourite ON image not displayed following favourite");
             })
             .end()
          .findByCssSelector(toggleSelector("FAVOURITES", "off"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #2c - favourite OFF image displayed despite liking")
+               assert(result === false, "Test #2c - favourite OFF image displayed despite liking");
             })
             .end()
 
@@ -224,13 +220,13 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("FAVOURITES", "on"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == false, "Test #3b - favourite ON image displayed despite removing favourite")
+               assert(result === false, "Test #3b - favourite ON image displayed despite removing favourite");
             })
             .end()
          .findByCssSelector(toggleSelector("FAVOURITES", "off"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #3c - favourite OFF image not displayed despite removing favourite")
+               assert(result === true, "Test #3c - favourite OFF image not displayed despite removing favourite");
             })
             .end()
 
@@ -246,15 +242,11 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("FAVOURITES", "warning"))
             .isDisplayed()
             .then(function(result) {
-               assert(result == true, "Test #4b - favourite WARNING image not displayed following simulated failure")
+               assert(result === true, "Test #4b - favourite WARNING image not displayed following simulated failure");
             })
             .end()
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         
+         .alfPostCoverageResults(browser);
       },
       'Comments Test': function () {
          var browser = this.remote;
@@ -272,15 +264,11 @@ define(["intern!object",
          .findByCssSelector(toggleSelector("COMMENTS", "count"))
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "6", "Test #1a - comments COUNT is incorrect: " + resultText)
+               assert(resultText == "6", "Test #1a - comments COUNT is incorrect: " + resultText);
             })
             .end()
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         
+         .alfPostCoverageResults(browser);
       }
    });
 });

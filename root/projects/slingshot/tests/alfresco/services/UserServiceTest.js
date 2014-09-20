@@ -70,10 +70,7 @@ define(["intern!object",
             })
          .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'UserService - failure': function () {
@@ -118,10 +115,7 @@ define(["intern!object",
             })
          .end()
 
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
-
+         .alfPostCoverageResults(browser);
       }
    });
 });

@@ -70,10 +70,7 @@ define(["intern!object",
                })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Test Alternative Search': function () {
 
@@ -137,10 +134,7 @@ define(["intern!object",
                })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Test Search Suggestions': function () {
 
@@ -188,10 +182,7 @@ define(["intern!object",
                })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Test Standard Search': function () {
 
@@ -220,10 +211,7 @@ define(["intern!object",
                })
             .end()
             
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
       'Test Visibity Config': function () {
 
@@ -260,10 +248,7 @@ define(["intern!object",
                })
             .end()
             
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

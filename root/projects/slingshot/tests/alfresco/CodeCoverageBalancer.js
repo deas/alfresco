@@ -43,12 +43,8 @@ define(["intern!object",
                   .then(function(text) {
                      assert(text === "Coverage Balanced!", "Code Coverage Balancer Didn't Load - coverage results will be invalid");
                   })
-                  .end()
-
-               // Post the coverage results...
-               .then(function() {
-                  TestCommon.postCoverageResults(browser);
-               })
+               .end()
+               .alfPostCoverageResults(browser);
           }
           else
           {

@@ -62,7 +62,7 @@ define(["intern!object",
             // Move the mouse to the property and check that the icon appears...
             .findByCssSelector("#INLINE_EDIT > .alfresco-renderers-Property")
                .then(function(element) {
-                  browser.moveMouseTo(element)
+                  browser.moveMouseTo(element);
                })
                .sleep(500)
                .end()
@@ -81,7 +81,7 @@ define(["intern!object",
             .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox:first-child")
                .then(
                   function(){ /* No action required */},
-                  function(){assert(false, "Test #2b - Clicking the edit icon did not create the validation text box")}
+                  function(){assert(false, "Test #2b - Clicking the edit icon did not create the validation text box");}
                )
                .end()
 
@@ -97,13 +97,13 @@ define(["intern!object",
             .findByCssSelector("#INLINE_EDIT .action.save")
                .isDisplayed()
                .then(function(result) {
-                  assert(result === true, "Test #2d - The save button was not revealed")
+                  assert(result === true, "Test #2d - The save button was not revealed");
                })
                .end()
             .findByCssSelector("#INLINE_EDIT .action.cancel")
                .isDisplayed()
                .then(function(result) {
-                  assert(result === true, "Test #2d - The cancel button was not revealed")
+                  assert(result === true, "Test #2d - The cancel button was not revealed");
                })
                .end()
 
@@ -171,7 +171,7 @@ define(["intern!object",
             // Check inline edit select (it should fail on update...
             .findByCssSelector("#INLINE_SELECT > .alfresco-renderers-Property")
                .then(function(element) {
-                  browser.moveMouseTo(element)
+                  browser.moveMouseTo(element);
                })
                .sleep(500)
                .end()
@@ -197,11 +197,8 @@ define(["intern!object",
                   assert(text === "1", "Test #6b - The read only value was not restored correctly: " + text);
                })
                .end()
-
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            });
+            
+            .alfPostCoverageResults(browser);
       }
    });
 });

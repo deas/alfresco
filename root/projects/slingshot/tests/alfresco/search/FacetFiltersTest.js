@@ -235,10 +235,7 @@ define(["intern!object",
             )
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'Keyboard tests': function () {
@@ -341,10 +338,7 @@ define(["intern!object",
             )
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'Url hash tests': function () {
@@ -418,10 +412,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

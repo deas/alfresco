@@ -42,7 +42,7 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("TEST_PUBLISH", "publish", "any"))
             .then(function(elements) {
-               assert(elements.length == 0, "Test #1 - enter key submitted data on empty field");
+               assert(elements.length === 0, "Test #1 - enter key submitted data on empty field");
             })
             .end()
 
@@ -57,11 +57,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       }
    });
 });

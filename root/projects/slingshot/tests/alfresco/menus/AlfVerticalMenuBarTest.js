@@ -39,11 +39,8 @@ define(["intern!object",
 
             // TODO: This test has not yet been written because the vertical menu bar is still in beta and needs to be completed
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            
+            .alfPostCoverageResults(browser);
       }
    });
 });

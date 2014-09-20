@@ -38,35 +38,31 @@ define(["intern!object",
 
                   // Test #1
                   // Check pie slices
-                     .findAllByCssSelector("#PIECHART_1 svg text")
+                  .findAllByCssSelector("#PIECHART_1 svg text")
                      .then(function(elements) {
                         assert(elements.length == 2, "Expected to find 2 items in the chart, but found " + elements.length);
                      })
-                     .end()
+                  .end()
 
                   // Test #2
                   // Check labels
-                     .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(2) text")
+                  .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(2) text")
                      .getVisibleText()
                      .then(function(text) {
                         assert(text == "one-hundred-100", "Expected to find label 'one-hundred-100', but found '" + text + "'");
                      })
-                     .end()
+                  .end()
 
                   // Test #3
                   // Check labels
-                     .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(4) text")
+                  .findByCssSelector("#PIECHART_1 svg g g g g g:nth-child(4) text")
                      .getVisibleText()
                      .then(function(text) {
                         assert(text == "two-hundred-200", "Expected to find label 'two-hundred-200', but found '" + text + "'");
                      })
-                     .end()
-
-                  // Post the coverage results...
-                     .then(function() {
-                        TestCommon.postCoverageResults(browser);
-                     })
-                     .end();
+                  .end()
+                  
+                  .alfPostCoverageResults(browser);
             }
          });
       });

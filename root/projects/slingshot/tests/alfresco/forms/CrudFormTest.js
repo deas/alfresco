@@ -42,7 +42,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Check that the info node is initially displayed");
                   assert(result === true, "Test #0a - The info node should be displayed");
                })
-               .end()
+            .end()
 
             // Show the form...
             .findByCssSelector("#SHOW_FORM_label")
@@ -54,7 +54,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Check that the info node has been hidden");
                   assert(result === false, "Test #0b - The info node should be hidden");
                })
-               .end()
+            .end()
 
             // Hide the form...
             .findByCssSelector("#ADDITIONAL_BUTTON_label")
@@ -66,12 +66,12 @@ define(["intern!object",
                   TestCommon.log(testname, "Check that the info node has been displayed again");
                   assert(result === true, "Test #0c - The info node should be displayed");
                })
-               .end()
+            .end()
 
             // Display the new item form...
             .findByCssSelector("#SHOW_CREATE_label")
                .click()
-               .end()
+            .end()
 
             .findByCssSelector("#CRUD_FORM_INFO_NODE")
                .isDisplayed()
@@ -79,7 +79,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Check that the info node has been hidden again");
                   assert(result === false, "Test #0d - The info node should be hidden");
                })
-               .end()
+            .end()
 
             // Check default data is displayed...
             .findByCssSelector("#TEXT_FIELD .dijitInputContainer input")
@@ -88,7 +88,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking that new form value is correct default");
                   assert(resultText === "NewData", "Test #1a - The new form value was not set correctly: " + resultText);
                })
-               .end()
+            .end()
 
             // Check the create button is displayed...
             .findByCssSelector(".alfresco-buttons-AlfButton.createButton > span")
@@ -98,7 +98,7 @@ define(["intern!object",
                   assert(result === true, "Test #1b - The create button was not displayed");
                })
                .click()
-               .end()
+            .end()
 
             // Check that the create data is published correctly...
             .findAllByCssSelector(TestCommon.pubDataCssSelector("CREATE_ITEM", "prop1", "NewData"))
@@ -106,12 +106,12 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking that new item data is published correctly");
                   assert(elements.length === 1, "Test #1c - The new item button data was not published correctly, expected 1. Found: " + elements.length);
                })
-               .end()
+            .end()
 
             // Display the new item form...
             .findByCssSelector("#SHOW_EXISTING_1_label")
                .click()
-               .end()
+            .end()
 
             // Check existing data is displayed...
             .findByCssSelector("#TEXT_FIELD .dijitInputContainer input")
@@ -120,7 +120,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking that form value is shows the existing value");
                   assert(resultText === "Existing 1", "Test #2a - The form was not set with existing data: " + resultText);
                })
-               .end()
+            .end()
 
             // Check the update button is displayed...
             .findByCssSelector(".alfresco-buttons-AlfButton.updateButton > span")
@@ -130,7 +130,7 @@ define(["intern!object",
                   assert(result === true, "Test #2b - The update button was not displayed");
                })
                .click()
-               .end()
+            .end()
 
             // Check that the create data is published correctly...
             .findAllByCssSelector(TestCommon.pubDataCssSelector("UPDATE_ITEM", "prop1", "Existing 1"))
@@ -138,7 +138,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking that existing item data is published correctly");
                   assert(elements.length === 1, "Test #2c - The existing item button data was not published correctly");
                })
-               .end()
+            .end()
 
             // Check the delete button is displayed...
             .findByCssSelector(".alfresco-buttons-AlfButton.deleteButton > span")
@@ -148,7 +148,7 @@ define(["intern!object",
                   assert(result === true, "Test #3a - The delete button was not displayed");
                })
                .click()
-               .end()
+            .end()
 
             // Check that the create data is published correctly...
             .findAllByCssSelector(TestCommon.pubDataCssSelector("DELETE_ITEM", "prop1", "Existing 1"))
@@ -156,22 +156,16 @@ define(["intern!object",
                   TestCommon.log(testname, "Checking that a request was made to delete the existing item");
                   assert(elements.length === 1, "Test #3b - A request was not made to delete the existing item");
                })
-               .end()
+            .end()
 
             .findByCssSelector("#CRUD_FORM_INFO_NODE")
                .isDisplayed()
                .then(function(result) {
                   assert(result === true, "Test #3c - The info node should be displayed");
                })
-               .end()
+            .end()
 
-            
-
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+            .alfPostCoverageResults(browser);
       }
    });
 });

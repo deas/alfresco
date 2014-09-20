@@ -192,10 +192,7 @@ define(["intern!object",
             })
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       },
 
       'Add Favourite Test': function() {
@@ -226,17 +223,13 @@ define(["intern!object",
                })
                .end()
 
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            });
+            .alfPostCoverageResults(browser);
       },
 
       'Remove Favourite Test': function() {
          var browser = this.remote;
          var testname = "Remove Favourite";
          return TestCommon.loadTestWebScript(this.remote, "/RemoveFavouriteSite", testname)
-
-            .end()
             
             .findByCssSelector("#SITES_MENU_text")
                .click()
@@ -258,10 +251,8 @@ define(["intern!object",
                   assert(elements.length == 1, "Test #1b - Favourite not removed correctly");
                })
                .end()
-
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            });
+            
+            .alfPostCoverageResults(browser);
       }
    });
 });

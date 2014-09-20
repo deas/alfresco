@@ -70,7 +70,7 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === false, "Test #1a - The previous preview control should not be displayed");
                })
-               .end()
+            .end()
 
             // Check that the "Next Preview" control is displayed...
             .findByCssSelector(nextPreviewControlSelector)
@@ -78,7 +78,7 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === true, "Test #1b - The previous preview control should have been displayed");
                })
-               .end()
+            .end()
 
             // Check that the "Previous Thumbnails" control is hidden...
             .findByCssSelector(prevThumbnailControlSelector)
@@ -86,7 +86,7 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === false, "Test #1c - The previous thumbnails control should not be displayed");
                })
-               .end()
+            .end()
 
             // Check that the "Next Thumbnails" control is hidden...
             .findByCssSelector(nextThumbnailControlSelector)
@@ -94,14 +94,14 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === false, "Test #1d - The next thumbnails control should not be displayed");
                })
-               .end()
+            .end()
 
             // Count the number of preview items...
             .findAllByCssSelector(previewFrameItemsSelector)
                .then(function(elements) {
                   assert(elements.length === 2, "Test #2a - Expected 2 preview items, found: " + elements.length);
                })
-               .end()
+            .end()
 
             // Check the first preview is displayed and the second is hidden...
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(1)")
@@ -109,14 +109,14 @@ define(["intern!object",
                .then(function(result) {
                   assert(result === true, "Test #2b - The first preview item should be displayed");
                })
-               .end()
+            .end()
 
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(2)")
                .isVisible()
                .then(function(result) {
                   assert(result === false, "Test #2c - The second preview item should be hidden");
                })
-               .end();
+            .end();
       },
       'Test Next/Previous Preview': function () {
          // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
@@ -126,7 +126,7 @@ define(["intern!object",
          // Click on the next preview item to scroll along...
          return browser.findByCssSelector(nextPreviewControlSelector)
                .click()
-               .end()
+            .end()
 
             .sleep(pause) // Wait for just over a second for the animation to complete...
 
@@ -150,13 +150,13 @@ define(["intern!object",
             // Click previous...
             .findByCssSelector(prevPreviewControlSelector)
                .click()
-               .end()
+            .end()
             .sleep(pause) // Wait for just over a second for the animation to complete...
 
             // Click the preview image to load folder...
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(1)" + previewImgSelectorSuffix)
                .click()
-               .end()
+            .end()
 
             .sleep(pause) // Wait for folder items to load...
 
@@ -165,7 +165,7 @@ define(["intern!object",
                .then(function(elements) {
                   assert(elements.length === 14, "Test #2a - Expected 14 preview items, found: " + elements.length);
                })
-               .end();
+            .end();
       },
       'Test Thumbnail Scrolls With Preview': function () {
          // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
@@ -190,8 +190,8 @@ define(["intern!object",
          
          // Move to the 3rd selection of thumbnails...
          return browser.findByCssSelector(nextThumbnailControlSelector)
-            .click()
-            .sleep(pause)
+               .click()
+               .sleep(pause)
             .end()
 
             // TODO: Check that 3rd frame of thumbnails is displayed...
@@ -199,17 +199,13 @@ define(["intern!object",
             .findByCssSelector(thumbnailFrameItemsSelector + ":nth-child(10)" + thumbnailImgSelectorSuffix)
                .click()
                .sleep(pause)
-               .end()
+            .end()
 
-               .sleep(pause)
+            .sleep(pause)
 
             // TODO: Check that 10th preview is displayed...
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .alfPostCoverageResults(browser);
       }
    });
 });

@@ -71,7 +71,7 @@ define(["dojo/_base/declare",
        */
       postMixInProperties: function alfresco_testing_TestCoverageResults__postMixInProperties() {
          this.inherited(arguments);
-         // this.nodeCoverageServer = window.location.hostname + ":8282";
+         this.nodeCoverageServer = location.hostname + ":8082";
       },
 
       /**

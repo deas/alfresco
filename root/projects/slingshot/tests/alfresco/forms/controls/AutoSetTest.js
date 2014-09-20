@@ -80,7 +80,7 @@ define(["intern!object",
                .end()
             .findByCssSelector(TestCommon.pubDataNestedValueCssSelector("POST_FORM","something","quite","complex"))
                .then(null, function() {
-                  assert(false, "Test #2c - Couldn't find complex data in initial form value publication")
+                  assert(false, "Test #2c - Couldn't find complex data in initial form value publication");
                })
                .end()
 
@@ -120,11 +120,7 @@ define(["intern!object",
                })
                .end()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .alfPostCoverageResults(browser);
       }
    });
 });

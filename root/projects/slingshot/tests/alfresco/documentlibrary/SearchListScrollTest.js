@@ -40,18 +40,18 @@ define(["intern!object",
                   .then(function(elements) {
                      assert(elements.length === expected, "Counting Result, expected: " + expected + ", found: " + elements.length);
                   })
-                  .end();
+               .end();
             },
             scrollToBottom = function() {
                TestCommon.log(testname, "Scrolling to bottom...");
                browser.execute("return window.scrollTo(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,document.documentElement.clientHeight))")
-               .sleep(2000)
+                  .sleep(2000)
                .end();
             },
             scrollToTop = function() {
                TestCommon.log(testname, "Scrolling to top...");
                browser.execute("return window.scrollTo(0,0)")
-               .sleep(2000)
+                  .sleep(2000)
                .end();
             };
 
@@ -63,7 +63,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Looking for search request...");
                   assert(false, "Test #1a - Search request not made");
                })
-               .end()
+            .end()
 
             // Check for the search results being returned...
             .findByCssSelector(TestCommon.topicSelector("ALF_SEARCH_RESULTS_COUNT", "publish", "any"))
@@ -71,7 +71,7 @@ define(["intern!object",
                   TestCommon.log(testname, "Looking for first search response...");
                   assert(false, "Test #1b - Search results not returned");
                })
-               .end()
+            .end()
 
             // Count number of results - there should be 25 (Request 1)
             .then(function(){
@@ -102,11 +102,7 @@ define(["intern!object",
                countResults(75);
             })
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .alfPostCoverageResults(browser);
       }
    });
 });

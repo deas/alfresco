@@ -91,13 +91,8 @@ define(["intern!object",
             //    .then(function(resultText) {
             //       assert(resultText == "Copy me!", "Test #1c - The inital label of TEXT3 has been set incorrectly: " + resultText);
             //    })
-
-
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            
+            .alfPostCoverageResults(browser);
       }
    });
 });

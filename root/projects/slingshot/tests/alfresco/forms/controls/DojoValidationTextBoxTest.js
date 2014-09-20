@@ -328,11 +328,8 @@ define(["intern!object",
             .findByCssSelector("#INVALID_VALIDATION_CONFIG_2")
                .isDisplayed()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+           
+            .alfPostCoverageResults(browser);
       }
    });
 });

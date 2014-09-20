@@ -25,8 +25,9 @@
 define(["intern/dojo/node!fs",
         "config/Config",
         "intern/dojo/node!leadfoot/helpers/pollUntil",
-        "intern/lib/args"], 
-       function(fs, Config, pollUntil, args) {
+        "intern/lib/args",
+        "intern/chai!assert"], 
+       function(fs, Config, pollUntil, args, assert) {
    return {
 
       /**
@@ -112,10 +113,53 @@ define(["intern/dojo/node!fs",
          {
             console.log(">> Starting '" + testName + "' on " + browser.environmentType.browserName);
          }
-         return browser.get(this.testWebScriptURL(testWebScriptURL))
-            .then(pollUntil('return document.getElementsByClassName("allWidgetsProcessed");'))
-            .then(function (element) {}, function (error) {})
+         var command = browser.get(this.testWebScriptURL(testWebScriptURL))
+            .then(pollUntil(
+               function() {
+                  var elements = document.getElementsByClassName("aikau-reveal");
+                  return elements.length > 0 ? true : null;
+               }, [], 20000, 1000))
+            // .then(pollUntil('return document.getElementsByClassName("aikau-reveal");'))
+            .then(
+               function (element) {
+                  console.log(">> Test page for '" + testName + "' loaded successfully");
+               }, 
+               function (error) {
+                  console.log(">> Test page for '" + testName + "'  failed to load...", error);
+                  assert(false, "It wasn't possible to load test page for: " + testName);
+               }
+            )
             .end();
+
+         // Add in a custom command for posting code coverage...
+         command.session.alfPostCoverageResults = function (browser) {
+            if(args.doCoverage === "true")
+            {
+               return browser
+                  .findByCssSelector('.alfresco-testing-TestCoverageResults input[type=submit]')
+                     .click()
+                  .end()
+                  .then(pollUntil(
+                     function() {
+                        var result = (document && document.body && document.body.firstChild.innerHTML === "OK");
+                        return result ? true : null;
+                     }, [], 5000))
+                  .then(
+                     function (element) {
+                        console.log(">> Converage successfully posted");
+                     }, 
+                     function (error) {
+                        console.log(">> Coverage post failed");
+                     }
+                  )
+               .end();
+            }
+            else
+            {
+               return browser;
+            }
+         };
+         return command;
       },
 
       /**
@@ -519,17 +563,11 @@ define(["intern/dojo/node!fs",
 
             .findByCssSelector('.alfresco-testing-TestCoverageResults input[type=submit]')
                .click()
-               .end()
+            .end()
             
             .then(function() {
                console.log(">> Waiting for coverage submission to complete...");
-            })
-            .sleep(1000).end();
-            
-            // .then(pollUntil('return document.querySelector("body > pre");'))
-            //    .then(function (element) {}, function (error) {})
-            //    .end();
-            
+            });
          }
          else
          {

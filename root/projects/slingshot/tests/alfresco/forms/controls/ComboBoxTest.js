@@ -115,9 +115,7 @@ define(["intern!object",
             })
             .end()
 
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
 
       },
 
@@ -152,10 +150,7 @@ define(["intern!object",
          .pressKeys(keys.NULL)
             .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+         .alfPostCoverageResults(browser);
       }
    });
 });

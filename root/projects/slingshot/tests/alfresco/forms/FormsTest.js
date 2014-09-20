@@ -95,7 +95,7 @@ define(["intern!object",
 
          .findAllByCssSelector("#STANDARD_FORM .buttons .alfresco-buttons-AlfButton.confirmationButton.dijitButtonDisabled")
          .then(function(elements) {
-            assert(elements.length == 0, "Test #4a - Standard form button was not enabled following valid data entry");
+            assert(elements.length === 0, "Test #4a - Standard form button was not enabled following valid data entry");
          })
          .end()
 
@@ -171,11 +171,7 @@ define(["intern!object",
          })
          .end()
 
-         // Post the coverage results...
-         .then(function() {
-            TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         .alfPostCoverageResults(browser);
       }
    });
 });

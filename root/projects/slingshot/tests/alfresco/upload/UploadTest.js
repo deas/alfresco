@@ -168,14 +168,7 @@ define(["intern!object",
          // Close the dialog
          .findByCssSelector(okButtonSelector)
             .click()
-            .end();
-      },
-      'Post Code Coverage': function () {
-         // Post the coverage results...
-         var browser = this.remote;
-         return browser.then(function() {
-            TestCommon.postCoverageResults(browser);
-         });
+            .end().alfPostCoverageResults(browser);
       }
    });
 });

@@ -51,14 +51,14 @@ define(["intern!object",
                .then(function(resultText) {
                   expect(resultText).to.equal("Column 1", "Test #1a - The text is incorrect");
                })
-               .end()
+            .end()
             
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
                .then(null, function() {
                   assert(false, "Test #1b - Could not request to sort column 1 in PubSubLog");
                })
-               .end()
+            .end()
 
             // Sort on the second column header...
             .pressKeys(keys.TAB)
@@ -68,7 +68,7 @@ define(["intern!object",
                .then(null, function() {
                   assert(false, "Test #1c - Could not request to sort column 1 in PubSubLog");
                })
-               .end()
+            .end()
 
             // Check that sort request doesn't occur for third column...
             .pressKeys(keys.TAB)
@@ -78,32 +78,32 @@ define(["intern!object",
                .then(null, function() {
                   assert(false, "Test #1d - Could not request to sort column 1 in PubSubLog");
                })
-               .end()
+            .end()
 
             // // Go back to the previous header cell and sort in the opposite direction...
             .pressKeys([keys.SHIFT,keys.TAB])
             .findByCssSelector("#COLUMN2_HEADER .descendingSort.hidden")
                .then(null,null)
-               .end()
+            .end()
 
             // Check it is currently sorted ascendinging...
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "ascending"))
                .then(null, function() {
                   assert(false, "Test #1e - The initial sort direction is not ascending");
                })
-               .end()
+            .end()
 
             // Now change the sort direction...
             .pressKeys(keys.RETURN)
             .findByCssSelector("#COLUMN2_HEADER .ascendingSort.hidden")
                .then(null,null)
-               .end()
+            .end()
 
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "direction", "descending"))
                .then(null, function() {
                   assert(false, "Test #1f - The second sort direction is not descending");
                })
-               .end()
+            .end()
 
             // Now go to the table itself...
             .pressKeys(keys.SHIFT) // Need to remove shift...
@@ -122,7 +122,7 @@ define(["intern!object",
                .then(function(resultText) {
                   expect(resultText).to.equal("A", "Test #1g - The text is incorrect");
                })
-               .end()
+            .end()
 
             // Use the cursor keys to go to the next line...
             .pressKeys(keys.ARROW_DOWN)
@@ -136,7 +136,7 @@ define(["intern!object",
                .then(function(resultText) {
                   expect(resultText).to.equal("D", "Test #1h - The text is incorrect");
                })
-               .end()
+            .end()
 
             // Use the cursor keys to wrap back to the first row...
             .pressKeys(keys.ARROW_DOWN)
@@ -154,7 +154,7 @@ define(["intern!object",
                .then(function(resultText) {
                   expect(resultText).to.equal("A", "Test #1i - The text is incorrect");
                })
-               .end()
+            .end()
 
             // Use the up cursor to wrap back to the last element...
             .pressKeys(keys.ARROW_UP)
@@ -168,7 +168,7 @@ define(["intern!object",
                .then(function(resultText) {
                   expect(resultText).to.equal("J", "Test #1j - The text is incorrect");
                })
-               .end()
+            .end()
 
             // Use the up cursor to go to the third row
             .pressKeys(keys.ARROW_UP)
@@ -182,13 +182,8 @@ define(["intern!object",
                .then(function(resultText) {
                   expect(resultText).to.equal("G", "Test #1k - The text is incorrect");
                })
-               .end()
-
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .end()
+            .alfPostCoverageResults(browser);
       },
       'Mouse Tests': function () {
          var browser = this.remote;
@@ -199,21 +194,17 @@ define(["intern!object",
                .then(null, function() {
                   assert(false, "Test #1a - Could not find COLUMN1_HEADER in Test #2a");
                })
-               .end()
+            .end()
             .findByCssSelector("#COLUMN1_HEADER > span")
                .click()
-               .end()
+            .end()
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "value", "col1"))
                .then(null, function() {
                   assert(false, "Test #1b - Could not request to sort column 1 via mouse");
                })
-               .end()
+            .end()
             
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            .alfPostCoverageResults(browser);
       }
    });
 });

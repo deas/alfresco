@@ -28,7 +28,6 @@ define(["intern!object",
         "intern/dojo/node!leadfoot/keys"], 
         function (registerSuite, assert, require, TestCommon, keys) {
 
-           debugger;
 
    registerSuite({
       name: 'Select DojoDateTextBox Test',
@@ -44,7 +43,7 @@ define(["intern!object",
                .then(function(value) {
                   assert(value == "12/12/2012", "Unexpected date value found in control");
                })
-               .end()
+            .end()
 
             // TODO: Can't get this to pass...
             // TEST 2
@@ -71,11 +70,8 @@ define(["intern!object",
             //    })
             //    .end()
 
-            // Post the coverage results...
-            .then(function() {
-               TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            
+            .alfPostCoverageResults(browser);
       }
    });
 });
