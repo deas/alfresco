@@ -34,14 +34,47 @@ define(["intern!object",
 
          var browser = this.remote;
          var testname = "AlfSearchResult Test";
+         var activeElementId;
          return TestCommon.loadTestWebScript(this.remote, "/AlfSearchResult", testname)
 
+         // Are there 11 results?
          .findAllByCssSelector('#SEARCH_RESULTS table tbody tr')
             .then(function (rows){
                TestCommon.log(testname,"Check the correct number of rows is shown");
-               expect(rows).to.have.length(11, "There should be 11 search result rows shown");
+               expect(rows).to.have.length(11, "Test #1 - There should be 11 search result rows shown");
             })
             .end()
+
+         // Click the last result row
+         .findByCssSelector('#SEARCH_RESULTS table tbody tr:last-of-type')
+            .click()
+            .end()
+
+         // Store the id of the currently focused (active) element
+         .getActiveElement()
+            .then(function (element){
+               activeElementId = element._elementId;
+            })
+            .end()
+
+         // Are the clicked row of the results and the currently focused item the same?
+         .findByCssSelector('#SEARCH_RESULTS table tbody tr:last-of-type')
+            .then(function (clickedElement){
+               TestCommon.log(testname,"Check that a clicked search result at the bottom of the screen becomes focused");
+               var clickedElementId = clickedElement._elementId;
+               expect(clickedElementId).to.equal(activeElementId, "Test #2 - The clicked element has not become focused");
+            })
+            .end()
+
+         // Old version of last test which was a bit brittle
+         // .findByCssSelector('#SEARCH_RESULTS table tbody tr:last-of-type')
+         //    .click()
+         //    .getComputedStyle('background-color')
+         //    .then(function (colour){
+         //       TestCommon.log(testname,"Check that a clicked search result at the bottom of the screen becomes selected");
+         //       expect(colour).to.equal("rgba(245, 245, 245, 1)", "Test #2 - The colour of the click selection was not as expected");
+         //    })
+         //    .end()
 
          // Post the coverage results...
          .then(function() {
