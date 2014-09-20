@@ -2,18 +2,16 @@
   /* margin-left: 20px;*/
 }
 
-.alfresco-renderers-Comments a.link
-{
+.alfresco-renderers-Comments > span.comment-link {
    background-image: url(./images/comment-16.png);
    background-repeat: no-repeat;
-   font-size: 93%;
+   font-size: @small-font-size;
    padding: 1px 0 1px 20px;
    cursor: pointer;
-   color: #333;
+   color: @general-font-color;
 }
 
-.alfresco-renderers-Comments span.count
-{
+.alfresco-renderers-Comments > span.count {
    background-color: #eee;
    font-size: 93%;
    margin-left: 0.5em;

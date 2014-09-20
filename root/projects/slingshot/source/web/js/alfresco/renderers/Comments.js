@@ -28,15 +28,18 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase", 
         "dijit/_TemplatedMixin",
+        "dijit/_OnDijitClickMixin",
         "alfresco/renderers/_JsNodeMixin",
+        "alfresco/navigation/_HtmlAnchorMixin",
         "dojo/text!./templates/Comments.html",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "alfresco/core/UrlUtils",
         "dojo/dom-class"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, template, AlfCore, lang, UrlUtils, domClass) {
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, 
+                 _HtmlAnchorMixin, template, AlfCore, lang, UrlUtils, domClass) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _JsNodeMixin, AlfCore, UrlUtils], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, _HtmlAnchorMixin, AlfCore, UrlUtils], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -73,6 +76,26 @@ define(["dojo/_base/declare",
       commentCountProperty: "node.properties.fm:commentCount",
 
       /**
+       * The type of comment  link URL. Should only be overridden by extending modules
+       * not through configuration.
+       *
+       * @instance
+       * @type {string}
+       * @default "FULL_PATH"
+       */
+      targetUrlType: "FULL_PATH",
+
+      /**
+       * The comment link target, defaults to opening the link in the current browser
+       * tab or window.
+       *
+       * @instance
+       * @type {string}
+       * @default "CURRENT"
+       */
+      linkTarget: "CURRENT",
+
+      /**
        * Set up the attributes to be used when rendering the template.
        * 
        * @instance
@@ -96,14 +119,14 @@ define(["dojo/_base/declare",
          // TODO: Need to add siteId and repositoryUrl from somewhere
          // TODO: The actionUrls approach is neither performant nor configurable so should be replaced.
          var actionUrls = this.getActionUrls(this.currentItem, null, null);
-         var urlType = (isContainer ? "folderDetailsUrl" : "documentDetailsUrl")
+         var urlType = (isContainer ? "folderDetailsUrl" : "documentDetailsUrl");
          if (actionUrls[urlType])
          {
-            this.url = actionUrls[urlType] + "#comment";
+            this.targetUrl = actionUrls[urlType] + "#comment";
          }
          else
          {
-            this.url = "";
+            this.targetUrl = "";
          }
          
          // Get the count of comments if there are any...
@@ -112,6 +135,17 @@ define(["dojo/_base/declare",
          {
             this.commentCount = 0;
          }
+      },
+
+      /**
+       * Returns an array containing the selector that identifies the span to wrap in an anchor.
+       * This overrides the [mixed in function]{@link module:alfresco/navigation/_HtmlAnchorMixin}
+       * that just returns an empty array.
+       *
+       * @instance
+       */
+      getAnchorTargetSelectors: function alfresco_renderers_SearchResultPropertyLink__getAnchorTargetSelectors() {
+         return ["span.comment-link"];
       },
       
       /**
@@ -122,6 +156,19 @@ define(["dojo/_base/declare",
          {
             domClass.remove(this.countNode, "hidden");
          }
+         this.makeAnchor(this.targetUrl, this.targetUrlType);
+      },
+
+      /**
+       * Handles clicking on the comments link click and issues a navigation request.
+       *
+       * @instance
+       * @param {object} evt The click event
+       */
+      onCommentClick: function alfresco_renderers_Comments__onCommentClick(evt) {
+         this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: this.targetUrl,
+                                                   type: this.targetUrlType,
+                                                   target: this.linkTarget});
       }
    });
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -73,7 +73,7 @@ define(["dojo/_base/declare",
             var anchorUrl;
             if (typeof type == "undefined" ||
                 type == null ||
-                type == "" ||
+                type === "" ||
                 type == this.sharePageRelativePath)
             {
                anchorUrl = AlfConstants.URL_PAGECONTEXT + url;
