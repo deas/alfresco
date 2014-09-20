@@ -240,7 +240,7 @@ define(["dojo/_base/declare",
        */
       onAutoSuggest: function alfresco_services_SearchService__onAutoSuggest(payload) {
          // Create the root URL...
-         var url = AlfConstants.PROXY_URI + "service/slingshot/auto-suggest";
+         var url = AlfConstants.PROXY_URI + "slingshot/auto-suggest";
          var options = {
             t: ""
          };

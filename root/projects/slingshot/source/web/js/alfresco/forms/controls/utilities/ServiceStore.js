@@ -139,9 +139,8 @@ define(["dojo/_base/declare",
                }
             });
 
-            var updatedQuery = {
-               name: new RegExp("^" + query[this.queryAttribute].toString() + ".*$")
-            }; 
+            var updatedQuery = {};
+            updatedQuery[this.queryAttribute] = new RegExp("^" + query[this.queryAttribute].toString() + ".*$");
 
             // NOTE: Ignore JSHint warnings on the following 2 lines...
             var queryEngine = SimpleQueryEngine(updatedQuery);

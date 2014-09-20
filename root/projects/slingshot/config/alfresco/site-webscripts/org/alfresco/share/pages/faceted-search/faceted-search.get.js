@@ -111,8 +111,8 @@ var headingForResultsList = {
 // Compose the search form model
 var searchForm = {
    id: "FCTSRCH_SEARCH_FORM",
-   // name: "alfresco/forms/SingleComboBoxForm",
-   name: "alfresco/forms/SingleTextFieldForm",
+   name: "alfresco/forms/SingleComboBoxForm",
+   // name: "alfresco/forms/SingleTextFieldForm",
    config: {
       useHash: true,
       okButtonLabel: msg.get("faceted-search.search-form.ok-button-label"),
