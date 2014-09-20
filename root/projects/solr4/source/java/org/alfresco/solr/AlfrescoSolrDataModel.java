@@ -907,13 +907,49 @@ public class AlfrescoSolrDataModel implements QueryConstants
                 }
                 else
                 {
-                    return true;
+                    return isPrimitive(propertyDefinition.getDataType());
                 }
             }
         }
 
     }
     
+    /**
+     * @param dataType
+     * @return
+     */
+    private boolean isPrimitive(DataTypeDefinition dataType)
+    {
+        if(dataType.getName().equals(DataTypeDefinition.INT))
+        {
+            return true;
+        }
+        else if(dataType.getName().equals(DataTypeDefinition.LONG))
+        {
+            return true;
+        }
+        else if(dataType.getName().equals(DataTypeDefinition.FLOAT))
+        {
+            return true;
+        }
+        else if(dataType.getName().equals(DataTypeDefinition.DOUBLE))
+        {
+            return true;
+        }
+        else if(dataType.getName().equals(DataTypeDefinition.DATE))
+        {
+            return true;
+        }
+        else if(dataType.getName().equals(DataTypeDefinition.DATETIME))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private String getFieldForNonText(PropertyDefinition propertyDefinition)
     {
         StringBuilder builder = new StringBuilder();
