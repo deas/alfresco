@@ -107,12 +107,13 @@ define(["dojo/_base/declare",
             "document-move-to",
             "document-upload-new-version",
             "document-locate",
+            "document-assign-workflow",
+            "document-cancel-editing"
 
-//            TODO: ContentService needs updates to work (or alfresco_services_ActionService__onActionDetailsSuccess needs to publish different payload.
-            "document-edit-properties"
+//            TODO: Needs to use forms runtime or equiv.
+//            "document-edit-properties",
 //
 //            TODO: Not implemented yet.
-//            "document-assign-workflow",
 //            "folder-view-details"
 //            "document-approve"
 //            "document-reject"
@@ -125,7 +126,7 @@ define(["dojo/_base/declare",
 //            "document-checkout-to-googledocs"
 //            "document-checkin-from-googledocs"
 //            "document-assign-workflow"
-//            "document-cancel-editing"
+
 //            "document-cancel-editing-unlock"
          ];
 
