@@ -155,7 +155,7 @@ define(["dojo/_base/declare",
          this.invalidFormControls = [];
          
          // Generate a new pubSubScope if required...
-         if (this.scopeFormControls == true && this.pubSubScope == "")
+         if (this.scopeFormControls === true && this.pubSubScope === "")
          {
             this.pubSubScope = this.generateUuid();
          }
@@ -169,7 +169,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_INVALID_CONTROL", lang.hitch(this, "onInvalidField"));
          this.alfSubscribe("ALF_VALID_CONTROL", lang.hitch(this, "onValidField"));
 
-         if (this.displayButtons == true)
+         if (this.displayButtons === true)
          {
             // Create the buttons for the form...
             this.createButtons();
@@ -203,6 +203,20 @@ define(["dojo/_base/declare",
          {
             this.okButton.set("disabled", "true");
          }
+         this.publishFormValidity();
+      },
+
+      /**
+       * Published the current form validity. This is done as a courtesy for other
+       * widgets that might be dependant up the current state of the form.
+       *
+       * @instance
+       */
+      publishFormValidity: function alfresco_forms_Form__publishFormValidity() {
+         this.alfPublish("ALF_FORM_VALIDITY", {
+            valid: (this.invalidFormControls.length === 0),
+            invalidFormControls: this.invalidFormControls
+         });
       },
       
       /**
@@ -222,6 +236,8 @@ define(["dojo/_base/declare",
          {
             this.okButton.set("disabled", this.invalidFormControls.length > 0);
          }
+         this.publishFormValidity();
+
          // Update the publishPayload of the "OK" button so that when it is clicked
          // it will provide the current form data...
          var formValue = this.getValue();
@@ -430,7 +446,7 @@ define(["dojo/_base/declare",
        * @param {object} payload The publication topic.
        */
       onHashChange: function alfresco_forms_Form__onHashChange(payload) {
-         if (this.useHash == true)
+         if (this.useHash === true)
          {
             var hashData = this.processFilter(payload);
             this.setValue(hashData);
@@ -443,7 +459,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       createButtons: function alfresco_forms_Form__createButtons() {
-         if (this.showOkButton == true)
+         if (this.showOkButton === true)
          {
             this.okButton = new AlfButton({
                pubSubScope: this.pubSubScope,
@@ -457,7 +473,7 @@ define(["dojo/_base/declare",
 
             // If useHash is set to true then set up a subcription on the publish topic for the OK button which will
             // set the hash fragment with the form contents...
-            if (this.setHash == true)
+            if (this.setHash === true)
             {
                if (this.okButtonPublishTopic != null &&
                    lang.trim(this.okButtonPublishTopic) != null)
@@ -470,7 +486,7 @@ define(["dojo/_base/declare",
                }
             }
          }
-         if (this.showCancelButton == true)
+         if (this.showCancelButton === true)
          {
             this.cancelButton = new AlfButton({
                pubSubScope: this.pubSubScope,

@@ -667,6 +667,9 @@ var main = {
                                                                   config: {
                                                                      propertyToRender: "displayName",
                                                                      refreshCurrentItem: true,
+                                                                     requirementConfig: {
+                                                                        initialValue: true
+                                                                     },
                                                                      publishTopic: "ALF_CRUD_UPDATE",
                                                                      publishPayloadType: "PROCESS",
                                                                      publishPayloadModifiers: ["processCurrentItemTokens"],

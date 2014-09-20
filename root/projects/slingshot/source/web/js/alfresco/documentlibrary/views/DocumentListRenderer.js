@@ -78,7 +78,6 @@ define(["dojo/_base/declare",
          this.inherited(arguments);
          this.setupKeyboardNavigation();
          on(this.domNode, "onSuppressKeyNavigation", lang.hitch(this, this.onSuppressKeyNavigation));
-
          on(this.domNode, "onItemFocused", lang.hitch(this, this.onItemFocused));
       },
 

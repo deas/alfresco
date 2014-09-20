@@ -17,6 +17,11 @@
    cursor: pointer;
 }
 
+.alfresco-renderers-InlineEditProperty .action.disabled {
+   cursor: default;
+   color: @de-emphasized-font-color;
+}
+
 .alfresco-renderers-InlineEditProperty > .editor > .alfresco-forms-Form {
    display: inline-block;
    vertical-align: top;

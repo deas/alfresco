@@ -180,7 +180,7 @@ define(["dojo/_base/declare",
             this.alfLog("warn", "Property to render attribute has not been set", this);
          }
 
-         if (this.editIconImageSrc == null || this.editIconImageSrc == "")
+         if (this.editIconImageSrc == null || this.editIconImageSrc === "")
          {
             this.editIconImageSrc = require.toUrl("alfresco/renderers") + "/css/images/edit-16.png";
          }
@@ -252,6 +252,7 @@ define(["dojo/_base/declare",
             config: {
                name: this.postParam,
                validationConfig: this.validationConfig,
+               requirementConfig: this.requirementConfig,
                additionalCssClasses: "hiddenlabel",
                label: this.message(this.editLabel)
             }
@@ -268,7 +269,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       processHiddenDataRules: function alfresco_renderers_InlineEditProperty__processHiddenDataRules() {
-         var additionalFormWidgets = []
+         var additionalFormWidgets = [];
          if (this.hiddenDataRules != null)
          {
             array.forEach(this.hiddenDataRules, lang.hitch(this, this.processHiddenDataRule, additionalFormWidgets));
@@ -315,12 +316,15 @@ define(["dojo/_base/declare",
       getFormWidget: function alfresco_renderers_InlineEditProperty__getFormWidget() {
          if (this.formWidget === null)
          {
+            var uuid = this.generateUuid();
+            this.alfSubscribe(uuid + "ALF_FORM_VALIDITY", lang.hitch(this, this.onFormValidityChange), true);
             var primaryFormWidget = this.getPrimaryFormWidget();
             var autoSetFields = this.processHiddenDataRules();
             lang.setObject("config.fieldId", "PRIMARY_FIELD", primaryFormWidget);
             this.formWidget = this.createWidget({
                name: "alfresco/forms/Form",
                config: {
+                  pubSubScope: uuid,
                   showOkButton: false,
                   showCancelButton: false,
                   widgets: [primaryFormWidget].concat(autoSetFields)
@@ -328,6 +332,28 @@ define(["dojo/_base/declare",
             }, this.formWidgetNode);
          }
          return this.formWidget;
+      },
+
+      /**
+       * This handles publications from the form used by this widget to determine whether
+       * or the edit field is invalid or not. If the form is in an invalid state then the
+       * "Save" link will be disabled.
+       *
+       * @instance
+       * @param {object} payload The details of the updated form validity
+       */
+      onFormValidityChange: function alfresco_renderers_InlineEditProperty__onFormValidityChange(payload) {
+         this.alfLog("log", "Form validity changed", payload);
+         if (payload.valid === true)
+         {
+            this.isSaveAllowed = true;
+            domClass.remove(this.saveLinkNode, "disabled");
+         }
+         else
+         {
+            this.isSaveAllowed = false;
+            domClass.add(this.saveLinkNode, "disabled");
+         }
       },
 
       /**
@@ -339,14 +365,13 @@ define(["dojo/_base/declare",
       onEditClick: function alfresco_renderers_InlineEditProperty__onEditClick(evt) {
          this.suppressContainerKeyboardNavigation(true);
          var formWidget = this.getFormWidget();
-         var o = new Object();
          var o = {};
          lang.setObject(this.postParam, this.originalRenderedValue, o);
          formWidget.setValue(o);
          domClass.toggle(this.renderedValueNode, "hidden");
          domClass.toggle(this.editNode, "hidden");
-         formWidget.focus() // Focus on the input node so typing can occur straight away
-         if (evt != undefined) event.stop(evt);
+         formWidget.focus(); // Focus on the input node so typing can occur straight away
+         if (evt !== undefined) event.stop(evt);
       },
       
       /**
@@ -356,7 +381,7 @@ define(["dojo/_base/declare",
        * @param {object} evt The keypress event
        */
       onKeyPress: function alfresco_renderers_InlineEditProperty__onKeyPress(evt) {
-         if (evt.ctrlKey == true && evt.charCode == "101")
+         if (evt.ctrlKey === true && evt.charCode === 101)
          {
             // On ctrl-e simulate an edit click
             event.stop(evt);
@@ -390,15 +415,17 @@ define(["dojo/_base/declare",
        * @instance
        */
       onSave: function alfresco_renderers_InlineEditProperty__onSave(evt) {
-         var responseTopic = this.generateUuid();
-         var payload = lang.clone(this.getGeneratedPayload(false, null));
-         payload.alfResponseTopic = responseTopic;
-         this._saveSuccessHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onSaveSuccess), true);
-         this._saveFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onSaveFailure), true);
-         this.updateSaveData(payload);
-         this.alfPublish(this.publishTopic, payload, true);
-         
-         // TODO: Set some sort of indicator to show that a save operation is in flight?
+         if (this.isSaveAllowed === true)
+         {
+            var responseTopic = this.generateUuid();
+            var payload = lang.clone(this.getGeneratedPayload(false, null));
+            payload.alfResponseTopic = responseTopic;
+            this._saveSuccessHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onSaveSuccess), true);
+            this._saveFailureHandle = this.alfSubscribe(responseTopic + "_FAILURE", lang.hitch(this, this.onSaveFailure), true);
+            this.updateSaveData(payload);
+            this.alfPublish(this.publishTopic, payload, true);
+            // TODO: Set some sort of indicator to show that a save operation is in flight?
+         }
       },
 
       /**
