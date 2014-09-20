@@ -1736,7 +1736,9 @@ public class SolrInformationServer implements InformationServer
             if(matcher.find())
             {
                 wasSiteOrTag = true;
-                doc.addField(FIELD_TAG, ISO9075.decode(matcher.group(1)));
+                String tag = matcher.group(1);
+                doc.addField(FIELD_TAG, tag);
+                doc.addField(FIELD_SUGGEST, tag);
             }
             
             if(!addedRepo && !wasSiteOrTag)
@@ -1755,6 +1757,10 @@ public class SolrInformationServer implements InformationServer
                 builder.append('/').append(element);
                 doc.addField(FIELD_NPATH, "" + i++ + builder.toString());
             }
+            if(builder.length() > 0)
+            {
+                doc.addField(FIELD_NPATH, "F" + builder.toString());
+            }
             
             builder = new StringBuilder();
             for(int j = 0;  j < namePath.size() - 1; j++)
@@ -1764,11 +1770,10 @@ public class SolrInformationServer implements InformationServer
                 builder.insert(0, '/');
                 doc.addField(FIELD_PNAME, "" + j +  builder.toString());
             }
-//            
-//            if(namePath.size() > 1)
-//            {
-//                doc.addField(FIELD_PNAME, namePath.get(namePath.size() - 2));
-//            }
+            if(builder.length() > 0)
+            {
+                doc.addField(FIELD_PNAME, "F" +  builder.toString());
+            }
         }
         
         if (nodeMetaData.getOwner() != null)

@@ -890,7 +890,10 @@ public class AlfrescoSolrDataModel implements QueryConstants
         {
             return false;
         }
-        return propertyQName.equals(ContentModel.PROP_NAME) || propertyQName.equals(ContentModel.PROP_TITLE) || propertyQName.equals(ContentModel.PROP_DESCRIPTION);
+        return propertyQName.equals(ContentModel.PROP_NAME) 
+                || propertyQName.equals(ContentModel.PROP_TITLE) 
+                || propertyQName.equals(ContentModel.PROP_DESCRIPTION)
+                || propertyQName.equals(ContentModel.PROP_CONTENT);
     }
     
     private boolean hasDocValues(PropertyDefinition propertyDefinition)
