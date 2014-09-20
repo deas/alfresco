@@ -118,17 +118,27 @@ define(["intern/dojo/node!fs",
                function() {
                   var elements = document.getElementsByClassName("aikau-reveal");
                   return elements.length > 0 ? true : null;
-               }, [], 20000, 1000))
-            // .then(pollUntil('return document.getElementsByClassName("aikau-reveal");'))
+               }, [], 10000, 1000))
+            .then(
+               function (element) {
+               }, 
+               function (error) {
+                  console.log(">> Test page for '" + testName + "'  failed to load, trying again...");
+                  browser.refresh();
+               })
+            .then(pollUntil(
+               function() {
+                  var elements = document.getElementsByClassName("aikau-reveal");
+                  return elements.length > 0 ? true : null;
+               }, [], 10000, 1000))
             .then(
                function (element) {
                   console.log(">> Test page for '" + testName + "' loaded successfully");
                }, 
                function (error) {
-                  console.log(">> Test page for '" + testName + "'  failed to load...", error);
-                  assert(false, "It wasn't possible to load test page for: " + testName);
-               }
-            )
+                  console.log(">> Test page for '" + testName + "'  failed to load after two attempts");
+                  assert(false, "Test page could not be loaded");
+               })
             .end();
 
          // Add in a custom command for posting code coverage...
