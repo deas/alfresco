@@ -275,7 +275,7 @@ function getFormDefinition(canEditFilterId) {
                   config: {
                      fieldId: "MIN_FILTER_VALUE_LENGTH",
                      name: "minFilterValueLength",
-                     value: "10",
+                     value: "1",
                      label: "faceted-search-config.minFilterValueLength.label",
                      description: "faceted-search-config.minFilterValueLength.description",
                      min: 1,
