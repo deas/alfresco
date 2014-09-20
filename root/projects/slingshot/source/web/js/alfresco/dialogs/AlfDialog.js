@@ -199,7 +199,11 @@ define(["dojo/_base/declare",
             domStyle.set(this.bodyNode, "overflow", "auto");
          }
 
-         this.alfLog("info", "Resizing dialog...");
+         // Fix the width of the dialog - this has been done to prevent the dialog from shrinking
+         // as its contents are resized on window resize events. The issue here is that the dialog
+         // may become too big for the initial window, but that's preferable to shrinkage...
+         domStyle.set(this.domNode, "width", output.w + "px");
+
          this.alfPublishResizeEvent(this.domNode);
          // TODO: We could optionally reveal the dialog after resizing to prevent any resizing jumping?
       },
