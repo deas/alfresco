@@ -22,7 +22,7 @@
  * form control. It extends the Dojo JsonRest module to support queries over the Aikau publication/subscription
  * communication layer (rather than by direct XHR request).
  * 
- * @module alfresco/forms/controls/ServiceStore
+ * @module alfresco/forms/controls/utilities/ServiceStore
  * @extends dojo/store/JsonRest
  * @author Dave Draper
  */
@@ -70,42 +70,180 @@ define(["dojo/_base/declare",
       queryAttribute: "name",
 
       /**
-       * Overrides the inherited function from the JsonRest store to make a request for data by publishing a request
-       * on a specific topic. This returns a Deferred object which is resolved by the 
-       * [onOptions]{@link module:alfresco/forms/controls/utilities/ServiceStore#onOptions} function.
+       * If this is configured to be an array of fixed options then the query will be run against
+       * those options without constantly making XHR requests for fresh data.
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      fixed: null,
+
+      get: function alfresco_forms_controls_utilities_ServiceStore__get(id, options){
+         var response = new Deferred();
+         var responseTopic = this.generateUuid();
+         var payload = lang.clone(this.publishPayload);
+         if (payload == null)
+         {
+            payload = {};
+         }
+         payload.alfResponseTopic = responseTopic;
+         var resultsProperty = (this.publishPayload.resultsProperty != null) ? this.publishPayload.resultsProperty : "response";
+         this._getOptionsHandle = [];
+         this._getOptionsHandle.push(this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onGetOptions", response, resultsProperty, id), true));
+         this.alfPublish(this.publishTopic, payload, true);
+         return response;
+      },
+
+      onGetOptions: function alfresco_forms_controls_utilities_ServiceStore__onGetOptions(dfd, resultsProperty, id, payload) {
+         this.alfUnsubscribeSaveHandles([this._getOptionsHandle]);
+         var results = lang.getObject(resultsProperty, false, payload);
+         if (results != null)
+         {
+            var target = "";
+            array.forEach(results, function(item, i) {
+               if (item[this.valueAttribute] == id)
+               {
+                  target = item;
+               }
+            }, this);
+            dfd.resolve(target);
+         }
+         else
+         {
+            this.alfLog("warn", "No '" + resultsProperty + "' attribute published in payload for the query options", payload, this);
+            dfd.resolve("");
+         }
+      },
+
+      /**
+       * 
+       *
+       * @instance
+       * @param {array} results The results to query.
+       */
+      queryResults: function alfresco_forms_controls_utilities_ServiceStore__queryResults(results, query) {
+         // Clone the original fixed set of options to ensure that we're not
+         // removing any of the original data...
+         var queryAttribute = (this.queryAttribute != null) ? this.queryAttribute : "name";
+         var labelAttribute = (this.labelAttribute != null) ? this.labelAttribute : "label";
+         var valueAttribute = (this.valueAttribute != null) ? this.valueAttribute : "value";
+         
+         // Check that all the data is valid, this is done to ensure any data sets that don't contain all the data...
+         // This is a workaround for an issue with the Dojo query engine that will break when an item doesn't contain
+         // the query attribute...
+         array.forEach(results, lang.hitch(this, this.processResult, queryAttribute, labelAttribute, valueAttribute));
+
+         var updatedQuery = {};
+         updatedQuery[this.queryAttribute] = new RegExp("^" + query[this.queryAttribute].toString() + ".*$");
+
+         // NOTE: Ignore JSHint warnings on the following 2 lines...
+         var queryEngine = SimpleQueryEngine(updatedQuery);
+         var queriedResults = QueryResults(queryEngine(results));
+         return queriedResults;
+      },
+
+      /**
+       * Processes the results to check that all the data is valid, this is done to ensure any 
+       * data sets that don't contain all the data are corrected.This is a workaround for an 
+       * issue with the Dojo query engine that will break when an item doesn't contain
+       * the query attribute. This function also adds label and value attributes to the item
+       * if they're not present.
+       * 
+       * @instance
+       * @param {array} options The array to add the processed item to
+       * @param {object} config The configuration to use for processing the option
+       * @param {object} item The current item to process as an option
+       * @param {number} index The index of the item in the items list
+       */
+      processResult: function alfresco_forms_controls_utilities_ServiceStore__processResult(queryAttribute, labelAttribute, valueAttribute, item, index) {
+         if (item[queryAttribute] == null)
+         {
+            item[queryAttribute] = "";
+         }
+         if (item.label == null && item[labelAttribute] != null)
+         {
+            item.label = item[labelAttribute];
+         }
+         if (item.value == null && item[valueAttribute] != null)
+         {
+            item.value = item[valueAttribute];
+         }
+      },
+
+      /**
+       * Queries a fixed set of options.
        *
        * @instance
        * @param {object} query The query to use for retrieving objects from the store.
        * @param {object} options The optional arguments to apply to the resultset.
        * @returns {object} The results of the query, extended with iterative methods.
        */
+      queryFixedOptions: function alfresco_forms_controls_utilities_ServiceStore__queryFixedOptions(query, options) {
+         var queriedResults = this.queryResults(lang.clone(this.fixed), query);
+         return queriedResults;
+      },
+
+      /**
+       * Makes a request for data by publishing a request on a specific topic. This returns a 
+       * Deferred object which is resolved by the 
+       * [onOptions]{@link module:alfresco/forms/controls/utilities/ServiceStore#onOptions} 
+       * function.
+       *
+       * @instance
+       * @param {object} query The query to use for retrieving objects from the store.
+       * @param {object} options The optional arguments to apply to the resultset.
+       * @returns {object} The results of the query, extended with iterative methods.
+       */
+      queryXhrOptions: function alfresco_forms_controls_utilities_ServiceStore__query(query, options) {
+         var response = new Deferred();
+         var responseTopic = this.generateUuid();
+         var payload = lang.clone(this.publishPayload);
+         if (payload == null)
+         {
+            payload = {};
+         }
+         payload.alfResponseTopic = responseTopic;
+
+         // Set up a dot-notation address to retrieve the results from, this will be set to response if not included
+         // in the payload...
+         var resultsProperty = (this.publishPayload.resultsProperty != null) ? this.publishPayload.resultsProperty : "response";
+
+         // Add in an additional query attribute. Some services (e.g. the TagService) will use this as an additional
+         // search term request parameter...
+         payload.query = query[(this.queryAttribute != null) ? this.queryAttribute : "name"];
+
+         this._optionsHandle = [];
+         this._optionsHandle.push(this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onOptions", response, query, resultsProperty), true));
+         this._optionsHandle.push(this.alfSubscribe(responseTopic, lang.hitch(this, "onOptions", response, query, resultsProperty), true));
+         this.alfPublish(this.publishTopic, payload, true);
+         return response;
+      },
+
+      /**
+       * Overrides the inherited function from the JsonRest store to call either the 
+       * [queryXhrOptions]{@link module:alfresco/forms/controls/utilities/ServiceStore#queryXhrOptions}
+       * or [queryFixedOptions]{@link module:alfresco/forms/controls/utilities/ServiceStore#queryFixedOptions}
+       * depending upon how this module has been configured.
+       *
+       * @instance
+       * @param {object} query The query to use for retrieving objects from the store.
+       * @param {object} options The optional arguments to apply to the resultset.
+       * @returns {object} The r{@link module:alfresco/forms/controls/utilities/ServiceStore#onOptions} esults of the query, extended with iterative methods.
+       */
       query: function alfresco_forms_controls_utilities_ServiceStore__query(query, options){
          var response = null;
          if (this.publishTopic != null)
          {
-            response = new Deferred();
-            var responseTopic = this.generateUuid();
-            var payload = this.publishPayload;
-            if (payload == null)
-            {
-               payload = {};
-            }
-            payload.alfResponseTopic = responseTopic;
-
-            // Set up a dot-notation address to retrieve the results from, this will be set to response if not included
-            // in the payload...
-            var resultsProperty = (this.publishPayload.resultsProperty != null) ? this.publishPayload.resultsProperty : "response";
-
-            // Add in an additional query attribute. Some services (e.g. the TagService) will use this as an additional
-            // search term request parameter...
-            payload.query = query[(this.queryAttribute != null) ? this.queryAttribute : "name"];
-
-            this._optionsHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, "onOptions", response, query, resultsProperty), true);
-            this.alfPublish(this.publishTopic, payload, true);
+            response = this.queryXhrOptions(query, options);
+         }
+         else if (this.fixed != null)
+         {
+            response = this.queryFixedOptions(query, options);
          }
          else
          {
-            this.alfLog("warn", "A ServiceStore was set up without a 'publishTopic' to use to retrieve options", this);
+            this.alfLog("warn", "A ServiceStore was set up without 'publishTopic' or 'fixed' attributes to use to retrieve options", this);
             response = {};
          }
          return response;
@@ -126,25 +264,7 @@ define(["dojo/_base/declare",
          var results = lang.getObject(resultsProperty, false, payload);
          if (results != null)
          {
-            // Get the list of options from the payload...
-            var queryAttribute = (this.queryAttribute != null) ? this.queryAttribute : "name";
-            
-            // Check that all the data is valid, this is done to ensure any data sets that don't contain all the data...
-            // This is a workaround for an issue with the Dojo query engine that will break when an item doesn't contain
-            // the query attribute...
-            array.forEach(results, function(item, i) {
-               if (item[queryAttribute] == null)
-               {
-                  item[queryAttribute] = "";
-               }
-            });
-
-            var updatedQuery = {};
-            updatedQuery[this.queryAttribute] = new RegExp("^" + query[this.queryAttribute].toString() + ".*$");
-
-            // NOTE: Ignore JSHint warnings on the following 2 lines...
-            var queryEngine = SimpleQueryEngine(updatedQuery);
-            var queriedResults = QueryResults(queryEngine(results));
+            var queriedResults = this.queryResults(results, query);
             dfd.resolve(queriedResults);
          }
          else

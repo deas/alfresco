@@ -23,7 +23,7 @@
  * retrieved and filtered by a dedicated [ServiceStore]{@link module:alfresco/forms/controls/utilities/ServiceStore}
  * instance.
  *
- * @module alfresco/forms/controls/ComboBox
+ * @module alfresco/forms/controls/FilteringSelect
  * @extends module:alfresco/forms/controls/BaseFormControl
  * @author Dave Draper
  */
@@ -31,9 +31,10 @@ define(["alfresco/forms/controls/BaseFormControl",
         "alfresco/forms/controls/utilities/UseServiceStoreMixin",
         "alfresco/forms/controls/utilities/IconMixin",
         "dojo/_base/declare",
-        "dijit/form/ComboBox",
+        "dijit/form/FilteringSelect",
         "dojo/_base/lang"], 
-        function(BaseFormControl, UseServiceStoreMixin, IconMixin, declare, ComboBox, lang) {
+        function(BaseFormControl, UseServiceStoreMixin, IconMixin, declare, 
+                 FilteringSelect, lang) {
 
    return declare([BaseFormControl, UseServiceStoreMixin, IconMixin], {
 
@@ -44,12 +45,13 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @type {object[]}
        * @default [{cssFile:"./css/ComboBox.css"}]
        */
-      cssRequirements: [{cssFile:"./css/ComboBox.css"}],
+      cssRequirements: [{cssFile:"./css/FilteringSelect.css"},
+                        {cssFile:"./css/ComboBox.css"}],
 
       /**
        * @instance
        */
-      getWidgetConfig: function alfresco_forms_controls_ComboBox__getWidgetConfig() {
+      getWidgetConfig: function alfresco_forms_controls_FilteringSelect__getWidgetConfig() {
          // Return the configuration for the widget
          return {
             id : this.id + "_CONTROL",
@@ -61,34 +63,66 @@ define(["alfresco/forms/controls/BaseFormControl",
       /**
        * Creates a new [ServiceStore]{@link module:alfresco/forms/controls/utilities/ServiceStore} object to use for 
        * retrieving and filtering the available options to be included in the ComboBox and then instantiates and returns
-       * the a Dojo ComboBox widget that is configured to use it.
+       * the a Dojo FilteringSelect widget that is configured to use it.
        * 
        * @instance
        */
-      createFormControl: function alfresco_forms_controls_ComboBox__createFormControl(config, domNode) {
+      createFormControl: function alfresco_forms_controls_FilteringSelect__createFormControl(config, domNode) {
          var serviceStore = this.createServiceStore();
-         var comboBox = new ComboBox({
+         var filteringSelect = new FilteringSelect({
             id: this.id + "_CONTROL",
             name: this.name,
             value: this.value,
             store: serviceStore,
             searchAttr: serviceStore.queryAttribute,
             labelAttribute: serviceStore.labelAttribute,
-            queryExpr: "${0}"
+            queryExpr: "${0}",
          });
-         this.addIcon(comboBox);
-         this.showOptionsBasedOnValue(comboBox);
-         return comboBox;
+         this.addIcon(filteringSelect);
+         this.showOptionsBasedOnValue(filteringSelect);
+
+         // It's necessary to override the standard Dojo validation message handling here.
+         filteringSelect.displayMessage = lang.hitch(this, this.onFilteringValidation);
+         return filteringSelect;
+      },
+
+      /**
+       * This function is hitched to the Dojo FilteringSelect widgets displayMessage function
+       * and is used to control the overall validation for the widget so that it works with
+       * other Aikau form controls.
+       * 
+       * @instance
+       * @param {string} message The error message to display (this will be null if value is valid)
+       */
+      onFilteringValidation: function alfresco_forms_controls_FilteringSelect__onFilteringValidation(message) {
+         if (!message)
+         {
+            this._validationMessage.innerHTML = "";
+            this.alfPublish("ALF_VALID_CONTROL", {
+               name: this.name,
+               fieldId: this.fieldId
+            });
+            this.hideValidationFailure();
+         }
+         else
+         {
+            this._validationMessage.innerHTML = message;
+            this.alfPublish("ALF_INVALID_CONTROL", {
+               name: this.name,
+               fieldId: this.fieldId
+            });
+            this.showValidationFailure();
+         }
       },
 
       /**
        * Extends the [inherited function]{@link module:alfresco/forms/controls/BaseFormControl#setValue} to
-       * reset the ComboBox if the empty string is set as the value.
+       * reset the FilteringSelect if the empty string is set as the value.
        * 
        * @instance
        * @param {object} value
        */
-      setValue: function alfresco_forms_controls_ComboBox__setValue(value) {
+      setValue: function alfresco_forms_controls_FilteringSelect__setValue(value) {
          this.inherited(arguments);
          if (value === "")
          {

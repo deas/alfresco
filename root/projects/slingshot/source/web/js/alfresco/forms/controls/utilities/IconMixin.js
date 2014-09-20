@@ -18,11 +18,10 @@
  */
 
 /**
- * This module was written with the express purpose of working with the [ComboBox]{@link module:alfresco/forms/controls/ComboBox}
- * form control. It extends the Dojo JsonRest module to support queries over the Aikau publication/subscription
- * communication layer (rather than by direct XHR request).
+ * This mixin provides the ability to add a new icon within a form control. It 
+ * was originally created to add a search icon for the faceted search page in Share.
  * 
- * @module alfresco/forms/controls/ServiceStore
+ * @module alfresco/forms/controls/utilities/IconMixin
  * @extends dojo/store/JsonRest
  * @author Dave Draper
  */

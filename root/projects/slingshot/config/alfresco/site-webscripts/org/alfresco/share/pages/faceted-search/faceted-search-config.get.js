@@ -195,7 +195,7 @@ function getFormDefinition(canEditFilterId) {
             widgets: [
                {
                   id: "FORM_FACET_QNAME",
-                  name: "alfresco/forms/controls/DojoSelect",
+                  name: "alfresco/forms/controls/FilteringSelect",
                   config: {
                      fieldId: "FACET_QNAME",
                      name: "facetQName",
@@ -203,7 +203,16 @@ function getFormDefinition(canEditFilterId) {
                      label: "faceted-search-config.facetQName.label",
                      description: "faceted-search-config.facetQName.description",
                      optionsConfig: {
-                        fixed: facetetableProperties
+                        // fixed: facetetableProperties,
+                        queryAttribute: "displayName",
+                        labelAttribute: "displayName",
+                        valueAttribute: "longqname",
+                        publishTopic: "ALF_CRUD_GET_ALL",
+                        publishPayload: {
+                           url: "api/facet/facetable-properties?maxItems=0",
+                           resultsProperty: "response.data.properties",
+                           itemsAttribute: "data.properties"
+                        }
                      }
                   }
                },
