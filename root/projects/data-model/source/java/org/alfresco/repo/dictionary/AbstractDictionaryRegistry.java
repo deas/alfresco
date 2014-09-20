@@ -570,6 +570,7 @@ public abstract class AbstractDictionaryRegistry implements DictionaryRegistry
 		    {
 		        throw new NamespaceException("Namespace URI " + uri + " does not exist");
 		    }
+		    prefixesCache.put(prefix,  uri);
         }
         finally
         {
