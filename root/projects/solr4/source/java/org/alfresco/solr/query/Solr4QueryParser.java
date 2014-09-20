@@ -639,6 +639,18 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 return createTagQuery(queryText);
             }
+            else if (field.equals(FIELD_SITE))
+            {
+                return createSiteQuery(queryText);
+            }
+            else if (field.equals(FIELD_PNAME))
+            {
+                return createPNameQuery(queryText);
+            }
+            else if (field.equals(FIELD_NPATH))
+            {
+                return createNPathQuery(queryText);
+            }
             else if (field.equals(FIELD_TENANT))
             {
                 return createTenantQuery(queryText);
@@ -662,6 +674,47 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             throw new ParseException("IO: " + e.getMessage());
         }
 
+    }
+
+    /**
+     * @param queryText
+     * @return
+     */
+    private org.apache.lucene.search.Query createNPathQuery(String queryText)
+    {
+        return createTermQuery(FIELD_NPATH, queryText);
+    }
+
+    /**
+     * @param queryText
+     * @return
+     */
+    private Query createPNameQuery(String queryText)
+    {
+        return createTermQuery(FIELD_PNAME, queryText);
+    }
+
+    /**
+     * @param queryText
+     * @return
+     */
+    private Query createSiteQuery(String queryText)
+    {
+        if(queryText.equals("_EVERYTHING_"))
+        {
+            return createTermQuery(FIELD_ISNODE, "T");
+        }
+        else if(queryText.equals("_ALL_SITES_"))
+        {
+            BooleanQuery invertedRepositoryQuery = new BooleanQuery();
+            invertedRepositoryQuery.add(createTermQuery(FIELD_ISNODE, "T"), Occur.MUST);
+            invertedRepositoryQuery.add(createTermQuery(FIELD_SITE, "_REPOSITORY_"), Occur.MUST_NOT);
+            return invertedRepositoryQuery;
+        }
+        else
+        {
+            return createTermQuery(FIELD_SITE, queryText);
+        }
     }
 
     private boolean isPropertyField(String field)
@@ -2690,8 +2743,20 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 return query;
             }
         }
-        else if (field.equals(FIELD_ID)
-                || field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
+        else if (field.equals(FIELD_ID))
+        {
+            boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
+            try
+            {
+                setLowercaseExpandedTerms(false);
+                return super.getPrefixQuery(FIELD_LID, termStr);
+            }
+            finally
+            {
+                setLowercaseExpandedTerms(lowercaseExpandedTerms);
+            }
+        }
+        else if (field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
                 || field.equals(FIELD_PARENT) || field.equals(FIELD_PRIMARYPARENT) || field.equals(FIELD_QNAME) || field.equals(FIELD_PRIMARYASSOCTYPEQNAME)
                 || field.equals(FIELD_ASSOCTYPEQNAME))
         {
@@ -2812,7 +2877,19 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
         else if (field.equals(FIELD_TAG))
         {
-            return null;
+            return super.getPrefixQuery(field, termStr);
+        }
+        else if (field.equals(FIELD_SITE))
+        {
+            return super.getPrefixQuery(field, termStr);
+        }
+        else if (field.equals(FIELD_NPATH))
+        {
+            return super.getPrefixQuery(field, termStr);
+        }
+        else if (field.equals(FIELD_PNAME))
+        {
+            return super.getPrefixQuery(field, termStr);
         }
         else
         {
@@ -2867,8 +2944,20 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 return query;
             }
         }
-        else if (field.equals(FIELD_ID)
-                || field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
+        else if (field.equals(FIELD_ID))
+        {
+            boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
+            try
+            {
+                setLowercaseExpandedTerms(false);
+                return super.getWildcardQuery(FIELD_LID, termStr);
+            }
+            finally
+            {
+                setLowercaseExpandedTerms(lowercaseExpandedTerms);
+            }
+        }
+        else if (field.equals(FIELD_DBID) || field.equals(FIELD_ISROOT) || field.equals(FIELD_ISCONTAINER) || field.equals(FIELD_ISNODE) || field.equals(FIELD_TX)
                 || field.equals(FIELD_PARENT) || field.equals(FIELD_PRIMARYPARENT) || field.equals(FIELD_QNAME) || field.equals(FIELD_PRIMARYASSOCTYPEQNAME)
                 || field.equals(FIELD_ASSOCTYPEQNAME))
         {
@@ -2989,7 +3078,19 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
         else if (field.equals(FIELD_TAG))
         {
-            return null;
+            return super.getWildcardQuery(field, termStr);
+        }
+        else if (field.equals(FIELD_SITE))
+        {
+            return super.getWildcardQuery(field, termStr);
+        }
+        else if (field.equals(FIELD_PNAME))
+        {
+            return super.getWildcardQuery(field, termStr);
+        }
+        else if (field.equals(FIELD_NPATH))
+        {
+            return super.getWildcardQuery(field, termStr);
         }
         else
         {
@@ -3156,7 +3257,19 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
         else if (field.equals(FIELD_TAG))
         {
-            throw new UnsupportedOperationException("Fuzzy Queries are not support for "+FIELD_TAG);
+            return super.getFuzzyQuery(field, termStr, minSimilarity);
+        } 
+        else if (field.equals(FIELD_SITE))
+        {
+            return super.getFuzzyQuery(field, termStr, minSimilarity);
+        } 
+        else if (field.equals(FIELD_PNAME))
+        {
+            return super.getFuzzyQuery(field, termStr, minSimilarity);
+        } 
+        else if (field.equals(FIELD_NPATH))
+        {
+            return super.getFuzzyQuery(field, termStr, minSimilarity);
         } 
         else
         {
