@@ -43,7 +43,9 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      constructor: function alfresco_dialogs_AlfDialogService__constructor() {
+      constructor: function alfresco_dialogs_AlfDialogService__constructor(args) {
+         lang.mixin(this, args);
+
          // Generate a new pub/sub scope for the widget (this will intentionally override any other settings
          // to contrain communication...
          this.publishTopic = "ALF_CREATE_FORM_DIALOG_REQUEST";
