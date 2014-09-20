@@ -180,39 +180,6 @@ define(["intern!object",
             })
             .end()
 
-         // Click the dialog button to re-open the dialog
-         .findById("TEST_DIALOG_BUTTON")
-            .click()
-            .end()
-
-         // Move the dialog
-         .findByCssSelector("span.dijitDialogTitle")
-            .getPosition()
-            .then(function(pos) {
-               startPos = pos;
-            })
-            .end()
-
-         .findByCssSelector("span.dijitDialogTitle")
-            .then(function(element) {
-               browser.moveMouseTo(element);
-            })
-            .sleep(100)
-            .pressMouseButton()
-            .sleep(100)
-            .moveMouseTo(null, 50, 25)
-            .sleep(100)
-            .releaseMouseButton()
-            .end()
-
-         .findByCssSelector("span.dijitDialogTitle")
-            .getPosition()
-            .then(function(endPos) {
-               expect(endPos.x - 50).to.equal(startPos.x, "The dialog did not move the expected distance on the x axis");
-               expect(endPos.y - 25).to.equal(startPos.y, "The dialog did not move the expected distance on the y axis");
-            })
-            .end()
-
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
