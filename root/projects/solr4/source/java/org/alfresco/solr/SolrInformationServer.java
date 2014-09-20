@@ -510,6 +510,11 @@ public class SolrInformationServer implements InformationServer, QueryConstants
         }
         finally
         {
+            if(request != null)
+            {
+                request.close();
+            }
+            
             if (refCounted != null)
             {
                 refCounted.decref();
