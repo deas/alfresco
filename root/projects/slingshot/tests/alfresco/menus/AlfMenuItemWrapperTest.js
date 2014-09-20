@@ -33,57 +33,81 @@ define(["intern!object",
       name: 'AlfMenuItemWrapper Test',
       'alfresco/menus/AlfMenuItemWrapper': function () {
 
+         var testname = "AlfMenuItemWrapper Test";
+         var alfPause = 500;
          var browser = this.remote;
          return TestCommon.loadTestWebScript(this.remote, "/AlfMenuItemWrapper")
 
             // Test #1
             // Check that keyboard navigation works
             .pressKeys(keys.TAB)
+            .sleep(alfPause)
             .pressKeys(keys.ARROW_DOWN) // Opens the drop-down
+            .sleep(alfPause)
             .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button
-            .sleep(1000)
+            .sleep(alfPause)
             .pressKeys(keys.SPACE)
-            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
-               .then(null, function() {
-                  assert(false, "Test #1a - The wrapped menu item without focus was not skipped on downward keyboard navigation");
-               })
-               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "CLICKED_BUTTON_2"))
+               .then(
+                  function() {
+                     TestCommon.log(testname, "Check that 2nd menu item is skipped down...");
+                  }, 
+                  function(err) {
+                     assert(false, "Test #1a - The wrapped menu item without focus was not skipped on downward keyboard navigation", err);
+                  }
+               )
+            .end()
 
             .pressKeys(keys.ARROW_UP) // Skips over log to 2nd button
-            .sleep(1000)
+            .sleep(alfPause)
             .pressKeys(keys.RETURN)
-            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
-               .then(null, function() {
-                  assert(false, "Test #1b - The wrapped menu item without focus was not skipped on upwards keyboard navigation");
-               })
-               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "CLICKED_BUTTON_1"))
+               .then(
+                  function() {
+                     TestCommon.log(testname, "Check that 2nd menu item is skipped up...");
+                  }, 
+                  function(err) {
+                     assert(false, "Test #1b - The wrapped menu item without focus was not skipped on upwards keyboard navigation", err);
+                  }
+               )
+            .end()
+
             // Currently commented out - this works in manual testing but not in Selenium for some reason
             // .end()
             // .findByCssSelector(".alfresco-logo-large")
             //    .click()
             //    .end()
             .pressKeys(keys.ARROW_DOWN)
-            .sleep(1000)
+            .sleep(alfPause)
             .pressKeys(keys.SPACE)
-            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_2", "publish", "last"))
-               .then(null, function() {
-                  assert(false, "Test #1c - The wrapped menu item without focus was not navigated away from successfully");
-               })
-               .end()
+            .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "CLICKED_BUTTON_2"))
+               .then(
+                  function() {
+                     TestCommon.log(testname, "Check that 2nd menu item is skipped down again...");
+                  }, 
+                  function(err) {
+                     assert(false, "Test #1c - The wrapped menu item without focus was not navigated away from successfully", err);
+                  }
+               )
+            .end()
+
             .pressKeys(keys.ARROW_DOWN) // Skips over log to 2nd button
-            .sleep(1000)
+            .sleep(alfPause)
             .pressKeys(keys.SPACE)
-            .findByCssSelector(TestCommon.topicSelector("CLICKED_BUTTON_1", "publish", "last"))
-               .then(null, function() {
-                  assert(false, "Test #1d - The empty wrapped menu item was not skipped on keyboard navigation");
-               })
-               .end()
+               .then(
+                  function() {
+                     TestCommon.log(testname, "Check that 2nd menu wraps...");
+                  }, 
+                  function(err) {
+                     assert(false, "Test #1d - The empty wrapped menu item was not skipped on keyboard navigation", err);
+                  }
+               )
+            .end()
 
             // Post the coverage results...
             .then(function() {
                TestCommon.postCoverageResults(browser);
-            })
-            .end();
+            });
       }
    });
 });

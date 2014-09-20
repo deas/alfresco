@@ -33,8 +33,9 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "dojo/dom-class",
         "dojo/_base/array",
-        "dojo/_base/lang"], 
-        function(declare, Button, AlfCore, domClass, array, lang) {
+        "dojo/_base/lang",
+        "dojo/_base/event"], 
+        function(declare, Button, AlfCore, domClass, array, lang, event) {
    
    return declare([Button, AlfCore], {
       
@@ -185,6 +186,7 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "A widget was clicked but did not provide any information on how to handle the event", this);
          }
+         event.stop(evt);
       }
    });
 });
