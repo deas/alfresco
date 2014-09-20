@@ -64,6 +64,11 @@ public class PropertyDefinitionWrapper implements PropertyDefinition
         return delegate.getTitle(messageLookup);
     }
 
+    public String getTitle(MessageLookup messageLookup, Locale locale)
+    {
+        return delegate.getTitle(messageLookup, locale);
+    }
+
     public String getDescription()
     {
         return delegate.getDescription();
@@ -72,6 +77,11 @@ public class PropertyDefinitionWrapper implements PropertyDefinition
     public String getDescription(MessageLookup messageLookup)
     {
         return delegate.getDescription(messageLookup);
+    }
+
+    public String getDescription(MessageLookup messageLookup, Locale locale)
+    {
+        return delegate.getDescription(messageLookup, locale);
     }
 
     public String getDefaultValue()
