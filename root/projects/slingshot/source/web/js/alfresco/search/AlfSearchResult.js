@@ -41,7 +41,7 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "alfresco/renderers/XhrContextActions",
         "alfresco/renderers/Size"],
-        function(declare, Row, template, SearchThumbnail, SearchResultPropertyLink, PropertyLink, Property, 
+        function(declare, Row, template, SearchThumbnail, SearchResultPropertyLink, PropertyLink, Property,
                  DateLink, XhrActions, lang, domClass, XhrContextActions, Size) {
 
    return declare([Row], {
@@ -105,7 +105,6 @@ define(["dojo/_base/declare",
             "folder-download",
             "document-copy-to",
             "document-move-to",
-            "document-upload-new-version",
             "document-locate",
             "document-assign-workflow",
             "document-cancel-editing"
@@ -114,6 +113,7 @@ define(["dojo/_base/declare",
 //            "document-edit-properties",
 //
 //            TODO: Not implemented yet.
+//            "document-upload-new-version",
 //            "folder-view-details"
 //            "document-approve"
 //            "document-reject"
@@ -126,8 +126,8 @@ define(["dojo/_base/declare",
 //            "document-checkout-to-googledocs"
 //            "document-checkin-from-googledocs"
 //            "document-assign-workflow"
-
 //            "document-cancel-editing-unlock"
+
          ];
 
          // For actions other than folders and documents we want to further restrict what are displayed
