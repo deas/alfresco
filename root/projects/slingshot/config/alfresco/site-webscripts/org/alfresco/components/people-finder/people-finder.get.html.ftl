@@ -31,32 +31,7 @@
                <@markup id="searchHelp">
                <div id="${el}-help" class="yui-g theme-bg-color-2 help hidden">
                   <span class="title">${msg("help.title")}</span>
-                  <div class="yui-u first">
-                     <span class="subtitle">${msg("help.subtitle1")}</span>
-                     <span>${msg("help.info1")}</span>
-                     <span class="example">${msg("help.example1")}</span>
-                     <span>${msg("help.result1")}</span>
-                     <span>${msg("help.info2")}</span>
-                     <span class="example">${msg("help.example2")}</span>
-                     <span>${msg("help.result2")}</span>
-                     <span>${msg("help.info3")}</span>
-                     <span class="example">${msg("help.example3")}</span>
-                     <span>${msg("help.result3")}</span>
-                  </div>
-                  <div class="yui-u">
-                     <span class="subtitle">${msg("help.subtitle2")}</span>
-                     <span>${msg("help.info4")}</span>
-                     <span class="example">${msg("help.example4")}</span>
-                     <span>${msg("help.result4")}</span>
-                     <span>${msg("help.info5")}</span>
-                     <span class="example">${msg("help.example5")}</span>
-                     <span>${msg("help.result5")}</span>
-                     <span>${msg("help.info6")}</span>
-                     <span class="example">${msg("help.example6")}</span>
-                     <span>${msg("help.result6")}</span>
-                     <span class="example">${msg("help.example7")}</span>
-                     <span>${msg("help.result7")}</span>
-                  </div>
+                  <span>${msg("help.content")}</span>
                </div>
                </@markup>
 
