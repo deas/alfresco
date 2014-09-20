@@ -219,7 +219,21 @@ define(["dojo/_base/declare",
                                              url: "api/node/{jsNode.nodeRef.uri}/formprocessor",
                                              noRefresh: false,
                                              successMessage: "moreInfo.inlineEdit.update.success"
-                                          }
+                                          },
+                                          renderFilter: [{
+                                             property: "node.permissions.user.Write",
+                                             values: [true]
+                                          }]
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/renderers/Property",
+                                       config: {
+                                          propertyToRender: "node.properties.cm:name",
+                                          renderFilter: [{
+                                             property: "node.permissions.user.Write",
+                                             values: [false]
+                                          }]
                                        }
                                     },
                                     {
@@ -229,11 +243,16 @@ define(["dojo/_base/declare",
                                           postParam: "prop_cm_title",
                                           renderedValuePrefix: "(",
                                           renderedValueSuffix: ")",
+                                          renderFilterMethod: "ALL",
                                           renderFilter: [
                                              {
                                                 property: "node.properties.cm:title",
                                                 values: [""],
                                                 negate: true
+                                             },
+                                             {
+                                                property: "node.permissions.user.Write",
+                                                values: [true]
                                              }
                                           ],
                                           publishTopic: "ALF_CRUD_CREATE",
@@ -248,8 +267,27 @@ define(["dojo/_base/declare",
                                        }
                                     },
                                     {
+                                       name: "alfresco/renderers/Property",
+                                       config: {
+                                          propertyToRender: "node.properties.cm:title",
+                                          renderFilterMethod: "ALL",
+                                          renderFilter: [
+                                             {
+                                                property: "node.properties.cm:title",
+                                                values: [""],
+                                                negate: true
+                                             },
+                                             {
+                                                property: "node.permissions.user.Write",
+                                                values: [false]
+                                             }
+                                          ]
+                                       }
+                                    },
+                                    {
                                        name: "alfresco/renderers/Version",
                                        config: {
+                                          renderFilterMethod: "ALL",
                                           renderFilter: [
                                              {
                                                 property: "node.isContainer",
@@ -311,7 +349,23 @@ define(["dojo/_base/declare",
                                           publishPayload: {
                                              url: "api/node/{jsNode.nodeRef.uri}/formprocessor",
                                              noRefresh: false
-                                          }
+                                          },
+                                          renderFilter: [{
+                                             property: "node.permissions.user.Write",
+                                             values: [true]
+                                          }]
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/renderers/Property",
+                                       config: {
+                                          propertyToRender: "node.properties.cm:description",
+                                          warnIfNotAvailable: true,
+                                          warnIfNoteAvailableMessage: "no.description.message",
+                                          renderFilter: [{
+                                             property: "node.permissions.user.Write",
+                                             values: [false]
+                                          }]
                                        }
                                     }
                                  ]
@@ -364,10 +418,15 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/QuickShare",
                                        config: {
+                                          renderFilterMethod: "ALL",
                                           renderFilter: [
                                              {
                                                 property: "node.isContainer",
                                                 values: [false]
+                                             },
+                                             {
+                                                property: "node.permissions.user.Write",
+                                                values: [true]
                                              }
                                           ]
                                        }
