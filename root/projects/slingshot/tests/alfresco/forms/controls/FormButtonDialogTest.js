@@ -162,10 +162,6 @@ define(["intern!object",
             })
             .end()
 
-         .findById("TEST_DIALOG_BUTTON")
-            .click()
-            .end()
-
          // Submit the main form
          .findByCssSelector("span.alfresco-buttons-AlfButton.confirmationButton > span")
             .click()
