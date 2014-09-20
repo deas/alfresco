@@ -73,8 +73,7 @@
        replication is in use, this should match the replication
        configuration.
     -->
-  <dataDir>${solr.data.dir:}</dataDir>
-
+  <dataDir>${data.dir.root}/${data.dir.store}</dataDir>
 
   <!-- The DirectoryFactory to use for indexes.
        
