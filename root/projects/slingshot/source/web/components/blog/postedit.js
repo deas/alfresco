@@ -282,10 +282,6 @@
          {
             publishExternalButtonLabel = this.msg("action.updateIntAndPublishExt");
          }
-         this.widgets.publishExternalButton = Alfresco.util.createYUIButton(this, "publishexternal-button", this.onFormPublishExternalButtonClick,
-         {
-            label: publishExternalButtonLabel
-         });
 
          // Cancel button
          this.widgets.cancelButton = Alfresco.util.createYUIButton(this, "cancel-button", this.onFormCancelButtonClick);
@@ -373,26 +369,6 @@
       {
          // make sure we set the draft flag to false
          Dom.get(this.id + "-draft").setAttribute("value", false);
-          
-         // submit the form
-         this.widgets.saveButton.fireEvent("click",
-         {
-            type: "click"
-         });
-      },
-      
-      /**
-       * Publish external button click handler
-       *
-       * @method onFormPublishExternalButtonClick
-       */
-      onFormPublishExternalButtonClick: function BlogPostEdit_onFormPublishExternalButtonClick(type, args)
-      {
-         // make sure we set the draft flag to false
-         Dom.get(this.id + "-draft").setAttribute("value", false);
-          
-         // make sure that the post gets also externally published
-         this.performExternalPublish = true;
           
          // submit the form
          this.widgets.saveButton.fireEvent("click",

@@ -26,8 +26,6 @@
          </div>
          <div class="action-bar theme-bg-1">
             <div class="new-blog"><button id="${args.htmlid}-create-button">${msg("button.create")}</button></div>
-            <div class="separator">&nbsp;</div>
-            <div class="configure-blog"><button id="${args.htmlid}-configure-button" name="postlist-configure-button">${msg("button.configure")}</button></div>
          </div>
          <@markup id="rssAction">
          <div class="rss-feed">
