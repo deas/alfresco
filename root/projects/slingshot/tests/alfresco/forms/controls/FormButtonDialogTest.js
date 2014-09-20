@@ -40,6 +40,7 @@ define(["intern!object",
          // Does the form exist?
          .findByCssSelector("DIV#TEST_FORM > FORM")
             .then(function(el1) {
+               TestCommon.log(testname, "Find the form...");
                expect(el1).to.be.an("object", "The Form could not be found");
             })
             .end()
@@ -47,6 +48,7 @@ define(["intern!object",
          // Does the dialog opening button exist?
          .findById("TEST_DIALOG_BUTTON")
             .then(function(el2) {
+               TestCommon.log(testname, "Find the button to open the dialog...");
                expect(el2).to.be.an("object", "The Button could not be found");
             })
             .end()
@@ -58,6 +60,7 @@ define(["intern!object",
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
             .then(null, function() {
+               TestCommon.log(testname, "Find the dialog...");
                assert(false, "The Dialog did not appear");
             })
             .end()
@@ -66,6 +69,7 @@ define(["intern!object",
          .findByCssSelector("span.dijitDialogTitle")
             .getVisibleText()
             .then(function(resultText1) {
+               TestCommon.log(testname, "Find the title text...");
                expect(resultText1).to.equal("Twas brillig and the slithy toves...", "The Dialog title text is incorrect");
             })
             .end()
@@ -73,6 +77,7 @@ define(["intern!object",
          // Does the dialog have a couple of buttons?
          .findAllByCssSelector("div.alfresco-dialog-AlfDialog div.footer > span.alfresco-buttons-AlfButton")
             .then(function (buttons) {
+               TestCommon.log(testname, "Count the buttons...");
                expect(buttons).to.have.length(2, "The popup Dialog does not contain 2 buttons");
             })
             .end()
@@ -80,6 +85,7 @@ define(["intern!object",
          // Does the cancel button exist?
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation")
             .then(null, function() {
+               TestCommon.log(testname, "Find the cancel button...");
                assert(false, "The Dialog cancel button cannot be found");
             })
             .end()
@@ -88,6 +94,7 @@ define(["intern!object",
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
             .getVisibleText()
             .then(function (resultText2) {
+               TestCommon.log(testname, "Check the custom OK button label...");
                expect(resultText2).to.equal("Ok friend", "The copy on Dialog button one was incorrect");
             })
             .end()
@@ -95,34 +102,38 @@ define(["intern!object",
          .findByCssSelector("span.alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
             .getVisibleText()
             .then(function (resultText3) {
+               TestCommon.log(testname, "Check the custom cancel button label...");
                expect(resultText3).to.equal("No thanks buddy", "The copy on Dialog button two was incorrect");
             })
             .end()
 
          // Does the checkbox exist?
-         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control-row > div.control input")
             .then(function (el3) {
+               TestCommon.log(testname, "Find the checkbox...");
                expect(el3).to.be.an("object", "The Checkbox could not be found");
             })
             .end()
 
          // Is the checkbox checked?
-         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control-row > div.control input")
             .isSelected()
             .then(function (result3) {
+               TestCommon.log(testname, "Check the initial state of the checkbox...");
                expect(result3).to.equal(false, "The Checkbox should not be selected when the Dialog form is first loaded");
             })
             .end()
 
          // Click the checkbox
-         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control-row > div.control input")
             .click()
             .end()
 
          // Now is the checkbox checked?
-         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control input")
+         .findByCssSelector("div#TEST_CHECKBOX_CONTAINER > div.control-row > div.control input")
             .isSelected()
             .then(function (result4) {
+               TestCommon.log(testname, "Confirm that the checkbox is now checked...");
                expect(result4).to.equal(true, "The Checkbox should now be selected");
             })
             .end()
@@ -137,6 +148,7 @@ define(["intern!object",
          .findAllByCssSelector(".alfresco-dialog-AlfDialog")
             .then(function(elements) {
                // TODO: When dialogs are properly cleaned up, this should be a test for zero...
+               TestCommon.log(testname, "Count the dialogs after closing...");
                assert(elements.length === 1, "The Dialog was found but should be hidden after the cancel button has been clicked");
             })
             .end()
@@ -145,8 +157,13 @@ define(["intern!object",
          .findByCssSelector(".alfresco-dialog-AlfDialog")
             .isDisplayed()
             .then(function(result) {
-               assert(result === false, "The dialog should have been hidden")
+               TestCommon.log(testname, "Check the dialog isn't displayed...");
+               assert(result === false, "The dialog should have been hidden");
             })
+            .end()
+
+         .findById("TEST_DIALOG_BUTTON")
+            .click()
             .end()
 
          // Submit the main form
@@ -158,7 +175,8 @@ define(["intern!object",
          // Check the correct pub/sub form submission element has appeared
          .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "alfTopic", "TEST_FORM_SUBMITTED"))
             .then(null, function() {
-               assert(false, "Form submission did not proceed as expected and the expected publish on 'TEST_FORM_SUBMITTED' was missing")
+               TestCommon.log(testname, "Check the form has been submitted...");
+               assert(false, "Form submission did not proceed as expected and the expected publish on 'TEST_FORM_SUBMITTED' was missing");
             })
             .end()
 
@@ -198,8 +216,7 @@ define(["intern!object",
          // Post the coverage results...
          .then(function() {
             TestCommon.postCoverageResults(browser);
-         })
-         .end();
+         });
       }
    });
 });
