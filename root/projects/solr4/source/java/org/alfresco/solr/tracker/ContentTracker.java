@@ -52,6 +52,13 @@ public class ContentTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack() throws Exception
     {
+        int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
+        if(registeredSearcherCount >= getMaxLiveSearchers())
+        {
+            log.info(".... skipping tracking registered searcher count = " + registeredSearcherCount);
+            return;
+        }
+        
         checkShutdown();
         final int ROWS = 300;
         int start = 0;

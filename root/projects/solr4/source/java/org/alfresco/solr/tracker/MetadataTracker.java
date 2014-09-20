@@ -21,6 +21,7 @@ package org.alfresco.solr.tracker;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -405,7 +406,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         boolean upToDate = false;
         Transactions transactions;
         BoundedDeque<Transaction> txnsFound = new BoundedDeque<Transaction>(100);
-        HashSet<Transaction> txsIndexed = new HashSet<>(); 
+        HashSet<Transaction> txsIndexed = new LinkedHashSet<>(); 
         TrackerState state = this.getTrackerState();
         long totalUpdatedDocs = 0;
         

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -842,7 +843,7 @@ public class AclTracker extends AbstractTracker
         boolean upToDate = false;
         AclChangeSets aclChangeSets;
         BoundedDeque<AclChangeSet> changeSetsFound = new BoundedDeque<AclChangeSet>(100);
-        HashSet<AclChangeSet> changeSetsIndexed = new HashSet<AclChangeSet>();
+        HashSet<AclChangeSet> changeSetsIndexed = new LinkedHashSet<AclChangeSet>();
         TrackerState state = super.getTrackerState();
         long totalAclCount = 0;
         
