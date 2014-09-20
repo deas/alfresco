@@ -105,6 +105,7 @@ define(["intern!object",
          // Check publication occurs (don't check details - that's for another test)
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
             .click()
+            .sleep(250)
             .end()
 
          .findByCssSelector(TestCommon.topicSelector("FORM_SUBMIT", "publish"))
@@ -121,6 +122,7 @@ define(["intern!object",
 
          .findByCssSelector("#FDM1_text")
             .click()
+            .sleep(250)
             .end()
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
@@ -131,6 +133,7 @@ define(["intern!object",
 
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
             .click()
+            .sleep(250)
             .end()
 
          .findByCssSelector(TestCommon.nthTopicSelector("last"))
