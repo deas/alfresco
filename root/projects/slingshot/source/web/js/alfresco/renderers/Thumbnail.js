@@ -207,7 +207,7 @@ define(["dojo/_base/declare",
        * @type {string}
        * @default
        */
-      lastThumbnailModificationProperty: "currentItem.jsNode.properties.cm:lastThumbnailModification",
+      lastThumbnailModificationProperty: "jsNode.properties.cm:lastThumbnailModification",
 
       /**
        * Generates the URL to use as the source of the thumbnail.
@@ -253,7 +253,7 @@ define(["dojo/_base/declare",
        */
       generateRenditionSpecificThumbnailUrl: function alfresco_renderers_Thumbnail__generateRenditionSpecificThumbnailUrl(nodeRefUri) {
          var url = null;
-         var thumbnailModData = lang.getObject(this.lastThumbnailModificationProperty, false, this);
+         var thumbnailModData = lang.getObject(this.lastThumbnailModificationProperty, false, this.currentItem);
          if (thumbnailModData)
          {
             for (var i = 0; i < thumbnailModData.length; i++)
