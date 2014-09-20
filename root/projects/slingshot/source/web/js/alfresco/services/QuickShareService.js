@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,9 @@
  */
 
 /**
+ * This service handles requests to publicly Share documents and to remove previously shared documents
+ * from being publicly accessible.
+ *
  * @module alfresco/services/QuickShareService
  * @extends module:alfresco/core/Core
  * @mixes module:alfresco/core/CoreXhr
@@ -78,11 +81,8 @@ define(["dojo/_base/declare",
          {
             var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : this.addQuickShareTopic;
             url = this.getAddQuickShareUrl(url);
-            var data = {
-               node: payload.node
-            };
             this.serviceXhr({url : url,
-                             data: data,
+                             data: null,
                              method: "POST",
                              alfTopic: alfTopic});
          }
@@ -100,11 +100,8 @@ define(["dojo/_base/declare",
          {
             var alfTopic = (payload.alfResponseTopic != null) ? payload.alfResponseTopic : this.removeQuickShareTopic;
             var url = this.getRemoveQuickShareUrl(quickShareId);
-            var data = {
-               node: payload.node
-            };
             this.serviceXhr({url : url,
-                             data: data,
+                             data: null,
                              method: "DELETE",
                              alfTopic: alfTopic});
          }
