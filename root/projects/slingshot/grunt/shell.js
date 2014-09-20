@@ -50,7 +50,7 @@ module.exports = function (grunt, alf) {
          // start share & alfresco
          // Assumes script called "start-tomcat" and "start-app-tomcat" exist.
          startRepo: {
-            command: 'mvn install -pl projects/web-client,projects/solr -Psolr-http -DskipTests && start-tomcat',
+            command: 'mvn install -pl ../../projects/web-client,../../projects/solr -Psolr-http -DskipTests && start-tomcat',
             options: {
                stdout: true,
                stderr: true,
@@ -72,7 +72,7 @@ module.exports = function (grunt, alf) {
             }
          },
          se: {
-            command: 'mvn prepare-package -pl projects/slingshot -DskipTests -Dmaven.yuicompressor.skip --offline',
+            command: 'mvn prepare-package -pl ../../projects/slingshot -DskipTests -Dmaven.yuicompressor.skip --offline',
             options: {
                stdout: true,
                stderr: true,
@@ -83,7 +83,7 @@ module.exports = function (grunt, alf) {
             }
          },
          startShare: {
-            command: 'mvn prepare-package -pl projects/slingshot -DskipTests -Dmaven.yuicompressor.skip && start-app-tomcat',
+            command: 'mvn prepare-package -pl ../../projects/slingshot -DskipTests -Dmaven.yuicompressor.skip && start-app-tomcat',
             options: {
                stdout: true,
                stderr: true,
@@ -94,7 +94,7 @@ module.exports = function (grunt, alf) {
             }
          },
          startShareInc: {
-            command: 'mvn install -pl projects/slingshot -DskipTests && start-app-tomcat',
+            command: 'mvn install -pl ../../projects/slingshot -DskipTests && start-app-tomcat',
             options: {
                stdout: true,
                stderr: true,
@@ -103,8 +103,22 @@ module.exports = function (grunt, alf) {
                   maxBuffer: "Infinite"
                }
             }
+         },
+         scb: {
+            command: 'mvn clean install -pl ../../projects/slingshot -DskipTests',
+            options: {
+               stdout: true,
+               stderr: true,
+               failOnError: true,
+               execOption: {
+                  maxBuffer: "Infinite"
+               }
+            }
          }
+
       },
+
+
       alfrescoConfig = {
          // Reset Share's Caches:
          resetCaches: {
@@ -382,9 +396,17 @@ module.exports = function (grunt, alf) {
                }
             }
          }
+
       },
-      configToMerge = (process.env.CURRENT_PROJECT)? alfrescoConfig : communityConfig,
-      shellConfig = extend(sharedConfig, configToMerge);
+
+      configToMerge = alfrescoConfig
+      if (process.env.CURRENT_PROJECT && process.platform === "win32"){
+         // If we're not running within the Alfresco Dev Env (CURRENT_PROJECT) or
+         // we're running on Windows (which doesn't support spawning child unix shells via node)
+         // then we should run with communityConfig that doesn't assume the Dev Env helper scripts are present.
+         configToMerge = communityConfig;
+      }
+      var shellConfig = extend(sharedConfig, configToMerge);
 
    // Return the config. This gets pushed into the grunt.init.config method in Gruntfile.
    return {
