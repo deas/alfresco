@@ -7369,6 +7369,20 @@ public class AlfrescoCoreAdminTester
         testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
                     "{ \"authorities\": [ \"strange:,-!+=;~/\", \"bob\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
         
+        // Test any allow allows.
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 16, null, null, null, null, null,
+                    "{ \"anyDenyDenies\":false, \"authorities\": [ \"something\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null,
+                    "{ \"anyDenyDenies\":false, \"authorities\": [ \"andy\", \"bob\", \"cid\", \"something\" ], \"tenants\": [ \"\" ] }");
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{ \"anyDenyDenies\":false, \"authorities\": [ \"something\" ], \"tenants\": [ \"\" ] }");
+        // Check with AUTHORITY/DENIED rather than AUTHSET/DENYSET
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 3, null, null, null, null, null,
+                    "{ \"anyDenyDenies\":false, \"authorities\": [ \"strange:,-!+=;~/\", \"andy\", \"bob\", \"cid\", \"something\" ], \"tenants\": [ \"\" ] }");
+        // Check that anyDenyDenies:true actually works (code above relies on default of true)
+        testJSONAuthorityFilter(report, core, "/afts", "PATH:\"//.\"", 0, null, null, null, null, null,
+                    "{ \"anyDenyDenies\":true, \"authorities\": [ \"something\", \"GROUP_EVERYONE\" ], \"tenants\": [ \"\" ] }");
+        
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,
                     "{!afts}|AUTHORITY:andy");
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 1, null, null, null, null, null,

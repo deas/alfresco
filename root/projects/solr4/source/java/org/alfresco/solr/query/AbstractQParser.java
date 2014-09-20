@@ -243,10 +243,16 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
 
                         if (authQuery.length() > 0)
                         {
-                            authQuery.insert(0, "(").
-                                      append(") AND NOT (").
-                                      append(denyQuery).
-                                      append(")");
+                            // Default to true for safety reasons.
+                            final boolean anyDenyDenies = json.optBoolean("anyDenyDenies", true);
+                            
+                            if (anyDenyDenies)
+                            {
+                                authQuery.insert(0, "(").
+                                    append(") AND NOT (").
+                                    append(denyQuery).
+                                    append(")");
+                            }
                             searchParameters.setQuery(authQuery.toString());
                         }
                     }
