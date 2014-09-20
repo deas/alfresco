@@ -1205,9 +1205,10 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                     nodeMetaData.getAclId(), nodeMetaData.getId()));
         doc.addField(FIELD_VERSION, 0);
         doc.addField(FIELD_DBID, nodeMetaData.getId());
-        doc.addField(FIELD_LID, nodeMetaData.getNodeRef());
+        doc.addField(FIELD_LID, nodeMetaData.getNodeRef().toString());
         doc.addField(FIELD_INTXID, nodeMetaData.getTxnId());
         doc.addField(FIELD_DOC_TYPE, docType);
+        doc.addField(FIELD_ACLID, nodeMetaData.getAclId());
         return doc;
     }
     
