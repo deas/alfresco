@@ -39,6 +39,13 @@ if (user.isAdmin == true ||
     _processedUserData.groups["GROUP_ALFRESCO_SEARCH_ADMINISTRATORS"] == true ||
     _processedUserData.isNetworkAdmin == true)
 {
+   // Make sure any site context is retained...
+   var searchManagerUrl = "dp/ws/faceted-search-config";
+   if (page.url.templateArgs.site)
+   {
+      searchManagerUrl = "site/" + page.url.templateArgs.site + "/" + searchManagerUrl;
+   }
+
    var titleMenu = widgetUtils.findObject(widgets, "id", "HEADER_TITLE_MENU");
    var searchConfigMenuItem = {
       id: "FCTSRCH_CONFIG_PAGE_LINK",
@@ -46,7 +53,7 @@ if (user.isAdmin == true ||
       config: {
          label: msg.get("faceted-search-config.label"),
          title: msg.get("faceted-search.config.link"),
-         targetUrl: "dp/ws/faceted-search-config"
+         targetUrl: searchManagerUrl
       }
    };
    titleMenu.config.widgets.splice(0, 0, searchConfigMenuItem);
