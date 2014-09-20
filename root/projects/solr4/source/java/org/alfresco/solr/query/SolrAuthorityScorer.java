@@ -35,7 +35,10 @@ import org.apache.solr.search.SolrIndexSearcher;
 
 /**
  * Find the set of docs that the supplied authority can read.
+ * <p>
+ * Note that anyDenyDenies is not directly supported by this class, see {@link AbstractQParser}.
  * 
+ * @see AbstractQParser
  * @author Matt Ward
  */
 public class SolrAuthorityScorer extends AbstractSolrCachingScorer
@@ -71,8 +74,6 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
 
         // Docs for which the authority has explicit read access.
         DocSet readableDocSet = searcher.getDocSet(new SolrReaderQuery(authority));
-        // Docs for which the authority has been explicitly denied access.
-        DocSet deniedDocSet = searcher.getDocSet(new SolrDeniedQuery(authority));
 
         // Are all doc owners granted read permissions at a global level?
         if (globalReaders.contains(PermissionService.OWNER_AUTHORITY))
@@ -80,7 +81,7 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
             // Get the set of docs owned by the authority (which they can therefore read).
             DocSet authorityOwnedDocs = searcher.getDocSet(new SolrOwnerQuery(authority));
             // Final set of docs that the authority can read.
-            DocSet toCache = readableDocSet.andNot(deniedDocSet).union(authorityOwnedDocs);
+            DocSet toCache = readableDocSet.union(authorityOwnedDocs);
             searcher.cacheInsert(CacheConstants.ALFRESCO_AUTHORITY_CACHE, key, toCache);
             return new SolrAuthorityScorer(weight, toCache, context, acceptDocs, searcher);
         }
@@ -93,7 +94,7 @@ public class SolrAuthorityScorer extends AbstractSolrCachingScorer
             // Docs where the authority is an owner and where owners have read rights.
             DocSet docsAuthorityOwnsAndCanRead = ownerReadableDocSet.intersection(authorityOwnedDocs);
             // Final set of docs that the authority can read.
-            DocSet toCache = readableDocSet.andNot(deniedDocSet).union(docsAuthorityOwnsAndCanRead);
+            DocSet toCache = readableDocSet.union(docsAuthorityOwnsAndCanRead);
             searcher.cacheInsert(CacheConstants.ALFRESCO_AUTHORITY_CACHE, key, toCache);
             return new SolrAuthorityScorer(weight, toCache, context, acceptDocs, searcher);
         }
