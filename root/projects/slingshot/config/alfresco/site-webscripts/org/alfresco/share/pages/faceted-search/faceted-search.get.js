@@ -395,6 +395,20 @@ var searchResultsMenuBar = {
    }
 };
 
+var widgetsForNoDataDisplay = [
+   {
+      name: "alfresco/search/NoSearchResults",
+      config: {
+         title: msg.get("faceted-search.advice.title"),
+         suggestions: [
+            "faceted-search.advice.suggestion1",
+            "faceted-search.advice.suggestion2",
+            "faceted-search.advice.suggestion3"
+         ]
+      }
+   }
+];
+
 // Build the searchDocLib model
 var searchDocLib = {
    id: "FCTSRCH_SEARCH_RESULTS_LIST",
@@ -426,12 +440,7 @@ var searchDocLib = {
             id: "FCTSRCH_SEARCH_ADVICE_NO_RESULTS",
             name: "alfresco/documentlibrary/views/AlfSearchListView",
             config: {
-               searchAdviceTitle: "faceted-search.advice.title",
-               searchAdvice: [
-                  "faceted-search.advice.suggestion1",
-                  "faceted-search.advice.suggestion2",
-                  "faceted-search.advice.suggestion3"
-               ],
+               widgetsForNoDataDisplay: widgetsForNoDataDisplay,
                a11yCaption: msg.get("faceted-search.results.caption"),
                a11yCaptionClass: "hiddenAccessible",
                widgetsForHeader: [
@@ -476,6 +485,7 @@ var searchDocLib = {
             config: {
                showNextLink: true,
                nextLinkLabel: msg.get("faceted-search.show-more-results.label"),
+               widgetsForNoDataDisplay: widgetsForNoDataDisplay,
                widgets: [
                   {
                      name: "alfresco/search/SearchGalleryThumbnail",

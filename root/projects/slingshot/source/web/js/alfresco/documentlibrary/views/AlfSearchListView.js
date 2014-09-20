@@ -27,46 +27,9 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/views/AlfDocumentListView",
-        "dijit/_WidgetBase", 
-        "dijit/_TemplatedMixin",
-        "alfresco/core/Core",
-        "dojo/text!./templates/NoSearchResults.html",
-        "dojo/_base/array",
-        "dojo/dom-construct"], 
-        function(declare, AlfDocumentListView,  _WidgetBase, _TemplatedMixin, AlfCore, template, array, domConstruct) {
+        "alfresco/documentlibrary/views/AlfDocumentListView"], 
+        function(declare, AlfDocumentListView) {
    
-   // Inner widget to render a template of advice...
-   var NoSearchResultsTemplate = declare([_WidgetBase, _TemplatedMixin, AlfCore], {
-      
-      /**
-       * @instance
-       * @type {string}
-       */
-      templateString: template,
-
-      /**
-       * Iterates over the suggestions.
-       *
-       * @instance
-       */
-      postCreate: function alfresco_documentlibrary_views_AlfSearchListView_NoSearchResultsTemplate__postCreate() {
-         if (this.title != null)
-         {
-            this.titleNode.innerHTML = this.message(this.title);
-         }
-         if (this.suggestions != null)
-         {
-            array.forEach(this.suggestions, function(suggestion, index) {
-               domConstruct.create("li", {
-                  innerHTML: this.message(suggestion),
-                  className: "suggestion"
-               }, this.suggestionsNode, "last");
-            }, this);
-         }
-      }
-   });
-
    return declare([AlfDocumentListView], {
       
       /**
@@ -110,41 +73,6 @@ define(["dojo/_base/declare",
          {
             name: "alfresco/search/AlfSearchResult"
          }
-      ],
-
-      /**
-       * Overrides the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#renderNoDataDisplay}
-       * to render a template providing useful information to help users get some results for their
-       * search.
-       * 
-       * @instance
-       */
-      renderNoDataDisplay: function alfresco_documentlibrary_views_AlfSearchListView__renderNoDataDisplay() {
-         this.clearOldView();
-         this.messageNode = domConstruct.create("div", {}, this.domNode);
-         this.docListRenderer = new NoSearchResultsTemplate({
-            title: this.message(this.searchAdviceTitle),
-            suggestions: this.searchAdvice
-         },this.messageNode);
-      },
-
-      /**
-       * A configurable title for the list of searchAdvice elements.
-       *
-       * @instance
-       * @type {string}
-       * @default "faceted-search.advice.title"
-       */
-      searchAdviceTitle: "faceted-search.advice.title:",
-      
-      /**
-       * A configurable array of strings where each entry is a suggestion for how to get the best results out of
-       * the search.
-       *
-       * @instance
-       * @type {array}
-       * @default []
-       */
-      searchAdvice: [] 
+      ]
    });
 });

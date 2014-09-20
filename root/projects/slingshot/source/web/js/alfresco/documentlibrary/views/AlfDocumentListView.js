@@ -39,6 +39,7 @@ define(["dojo/_base/declare",
         "alfresco/documentlibrary/views/DocumentListRenderer",
         "alfresco/core/Core",
         "alfresco/core/JsNode",
+        "alfresco/core/WidgetsCreator",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-construct",
@@ -46,7 +47,7 @@ define(["dojo/_base/declare",
         "dojo/query",
         "dijit/registry"],
         function(declare, _WidgetBase, _TemplatedMixin, template, _MultiItemRendererMixin, _AlfDndDocumentUploadMixin, DocumentListRenderer,
-                 AlfCore, JsNode, lang, array, domConstruct, domClass, query, registry) {
+                 AlfCore, JsNode, WidgetsCreator, lang, array, domConstruct, domClass, query, registry) {
 
    return declare([_WidgetBase, _TemplatedMixin, _MultiItemRendererMixin, AlfCore, _AlfDndDocumentUploadMixin], {
 
@@ -369,6 +370,15 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * An optional JSON model defining the widgets to display when no data is available to display.
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      widgetsForNoDataDisplay: null,
+
+      /**
        * This method is called when there is no data to be shown. By default this just shows a standard localized
        * message to say that there is no data.
        *
@@ -379,6 +389,17 @@ define(["dojo/_base/declare",
          this.messageNode = domConstruct.create("div", {
             innerHTML: this.noItemsMessage
          }, this.domNode);
+
+         // If specific widgets have been defined to display when there are no results then replace
+         // the default message with them...
+         if (this.widgetsForNoDataDisplay != null)
+         {
+            var wc = new WidgetsCreator({
+               widgets: this.widgetsForNoDataDisplay
+            });
+            domConstruct.empty(this.messageNode);
+            wc.buildWidgets(this.messageNode);
+         }
       },
 
       /**
