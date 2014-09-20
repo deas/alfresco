@@ -88,6 +88,7 @@ public class Cloud
 
         if (rc != null)
         {
+// TODO Should we use rc.docs.matches() instead?
             if (rc.docs != null) { return rc.docs.iterator().hasNext(); }
         }
 
@@ -103,6 +104,8 @@ public class Cloud
      */
     DocList getDocList(SolrRequestHandler requestHandler, SolrQueryRequest request, String query)
     {
+        // Getting the doc list is shard-specific, and not really cloud-friendly
+        
         ModifiableSolrParams params = new ModifiableSolrParams(request.getParams());
         // Sets MAX_VALUE to get all the rows
         params.set("q", query).set("fl", QueryConstants.FIELD_SOLR4_ID).set("rows", Integer.MAX_VALUE);

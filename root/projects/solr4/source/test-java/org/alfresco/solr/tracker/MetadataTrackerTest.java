@@ -75,21 +75,21 @@ public class MetadataTrackerTest
         TrackerState state = new TrackerState();
         state.setTimeToStopIndexing(2L);
         when(srv.getTrackerInitialState()).thenReturn(state);
-// TODO: We need to decide how to persist this state
+        // TrackerState is persisted per tracker
         when(this.metadataTracker.getTrackerState()).thenReturn(state);
 
-        Transactions txs = mock(Transactions.class);
         List<Transaction> txsList = new ArrayList<>();
         Transaction tx = new Transaction();
         tx.setCommitTimeMs(1L);
         tx.setDeletes(1);
         tx.setUpdates(1);
         txsList.add(tx);
+        Transactions txs = mock(Transactions.class);
         when(txs.getTransactions()).thenReturn(txsList);
 
         // Subsequent calls to getTransactions must return a different set of transactions to avoid an infinite loop
         when(repositoryClient.getTransactions(anyLong(), anyLong(), anyLong(), anyLong(), anyInt())).thenReturn(txs)
-                    .thenReturn(mock(Transactions.class));
+                    .thenReturn(txs).thenReturn(mock(Transactions.class));
 
         List<Node> nodes = new ArrayList<>();
         Node node = new Node();
@@ -109,7 +109,6 @@ public class MetadataTrackerTest
     {
         TrackerState state = new TrackerState();
         when(srv.getTrackerInitialState()).thenReturn(state);
-// TODO: We need to decide how to persist this state
         when(this.metadataTracker.getTrackerState()).thenReturn(state);
 
         Transactions txs = mock(Transactions.class);

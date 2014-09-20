@@ -18,18 +18,11 @@
  */
 package org.alfresco.solr.tracker;
 
-import java.io.IOException;
-
-import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.solr.TrackerState;
-import org.json.JSONException;
 
 public interface Tracker
 {
     void track();
-
-    IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
-                throws AuthenticationException, IOException, JSONException;
 
     String getAlfrescoVersion();
     

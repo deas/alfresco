@@ -34,8 +34,6 @@ import org.alfresco.repo.dictionary.M2Model;
 import org.alfresco.repo.dictionary.NamespaceDAO;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.InformationServer;
-import org.alfresco.solr.adapters.IOpenBitSet;
-import org.alfresco.solr.adapters.SolrOpenBitSetAdapter;
 import org.alfresco.solr.client.AlfrescoModel;
 import org.alfresco.solr.client.AlfrescoModelDiff;
 import org.alfresco.solr.client.AlfrescoModelDiff.TYPE;
@@ -91,7 +89,7 @@ public class ModelTrackerTest
     @Before
     public void setUp() throws Exception
     {
-        when(props.getProperty("alfresco.stores")).thenReturn("workspace://SpacesStore");
+        when(props.getProperty("alfresco.stores", "workspace://SpacesStore")).thenReturn("workspace://SpacesStore");
         when(props.getProperty("alfresco.batch.count", "1000")).thenReturn("1000");
         when(props.getProperty("alfresco.maxLiveSearchers", "2")).thenReturn("2");
         when(props.getProperty("enable.slave", "false")).thenReturn("false");
@@ -114,17 +112,6 @@ public class ModelTrackerTest
 
         verify(this.srv).getRegisteredSearcherCount();
         verify(spiedModelTracker).trackModels(false);
-    }
-
-    @Test
-    public void testCheckIndex() throws IOException, AuthenticationException, JSONException
-    {
-        when(this.srv.getOpenBitSetInstance()).thenReturn(new SolrOpenBitSetAdapter());
-        IndexHealthReport mockReport = mock(IndexHealthReport.class);
-        when(this.srv.checkIndexTransactions(any(IndexHealthReport.class), anyLong(), anyLong(),
-                    any(IOpenBitSet.class), anyLong(), any(IOpenBitSet.class), anyLong())).thenReturn(mockReport);
-        IndexHealthReport report = this.modelTracker.checkIndex(0L, 0L, 0L, 0L, 0L, 0L);
-        assertEquals(mockReport, report);
     }
 
     @Test

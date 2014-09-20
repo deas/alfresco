@@ -51,8 +51,6 @@ import org.slf4j.LoggerFactory;
 public class MetadataTracker extends AbstractTracker implements Tracker
 {
     protected final static Logger log = LoggerFactory.getLogger(MetadataTracker.class);
-    private static final long TIME_STEP_32_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 32L;
-    private static final long TIME_STEP_1_HR_IN_MS = 60 * 60 * 1000L;
     private static final int DEFAULT_TRANSACTION_DOCS_BATCH_SIZE = 100;
     private static final int DEFAULT_NODE_BATCH_SIZE = 10;
     private int transactionDocsBatchSize = DEFAULT_TRANSACTION_DOCS_BATCH_SIZE;
@@ -249,7 +247,6 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                     // Index the transaction doc after the node - if this is not found then a reindex will be done.
                     this.infoSrv.indexTransaction(info, true);
                     requiresCommit = true;
-
                 }
             }
 
@@ -292,7 +289,6 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 requiresCommit = true;
             }
             checkShutdown();
-
         }
 
         if(requiresCommit)
@@ -317,6 +313,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             }
             checkShutdown();
         }
+        
         if(requiresCommit)
         {
             checkShutdown();
@@ -338,6 +335,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             }
             checkShutdown();
         }
+        
         if(requiresCommit)
         {
             checkShutdown();
@@ -418,17 +416,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             transactions = getSomeTransactions(txnsFound, fromCommitTime, TIME_STEP_1_HR_IN_MS, 2000,
                         state.getTimeToStopIndexing());
 
-            Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
-            if (maxTxnCommitTime != null)
-            {
-                state.setLastTxCommitTimeOnServer(transactions.getMaxTxnCommitTime());
-            }
-
-            Long maxTxnId = transactions.getMaxTxnId();
-            if (maxTxnId != null)
-            {
-                state.setLastTxIdOnServer(transactions.getMaxTxnId());
-            }
+            setLastTxCommitTimeAndTxIdInTrackerState(transactions, state);
 
             log.info("Scanning transactions ...");
             if (transactions.getTransactions().size() > 0)
@@ -512,6 +500,21 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         if (indexed)
         {
             indexTransactionsAfterAsynchronous(txsIndexed, state);
+        }
+    }
+
+    private void setLastTxCommitTimeAndTxIdInTrackerState(Transactions transactions, TrackerState state)
+    {
+        Long maxTxnCommitTime = transactions.getMaxTxnCommitTime();
+        if (maxTxnCommitTime != null)
+        {
+            state.setLastTxCommitTimeOnServer(maxTxnCommitTime);
+        }
+
+        Long maxTxnId = transactions.getMaxTxnId();
+        if (maxTxnId != null)
+        {
+            state.setLastTxIdOnServer(maxTxnId);
         }
     }
 
@@ -696,28 +699,69 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         }
     }
 
-    @Override
-    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
+    public IndexHealthReport checkIndex(Long toTx, Long toAclTx, Long fromTime, Long toTime)
                 throws IOException, AuthenticationException, JSONException
     {
-        IndexHealthReport indexHealthReport = new IndexHealthReport(infoSrv);
-        Long minTxId = null;
-        Long minAclTxId = null;
-
         // DB TX Count
+        long firstTransactionCommitTime = 0;
+        Transactions firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
+        if(firstTransactions.getTransactions().size() > 0)
+        {
+            Transaction firstTransaction = firstTransactions.getTransactions().get(0);
+            firstTransactionCommitTime = firstTransaction.getCommitTimeMs();
+        }
+
         IOpenBitSet txIdsInDb = infoSrv.getOpenBitSetInstance();
+        Long lastTxCommitTime = Long.valueOf(firstTransactionCommitTime);
+        if (fromTime != null)
+        {
+            lastTxCommitTime = fromTime;
+        }
         long maxTxId = 0;
+        Long minTxId = null;
 
-        indexHealthReport.setDbTransactionCount(txIdsInDb.cardinality());
+        Transactions transactions;
+        BoundedDeque<Transaction> txnsFound = new  BoundedDeque<Transaction>(100);
+        long endTime = System.currentTimeMillis() + infoSrv.getHoleRetention();
+        DO: do
+        {
+            transactions = getSomeTransactions(txnsFound, lastTxCommitTime, TIME_STEP_1_HR_IN_MS, 2000, endTime);
+            for (Transaction info : transactions.getTransactions())
+            {
+                // include
+                if (toTime != null)
+                {
+                    if (info.getCommitTimeMs() > toTime.longValue())
+                    {
+                        break DO;
+                    }
+                }
+                if (toTx != null)
+                {
+                    if (info.getId() > toTx.longValue())
+                    {
+                        break DO;
+                    }
+                }
 
-        IOpenBitSet aclTxIdsInDb = infoSrv.getOpenBitSetInstance();
-        long maxAclTxId = 0;
+                // bounds for later loops
+                if (minTxId == null)
+                {
+                    minTxId = info.getId();
+                }
+                if (maxTxId < info.getId())
+                {
+                    maxTxId = info.getId();
+                }
 
-        indexHealthReport.setDbAclTransactionCount(aclTxIdsInDb.cardinality());
+                lastTxCommitTime = info.getCommitTimeMs();
+                txIdsInDb.set(info.getId());
+                txnsFound.add(info);
+            }
+        }
+        while (transactions.getTransactions().size() > 0);
 
-        // Index TX Count
-        return this.infoSrv.checkIndexTransactions(indexHealthReport, minTxId, minAclTxId, txIdsInDb, maxTxId,
-                    aclTxIdsInDb, maxAclTxId);
+        return this.infoSrv.reportIndexTransactions(minTxId, txIdsInDb, maxTxId);
     }
 
     public void addTransactionToPurge(Long txId)

@@ -38,6 +38,7 @@ import org.alfresco.solr.client.Node;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.TrackerStats;
+import org.apache.solr.common.util.NamedList;
 import org.json.JSONException;
 
 /**
@@ -73,7 +74,7 @@ public interface InformationServer
 
     TrackerState getTrackerInitialState();
 
-    int getDocSetSize(String targetTxId, String targetTxCommitTime) throws IOException;
+    int getTxDocsSize(String targetTxId, String targetTxCommitTime) throws IOException;
 
     int getRegisteredSearcherCount();
 
@@ -107,12 +108,21 @@ public interface InformationServer
 
     AclReport checkAclInIndex(Long aclid, AclReport aclReport);
 
-    IndexHealthReport checkIndexTransactions(IndexHealthReport indexHealthReport, Long minTxId, Long minAclTxId,
-                IOpenBitSet txIdsInDb, long maxTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId) throws IOException;
+    IndexHealthReport reportIndexTransactions(Long minTxId, IOpenBitSet txIdsInDb, long maxTxId) throws IOException;
 
     List<TenantAclIdDbId> getDocsWithUncleanContent(int start, int rows) throws IOException;
 
     void updateContentToIndexAndCache(long dbId, String tenant) throws Exception;
 
     void addCommonNodeReportInfo(NodeReport nodeReport);
+
+    void addFTSStatusCounts(NamedList<Object> ihr);
+
+    IndexHealthReport reportAclTransactionsInIndex(Long minAclTxId, IOpenBitSet aclTxIdsInDb, long maxAclTxId);
+
+    int getAclTxDocsSize(String aclTxId, String aclTxCommitTime) throws IOException;
+    
+    AclChangeSet getMaxAclChangeSetIdAndCommitTimeInIndex();
+    
+    Transaction getMaxTransactionIdAndCommitTimeInIndex();
 }

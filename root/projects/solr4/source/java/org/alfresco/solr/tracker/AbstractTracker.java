@@ -39,6 +39,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractTracker implements Tracker
 {
+    public static final long TIME_STEP_32_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 32L;
+    public static final long TIME_STEP_1_HR_IN_MS = 60 * 60 * 1000L;
     protected final static Logger log = LoggerFactory.getLogger(AbstractTracker.class);
     
     protected Properties props;    

@@ -80,12 +80,4 @@ public class ContentTracker extends AbstractTracker implements Tracker
         
         log.info("total number of docs with content updated: " + totalDocs);
     }
-
-    @Override
-    public IndexHealthReport checkIndex(Long fromTx, Long toTx, Long fromAclTx, Long toAclTx, Long fromTime, Long toTime)
-    {
-        // TODO Auto-generated method stub
-        return new IndexHealthReport(infoSrv);
-    }
-
 }
