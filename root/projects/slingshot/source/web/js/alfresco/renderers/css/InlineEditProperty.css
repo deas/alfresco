@@ -24,5 +24,5 @@
 
 .alfresco-renderers-InlineEditProperty > .editor > .alfresco-forms-Form {
    display: inline-block;
-   vertical-align: top;
+   vertical-align: middle;
 }

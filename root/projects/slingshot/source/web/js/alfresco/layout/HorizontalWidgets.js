@@ -151,6 +151,8 @@ define(["alfresco/core/ProcessWidgets",
             var overallwidth = output.w;
             overallwidth -= widgets.length;
 
+            // Always allow some pixels for potential scrollbars...
+            overallwidth -= 30;
             
             // Subtract the margins from the overall width
             var leftMarginsSize = 0,

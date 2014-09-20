@@ -25,11 +25,21 @@
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
         "dijit/form/CheckBox",
-        "dojo/_base/lang"], 
-        function(BaseFormControl, declare, CheckBox, lang) {
+        "dojo/_base/lang",
+        "dojo/dom-class"], 
+        function(BaseFormControl, declare, CheckBox, lang, domClass) {
    
    return declare([BaseFormControl], {
       
+      /**
+       * An array of the CSS files to use with this widget.
+       * 
+       * @instance
+       * @type {object[]}
+       * @default [{cssFile:"./css/DojoCheckBox.css"}]
+       */
+      cssRequirements: [{cssFile:"./css/DojoCheckBox.css"}],
+
       /**
        * @instance
        */
@@ -39,7 +49,7 @@ define(["alfresco/forms/controls/BaseFormControl",
             id : this.generateUuid(),
             name: this.name,
             value: this.value,
-            checked: (this.value == "true" || this.value == true)
+            checked: (this.value == "true" || this.value === true)
          };
       },
       
@@ -47,6 +57,12 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @instance
        */
       createFormControl: function alfresco_forms_controls_DojoCheckBox__createFormControl(config, domNode) {
+         var additionalCssClasses = "";
+         if (this.additionalCssClasses != null)
+         {
+            additionalCssClasses = this.additionalCssClasses;
+         }
+         domClass.add(this.domNode, "alfresco-forms-controls-DojoCheckBox " + additionalCssClasses);
          return new CheckBox(config);
       },
       

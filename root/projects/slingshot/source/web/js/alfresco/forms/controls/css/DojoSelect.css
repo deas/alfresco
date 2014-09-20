@@ -1,4 +1,4 @@
-.alfresco-forms-controls-BaseFormControl > .control > table{
+.alfresco-forms-controls-BaseFormControl > .control-row > .control > table{
    -moz-border-radius: 3px;
    -webkit-border-radius: 3px;
    -khtml-border-radius: 3px;
@@ -6,23 +6,23 @@
    background-color: @standard-button-background-color;
 }
 
-.alfresco-forms-controls-BaseFormControl > .control > table > tr{
+.alfresco-forms-controls-BaseFormControl > .control-row > .control > table > tr{
    background: transparent;
 }
 
-.alfresco-forms-controls-BaseFormControl > .control > table td{
+.alfresco-forms-controls-BaseFormControl > .control-row > .control > table td{
    border: none;
    padding: 3px 5px;
    background: transparent;
 }
 
-.alfresco-forms-controls-BaseFormControl > .control > table td.dijitArrowButton{
+.alfresco-forms-controls-BaseFormControl > .control-row > .control > table td.dijitArrowButton{
    border: none;
    background: transparent;
    padding-right: 3px;
 }
 
-.alfresco-forms-controls-BaseFormControl > .control > table td.dijitArrowButton > input{
+.alfresco-forms-controls-BaseFormControl > .control-row > .control > table td.dijitArrowButton > input{
    border: none;
 }
 
