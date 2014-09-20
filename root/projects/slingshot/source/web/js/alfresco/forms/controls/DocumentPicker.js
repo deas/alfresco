@@ -18,25 +18,25 @@
  */
 
 /**
- * <p>A form control for allowing the user to select documents from the Alfresco repository. It extends the 
- * standard [picker form control]{@link module:alfresco/forms/controls/Picker} to show the document 
+ * <p>A form control for allowing the user to select documents from the Alfresco repository. It extends the
+ * standard [picker form control]{@link module:alfresco/forms/controls/Picker} to show the document
  * picked item display along with the standard document pickers.</p>
- * 
+ *
  * @module alfresco/forms/controls/DocumentPicker
  * @extends module:alfresco/forms/controls/Picker
  * @mixes module:alfresco/core/CoreWidgetProcessing
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/Picker",
-        "dojo/_base/declare"], 
+        "dojo/_base/declare"],
         function(Picker, declare) {
-   
+
    return declare([Picker], {
-      
+
       /**
-       * Current defines exactly the same default widget model as the standard [picker form control]{@link module:alfresco/forms/controls/Picker}
+       * Currently defines exactly the same default widget model as the standard [picker form control]{@link module:alfresco/forms/controls/Picker}
        * so this could be removed, but has been left in case the default picker model should ever change.
-       * 
+       *
        * @instance
        * @type {object}
        * @default

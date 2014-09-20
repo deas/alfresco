@@ -18,9 +18,9 @@
  */
 
 /**
- * This mixin is intended to be mixed into any buttons or menu items that require an action that creates a new 
+ * This mixin is intended to be mixed into any buttons or menu items that require an action that creates a new
  * [dialog]{@link module:alfresco/dialogs/AlfDialog} that contains a [form]{@link module:alfresco/forms/Form}.
- * 
+ *
  * Examples of use include the create content menu items in the document library.
  *
  * @module alfresco/dialogs/AlfDialogService
@@ -34,13 +34,13 @@ define(["dojo/_base/declare",
         "alfresco/forms/Form",
         "dojo/_base/array"],
         function(declare, AlfCore, lang, AlfDialog, AlfForm, array) {
-   
+
    return declare([AlfCore], {
 
       /**
-       * Create a new 'publishTopic' for the action and generates a new 'pubSubScope' and then sets 
+       * Create a new 'publishTopic' for the action and generates a new 'pubSubScope' and then sets
        * up subscriptions for handling show dialog and cancel dialog requests.
-       * 
+       *
        * @instance
        */
       constructor: function alfresco_dialogs_AlfDialogService__constructor() {
@@ -93,7 +93,7 @@ define(["dojo/_base/declare",
             this.dialog.destroyRecursive();
          }
 
-         // TODO: Update this and other function with scoll setting...
+         // TODO: Update this and other function with scroll setting...
          var dialogConfig = {
             title: this.message(payload.dialogTitle),
             textContent: payload.textContent,
@@ -138,7 +138,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} payload The payload published on the request topic.
-       */ 
+       */
       onCreateFormDialogRequest: function alfresco_dialogs_AlfDialogService__onCreateFormDialogRequest(payload) {
          // Destroy any previously created dialog...
          if (this.dialog != null)
@@ -246,7 +246,7 @@ define(["dojo/_base/declare",
 
       /**
        * This is the topic that will be published when the dialog is "confirmed" (e.g. the "OK" button is clicked)
-       * 
+       *
        * @instance
        * @type {string}
        * @default null
@@ -257,12 +257,12 @@ define(["dojo/_base/declare",
        * This handles the user clicking the confirmation button on the dialog (typically, and by default the "OK" button). This has a special
        * handler to process the  payload and construct a simple object reqpresenting the
        * content of the inner [form]{@link module:alfresco/forms/Form}.
-       * 
+       *
        * @instance
        * @param {object} payload The dialog content
        */
       onFormDialogConfirmation: function alfresco_dialogs_AlfDialogService__onFormDialogConfirmation(payload) {
-         if (payload != null && 
+         if (payload != null &&
              payload.dialogContent != null &&
              payload.dialogContent.length == 1 &&
              typeof payload.dialogContent[0].getValue === "function")
@@ -273,7 +273,7 @@ define(["dojo/_base/declare",
             {
                this.alfUnsubscribe(payload.subcriptionTopic); // Remove the subscription...
             }
-            
+
             // Destroy the dialog if a reference is provided...
             if (payload.dialogReference != null)
             {

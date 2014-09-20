@@ -20,9 +20,9 @@
 /**
  * This is a mixin that provides URL related utility functions.
  *
- * @module alfresco/core/UrlUtils
- * @extends module:alfresco/core/I18nUtils
- * @author Wrik Winlöf
+ * @module alfresco/core/I18nUtils
+ * @extends module:alfresco/core/Core
+ * @author Erik Winlöf
  */
 define(["alfresco/core/Core"], function(AlfCore){
 

@@ -34,37 +34,37 @@ define(["dojo/_base/declare",
         "alfresco/logging/SubscriptionLog",
         "alfresco/debug/CoreDataDebugger"],
         function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, sniff, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
-   
+
    return declare([AlfCore, _PreferenceServiceTopicMixin], {
-      
+
       /**
        * An array of the i18n files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{i18nFile: "./i18n/LoggingService.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/LoggingService.properties"}],
-      
+
       /**
        * @instance
        * @type {string}
        * @default "org.alfresco.share.logging"
        */
       loggingPreferencesId: "org.alfresco.share.logging",
-      
+
       /**
-       * This will hold a reference to the subscription to log events. It will be null unless logging is enabled. 
-       * 
+       * This will hold a reference to the subscription to log events. It will be null unless logging is enabled.
+       *
        * @instance
        * @type {object}
        * @default null
        */
       logSubscriptionHandle: null,
-      
+
       /**
        * Sets up the subscriptions for the LoggingService
-       * 
+       *
        * @instance
        * @param {array} args The constructor arguments.
        */
@@ -81,14 +81,14 @@ define(["dojo/_base/declare",
             // preferences...
             this.handleSubscription();
          }
-         
+
          this.alfPublish(this.getPreferenceTopic, {
             preference: this.loggingPreferencesId,
             callback: this.setLoggingStatus,
             callbackScope: this
          });
       },
-      
+
       /**
        *
        * @instance
@@ -112,7 +112,7 @@ define(["dojo/_base/declare",
       /**
        * This displays a dialog that displays the current data model built up through the use of the
        * [CoreData singleton]{@link module:alfresco/core/CoreData}.
-       * 
+       *
        * @instance
        * @param {object} payload The request payload
        */
@@ -131,7 +131,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles requests to change the current logging status.
-       * 
+       *
        * @instance
        * @param {object} payload
        */
@@ -146,7 +146,7 @@ define(["dojo/_base/declare",
             this.handleSubscription();
          }
       },
-      
+
       /**
        * @instance
        * @param {boolean} value Indicates whether or not to enable or disable logging.
@@ -159,10 +159,10 @@ define(["dojo/_base/declare",
          this.loggingPreferences = value;
          this.handleSubscription();
       },
-      
+
       /**
        * Updates the subscription to the logging topic
-       * 
+       *
        * @instance
        */
       handleSubscription: function alfresco_services_LoggingService__handleSubscription() {
@@ -176,38 +176,38 @@ define(["dojo/_base/declare",
             this.logSubscriptionHandle = null;
          }
       },
-      
+
       /**
        * This attribute is used to hold a reference to a [dialog]{@link module:alfresco/dialogs/AlfDialog} that can be
        * used to set more granular logging information (e.g. wildcard style matches for widgets and functions). It is set
        * on the first call to the [onDetailsDialog function]{@link module:alfresco/services/LoggingService#onDetailsDialog}.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       detailsDialog: null,
-      
+
       /**
-       * This is the topic used to subscribe to requests to save logging preferences updated by the 
+       * This is the topic used to subscribe to requests to save logging preferences updated by the
        * [preferences dialog]{@link module:alfresco/services/LoggingService#detailsDialog}.
-       * 
+       *
        * @instance
        * @type {string}
        * @default "ALF_SAVE_LOGGING_PREFERNCES_UPDATE"
        */
       saveLoggingPrefsUpdateTopic: "ALF_SAVE_LOGGING_PREFERNCES_UPDATE",
-      
+
       /**
-       * This is the topic used to subscribe to requests to cancel logging preferences updates set in the 
+       * This is the topic used to subscribe to requests to cancel logging preferences updates set in the
        * [preferences dialog]{@link module:alfresco/services/LoggingService#detailsDialog}.
-       * 
+       *
        * @instance
        * @type {string}
        * @default "ALF_CANCEL_LOGGING_PREFERNCES_UPDATE"
        */
       cancelLoggingPrefsUpdateTopic: "ALF_CANCEL_LOGGING_PREFERNCES_UPDATE",
-      
+
       /**
        * @instance
        * @param {object} payload
@@ -253,7 +253,7 @@ define(["dojo/_base/declare",
          }
          this.detailsDialog.show();
       },
-      
+
       /**
        * @instance
        * @param {object} payload
@@ -270,7 +270,7 @@ define(["dojo/_base/declare",
             this.loggingPreferences.filter = filterValue;
          }
       },
-      
+
       /**
        * @instance
        * @param {object} payload
@@ -282,24 +282,33 @@ define(["dojo/_base/declare",
             var filterValue = filterWidget.setValue((this.loggingPreferences.filter != null) ? this.loggingPreferences.filter : "");
          }
       },
-      
+
       /**
        * The local copy of logging preferences.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       loggingPreferences: null,
-      
+
+      /**
+       *
+       *
+       * @typedef {Object} logPayload
+       * @property severity {string}
+       * @property callerName {string}
+       * @property messageArgs {Object[]}
+       */
+
       /**
        * @instance
-       * @param {{severity: string, callerName: string, messageArgs: object[]} payload
+       * @param {logPayload} payload
        */
       onLogRequest: function alfresco_services_LoggingService__onLogRequest(payload) {
          if (payload &&
              payload.severity &&
-             payload.messageArgs && 
+             payload.messageArgs &&
              (this.loggingPreferences.all == true ||
               this.loggingPreferences[payload.severity] == true))
          {
@@ -331,8 +340,8 @@ define(["dojo/_base/declare",
                {
                   callerName = "";
                }
-               
-               // Check to see whether or not there is a log filter and if so, whether or 
+
+               // Check to see whether or not there is a log filter and if so, whether or
                // not the current caller passes the filter...
                var matchesFilter = true;
                if (this.loggingPreferences.filter != null)
@@ -340,7 +349,7 @@ define(["dojo/_base/declare",
                   var test = new RegExp(this.loggingPreferences.filter);
                   matchesFilter = test.test(callerName);
                }
-               
+
                // If the filter is mapped (or if there is no filter) output the log...
                if (matchesFilter || sniff("ie"))
                {

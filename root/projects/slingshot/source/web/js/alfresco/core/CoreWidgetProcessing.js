@@ -19,7 +19,7 @@
 
 /**
  * This mixin in provides all the functions required for widgets that wish to process sub-widgets.
- * 
+ *
  * @module alfresco/core/CoreWidgetProcessing
  * @extends module:alfresco/core/Core
  * @author Dave Draper
@@ -31,18 +31,18 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/dom-style"], 
+        "dojo/dom-style"],
         function(declare, AlfCore, ObjectTypeUtils, registry, array, lang, domConstruct, domStyle) {
-   
+
    return declare([AlfCore], {
 
       /**
        * This function can be used to instantiate an array of widgets. Each widget configuration in supplied
        * widgets array is passed to the [processWidget]{@link module:alfresco/core/Core#processWidget} function
        * to handle it's creation.
-       * 
-       * @instance 
-       * @param {Object[]} widgets An array of the widget definitions to instantiate
+       *
+       * @instance
+       * @param {array} widgets An array of the widget definitions to instantiate
        * @param {element} rootNode The DOM node which should be used to add instantiated widgets to
        */
       processWidgets: function alfresco_core_CoreWidgetProcessing__processWidgets(widgets, rootNode) {
@@ -56,11 +56,11 @@ define(["dojo/_base/declare",
             {
                // Reset the processing complete flag (this is to support multiple invocations of widget processing)...
                this.widgetProcessingComplete = false;
-               
+
                // TODO: Using these attributes will not support multiple calls to processWidgets from within the same object instance
                this._processedWidgetCountdown = widgets.length;
                this._processedWidgets = [];
-               
+
                // Iterate over all the widgets in the configuration object and add them...
                array.forEach(widgets, lang.hitch(this, this.processWidget, rootNode));
             }
@@ -70,10 +70,10 @@ define(["dojo/_base/declare",
             this.alfLog("error", "The following error occurred processing widgets", e);
          }
       },
-      
+
       /**
        * Creates a widget from the supplied configuration. The creation of each widgets DOM node
-       * is delegated to the [createWidgetDomNode]{@link module:alfresco/core/Core#createWidgetDomNode} function 
+       * is delegated to the [createWidgetDomNode]{@link module:alfresco/core/Core#createWidgetDomNode} function
        * and the actual instantiation of the widget is handled by the [createWidget]{@link module:alfresco/core/Core#createWidget} function.
        * Before creation of the widget begins the [filterWidget]{@link module:alfresco/core/Core#filterWidget} function is
        * called to confirm that the widget should be created. This allows extending classes the opportunity filter
@@ -99,31 +99,31 @@ define(["dojo/_base/declare",
             this._processedWidgetCountdown--;
          }
       },
-      
+
       /**
        * Used to keep track of all the widgets created as a result of a call to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function
-       * 
+       *
        * @instance
        * @type {Array}
        * @default null
        */
       _processedWidgets: null,
-      
+
       /**
        * This is used to countdown the widgets that are still waiting to be created. It is initialised to the size
        * of the widgets array supplied to the [processWidgets]{@link module:alfresco/core/Core#processWidgets} function.
-       * 
-       * @instance 
+       *
+       * @instance
        * @type {number}
        * @default null
        */
       _processedWidgetCountdown: null,
-      
+
       /**
-       * This function registers the creation of a widget. It decrements the 
+       * This function registers the creation of a widget. It decrements the
        * [_processedWidgetCountdown]{@link module:alfresco/core/Core#_processedWidgetCountdown} attribute
        * and calls the [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed} function when it reaches zero.
-       * 
+       *
        * @instance
        * @param {object} widget The widget that has just been processed.
        * @param {number} index The target index of the widget
@@ -137,7 +137,7 @@ define(["dojo/_base/declare",
             {
                this._processedWidgets = [];
             }
-            
+
             if (index == null || isNaN(index))
             {
                this._processedWidgets.push(widget);
@@ -178,7 +178,7 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "No widget supplied following registration", this);
          }
-         
+
          if (this._processedWidgetCountdown === 0)
          {
             // Double-check that no empty elements are in the array of processed widgets...
@@ -194,8 +194,8 @@ define(["dojo/_base/declare",
       /**
        * This function is called whenever a widget configured with a dynamic visibility rule is triggered
        * by a publication. The configured rules are processed and the widget is displayed or hidden
-       * accordingly 
-       * 
+       * accordingly
+       *
        * @instance
        * @param {object} widget The widget to control the visibility of
        * @param {array} is The values that the payload value can be for the widget to be visible
@@ -217,7 +217,7 @@ define(["dojo/_base/declare",
             // Check to see if the current value is set to an invalid value (i.e. a value that negates the rule)
             isInvalidValue = array.some(isNot, lang.hitch(this, "visibilityRuleComparator", target));
          }
-         
+
          // Check to see if the current value is set to a valid value...
          if (!isInvalidValue && typeof is != "undefined" && is.length > 0)
          {
@@ -234,9 +234,9 @@ define(["dojo/_base/declare",
             domStyle.set(widget.domNode, "display", "");
          }
       },
-      
+
       /**
-       * This function compares the supplied values for equality. It is called from the 
+       * This function compares the supplied values for equality. It is called from the
        * [processVisibility function]{@link module:alfresco/core/CoreWidgetProcessing#processVisibility} to compare
        * the current value with the configured rules for dynamically hiding and displaying a widget
        * triggered by publications
@@ -251,8 +251,8 @@ define(["dojo/_base/declare",
          {
             return true;
          }
-         else if (targetValue != null && 
-                  typeof targetValue.toString == "function" && 
+         else if (targetValue != null &&
+                  typeof targetValue.toString == "function" &&
                   currValue != null &&
                   typeof currValue.toString == "function")
          {
@@ -266,19 +266,19 @@ define(["dojo/_base/declare",
 
       /**
        * This is set from false to true after the [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed}
-       * extension point function is called. It can be used to check whether or not widget processing is complete. 
-       * This is to allow for checks that widget processing has been completed BEFORE attaching a listener to the 
+       * extension point function is called. It can be used to check whether or not widget processing is complete.
+       * This is to allow for checks that widget processing has been completed BEFORE attaching a listener to the
        * [allWidgetsProcessed]{@link module:alfresco/core/Core#allWidgetsProcessed} function.
-       * 
+       *
        * @instance
        * @type {boolean}
        * @default false
        */
       widgetProcessingComplete: false,
-      
+
       /**
        * This is an extension point for handling the completion of calls to [processWidgets]{@link module:alfresco/core/Core#processWidgets}
-       * 
+       *
        * @instance
        * @param {Array} widgets An array of all the widgets that have been processed
        */
@@ -290,7 +290,7 @@ define(["dojo/_base/declare",
        * Creates a new DOM node for a widget to use. The DOM node contains a child <div> element
        * that the widget will be attached to and an outer <div> element that additional CSS classes
        * can be applied to.
-       * 
+       *
        * @instance
        * @param {object} widget The widget definition to create the DOM node for
        * @param {element} rootNode The DOM node to create the new DOM node as a child of
@@ -306,21 +306,21 @@ define(["dojo/_base/declare",
          }
          return domConstruct.create("div", {}, tmp);
       },
-      
+
       /**
        * This method will instantiate a new widget having requested that its JavaScript resource and
        * dependent resources be downloaded. In principle all of the required resources should be available
-       * if the widget is being processed in the context of the Surf framework and dependency analysis of 
-       * the page has been completed. However, if this is being performed as an asynchronous event it may 
+       * if the widget is being processed in the context of the Surf framework and dependency analysis of
+       * the page has been completed. However, if this is being performed as an asynchronous event it may
        * be necessary for Dojo to request additional modules. This is why the callback function is required
        * to ensure that successfully instantiated modules can be kept track of.
-       * 
+       *
        * @instance
        * @param {object} config The configuration for the widget
        * @param {element} domNode The DOM node to attach the widget to
        * @param {function} callback A function to call once the widget has been instantiated
        * @param {object} callbackScope The scope with which to call the callback
-       * @param {number} index The index of the widget to create (this will effect it's location in the 
+       * @param {number} index The index of the widget to create (this will effect it's location in the
        * [_processedWidgets]{@link module:alfresco/core/Core#_processedWidgets} array)
        */
       createWidget: function alfresco_core_CoreWidgetProcessing__createWidget(config, domNode, callback, callbackScope, index) {
@@ -397,7 +397,7 @@ define(["dojo/_base/declare",
 
             // Create a reference for the widget to be added to. Technically the require statement
             // will need to asynchronously request the widget module - however, assuming the widget
-            // has been included in such a way that it will have been included in the generated 
+            // has been included in such a way that it will have been included in the generated
             // module cache then the require call will actually process synchronously and the widget
             // variable will be returned with an assigned value...
             var widget = null;
@@ -412,7 +412,7 @@ define(["dojo/_base/declare",
                {
                   initArgs.id = config.name + "___" + _this.generateUuid();
                }
-               
+
                // Instantiate the new widget
                // This is an asynchronous response so we need a callback method...
                widget = new WidgetType(initArgs, domNode);
@@ -441,7 +441,7 @@ define(["dojo/_base/declare",
                   callback.call((callbackScope != null ? callbackScope : this), widget, index);
                }
             });
-            
+
             if (widget == null)
             {
                this.alfLog("warn", "A widget was not declared so that it's modules were included in the loader cache", config, this);
@@ -474,7 +474,7 @@ define(["dojo/_base/declare",
          {
             // If filter configuration is provided, then switch the default so that rendering will NOT occur...
             // shouldRender = false;
-      
+
             // Check that the object has a the supplied property...
             var renderFilterConfig = widgetConfig.config.renderFilter;
             if (!ObjectTypeUtils.isArray(renderFilterConfig))
@@ -510,7 +510,7 @@ define(["dojo/_base/declare",
          }
          return shouldRender;
       },
-      
+
       /**
        * @instance
        * @param {object} renderFilterConfig The filter configuration to process
@@ -521,7 +521,7 @@ define(["dojo/_base/declare",
          var passesFilter = false;
          if (this.filterPropertyExists(renderFilterConfig))
          {
-            // Compare the property value against the applicable values... 
+            // Compare the property value against the applicable values...
             var renderFilterProperty = this.getRenderFilterPropertyValue(renderFilterConfig),
                 renderFilterValues = this.getRenderFilterValues(renderFilterConfig);
             passesFilter = array.some(renderFilterValues, lang.hitch(this, "processFilter", renderFilterConfig, renderFilterProperty));
@@ -537,14 +537,14 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Render filter result", passesFilter, this.currentItem, renderFilterConfig);
          return passesFilter;
       },
-      
+
       /**
-       * This is called from the [filterWidget]{@link module:alfresco/core/WidgetsProcessingFilterMixin#filterWidget} function 
+       * This is called from the [filterWidget]{@link module:alfresco/core/WidgetsProcessingFilterMixin#filterWidget} function
        * for each acceptable filter value and compares it against the supplied target value.
-       * 
+       *
        * @instance
        * @param {object} renderFilterConfig The configuration for the filter
-       * @param {string|boolean|number} target The target object to match (ideally this should be a string, boolean or a number 
+       * @param {string|boolean|number} target The target object to match (ideally this should be a string, boolean or a number
        * @returns {boolean} true If the supplied value matches the target value and false otherwise.
        */
       processFilter: function alfresco_core_WidgetsProcessingFilterMixin__processFilter(renderFilterConfig, target, currValue) {
@@ -574,11 +574,11 @@ define(["dojo/_base/declare",
             return currValue !== target;
          }
       },
-      
+
       /**
        * Checks to see whether or not the supplied filter property is a genuine attribute of the
        * [currentItem]{@link module:alfresco/core/WidgetsProcessingFilterMixin#currentItem}.
-       * 
+       *
        * @instance
        * @param {{property: string, values: string[]|string}} renderFilterConfig The filter configuration to process.
        * @returns {boolean} true if the property exists and false if it doesn't.
@@ -591,13 +591,13 @@ define(["dojo/_base/declare",
          }
          return (ObjectTypeUtils.isString(renderFilterConfig.property) && ObjectTypeUtils.isObject(targetObject) && lang.exists(renderFilterConfig.property, targetObject));
       },
-      
+
       /**
        * Processes the "filterProperty" attribute defined in the filter configuration (which is expected to be a dot notation path to an attribute
-       * of the [currentItem]{@link module:alfresco/core/WidgetsProcessingFilterMixin#currentItem}. This 
+       * of the [currentItem]{@link module:alfresco/core/WidgetsProcessingFilterMixin#currentItem}. This
        * property is then retrieved from [currentItem]{@link module:alfresco/core/WidgetsProcessingFilterMixin#currentItem}
-       * and returned so that it can be compared against the "values" configuration. Retrieval of the 
-       * 
+       * and returned so that it can be compared against the "values" configuration. Retrieval of the
+       *
        * @instance
        * @param {{property: string, values: string[]|string}} renderFilter The filter configuration to process.
        * @returns {object} The property of [currentItem]{@link module:alfresco/core/WidgetsProcessingFilterMixin#currentItem} defined
@@ -611,7 +611,7 @@ define(["dojo/_base/declare",
          }
          return lang.getObject(renderFilterConfig.property, false, targetObject);
       },
-      
+
       /**
        *
        * @instance
@@ -626,10 +626,10 @@ define(["dojo/_base/declare",
          }
          return result;
       },
-      
+
       /**
        * Attempt to convert the supplied filter value into an array. Filter values should be configured as an array of
-       * strings but this also allows single strings to be used (which are converted into a single element array) but 
+       * strings but this also allows single strings to be used (which are converted into a single element array) but
        * if all else fails then an empty array will be returned.
        *
        * @instance

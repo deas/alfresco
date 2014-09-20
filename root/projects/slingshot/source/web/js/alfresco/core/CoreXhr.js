@@ -78,10 +78,24 @@ define(["dojo/_base/declare",
        *
        * By default this function will issue a POST method
        *
+       * @typedef {Object} serviceXhrConfig
+       * @property {String} url - Where should we send the request to.
+       * @property {Object} [headers={'Content-Type': 'application/json'}] headers - Request headers to send (overrides default)
+       * @property {Object} [data=null] - data for the request body
+       * @property {String} [query=null] - data for the query string
+       * @property {String} [handleAs=text] - TODO - document this feature.
+       * @property {String} [method=POST] - HTTP method to use for XHR
+       * @property {Object} [requestId] - TODO - document this feature
+       * @property {function} [successCallback] - overrides the default success callback
+       * @property {function} [failureCallback] - overrides the default failure callback
+       * @property {function} [progressCallback] - overrides the default progress callback
+       * @property {function} [callbackScope=_this] - the scope to pass to the overridden callback function
+       * @property {string} [alfTopic] - The topic to by published by the default request callbacks.
+       * Appended with "_PROGRESS", "_FAILURE" or "_SUCCESS" depending on response status code.
+       *
+       *
        * @instance
-       * @param {Object} config The configuration for the request
-       * @todo List the available config object attributes
-       * @todo - should 400 response be a success?
+       * @param {serviceXhrConfig} config The configuration for the request
        */
       serviceXhr: function alfresco_core_CoreXhr__serviceXhr(config) {
 

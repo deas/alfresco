@@ -22,7 +22,7 @@
  * previous and next buttons. It was written to support the [filmstrip view]{@link module:alfresco/documentlibrary/views/AlfFilmStripView}
  * which uses both this module (and the extending module [DocumentCarousel]{@link module:alfresco/documentlibrary/views/layouts/DocumentCarousel}
  * to show both the entire contents of a folder and a preview of the currently selected item.
- * 
+ *
  * @module alfresco/documentlibrary/views/layouts/Carousel
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
@@ -33,7 +33,7 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
+        "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
         "alfresco/core/Core",
@@ -46,32 +46,32 @@ define(["dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/dom-style",
         "dojo/dom-geometry",
-        "dojo/window"], 
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, ResizeMixin, _MultiItemRendererMixin, template, 
+        "dojo/window"],
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, AlfCore, ResizeMixin, _MultiItemRendererMixin, template,
                  lang, array, domClass, domConstruct, domStyle, domGeom, win) {
 
    return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, ResizeMixin, _MultiItemRendererMixin, AlfCore], {
-      
+
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{cssFile:"./css/Carousel.css"}]
        */
       cssRequirements: [{cssFile:"./css/Carousel.css"}],
-      
+
       /**
        * The HTML template to use for the widget.
-       * 
+       *
        * @instance
        * @type {String}
        */
       templateString: template,
-      
+
       /**
        * Sets up image source files, etc.
-       * 
+       *
        * @instance postCreate
        */
       postMixInProperties: function alfresco_documentlibrary_views_layouts_Carousel__postMixInProperties() {
@@ -81,7 +81,7 @@ define(["dojo/_base/declare",
 
       /**
        * Calls [processWidgets]{@link module:alfresco/core/Core#processWidgets}
-       * 
+       *
        * @instance postCreate
        */
       postCreate: function alfresco_documentlibrary_views_layouts_Carousel__postCreate() {
@@ -209,10 +209,10 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * Extends the inherited function to add an additional li element for each item.
-       * 
+       *
        * @instance
        * @param {array} widgets The widgets to create
        * @param {element} rootNode The DOM element to add them into.
@@ -223,11 +223,11 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This keeps track of the current left position (e.g. the setting that controls what items you can see 
-       * within the clipped frame). This value is updated by the 
+       * This keeps track of the current left position (e.g. the setting that controls what items you can see
+       * within the clipped frame). This value is updated by the
        * [onPrevClick]{@link module:alfresco/documentlibrary/views/layouts/Carousel#onPrevClick} and
        * [onNextClick]{@link module:alfresco/documentlibrary/views/layouts/Carousel#onNextClick} functions.
-       * 
+       *
        * @instance
        * @type {number}
        * @default 0
@@ -301,7 +301,7 @@ define(["dojo/_base/declare",
             {
                var widgets = this._renderedItemWidgets[i];
                array.forEach(widgets, lang.hitch(this, this.renderDisplayedItem));
-               
+
             }
          }
 
@@ -313,7 +313,7 @@ define(["dojo/_base/declare",
          var itemsCount = lang.getObject("currentData.items.length", false, this);
          domStyle.set(this.prevNode, "visibility", (this.firstDisplayedIndex == 0) ? "hidden": "visible");
          domStyle.set(this.nextNode, "visibility", (this.firstDisplayedIndex <= itemsCount-1 && this.lastDisplayedIndex >= itemsCount-1) ? "hidden": "visible");
-         
+
       },
 
       /**

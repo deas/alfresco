@@ -1,4 +1,5 @@
 /**
+/**
  * Copyright (C) 2005-2013 Alfresco Software Limited.
  *
  * This file is part of Alfresco
@@ -18,9 +19,9 @@
  */
 
 /**
- * This should be used to wrap a set of [AlfDocumentFilters]{@link module:alfresco/documentlibrary/AlfDocumentFilter} 
+ * This should be used to wrap a set of [AlfDocumentFilters]{@link module:alfresco/documentlibrary/AlfDocumentFilter}
  * in order to achieve the "twisty" and correct look and feel as expected in a document library.
- * 
+ *
  * @module alfresco/documentlibrary/AlfDocumentFilters
  * @extends module:alfresco/layout/Twister
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
@@ -36,14 +37,14 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/dom-construct",
         "dojo/dom-class",
-        "dojo/on"], 
-        function(declare, Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin, template, 
+        "dojo/on"],
+        function(declare, Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin, template,
                  AlfDocumentFilter, lang, array, domConstruct, domClass, on) {
    return declare([Twister, _OnDijitClickMixin, _AlfDocumentListTopicMixin], {
 
       /**
        * An array of the i18n files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDocumentFilters.properties"}]
@@ -52,7 +53,7 @@ define(["dojo/_base/declare",
 
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance cssRequirements {Array}
        * @type {object[]}
        * @default [{cssFile:"./css/AlfDocumentFilters.css"}]
@@ -94,15 +95,15 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Overrides the inherited function to iterate over the processed widgets and call 
+       * Overrides the inherited function to iterate over the processed widgets and call
        * the 'addFilter' function passing each one as an argument.
-       * 
+       *
        * @instance
        * @param {object[]} widgets The widgets that were created.
        */
       allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentFilters__allWidgetsProcessed(widgets) {
          var _this = this;
-         array.forEach(widgets, lang.hitch(this, "addFilter"));
+         array.forEach(widgets, lang.hitch(this, this.addFilter));
          if (this.moreFiltersList != null)
          {
             domClass.remove(this.showMoreNode, "hidden");
@@ -110,8 +111,8 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Adds supplied widget to the 'filtersNode' if it inherites from 'alfresco/documentlibrary/AlfDocumentFilter'
-       * 
+       * Adds supplied widget to the 'filtersNode' if it inherits from 'alfresco/documentlibrary/AlfDocumentFilter'
+       *
        * @instance
        * @param {object} widget The widget to be added
        * @param {integer} insertIndex The index to add the widget at
@@ -128,7 +129,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       *
        * @instance
        * @type {array}
        * @default null
@@ -138,7 +139,7 @@ define(["dojo/_base/declare",
       /**
        * Add a filter than will be initially hidden but will be revealed when clicking on the "More Choices"
        * link
-       * 
+       *
        * @instance
        */
       addMoreFilter: function alfresco_documentlibrary_AlfDocumentFilters__addMoreFilter(widget) {

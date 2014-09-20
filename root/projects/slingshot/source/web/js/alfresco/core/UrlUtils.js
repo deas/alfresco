@@ -19,7 +19,7 @@
 
 /**
  * This is a mixin that provides URL related utility functions.
- * 
+ *
  * @module alfresco/core/UrlUtils
  * @extends module:alfresco/core/PathUtils
  * @author Dave Draper
@@ -27,21 +27,21 @@
 define(["dojo/_base/declare",
         "alfresco/core/PathUtils",
         "service/constants/Default",
-        "dojo/_base/lang"], 
+        "dojo/_base/lang"],
         function(declare, PathUtils, AlfConstants, lang) {
-   
+
    return declare([PathUtils], {
 
       /**
        * Declares the dependencies on "legacy" JavaScript files that this is aliasing some functions of
-       * 
+       *
        * @instance
        * @type {String[]}
        * @default ["/js/alfresco.js"]
        */
       nonAmdDependencies: ["/js/yui-common.js",
                            "/js/alfresco.js"],
-      
+
       /**
        * Generate User Profile link
        *
@@ -89,7 +89,7 @@ define(["dojo/_base/declare",
 
          return '<a href="' + uri + '" ' + (linkAttr || "") + '>' + html + '</a>';
       },
-      
+
       /**
        * Returns a URL to a site page.
        * If no Site ID is supplied, generates a link to the non-site page.
@@ -100,7 +100,7 @@ define(["dojo/_base/declare",
        *    "folder-details?nodeRef=" + nodeRef
        * </pre>
        * @param {object} obj The object literal containing the token values to substitute within the template
-       * @param {boolean} absolute Whether the URL should include the protocol and host
+       * @param {boolean} [absolute] Whether the URL should include the protocol and host
        * @returns {string} The populated URL
        */
       siteURL: function alfresco_core_UrlUtils__siteURL(pageURI, obj, absolute) {
@@ -111,9 +111,9 @@ define(["dojo/_base/declare",
             pageid: pageURI
          }), absolute);
       },
-      
+
       /**
-       * 
+       *
        * @instance
        * param {string} template
        * @param {object} obj
@@ -129,7 +129,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       *
        * @instance
        * @param {string} template
        * @param {object} obj
@@ -215,14 +215,14 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This function is required to support "legacy" action handling within Share. 
-       * 
+       * This function is required to support "legacy" action handling within Share.
+       *
        * @instance
-       * @param {Object} record The current node to generate actions URLs for. 
+       * @param {Object} record The current node to generate actions URLs for.
        * @param {String} [siteId] The id of the current site, will be generated if missing from record.
        * @param {String} [repositoryUrl] The URL of a linked repository
        */
-      getActionUrls: function alfresco_core_UrlUtils__getActionUrls(record, siteId, repositoryUrl, replicationUrlMapping) {
+      getActionUrls: function alfresco_core_UrlUtils__getActionUrls(record, siteId, repositoryUrl) {
          var actionUrls = {},
              jsNode = record.node;
          if (jsNode)
@@ -261,18 +261,18 @@ define(["dojo/_base/declare",
          }
          return actionUrls;
       },
-      
+
       /**
        * Alias to [siteURL]{@link module:alfresco/core/UrlUtils#siteURL}
-       * 
+       *
        * @instance
-       * @param {String} 
-       * @param {Object[]}
+       * @param {String} page
+       * @param {Object[]} args
        */
       generatePageUrl: function alfresco_core_UrlUtils__generatePageUrl(page, args) {
          return this.siteURL(page, args);
       },
-      
+
       /**
        * View in source Repository URL helper
        *
