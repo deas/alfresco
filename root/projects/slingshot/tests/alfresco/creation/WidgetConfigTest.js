@@ -34,20 +34,19 @@ define(["intern!object",
          var testname = "Page Creation Test";
          return TestCommon.loadTestWebScript(this.remote, "/WidgetConfig", testname)
 
-         .end()
-
          // 1. Find and pick up the draggable item
          .findByCssSelector("#dojoUnique1 > .title")
             .moveMouseTo()
             .click()
             .pressMouseButton()
-            .moveMouseTo(null, 1, 1)
+            .moveMouseTo(1, 1)
             .end()
 
          // 2. Move to the drop zone and release
          .findByCssSelector(".alfresco-creation-DropZone > div")
             .then(function(element) {
-               browser.moveMouseTo(element)
+               TestCommon.log(testname, "Dragging widget to drop zone...");
+               browser.moveMouseTo(element);
             })
             .sleep(500) // The drag is 'elastic' and this sleep allows the item to catch up with the mouse movement
             .releaseMouseButton()
@@ -62,6 +61,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-forms-controls-DojoValidationTextBox .dijitInputContainer input")
             .getProperty('value')
             .then(function(resultText) {
+               TestCommon.log(testname, "Check that widget is displayed in drop zone...");
                assert(resultText == "Value1", "Test #2a - The initial value was not set correctly: " + resultText);
             })
             .end()

@@ -1,6 +1,6 @@
 {
    "devDependencies": {
-      "intern": "~2",
+      "intern": "latest",
       "squirejs": "~0.1.0",
       "grunt": "latest",
       "grunt-cli": "latest",
