@@ -65,7 +65,7 @@ define(["dojo/_base/declare",
          label: "doclist.view.gallery.label",
          iconClass: "alf-gallery-icon"
       },
-      
+
       /**
        * Subscribes to a topic to that sets the number of columns for the gallery. This topic is
        * published on by the slider control and which calls the 
@@ -73,10 +73,11 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      constructor: function alfresco_documentlibrary_views_AlfGalleryView__constructor() {
+      postCreate: function alfresco_documentlibrary_views_AlfGalleryView__postCreate() {
+         this.inherited(arguments);
          this.alfSubscribe("ALF_DOCLIST_SET_GALLERY_COLUMNS", lang.hitch(this, "updateColumns"));
       },
-      
+
       /**
        * This is the number of columns to use in the grid.
        * 
@@ -124,7 +125,9 @@ define(["dojo/_base/declare",
        */
       getAdditionalControls: function alfresco_documentlibrary_views_AlfGalleryView__getAdditionalControls() {
          return [new AlfGalleryViewSlider({
-            relatedViewName: this.getViewName()
+            relatedViewName: this.getViewName(),
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope
          })];
       },
       
