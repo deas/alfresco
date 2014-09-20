@@ -74,8 +74,8 @@ define(["intern!object",
 
          .findByXpath(TestCommon.consoleXpathSelector("A heading must have a numeric level from 1 to 6 and must have a label"))
             .then(
-               function(){TestCommon.log(testname,"Check the console logged the faulty twister");},
-               function(){assert(false, "The console did not log the faulty twister");}
+               function(element){TestCommon.log(testname,"Check the console logged the faulty twister");},
+               function(err){assert(false, "The console did not log the faulty twister at xpath: " + TestCommon.consoleXpathSelector("A heading must have a numeric level from 1 to 6 and must have a label"));}
             )
             .end()
 
