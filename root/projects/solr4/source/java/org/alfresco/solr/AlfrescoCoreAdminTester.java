@@ -24,9 +24,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -39,6 +42,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.alfresco.httpclient.AuthenticationException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -50,11 +54,13 @@ import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.namespace.InvalidQNameException;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+import org.alfresco.solr.AlfrescoSolrDataModel.FieldInstance;
 import org.alfresco.solr.client.ContentPropertyValue;
 import org.alfresco.solr.client.MLTextPropertyValue;
 import org.alfresco.solr.client.MultiPropertyValue;
 import org.alfresco.solr.client.PropertyValue;
 import org.alfresco.solr.client.StringPropertyValue;
+import org.alfresco.solr.client.SOLRAPIClient.GetTextContentResponse;
 import org.alfresco.util.CachingDateFormat;
 import org.alfresco.util.CachingDateFormat.SimpleDateFormatAndResolution;
 import org.alfresco.util.GUID;
@@ -87,6 +93,7 @@ import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.util.RefCounted;
 //import org.alfresco.repo.search.impl.lucene.MultiReader;
+import org.springframework.util.FileCopyUtils;
 
 public class AlfrescoCoreAdminTester
 {
@@ -8256,6 +8263,7 @@ public class AlfrescoCoreAdminTester
             final SolrInputDocument cachedDoc = null;
             final boolean transformContentFlag = true;
             SolrInformationServer.addPropertiesToDoc(properties, isContentIndexedForNode, doc, cachedDoc, transformContentFlag);
+            addContentToDoc(doc, content);
         }
 
         doc.addField(FIELD_TYPE, type);
@@ -8277,6 +8285,44 @@ public class AlfrescoCoreAdminTester
         public SolrServletRequest(SolrCore core, HttpServletRequest req)
         {
             super(core, new MultiMapSolrParams(Collections.<String, String[]> emptyMap()));
+        }
+    }
+    
+    private void addContentToDoc(SolrInputDocument cachedDoc, Map<QName, String> content) 
+    {
+        Collection<String> fieldNames = cachedDoc.deepCopy().getFieldNames(); 
+        for (String fieldName : fieldNames)
+        {
+            if (fieldName.startsWith(AlfrescoSolrDataModel.CONTENT_S_LOCALE_PREFIX))
+            {
+                String locale = String.valueOf(cachedDoc.getFieldValue(fieldName));
+                String qNamePart = fieldName.substring(AlfrescoSolrDataModel.CONTENT_S_LOCALE_PREFIX.length());
+                QName propertyQName = QName.createQName(qNamePart);
+                addContentPropertyToDoc(cachedDoc, propertyQName, locale, content);
+            }
+            // Could update multi content but it is broken ....
+        }
+    }
+    
+    private void addContentPropertyToDoc(SolrInputDocument cachedDoc, 
+            QName propertyQName, String locale, Map<QName, String> content) 
+    {
+       
+        StringBuilder builder = new StringBuilder();
+        builder.append("\u0000").append(locale).append("\u0000");
+        builder.append(content.get(propertyQName));
+
+        for (FieldInstance  field : AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(propertyQName).getFields())
+        {
+            cachedDoc.removeField(field.getField());
+            if(field.isLocalised())
+            {
+                cachedDoc.addField(field.getField(), builder.toString());
+            }
+            else
+            {
+                cachedDoc.addField(field.getField(), content.get(propertyQName));
+            }
         }
     }
 }

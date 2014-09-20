@@ -1888,7 +1888,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                         }
                                         else
                                         {
-                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, nextSpanQuery}, gap, true);
+                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, nextSpanQuery}, gap + internalSlop, internalSlop < 2);
                                         }
                                         atSamePosition = new SpanOrQuery();
                                     }
@@ -1900,7 +1900,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                         }
                                         else
                                         {
-                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap + internalSlop, internalSlop < 2);
                                         }
                                         atSamePosition = new SpanOrQuery();
                                         atSamePosition.addClause(nextSpanQuery);
@@ -1913,7 +1913,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                         }
                                         else
                                         {
-                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                                            spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap + internalSlop, internalSlop < 2);
                                         }
                                         atSamePosition = new SpanOrQuery();
                                         atSamePosition.addClause(nextSpanQuery);
@@ -1957,7 +1957,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                             }
                             else
                             {
-                                spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                                spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap + internalSlop, internalSlop < 2);
                             }
                             atSamePosition = new SpanOrQuery();
                             spanOr.addClause(spanQuery);
@@ -1970,7 +1970,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                             }
                             else
                             {
-                                spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                                spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap + internalSlop, internalSlop < 2);
                             }
                             atSamePosition = new SpanOrQuery();
                             spanOr.addClause(spanQuery);
@@ -2015,7 +2015,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                 }
                                 else
                                 {
-                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, nextSpanQuery}, gap, true);
+                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, nextSpanQuery}, gap + internalSlop, internalSlop < 2);
                                 }
                                 atSamePosition = new SpanOrQuery();
                             }
@@ -2027,7 +2027,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                 }
                                 else
                                 {
-                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap + internalSlop, internalSlop < 2);
                                 }
                                 atSamePosition = new SpanOrQuery();
                                 atSamePosition.addClause(nextSpanQuery);
@@ -2040,7 +2040,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                 }
                                 else
                                 {
-                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                                    spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap + internalSlop, internalSlop < 2);
                                 }
                                 atSamePosition = new SpanOrQuery();
                                 atSamePosition.addClause(nextSpanQuery);
@@ -2083,7 +2083,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     }
                     else
                     {
-                        spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap, true);
+                        spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition.getClauses()[0]}, gap + internalSlop, internalSlop < 2);
                     }
                     return spanQuery;
                 }
@@ -2095,7 +2095,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     }
                     else
                     {
-                        spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap, true);
+                        spanQuery = new SpanNearQuery(new SpanQuery[]{spanQuery, atSamePosition}, gap + internalSlop, internalSlop < 2);
                     }
                     return spanQuery;
                 }

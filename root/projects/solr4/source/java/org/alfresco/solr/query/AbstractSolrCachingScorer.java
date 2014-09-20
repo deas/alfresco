@@ -47,8 +47,7 @@ public abstract class AbstractSolrCachingScorer extends Scorer
     AbstractSolrCachingScorer(Weight weight, DocSet in, AtomicReaderContext context, SolrIndexSearcher searcher)
     {
         super(weight);
-        // TODO: 'in' is often too small for the logic in next() to work successfully (ArrayIndexOutOfBoundsException)
-        if (false /*in instanceof BitDocSet*/)
+        if (in instanceof BitDocSet)
         {
             matches = (BitDocSet) in;
         }
@@ -68,10 +67,15 @@ public abstract class AbstractSolrCachingScorer extends Scorer
     
     private boolean next()
     {        
-        // TODO: this is breaking because sometimes a BitDocSet is passed in to the constructor
-        // that is smaller than searcher.maxDoc()
-        doc = bitSet.nextSetBit(doc+1);
-        return (doc != -1)  && (doc < (getBase()  + context.reader().maxDoc()));
+        if(doc+1 < bitSet.length())
+        {
+            doc = bitSet.nextSetBit(doc+1);
+            return (doc != -1)  && (doc < (getBase()  + context.reader().maxDoc()));
+        }
+        else
+        {
+            return false;
+        }
     }
     
     private int getBase()
