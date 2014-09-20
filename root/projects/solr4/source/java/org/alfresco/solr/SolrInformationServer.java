@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -126,6 +128,10 @@ import org.springframework.util.FileCopyUtils;
  */
 public class SolrInformationServer implements InformationServer, QueryConstants
 {
+    /**
+     * 
+     */
+    private static final String NO_SITE = "_REPOSITORY_";
     public static final String AND = " AND ";
     public static final String OR = " OR ";
     public static final String REQUEST_HANDLER_ALFRESCO_FULL_TEXT_SEARCH = "/afts";
@@ -143,6 +149,9 @@ public class SolrInformationServer implements InformationServer, QueryConstants
     public static final String DOC_TYPE_TX = "Tx";
     public static final String DOC_TYPE_ACL_TX = "AclTx";
     public static final String DOC_TYPE_STATE = "State";
+ 
+    private static final Pattern CAPTURE_SITE = Pattern.compile("^/\\{http\\://www\\.alfresco\\.org/model/application/1\\.0\\}company\\_home/\\{http\\://www\\.alfresco\\.org/model/site/1\\.0\\}sites/\\{http\\://www\\.alfresco\\.org/model/content/1\\.0}([^/]*)/.*" ); 
+    private static final Pattern CAPTURE_TAG = Pattern.compile("^/\\{http\\://www\\.alfresco\\.org/model/content/1\\.0\\}taggable/\\{http\\://www\\.alfresco\\.org/model/content/1\\.0\\}([^/]*)/\\{\\}member");
     
     private AlfrescoCoreAdminHandler adminHandler;
     private SolrCore core;
@@ -1376,11 +1385,58 @@ public class SolrInformationServer implements InformationServer, QueryConstants
                
         doc.addField(FIELD_TENANT, AlfrescoSolrDataModel.getTenantId(nodeMetaData.getTenantDomain()));
 
+        boolean addedRepo = false;
         for (Pair<String, QName> path : nodeMetaData.getPaths())
         {
+            boolean wasSiteOrTag = false;
+            
             doc.addField(FIELD_PATH, path.getFirst());
+            Matcher matcher = CAPTURE_SITE.matcher(path.getFirst());
+            if(matcher.find())
+            {
+                wasSiteOrTag = true;
+                doc.addField(FIELD_SITE, matcher.group(1));
+            }
+            
+            matcher = CAPTURE_TAG.matcher(path.getFirst());
+            if(matcher.find())
+            {
+                wasSiteOrTag = true;
+                doc.addField(FIELD_TAG, ISO9075.decode(matcher.group(1)));
+            }
+            
+            if(!addedRepo && !wasSiteOrTag)
+            {
+                addedRepo = true;
+                doc.addField(FIELD_SITE, NO_SITE);
+            }
         }
 
+        for(List<String> namePath : nodeMetaData.getNamePaths())
+        {
+            StringBuilder builder = new StringBuilder();
+            int i = 0;
+            for(String element : namePath)
+            {
+                builder.append('/').append(element);
+                doc.addField(FIELD_NPATH, "" + i++ + builder.toString());
+            }
+            
+            builder = new StringBuilder();
+            for(int j = 0;  j < namePath.size() - 1; j++)
+            {
+                String element = namePath.get(namePath.size() - 2 - j);
+                builder.insert(0, element);
+                builder.insert(0, '/');
+                doc.addField(FIELD_PNAME, "" + j +  builder.toString());
+            }
+//            
+//            if(namePath.size() > 1)
+//            {
+//                doc.addField(FIELD_PNAME, namePath.get(namePath.size() - 2));
+//            }
+        }
+        
         if (nodeMetaData.getOwner() != null)
         {
             doc.addField(FIELD_OWNER, nodeMetaData.getOwner());

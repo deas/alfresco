@@ -50,7 +50,7 @@
             <version>${project.version}</version>
         </dependency>
         <!-- provided dependencies -->
-            <dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>

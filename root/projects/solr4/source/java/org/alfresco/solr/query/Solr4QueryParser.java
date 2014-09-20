@@ -728,7 +728,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
      */
     protected Query createTagQuery(String tag) throws ParseException
     {
-        return getFieldQuery(FIELD_PATH, "/cm:taggable/cm:" + ISO9075.encode(tag.toLowerCase()) + "/member");
+        return createTermQuery(FIELD_TAG, tag.toLowerCase());
     }
 
    

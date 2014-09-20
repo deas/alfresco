@@ -58,6 +58,7 @@
                units="degrees" />
 
 
+<!--
       <fieldType name="site" class="solr.TextField" >
          <analyzer type="index">
             <tokenizer class="solr.PatternTokenizerFactory" pattern=";"/>
@@ -68,7 +69,7 @@
             <tokenizer class="solr.KeywordTokenizerFactory"/>
          </analyzer>
       </fieldType>
-
+-->
 
       <!-- Suggestion -->
 
@@ -621,10 +622,10 @@
 
 
       <!-- example pluggable field -->
-      <field name="SITE" type="site" indexed="true" omitNorms="true" stored="false" multiValued="true" />
-      <!--
-      <field name="TAG"  type="tag"  indexed="true" omitNorms="true" stored="false" multiValued="true" />
-       -->
+      <field name="SITE"   type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true" docValues="true" />
+      <field name="TAG"    type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true" docValues="true" />
+      <field name="PNAME"  type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true" docValues="true" />
+      <field name="NPATH"  type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true" docValues="true" />
 
 
       <!-- Single value indexed  -->
@@ -740,6 +741,4 @@
 
    <uniqueKey>id</uniqueKey>
 
-   <!-- A simple pluggable field based upon another field value -->
-   <copyField source="PATH" dest="SITE"/>
 </schema>
