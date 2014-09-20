@@ -131,8 +131,9 @@ define({
       'tests/alfresco/services/SiteServiceTest',
       'tests/alfresco/services/UserServiceTest',
 
-      'tests/alfresco/search/FacetFiltersTest',
       'tests/alfresco/search/AlfSearchResultTest',
+      'tests/alfresco/search/FacetFiltersTest',
+      'tests/alfresco/search/SearchSuggestionsTest',
 
       'tests/alfresco/upload/UploadTest'
    ],

@@ -106,6 +106,17 @@ define(["dojo/_base/declare",
       subscribeToDocRequests: false,
 
       /**
+       * This is the topic that will be subscribed to when [subscribeToDocRequests]
+       * {@link module:alfresco/documentlibrary/views/AlfDocumentListView#subscribeToDocRequests} is
+       * configured to be true.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS"
+       */
+      documentSubscriptionTopic: "ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS",
+
+      /**
        * Implements the widget life-cycle method to add drag-and-drop upload capabilities to the root DOM node.
        * This allows files to be dragged and dropped from the operating system directly into the browser
        * and uploaded to the location represented by the document list.
@@ -132,8 +143,11 @@ define(["dojo/_base/declare",
 
          if (this.subscribeToDocRequests)
          {
-            this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, "onFilterChange"));
-            this.alfSubscribe("ALF_RETRIEVE_DOCUMENTS_REQUEST_SUCCESS", lang.hitch(this, "onDocumentsLoaded"));
+            if (this.useHash === true)
+            {
+               this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onFilterChange));
+            }
+            this.alfSubscribe(this.documentSubscriptionTopic, lang.hitch(this, this.onDocumentsLoaded));
          }
          if (this.currentData != null)
          {
@@ -147,24 +161,55 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This is the property that is used to lookup documents in the subscribed topic. 
+       *
+       * @instance
+       * @type {string}
+       * @default  "response.items"
+       */
+      itemsProperty: "response.items",
+
+      /**
        * @instance
        * @param {object} payload The details of the documents that have been provided.
        */
       onDocumentsLoaded: function alfresco_documentlibrary_views_AlfDocumentListView__onDocumentsLoaded(payload) {
-         var items = lang.getObject("response.items", false, payload);
+         var items = lang.getObject(this.itemsProperty, false, payload);
          if (items != null)
          {
-            for (var i = 0; i<items.length; i++)
-            {
-               items[i].jsNode = new JsNode(items[i].node);
-            }
-
-            this.setData(payload.response);
+            array.forEach(items, lang.hitch(this, this.processItem));
+            this.setData({
+               items: items
+            });
             this.renderView(false);
          }
          else
          {
             this.alfLog("warn", "Payload contained no 'response.items' attribute", payload, this);
+         }
+      },
+
+      /**
+       * Attempts to process an item provided to the 
+       * [onDocumentsLoaded]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#onDocumentsLoaded}
+       * function. By default this attempts to process node data as the default behaviour is to assume this
+       * is an Alfresco node.
+       * 
+       * @instance
+       * @param {object} item The item to process
+       * @param {number} index The index of the item
+       */
+      processItem: function alfresco_documentlibrary_views_AlfDocumentListView__processItem(item, index) {
+         try
+         {
+            if (item.node)
+            {
+               item.jsNode = new JsNode(item.node);
+            }
+         }
+         catch (e)
+         {
+            this.alfLog("warn", "Could not process item as Alfresco node", item, e);
          }
       },
 

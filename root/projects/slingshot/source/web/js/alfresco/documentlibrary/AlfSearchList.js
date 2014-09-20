@@ -188,7 +188,6 @@ define(["dojo/_base/declare",
        * @param {object} payload The details of what to search for.
        */
       onAdvancedSearch: function alfresco_documentlibrary_AlfSearchList__onAdvancedSearch(payload) {
-         // TODO: This needs some serious work...
          this.resetResultsList();
          this.searchTerm = payload.searchTerm;
          delete payload.searchTerm;
@@ -585,6 +584,9 @@ define(["dojo/_base/declare",
             }
          }
 
+         // Handle any spell checking data included in the results...
+         this.handleSpellCheck(payload);
+
          var resultsCount = this.currentData.numberFound != -1 ? this.currentData.numberFound : 0;
          if (resultsCount != null)
          {
@@ -606,6 +608,51 @@ define(["dojo/_base/declare",
 
          // Force a resize of the sidebar container to take the new height of the view into account...
          this.alfPublish("ALF_RESIZE_SIDEBAR", {});
+      },
+
+      /**
+       * This function can be called to handle spell check results. If a search term did not match to any
+       * results or similar search terms yield better results then the search API may either have carried out
+       * the alternative search or has provided some alternative suggestions to search for. This function
+       * checks the search result payload and publishes on the "ALF_SPELL_CHECK_SEARCH_TERM" and 
+       * "ALF_SPELL_CHECK_SEARCH_SUGGESTIONS" topics respectively with that data.
+       *
+       * @instance
+       * @param {object} payload The payload containing the search result data
+       */
+      handleSpellCheck: function alfresco_documentlibrary_AlfSearchList__handleSpellCheck(payload) {
+         // Check to see whether or not spell checking was applied...
+         var spellcheck = lang.getObject("response.spellcheck", false, payload);
+         if (spellcheck != null)
+         {
+            if (spellcheck.searchedFor != null)
+            {
+               // This means that an alternative search term was used...
+               this.alfPublish("ALF_SPELL_CHECK_SEARCH_TERM", {
+                  searchRequest: spellcheck.searchRequest,
+                  searchedFor: spellcheck.searchedFor
+               });
+            }
+            else if (spellcheck.searchSuggestions != null)
+            {
+               // This means that an alternative search was not performed, but suggested searches
+               // are available...
+               var suggestions = [];
+               array.forEach(spellcheck.searchSuggestions, function(suggestion, i) {
+                  suggestions.push({
+                     term: suggestion
+                  });
+               });
+               this.alfPublish("ALF_SPELL_CHECK_SEARCH_SUGGESTIONS", {
+                  searchRequest: spellcheck.searchRequest,
+                  searchSuggestions: suggestions
+               });
+            }
+            else
+            {
+               // This means that the requested search term was used. No action required.
+            }
+         }
       },
 
       /**

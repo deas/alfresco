@@ -504,6 +504,102 @@ var searchDocLib = {
    }
 };
 
+// Define a widget for displaying alternative search terms should the search service report
+// that one has been used...
+var alternativeSearchLabel = {
+   id: "FCTSRCH_ALTERNATIVE_SEARCH",
+   name: "alfresco/search/AlternativeSearchLabel",
+   config: {
+      visibilityConfig: {
+         initialValue: false,
+         rules: [
+            {
+               topic: "ALF_SEARCH_REQUEST",
+               attribute: "dummy",
+               is: [""]
+            },
+            {
+               topic: "ALF_SPELL_CHECK_SEARCH_TERM",
+               attribute: "searchedFor",
+               isNot: [""]
+            }
+         ]
+      }
+   }
+};
+
+// Define a set of widgets to use to render any alternative search terms that the search
+// service might suggest as suitable alternatives to the search that was actually carried out
+var searchSuggestions = {
+   id: "FCTSRCH_SEARCH_SUGGESTIONS_STACK",
+   name: "alfresco/layout/VerticalWidgets",
+   config: {
+      visibilityConfig: {
+         initialValue: false,
+         rules: [
+            {
+               topic: "ALF_SEARCH_REQUEST",
+               attribute: "dummy",
+               is: [""]
+            },
+            {
+               topic: "ALF_SPELL_CHECK_SEARCH_SUGGESTIONS",
+               attribute: "searchSuggestions",
+               isNot: [""]
+            }
+         ]
+      },
+      widgets: [
+         {
+            id: "FCTSRCH_SEARCH_SUGGESTIONS_LABEL",
+            name: "alfresco/html/Label",
+            config: {
+               label: msg.get("faceted-search.suggestions.label")
+            }
+         },
+         {
+            id: "FCTSRCH_SEARCH_SUGGESTIONS_LIST",
+            name: "alfresco/documentlibrary/views/AlfDocumentListView",
+            config: {
+               subscribeToDocRequests: true,
+               documentSubscriptionTopic: "ALF_SPELL_CHECK_SEARCH_SUGGESTIONS",
+               itemsProperty: "searchSuggestions",
+               widgets: [
+                  {
+                     name: "alfresco/documentlibrary/views/layouts/Row",
+                     config: {
+                        widgets: [
+                           {
+                              name: "alfresco/documentlibrary/views/layouts/Cell",
+                              config: {
+                                 widgets: [
+                                    {
+                                       name: "alfresco/renderers/PropertyLink",
+                                       config: {
+                                          useCurrentItemAsPayload: false,
+                                          propertyToRender: "term",
+                                          publishTopic: "ALF_NAVIGATE_TO_PAGE",
+                                          publishPayloadType: "PROCESS",
+                                          publishPayloadModifiers: ["processCurrentItemTokens"],
+                                          publishPayload: {
+                                             type: "HASH",
+                                             url: "searchTerm={term}"
+                                          }
+                                       }
+                                    }
+                                 ]
+                              }
+                           }
+                        ]
+                     }
+                  }
+               ]
+            }
+         }
+      ]
+   }
+};
+
 // Put all components together
 var main = {
    id: "FCTSRCH_MAIN_VERTICAL_STACK",
@@ -566,6 +662,8 @@ var main = {
                      config: {
                         widgets: [
                            headingForResultsList,
+                           alternativeSearchLabel,
+                           searchSuggestions,
                            searchDocLib
                         ]
                      }
