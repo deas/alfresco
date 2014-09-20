@@ -96,6 +96,7 @@ define(["intern!object",
          // Close the dialog...
          .findByCssSelector(".alfresco-dialog-AlfDialog .footer .alfresco-buttons-AlfButton:first-child > span")
             .click()
+            .sleep(500)
             .end()
 
          // Count the selected items...
