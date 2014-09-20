@@ -34,43 +34,43 @@ define(["dojo/_base/declare",
         "alfresco/buttons/AlfButton",
         "service/constants/Default"],
         function(declare, AlfCore, AlfXhr, NotificationUtils, ObjectTypeUtils, xhr, JSON, lang, AlfButton, AlfConstants) {
-   
+
    return declare([AlfCore, AlfXhr, NotificationUtils], {
-      
+
       /**
        * An array of the i18n files to use with this widget.
-       * 
+       *
        * @instance
        * @type {Array}
        */
       i18nRequirements: [{i18nFile: "./i18n/SiteService.properties"}],
-      
+
       /**
        * Sets up the subscriptions for the SiteService
-       * 
-       * @instance 
+       *
+       * @instance
        * @param {array} args The constructor arguments.
        */
       constructor: function alfresco_services_SiteService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe("ALF_GET_SITES", lang.hitch(this, "getSites"));
-         this.alfSubscribe("ALF_GET_SITES_ADMIN", lang.hitch(this, "getAdminSites"));
-         this.alfSubscribe("ALF_GET_SITE_MEMBERSHIPS", lang.hitch(this, "getSiteMemberships"));
-         this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, "getSiteDetails"));
-         this.alfSubscribe("ALF_UPDATE_SITE_DETAILS", lang.hitch(this, "updateSite"));
-         this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, "becomeSiteManager"));
-         this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, "joinSite"));
-         this.alfSubscribe("ALF_REQUEST_SITE_MEMBERSHIP", lang.hitch(this, "requestSiteMembership"));
-         this.alfSubscribe("ALF_LEAVE_SITE", lang.hitch(this, "leaveSiteRequest"));
-         this.alfSubscribe("ALF_LEAVE_SITE_CONFIRMATION", lang.hitch(this, "leaveSite"));
-         this.alfSubscribe("ALF_CREATE_SITE", lang.hitch(this, "createSite"));
-         this.alfSubscribe("ALF_EDIT_SITE", lang.hitch(this, "editSite"));
-         this.alfSubscribe("ALF_DELETE_SITE", lang.hitch(this, "onActionDeleteSite"));
-         this.alfSubscribe("ALF_ADD_FAVOURITE_SITE", lang.hitch(this, "addSiteAsFavourite"));
-         this.alfSubscribe("ALF_REMOVE_FAVOURITE_SITE", lang.hitch(this, "removeSiteFromFavourites"));
-         this.alfSubscribe("ALF_GET_RECENT_SITES", lang.hitch(this, "getRecentSites"));
-         this.alfSubscribe("ALF_GET_FAVOURITE_SITES", lang.hitch(this, "getFavouriteSites"));
-         
+         this.alfSubscribe("ALF_GET_SITES", lang.hitch(this, this.getSites));
+         this.alfSubscribe("ALF_GET_SITES_ADMIN", lang.hitch(this, this.getAdminSites));
+         this.alfSubscribe("ALF_GET_SITE_MEMBERSHIPS", lang.hitch(this, this.getSiteMemberships));
+         this.alfSubscribe("ALF_GET_SITE_DETAILS", lang.hitch(this, this.getSiteDetails));
+         this.alfSubscribe("ALF_UPDATE_SITE_DETAILS", lang.hitch(this, this.updateSite));
+         this.alfSubscribe("ALF_BECOME_SITE_MANAGER", lang.hitch(this, this.becomeSiteManager));
+         this.alfSubscribe("ALF_JOIN_SITE", lang.hitch(this, this.joinSite));
+         this.alfSubscribe("ALF_REQUEST_SITE_MEMBERSHIP", lang.hitch(this, this.requestSiteMembership));
+         this.alfSubscribe("ALF_LEAVE_SITE", lang.hitch(this, this.leaveSiteRequest));
+         this.alfSubscribe("ALF_LEAVE_SITE_CONFIRMATION", lang.hitch(this, this.leaveSite));
+         this.alfSubscribe("ALF_CREATE_SITE", lang.hitch(this, this.createSite));
+         this.alfSubscribe("ALF_EDIT_SITE", lang.hitch(this, this.editSite));
+         this.alfSubscribe("ALF_DELETE_SITE", lang.hitch(this, this.onActionDeleteSite));
+         this.alfSubscribe("ALF_ADD_FAVOURITE_SITE", lang.hitch(this, this.addSiteAsFavourite));
+         this.alfSubscribe("ALF_REMOVE_FAVOURITE_SITE", lang.hitch(this, this.removeSiteFromFavourites));
+         this.alfSubscribe("ALF_GET_RECENT_SITES", lang.hitch(this, this.getRecentSites));
+         this.alfSubscribe("ALF_GET_FAVOURITE_SITES", lang.hitch(this, this.getFavouriteSites));
+
          // Make sure that the edit-site.js file is loaded. This is required for as it handles legacy site
          // editing. At some stage this will not be needed when a new edit site dialog is provided.
          var _this = this;
@@ -78,17 +78,20 @@ define(["dojo/_base/declare",
             _this.alfLog("log", "Edit Site JavaScript resource loaded");
          });
       },
-      
+
       /**
-       * 
+       *
        * @instance
        * @param {object} payload The details of the request
        */
       getSites: function alfresco_services_SiteService__getSites(payload) {
+         // TODO: Clean this up. Choose on or other as the Aikau standard.
+         var alfResponseTopic = payload.alfResponseTopic || payload.responseTopic;
+
          this.serviceXhr({
             url: AlfConstants.PROXY_URI + "api/sites",
             method: "GET",
-            alfTopic: payload.responseTopic
+            alfTopic: alfResponseTopic
          });
       },
 
@@ -136,7 +139,7 @@ define(["dojo/_base/declare",
        * This function makes a request to obtain the details of a specific site. Unlike the other functions
        * in this service it requires a specific callback function and scope to be provided in the request
        * as it doesn't make sense to just publish site information.
-       * 
+       *
        * @instance
        * @param {object} config An object with the details of the site to retrieve the data for.
        */
@@ -151,17 +154,17 @@ define(["dojo/_base/declare",
                              responseTopic: config.responseTopic,
                              successCallback: this.publishSiteDetails,
                              callbackScope: this});
-            
+
          }
          else
          {
             this.alfLog("error", "A request to get the details of a site was made, but either the 'site' or 'responseTopic' attributes was not provided", config);
          }
       },
-      
+
       /**
        * Publishes the details of a site on the requested topic. This is called
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
@@ -178,7 +181,7 @@ define(["dojo/_base/declare",
             this.alfLog("error", "It was not possible to publish requested site details because the 'responseTopic' attribute was not set on the original request", response, originalRequestConfig);
          }
       },
-      
+
       /**
        * This function handles requests to update a specific site
        *
@@ -206,7 +209,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles requests to delete the supplied site.
-       * 
+       *
        * @instance
        * @param {object} payload The details of the site to delete
        */
@@ -249,7 +252,7 @@ define(["dojo/_base/declare",
 
       /**
        * This function is called when the user confirms that they wish to delete a site
-       * 
+       *
        * @instance
        * @param {object} payload An object containing the details of the site to be deleted.
        */
@@ -294,7 +297,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles requesting that a site be made a favourite.
-       * 
+       *
        * @instance
        * @param {config} config The payload containing the details of the site to add to the favourites list
        */
@@ -320,11 +323,11 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request to make a site a favourite but either the site or user was not specified", config);
          }
       },
-      
+
       /**
        * This handles successfully completed requests to remove a site from the favourites list for a user. It publishes the
        * details on "ALF_FAVOURITE_SITE_ADDED" topic.
-       * 
+       *
        * @instance
        * @param {object} response The response from the request
        * @param {object} originalRequestConfig The configuration passed on the original request
@@ -333,11 +336,11 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Favourite Site Added Successfully", response, originalRequestConfig);
          this.alfPublish("ALF_FAVOURITE_SITE_ADDED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
       },
-     
-      
+
+
       /**
        * Handles requesting that a site be removed from favourites
-       * 
+       *
        * @instance
        * @param {config} config The payload containing the details of the site to remove from the favourites list
        */
@@ -359,11 +362,11 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request to remove a site from the favourites list but either the site or user was not specified", config);
          }
       },
-      
+
       /**
        * This handles successfully completed requests to remove a site from the favourites list for a user. It publishes the
        * details on "ALF_FAVOURITE_SITE_REMOVED" topic.
-       * 
+       *
        * @instance
        * @param {object} response The response from the XHR request to remove the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
@@ -372,7 +375,7 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Favourite Site Removed Successfully", response, originalRequestConfig);
          this.alfPublish("ALF_FAVOURITE_SITE_REMOVED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
       },
-      
+
       /**
        * Retrieves the site membership data for the supplied site.
        *
@@ -386,7 +389,7 @@ define(["dojo/_base/declare",
             this.serviceXhr({url : url,
                              method: "GET",
                              alfTopic: payload.responseTopic});
-            
+
          }
          else
          {
@@ -397,7 +400,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles XHR posting to make a user a site manager.
-       * 
+       *
        * @instance
        * @param {object} data The payload containing the user status to post.
        */
@@ -424,12 +427,12 @@ define(["dojo/_base/declare",
             this.alfLog("error", "A request was made for a user to become the manager of a site, but no site was specified", config);
          }
       },
-      
+
       /**
        * Handles requests to request membership of a moderated site
        *
        * @instance
-       * @param {object} config The configuration for the join request. 
+       * @param {object} config The configuration for the join request.
        */
       requestSiteMembership: function alfresco_services_SiteService__requestSiteMembership(config) {
          if (config.site && config.user)
@@ -444,7 +447,7 @@ define(["dojo/_base/declare",
                inviteeUserName: config.user,
                inviteeComments: (config.comments) ? config.comments : ""
             };
-            
+
             // Make the XHR request...
             this.serviceXhr({url : url,
                              method: "POST",
@@ -502,9 +505,9 @@ define(["dojo/_base/declare",
       /**
        * Performs and XHR put request to make the user a member of the site. The argument supplied must include
        * the attributes "site" and "user" and can optionally include an attribute "role".
-       * 
+       *
        * @instance
-       * @param {object} config The configuration for the join request. 
+       * @param {object} config The configuration for the join request.
        */
       joinSite: function alfresco_services_SiteService__joinSite(config) {
 
@@ -520,7 +523,7 @@ define(["dojo/_base/declare",
                   userName: config.user
                }
             };
-            
+
             // Make the XHR request...
             this.serviceXhr({url : url,
                              method: "PUT",
@@ -543,10 +546,10 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * This function is called when a user successfully joins a site.
-       * 
+       *
        * @instance
        * @param {object} response The response from the XHR request to join the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
@@ -556,10 +559,10 @@ define(["dojo/_base/declare",
          this.alfPublish("ALF_SITE_JOINED", { site: originalRequestConfig.site, user: originalRequestConfig.user});
          this.reloadPage();
       },
-      
+
       /**
        * This method delegates site creation to the legacy YUI popup.
-       * 
+       *
        * @instance
        * @param {string} site
        */
@@ -568,7 +571,7 @@ define(["dojo/_base/declare",
          // TODO: When an edit site request is received we should display the edit site dialog.
          //       We need to wrap the existing YUI widget in a Dojo object.
          this.alfLog("log", "A request has been made to create a site: ", config);
-         
+
          // Just use the old YUI popup...
          if (Alfresco && Alfresco.module && typeof Alfresco.module.getCreateSiteInstance === "function")
          {
@@ -578,11 +581,11 @@ define(["dojo/_base/declare",
          {
             this.alfLog("error", "Could not find the 'Alfresco.module.getCreateSiteInstance' function - has 'create-site.js' been included in the page?");
          }
-      }, 
-      
+      },
+
       /**
        * This method delegates site editing to the legacy YUI popup.
-       * 
+       *
        * @instance
        * @param {string} site
        */
@@ -591,7 +594,7 @@ define(["dojo/_base/declare",
          // TODO: When an edit site request is received we should display the edit site dialog.
          //       We need to wrap the existing YUI widget in a Dojo object.
          this.alfLog("log", "A request has been made to edit a site: ", config);
-         
+
          // Just use the old YUI popup...
          if (Alfresco && Alfresco.module && typeof Alfresco.module.getEditSiteInstance === "function")
          {
@@ -603,11 +606,11 @@ define(["dojo/_base/declare",
          {
             this.alfLog("error", "Could not find the 'Alfresco.module.getEditSiteInstance' function - has 'edit-site.js' been included in the page?");
          }
-      }, 
-      
+      },
+
       /**
        * Handles a request to leave a site.
-       * 
+       *
        * @instance
        * @param {object} payload
        */
@@ -635,9 +638,9 @@ define(["dojo/_base/declare",
             ]
          });
       },
-      
+
       /**
-       * 
+       *
        * @instance
        * @param {string} site The name of the site to leave
        * @param {string} user The name of the user to leave the site
@@ -670,10 +673,10 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * This function is called when a user has successfully left a site.
-       * 
+       *
        * @instance
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
@@ -684,10 +687,10 @@ define(["dojo/_base/declare",
          this.alfPublish("ALF_SITE_LEFT", { site: originalRequestConfig.site, user: originalRequestConfig.user});
          this.leaveSiteSuccess(response, originalRequestConfig);
       },
-      
+
       /**
        * This function is called when a user has failued to leave a site.
-       * 
+       *
        * @instance
        * @param {object} response The response from the XHR request to leave the site.
        * @param {object} originalRequestConfig The original configuration passed when the request was made.
@@ -696,7 +699,7 @@ define(["dojo/_base/declare",
          this.alfLog("log", "User has failed to leave a site", response, originalRequestConfig);
          this.displayMessage(this.message("message.leave-failure", {"0": originalRequestConfig.userFullName, "1": originalRequestConfig.siteTitle}));
       },
-      
+
       /**
        * This is a catch all success handler for both the join site and become site manager. It simply reloads
        * the current page. It is ** INCORRECTLY ** assumed that the current user will always be on the site
@@ -718,11 +721,11 @@ define(["dojo/_base/declare",
        * When a request is made for a user to leave a site we should determine whether or not the current user is the
        * user removed and whether or not they are currently viewing that site. If they are then we should navigate
        * them away from the site and back to their dashboard.
-       * 
+       *
        * In a future where notifications are generated based on events generated by other users, this would mean
        * that a user can be immediately ejected from a site as soon as they are removed from it (e.g. A Site Manager
        * removes a user from a site and if that user is viewing the site they are "ejected").
-       * 
+       *
        * @instance
        */
       leaveSiteSuccess: function alfresco_services_SiteService__leaveSiteSuccess(response, requestConfig) {
