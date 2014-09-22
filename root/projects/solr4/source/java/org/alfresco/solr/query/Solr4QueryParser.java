@@ -1547,12 +1547,17 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         LinkedList<LinkedList<org.apache.lucene.analysis.Token>> allTokenSequences = new LinkedList<LinkedList<org.apache.lucene.analysis.Token>>();
         for(LinkedList<org.apache.lucene.analysis.Token> tokensAtPosition : tokensByPosition)
         {
+            int positionIncrement = tokensAtPosition.get(tokensAtPosition.size() -1 ).getPositionIncrement();
             if(allTokenSequences.size() == 0)
             {
                 for(org.apache.lucene.analysis.Token t : tokensAtPosition)
                 {
+                    org.apache.lucene.analysis.Token replace = new org.apache.lucene.analysis.Token(t, t.startOffset(), t.endOffset());
+                    replace.setType(t.type());
+                    replace.setPositionIncrement(positionIncrement);
+                    
                     LinkedList<org.apache.lucene.analysis.Token> newEntry = new LinkedList<org.apache.lucene.analysis.Token>();
-                    newEntry.add(t);
+                    newEntry.add(replace);
                     allTokenSequences.add(newEntry);
                 }
             }
@@ -1562,14 +1567,18 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
                 FOR_FIRST_TOKEN_AT_POSITION_ONLY: for(org.apache.lucene.analysis.Token t : tokensAtPosition)
                 {
+                    org.apache.lucene.analysis.Token replace = new org.apache.lucene.analysis.Token(t, t.startOffset(), t.endOffset());
+                    replace.setType(t.type());
+                    replace.setPositionIncrement(positionIncrement);
+                    
                     boolean tokenFoundSequence = false;
                     for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : allTokenSequences)
                     {
                         LinkedList<org.apache.lucene.analysis.Token> newEntry = new LinkedList<org.apache.lucene.analysis.Token>();
                         newEntry.addAll(tokenSequence);
-                        if(newEntry.getLast().endOffset() <= t.startOffset())
+                        if(newEntry.getLast().endOffset() <= replace.startOffset())
                         {
-                            newEntry.add(t);
+                            newEntry.add(replace);
                             tokenFoundSequence = true;
                         }
                         newAllTokeSequences.add(newEntry);
@@ -1577,7 +1586,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     if(false == tokenFoundSequence)
                     {
                         LinkedList<org.apache.lucene.analysis.Token> newEntry = new LinkedList<org.apache.lucene.analysis.Token>();
-                        newEntry.add(t);
+                        newEntry.add(replace);
                         newAllTokeSequences.add(newEntry);
                     }
                     // Limit the max number of permutations we consider
@@ -1590,7 +1599,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
         }
 
-        // build the uniquie
+        // build the unique
 
         LinkedList<LinkedList<org.apache.lucene.analysis.Token>> fixedTokenSequences = new LinkedList<LinkedList<org.apache.lucene.analysis.Token>>();
         for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : allTokenSequences)
@@ -1909,7 +1918,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     
                     for(LinkedList<org.apache.lucene.analysis.Token> tokenSequence : fixedTokenSequences)
                     {
-                        int gap = 0;
+                        int gap = 1;
                         SpanQuery spanQuery = null;
                         SpanOrQuery atSamePosition = new SpanOrQuery();
                         for (int i = 0; i < tokenSequence.size(); i++)
