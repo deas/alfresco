@@ -541,7 +541,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
         
         createEditAdhocReportPage.clickOnExistingReport(reportName);
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, false, false);
+       
+        createEditAdhocReportPage.getReportTitle();
         
         String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
         
@@ -796,7 +797,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         //boolean isReportDisplayed = reportName.equals(createEditAdhocReportPage.getReportTitle());
         createEditAdhocReportPage.clickOnExistingReport(reportName);
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, false, false);
+        
+        createEditAdhocReportPage.getReportTitle();
         
         String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
         
@@ -828,8 +830,6 @@ public class AdhocAnalyzerTest extends AbstractUtils
                 
         //customise the user dashoard
         dashboardPage = (DashBoardPage)createEditAdhocReportPage.getNav().selectMyDashBoard().render();
-        
-        //
         CustomiseUserDashboardPage customiseUserDashboardPage = dashboardPage.getNav().selectCustomizeUserDashboard().render();
         
         dashboardPage = customiseUserDashboardPage.addDashlet(Dashlets.ADHOC_ANALYZER, 2).render();
@@ -843,8 +843,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
  
-        //boolean isReportDisplayedInDashlet = reportName.equals(createEditAdhocReportPage.isPieChartEventsDisplayed());
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, true, true);
+        createEditAdhocReportPage.isPieChartEventsDisplayed();
         
         //get tooltip data
         List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, PIE_CHART_TYPE );
@@ -1066,7 +1065,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
         
         createEditAdhocReportPage.clickOnExistingReport(reportName);
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, false, false);
+        createEditAdhocReportPage.getReportTitle();
         
         String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
         
@@ -1134,7 +1133,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
          
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, true, true);
+        createEditAdhocReportPage.isPieChartEventsDisplayed();
         
         //get tooltip data
         List<String> tooltipData = createEditAdhocReportPage.getTooltipData(true, PIE_CHART_TYPE);
@@ -1322,7 +1321,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));
         
         createEditAdhocReportPage.clickOnExistingReport(reportName);
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, false, false);
+        createEditAdhocReportPage.getReportTitle();
         
         String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
         
@@ -1365,16 +1364,11 @@ public class AdhocAnalyzerTest extends AbstractUtils
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
         
-        getAdhocAnalyzerReport(createEditAdhocReportPage, reportName, true, false);
+        createEditAdhocReportPage.isAreaChartTextDisplayed();
  
         //get tooltip data
         List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, AREA_CHART_TYPE);
 
-        for (String tooltip : tooltipData)
-        {
-            System.out.println("TTTT **** " + tooltip);
-        }
-        
         //expected data
         String commentCreated = COMMENT_CREATED + ":2";
         String fileAdded = FILE_ADDED + ":1";
@@ -1490,69 +1484,5 @@ public class AdhocAnalyzerTest extends AbstractUtils
         ShareUser.logout(drone);
 
     }
-    
-    /**
-     * Refreshes the page until the adhoc report is displayed 
-     * 
-     * @param createEditAdhocReportPage
-     * @param reportName
-     * @param isDashlet
-     * @param isPie
-     */
-    public void getAdhocAnalyzerReport(CreateEditAdhocReportPage createEditAdhocReportPage, String reportName, boolean isDashlet, boolean isPie)
-    {
-          
-        int counter = 0;
-        int waitInMilliSeconds = 8000;
-        while (counter < 3)
-        {
-            synchronized (this)
-            {
-                try
-                {
-                    this.wait(waitInMilliSeconds);
-                }
-                catch (InterruptedException e)
-                {
-                }
-            }
-            if (isDashlet && isPie)
-            {
-                if (createEditAdhocReportPage.isPieChartEventsDisplayed())
-                {
-                    break;
-                }
-                else
-                {
-                    counter++;
-                    refreshSharePage(drone);
-                }
-            } else if( isDashlet && !isPie )
-            {
-                if (createEditAdhocReportPage.isAreaChartTextDisplayed())
-                {
-                    break;
-                }
-                else
-                {
-                    counter++;
-                    refreshSharePage(drone);
-                }                
-            }
-            else
-            {
-                if (reportName.equals(createEditAdhocReportPage.getReportTitle()))
-                {
-                    break;
-                }
-                else
-                {
-                    counter++;
-                    refreshSharePage(drone);
-                }
-            }
-        }        
-    }
-
   
 }

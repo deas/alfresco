@@ -17,6 +17,7 @@ package org.alfresco.po.share.reports;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
@@ -194,15 +195,16 @@ public class AdhocAnalyzerPage extends SharePage
         try
         {
             drone.switchToFrame(getAnalyzerIframeId());
-            WebElement reportName = drone.findAndWait(By.cssSelector(REPORT_TITLE));
+            drone.waitForElement(By.cssSelector(REPORT_TITLE), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+            WebElement reportName = drone.find(By.cssSelector(REPORT_TITLE));
             String title = reportName.getText();
             drone.switchToDefaultContent();
             return title;
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException toe)
         {
-            logger.error("No report title " + nse);
-            throw new PageException("Unable to find report title.", nse);
+            logger.error("No report title " + toe);
+            throw new PageException("Unable to find report title.", toe);
         }
     }
 

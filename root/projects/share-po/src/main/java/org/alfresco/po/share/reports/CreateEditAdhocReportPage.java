@@ -17,6 +17,7 @@ package org.alfresco.po.share.reports;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
@@ -583,15 +584,16 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         try
         {
             drone.switchToFrame(getAnalyzerIframeId());
+            drone.waitForElement(By.cssSelector(PIE_CHART_EVENTS), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
             WebElement pieChartEvents = drone.find(By.cssSelector(PIE_CHART_EVENTS));
             boolean isPieChartEventsDisplayed = pieChartEvents.isDisplayed();
             drone.switchToDefaultContent();
             return isPieChartEventsDisplayed;
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException toe)
         {
-            logger.error("No Pie chart event names displayed " + nse);
-            throw new PageException("Unable to find Pie chart event names at the bottom of the pie chart.", nse);
+            logger.error("No Pie chart event names displayed " + toe);
+            throw new PageException("Unable to find Pie chart event names at the bottom of the pie chart.", toe);
         }
     }
     
@@ -605,15 +607,16 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         try
         {
             drone.switchToFrame(getAnalyzerIframeId());
+            drone.waitForElement(By.cssSelector(AREA_CHART), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
             WebElement areaChartText = drone.find(By.cssSelector(AREA_CHART));
             boolean isAreaChartTextDisplayed = areaChartText.isDisplayed();
             drone.switchToDefaultContent();
             return isAreaChartTextDisplayed;
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException toe)
         {
-            logger.error("No Area chart text displayed " + nse);
-            throw new PageException("Unable to find Area chart text at the bottom of the pie chart.", nse);
+            logger.error("No Area chart text displayed " + toe);
+            throw new PageException("Unable to find Area chart text at the bottom of the pie chart.", toe);
         }
     }
     
