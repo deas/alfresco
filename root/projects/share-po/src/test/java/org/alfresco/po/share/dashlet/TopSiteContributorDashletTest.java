@@ -67,7 +67,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
 
     private DashBoardPage dashBoard;
     private InviteMembersPage membersPage;
-     SiteDashboardPage siteDashBoard;
+    private SiteDashboardPage siteDashBoard;
 
     @BeforeTest
     public void prepare()
@@ -116,7 +116,8 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         navigateToSiteDashboard();
         SitePage site = drone.getCurrentPage().render();
         membersPage = site.getSiteNav().selectInvite().render();
-        membersPage.searchUser(random1);
+        membersPage.searchUser("User_");
+        //membersPage.searchUser(random1);
         membersPage.clickAddUser(random1);
         membersPage.selectInviteeAndAssignRole("(" + random1 + ")", UserRole.COLLABORATOR);
         membersPage.clickInviteButton();
@@ -207,11 +208,11 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         List<String> users = topSiteContributorDashlet.getTooltipUsers();
         List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
         
-        Assert.assertTrue(users.contains(random1.toLowerCase()));
-        Assert.assertTrue(users.contains(random2.toLowerCase()));
-        Assert.assertTrue(users.contains(random3.toLowerCase()));
-        Assert.assertTrue(users.contains(random4.toLowerCase()));
-        Assert.assertTrue(users.contains(random5.toLowerCase())); 
+        Assert.assertTrue(users.contains(random1));
+        Assert.assertTrue(users.contains(random2));
+        Assert.assertTrue(users.contains(random3));
+        Assert.assertTrue(users.contains(random4));
+        Assert.assertTrue(users.contains(random5)); 
         
         Assert.assertEquals(usersData.size(), 5);
         

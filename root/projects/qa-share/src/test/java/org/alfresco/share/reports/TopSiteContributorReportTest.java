@@ -104,7 +104,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
 
         // first user
-        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String testUser1 = getUserNameForDomain(testName + "-0", DOMAIN_FREE);
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo1);
@@ -309,7 +309,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
 
         // first user
-        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String testUser1 = getUserNameForDomain(testName + "-0", DOMAIN_FREE);
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
@@ -344,7 +344,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
-        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String testUser1 = getUserNameForDomain(testName + "-0", DOMAIN_FREE);
         
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
@@ -400,7 +400,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
 
         // first user
-        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String testUser1 = getUserNameForDomain(testName + "-0", DOMAIN_FREE);
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUserInfo1);
@@ -450,7 +450,8 @@ public class TopSiteContributorReportTest extends AbstractUtils
         topSiteContributorDashlet.clickCalendarDateRangeOption();
         topSiteContributorDashlet.renderDateDropDown(new RenderTime(maxWaitTime));
         
-        topSiteContributorDashlet.enterFromToDate("7/27/2012", "7/28/2012");
+        //topSiteContributorDashlet.enterFromToDate("7/27/2012", "7/28/2012");
+        topSiteContributorDashlet.enterFromToDate("27/7/2012", "28/7/2012");
         
         //Verify chart is not displayed and No data found message is shown
         topSiteContributorDashlet.clickOnChart();
@@ -578,7 +579,7 @@ public class TopSiteContributorReportTest extends AbstractUtils
         SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
 
         // first user
-        String testUser1 = getUserNameForDomain(testName + "-1", DOMAIN_FREE);
+        String testUser1 = getUserNameForDomain(testName + "-0", DOMAIN_FREE);
         String[] testUserInfo1 = new String[] { testUser1 };
 
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, testUser, testUserInfo1);
@@ -779,12 +780,12 @@ public class TopSiteContributorReportTest extends AbstractUtils
         List<String> users = topSiteContributorDashlet.getTooltipUsers();
         List<String> usersData = topSiteContributorDashlet.getTooltipUserData();
         
-        String testUser1 = getUserNameForDomain(testName + "1", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser2 = getUserNameForDomain(testName + "2", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser3 = getUserNameForDomain(testName + "3", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser4 = getUserNameForDomain(testName + "4", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-        String testUser5 = getUserNameForDomain(testName + "5", DOMAIN_FREE).replaceAll("[^A-Za-z0-9]", "");
-               
+        String testUser1 = getUserNameForDomain(testName + "-0", DOMAIN_FREE);
+        String testUser2 = getUserNameForDomain(testName + "-2", DOMAIN_FREE);
+        String testUser3 = getUserNameForDomain(testName + "-3", DOMAIN_FREE);
+        String testUser4 = getUserNameForDomain(testName + "-4", DOMAIN_FREE);
+        String testUser5 = getUserNameForDomain(testName + "-5", DOMAIN_FREE);
+
         Assert.assertTrue(users.contains(testUser1));
         Assert.assertTrue(users.contains(testUser2));
         Assert.assertTrue(users.contains(testUser3));
