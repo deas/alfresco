@@ -52,6 +52,9 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
     private static final String TOP_SITE_CONTRIBUTOR_REPORT = "top-site-contributor-report";
     private TopSiteContributorDashlet topSiteContributorDashlet = null;
     private CustomiseSiteDashboardPage customiseSiteDashBoard = null;
+    private DashBoardPage dashBoard;
+    private InviteMembersPage membersPage;
+    private SiteDashboardPage siteDashBoard;
     
     private String random1 = "User_" + System.currentTimeMillis() + "_" + 1;
     private String random2 = "User_" + System.currentTimeMillis() + "_" + 2;
@@ -65,9 +68,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
     private static int fourthNumberOfFiles = 6;
     private static int fifthNumberOfFiles = 10;
 
-    private DashBoardPage dashBoard;
-    private InviteMembersPage membersPage;
-    private SiteDashboardPage siteDashBoard;
+
 
     @BeforeTest
     public void prepare()
@@ -153,7 +154,8 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         DashBoardPage boardPage = loginAs(username, password).render();
         SiteFinderPage siteFinder = boardPage.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
-        SiteDashboardPage siteDashBoard = siteFinder.selectSite(siteName).render();
+        //SiteDashboardPage siteDashBoard = siteFinder.selectSite(siteName).render();
+        siteDashBoard = siteFinder.selectSite(siteName).render();
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
         siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.TOP_SITE_CONTRIBUTOR_REPORT, 2).render();
