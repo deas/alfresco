@@ -181,7 +181,13 @@ public class ShareUserReports extends AbstractUtils
         
     }  
     
-    
+    /**
+     * Utility to create events in share for adhoc reports
+     * 
+     * @param drone
+     * @param testName
+     * @throws Exception
+     */
     public static void userShareInteractions(WebDrone drone, String testName) throws Exception
     {
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);

@@ -92,15 +92,30 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
 
     //pie chart slices
     private static final String PIE_CHART_SLICES = "path[transform]";
+
+    //area chart points
+    private static final String AREA_CHART_CIRCLES = "circle[cursor]";
     
     //pie chart tooltip
     private static final String TOOLTIP_DATA = "//div[@original-title][1]";
+    
     //pie chart type
     private final static String PIE_CHART_TYPE = "//td[text()='Pie']";
+    
+    //area chart type
+    private final static String AREA_CHART_TYPE = "//td[text()='Area']";
     
     //variable for original title attribute
     private static final String ORIGINAL_TITLE_ATTRIBUTE = "original-title";
     
+    //pie chart events diaplayed at the bottom
+    private static final String PIE_CHART_EVENTS = "text[pointer-events=all]";
+    
+    //area chart fields displayed at the bottom
+    //private final static String AREA_CHART_TEXT = "//text[text()='Name and Event Type']";
+    
+    private final static String AREA_CHART = "rect[pointer-events=all]";
+
     
     /**
      * Constructor
@@ -559,6 +574,73 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     }
     
     /**
+     * Checks if Pie Chart event names are displayed at the bottom of the pie chart
+     * 
+     * @return
+     */
+    public boolean isPieChartEventsDisplayed()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement pieChartEvents = drone.find(By.cssSelector(PIE_CHART_EVENTS));
+            boolean isPieChartEventsDisplayed = pieChartEvents.isDisplayed();
+            drone.switchToDefaultContent();
+            return isPieChartEventsDisplayed;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Pie chart event names displayed " + nse);
+            throw new PageException("Unable to find Pie chart event names at the bottom of the pie chart.", nse);
+        }
+    }
+    
+    /**
+     * Checks if Area Chart text is displayed at the bottom of the chart
+     * 
+     * @return
+     */
+    public boolean isAreaChartTextDisplayed()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement areaChartText = drone.find(By.cssSelector(AREA_CHART));
+            boolean isAreaChartTextDisplayed = areaChartText.isDisplayed();
+            drone.switchToDefaultContent();
+            return isAreaChartTextDisplayed;
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Area chart text displayed " + nse);
+            throw new PageException("Unable to find Area chart text at the bottom of the pie chart.", nse);
+        }
+    }
+    
+    /**
+     * 
+     * Selects pie chart type
+     * 
+     * @return
+     */
+    public CreateEditAdhocReportPage clickOnAreaChartType()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement selectAreaChartType = drone.findAndWait(By.xpath(AREA_CHART_TYPE));
+            selectAreaChartType.click();
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Area chart type option. " + te);
+        }
+        throw new PageException("Unable to find Area chart type option.");
+    }
+    
+    /**
      * Gets the list of pie chart slices elements
      * 
      * @return
@@ -579,32 +661,83 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         return pieChartSlices;
     }
     
+    /**
+     * Gets the list of area chart circle elements
+     * 
+     * @return
+     */
+    private List<WebElement> getAreaChartCircles()
+    {
+        List<WebElement> areaChartCircles = new ArrayList<WebElement>();
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            areaChartCircles = drone.findAll(By.cssSelector(AREA_CHART_CIRCLES));
+            drone.switchToDefaultContent();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Adhoc Report area chart circles " + nse);
+        }
+        return areaChartCircles;
+    }
     
     /**
      * Gets the tooltip data (event type and number of events) 
      * @return
      */
-    public List<String> getTooltipData() throws Exception
+    public List<String> getTooltipData(boolean hasDay, String chartType) throws Exception
     {
-        List<WebElement> pieChartSlices = getPieChartSlices();
+        List<WebElement> chartElements = new ArrayList<WebElement>();
+        if ("pie".equals(chartType))
+        {
+            chartElements = getPieChartSlices();
+        } else if ("area".equals(chartType))
+        {
+            chartElements = getAreaChartCircles();
+        }
+        //List<WebElement> chartElements = getPieChartSlices();
         List<String> toolTipData = new ArrayList<String>();
-        for (WebElement pieChartSlice : pieChartSlices)
+        for (WebElement pieChartSlice : chartElements)
         {
             drone.switchToFrame(getAnalyzerIframeId());
             drone.mouseOverOnElement(pieChartSlice);
             WebElement tooltipElement = drone.findAndWait(By.xpath(TOOLTIP_DATA));
             String [] items = tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE).split(":");
-            String eventTypeItem = items[2];
-            String eventCountsItem = items[3];
-            
-            String [] types = eventTypeItem.split("<br />");
-            String type = types[0];
-            String [] counts = eventCountsItem.trim().split(" ");
-            String count = counts[0];
             
             StringBuilder builder = new StringBuilder();
-            builder.append(type.trim()).append(":").append(count.trim());
-            toolTipData.add(builder.toString());
+            
+            if (hasDay)
+            {
+                String eventTypeItem = items[2];
+                String eventDay = items[3];
+                String eventCountsItem = items[4];
+                
+                String [] types = eventTypeItem.split("<br />");
+                String type = types[0];
+                
+                String [] date = eventDay.split("<br />");
+                String day = date[0];
+                
+                String [] counts = eventCountsItem.trim().split(" ");
+                String count = counts[0].replaceAll("[^0-9]", "");
+                
+                builder.append(type.trim()).append(":").append(day.trim()).append(":").append(count.trim());
+                toolTipData.add(builder.toString());
+                
+            } else
+            {
+                String eventTypeItem = items[2];
+                String eventCountsItem = items[3];
+                
+                String [] types = eventTypeItem.split("<br />");
+                String type = types[0];
+                String [] counts = eventCountsItem.trim().split(" ");
+                String count = counts[0].replaceAll("[^0-9]", "");
+                
+                builder.append(type.trim()).append(":").append(count.trim());
+                toolTipData.add(builder.toString());
+            }
  
             drone.switchToDefaultContent();
 
