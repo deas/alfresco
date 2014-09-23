@@ -16,3 +16,15 @@
 .alfresco-forms-controls-BaseFormControl div.control div.dijitComboBox.dijitTextBoxFocused {
    border-color: @focused-border-color;
 }
+
+.claro .dijitMenu.dijitComboBoxMenu {
+   border-color: @standard-border-color;
+}
+
+.claro .dijitMenu.dijitComboBoxMenu .dijitMenuItem.dijitMenuItemSelected {
+   background-color: #f0f0f0;
+}
+
+.claro .dijitComboBoxHighlightMatch {
+   background-color: transparent;
+}
