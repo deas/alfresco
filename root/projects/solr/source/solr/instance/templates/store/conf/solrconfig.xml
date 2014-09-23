@@ -486,7 +486,7 @@
     -->
   <requestDispatcher handleSelect="true" >
     <!--Make sure your system has some authentication before enabling remote streaming!  -->
-    <requestParsers enableRemoteStreaming="true" multipartUploadLimitInKB="2048000" />
+    <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048000" />
 
     <!-- Set HTTP caching related parameters (for proxy caches and clients).
           
