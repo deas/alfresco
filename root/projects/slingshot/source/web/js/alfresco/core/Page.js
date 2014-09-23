@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -26,6 +26,8 @@
  * @author Dave Draper
  */
 define(["alfresco/core/ProcessWidgets",
+        "service/constants/Default",
+        "dojo/string",
         "dojo/_base/declare",
         "dojo/dom-construct",
         "dojo/_base/array",
@@ -33,7 +35,8 @@ define(["alfresco/core/ProcessWidgets",
         "dojo/dom-class",
         "dojo/_base/window",
         "alfresco/core/PubQueue"], 
-        function(ProcessWidgets, declare, domConstruct, array, lang, domClass, win, PubQueue) {
+        function(ProcessWidgets, AlfConstants, string, declare, domConstruct, array, 
+                 lang, domClass, win, PubQueue) {
    
    return declare([ProcessWidgets], {
       
@@ -46,10 +49,6 @@ define(["alfresco/core/ProcessWidgets",
        */
       baseClass: "alfresco-core-Page",
 
-      postMixInProperties: function alfresco_core_Page__postMixInProperties() {
-
-      },
-
       /**
        * Overrides the superclass implementation to call [processServices]{@link module:alfresco/core/Core#processServices}
        * and [processWidgets]{@link module:alfresco/core/Core#processWidgets} as applicable.
@@ -59,11 +58,29 @@ define(["alfresco/core/ProcessWidgets",
       postCreate: function alfresco_core_Page__postCreate() {
          try
          {
-            if (this.services != null && this.services.length != 0)
+            // If we're in debug mode, then we should add some DOM elements for the Developer View. This will
+            // allow developers to see which WebScript has generated the page and to click a link to generate
+            // a sample JAR to customize the page.
+            if (AlfConstants.DEBUG && this.domNode != null && this.webScriptId != null)
+            {
+               this.webScriptLabel = "WebScript ID:";
+               this.extensionDownloadUrl = AlfConstants.URL_PAGECONTEXT + "generator/extension?webscriptId=" + this.webScriptId;
+               this.extensionDownloadLabel = "(Click to generate extension JAR)";
+               var pageInfoTemplate = '<div class="alfresco-debug-PageInfo">' +
+                  '<span class="label">${webScriptLabel}</span>' + 
+                  '<span class="value">${webScriptId}</span>' + 
+                  '<a href="${extensionDownloadUrl}">${extensionDownloadLabel}</a>' + 
+               '</div>';
+               var pageInfo = string.substitute(pageInfoTemplate, this);
+               var pageInfoDom = domConstruct.toDom(pageInfo);
+               domConstruct.place(pageInfoDom, this.domNode, "first");
+            }
+
+            if (this.services != null && this.services.length !== 0)
             {
                this.processServices(this.services);
             }
-            else if (this.widgets != null && this.widgets.length != 0)
+            else if (this.widgets != null && this.widgets.length !== 0)
             {
                // Make sure to process widgets if there are no services...
                // Otherwise they will be processed once all the services are instantiated...
@@ -84,7 +101,7 @@ define(["alfresco/core/ProcessWidgets",
       onReadyPublish: function alfresco_core_Page__onReadyPublish(publicationDetails) {
          if (publicationDetails != null && 
              publicationDetails.publishTopic != null &&
-             publicationDetails.publishTopic != "")
+             publicationDetails.publishTopic !== "")
          {
             this.alfLog("log", "Onload publication", publicationDetails);
             this.alfPublish(publicationDetails.publishTopic, publicationDetails.publishPayload);
@@ -105,7 +122,6 @@ define(["alfresco/core/ProcessWidgets",
        * @param {number} index The index of the service to create 
        */
       processServices: function alfresco_core_Page__processServices(services, callback, callbackScope, index) {
-         var _this = this;
          if (services)
          {
             if (this.servicesToDestroy == null)
@@ -219,7 +235,7 @@ define(["alfresco/core/ProcessWidgets",
             this._processedServices[index] = service;
          }
          
-         if (this._processedServiceCountdown == 0)
+         if (this._processedServiceCountdown === 0)
          {
             this.allServicesProcessed(this._processedServices);
             this.serviceProcessingComplete = true;

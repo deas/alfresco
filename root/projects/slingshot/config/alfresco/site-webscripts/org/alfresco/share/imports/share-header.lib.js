@@ -1458,6 +1458,13 @@ function getHeaderModel(pageTitle) {
                               label: "Show Data Model",
                               publishTopic: "ALF_SHOW_DATA_MODEL"
                            }
+                        },
+                        {
+                           name: "alfresco/menus/AlfMenuItem",
+                           config: {
+                              label: "Toggle Developer View",
+                              publishTopic: "ALF_TOGGLE_DEVELOPER_MODE"
+                           }
                         }
                      ]
                   }

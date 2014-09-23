@@ -31,8 +31,11 @@ define(["dojo/_base/declare",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/dom-construct",
-        "dojo/dom-style"],
-        function(declare, AlfCore, ObjectTypeUtils, registry, array, lang, domConstruct, domStyle) {
+        "dojo/dom-class",
+        "dojo/dom-style",
+        "service/constants/Default",
+        "alfresco/debug/WidgetInfo"],
+        function(declare, AlfCore, ObjectTypeUtils, registry, array, lang, domConstruct, domClass, domStyle, AlfConstants, WidgetInfo) {
 
    return declare([AlfCore], {
 
@@ -446,6 +449,18 @@ define(["dojo/_base/declare",
                if (initArgs.style != null && widget.domNode != null)
                {
                   domStyle.set(widget.domNode, initArgs.style);
+               }
+
+               // Create a node for debug mode...
+               if (AlfConstants.DEBUG && widget.domNode != null)
+               {
+                  domClass.add(widget.domNode, "alfresco-debug-Info highlight");
+                  var infoWidget = new WidgetInfo({
+                     displayId: config.id || "",
+                     displayType: config.name,
+                     displayConfig: initArgs
+                  }).placeAt(widget.domNode);
+                  domConstruct.place(infoWidget.domNode, widget.domNode, "first");
                }
 
                if (callback)

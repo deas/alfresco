@@ -56,6 +56,7 @@ import org.springframework.extensions.surf.uri.UriUtils;
 import org.springframework.extensions.webscripts.LocalWebScriptContext;
 import org.springframework.extensions.webscripts.LocalWebScriptRuntime;
 import org.springframework.extensions.webscripts.LocalWebScriptRuntimeContainer;
+import org.springframework.extensions.webscripts.Match;
 import org.springframework.extensions.webscripts.WebScriptProcessor;
 import org.springframework.extensions.webscripts.json.JSONWriter;
 
@@ -575,6 +576,20 @@ public class ProcessJsonModelDirective extends JavaScriptDependencyDirective
         {
             content.append(",groupMemberships:");
             content.append(groupMemberships);
+        }
+        
+        // Get the ID of the WebScript being executed, this is done for debugging purposes...
+        String url = this.getModelObject().getProperty("url");
+        if (url != null && this.webScriptsContainer != null && this.webScriptsContainer.getRegistry() != null)
+        {
+            Match match = this.webScriptsContainer.getRegistry().findWebScript("GET", url);
+            String wsId = match.getWebScript().getDescription().getId();
+            if (wsId != null)
+            {
+                content.append(",webScriptId:\"");
+                content.append(wsId);
+                content.append("\"");
+            }
         }
         
         content.append("\n}, '");

@@ -90,6 +90,7 @@
             /feed/**=feedController
             /dologin/**=loginController
             /dologout/**=logoutController
+            /generator/**=generatorController
          </value>
       </property>
    </bean>

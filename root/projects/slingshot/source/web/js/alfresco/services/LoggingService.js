@@ -27,13 +27,15 @@ define(["dojo/_base/declare",
         "alfresco/core/Core",
         "alfresco/services/_PreferenceServiceTopicMixin",
         "dojo/_base/lang",
+        "dojo/dom-class",
+        "dojo/_base/window",
         "dojo/sniff",
         "dijit/registry",
         "alfresco/dialogs/AlfDialog",
         "alfresco/buttons/AlfButton",
         "alfresco/logging/SubscriptionLog",
         "alfresco/debug/CoreDataDebugger"],
-        function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, sniff, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
+        function(declare, AlfCore, _PreferenceServiceTopicMixin, lang, domClass, win, sniff, registry, AlfDialog, AlfButton, SubscriptionLog, CoreDataDebugger) {
 
    return declare([AlfCore, _PreferenceServiceTopicMixin], {
 
@@ -74,6 +76,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_UPDATE_LOGGING_PREFERENCES", lang.hitch(this, "onDetailsDialog"));
          this.alfSubscribe("ALF_SHOW_PUBSUB_LOG", lang.hitch(this, "showPubSubLog"));
          this.alfSubscribe("ALF_SHOW_DATA_MODEL", lang.hitch(this, "showDataModel"));
+         this.alfSubscribe("ALF_TOGGLE_DEVELOPER_MODE", lang.hitch(this, this.toggleDeveloperMode));
 
          if (this.loggingPreferences != null)
          {
@@ -87,6 +90,10 @@ define(["dojo/_base/declare",
             callback: this.setLoggingStatus,
             callbackScope: this
          });
+      },
+
+      toggleDeveloperMode: function alfresco_services_LoggingService__toggleDeveloperMode() {
+         domClass.toggle(win.body(), "alfresco-developer-mode-Enabled");
       },
 
       /**
@@ -141,9 +148,9 @@ define(["dojo/_base/declare",
          {
             this.alfPublish(this.setPreferenceTopic, {
                preference: this.loggingPreferencesId + "." + payload.value,
-               value: (payload.selected == true)
+               value: (payload.selected === true)
             });
-            this.loggingPreferences[payload.value] = (payload.selected == true);
+            this.loggingPreferences[payload.value] = (payload.selected === true);
             this.handleSubscription();
          }
       },
@@ -280,7 +287,7 @@ define(["dojo/_base/declare",
          var filterWidget = registry.byId(this.id + "_LOGGING_FILTER");
          if (filterWidget != null)
          {
-            var filterValue = filterWidget.setValue((this.loggingPreferences.filter != null) ? this.loggingPreferences.filter : "");
+            filterWidget.setValue((this.loggingPreferences.filter != null) ? this.loggingPreferences.filter : "");
          }
       },
 
@@ -310,10 +317,10 @@ define(["dojo/_base/declare",
          if (payload &&
              payload.severity &&
              payload.messageArgs &&
-             (this.loggingPreferences.all == true ||
-              this.loggingPreferences[payload.severity] == true))
+             (this.loggingPreferences.all === true ||
+              this.loggingPreferences[payload.severity] === true))
          {
-            if (typeof console[payload.severity] != "function" && (!sniff("ie") > 9))
+            if (typeof console[payload.severity] != "function" && (sniff("ie") <= 9))
             {
                // Catch developer errors !!
                console.error("The supplied severity is not a function of console", payload.severity);
@@ -322,7 +329,7 @@ define(["dojo/_base/declare",
             {
                // Call the console method passing all the additional arguments)...
                var callerName = payload.callerName;
-               if (callerName && callerName != "")
+               if (callerName && callerName !== "")
                {
                   var fIndex = callerName.lastIndexOf("__"),
                       re1 = /([^_])(_){1}/g;

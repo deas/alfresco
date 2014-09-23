@@ -39,6 +39,8 @@
         <property name="serviceRegistry" ref="webframework.service.registry" />
     </bean>
     
+    <bean id="generatorController" class="org.springframework.extensions.surf.mvc.GeneratorController"/>
+    
     <!-- Web Framework Abstract Handler Mappings -->
     <bean id="webframeworkHandlerMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" abstract="true">
         <property name="urlPathHelper" ref="urlPathHelper" />
@@ -58,6 +60,7 @@
                 /resource/**=resourceController
                 /dologin/**=loginController
                 /dologout/**=logoutController
+                /generator/**=generatorController
             </value>
         </property>
     </bean>
