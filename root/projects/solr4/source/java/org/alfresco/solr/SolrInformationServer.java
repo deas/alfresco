@@ -1432,7 +1432,7 @@ public class SolrInformationServer implements InformationServer
             nmdp.setIncludeAclId(false);
             nmdp.setIncludeAspects(false);
             nmdp.setIncludeChildAssociations(false);
-            nmdp.setIncludeChildIds(false);
+            nmdp.setIncludeChildIds(true);
             nmdp.setIncludeNodeRef(false);
             nmdp.setIncludeOwner(false);
             nmdp.setIncludeParentAssociations(false);
@@ -1459,17 +1459,17 @@ public class SolrInformationServer implements InformationServer
                 
                 if (cachedDoc != null)
                 {
+                    cachedDoc.removeField(FIELD_PATH);
                     for (Pair<String, QName> path : nodeMetaData.getPaths())
                     {
-                        cachedDoc.removeField(FIELD_PATH);
                         cachedDoc.addField(FIELD_PATH, path.getFirst());
                     }
                     
+                    cachedDoc.removeField(FIELD_ANCESTOR);
                     if (nodeMetaData.getAncestors() != null)
                     {
                         for (NodeRef ancestor : nodeMetaData.getAncestors())
                         {
-                            cachedDoc.removeField(FIELD_ANCESTOR);
                             cachedDoc.addField(FIELD_ANCESTOR, ancestor.toString());
                         }
                     }
