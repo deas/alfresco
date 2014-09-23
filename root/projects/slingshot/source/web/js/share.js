@@ -1148,7 +1148,27 @@ Alfresco.Share.postActivity = function(siteId, activityType, title, page, data, 
                         this.widgets.overlay.hide();
                      }, scope: this
                   },
-                  failureMessage: this.msg("quickshare.document.unshare.failure")
+                  failureCallback:
+                  {
+                     fn: function(response)
+                     {
+                        if (response.json.status.code == 403)
+                        {
+                           Alfresco.util.PopupManager.displayPrompt(
+                           {
+                              text: this.msg("quickshare.document.unshare.user.failure")
+                           });
+                        }
+                        else
+                        {
+                           Alfresco.util.PopupManager.displayPrompt(
+                           {
+                              text: this.msg("quickshare.document.unshare.failure")
+                           });
+                        }
+                     },
+                     scope: this
+                  }
                });
             }, null, this);
 
