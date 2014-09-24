@@ -64,7 +64,6 @@
                   <div class="yui-u">
                      <input type="submit" id="${args.htmlid}-save-button" value="" />
                      <input type="button" id="${args.htmlid}-publish-button" value="${msg('action.publish')}" class="hidden" />
-                     <input type="button" id="${args.htmlid}-publishexternal-button" value="" />
                      <input type="reset" id="${args.htmlid}-cancel-button" value="${msg('action.cancel')}" />
                   </div>
                </div>
