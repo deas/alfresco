@@ -1318,6 +1318,22 @@
             }
             fileInfo.request.open("POST",  url, true);
             fileInfo.request.send(formData);
+            fileInfo.request.onreadystatechange = function() {
+               if (this.status === 401)
+               {
+                  var redirect = this.getResponseHeader["Location"];
+                  if (redirect)
+                  {
+                     window.location.href = window.location.protocol + "//" + window.location.host + redirect;
+                     return;
+                  }
+                  else
+                  {
+                     window.location.reload(true);
+                     return;
+                  }
+               }
+            };
          }
          else if (this.uploadMethod === this.INMEMORY_UPLOAD)
          {
