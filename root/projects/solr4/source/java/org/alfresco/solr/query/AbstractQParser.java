@@ -486,6 +486,11 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
             sortStr = builder.toString();
         }
         
+        if(sortStr != null)
+        {
+            sortStr = sortStr.replaceAll("^ID(\\s)", "id$1");
+            sortStr = sortStr.replaceAll("(\\s)ID(\\s)", "$1id$2");
+        }
         SortSpec sort = QueryParsing.parseSortSpec(sortStr, req);
 
         sort.setOffset(start);

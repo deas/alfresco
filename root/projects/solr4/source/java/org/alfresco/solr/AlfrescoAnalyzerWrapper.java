@@ -51,13 +51,13 @@ public class AlfrescoAnalyzerWrapper extends AnalyzerWrapper
     @Override
     protected Analyzer getWrappedAnalyzer(String fieldName)
     {
-        if(fieldName.contains("@l_@"))
+        if(fieldName.contains("l_@{"))
         {
             return new MLAnalayser(MLAnalysisMode.EXACT_LANGUAGE, schema);
         }
-        else if(fieldName.contains("@lt@"))
+        else if(fieldName.contains("lt@{"))
         {
-            return new MLAnalayser(MLAnalysisMode.EXACT_LANGUAGE, schema);
+             return new MLAnalayser(MLAnalysisMode.EXACT_LANGUAGE, schema);
         }
         else
         {

@@ -726,7 +726,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         int index = field.lastIndexOf('@');
         if(index > -1)
         {
-            PropertyDefinition pDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field.substring(index));
+            PropertyDefinition pDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), namespacePrefixResolver, dictionaryService, field.substring(index+1));
             if(pDef != null)
             {
                 IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getIndexedFieldNamesForProperty(pDef.getName());
@@ -858,7 +858,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = getWildcardQuery(field.getField(), "*");
+                    Query presenceQuery = super.getWildcardQuery(field.getField(), "*");
                     if (presenceQuery != null)
                     {
                         query.add(presenceQuery, Occur.SHOULD);
@@ -891,7 +891,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = getWildcardQuery(field.getField(), "*");
+                    Query presenceQuery = super.getWildcardQuery(field.getField(), "*");
                     if (presenceQuery != null)
                     {
                         if(query.getClauses().length == 0)
@@ -934,7 +934,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = getWildcardQuery(field.getField(), "*");
+                    Query presenceQuery = super.getWildcardQuery(field.getField(), "*");
                     if (presenceQuery != null)
                     {
                         query.add(typeQuery, Occur.MUST);
@@ -1179,26 +1179,29 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         if(queryText.startsWith("{"))
         {
             int position = queryText.indexOf("}");
-            String language = queryText.substring(0, position + 1);
-            Locale locale = new Locale(queryText.substring(1, position));
-            String token = queryText.substring(position + 1);
-            boolean found = false;
-            for(Locale current : Locale.getAvailableLocales())
+            if(position > 0)
             {
-                if(current.toString().equalsIgnoreCase(locale.toString()))
+                String language = queryText.substring(0, position + 1);
+                Locale locale = new Locale(queryText.substring(1, position));
+                String token = queryText.substring(position + 1);
+                boolean found = false;
+                for(Locale current : Locale.getAvailableLocales())
                 {
-                    found = true;
-                    break;
+                    if(current.toString().equalsIgnoreCase(locale.toString()))
+                    {
+                        found = true;
+                        break;
+                    }
                 }
-            }
-            if(found)
-            {
-                localePrefix = language;
-                toTokenise = token;
-            }
-            else
-            {
-                toTokenise = token;
+                if(found)
+                {
+                    localePrefix = language;
+                    toTokenise = token;
+                }
+                else
+                {
+                    //toTokenise = token;
+                }
             }
         }
 
@@ -1217,20 +1220,22 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
         }
 
+       
+        
         // find the positions of any escaped * and ? and ignore them
 
         Set<Integer> wildcardPoistions = getWildcardPositions(testText);
         
         TokenStream source;
-        if((localePrefix.length() == 0) || (wildcardPoistions.size() > 0) || (analysisMode == AnalysisMode.IDENTIFIER))
-        {
+//        if((localePrefix.length() == 0) || (wildcardPoistions.size() > 0) || (analysisMode == AnalysisMode.IDENTIFIER))
+//        {
             source = getAnalyzer().tokenStream(field, new StringReader(toTokenise));
-        }
-        else
-        {
-            source = getAnalyzer().tokenStream(field, new StringReader("\u0000"+localePrefix.substring(1, localePrefix.length()-1)+"\u0000"+toTokenise));
-            localePrefix = "";
-        }
+//        }
+//        else
+//        {
+//            source = getAnalyzer().tokenStream(field, new StringReader("\u0000"+localePrefix.substring(1, localePrefix.length()-1)+"\u0000"+toTokenise));
+//            localePrefix = "";
+//        }
 
         ArrayList<org.apache.lucene.analysis.Token> list = new ArrayList<org.apache.lucene.analysis.Token>();
         org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
@@ -1277,7 +1282,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             // ignore
         }
-
+        
         // add any alpha numeric wildcards that have been missed
         // Fixes most stop word and wild card issues
 
@@ -4240,14 +4245,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         {
             if (locale.toString().length() == 0)
             {
-                StringBuilder builder = new StringBuilder(queryText.length() + 10);
-                builder.append("\u0000").append(locale.toString()).append("\u0000").append(queryText);
                 IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
                 for(FieldInstance field : indexedField.getFields())
                 {
                     if(!field.isLocalised())
                     {
-                        Query subQuery = subQueryBuilder.getQuery(field.getField(), builder.toString(), analysisMode, luceneFunction);
+                        Query subQuery = subQueryBuilder.getQuery(field.getField(), queryText, analysisMode, luceneFunction);
                         if (subQuery != null)
                         {
                             booleanQuery.add(subQuery, Occur.SHOULD);

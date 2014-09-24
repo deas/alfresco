@@ -323,63 +323,63 @@ public class QueryParserUtils implements QueryConstants
         String ending = "";
         if (field.endsWith(FIELD_MIMETYPE_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_MIMETYPE_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_MIMETYPE_SUFFIX.length());
             ending = FIELD_MIMETYPE_SUFFIX;
         }
         else if (field.endsWith(FIELD_SIZE_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_SIZE_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_SIZE_SUFFIX.length());
             ending = FIELD_SIZE_SUFFIX;
         }
         else if (field.endsWith(FIELD_LOCALE_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_LOCALE_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_LOCALE_SUFFIX.length());
             ending = FIELD_LOCALE_SUFFIX;
         }
         else if (field.endsWith(FIELD_ENCODING_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_ENCODING_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_ENCODING_SUFFIX.length());
             ending = FIELD_ENCODING_SUFFIX;
         }
         else if (field.endsWith(FIELD_CONTENT_DOC_ID_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_CONTENT_DOC_ID_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_CONTENT_DOC_ID_SUFFIX.length());
             ending = FIELD_CONTENT_DOC_ID_SUFFIX;
         }
         else if (field.endsWith(FIELD_TRANSFORMATION_EXCEPTION_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_EXCEPTION_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_TRANSFORMATION_EXCEPTION_SUFFIX.length());
             ending = FIELD_TRANSFORMATION_EXCEPTION_SUFFIX;
         }
         else if (field.endsWith(FIELD_TRANSFORMATION_TIME_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_TIME_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_TRANSFORMATION_TIME_SUFFIX.length());
             ending = FIELD_TRANSFORMATION_TIME_SUFFIX;
         }
         else if (field.endsWith(FIELD_TRANSFORMATION_STATUS_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_TRANSFORMATION_STATUS_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_TRANSFORMATION_STATUS_SUFFIX.length());
             ending = FIELD_TRANSFORMATION_STATUS_SUFFIX;
         }
         // ordering matters .__.u before .u 
         else if (field.endsWith(FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX.length());
             ending = FIELD_SOLR_NOLOCALE_UNTOKENISED_SUFFIX;
         }
         else if (field.endsWith(FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX.length());
             ending = FIELD_SOLR_LOCALISED_UNTOKENISED_SUFFIX;
         }
         else if (field.endsWith(FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX))
         {
-            propertyFieldName = field.substring(1, field.length() - FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX.length());
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0, field.length() - FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX.length());
             ending = FIELD_SOLR_NOLOCALE_TOKENISED_SUFFIX;
         }
         else
         {
-            propertyFieldName = field.substring(1);
+            propertyFieldName = field.substring(field.startsWith("@") ? 1 : 0);
         }
         return new Pair<>(propertyFieldName, ending);
     }

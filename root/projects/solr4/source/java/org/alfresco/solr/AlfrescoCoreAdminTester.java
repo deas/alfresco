@@ -6174,7 +6174,7 @@ public class AlfrescoCoreAdminTester
 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "cabbage desc", new int[] { 1, 2, 3, 4, 5, 6,
                     7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "PARENT desc", new int[] { 1, 2, 3, 4, 5, 6,
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "PRIMARYPARENT desc", new int[] { 1, 2, 3, 4, 5, 6,
                     7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@PARENT:PARENT desc", new int[] { 1, 2, 3,
                     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);

@@ -322,12 +322,12 @@ public class MLAnalayser extends Analyzer
         {
              if(schema != null)
              {
-                 if(fieldName.contains("@l_@"))
+                 if(fieldName.contains("l_@{"))
                  {
                      FieldType fieldType = schema.getFieldTypeByName("identifier");
                      return fieldType.getAnalyzer();
                  }
-                 else if(fieldName.contains("@lt@"))
+                 else if(fieldName.contains("lt@{"))
                  {
                      StringBuilder builder = new StringBuilder();
                      builder.append("text_");
