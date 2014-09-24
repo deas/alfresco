@@ -1,39 +1,7 @@
-Index: src/ooxml/java/org/apache/poi/POIXMLDocumentPart.java
+Index: src/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java
 ===================================================================
---- src/ooxml/java/org/apache/poi/POIXMLDocumentPart.java	(revision 1621722)
-+++ src/ooxml/java/org/apache/poi/POIXMLDocumentPart.java	(working copy)
-@@ -13,6 +13,10 @@
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-+
-+   2014 - Alfresco Software, Ltd.
-+   Alfresco Software has modified source of this file
-+   The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src
- ==================================================================== */
- package org.apache.poi;
- 
-@@ -38,6 +42,7 @@
- import org.apache.poi.openxml4j.opc.PackageRelationshipTypes;
- import org.apache.poi.openxml4j.opc.PackagingURIHelper;
- import org.apache.poi.openxml4j.opc.TargetMode;
-+import org.apache.poi.patch.AlfrescoPoiPatchUtils;
- import org.apache.poi.util.POILogFactory;
- import org.apache.poi.util.POILogger;
- import org.apache.xmlbeans.XmlOptions;
-@@ -402,7 +407,7 @@
-      * @param context   context map containing already visited noted keyed by targetURI
-      */
-     protected void read(POIXMLFactory factory, Map<PackagePart, POIXMLDocumentPart> context) throws OpenXML4JException {
--        PackageRelationshipCollection rels = packagePart.getRelationships();
-+        Iterable<PackageRelationship> rels = AlfrescoPoiPatchUtils.getRelationships(factory, packagePart);
-         for (PackageRelationship rel : rels) {
-             if(rel.getTargetMode() == TargetMode.INTERNAL){
-                 URI uri = rel.getTargetURI();
-Index: src/ooxml/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java
-===================================================================
---- src/ooxml/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java	(revision 0)
-+++ src/ooxml/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java	(working copy)
+--- src/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java	(revision 0)
++++ src/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java	(working copy)
 @@ -0,0 +1,289 @@
 +/*
 + * Copyright (C) 2005-2014 Alfresco Software Limited.
@@ -324,10 +292,10 @@ Index: src/ooxml/java/org/apache/poi/patch/AlfrescoPoiPatchUtils.java
 +        return result;
 +    }
 +}
-Index: src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java
+Index: src/ooxml/java/org/apache/poi/POIXMLDocumentPart.java
 ===================================================================
---- src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java	(revision 1621722)
-+++ src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java	(working copy)
+--- src/ooxml/java/org/apache/poi/POIXMLDocumentPart.java	(revision 1618521)
++++ src/ooxml/java/org/apache/poi/POIXMLDocumentPart.java	(working copy)
 @@ -13,6 +13,10 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
@@ -337,29 +305,28 @@ Index: src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java
 +   Alfresco Software has modified source of this file
 +   The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src
  ==================================================================== */
+ package org.apache.poi;
  
- package org.apache.poi.xwpf.usermodel;
-@@ -32,6 +36,7 @@
- import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
- import org.apache.poi.openxml4j.opc.PackagePart;
- import org.apache.poi.openxml4j.opc.PackageRelationship;
+@@ -38,6 +42,7 @@
+ import org.apache.poi.openxml4j.opc.PackageRelationshipTypes;
+ import org.apache.poi.openxml4j.opc.PackagingURIHelper;
+ import org.apache.poi.openxml4j.opc.TargetMode;
 +import org.apache.poi.patch.AlfrescoPoiPatchUtils;
- import org.apache.xmlbeans.XmlException;
+ import org.apache.poi.util.POILogFactory;
+ import org.apache.poi.util.POILogger;
  import org.apache.xmlbeans.XmlOptions;
- 
-@@ -79,7 +84,8 @@
-         }
- 
-         // Find our footnotes
--        for(CTFtnEdn note : ctFootnotes.getFootnoteList()) {
-+        List<CTFtnEdn> readonlyFootnoteList = AlfrescoPoiPatchUtils.getLimitedReadonlyList(ctFootnotes);
-+        for(CTFtnEdn note : readonlyFootnoteList) {
-             listFootnote.add(new XWPFFootnote(note, this));
-         }
-     }
+@@ -403,7 +408,7 @@
+      * @param context   context map containing already visited noted keyed by targetURI
+      */
+     protected void read(POIXMLFactory factory, Map<PackagePart, POIXMLDocumentPart> context) throws OpenXML4JException {
+-        PackageRelationshipCollection rels = packagePart.getRelationships();
++        Iterable<PackageRelationship> rels = AlfrescoPoiPatchUtils.getRelationships(factory, packagePart);
+         for (PackageRelationship rel : rels) {
+             if(rel.getTargetMode() == TargetMode.INTERNAL){
+                 URI uri = rel.getTargetURI();
 Index: src/ooxml/java/org/apache/poi/xslf/usermodel/XSLFSlide.java
 ===================================================================
---- src/ooxml/java/org/apache/poi/xslf/usermodel/XSLFSlide.java	(revision 1621722)
+--- src/ooxml/java/org/apache/poi/xslf/usermodel/XSLFSlide.java	(revision 1618521)
 +++ src/ooxml/java/org/apache/poi/xslf/usermodel/XSLFSlide.java	(working copy)
 @@ -13,14 +13,22 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -431,3 +398,36 @@ Index: src/ooxml/java/org/apache/poi/xslf/usermodel/XSLFSlide.java
      }
  
  
+Index: src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java
+===================================================================
+--- src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java	(revision 1618521)
++++ src/ooxml/java/org/apache/poi/xwpf/usermodel/XWPFFootnotes.java	(working copy)
+@@ -13,6 +13,10 @@
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
++
++   2014 - Alfresco Software, Ltd.
++   Alfresco Software has modified source of this file
++   The details of changes as svn diff can be found in svn at location root/projects/3rd-party/src
+ ==================================================================== */
+ 
+ package org.apache.poi.xwpf.usermodel;
+@@ -32,6 +36,7 @@
+ import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+ import org.apache.poi.openxml4j.opc.PackagePart;
+ import org.apache.poi.openxml4j.opc.PackageRelationship;
++import org.apache.poi.patch.AlfrescoPoiPatchUtils;
+ import org.apache.xmlbeans.XmlException;
+ import org.apache.xmlbeans.XmlOptions;
+ 
+@@ -79,7 +84,8 @@
+         }
+ 
+         // Find our footnotes
+-        for(CTFtnEdn note : ctFootnotes.getFootnoteList()) {
++        List<CTFtnEdn> readonlyFootnoteList = AlfrescoPoiPatchUtils.getLimitedReadonlyList(ctFootnotes);
++        for(CTFtnEdn note : readonlyFootnoteList) {
+             listFootnote.add(new XWPFFootnote(note, this));
+         }
+     }
