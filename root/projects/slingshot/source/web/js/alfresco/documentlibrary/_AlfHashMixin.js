@@ -64,6 +64,7 @@ define(["dojo/_base/declare",
          else
          {
             hash(hashString);
+            this.onHashChange(hash());
          }
       },
       
