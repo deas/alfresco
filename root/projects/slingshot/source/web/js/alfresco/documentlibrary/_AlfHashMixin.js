@@ -50,13 +50,21 @@ define(["dojo/_base/declare",
       
       /**
        * Checks the initial state of the hash location. This is to ensure that bookmarks and copied
-       * links work on page loading.
+       * links work on page loading. It is possible to provide an optional hash string which if provided
+       * will be used to set the current hash which in turn should trigger an hash change events.
        * 
        * @instance
+       * @param {string} hashString An optional string to use as the hash. If not provided the current hash will be
        */
-      initialiseFilter: function() {
-         // Store the current page...
-         this.onHashChange(hash());
+      initialiseFilter: function(hashString) {
+         if (hashString == null)
+         {
+            this.onHashChange(hash());
+         }
+         else
+         {
+            hash(hashString);
+         }
       },
       
       /**

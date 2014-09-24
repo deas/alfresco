@@ -410,6 +410,7 @@ var searchDocLib = {
       view: viewRendererName,
       waitForPageWidgets: true,
       useHash: true,
+      useLocalStorageHashFallback: true,
       hashVarsForUpdate: [
          "searchTerm",
          "facetFilters",

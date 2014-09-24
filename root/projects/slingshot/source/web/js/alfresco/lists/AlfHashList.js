@@ -57,6 +57,27 @@ define(["dojo/_base/declare",
       hashVarsForUpdate: [],
 
       /**
+       * Determines whether or not a locally stored hash value should be maintained and re-used in the event of 
+       * a hash not being found in the URL. This was added to support the scenario where a user might leave and 
+       * then return to a page having lost the hash (e.g. actions on search).
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      useLocalStorageHashFallback: false,
+
+      /**
+       * The key to use for storing the hash when the [useLocalStorageHashFallback]{@link module:alfresco/lists/AlfHashList#useLocalStorageHashFallback}
+       * is set to true.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_LOCAL_STORAGE_HASH"
+       */
+      useLocalStorageHashFallbackKey: "ALF_LOCAL_STORAGE_HASH",
+
+      /**
        * The AlfHashList is intended to work co-operatively with other widgets on a page to assist with
        * setting the data that should be retrieved. As related widgets are created and publish their initial
        * state they may trigger requests to load data. As such, data loading should not be started until
@@ -78,7 +99,18 @@ define(["dojo/_base/declare",
             // be required on the same page and they can't all feed off the hash to drive the location.
             this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onHashChanged));
 
-            var currHash = ioQuery.queryToObject(hash());
+            var hashString = hash();
+            if (hashString === "" && 
+                this.useLocalStorageHashFallback === true && 
+                ("localStorage" in window && window["localStorage"] !== null))
+            {
+               // No hash has been provided, check local storage for last hash...
+               var locallyStoredHash = localStorage.getItem(this.useLocalStorageHashFallbackKey);
+               hashString = (locallyStoredHash !== null) ? locallyStoredHash : "";
+               this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.updateLocallyStoredHash));
+            }
+
+            var currHash = ioQuery.queryToObject(hashString);
             if(!this._payloadContainsUpdateableVar(currHash))
             {
                this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
@@ -90,7 +122,7 @@ define(["dojo/_base/declare",
             {
                // When using hashes (e.g. a URL fragment in the browser address bar) then we need to 
                // actually get the initial filter and use it to generate the first data set...
-               this.initialiseFilter(); // Function provided by the _AlfHashMixin
+               this.initialiseFilter(hashString); // Function provided by the _AlfHashMixin
             }
          }
          else
@@ -143,12 +175,28 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Sets the current hash in the local storage.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      updateLocallyStoredHash: function alfresco_lists_AlfHashList__onHashChanged(payload) {
+         // Save the hash to local storage if required...
+         if(this.useLocalStorageHashFallback === true && 
+            ("localStorage" in window && window["localStorage"] !== null))
+         {
+            localStorage.setItem(this.useLocalStorageHashFallbackKey, hash());
+         }
+      },
+
+      /**
        * This function is called whenever the browser URL hash fragment is changed.e end of the fragment
        * 
        * @instance
        * @param {object} payload
        */
       onHashChanged: function alfresco_lists_AlfHashList__onHashChanged(payload) {
+         // Process the hash...
          if(this._payloadContainsUpdateableVar(payload))
          {
             //this.currentFilter = payload;
