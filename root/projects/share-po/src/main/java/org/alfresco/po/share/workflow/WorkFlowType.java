@@ -29,8 +29,8 @@ import org.openqa.selenium.WebElement;
 public enum WorkFlowType
 {
 
-    CLOUD_TASK_OR_REVIEW("Cloud Task or Review"), NEW_WORKFLOW("New Task"), GROUP_REVIEW_AND_APPROVE("Review and Approve"),SEND_DOCS_FOR_REVIEW("Review and Approve"), POOLED_REVIEW_AND_APPROVE(
-            "Review and Approve"), REVIEW_AND_APPROVE("Review and Approve");
+    CLOUD_TASK_OR_REVIEW("Cloud Task or Review"), NEW_WORKFLOW("New Task"), GROUP_REVIEW_AND_APPROVE("Review and Approve (group review)"),SEND_DOCS_FOR_REVIEW("Review and Approve (one or more reviewers)"), POOLED_REVIEW_AND_APPROVE(
+    		"Review and Approve (pooled review)"), REVIEW_AND_APPROVE("Review And Approve (single reviewer)");
 
     private String title;
 
