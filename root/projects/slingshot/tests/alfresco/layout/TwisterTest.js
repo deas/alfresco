@@ -41,7 +41,7 @@ define(["intern!object",
             .click()
             .end()
 
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister renders correctly");
@@ -56,7 +56,7 @@ define(["intern!object",
             })
             .end()
 
-         .findByCssSelector("#TWISTER_NO_HEADING_LEVEL > div")
+         .findByCssSelector("#TWISTER_NO_HEADING_LEVEL > div.alfresco-twister")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the second twister renders correctly");
@@ -64,7 +64,7 @@ define(["intern!object",
             })
             .end()
 
-         .findByCssSelector("#TWISTER_BAD_HEADING_LEVEL > div")
+         .findByCssSelector("#TWISTER_BAD_HEADING_LEVEL > div.alfresco-twister")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the third twister renders correctly");
@@ -80,12 +80,12 @@ define(["intern!object",
             .end()
 
          // Click the title of twister 1
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .click()
             .end()
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is still visible");
@@ -102,12 +102,12 @@ define(["intern!object",
             .end()
 
          // Click the title of twister 1
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .click()
             .end()
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is still visible");
@@ -143,7 +143,7 @@ define(["intern!object",
          .pressKeys(keys.RETURN)
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is visible after keyboard [RETURN]");
@@ -164,7 +164,7 @@ define(["intern!object",
          .pressKeys(keys.RETURN)
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is visible after re-pressing keyboard [RETURN]");
@@ -184,7 +184,7 @@ define(["intern!object",
          .pressKeys(keys.SPACE)
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is visible after keyboard [SPACE]");
@@ -205,7 +205,7 @@ define(["intern!object",
          .pressKeys(keys.SPACE)
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is visible after re-pressing keyboard [SPACE]");
@@ -225,7 +225,7 @@ define(["intern!object",
          .pressKeys('k')
 
          // Title should still be visible
-         .findByCssSelector("#TWISTER_HEADING_LEVEL > div > h3")
+         .findByCssSelector("#TWISTER_HEADING_LEVEL > div.alfresco-twister > h3")
             .getVisibleText()
             .then(function (text) {
                TestCommon.log(testname,"Check the first twister title is visible after re-pressing keyboard [k]");

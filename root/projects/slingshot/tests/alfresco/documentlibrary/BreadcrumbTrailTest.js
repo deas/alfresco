@@ -39,30 +39,35 @@ define(["intern!object",
          // Check the path is initially displayed...
          .findAllByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb")
             .then(function(elements) {
-               assert(elements.length === 4, "Test #1a - An unexpected number of breadcrumbs were found: " + elements.length)
+               TestCommon.log(testname, "Counting breadcrumbs...");
+               assert(elements.length === 4, "Test #1a - An unexpected number of breadcrumbs were found: " + elements.length);
             })
             .end()
-         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(1) > .breadcrumb")
+         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(2) > .breadcrumb")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Checking root breadcrumb text...");
                assert(text === "HOME", "Test #1b - Incorrect root text found: " + text);
             })
             .end()
-         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(3) > .breadcrumb")
+         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(4) > .breadcrumb")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Checking 2nd breadcrumb text...");
                assert(text === "some", "Test #1c - Incorrect breadcrumb text found: " + text);
             })
             .end()
-         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(5) > .breadcrumb")
+         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(6) > .breadcrumb")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Checking 3rd breadcrumb text...");
                assert(text === "imaginary", "Test #1d - Incorrect breadcrumb text found: " + text);
             })
             .end()
-         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(7) > .breadcrumb")
+         .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(8) > .breadcrumb")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Checking 4th breadcrumb text...");
                assert(text === "path", "Test #1e - Incorrect breadcrumb text found: " + text);
             })
             .end()
@@ -75,6 +80,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumbTrail")
             .isDisplayed()
             .then(function(result) {
+               TestCommon.log(testname, "Check that the breadcrumb is hidden...");
                assert(result === false, "Test #2a - The breadcrumb trail wasn't hidden");
             })
             .end()
@@ -84,6 +90,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumbTrail")
             .isDisplayed()
             .then(function(result) {
+               TestCommon.log(testname, "Check that the breadcrumb is displayed...");
                assert(result === true, "Test #2b - The breadcrumb trail wasn't displayed");
             })
             .end()
@@ -95,13 +102,15 @@ define(["intern!object",
             .end()
          .findAllByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb")
             .then(function(elements) {
-               assert(elements.length === 0, "Test #3a - Setting filter didn't remove breadcrumbs")
+               TestCommon.log(testname, "Check that filter mode is displayed...");
+               assert(elements.length === 0, "Test #3a - Setting filter didn't remove breadcrumbs");
             })
             .end()
          .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumbTrail > div")
             .getVisibleText()
             .then(function(text) {
-               assert(text === "Simulated Filter", "Test #3b - Filter wasn't displayed correctly")
+               TestCommon.log(testname, "Check that filter is displayed correctly...");
+               assert(text === "Simulated Filter", "Test #3b - Filter wasn't displayed correctly");
             })
             .end()
 
@@ -112,18 +121,21 @@ define(["intern!object",
             .end()
          .findAllByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb")
             .then(function(elements) {
-               assert(elements.length === 3, "Test #4a - An unexpected number of breadcrumbs were found: " + elements.length)
+               TestCommon.log(testname, "Count breadcrumbs after changing path via hash...");
+               assert(elements.length === 3, "Test #4a - An unexpected number of breadcrumbs were found: " + elements.length);
             })
             .end()
          .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(3) > .breadcrumb")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Check breadcrumb root label...");
                assert(text === "different", "Test #4b - Incorrect root text found: " + text);
             })
             .end()
          .findByCssSelector(".alfresco-documentlibrary-AlfBreadcrumb:nth-child(5) > .breadcrumb")
             .getVisibleText()
             .then(function(text) {
+               TestCommon.log(testname, "Check breadcrumb label...");
                assert(text === "path", "Test #4c - Incorrect breadcrumb text found: " + text);
             })
             .end()
@@ -136,11 +148,13 @@ define(["intern!object",
 
          .findAllByCssSelector(TestCommon.topicSelector("ALF_NAVIGATE_TO_PAGE", "publish", "last"))
             .then(function(elements) {
+               TestCommon.log(testname, "Check breadcrumb navigation request publishes...");
                assert(elements.length == 1, "Test #5a - Navigation publication not found");
             })
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "path=/different/path"))
             .then(function(elements) {
+               TestCommon.log(testname, "Check breadcrumb navigation payload...");
                assert(elements.length == 1, "Test #5b - Navigation payload not correct");
             })
             .end()
@@ -153,6 +167,7 @@ define(["intern!object",
             .end()
          .findAllByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "folder-details?nodeRef=some://fake/nodeRef"))
             .then(function(elements) {
+               TestCommon.log(testname, "Check leaf breadcrumb navigation payload...");
                assert(elements.length == 1, "Test #5c - Navigation payload not correct");
             })
             .end()

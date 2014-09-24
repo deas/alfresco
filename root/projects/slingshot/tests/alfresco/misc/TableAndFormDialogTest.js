@@ -35,23 +35,23 @@ define(["intern!object",
          var testname = "Table and Form Dialog Test";
          return TestCommon.loadTestWebScript(this.remote, "/TableAndFormDialog", testname)
 
-         // To get an entry in the table to click: "#TABLE_VIEW_ITEMS tr:nth-child(1) td:first-child span.inner"
-         // To get the value of an entry in the table to click: "#TABLE_VIEW_ITEMS tr:nth-child(1) td:first-child span.inner span.value"
+         // To get an entry in the table to click: "#TABLE_VIEW_ITEMS tr:nth-child(1) td:nth-child(2) span.inner"
+         // To get the value of an entry in the table to click: "#TABLE_VIEW_ITEMS tr:nth-child(1) td:nth-child(2) span.inner span.value"
 
          .findAllByCssSelector(".alfresco-dialog-AlfDialog")
             .then(function(elements) {
-               assert(elements.length == 0, "Test #0a - Check there are no dialogs at page load");
+               assert(elements.length === 0, "Test #0a - Check there are no dialogs at page load");
             })
             .end()
 
          // Check the initial values...
-         .findByCssSelector("#TABLE_VIEW_ITEMS tr:nth-child(1) td:first-child span.inner span.value")
+         .findByCssSelector("#TABLE_VIEW_ITEMS tr:nth-child(1) td:nth-child(2) span.inner span.value")
             .getVisibleText()
             .then(function(resultText) {
                   assert(resultText == "ID1", "Test #1a - First row of data has wrong id" + resultText);
                })
             .end()
-         .findByCssSelector("#TABLE_VIEW_ITEMS tr:nth-child(2) td:first-child span.inner span.value")
+         .findByCssSelector("#TABLE_VIEW_ITEMS tr:nth-child(2) td:nth-child(2) span.inner span.value")
             .getVisibleText()
             .then(function(resultText) {
                   assert(resultText == "ID2", "Test #1b - Second row of data has wrong id" + resultText);
@@ -59,7 +59,7 @@ define(["intern!object",
             .end()
 
          // Click on the ID in the first row to open the dialog...
-         .findByCssSelector("#TABLE_VIEW_ITEMS tr:nth-child(1) td:first-child span.inner")
+         .findByCssSelector("#TABLE_VIEW_ITEMS tr:nth-child(1) td:nth-child(2) span.inner")
             .click()
             .end()
 
@@ -74,7 +74,7 @@ define(["intern!object",
          .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitleBar .dijitDialogTitle")
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "ID1", "Test #2b - The dialog did not have the expected title")
+               assert(resultText === "ID1", "Test #2b - The dialog did not have the expected title");
             })
             .end()
 

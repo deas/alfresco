@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -34,7 +34,8 @@ define(["dojo/_base/declare",
         "alfresco/menus/AlfCheckableMenuItem",
         "dijit/registry",
         "dojo/dom-class"], 
-        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, lang, array, AlfMenuBarSelect, AlfMenuGroups, AlfMenuGroup, AlfCheckableMenuItem, registry, domClass) {
+        function(declare, AlfMenuBar, _AlfDocumentListTopicMixin, lang, array, AlfMenuBarSelect, AlfMenuGroups, AlfMenuGroup, 
+                 AlfCheckableMenuItem, registry, domClass) {
 
    return declare([AlfMenuBar, _AlfDocumentListTopicMixin], {
       
@@ -410,7 +411,8 @@ define(["dojo/_base/declare",
          
          // This next line will work providing that the widgets attribute has been created as defined in the
          // postCreate function...
-         this.pageSelectorGroup = this._menuBar.getChildren()[0].popup.getChildren()[0];
+         var popupChildren = this._menuBar.getChildren()[0].popup.getChildren();
+         this.pageSelectorGroup = popupChildren[popupChildren.length-1];
          
          this.pageBack = registry.byId(this.id + "_PAGE_BACK");
          this.pageForward = registry.byId(this.id + "_PAGE_FORWARD");
