@@ -749,7 +749,7 @@ public class AclTracker extends AbstractTracker
     private void indexAclChangeSetAfterAsynchronous(HashSet<AclChangeSet> changeSetsIndexed, TrackerState state)
                 throws IOException
     {
-        waitForAsynchronousReindexing();
+        waitForAsynchronous();
         for (AclChangeSet set : changeSetsIndexed)
         {
             super.infoSrv.indexAclTransaction(set, true);

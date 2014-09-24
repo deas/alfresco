@@ -263,7 +263,7 @@ public abstract class AbstractTracker implements Tracker
     /**
      * Allows time for the scheduled asynchronous tasks to complete
      */
-    protected synchronized void waitForAsynchronousReindexing()
+    protected synchronized void waitForAsynchronous()
     {
         AbstractWorkerRunnable currentRunnable = this.threadHandler.peekHeadReindexWorker();
         while (currentRunnable != null)

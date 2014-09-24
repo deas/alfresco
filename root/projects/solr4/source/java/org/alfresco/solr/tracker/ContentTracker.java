@@ -36,12 +36,17 @@ import org.slf4j.LoggerFactory;
 public class ContentTracker extends AbstractTracker implements Tracker
 {
     protected final static Logger log = LoggerFactory.getLogger(ContentTracker.class);
+    private int contentReadBatchSize;
+    private int contentUpdateBatchSize;
     
 
     public ContentTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, String coreName,
                 InformationServer informationServer)
     {
         super(scheduler, p, client, coreName, informationServer);
+        contentReadBatchSize = Integer.parseInt(p.getProperty("alfresco.contentReadBatchSize", "400"));
+        contentUpdateBatchSize = Integer.parseInt(p.getProperty("alfresco.contentUpdateBatchSize", "100"));
+        threadHandler = new ThreadHandler(p, coreName);
     }
     
     ContentTracker()
@@ -60,24 +65,56 @@ public class ContentTracker extends AbstractTracker implements Tracker
         }
         
         checkShutdown();
-        final int ROWS = 300;
+        final int ROWS = contentReadBatchSize;
         int start = 0;
         long totalDocs = 0l;
-        List<TenantAclIdDbId> buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
-        while (!buckets.isEmpty())
+        List<TenantAclIdDbId> docs = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
+        while (!docs.isEmpty())
         {
-            for (TenantAclIdDbId bucket : buckets)
+            int docsUpdatedSinceLastCommit = 0;
+            for (TenantAclIdDbId doc : docs)
             {
-                // update the content
-                this.infoSrv.updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+                ContentIndexWorkerRunnable ciwr = new ContentIndexWorkerRunnable(super.threadHandler, doc, infoSrv);
+                super.threadHandler.scheduleTask(ciwr);
+                docsUpdatedSinceLastCommit ++;
+                
+                if (docsUpdatedSinceLastCommit == contentUpdateBatchSize)
+                {
+                    super.waitForAsynchronous();
+                    this.infoSrv.commit();
+                    docsUpdatedSinceLastCommit = 0;
+                }
             }
             
-            this.infoSrv.commit();
-            totalDocs += buckets.size();
+            if (docsUpdatedSinceLastCommit > 0)
+            {
+                super.waitForAsynchronous();
+                this.infoSrv.commit();
+            }
+            totalDocs += docs.size();
             start += ROWS;
-            buckets = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
+            docs = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
         }
         
         log.info("total number of docs with content updated: " + totalDocs);
+    }
+    
+    class ContentIndexWorkerRunnable extends AbstractWorkerRunnable
+    {
+        InformationServer infoServer;
+        TenantAclIdDbId doc;
+
+        ContentIndexWorkerRunnable(QueueHandler queueHandler, TenantAclIdDbId doc, InformationServer infoServer)
+        {
+            super(queueHandler);
+            this.doc = doc;
+            this.infoServer = infoServer;
+        }
+
+        @Override
+        protected void doWork() throws Exception
+        {
+            this.infoServer.updateContentToIndexAndCache(doc.dbId, doc.tenant);
+        }
     }
 }

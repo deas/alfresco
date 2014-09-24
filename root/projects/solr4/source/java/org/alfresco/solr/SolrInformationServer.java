@@ -2153,7 +2153,7 @@ public class SolrInformationServer implements InformationServer
     {
         long start = System.nanoTime();
         
-        // Expensive call to be done with ContentTrakcer
+        // Expensive call to be done with ContentTracker
         GetTextContentResponse response = repositoryClient.getTextContent(dbId, propertyQName, null);
         
         addContentPropertyMetadata(cachedDoc, propertyQName, AlfrescoSolrDataModel.ContentFieldType.TRANSFORMATION_STATUS, response);

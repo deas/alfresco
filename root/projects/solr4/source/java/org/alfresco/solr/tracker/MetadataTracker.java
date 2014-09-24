@@ -36,10 +36,10 @@ import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.adapters.IOpenBitSet;
 import org.alfresco.solr.client.GetNodesParameters;
 import org.alfresco.solr.client.Node;
+import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.alfresco.solr.client.SOLRAPIClient;
 import org.alfresco.solr.client.Transaction;
 import org.alfresco.solr.client.Transactions;
-import org.alfresco.solr.client.Node.SolrApiNodeStatus;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -602,7 +602,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
     private void indexTransactionsAfterAsynchronous(HashSet<Transaction> txsIndexed, TrackerState state)
                 throws IOException
     {
-        waitForAsynchronousReindexing();
+        waitForAsynchronous();
         for (Transaction tx : txsIndexed)
         {
             super.infoSrv.indexTransaction(tx, true);
@@ -688,6 +688,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             this.nodes = nodes;
         }
 
+        @Override
         protected void doWork() throws IOException, AuthenticationException, JSONException
         {
             this.infoServer.indexNodes(nodes, true);

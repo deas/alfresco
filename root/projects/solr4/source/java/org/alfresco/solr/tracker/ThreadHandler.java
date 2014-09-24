@@ -35,8 +35,8 @@ public class ThreadHandler implements QueueHandler
 {
     /** the instance that will be given out by the factory */
     private ThreadPoolExecutor threadPool;
-    private LinkedBlockingQueue<AbstractWorkerRunnable> reindexThreadQueue = new LinkedBlockingQueue<>();
-    private ReentrantReadWriteLock reindexThreadLock = new ReentrantReadWriteLock(true);
+    private LinkedBlockingQueue<AbstractWorkerRunnable> threadQueue = new LinkedBlockingQueue<>();
+    private ReentrantReadWriteLock threadLock = new ReentrantReadWriteLock(true);
 
     public ThreadHandler(Properties p, String coreName)
     {
@@ -50,13 +50,13 @@ public class ThreadHandler implements QueueHandler
     {
         try
         {
-            reindexThreadLock.writeLock().lock();
+            threadLock.writeLock().lock();
             // Add the runnable to the queue to ensure ordering
-            reindexThreadQueue.add(awr);
+            threadQueue.add(awr);
         }
         finally
         {
-            reindexThreadLock.writeLock().unlock();
+            threadLock.writeLock().unlock();
         }
         threadPool.execute(awr);
     }
@@ -68,13 +68,13 @@ public class ThreadHandler implements QueueHandler
     {
         try
         {
-            reindexThreadLock.writeLock().lock();
+            threadLock.writeLock().lock();
             // Remove self from head of queue
-            reindexThreadQueue.remove(job);
+            threadQueue.remove(job);
         }
         finally
         {
-            reindexThreadLock.writeLock().unlock();
+            threadLock.writeLock().unlock();
         }
     }
     
@@ -85,12 +85,12 @@ public class ThreadHandler implements QueueHandler
     {
         try
         {
-            reindexThreadLock.readLock().lock();
-            return reindexThreadQueue.peek();
+            threadLock.readLock().lock();
+            return threadQueue.peek();
         }
         finally
         {
-            reindexThreadLock.readLock().unlock();
+            threadLock.readLock().unlock();
         }
     }
     

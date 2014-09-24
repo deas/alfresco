@@ -18,11 +18,6 @@
  */
 package org.alfresco.solr.tracker;
 
-import java.io.IOException;
-
-import org.alfresco.httpclient.AuthenticationException;
-import org.json.JSONException;
-
 
 abstract class AbstractWorkerRunnable implements Runnable
 {
@@ -44,19 +39,8 @@ abstract class AbstractWorkerRunnable implements Runnable
         {
             doWork();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (AuthenticationException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (JSONException e)
-        {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         finally
@@ -66,5 +50,5 @@ abstract class AbstractWorkerRunnable implements Runnable
         }
     }
     
-    abstract protected void doWork() throws IOException, AuthenticationException, JSONException;
+    abstract protected void doWork() throws Exception;
 }
