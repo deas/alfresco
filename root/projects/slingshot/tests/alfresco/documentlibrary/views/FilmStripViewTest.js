@@ -44,7 +44,7 @@ define(["intern!object",
    var previewFrameSelector = previewCarouselSelector + " .frame > ol";
    var previewFrameItemsSelector = previewFrameSelector + " > li";
 
-   var previewImgSelectorSuffix = " > div:nth-child(2) img";
+   var previewImgSelectorSuffix = " > div:nth-child(2) span > img";
    var thumbnailImgSelectorSuffix = " > div:nth-child(1) img";
 
    var thumbnailControlsSelector = thumbnailsCarouselSelector + " .controls";
@@ -68,6 +68,7 @@ define(["intern!object",
             .findByCssSelector(prevPreviewControlSelector)
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Check that PREVIOUS preview control is NOT displayed...");
                   assert(result === false, "Test #1a - The previous preview control should not be displayed");
                })
             .end()
@@ -76,6 +77,7 @@ define(["intern!object",
             .findByCssSelector(nextPreviewControlSelector)
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Check that next preview control IS displayed...");
                   assert(result === true, "Test #1b - The previous preview control should have been displayed");
                })
             .end()
@@ -84,6 +86,7 @@ define(["intern!object",
             .findByCssSelector(prevThumbnailControlSelector)
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Check that PREVIOUS thumbnails control is NOT displayed...");
                   assert(result === false, "Test #1c - The previous thumbnails control should not be displayed");
                })
             .end()
@@ -92,6 +95,7 @@ define(["intern!object",
             .findByCssSelector(nextThumbnailControlSelector)
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Check that NEXT thumbnails control is NOT displayed...");
                   assert(result === false, "Test #1d - The next thumbnails control should not be displayed");
                })
             .end()
@@ -99,7 +103,8 @@ define(["intern!object",
             // Count the number of preview items...
             .findAllByCssSelector(previewFrameItemsSelector)
                .then(function(elements) {
-                  assert(elements.length === 2, "Test #2a - Expected 2 preview items, found: " + elements.length);
+                  TestCommon.log(testname, "Searching for preview items using: " + previewFrameItemsSelector);
+                  assert(elements.length === 4, "Test #2a - Expected 2 preview items, found: " + elements.length);
                })
             .end()
 
@@ -107,6 +112,7 @@ define(["intern!object",
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(1)")
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Check that first preview is displayed...");
                   assert(result === true, "Test #2b - The first preview item should be displayed");
                })
             .end()
@@ -114,6 +120,7 @@ define(["intern!object",
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(2)")
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Check that second preview is hidden...");
                   assert(result === false, "Test #2c - The second preview item should be hidden");
                })
             .end();
@@ -121,10 +128,14 @@ define(["intern!object",
       'Test Next/Previous Preview': function () {
          // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
          var browser = this.remote;
-         // var testname = "Pagination Test";
+         var testname = "Filmstrip View - Previous/Next";
          
          // Click on the next preview item to scroll along...
-         return browser.findByCssSelector(nextPreviewControlSelector)
+         return browser
+            .then(function() {
+                  TestCommon.log(testname, "Starting preview/next test");
+            })
+            .findByCssSelector(nextPreviewControlSelector)
                .click()
             .end()
 
@@ -143,18 +154,30 @@ define(["intern!object",
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(2)")
                .isVisible()
                .then(function(result) {
+                  TestCommon.log(testname, "Checking that the second preview item is displayed");
                   assert(result === true, "Test #3b - The second preview item should now be displayed");
                })
-               .end()
+            .end()
 
             // Click previous...
             .findByCssSelector(prevPreviewControlSelector)
+               .then(function() {
+                  TestCommon.log(testname, "Clicking previous button: " + prevPreviewControlSelector);
+               })
+               .isVisible()
+               .then(function(result) {
+                  TestCommon.log(testname, "Checking that the previous button is displayed");
+                  assert(result === true, "Test #3c - The previous button is not displayed");
+               })
                .click()
             .end()
             .sleep(pause) // Wait for just over a second for the animation to complete...
 
             // Click the preview image to load folder...
             .findByCssSelector(previewFrameItemsSelector + ":nth-child(1)" + previewImgSelectorSuffix)
+               .then(function(result) {
+                  TestCommon.log(testname, "Clicking the preview image to load the folder, " + previewFrameItemsSelector + ":nth-child(1)" + previewImgSelectorSuffix);
+               })
                .click()
             .end()
 
@@ -163,7 +186,7 @@ define(["intern!object",
             // Count the number of preview items...
             .findAllByCssSelector(previewFrameItemsSelector)
                .then(function(elements) {
-                  assert(elements.length === 14, "Test #2a - Expected 14 preview items, found: " + elements.length);
+                  assert(elements.length === 16, "Test #2a - Expected 14 preview items (+ 2 debug items), found: " + elements.length);
                })
             .end();
       },
@@ -171,25 +194,49 @@ define(["intern!object",
          // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
          var browser = this.remote;
          
+         var testname = "Filmstrip View - Thumbnail scrolling";
+
          // Click the next preview selector 3 times (to check that the thumbnail frame scrolls)...
-         return browser.findByCssSelector(nextPreviewControlSelector)
+         return browser
+            .then(function() {
+               TestCommon.log(testname, "Starting thumbnail scrolls tests...");
+               TestCommon.log(testname, "Clicking next preview: " + nextPreviewControlSelector);
+            })
+            .findByCssSelector(nextPreviewControlSelector)
+            .then(function() {
+               TestCommon.log(testname, "Click 1...");
+            })
             .click()
             .sleep(pause)
+            .then(function() {
+               TestCommon.log(testname, "Click 2...");
+            })
             .click()
             .sleep(pause)
+            .then(function() {
+               TestCommon.log(testname, "Click 3...");
+            })
             .click()
             .sleep(pause)
+            .then(function() {
+               TestCommon.log(testname, "Click 4...");
+            })
             .click()
             .sleep(pause)
-            .end();
-            // TODO: Check that 2nd frame of thumbnails is displayed...
+         .end();
+         // TODO: Check that 2nd frame of thumbnails is displayed...
       },
       'Test Preview Scrolls With Thumbnail Selection': function () {
          // Wait for the data to load and the page to draw - this is currently slow and the rendering needs to be
          var browser = this.remote;
-         
+         var testname = "Filmstrip View - Preview scrolling via thumbnail selection";
+
          // Move to the 3rd selection of thumbnails...
-         return browser.findByCssSelector(nextThumbnailControlSelector)
+         return browser
+            .then(function() {
+                  TestCommon.log(testname, "Starting tests...");
+            })
+            .findByCssSelector(nextThumbnailControlSelector)
                .click()
                .sleep(pause)
             .end()
