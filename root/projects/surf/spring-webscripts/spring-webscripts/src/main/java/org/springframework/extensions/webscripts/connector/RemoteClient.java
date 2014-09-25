@@ -1070,20 +1070,17 @@ public class RemoteClient extends AbstractClient implements Cloneable
                     {
                         if (req != null)
                         {
-                            if (method instanceof HttpPost)
+                            // apply any supplied request parameters
+                            Map<String, String[]> postParams = req.getParameterMap();
+                            if (postParams != null)
                             {
-                                // apply any supplied POST request parameters
-                                Map<String, String[]> postParams = req.getParameterMap();
-                                if (postParams != null)
+                                List<NameValuePair> params = new ArrayList<NameValuePair>(postParams.size());
+                                for (String key : postParams.keySet())
                                 {
-                                    List<NameValuePair> params = new ArrayList<NameValuePair>(postParams.size());
-                                    for (String key : postParams.keySet())
+                                    String[] values = postParams.get(key);
+                                    for (int i = 0; i < values.length; i++)
                                     {
-                                        String[] values = postParams.get(key);
-                                        for (int i = 0; i < values.length; i++)
-                                        {
-                                            params.add(new BasicNameValuePair(key, values[i]));
-                                        }
+                                        params.add(new BasicNameValuePair(key, values[i]));
                                     }
                                 }
                             }
