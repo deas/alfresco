@@ -325,11 +325,27 @@ var searchResultsMenuBar = {
    config: {
       widgets: [
          {
+            id: "FCTSRCH_RESULTS_COUNT_LABEL",
             name: "alfresco/html/Label",
             align: "left",
             config: {
                label: msg.get("faceted-search.results-menu.no"),
-               subscriptionTopic: "ALF_SEARCH_RESULTS_COUNT"
+               subscriptionTopic: "ALF_SEARCH_RESULTS_COUNT",
+               visibilityConfig: {
+                  initialValue: false,
+                  rules: [
+                     {
+                        topic: "ALF_SEARCH_REQUEST",
+                        attribute: "dummy",
+                        is: [""]
+                     },
+                     {
+                        topic: "ALF_SEARCH_RESULTS_COUNT",
+                        attribute: "count",
+                        isNot: [""]
+                     }
+                  ]
+               }
             }
          },
          headingForSortMenu,
