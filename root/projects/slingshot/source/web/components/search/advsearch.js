@@ -97,10 +97,10 @@
          /**
           * It is possible to disable searching entire repo via config
           * 
-          * @property searchRepo
-          * @type boolean
+          * @property searchScope - "repo" or "all_sites" or a siteid
+          * @type string
           */
-         searchRepo: true
+         searchScope: ""
       },
       
       /**
@@ -369,7 +369,7 @@
             site: (this.options.siteId.length !== 0 ? ("site/" + this.options.siteId + "/") : ""),
             terms: encodeURIComponent(Dom.get(this.id + "-search-text").value),
             query: encodeURIComponent(YAHOO.lang.JSON.stringify(formData)),
-            repo: this.options.searchRepo.toString()
+            scope: this.options.searchScope.toString()
          });
          
          window.location.href = url;

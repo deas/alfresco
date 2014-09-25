@@ -211,14 +211,14 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * The initially selected scope. This should either be "REPO", "ALL_SITES" or the shortname of a
+       * The initially selected scope. This should either be "repo", "all_sites" or the shortname of a
        * specific site.
        *
        * @instance
        * @type {string}
-       * @default "REPO"
+       * @default "repo"
        */
-      selectedScope: "REPO",
+      selectedScope: "repo",
 
       /**
        * 
@@ -241,26 +241,13 @@ define(["dojo/_base/declare",
          {
             var currHash = ioQuery.queryToObject(hash());
             this.selectedScope = scope;
-            if (scope === "REPO")
+            currHash.scope = scope;
+            if (scope === "repo" || scope === "all_sites")
             {
-               currHash.repo = "true";
-               currHash.allSites = "false";
-               delete currHash.siteId;
-               this.siteId = "";
-            }
-            else if (scope === "ALL_SITES")
-            {
-               currHash.repo = "false";
-               currHash.allSites = "true";
-               delete currHash.siteId;
                this.siteId = "";
             }
             else
             {
-               // Must be a site shortname...
-               currHash.repo = "false";
-               currHash.allSites = "true";
-               currHash.siteId = scope;
                this.siteId = scope;
             }
 
@@ -509,7 +496,7 @@ define(["dojo/_base/declare",
 
                // Make sure the repo param is set appropriately...
                // The repo instance variable trumps everything else...
-               var repo = this.repo === "true" || !(this.allSites === "true" || (this.siteId != null && this.siteId !== ""));
+               var siteId = (this.scope === "repo" || this.scope === "all_sites") ? "" : this.scope;
 
                this.currentRequestId = this.generateUuid();
                var searchPayload = {
@@ -518,9 +505,9 @@ define(["dojo/_base/declare",
                   filters: filters,
                   sortAscending: this.sortAscending,
                   sortField: this.sortField,
-                  site: this.siteId,
+                  site: siteId,
                   rootNode: this.rootNode,
-                  repo: repo,
+                  repo: this.scope === "repo",
                   requestId: this.currentRequestId,
                   pageSize: this.currentPageSize,
                   startIndex: startIndex,

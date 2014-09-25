@@ -416,14 +416,12 @@ var searchDocLib = {
          "facetFilters",
          "sortField",
          "sortAscending",
-         "allSites",
-         "repo",
-         "searchScope",
-         "query"
+         "query",
+         "scope"
       ],
-      selectedScope: "REPO",
+      selectedScope: "repo",
       useInfiniteScroll: true,
-      siteId: null, // Don't set the siteId initially (we don't want to do a site search on first load)
+      siteId: null,
       rootNode: null,
       repo: true,
       additionalControlsTarget: "FCTSRCH_RESULTS_MENU_BAR",
@@ -705,6 +703,7 @@ if (page.url.templateArgs.site != null)
          group: "SEARCHLIST_SCOPE",
          publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
          checked: false,
+         hashName: "scope",
          publishPayload: {
             label: siteData.profile.title,
             value: page.url.templateArgs.site
@@ -718,28 +717,31 @@ scopeOptions.push({
    name: "alfresco/menus/AlfCheckableMenuItem",
    config: {
       label: msg.get("faceted-search.scope.allSites"),
-      value: "ALL_SITES",
+      value: "all_sites",
       group: "SEARCHLIST_SCOPE",
       publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
       checked: false,
+      hashName: "scope",
       publishPayload: {
          label: msg.get("faceted-search.scope.allSites"),
-         value: "ALL_SITES"
+         value: "all_sites"
       }
    }
 });
+
 scopeOptions.push({
    id: "FCTSRCH_SET_REPO_SCOPE",
    name: "alfresco/menus/AlfCheckableMenuItem",
    config: {
       label: msg.get("faceted-search.scope.repository"),
-      value: "REPO",
+      value: "repo",
       group: "SEARCHLIST_SCOPE",
       publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
       checked: true,
+      hashName: "scope",
       publishPayload: {
          label: msg.get("faceted-search.scope.repository"),
-         value: "REPO"
+         value: "repo"
       }
    }
 });

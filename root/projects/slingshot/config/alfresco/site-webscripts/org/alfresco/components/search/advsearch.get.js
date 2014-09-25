@@ -55,12 +55,12 @@ function main()
    
    // Prepare the model
    var repoconfig = config.scoped['Search']['search'].getChildValue('repository-search');
+
    // config override can force repository search on/off
-   model.searchRepo = (repoconfig != "none");
+   model.searchScope = (siteId ? siteId : (repoconfig != "none" ? "repo" : "all_sites"));
    model.siteId = siteId;
    model.searchForms = searchForms;
-   model.searchPath = "{site}dp/ws/faceted-search#searchTerm={terms}&query={query}&repo={repo}";
-   // ###old version of this path### model.searchPath = "{site}search?t={terms}&q={query}&r={repo}";
+   model.searchPath = "{site}dp/ws/faceted-search#searchTerm={terms}&query={query}&scope={scope}";
 
    // Widget instantiation metadata...
    var advancedSearch = {
@@ -69,7 +69,7 @@ function main()
       options : {
          siteId : model.siteId,
          savedQuery : (page.url.args.sq != null) ? page.url.args.sq : "",
-         searchRepo : model.searchRepo,
+         searchScope : model.searchScope,
          searchForms : model.searchForms,
          searchPath : model.searchPath
       }
@@ -78,4 +78,3 @@ function main()
 }
 
 main();
-
