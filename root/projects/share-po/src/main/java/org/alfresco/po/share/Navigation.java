@@ -135,7 +135,7 @@ public class Navigation extends SharePage
     public PeopleFinderPage selectPeople()
     {
         String selector = isDojoSupport() ? "div#HEADER_PEOPLE" : "a[id$='people-button']";
-    	drone.find(By.cssSelector(selector)).click();
+    	drone.findAndWait(By.cssSelector(selector)).click();
         return new PeopleFinderPage(drone);
     }
 
@@ -708,7 +708,14 @@ public class Navigation extends SharePage
     {
         String selector = isDojoSupport() ? "td#HEADER_SITES_MENU_CREATE_SITE_text" : "ul.create-site-menuitem>li>a";
         selectSitesDropdown();
-        return drone.isElementDisplayed(By.cssSelector(selector));
+        if(drone.findAndWait(By.cssSelector(selector)).isDisplayed())
+        {
+        return true;               
+        }
+        else
+        {
+            throw new UnsupportedOperationException("Not able to find create site");
+        }                    
     }
    
     
@@ -814,7 +821,7 @@ public class Navigation extends SharePage
         {
 
             selectSitesDropdown();
-            List<WebElement> sites = drone.findAll(By.cssSelector(RECENT_SITES));
+            List<WebElement> sites = drone.findAndWaitForElements(By.cssSelector(RECENT_SITES));
             for (WebElement webElement : sites)
             {
                 siteNames.add(webElement.getText());
@@ -890,7 +897,7 @@ public class Navigation extends SharePage
             drone.refresh();
             
             selectSitesDropdown(); 
-            drone.find(By.cssSelector(LINK_FAVOURITES)).click();
+            drone.findAndWait(By.cssSelector(LINK_FAVOURITES)).click();
             return FactorySharePage.resolvePage(drone);
         }
         catch(NoSuchElementException nse)
@@ -910,8 +917,9 @@ public class Navigation extends SharePage
         try
         {
             //Refresh is needed since sites added in favourites dont reflect.
-            selectSitesDropdown(); 
-            drone.find(By.cssSelector(MY_SITES)).click();
+            selectSitesDropdown();
+            
+            drone.findAndWait(By.cssSelector(MY_SITES)).click();
             return FactorySharePage.resolvePage(drone);
         }
         catch(NoSuchElementException nse)

@@ -88,7 +88,7 @@ public class CreateSitePage extends ShareDialogue
     {
         try
         {
-            return drone.find(CREATE_SITE_FORM).isDisplayed();
+            return drone.findAndWait(CREATE_SITE_FORM).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {

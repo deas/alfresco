@@ -147,7 +147,7 @@ public class LiveSearchDropdownTest extends AbstractTest
     public void expandLiveSearchDocumentResult()
     {
         SearchBox search = dashBoard.getSearch();
-        LiveSearchDropdown liveSearchResultPage = search.liveSearch("*.*").render();
+        LiveSearchDropdown liveSearchResultPage = search.liveSearch("jpg").render();
         Assert.assertNotNull(liveSearchResultPage);
 
         liveSearchResultPage.clickToSeeMoreDocumentResults();
