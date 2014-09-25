@@ -43,10 +43,14 @@ define(["intern!object",
 
          // Check the picker is displayed...
          .findByCssSelector(".alfresco-pickers-Picker")
-            .then(function(){}, function() {
-               TestCommon.log(testname, "Check that the dialog has opened with the picker...");
-               assert(false, "Test #1a - The dialog has NOT opened with the picker");
-            })
+            .then(
+               function(){
+                  TestCommon.log(testname, "Check that the dialog has opened with the picker...");
+               }, 
+               function() {
+                  assert(false, "Test #1a - The dialog has NOT opened with the picker");
+               }
+            )
             .end()
 
          // Select "Shared Files" (the results for this are mocked)
@@ -56,10 +60,15 @@ define(["intern!object",
 
          // Check that a new results set are shown...
          .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView")
-            .then(function(){}, function() {
-               TestCommon.log(testname, "Check that clicking Shared Files shows some results...");
-               assert(false, "Test #1b - The Shared Files click did not yield any results");
-            })
+            .then(
+               function()
+               {
+                  TestCommon.log(testname, "Check that clicking Shared Files shows some results...");
+               }, 
+               function() {
+                  assert(false, "Test #1b - The Shared Files click did not yield any results");
+               }
+            )
             .end()
 
          // Count the mocked results...
@@ -72,15 +81,19 @@ define(["intern!object",
 
          // Check the first item has an ADD publish action image...
          // TODO: This could be more specific, e.g. to check the actual image source?
-         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction img")
-            .then(function(){}, function() {
-               TestCommon.log(testname, "Check that the first item in Shared Files has the icon for adding...");
-               assert(false, "Test #1d -The first shared files item did not have an ADD publish action image");
-            })
+         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction > img")
+            .then(
+               function(){
+                  TestCommon.log(testname, "Check that the first item in Shared Files has the icon for adding...");
+               }, 
+               function() {
+                  assert(false, "Test #1d -The first shared files item did not have an ADD publish action image");
+               }
+            )
             .end()
 
          // Click the ADD publish action image to add the item to the picked items...
-         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction img")
+         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(1) .alfresco-renderers-PublishAction > img")
             .click()
             .end()
 
@@ -126,15 +139,18 @@ define(["intern!object",
             .end()
 
          // Check the remove item image exists...
-         .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction img")
-            .then(function(){}, function() {
-               TestCommon.log(testname, "Check that the remove item image is present...");
-               assert(false, "Test #1h - The remove item image could not be found");
-            })
+         .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction > img")
+            .then(
+               function(){
+                  TestCommon.log(testname, "Check that the remove item image is present...");
+               }, function() {
+                  assert(false, "Test #1h - The remove item image could not be found");
+               }
+            )
             .end()
 
          // Remove the previously selected item...
-         .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction img")
+         .findByCssSelector(".picked-items tr .alfresco-renderers-PublishAction > img")
             .click()
             .end()
 
@@ -162,7 +178,7 @@ define(["intern!object",
             .end()
 
          // Click the ADD publish action image TWICE, check that it was only added once...
-         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(2) .alfresco-renderers-PublishAction img")
+         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(2) .alfresco-renderers-PublishAction > img")
             .click()
             .click()
             .end()
@@ -176,7 +192,7 @@ define(["intern!object",
             .end()
 
          // Add another item...
-         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(3) .alfresco-renderers-PublishAction img")
+         .findByCssSelector(".alfresco-documentlibrary-views-layouts-AlfDocumentListView tr:nth-child(3) .alfresco-renderers-PublishAction > img")
             .click()
             .end()
 
