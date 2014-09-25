@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -125,11 +125,11 @@ define(["dojo/_base/declare",
          {
             this.alfLog("log", "Focus first in next group");
             var nextSibling = groupParent._getSiblingOfChild(this, 1);
-            while (nextSibling && !nextSibling.hasChildren())
+            while (nextSibling && typeof nextSibling.hasChildren === "function" && !nextSibling.hasChildren())
             {
                nextSibling = groupParent._getSiblingOfChild(nextSibling, 1);
             }
-            if (nextSibling)
+            if (nextSibling && typeof nextSibling.focusFirstChild === "function")
             {
                // Find a sibling that has a child to try and focus!
                nextSibling.focusFirstChild();
@@ -168,11 +168,11 @@ define(["dojo/_base/declare",
             // Otherwise we need to move to the FIRST entry in the NEXT group...
             // Get my previous sibling...
             var previousSibling = groupParent._getSiblingOfChild(this, -1);
-            while (previousSibling && !previousSibling.hasChildren())
+            while (previousSibling && typeof previousSibling.hasChildren === "function" && !previousSibling.hasChildren())
             {
                previousSibling = groupParent._getSiblingOfChild(previousSibling, -1);
             }
-            if (previousSibling)
+            if (previousSibling && typeof previousSibling.focusLastChild === "function")
             {
                // Focus on the last child of the previous sibling...
                previousSibling.focusLastChild();

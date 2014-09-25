@@ -49,9 +49,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_1 after Test #1");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "1) Clicking MENU_ITEM_1 (tab, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_1 after Test #1");
+                  }
+               )
                .end()
 
             // Test #2
@@ -61,9 +66,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.RETURN)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
-               .then(null, function(result) {
-                  assert(false, "Could not find MENU_ITEM_2 in Test #2");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "2) Clicking MENU_ITEM_2 (down, down, return)...");
+                  }, 
+                  function(result) {
+                     assert(false, "Could not find MENU_ITEM_2 in Test #2");
+                  }
+               )
                .end()
 
             // Test #3
@@ -74,9 +84,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.RETURN)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_3"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_3 in Test #3");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "3) Clicking MENU_ITEM_3 (down, down, down, return)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_3 in Test #3");
+                  }
+               )
                .end()
 
             // Test #4
@@ -88,9 +103,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_2 in Test #4");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "4) Clicking MENU_ITEM_2 (down, down, down, up, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_2 in Test #4");
+                  }
+               )
                .end()
 
             // Test #5
@@ -100,9 +120,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_6"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_6 in Test #5");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "5) Clicking MENU_ITEM_6 (down, up, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_6 in Test #5");
+                  }
+               )
                .end()
 
             // Test #6
@@ -113,9 +138,14 @@ define(["intern!object",
             .sleep(1000)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_1 in Test #6");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "6) Clicking MENU_ITEM_1 (down, up, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_1 in Test #6");
+                  }
+               )
                .end()
 
             // Test #7
@@ -124,9 +154,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "MENU_BAR_ITEM_1"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_BAR_ITEM_1 in Test #7");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "7) Clicking MENU_BAR_ITEM_1 (right, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_BAR_ITEM_1 in Test #7");
+                  }
+               )
                .end()
 
             // Test #8
@@ -137,9 +172,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "MENU_ITEM_8"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_8 in Test #8");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "8) Clicking MENU_ITEM_8 (right, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_8 in Test #8");
+                  }
+               )
                .end()
 
             .pressKeys(keys.ARROW_DOWN)
@@ -148,9 +188,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "url", "MENU_ITEM_7"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_7 in Test #8");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "9) Clicking MENU_ITEM_7 (down, down, up, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_7 in Test #9");
+                  }
+               )
                .end()
 
             // Test #9
@@ -163,9 +208,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_11"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_11 in Test #9");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "10) Clicking MENU_ITEM_11 (right, down, down, up, right)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_11 in Test #10");
+                  }
+               )
                .end()
 
             // Test #10
@@ -178,8 +228,12 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_13"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_13 in Test #10");
+               .then(
+                  function() {
+                     TestCommon.log(testName, "11) Clicking MENU_ITEM_13 (down, down, right, down, right, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_13 in Test #11");
                })
                .end()
 
@@ -193,9 +247,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_14"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_14 in Test #11");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "12) Clicking MENU_ITEM_14 (down, down, right, left, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_14 in Test #12");
+                  }
+               )
                .end()
 
             // Test #12
@@ -205,9 +264,14 @@ define(["intern!object",
             .sleep(alfPause)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_10"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_10 in Test #12");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "13) Clicking MENU_ITEM_10 (right, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_10 in Test #13");
+                  }
+               )
                .end()
 
             // Test #13
@@ -218,8 +282,12 @@ define(["intern!object",
             .sleep(1000)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_9"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_9 in Test #13");
+               .then(
+                  function() {
+                     TestCommon.log(testName, "14) Clicking MENU_ITEM_9 (down, down, up, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_9 in Test #14");
                })
                .end()
 
@@ -230,9 +298,14 @@ define(["intern!object",
             .sleep(1000)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_2"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_2 in Test #14");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "15) Clicking MENU_ITEM_2 (right, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_2 in Test #15");
+                  }
+               )
                .end()
 
             // Test #15
@@ -242,9 +315,14 @@ define(["intern!object",
             .sleep(1000)
             .pressKeys(keys.SPACE)
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_10"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_10 in Test #15");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "16) Clicking MENU_ITEM_10 (left, down, space)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_10 in Test #16");
+                  }
+               )
                .end()
 
             // Test #16
@@ -256,9 +334,14 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_1"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_1 in Test #16");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "17) Clicking MENU_ITEM_1 (mouse)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_1 in Test #17");
+                  }
+               )
                .end()
 
             // Test #17
@@ -276,9 +359,14 @@ define(["intern!object",
                .click()
                .end()
             .findByCssSelector(TestCommon.pubSubDataCssSelector("last", "item", "MENU_ITEM_13"))
-               .then(null, function() {
-                  assert(false, "Could not find MENU_ITEM_13 in Test #17");
-               })
+               .then(
+                  function() {
+                     TestCommon.log(testName, "18) Clicking MENU_ITEM_13 (mouse)...");
+                  }, 
+                  function() {
+                     assert(false, "Could not find MENU_ITEM_13 in Test #18");
+                  }
+               )
                .end()
 
             .alfPostCoverageResults(browser);
