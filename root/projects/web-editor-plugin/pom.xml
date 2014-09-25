@@ -9,6 +9,19 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
+    <build>
+    <!-- Non standard folder layout for resources -->
+        <resources>
+            <resource>
+                <directory>config</directory>
+            </resource>
+            <resource>
+                <directory>source/web</directory>
+                <targetPath>${project.build.outputDirectory}/META-INF</targetPath>
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.extensions.surf</groupId>
