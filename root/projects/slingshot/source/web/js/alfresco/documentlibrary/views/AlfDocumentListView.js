@@ -161,7 +161,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This is the property that is used to lookup documents in the subscribed topic. 
+       * This is the property that is used to lookup documents in the subscribed topic.
        *
        * @instance
        * @type {string}
@@ -190,11 +190,11 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Attempts to process an item provided to the 
+       * Attempts to process an item provided to the
        * [onDocumentsLoaded]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#onDocumentsLoaded}
        * function. By default this attempts to process node data as the default behaviour is to assume this
        * is an Alfresco node.
-       * 
+       *
        * @instance
        * @param {object} item The item to process
        * @param {number} index The index of the item
@@ -332,6 +332,12 @@ define(["dojo/_base/declare",
 
                // Finally, render the current data (when using infinite scroll the data should have been augmented)
                this.docListRenderer.renderData();
+
+               // Check to see if any rows were rendered (allows for renderFilters on widgets. If they weren't, render no Data Display.
+               if (query("tr", this.tableNode).length === 0)
+               {
+                  this.renderNoDataDisplay();
+               }
             }
             catch(e)
             {
