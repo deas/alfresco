@@ -86,13 +86,13 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
 
     }
 
-    
+    /**
     @AfterClass
     public void deleteSite()
     {
       SiteUtil.deleteSite(drone, siteName);
     }
-    
+    **/
 
     /**
      * 
@@ -135,7 +135,7 @@ public class SiteContentBreakdownDashletTest extends AbstractSiteDashletTest
     @Test(dependsOnMethods = "instantiateDashlet")
     public void testMimeTypesAndCounts() throws Exception
     {
-        List<String> mimeTypes = siteContentBreakdownDashlet.getTooltipFileTypes();      
+        List<String> mimeTypes = siteContentBreakdownDashlet.getTooltipFileTypes();
         Assert.assertTrue(mimeTypes.contains(TXT_TYPE));
         Assert.assertTrue(mimeTypes.contains(JPEG_TYPE));
         Assert.assertTrue(mimeTypes.contains(DOCX_TYPE));

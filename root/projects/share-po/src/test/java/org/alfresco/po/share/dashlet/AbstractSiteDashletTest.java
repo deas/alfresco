@@ -72,6 +72,7 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
         siteDashBoard = finderPage.selectSite(siteName).render();
     }
     
+    /**
     @AfterClass(alwaysRun=true)
     public void deleteSite()
     {
@@ -88,5 +89,5 @@ public class AbstractSiteDashletTest extends AbstractDocumentTest
             logger.error("Problem deleting site", e);
         }
     }
-    
+    **/
 }
