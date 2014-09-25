@@ -117,16 +117,22 @@ define(["dojo/_base/declare",
 
                // Attempt to parse the data, but reset to null if not possible...
                var data;
-               try
+               if (headers['Content-Type'] == 'application/json')
                {
-                  data = (config.data != null) ? JSON.stringify(config.data) : null;
+                  try
+                  {
+                     data = (config.data != null) ? JSON.stringify(config.data) : null;
+                  }
+                  catch (e)
+                  {
+                     this.alfLog("warn", "Could not stringify XHR JSON data", data);
+                     data = null;
+                  }
                }
-               catch (e)
+               else
                {
-                  this.alfLog("warn", "Could not stringify XHR JSON data", data);
-                  data = null;
+                  data = config.data;
                }
-
                var request = xhr(config.url, {
                   handleAs: (config.handleAs) ? config.handleAs : "text",
                   method: (config.method) ? config.method : "POST",
