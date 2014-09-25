@@ -184,15 +184,18 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 firstTransactions = client.getTransactions(null, 0L, null, 2000L, 1);
             }
             
+            setLastTxCommitTimeAndTxIdInTrackerState(firstTransactions, state);
             Long maxTxnCommitTimeInRepo = firstTransactions.getMaxTxnCommitTime();
             Long maxTxnIdInRepo = firstTransactions.getMaxTxnId();
             if (maxTxnCommitTimeInRepo != null && maxTxnIdInRepo != null)
             {
                 Transaction maxTxInIndex = this.infoSrv.getMaxTransactionIdAndCommitTimeInIndex();
-                if (maxTxInIndex.getId() > maxTxnIdInRepo 
-                            || maxTxInIndex.getCommitTimeMs() > maxTxnCommitTimeInRepo)
+                if (maxTxInIndex.getId() > maxTxnIdInRepo)
                 {
                     log.error("Last transaction was found in index with timestamp later than that of repository.");
+                    log.error("Max Tx In Index: " + maxTxInIndex.getId() + ", In Repo: " + maxTxnIdInRepo);
+                    log.error("Max Tx Commit Time In Index: " + maxTxInIndex.getCommitTimeMs() + ", In Repo: "
+                            + maxTxnCommitTimeInRepo);
                     log.error("SOLR has successfully connected to your repository  however the SOLR indexes and repository database do not match."); 
                     log.error("If this is a new or rebuilt database your SOLR indexes also need to be re-built to match the database.");
                     log.error("You can also check your SOLR connection details in solrcore.properties.");

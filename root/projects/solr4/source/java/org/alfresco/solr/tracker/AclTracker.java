@@ -379,16 +379,19 @@ public class AclTracker extends AbstractTracker
             {
                 firstChangeSets = client.getAclChangeSets(null, 0l, null, 2000L, 1);
             }
-            
+
+            setLastChangeSetIdAndCommitTimeInTrackerState(firstChangeSets, state);
             Long maxChangeSetCommitTimeInRepo = firstChangeSets.getMaxChangeSetCommitTime();
             Long maxChangeSetIdInRepo = firstChangeSets.getMaxChangeSetId();
             if (maxChangeSetCommitTimeInRepo != null && maxChangeSetIdInRepo != null)
             {
                 AclChangeSet maxAclTxInIndex = this.infoSrv.getMaxAclChangeSetIdAndCommitTimeInIndex();
-                if (maxAclTxInIndex.getId() > maxChangeSetIdInRepo 
-                            || maxAclTxInIndex.getCommitTimeMs() > maxChangeSetCommitTimeInRepo)
+                if (maxAclTxInIndex.getId() > maxChangeSetIdInRepo)
                 {
                     log.error("Last acl transaction was found in index with timestamp later than that of repository.");
+                    log.error("Max Acl Tx In Index: " + maxAclTxInIndex.getId() + ", In Repo: " + maxChangeSetIdInRepo);
+                    log.error("Max Acl Tx Commit Time In Index: " + maxAclTxInIndex.getCommitTimeMs() + ", In Repo: "
+                            + maxChangeSetCommitTimeInRepo);
                     log.error("SOLR has successfully connected to your repository  however the SOLR indexes and repository database do not match."); 
                     log.error("If this is a new or rebuilt database your SOLR indexes also need to be re-built to match the database."); 
                     log.error("You can also check your SOLR connection details in solrcore.properties.");
@@ -758,7 +761,7 @@ public class AclTracker extends AbstractTracker
                 state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
                 state.setLastIndexedChangeSetId(set.getId());
             }
-            trackerStats.addChangeSetAcls((int) (set.getAclCount()));
+            trackerStats.addChangeSetAcls(set.getAclCount());
         }
         changeSetsIndexed.clear();
         super.infoSrv.commit();
@@ -823,6 +826,7 @@ public class AclTracker extends AbstractTracker
             this.acls = acls;
         }
 
+        @Override
         protected void doWork() throws IOException, AuthenticationException, JSONException
         {
             List<AclReaders> readers = client.getAclReaders(acls);
