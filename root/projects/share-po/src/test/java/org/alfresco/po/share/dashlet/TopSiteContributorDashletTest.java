@@ -117,9 +117,14 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         navigateToSiteDashboard();
         SitePage site = drone.getCurrentPage().render();
         membersPage = site.getSiteNav().selectInvite().render();
-        membersPage.searchUser("User_");
-        //membersPage.searchUser(random1);
-        membersPage.clickAddUser(random1);
+        List<String> users = membersPage.searchUser("User_");
+        for (String user : users)
+        {    
+            if(user.equalsIgnoreCase("(" + random1 + ")"))
+            {        
+                membersPage.clickAddUser(random1);
+            }
+        }    
         membersPage.selectInviteeAndAssignRole("(" + random1 + ")", UserRole.COLLABORATOR);
         membersPage.clickInviteButton();
         logout(drone);
@@ -154,7 +159,6 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
         DashBoardPage boardPage = loginAs(username, password).render();
         SiteFinderPage siteFinder = boardPage.getNav().selectSearchForSites().render();
         siteFinder = siteFinder.searchForSite(siteName).render();
-        //SiteDashboardPage siteDashBoard = siteFinder.selectSite(siteName).render();
         siteDashBoard = siteFinder.selectSite(siteName).render();
         customiseSiteDashBoard = siteDashBoard.getSiteNav().selectCustomizeDashboard();
         customiseSiteDashBoard.render();
