@@ -6171,14 +6171,8 @@ public class AlfrescoCoreAdminTester
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " desc",
                     new int[] { 6, 5, 4, 3, 2, 13, 12, 11, 10, 9, 8, 14, 7, 15, 16, 1 }, new Locale("es"), null, null,
                     (String) null);
-
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "cabbage desc", new int[] { 1, 2, 3, 4, 5, 6,
-                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "PRIMARYPARENT desc", new int[] { 1, 2, 3, 4, 5, 6,
                     7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@PARENT:PARENT desc", new int[] { 1, 2, 3,
-                    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
-
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16,
                     "@" + ContentModel.PROP_CONTENT + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
                                 13, 14, 16, 15 }, null, null, null, (String) null);

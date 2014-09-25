@@ -4548,83 +4548,111 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
    
-    protected org.apache.lucene.search.Query addContentSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName,
-            List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode)
+    protected org.apache.lucene.search.Query addContentSpanQuery(String afield, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName,
+            List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode) 
     {
-//        try
-//        {
-//            BooleanQuery booleanQuery = new BooleanQuery();
-//            for (Locale locale : expandedLocales)
-//            {
-//                if (locale.toString().length() == 0)
-//                {
-//                    StringBuilder builder = new StringBuilder(first.length() + 10);
-//                    builder.append("\u0000").append(locale.toString()).append("\u0000").append(first);
-//                    TokenStream source = getAnalyzer().tokenStream(expandedFieldName + ".__", new StringReader(builder.toString()));
-//
-//                    org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
-//                    org.apache.lucene.analysis.Token nextToken;
-//
-//                    nextToken = source.next(reusableToken);
-//                    SpanQuery firstTerm = new SpanTermQuery(new Term(expandedFieldName + ".__", nextToken.term()));
-//                    if (source.next(reusableToken) != null)
-//                    {
-//                        throw new AlfrescoRuntimeException("Found extra token in span query: " + first);
-//                    }
-//
-//                    builder = new StringBuilder(last.length() + 10);
-//                    builder.append("\u0000").append(locale.toString()).append("\u0000").append(last);
-//                    source = getAnalyzer().tokenStream(expandedFieldName + ".__", new StringReader(builder.toString()));
-//
-//                    nextToken = source.next(reusableToken);
-//                    SpanQuery lastTerm = new SpanTermQuery(new Term(expandedFieldName + ".__", nextToken.term()));
-//                    if (source.next(reusableToken) != null)
-//                    {
-//                        throw new AlfrescoRuntimeException("Found extra token in span query: " + last);
-//                    }
-//
-//                    SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
-//                    booleanQuery.add(result, Occur.SHOULD);
-//
-//                }
-//                else
-//                {
-//                    StringBuilder builder = new StringBuilder(first.length() + 10);
-//                    builder.append("\u0000").append(locale.toString()).append("\u0000").append(first);
-//                    TokenStream source = getAnalyzer().tokenStream(expandedFieldName, new StringReader(builder.toString()), AnalysisMode.TOKENISE);
-//
-//                    org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
-//                    org.apache.lucene.analysis.Token nextToken;
-//
-//                    nextToken = source.next(reusableToken);
-//                    SpanQuery firstTerm = new SpanTermQuery(new Term(expandedFieldName, nextToken.term()));
-//                    if (source.next(reusableToken) != null)
-//                    {
-//                        throw new AlfrescoRuntimeException("Found extra token in span query: " + first);
-//                    }
-//
-//                    builder = new StringBuilder(last.length() + 10);
-//                    builder.append("\u0000").append(locale.toString()).append("\u0000").append(last);
-//                    source = getAnalyzer().tokenStream(expandedFieldName, new StringReader(builder.toString()), AnalysisMode.TOKENISE);
-//
-//                    nextToken = source.next(reusableToken);
-//                    SpanQuery lastTerm = new SpanTermQuery(new Term(expandedFieldName, nextToken.term()));
-//                    if (source.next(reusableToken) != null)
-//                    {
-//                        throw new AlfrescoRuntimeException("Found extra token in span query: " + last);
-//                    }
-//
-//                    SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
-//                    booleanQuery.add(result, Occur.SHOULD);
-//                }
-//            }
-//            return getNonEmptyBooleanQuery(booleanQuery);
-//        }
-//        catch (IOException ioe)
-//        {
-//            return createNoMatchQuery();
-//        }
-        throw new UnsupportedOperationException();
+        try
+        {
+            BooleanQuery booleanQuery = new BooleanQuery();
+            for (Locale locale : expandedLocales)
+            {
+                if (locale.toString().length() == 0)
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(!field.isLocalised())
+                        {
+                            SpanOrQuery firstQuery = buildSpanOrQuery(first, field);
+                            SpanOrQuery lastQuery = buildSpanOrQuery(last, field);
+                            SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstQuery, lastQuery }, slop, inOrder);
+                            booleanQuery.add(result, Occur.SHOULD);
+                        }
+                    }
+                }
+                else
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(field.isLocalised())
+                        {
+                            SpanOrQuery firstQuery = buildSpanOrQuery(getLocalePrefixedText(first, locale), field);
+                            SpanOrQuery lastQuery = buildSpanOrQuery(getLocalePrefixedText(last, locale), field);
+                            SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstQuery, lastQuery }, slop, inOrder);
+                            booleanQuery.add(result, Occur.SHOULD);
+                        }
+                    }
+                }
+            }
+            return getNonEmptyBooleanQuery(booleanQuery);
+        }
+        catch (IOException ioe)
+        {
+            return createNoMatchQuery();
+        }
+      
+    }
+
+    private String getLocalePrefixedText(String text, Locale locale)
+    {
+        StringBuilder builder = new StringBuilder(text.length() + 10);
+        builder.append("\u0000").append(locale.toString()).append("\u0000").append(text);
+        return builder.toString();
+    }
+    
+    /**
+     * @param first
+     * @param booleanQuery
+     * @param field
+     * @param firstQuery
+     * @throws IOException
+     */
+    private SpanOrQuery buildSpanOrQuery(String first, FieldInstance field) throws IOException
+    {
+        SpanOrQuery spanOrQuery = new SpanOrQuery();
+
+        org.apache.lucene.analysis.Token nextToken;
+        TokenStream source = getAnalyzer().tokenStream(field.getField(), new StringReader(first));
+
+        source.reset();
+        while (source.incrementToken())
+        {
+            CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
+            OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
+            TypeAttribute typeAtt = null;
+            if(source.hasAttribute(TypeAttribute.class))
+            {
+                typeAtt = source.getAttribute(TypeAttribute.class);
+            }
+            PositionIncrementAttribute posIncAtt = null;
+            if(source.hasAttribute(PositionIncrementAttribute.class))
+            {
+                posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
+            }
+            nextToken = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
+            if(typeAtt != null)
+            {
+                nextToken.setType(typeAtt.type());
+            }
+            if(posIncAtt != null)
+            {
+                nextToken.setPositionIncrement(posIncAtt.getPositionIncrement());
+            }
+
+            SpanQuery termQuery = new SpanTermQuery(new Term(field.getField(), nextToken.toString()));
+            spanOrQuery.addClause(termQuery);
+        }
+        try
+        {
+            source.close();
+        }
+        catch (IOException e)
+        {
+            // ignore
+        }
+
+        return spanOrQuery;
     }
 
  
@@ -4634,47 +4662,46 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
     }
 
-    private void addMLTextOrTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
+    private void addMLTextOrTextSpanQuery(String afield, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
             BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
     {
-//        try
-//        {
-//            String fieldName = getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.TRUE);
-//
-//            StringBuilder builder = new StringBuilder(first.length() + 10);
-//            builder.append("\u0000").append(locale.toString()).append("\u0000").append(first);
-//            TokenStream source = getAnalyzer().tokenStream(fieldName, new StringReader(builder.toString()), AnalysisMode.TOKENISE);
-//
-//            org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
-//            org.apache.lucene.analysis.Token nextToken;
-//
-//            nextToken = source.next(reusableToken);
-//            SpanQuery firstTerm = new SpanTermQuery(new Term(fieldName, nextToken.term()));
-//            if (source.next(reusableToken) != null)
-//            {
-//                throw new AlfrescoRuntimeException("Found extra token in span query: " + first);
-//            }
-//
-//            builder = new StringBuilder(last.length() + 10);
-//            builder.append("\u0000").append(locale.toString()).append("\u0000").append(last);
-//            source = getAnalyzer().tokenStream(fieldName, new StringReader(builder.toString()), AnalysisMode.TOKENISE);
-//
-//            nextToken = source.next(reusableToken);
-//            SpanQuery lastTerm = new SpanTermQuery(new Term(fieldName, nextToken.term()));
-//            if (source.next(reusableToken) != null)
-//            {
-//                throw new AlfrescoRuntimeException("Found extra token in span query: " + last);
-//            }
-//
-//            SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstTerm, lastTerm }, slop, inOrder);
-//            booleanQuery.add(result, Occur.SHOULD);
-//        }
-//        catch (IOException ioe)
-//        {
-//            booleanQuery.add(createNoMatchQuery(), Occur.SHOULD);
-//        }
-        throw new UnsupportedOperationException();
-
+        try
+        {
+            
+                if (locale.toString().length() == 0)
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(!field.isLocalised())
+                        {
+                            SpanOrQuery firstQuery = buildSpanOrQuery(first, field);
+                            SpanOrQuery lastQuery = buildSpanOrQuery(last, field);
+                            SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstQuery, lastQuery }, slop, inOrder);
+                            booleanQuery.add(result, Occur.SHOULD);
+                        }
+                    }
+                }
+                else
+                {
+                    IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(pDef.getName(), null, FieldUse.FTS);
+                    for(FieldInstance field : indexedField.getFields())
+                    {
+                        if(field.isLocalised())
+                        {
+                            SpanOrQuery firstQuery = buildSpanOrQuery(getLocalePrefixedText(first, locale), field);
+                            SpanOrQuery lastQuery = buildSpanOrQuery(getLocalePrefixedText(last, locale), field);
+                            SpanNearQuery result = new SpanNearQuery(new SpanQuery[] { firstQuery, lastQuery }, slop, inOrder);
+                            booleanQuery.add(result, Occur.SHOULD);
+                        }
+                    }
+                }
+         
+        }
+        catch (IOException ioe)
+        {
+          
+        }
     }
 
    
