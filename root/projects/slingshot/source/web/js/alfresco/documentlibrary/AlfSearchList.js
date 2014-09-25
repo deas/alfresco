@@ -583,7 +583,12 @@ define(["dojo/_base/declare",
          {
             for (var key in facets)
             {
-               this.alfPublish("ALF_FACET_RESULTS_" + key, {
+               var facet = key;
+               if (key[0] === "@")
+               {
+                  facet = key.substring(1);
+               }
+               this.alfPublish("ALF_FACET_RESULTS_" + facet, {
                   facetResults: facets[key],
                   activeFilters: filters
                });

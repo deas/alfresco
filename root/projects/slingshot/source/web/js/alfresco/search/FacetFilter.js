@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -169,7 +169,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_search_FacetFilter__postCreate() {
-         if (this.hide == true)
+         if (this.hide === true)
          {
             domClass.add(this.domNode, "hidden");
          }

@@ -31,7 +31,7 @@ model.jsonModel = {
                   config: {
                      id: "DO_FACET_BUTTON_1",
                      label: "Publish facet data 1",
-                     publishTopic: "ALF_FACET_RESULTS_@FACET1QNAME",
+                     publishTopic: "ALF_FACET_RESULTS_FACET1QNAME",
                      publishPayload: {
                         activeFilters: null,
                         facetResults: [
@@ -64,7 +64,7 @@ model.jsonModel = {
                   config: {
                      id: "DO_FACET_BUTTON_2",
                      label: "Publish facet data 2",
-                     publishTopic: "ALF_FACET_RESULTS_@FACET1QNAME",
+                     publishTopic: "ALF_FACET_RESULTS_FACET1QNAME",
                      publishPayload: {
                         activeFilters: null,
                         facetResults: [
@@ -87,7 +87,7 @@ model.jsonModel = {
                   config: {
                      id: "DO_FACET_BUTTON_3",
                      label: "Publish facet data 3",
-                     publishTopic: "ALF_FACET_RESULTS_@FACET1QNAME",
+                     publishTopic: "ALF_FACET_RESULTS_FACET1QNAME",
                      publishPayload: {
                         activeFilters: null,
                         facetResults: [
@@ -140,7 +140,7 @@ model.jsonModel = {
                   config: {
                      id: "DO_FACET_BUTTON_4",
                      label: "Publish facet data 4",
-                     publishTopic: "ALF_FACET_RESULTS_@FACET2QNAME",
+                     publishTopic: "ALF_FACET_RESULTS_FACET2QNAME",
                      publishPayload: {
                         activeFilters: null,
                         facetResults: [
