@@ -198,7 +198,56 @@ define(["dojo/_base/declare",
                               config: {
                                  widgets: [
                                     {
-                                       name: "alfresco/renderers/Actions"
+                                       name: "alfresco/renderers/Actions",
+                                       config: {
+                                          allowedActions: [
+                                             "document-delete"
+                                          ],
+                                          renderFilter: [
+                                             {
+                                                property: "node.type",
+                                                values: ["cm:folder","cm:content"],
+                                                negate: true
+                                             }
+                                          ]
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/renderers/Actions",
+                                       config: {
+                                          allowedActions: [
+                                             "document-download",
+                                             "document-view-content",
+                                             "document-view-details",
+                                             "folder-view-details",
+                                             "document-edit-metadata",
+                                             "document-inline-edit",
+                                             "document-manage-granular-permissions",
+                                             "document-manage-repo-permissions",
+                                             "document-view-original",
+                                             "document-view-working-copy",
+                                             "folder-manage-rules",
+                                             "view-in-explorer",
+                                             "document-view-googlemaps",
+                                             "document-view-in-source-repository",
+                                             "document-view-in-cloud",
+                                             "document-delete",
+                                             "document-edit-offline",
+                                             "folder-download",
+                                             "document-copy-to",
+                                             "document-move-to",
+                                             "document-locate",
+                                             "document-assign-workflow",
+                                             "document-cancel-editing"
+                                          ],
+                                          renderFilter: [
+                                             {
+                                                property: "node.type",
+                                                values: ["cm:folder","cm:content"],
+                                                negate: false
+                                             }
+                                          ]
+                                       }
                                     }
                                  ]
                               }

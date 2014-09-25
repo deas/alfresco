@@ -51,49 +51,55 @@ define(["intern!object",
             .then(function (el) {
                expect(el).to.be.an("object", "A single render filter rule failed unexpectedly");
             })
-            .end()
+         .end()
 
          .findById("MBI3")
             .then(function (el) {
                expect(el).to.be.an("object", "A single negated render filter rule failed unexpectedly");
             })
-            .end()
+         .end()
+
+         .findAllByCssSelector("MBI3a")
+            .then(function (els) {
+               assert(els.length === 0, "A single negated render filter rule failed unexpectedly");
+            })
+         .end()
 
          .findById("MBI4")
             .then(function (el) {
                expect(el).to.be.an("object", "A single absent property render filter rule failed unexpectedly");
             })
-            .end()
+         .end()
 
          .findById("MBI5")
             .then(function (el) {
                expect(el).to.be.an("object", "An AND condition property render filter rule failed unexpectedly");
             })
-            .end()
+         .end()
 
          .findById("MBI7")
             .then(function (el) {
                TestCommon.log(testname,"Test OR property rule");
                expect(el).to.be.an("object", "An OR condition property render filter rule failed unexpectedly");
             })
-            .end()
+         .end()
 
          .findAllByCssSelector("#MBI8")
             .then(function (els) {
                assert(els.length === 0, "An OR condition property render filter rule passed unexpectedly");
             })
-            .end()
+         .end()
 
          .findAllByCssSelector("#MBI2")
             .then(function (els) {
                assert(els.length === 0, "An inherited currentItem change render filter rule passed unexpectedly");
             })
-            .end()
+         .end()
 
          .findByCssSelector("#DD1_text")
             .sleep(250)
             .click()
-            .end()
+         .end()
 
          .sleep(250)
 
@@ -101,13 +107,13 @@ define(["intern!object",
             .then(function (el) {
                expect(el).to.be.an("object", "An inherited currentItem change render filter rule failed unexpectedly");
             })
-            .end()
+         .end()
 
          .findAllByCssSelector("#MI2")
             .then(function (els) {
                assert(els.length === 0, "An inherited currentItem change render filter rule passed unexpectedly");
             })
-            .end()
+         .end()
 
          .alfPostCoverageResults(browser);
       }

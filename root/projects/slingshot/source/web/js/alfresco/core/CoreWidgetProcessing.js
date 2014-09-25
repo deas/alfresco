@@ -563,6 +563,15 @@ define(["dojo/_base/declare",
          {
             passesFilter = false;
          }
+         if (renderFilterConfig.negate == null || renderFilterConfig.negate === false)
+         {
+            // No action, leave result as it is...
+         }
+         else
+         {
+            // Negate the result...
+            passesFilter = !passesFilter;
+         }
          this.alfLog("log", "Render filter result", passesFilter, this.currentItem, renderFilterConfig);
          return passesFilter;
       },
@@ -593,15 +602,7 @@ define(["dojo/_base/declare",
          {
             currValue = currValue.toString();
          }
-
-         if (renderFilterConfig.negate == null || renderFilterConfig.negate === false)
-         {
-            return currValue === target;
-         }
-         else
-         {
-            return currValue !== target;
-         }
+         return currValue === target;
       },
 
       /**

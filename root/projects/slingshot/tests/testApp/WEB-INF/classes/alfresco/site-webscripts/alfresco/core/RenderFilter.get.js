@@ -60,7 +60,22 @@ model.jsonModel = {
                      renderFilter: [
                         {
                            property: "x",
-                           values: ["1"],
+                           values: ["1","2"],
+                           negate: true
+                        }
+                     ]
+                  }
+               },
+               {
+                  name: "alfresco/menus/AlfMenuBarItem",
+                  config: {
+                     id: "MBI3a",
+                     label: "Should NOT appear (negate)",
+                     publishTopic: "MBI3a",
+                     renderFilter: [
+                        {
+                           property: "x",
+                           values: ["a","b"],
                            negate: true
                         }
                      ]
