@@ -64,10 +64,10 @@ model.jsonModel = {
          id: "SET_SCOPE_1",
          name: "alfresco/buttons/AlfButton",
          config: {
-            label: "Set Scope (REPO)",
+            label: "Set Scope (repo)",
             publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
             publishPayload: {
-               value: "REPO"
+               value: "repo"
             }
          }
       },
@@ -75,10 +75,10 @@ model.jsonModel = {
          id: "SET_SCOPE_2",
          name: "alfresco/buttons/AlfButton",
          config: {
-            label: "Set Scope (ALL_SITES)",
+            label: "Set Scope (all_sites)",
             publishTopic: "ALF_SEARCHLIST_SCOPE_SELECTION",
             publishPayload: {
-               value: "ALL_SITES"
+               value: "all_sites"
             }
          }
       },
