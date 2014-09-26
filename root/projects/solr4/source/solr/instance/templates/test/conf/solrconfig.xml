@@ -745,7 +745,7 @@
          using enableRemoteStreaming="true"
 
       --> 
-    <requestParsers enableRemoteStreaming="true" 
+    <requestParsers enableRemoteStreaming="false" 
                     multipartUploadLimitInKB="2048000"
                     formdataUploadLimitInKB="2048"
                     addHttpRequestToContext="false"/>
