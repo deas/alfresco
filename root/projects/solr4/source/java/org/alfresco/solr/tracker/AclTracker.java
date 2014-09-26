@@ -386,7 +386,7 @@ public class AclTracker extends AbstractTracker
             if (maxChangeSetCommitTimeInRepo != null && maxChangeSetIdInRepo != null)
             {
                 AclChangeSet maxAclTxInIndex = this.infoSrv.getMaxAclChangeSetIdAndCommitTimeInIndex();
-                if (maxAclTxInIndex.getId() > maxChangeSetIdInRepo)
+                if (maxAclTxInIndex.getCommitTimeMs() > maxChangeSetCommitTimeInRepo)
                 {
                     log.error("Last acl transaction was found in index with timestamp later than that of repository.");
                     log.error("Max Acl Tx In Index: " + maxAclTxInIndex.getId() + ", In Repo: " + maxChangeSetIdInRepo);
@@ -400,7 +400,7 @@ public class AclTracker extends AbstractTracker
                 else
                 {
                     state.setCheckedLastAclTransactionTime(true);
-                    log.info("Verified last acl transaction and timestamp in index less than or equal to that of repository.");
+                    log.info("Verified last acl transaction timestamp in index less than or equal to that of repository.");
                 }
             }
         }
@@ -756,7 +756,10 @@ public class AclTracker extends AbstractTracker
         for (AclChangeSet set : changeSetsIndexed)
         {
             super.infoSrv.indexAclTransaction(set, true);
-            if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime())
+            // Acl change sets are ordered by commit time and tie-broken by id
+            if (set.getCommitTimeMs() > state.getLastIndexedChangeSetCommitTime()
+                    || set.getCommitTimeMs() == state.getLastIndexedChangeSetCommitTime()
+                    && set.getId() > state.getLastIndexedChangeSetId())
             {
                 state.setLastIndexedChangeSetCommitTime(set.getCommitTimeMs());
                 state.setLastIndexedChangeSetId(set.getId());

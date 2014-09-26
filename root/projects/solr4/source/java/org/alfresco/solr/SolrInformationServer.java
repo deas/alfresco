@@ -306,21 +306,25 @@ public class SolrInformationServer implements InformationServer
             IndexHealthReport report = new IndexHealthReport(this);
             TransactionInfoReporter txReporter = new TransactionInfoReporter(report)
             {
+                @Override
                 void reportIdInIndexButNotInDb(long txid)
                 {
                     report.setTxInIndexButNotInDb(txid);
                 }
 
+                @Override
                 void reportIdInDbButNotInIndex(long id)
                 {
                     report.setMissingTxFromIndex(id);
                 }
 
+                @Override
                 void reportDuplicatedIdInIndex(long id)
                 {
                     report.setDuplicatedTxInIndex(id);
                 }
 
+                @Override
                 void reportUniqueIdsInIndex(long count)
                 {
                     report.setUniqueTransactionDocsInIndex(count);
@@ -388,21 +392,25 @@ public class SolrInformationServer implements InformationServer
             IndexHealthReport report = new IndexHealthReport(this);
             TransactionInfoReporter aclTxReporter = new TransactionInfoReporter(report)
             {
+                @Override
                 void reportIdInIndexButNotInDb(long txid)
                 {
                     report.setAclTxInIndexButNotInDb(txid);
                 }
     
+                @Override
                 void reportIdInDbButNotInIndex(long id)
                 {
                     report.setMissingAclTxFromIndex(id);
                 }
     
+                @Override
                 void reportDuplicatedIdInIndex(long id)
                 {
                     report.setDuplicatedAclTxInIndex(id);
                 }
     
+                @Override
                 void reportUniqueIdsInIndex(long count)
                 {
                     report.setUniqueAclTransactionDocsInIndex(count);
@@ -764,7 +772,7 @@ public class SolrInformationServer implements InformationServer
                 Long fileSize = 0L;
 
                 File dir = new File(solrIndexSearcher.getPath());
-                for (String name : (Collection<String>) indexCommit.getFileNames())
+                for (String name : indexCommit.getFileNames())
                 {
                     File file = new File(dir, name);
                     if (file.exists())
@@ -1188,8 +1196,11 @@ public class SolrInformationServer implements InformationServer
         SolrDocument aclState = getState(request, "TRACKER!STATE!ACLTX");
         if (aclState != null)
         {
+            long aclTxCommitTime = this.getFieldValueLong(aclState, FIELD_S_ACLTXCOMMITTIME);
             long aclTxId = this.getFieldValueLong(aclState, FIELD_S_ACLTXID);
-            if (changeSet.getId() > aclTxId)
+            // Acl change sets are ordered by commit time and tie-broken by id
+            if (changeSet.getCommitTimeMs() > aclTxCommitTime
+                    || changeSet.getCommitTimeMs() == aclTxCommitTime && changeSet.getId() > aclTxId)
             {
                 // Uses optimistic concurrency 
                 version = this.getFieldValueString(aclState, FIELD_VERSION);
@@ -1330,6 +1341,17 @@ public class SolrInformationServer implements InformationServer
         }
         catch (Exception e)
         {
+            log.warn("Node index failed and skipped for " + node.getId() + " in Tx " + node.getTxnId(), e);
+
+            if (processor == null)
+            {
+                if (request == null)
+                {
+                    request = getLocalSolrQueryRequest();
+                }
+                processor = this.core.getUpdateProcessingChain(null).createProcessor(request, new SolrQueryResponse());
+            }
+
             // TODO: retry failed
 
             log.debug(".. deleting on exception");
@@ -1361,8 +1383,6 @@ public class SolrInformationServer implements InformationServer
 
             addDocCmd.solrDoc = doc;
             processor.processAdd(addDocCmd);
-           
-            log.warn("Node index failed and skipped for " + node.getId() + " in Tx " + node.getTxnId(), e);
         }
         finally
         {
@@ -2115,7 +2135,11 @@ public class SolrInformationServer implements InformationServer
             }
             else
             {
-                throw new Exception("This method should not be called unless there is a cached doc in the content store.");
+                log.warn("There is no cached doc in the Solr content store with tenant [" + tenant + "] and dbId ["
+                        + dbId + "].");
+                log.warn("This should only happen if the content has been removed from the Solr content store.");
+                log.warn("Attempting to recreate ... ");
+                // TODO recreate cachedDoc ACE-2896
             }
         }
         finally
@@ -2396,12 +2420,12 @@ public class SolrInformationServer implements InformationServer
         try
         {
             request = getLocalSolrQueryRequest();
-            SolrDocument aclState = getState(request, "TRACKER!STATE!TX");
+            SolrDocument txState = getState(request, "TRACKER!STATE!TX");
             Transaction maxTransaction = null;
-            if (aclState != null)
+            if (txState != null)
             {
-                long id = this.getFieldValueLong(aclState, FIELD_S_TXID);
-                long commitTime = this.getFieldValueLong(aclState, FIELD_S_TXCOMMITTIME);
+                long id = this.getFieldValueLong(txState, FIELD_S_TXID);
+                long commitTime = this.getFieldValueLong(txState, FIELD_S_TXCOMMITTIME);
                 maxTransaction = new Transaction();
                 maxTransaction.setId(id);
                 maxTransaction.setCommitTimeMs(commitTime);
@@ -2431,13 +2455,15 @@ public class SolrInformationServer implements InformationServer
         SolrDocument txState = getState(request, "TRACKER!STATE!TX");
         if (txState != null)
         {
+            long txCommitTime = this.getFieldValueLong(txState, FIELD_S_TXCOMMITTIME);
             long txId = this.getFieldValueLong(txState, FIELD_S_TXID);
-            if (tx.getId() > txId)
+            // Transactions are ordered by commit time and tie-broken by tx id
+            if (tx.getCommitTimeMs() > txCommitTime || tx.getCommitTimeMs() == txCommitTime && tx.getId() > txId)
             {
                 // Uses optimistic concurrency 
                 version = this.getFieldValueString(txState, FIELD_VERSION);
             }
-            else 
+            else
             {
                 version = null; // Should not update in this case
             }

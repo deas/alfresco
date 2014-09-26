@@ -111,7 +111,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             return;
         }
 
-        TrackerState state = this.infoSrv.getTrackerInitialState();
+        TrackerState state = super.getTrackerState();
 
         // Check we are tracking the correct repository
         checkRepoAndIndexConsistency(state);
@@ -190,7 +190,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             if (maxTxnCommitTimeInRepo != null && maxTxnIdInRepo != null)
             {
                 Transaction maxTxInIndex = this.infoSrv.getMaxTransactionIdAndCommitTimeInIndex();
-                if (maxTxInIndex.getId() > maxTxnIdInRepo)
+                if (maxTxInIndex.getCommitTimeMs() > maxTxnCommitTimeInRepo)
                 {
                     log.error("Last transaction was found in index with timestamp later than that of repository.");
                     log.error("Max Tx In Index: " + maxTxInIndex.getId() + ", In Repo: " + maxTxnIdInRepo);
@@ -204,7 +204,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 else
                 {
                     state.setCheckedLastTransactionTime(true);
-                    log.info("Verified last transaction and timestamp in index less than or equal to that of repository.");
+                    log.info("Verified last transaction timestamp in index less than or equal to that of repository.");
                 }
             }
         }
@@ -609,7 +609,10 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         for (Transaction tx : txsIndexed)
         {
             super.infoSrv.indexTransaction(tx, true);
-            if (tx.getCommitTimeMs() > state.getLastIndexedTxCommitTime())
+            // Transactions are ordered by commit time and tie-broken by tx id
+            if (tx.getCommitTimeMs() > state.getLastIndexedTxCommitTime()
+                    || tx.getCommitTimeMs() == state.getLastIndexedTxCommitTime()
+                    && tx.getId() > state.getLastIndexedTxId())
             {
                 state.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
                 state.setLastIndexedTxId(tx.getId());
