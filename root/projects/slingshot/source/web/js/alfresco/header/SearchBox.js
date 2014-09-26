@@ -355,7 +355,7 @@ define(["dojo/_base/declare",
          if (this.linkToFacetedSearch === true)
          {
             // Generate faceted search page link...
-            url = "dp/ws/faceted-search#searchTerm=" + encodeURIComponent(terms) + "&scope=" + (this.site != null ? this.site : (this.allsites ? "all_sites" : "repo")) + "&sortField=Relevance";
+            url = "dp/ws/faceted-search#searchTerm=" + encodeURIComponent(terms) + "&scope=repo&sortField=Relevance";
             if (this.site != null)
             {
                url = "site/" + this.site + "/" + url;
