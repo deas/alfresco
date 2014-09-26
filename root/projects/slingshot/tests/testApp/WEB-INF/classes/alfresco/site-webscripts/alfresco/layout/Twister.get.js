@@ -32,7 +32,7 @@ model.jsonModel = {
                   config: {
                      id: "BUTTON_1",
                      label: "Publish twister data 1",
-                     publishTopic: "ALF_FACET_RESULTS_@FACET1QNAME",
+                     publishTopic: "ALF_FACET_RESULTS_FACET1QNAME",
                      publishPayload: {
                         activeFilters: null,
                         facetResults: [
