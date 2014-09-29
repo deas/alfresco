@@ -580,7 +580,7 @@ public class FileDirectoryInfoTest extends AbstractDocumentTest
         // Verify added category is displayed beneath categories part
         
         // Select add category
-        categoryPage.add(Arrays.asList(Categories.LANGUAGES));
+        categoryPage.addCategories(Arrays.asList(Categories.LANGUAGES.getValue()));
 
         // Click on save button in edit document properties pop up page
         categoryPage.clickOk().render();

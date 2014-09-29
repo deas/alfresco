@@ -95,13 +95,13 @@ public class CategoryPageTest extends AbstractDocumentTest
     {
         EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = propertiesPage.getCategory().render();
-        List<Categories> addAbleCategories = categoryPage.getAddAbleCatgories();
+        List<String> addAbleCategories = categoryPage.getAddAbleCatgoryList();
         assertTrue(addAbleCategories.size() > 0);
-        assertTrue(addAbleCategories.contains(Categories.TAGS));
-        categoryPage.add(Arrays.asList(Categories.TAGS)).render();
-        List<Categories> addedCategories = categoryPage.getAddedCatgories();
+        assertTrue(addAbleCategories.contains(Categories.TAGS.getValue()));
+        categoryPage.addCategories(Arrays.asList(Categories.TAGS.getValue())).render();
+        List<String> addedCategories = categoryPage.getAddedCatgoryList();
         assertTrue(addedCategories.size() > 0);
-        assertTrue(addedCategories.contains(Categories.TAGS));
+        assertTrue(addedCategories.contains(Categories.TAGS.getValue()));
         propertiesPage = categoryPage.clickCancel().render();
         detailsPage = propertiesPage.selectCancel().render();
     }

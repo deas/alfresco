@@ -678,6 +678,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 timer.start();
                 WebElement tagInfo = findAndWait(By.cssSelector(TAG_INFO));
                 getDrone().mouseOver(tagInfo);
+                drone.waitUntilElementClickable(By.cssSelector(ADD_TAG), 10);
                 // Wait till pencil icon appears
                 WebElement addTagBtn = findElement(By.cssSelector(ADD_TAG));
                 // Select to get focus

@@ -829,9 +829,9 @@ public class Navigation extends SharePage
             return siteNames;
 
         }
-        catch (NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
-            throw new PageException("No option available to remove site from favourtie.", nse);
+            throw new PageOperationException("No Recent Site(s) Available", nse);
         }
     }
     

@@ -377,14 +377,14 @@ public class NodeBrowserPage extends AdminConsolePage
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace("Unable to find " + name);
+                logger.trace("Unable to find " + name, e);
             }
         }
         catch(NoSuchElementException nse)
         {
             if(logger.isTraceEnabled())
             {
-                logger.trace(nse.getMessage());
+                logger.trace(nse.getMessage(), nse);
             }
         }
         throw new PageOperationException("Unable to find " + name);

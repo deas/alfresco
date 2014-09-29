@@ -30,6 +30,7 @@ import org.alfresco.po.share.user.AccountSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.user.UserSitesPage;
 import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
@@ -299,10 +300,10 @@ public class NavigationBarTest extends AbstractTest
         usereDashBoradPage.getNav().isSiteFavourtie();
     }
     
-    @Test(groups= "Enterprise-only")
+    @Test(groups= "Enterprise-only", expectedExceptions=PageOperationException.class, expectedExceptionsMessageRegExp="No Recent Site(s) Available")
     public void noRecentSites() throws Exception
     {   
-        Assert.assertFalse(page.getNav().getRecentSitesPresent().size() > 0 ); 
+    	page.getNav().getRecentSitesPresent();
     }
     
     /**
