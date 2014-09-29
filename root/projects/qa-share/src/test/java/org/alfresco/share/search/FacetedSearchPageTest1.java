@@ -188,7 +188,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void ALF_16055() throws Exception
+    public void AONE_16055() throws Exception
     {
         trace("Starting searchAndClickViewInBrowserActionTest");      
                 
@@ -372,7 +372,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         // Click the first action        
         facetedSearchPage.getResultByName(name1).getActions().clickActionByName(actionName5);
         
-        //We should be on the faceted search page
+        //We should be on Manage Permissions page
         ManagePermissionsPage managePermissionsPage = (ManagePermissionsPage) drone.getCurrentPage();
         Assert.assertTrue(managePermissionsPage.getTitle().contains("Manage Permissions"));
         
@@ -598,7 +598,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         // Get the url again
         String newUrl = drone.getCurrentUrl();
 
-        // We should be on the faceted search page
+        // We should not be on the faceted search page
         Assert.assertNotEquals(url, newUrl, "After clicking on action, the url should not have changed");       
                 
         // Navigate back to the faceted search page
@@ -610,7 +610,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         //login as user2
         userLogin2();
         
-        //Do a search for the letter 'a'
+        //Do a search 
         doretrySearch(name1);     
         
         // Check the results
@@ -647,17 +647,14 @@ public class FacetedSearchPageTest1 extends AbstractUtils
 
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
-        
-        // Get the current url
-        //String url = drone.getCurrentUrl();
-        
+                   
         //Check Actions are displayed on Facet results page for folder
         Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));        
         
         // Click the first action        
         facetedSearchPage.getResultByName(name).getActions().clickActionByName(actionName1);
 
-        //We should be on the faceted search page
+        //We should be on start Work flow page
         StartWorkFlowPage startWorkFlowPage = (StartWorkFlowPage) drone.getCurrentPage();
         Assert.assertTrue(startWorkFlowPage.getTitle().contains("Start Workflow"));
         
@@ -665,18 +662,12 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         ShareUser.openUserDashboard(drone);                  
         
         // Logout
-        ShareUtil.logout(drone);       
-                       
-        // Navigate back to the faceted search page
-        //facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-
-        // Logout
-        //ShareUtil.logout(drone);
-        
+        ShareUtil.logout(drone);   
+                
         //login as user2
         userLogin2();
         
-        //Do a search for the letter 'a'
+        //Do a search
         doretrySearch(name1);     
         
         // Check the results
