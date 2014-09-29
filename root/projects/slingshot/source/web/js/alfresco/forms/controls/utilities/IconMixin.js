@@ -56,7 +56,11 @@ define(["dojo/_base/declare",
             }, control.focusNode, "before");
 
             var currWidth = domStyle.get(control.focusNode, "width");
-            domStyle.set(control.focusNode, "width", currWidth - 30 + "px");
+            var targetWidth = currWidth - 30;
+            if (targetWidth >= 0)
+            {
+               domStyle.set(control.focusNode, "width", currWidth - 30 + "px");
+            }
          }
       }
    });
