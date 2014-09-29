@@ -69,6 +69,18 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * This utility function will convert any NodeRef token into a URL friendly version (e.g. the "://" will
+       * be converted to "/")
+       *
+       * @instance
+       * @param {string} v The value to process
+       * @returns The processed value
+       */
+      convertNodeRefToUrl: function alfresco_core_ObjectProcessingMixin__convertNodeRefToUrl(v) {
+         return v.replace(":/", "");
+      },
+
+      /**
        * This replace funtcion is called from [processCurrentItemTokens]{@link module:alfresco/core/ObjectProcessingMixin#processCurrentItemTokens}
        * and updates the default Dojo replace function to only replace tokens if the token is a key in the currentItem
        *

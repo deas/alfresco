@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -186,7 +186,10 @@ define(["dojo/_base/declare",
          {
             this.alfLog("warn", "A widget was clicked but did not provide any information on how to handle the event", this);
          }
-         event.stop(evt);
+         if (evt)
+         {
+            event.stop(evt);
+         }
       }
    });
 });
