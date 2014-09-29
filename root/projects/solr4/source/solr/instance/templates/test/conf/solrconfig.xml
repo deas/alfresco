@@ -1810,12 +1810,6 @@
 
   <!-- Alfresco query extensions -->
 
-<!--
-  <searchComponent name="setLocale"     class="org.alfresco.solr.SetLocaleSearchComponent" />
-  <searchComponent name="clearLocale"     class="org.alfresco.solr.ClearLocaleSearchComponent" />
-  <searchComponent name="addTxId"     class="org.alfresco.solr.TxIdSearchComponent" />  
--->
-
    <requestHandler name="/alfresco" class="org.apache.solr.handler.component.AlfrescoSearchHandler" lazy="false" >
     <lst name="defaults">
      <str name="defType">alfresco</str>

@@ -21,6 +21,8 @@ package org.alfresco.solr.component;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.alfresco.solr.AlfrescoCoreAdminHandler;
+import org.alfresco.solr.tracker.ModelTracker;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.handler.component.SearchComponent;
@@ -45,6 +47,16 @@ public class SetLocaleComponent extends SearchComponent
         String localeStr = params.get("locale");
         Locale locale = I18NUtil.parseLocale(localeStr);
         I18NUtil.setLocale(locale);
+
+        // Makes queries block wait until the first model sync is done to the repository
+        // This also ensures that module models are gotten before queries go through during installation
+        AlfrescoCoreAdminHandler adminHandler = (AlfrescoCoreAdminHandler) req.getCore().getCoreDescriptor()
+                .getCoreContainer().getMultiCoreHandler();
+        ModelTracker modelTracker = adminHandler.getTrackerRegistry().getModelTracker();
+        if (modelTracker != null)
+        {
+            modelTracker.ensureFirstModelSync();
+        }
     }
 
     /* (non-Javadoc)
