@@ -27,7 +27,7 @@
 {
    background-position: left 50%;
    background-repeat: no-repeat;
-   padding: 2px 0 2px 20px;
+   padding: 2px 0 2px 16px;
 }
 
 .node-header .node-path .folder-link:first-child
@@ -38,11 +38,13 @@
 .node-header .node-path .folder-open
 {
    background-image: url(../documentlibrary/images/folder-open-16.png);
+   padding-left: 20px;
 }
 
 .node-header .node-path .folder-closed
 {
    background-image: url(../documentlibrary/images/folder-closed-16.png);
+   padding-left: 20px;
 }
 
 .node-header .node-path .separator

@@ -814,7 +814,8 @@ services.push("alfresco/services/NavigationService",
               "alfresco/services/CrudService",
               "alfresco/services/NotificationService",
               "alfresco/services/ContentService",
-              "alfresco/services/TagService");
+              "alfresco/services/TagService",
+              "alfresco/services/LightboxService");
 
 // Add in the search form and search doc lib...
 widgets.unshift(accessMenu);

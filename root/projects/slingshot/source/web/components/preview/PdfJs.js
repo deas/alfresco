@@ -396,7 +396,7 @@
        * @method display
        * @public
        */
-      display : function PdfJs_display()
+      display: function PdfJs_display()
       {
          this.inDashlet = Dom.getAncestorByClassName(this.wp.getPreviewerElement(), "body") != null ||
                           Dom.getAncestorByClassName(this.wp.getPreviewerElement(), "yui-panel") != null;
@@ -417,7 +417,7 @@
        * @method onComponentsLoaded
        * @public
        */
-      onComponentsLoaded : function PdfJs_onComponentsLoaded()
+      onComponentsLoaded: function PdfJs_onComponentsLoaded()
       {
          this.workerSrc = Alfresco.constants.URL_CONTEXT + 'res/components/preview/pdfjs/pdf.worker' +  (Alfresco.constants.DEBUG ? '.js' : '-min.js');
          // Find the name of pdf.js resource file (4.2 specific)
@@ -474,7 +474,7 @@
        * @method onViewerLoaded
        * @public
        */
-      onViewerLoaded : function PdfJs_onViewerLoaded(p_obj)
+      onViewerLoaded: function PdfJs_onViewerLoaded(p_obj)
       {
          this.wp.getPreviewerElement().innerHTML = p_obj.serverResponse.responseText;
 
@@ -689,14 +689,22 @@
        * @method _setPreviewerElementHeight
        * @private
        */
-      _setPreviewerElementHeight : function PdfJs_setPreviewerElementHeight()
+      _setPreviewerElementHeight: function PdfJs_setPreviewerElementHeight()
       {
          // Is the viewer maximized?
+         console.log("_setPreviewerElementHeight");
          if (!this.maximized)
          {
+            var dialogPane;
             if (this.inDashlet)
             {
                Dom.setStyle(this.wp.getPreviewerElement(), "height", (Dom.getClientHeight() - 64) + "px");
+            }
+            else if (dialogPane = Dom.getAncestorByClassName(this.wp.getPreviewerElement(), "dijitDialogPaneContent"))
+            {
+               var h = Dom.getStyle(dialogPane, "height");
+               var previewHeight = (parseInt(h)-34) + "px";
+               Dom.setStyle(this.wp.getPreviewerElement(), "height", previewHeight);
             }
             else
             {
@@ -726,28 +734,35 @@
        * @method _setViewerHeight
        * @private
        */
-      _setViewerHeight : function PdfJs_setViewerHeight()
+      _setViewerHeight: function PdfJs_setViewerHeight()
       {
          var previewRegion = Dom.getRegion(this.viewer.parentNode), 
             controlRegion = Dom.getRegion(this.controls),
             controlHeight = !this.fullscreen ? controlRegion.height : 0,
             newHeight = previewRegion.height - controlHeight -1; // Allow for bottom border
          
+         console.log("_setViewerHeight");
          if (newHeight === 0)
          {
-            // Some browser get viewer.parentNode wrong (same as this.controls),
-            // Probably due to timing isseu, new height from style hasn't
-            // rendered yet.
-            // use the default to get height.
             if (!this.maximized)
             {
-               var sourceYuiEl = new YAHOO.util.Element(this.wp.getPreviewerElement()),
-                   docHeight = Dom.getDocumentHeight(),
-                   clientHeight = Dom.getClientHeight();
-			      // Take the smaller of the two
-			      var previewHeight = ((docHeight < clientHeight) ? docHeight : clientHeight) - 220;
-			      // Leave space for header etc.
-               newHeight = previewHeight - 10 - controlHeight -1; // Allow for bottom border of 1px
+               var dialogPane;
+               if (dialogPane = Dom.getAncestorByClassName(this.wp.getPreviewerElement(), "dijitDialogPaneContent"))
+               {
+                  var h = Dom.getStyle(dialogPane, "height");
+                  var previewHeight = (parseInt(h) -34 -10 -controlHeight -1) + "px";
+                  Dom.setStyle(this.wp.getPreviewerElement(), "height", previewHeight);
+               }
+               else
+               {
+                  var sourceYuiEl = new YAHOO.util.Element(this.wp.getPreviewerElement()),
+                      docHeight = Dom.getDocumentHeight(),
+                      clientHeight = Dom.getClientHeight();
+   			      // Take the smaller of the two
+   			      var previewHeight = ((docHeight < clientHeight) ? docHeight : clientHeight) - 220;
+   			      // Leave space for header etc.
+                  newHeight = previewHeight - 10 - controlHeight -1; // Allow for bottom border of 1px
+               }
             }
             else
             {
@@ -780,7 +795,7 @@
        * @method _loadPdf
        * @private
        */
-      _loadPdf : function PdfJs__loadPdf(params)
+      _loadPdf: function PdfJs__loadPdf(params)
       {
          // Workaround for ALF-17458
          this.wp.options.name = this.wp.options.name.replace(/[^\w_\-\. ]/g, "");

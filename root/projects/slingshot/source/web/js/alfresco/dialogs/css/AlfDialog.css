@@ -11,25 +11,25 @@
  * of the main body element.
  */
 .alfresco-dialog-AlfDialog.dijitDialog a {
-    color: @general-font-color;
-    text-decoration: none;
+   color: @general-font-color;
+   text-decoration: none;
 }
 
 /*
  * This resets input elements in a dialog
  */
 .alfresco-dialog-AlfDialog.dijitDialog input {
-    border: @standard-border;
-    font-weight: normal;
+   border: @standard-border;
+   font-weight: normal;
 }
 
 .alfresco-dialog-AlfDialog .dialog-body {
-  padding: 10px;
-  overflow: hidden;
+   padding: 10px;
+   overflow: hidden;
 }
 
 .alfresco-dialog-AlfDialog.no-padding .dialog-body {
-  padding: 0px;
+   padding: 0px;
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogPaneContent {
@@ -60,7 +60,10 @@
    border-top: @standard-border;
    text-align: center;
    padding: 5px 0;
-   position: relative;
-   bottom: 0;
    width: 100%;
+}
+
+.alfresco-dialog-AlfDialog.no-padding .footer {
+   position: absolute;
+   bottom: 0px;
 }

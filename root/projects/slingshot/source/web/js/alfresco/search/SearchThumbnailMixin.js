@@ -80,50 +80,64 @@ define(["dojo/_base/declare",
        * @returns {object} The payload to publish when clicked.
        */
       generateSearchLinkPayload: function alfresco_renderers_SearchThumbnailMixin__generateSearchLinkPayload() {
-         // TODO: Set no-scroll (because document preview handles it)
-         var type = lang.getObject("type", false, this.currentItem);
+         var type = lang.getObject("type", false, this.currentItem),
+             mimetype = lang.getObject("mimetype", false, this.currentItem);
          if (this.showDocumentPreview && type === "document")
          {
-            // Because the content of the previewer will load asynchronously it's important that 
-            // we set some dimensions for the dialog body, otherwise it will appear off-center
-            var vs = win.getBox();
-            this.publishTopic = "ALF_CREATE_DIALOG_REQUEST";
-            return {
-               contentWidth: (vs.w*0.8) + "px",
-               contentHeight: (vs.h*0.7) + "px",
-               handleOverflow: false,
-               dialogTitle: this.currentItem.name,
-               additionalCssClasses: "no-padding",
-               widgetsContent: [
-                  {
-                     name: "alfresco/documentlibrary/AlfDocument",
-                     config: {
-                        widgets: [
-                           {
-                              name: "alfresco/preview/AlfDocumentPreview"
-                           }
-                        ]
+            if (mimetype && mimetype.indexOf("image/") === 0)
+            {
+               // get last modified for image preview if present in the metadata
+               var lastModified = lang.getObject("lastThumbnailModification", false, this.currentItem) || 1;
+               this.publishTopic = "ALF_DISPLAY_LIGHTBOX";
+               return {
+                  src: AlfConstants.PROXY_URI + "api/node/" + lang.getObject("nodeRef", false, this.currentItem).replace(":/", "") +
+                       "/content/thumbnails/imgpreview?c=force&lastModified=" + encodeURIComponent(lastModified),
+                  title: lang.getObject("displayName", false, this.currentItem)
+               };
+            }
+            else
+            {
+               // Because the content of the previewer will load asynchronously it's important that 
+               // we set some dimensions for the dialog body, otherwise it will appear off-center
+               var vs = win.getBox();
+               this.publishTopic = "ALF_CREATE_DIALOG_REQUEST";
+               return {
+                  contentWidth: (vs.w*0.7) + "px",
+                  contentHeight: (vs.h-64) + "px",
+                  handleOverflow: false,
+                  dialogTitle: this.currentItem.name,
+                  additionalCssClasses: "no-padding",
+                  widgetsContent: [
+                     {
+                        name: "alfresco/documentlibrary/AlfDocument",
+                        config: {
+                           widgets: [
+                              {
+                                 name: "alfresco/preview/AlfDocumentPreview"
+                              }
+                           ]
+                        }
                      }
-                  }
-               ],
-               widgetsButtons: [
-                  {
-                     name: "alfresco/buttons/AlfButton",
-                     config: {
-                        label: this.message("searchThumbnail.preview.dialog.close"),
-                        publishTopic: "NO_OP"
+                  ],
+                  widgetsButtons: [
+                     {
+                        name: "alfresco/buttons/AlfButton",
+                        config: {
+                           label: this.message("searchThumbnail.preview.dialog.close"),
+                           publishTopic: "NO_OP"
+                        }
                      }
-                  }
-               ],
-               publishOnShow: [
-                  {
-                     publishTopic: "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
-                     publishPayload: {
-                        nodeRef: this.currentItem.nodeRef
+                  ],
+                  publishOnShow: [
+                     {
+                        publishTopic: "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
+                        publishPayload: {
+                           nodeRef: this.currentItem.nodeRef
+                        }
                      }
-                  }
-               ]
-            };
+                  ]
+               };
+            }
          }
          else
          {
