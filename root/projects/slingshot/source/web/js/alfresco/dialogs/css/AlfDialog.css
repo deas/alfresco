@@ -28,6 +28,10 @@
   overflow: hidden;
 }
 
+.alfresco-dialog-AlfDialog.no-padding .dialog-body {
+  padding: 0px;
+}
+
 .alfresco-dialog-AlfDialog .dijitDialogPaneContent {
    border-top: @standard-border;
    padding: 0;

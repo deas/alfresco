@@ -93,6 +93,7 @@ define(["dojo/_base/declare",
                contentHeight: (vs.h*0.7) + "px",
                handleOverflow: false,
                dialogTitle: this.currentItem.name,
+               additionalCssClasses: "no-padding",
                widgetsContent: [
                   {
                      name: "alfresco/documentlibrary/AlfDocument",

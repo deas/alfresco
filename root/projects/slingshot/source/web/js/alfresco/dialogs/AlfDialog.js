@@ -147,6 +147,13 @@ define(["dojo/_base/declare",
          this.alfSubscribe("ALF_RESIZE_DIALOG", lang.hitch(this, "onResizeRequest"));
 
          domClass.add(this.domNode, "alfresco-dialog-AlfDialog");
+
+         // Add in any additional CSS classes...
+         if (this.additionalCssClasses != null)
+         {
+            domClass.add(this.domNode, this.additionalCssClasses);
+         }
+
          this.bodyNode = domConstruct.create("div", {
             "class" : "dialog-body"
          }, this.containerNode, "last");
