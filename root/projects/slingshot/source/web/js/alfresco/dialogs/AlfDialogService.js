@@ -235,7 +235,8 @@ define(["dojo/_base/declare",
                         disableOnInvalidControls: true,
                         publishTopic: this._formConfirmationTopic,
                         publishPayload: {
-                           formSubmissionTopic: config.formSubmissionTopic
+                           formSubmissionTopic: config.formSubmissionTopic,
+                           formSubmissionPayloadMixin: config.formSubmissionPayloadMixin
                         }
                      }
                   },
@@ -305,6 +306,12 @@ define(["dojo/_base/declare",
             if (payload.dialogReference != null)
             {
                payload.dialogReference.destroyRecursive();
+            }
+
+            // Mixin in any additional payload information...
+            if (payload.formSubmissionPayloadMixin != null)
+            {
+               lang.mixin(data, payload.formSubmissionPayloadMixin);
             }
 
             // Publish the topic requested for complete...
