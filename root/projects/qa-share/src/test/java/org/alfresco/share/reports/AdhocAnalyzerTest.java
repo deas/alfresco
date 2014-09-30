@@ -24,18 +24,26 @@ import java.util.List;
 import org.alfresco.po.share.CustomiseUserDashboardPage;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.Navigation;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.dashlet.AdhocAnalyzerDashlet;
 import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.reports.AdhocAnalyzerPage;
 import org.alfresco.po.share.reports.CreateEditAdhocReportPage;
+import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.util.FailedTestListener;
+//import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.share.util.SiteUtil;
 import org.alfresco.po.thirdparty.pentaho.PentahoUserConsolePage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserReports;
+import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
@@ -59,14 +67,15 @@ public class AdhocAnalyzerTest extends AbstractUtils
     private static String testPassword = DEFAULT_PASSWORD;
     protected String testUser;
     protected String siteName = "";
-    private static final String ADHOC_ANALYZE = "Adhoc Analyze";
+    private static final String CUSTOM_REPORTS = "Custom Reports";
+    //private static final String ADHOC_ANALYZE = "Adhoc Analyze";
     private static final String UNSAVED_REPORT = "Unsaved Report";
     private static final String PIE_CHART_TYPE = "pie";
     private static final String AREA_CHART_TYPE = "area";
     
     private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
     private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
-    private static final String PENTAHO_BUSINESS_ANALYSTS_GROUP = "PENTAHO_BUSINESS_ANALYSTS";
+    private static final String PENTAHO_BUSINESS_ANALYSTS_GROUP = "ANALYTICS_BUSINESS_ANALYSTS";
     
     private static final String COMMENT_CREATED = "activity.org.alfresco.comments.comment-created";
     private static final String FILE_ADDED = "activity.org.alfresco.documentlibrary.file-added";
@@ -150,8 +159,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16006() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16006() throws Exception
     {
         String testUser = "user16006";
 
@@ -230,13 +239,13 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
 
         // penatho business analyst can see Adhoc Analyze page and click on Analyze button and Content, Users and Activities button
         adhocAnalyzePage.clickOnAnalyzeButton();
         Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
@@ -253,8 +262,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16007() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16007() throws Exception
     {
         String testUser = "user16007";
 
@@ -315,7 +324,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
         
         adhocAnalyzePage.clickOnAnalyzeButton();
         Assert.assertTrue(adhocAnalyzePage.isCreateContentUsersActivitiesDisplayed());
@@ -323,7 +332,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
@@ -356,8 +365,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16008() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16008() throws Exception
     {
         String testUser = "user16008";
 
@@ -415,9 +424,9 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
 
-        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();       
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();  
         Assert.assertTrue(createEditAdhocReportPage.isThereAreNoAnalysesDisplayed());
     
         ShareUser.navigateToPage(drone, shareUrl).render();
@@ -431,8 +440,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16009() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16009() throws Exception
     {
         String testUser = "user16009";
 
@@ -501,7 +510,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
           
         adhocAnalyzePage.clickOnAnalyzeButton();
         
@@ -510,7 +519,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
               
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
@@ -558,7 +567,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
@@ -569,68 +578,12 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         //select pie chart
         createEditAdhocReportPage.clickOnPieChartType();
-        
+
+        Assert.assertTrue(createEditAdhocReportPage.isPieChartEventsDisplayed());
+              
         //get tooltip data
-        List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, PIE_CHART_TYPE );
-
-        //expected data
-        String commentCreated = COMMENT_CREATED + ":2";
-        String fileAdded = FILE_ADDED + ":1";
-        String fileCreated = FILE_CREATED + ":1";
-        String fileDeleted = FILE_DELETED + ":1";
-        String fileLiked = FILE_LIKED + ":1";
-        String filePreviewed = FILE_PREVIEWED + ":2";
-        String folderAdded = FOLDER_ADDED + ":1";
-        String folderDeleted = FOLDER_DELETED + ":1";
-        String inlineEdit = INLINE_EDIT + ":1";
-        String userJoined = USER_JOINED + ":1";
-        String userLeft = USER_LEFT + ":1";
-        String userRoleChanged = USER_ROLE_CHANGED + ":1";
-        String activityQuickshare = ACTIVITY_QUICKSHARE + ":1";
-        String siteCreate = SITE_CREATE + ":1";
-        String userLogin = USER_LOGIN + ":5";
-        String userCreated = USER_CREATED + ":1";
-
-       //verify chart type and data here
-        
-        
-        // 2 x activity.org.alfresco.comments.comment-created
-        // 1 x activity.org.alfresco.documentlibrary.file-added
-        // 1 x activity.org.alfresco.documentlibrary.file-created
-        // 1 x activity.org.alfresco.documentlibrary.file-deleted
-        // 1 x activity.org.alfresco.documentlibrary.file-liked
-        // 2 x activity.org.alfresco.documentlibrary.file-previewed
-        // 1 x activity.org.alfresco.documentlibrary.folder-added
-        // 1 x activity.org.alfresco.documentlibrary.folder-deleted
-        // 1 x activity.org.alfresco.documentlibrary.inline-edit
-        // 1 x activity.quickshare
-        // 1 x site.create
-        // 1 x activity.org.alfresco.site.user-created --- ?????? missing currently
-        // 1 x activity.org.alfresco.site.user-joined
-        // 1 x activity.org.alfresco.site.user-left
-        // 1 x activity.org.alfresco.site.user-role-changed
-        // 5 x login --- ?????? missing currently
-        
-        Assert.assertEquals(tooltipData.size(), 14);
-        //Assert.assertEquals(tooltipData.size(), 16);
-        
-        Assert.assertTrue(tooltipData.contains(commentCreated));
-        Assert.assertTrue(tooltipData.contains(fileAdded));
-        Assert.assertTrue(tooltipData.contains(fileCreated));
-        Assert.assertTrue(tooltipData.contains(fileDeleted));
-        Assert.assertTrue(tooltipData.contains(fileLiked));
-        Assert.assertTrue(tooltipData.contains(filePreviewed));
-        Assert.assertTrue(tooltipData.contains(folderAdded));
-        Assert.assertTrue(tooltipData.contains(folderDeleted));
-        Assert.assertTrue(tooltipData.contains(inlineEdit));
-        Assert.assertTrue(tooltipData.contains(userJoined));
-        Assert.assertTrue(tooltipData.contains(userLeft));
-        Assert.assertTrue(tooltipData.contains(userRoleChanged));
-        //Assert.assertTrue(tooltipData.contains(userLogin));
-        //Assert.assertTrue(tooltipData.contains(userCreated));
-        Assert.assertTrue(tooltipData.contains(activityQuickshare));
-        Assert.assertTrue(tooltipData.contains(siteCreate));
- 
+        List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, PIE_CHART_TYPE);
+        Assert.assertEquals(tooltipData.size(), 16);
          
         ShareUser.navigateToPage(drone, shareUrl).render();
         ShareUser.logout(drone);
@@ -644,8 +597,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16046() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16046() throws Exception
     {
         String testUser = "user16046";
 
@@ -683,8 +636,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16045() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16045() throws Exception
     {
         String testUser = "user16045";
 
@@ -756,7 +709,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
           
         adhocAnalyzePage.clickOnAnalyzeButton();
         
@@ -765,7 +718,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
               
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
@@ -814,7 +767,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
@@ -823,7 +776,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         createEditAdhocReportPage.clickOnChangeChartType();
 
         //select pie chart
-        createEditAdhocReportPage.clickOnPieChartType();
+        //createEditAdhocReportPage.clickOnPieChartType();
+        createEditAdhocReportPage.clickOnAreaChartType();
         
         //save report again
         createEditAdhocReportPage.clickOnSaveReportButton();
@@ -846,13 +800,16 @@ public class AdhocAnalyzerTest extends AbstractUtils
         createEditAdhocReportPage.isPieChartEventsDisplayed();
         
         //get tooltip data
-        List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, PIE_CHART_TYPE );
+        //List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, PIE_CHART_TYPE );
+        List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, AREA_CHART_TYPE );
+        
 
         //expected data
         String commentCreated = COMMENT_CREATED + ":2";
         String fileAdded = FILE_ADDED + ":1";
         String fileCreated = FILE_CREATED + ":1";
         String fileDeleted = FILE_DELETED + ":1";
+        //String fileDeleted = FILE_DELETED + ":2";
         String fileLiked = FILE_LIKED + ":1";
         String filePreviewed = FILE_PREVIEWED + ":2";
         String folderAdded = FOLDER_ADDED + ":1";
@@ -885,8 +842,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         // 1 x activity.org.alfresco.site.user-role-changed
         // 5 x login --- ?????? missing currently
         
-        Assert.assertEquals(tooltipData.size(), 14);
-        //Assert.assertEquals(tooltipData.size(), 16);
+        //Assert.assertEquals(tooltipData.size(), 15);
+        Assert.assertEquals(tooltipData.size(), 16);
         
         Assert.assertTrue(tooltipData.contains(commentCreated));
         Assert.assertTrue(tooltipData.contains(fileAdded));
@@ -900,12 +857,11 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(tooltipData.contains(userJoined));
         Assert.assertTrue(tooltipData.contains(userLeft));
         Assert.assertTrue(tooltipData.contains(userRoleChanged));
-        //Assert.assertTrue(tooltipData.contains(userLogin));
-        //Assert.assertTrue(tooltipData.contains(userCreated));
+        Assert.assertTrue(tooltipData.contains(userLogin));
+        Assert.assertTrue(tooltipData.contains(userCreated));
         Assert.assertTrue(tooltipData.contains(activityQuickshare));
         Assert.assertTrue(tooltipData.contains(siteCreate));
- 
-         
+  
         ShareUser.navigateToPage(drone, shareUrl).render();
         ShareUser.logout(drone);
        
@@ -952,8 +908,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16142() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16142() throws Exception
     {
         String testUser = "user16142";
 
@@ -1025,7 +981,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
           
         adhocAnalyzePage.clickOnAnalyzeButton();
         
@@ -1034,7 +990,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
               
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
@@ -1081,7 +1037,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
@@ -1105,7 +1061,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
@@ -1140,63 +1096,14 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
        
-        //expected data
-        String commentCreated = COMMENT_CREATED + ":" + date + ":2";
-        String fileAdded = FILE_ADDED + ":" + date + ":1";
-        String fileCreated = FILE_CREATED + ":" + date + ":1";
-        String fileDeleted = FILE_DELETED + ":" + date + ":1";
-        String fileLiked = FILE_LIKED + ":" + date + ":1";
-        String filePreviewed = FILE_PREVIEWED + ":" + date + ":2";
-        String folderAdded = FOLDER_ADDED + ":" + date + ":1";
-        String folderDeleted = FOLDER_DELETED + ":" + date + ":1";
-        String inlineEdit = INLINE_EDIT + ":" + date + ":1";
-        String userJoined = USER_JOINED + ":" + date + ":1";
-        String userLeft = USER_LEFT + ":" + date + ":1";
-        String userRoleChanged = USER_ROLE_CHANGED + ":" + date + ":1";
-        String activityQuickshare = ACTIVITY_QUICKSHARE + ":" + date + ":1";
-        String siteCreate = SITE_CREATE + ":" + date + ":1";
-        String userLogin = USER_LOGIN + ":" + date + ":5";
-        String userCreated = USER_CREATED + ":" + date + ":1";
 
-        //verify chart type and data here
+        Assert.assertEquals(tooltipData.size(), 16);
         
-        // 2 x activity.org.alfresco.comments.comment-created
-        // 1 x activity.org.alfresco.documentlibrary.file-added
-        // 1 x activity.org.alfresco.documentlibrary.file-created
-        // 1 x activity.org.alfresco.documentlibrary.file-deleted
-        // 1 x activity.org.alfresco.documentlibrary.file-liked
-        // 2 x activity.org.alfresco.documentlibrary.file-previewed
-        // 1 x activity.org.alfresco.documentlibrary.folder-added
-        // 1 x activity.org.alfresco.documentlibrary.folder-deleted
-        // 1 x activity.org.alfresco.documentlibrary.inline-edit
-        // 1 x activity.quickshare
-        // 1 x site.create
-        // 1 x activity.org.alfresco.site.user-created --- ?????? missing currently
-        // 1 x activity.org.alfresco.site.user-joined
-        // 1 x activity.org.alfresco.site.user-left
-        // 1 x activity.org.alfresco.site.user-role-changed
-        // 5 x login --- ?????? missing currently
-        
-        Assert.assertEquals(tooltipData.size(), 14);
-        //Assert.assertEquals(tooltipData.size(), 16);
-        
-        Assert.assertTrue(tooltipData.contains(commentCreated));
-        Assert.assertTrue(tooltipData.contains(fileAdded));
-        Assert.assertTrue(tooltipData.contains(fileCreated));
-        Assert.assertTrue(tooltipData.contains(fileDeleted));
-        Assert.assertTrue(tooltipData.contains(fileLiked));
-        Assert.assertTrue(tooltipData.contains(filePreviewed));
-        Assert.assertTrue(tooltipData.contains(folderAdded));
-        Assert.assertTrue(tooltipData.contains(folderDeleted));
-        Assert.assertTrue(tooltipData.contains(inlineEdit));
-        Assert.assertTrue(tooltipData.contains(userJoined));
-        Assert.assertTrue(tooltipData.contains(userLeft));
-        Assert.assertTrue(tooltipData.contains(userRoleChanged));
-        //Assert.assertTrue(tooltipData.contains(userLogin));
-        //Assert.assertTrue(tooltipData.contains(userCreated));
-        Assert.assertTrue(tooltipData.contains(activityQuickshare));
-        Assert.assertTrue(tooltipData.contains(siteCreate));
-         
+        for (String tooltip : tooltipData)
+        {
+            Assert.assertTrue(tooltip.contains(date));
+        }
+ 
         ShareUser.navigateToPage(drone, shareUrl).render();
         ShareUser.logout(drone);
        
@@ -1208,8 +1115,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16143() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16143() throws Exception
     {
         String testUser = "user16143";
 
@@ -1281,7 +1188,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         // penatho business analyst can see Adhoc Analyze page
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
           
         adhocAnalyzePage.clickOnAnalyzeButton();
         
@@ -1290,7 +1197,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
               
         //create new report
         CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();  
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
@@ -1337,7 +1244,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         // check that the name of the report is saved correctly
         Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), reportName);
-        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), ADHOC_ANALYZE);
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_REPORTS);
         
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
@@ -1377,6 +1284,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         String fileLiked = FILE_LIKED + ":1";
         String filePreviewed = FILE_PREVIEWED + ":2";
         String folderAdded = FOLDER_ADDED + ":1";
+        //String folderDeleted = FOLDER_DELETED + ":2";
         String folderDeleted = FOLDER_DELETED + ":1";
         String inlineEdit = INLINE_EDIT + ":1";
         String userJoined = USER_JOINED + ":1";
@@ -1387,7 +1295,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         String userLogin = USER_LOGIN + ":5";
         String userCreated = USER_CREATED + ":1";
 
-       //verify chart type and data here
+        //verify chart type and data here
         
         // 2 x activity.org.alfresco.comments.comment-created
         // 1 x activity.org.alfresco.documentlibrary.file-added
@@ -1400,14 +1308,13 @@ public class AdhocAnalyzerTest extends AbstractUtils
         // 1 x activity.org.alfresco.documentlibrary.inline-edit
         // 1 x activity.quickshare
         // 1 x site.create
-        // 1 x activity.org.alfresco.site.user-created --- ?????? missing currently
+        // 1 x activity.org.alfresco.site.user-created
         // 1 x activity.org.alfresco.site.user-joined
         // 1 x activity.org.alfresco.site.user-left
         // 1 x activity.org.alfresco.site.user-role-changed
         // 5 x login --- ?????? missing currently
         
-        Assert.assertEquals(tooltipData.size(), 14);
-        //Assert.assertEquals(tooltipData.size(), 16);
+        Assert.assertEquals(tooltipData.size(), 16);
         
         Assert.assertTrue(tooltipData.contains(commentCreated));
         Assert.assertTrue(tooltipData.contains(fileAdded));
@@ -1421,8 +1328,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(tooltipData.contains(userJoined));
         Assert.assertTrue(tooltipData.contains(userLeft));
         Assert.assertTrue(tooltipData.contains(userRoleChanged));
-        //Assert.assertTrue(tooltipData.contains(userLogin));
-        //Assert.assertTrue(tooltipData.contains(userCreated));
+        Assert.assertTrue(tooltipData.contains(userLogin));
+        Assert.assertTrue(tooltipData.contains(userCreated));
         Assert.assertTrue(tooltipData.contains(activityQuickshare));
         Assert.assertTrue(tooltipData.contains(siteCreate));
  
@@ -1433,15 +1340,13 @@ public class AdhocAnalyzerTest extends AbstractUtils
     }        
     
     
-    
-    
     /**
      * Creates new test user
      * 
      * @throws Exception
      */
-    @Test(groups = { "AdhocAnalyzer" })
-    public void dataPrep_AdhocAnalyzer_16144() throws Exception
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16144() throws Exception
     {
         String testUser = "user16144";
 
@@ -1473,7 +1378,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
             customiseUserDashboardPage.addDashlet(Dashlets.ADHOC_ANALYZER, 2).render();
             Assert.assertTrue(false, "Above line should have thrown page exception");
         }
-        catch (NoSuchElementException e)
+        catch (PageOperationException e)
         {
             Assert.assertTrue(e.getMessage().startsWith("Error in adding dashlet using drag and drop"));
             ShareUser.logout(drone);
@@ -1485,4 +1390,211 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
     }
   
+    
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16508() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser };
+        String siteName = getSiteName(testName);
+
+        // Create test user
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        
+        // Login as created test user
+        ShareUser.login(drone, testUser, testPassword);
+
+        // test user creates site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE);
+        
+        //test user logs out
+        ShareUser.logout(drone);
+    }    
+    
+    @Test(groups = { "AdhocAnalyzerTests" })
+    public void AONE_16508() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
+        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        try
+        {        
+            ShareUserDashboard.addDashlet(drone, siteName, Dashlets.HOT_CONTENT_REPORT);
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        } catch (PageOperationException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Error in adding dashlet using drag and drop"));
+            ShareUser.logout(drone);
+
+        } 
+        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        try
+        {        
+            ShareUserDashboard.addDashlet(drone, siteName, Dashlets.USER_ACTIVITY_REPORT);
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        } catch (PageOperationException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Error in adding dashlet using drag and drop"));
+            ShareUser.logout(drone);
+
+        } 
+ 
+    }
+    
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16509() throws Exception
+    {
+        String testUser = "user16509";
+
+        //Create test user as pentaho business analyst
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
+
+        //Created user logs into share and automatically into pentaho
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+
+        //go to pentaho user console and assign Read, Publish and Create Content permissions to created user
+        PentahoUserConsolePage pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
+
+        // verify test user is logged into pentaho user console
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+ 
+        pentahoUserConsolePage.clickOnHome();
+        pentahoUserConsolePage.clickOnAdministration();
+        pentahoUserConsolePage.clickOnManageRoles();
+        pentahoUserConsolePage.clickOnBusinessAnalyst();
+        pentahoUserConsolePage.clickOnReadContent();
+        pentahoUserConsolePage.clickOnPublishContent();
+        pentahoUserConsolePage.clickOnCreateContent();
+
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        
+
+        // Create new user - site manager
+        String testName = getTestName();
+        String testUser1 = getUserNameForDomain(testName, DOMAIN_FREE);
+        String[] testUserInfo = new String[] { testUser1 };
+        String siteName = getSiteName(testName);
+        
+        ShareUser.logout(drone);
+        
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        
+        // Login as created site manager user
+        ShareUser.login(drone, testUser1, testPassword);
+
+        //site manager user creates site
+        SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        
+        //site user logs out
+        ShareUser.logout(drone);
+        
+    }     
+    
+    @Test(groups = { "AdhocAnalyzerTests" })
+    public void AONE_16509() throws Exception
+    {
+        //Login as business analyst but not site manager
+        String testUser = "user16509";
+        ShareUser.login(drone, testUser, testPassword).render();        
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+
+        SharePage page = ShareUser.getSharePage(drone);
+        SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
+        siteFinder = SiteUtil.searchSiteWithRetry(drone, siteName, true);
+        SiteDashboardPage siteDashoardPage = siteFinder.selectSite(siteName).render();
+        
+        //verify user can't customize the site dasboard
+        try
+        {
+            siteDashoardPage.getSiteNav().selectCustomizeSite();
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        }
+        catch (NoSuchElementException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Unable to locate element:"));
+            ShareUser.logout(drone);
+
+        }
+        
+    }
+    
+    @Test(groups = { "DataPrepAdhocAnalyzer" })
+    public void dataPrep_AdhocAnalyzer_AONE_16510() throws Exception
+    {
+        String testUser = "user16510";
+
+        //Create test user as pentaho business analyst
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, testUser);
+
+        //Created user logs into share and automatically into pentaho
+        DashBoardPage dashboardPage = (DashBoardPage) ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD).render();
+        Assert.assertTrue(dashboardPage.isLoggedIn());
+        Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
+
+        //go to pentaho user console and assign Read, Publish and Create Content permissions to created user
+        PentahoUserConsolePage pentahoUserConsolePage = ShareUser.navigateToPage(drone, pentahoUserConsoleUrl).render();
+
+        // verify test user is logged into pentaho user console
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(maxWaitTime));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+ 
+        pentahoUserConsolePage.clickOnHome();
+        pentahoUserConsolePage.clickOnAdministration();
+        pentahoUserConsolePage.clickOnManageRoles();
+        pentahoUserConsolePage.clickOnBusinessAnalyst();
+        pentahoUserConsolePage.clickOnReadContent();
+        pentahoUserConsolePage.clickOnPublishContent();
+        pentahoUserConsolePage.clickOnCreateContent();
+
+        ShareUser.navigateToPage(drone, shareUrl).render();
+        //site user logs out
+        ShareUser.logout(drone);
+        
+    }     
+    
+    @Test(groups = { "AdhocAnalyzerTests" })
+    public void AONE_16510() throws Exception
+    {
+        //Login as business analyst but not site manager
+        String testUser = "user16509";
+        ShareUser.login(drone, testUser, testPassword).render();        
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+
+        //try to add hot content and user activity report
+        try
+        {        
+            ShareUserDashboard.addDashlet(drone, siteName, Dashlets.HOT_CONTENT_REPORT);
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        } catch (PageOperationException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Error in adding dashlet using drag and drop"));
+            ShareUser.logout(drone);
+
+        } 
+        
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        
+        try
+        {        
+            ShareUserDashboard.addDashlet(drone, siteName, Dashlets.USER_ACTIVITY_REPORT);
+            Assert.assertTrue(false, "Above line should have thrown page exception");
+        } catch (PageOperationException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith( "Error in adding dashlet using drag and drop"));
+            ShareUser.logout(drone);
+
+        } 
+        
+    }
 }

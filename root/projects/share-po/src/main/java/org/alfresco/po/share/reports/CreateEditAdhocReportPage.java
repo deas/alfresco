@@ -41,7 +41,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private final static String SAVE_BUTTON = "span[id^='alfresco_buttons_AlfButton'] span[id^='alfresco_buttons_AlfButton']";
 
     // Site name
-    private final static String SITE_NAME = "div[formula='[Sites].[Name]']";
+    private final static String SITE_NAME = "div[formula='[Sites].[Site Name]']";
 
     // Activity - Event Type
     private final static String EVENT_TYPE = "div[formula='[Activity].[Event Type]']";
@@ -65,7 +65,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private final static String TABLE_STATUS_BAR = "div[id='RPT001StatusBar']";
         
     // Site name - table header
-    private final static String SITE_NAME_TABLE = "td[formula='[Sites].[Name]']";
+    private final static String SITE_NAME_TABLE = "td[formula='[Sites].[Site Name]']";
 
     // Activity - Event Type - table header
     private final static String EVENT_TYPE_TABLE = "td[formula='[Activity].[Event Type]']";
@@ -77,7 +77,8 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private final static String DAY_TABLE = "td[formula='[Date].[Day]']";
     
     // Save Analysis title Save Analysis
-    private final static String SAVE_ANALYSIS = "//span[text()='Save Analysis']";
+    //private final static String SAVE_ANALYSIS = "//span[text()='Save Analysis']";
+    private final static String SAVE_ANALYSIS = "//span[text()='Save Report']";
 
     // Save file input field
     private final static String SAVE_FILE_INPUT_FIELD = "input[name='filename']";
@@ -92,13 +93,15 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private final static String CLOSE_SAVE_ANALYSIS = "span[title='Cancel']";
 
     //pie chart slices
-    private static final String PIE_CHART_SLICES = "path[transform]";
+    private static final String PIE_CHART_SLICES = "path[cursor='pointer']";
+    //private static final String PIE_CHART_SLICES = "path[transform]";
 
     //area chart points
     private static final String AREA_CHART_CIRCLES = "circle[cursor]";
     
     //pie chart tooltip
-    private static final String TOOLTIP_DATA = "//div[@original-title][1]";
+    //private static final String TOOLTIP_DATA = "//div[@original-title][1]";
+    private static final String TOOLTIP_DATA = "//div[starts-with(@id, 'tipsyPvBehavior')][@original-title != '']";
     
     //pie chart type
     private final static String PIE_CHART_TYPE = "//td[text()='Pie']";
@@ -654,7 +657,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         try
         {
             drone.switchToFrame(getAnalyzerIframeId());
-            pieChartSlices = drone.findAll(By.cssSelector(PIE_CHART_SLICES));
+            pieChartSlices = drone.findAndWaitForElements(By.cssSelector(PIE_CHART_SLICES));
             drone.switchToDefaultContent();
         }
         catch (NoSuchElementException nse)
@@ -699,13 +702,13 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         {
             chartElements = getAreaChartCircles();
         }
-        //List<WebElement> chartElements = getPieChartSlices();
         List<String> toolTipData = new ArrayList<String>();
         for (WebElement pieChartSlice : chartElements)
         {
             drone.switchToFrame(getAnalyzerIframeId());
             drone.mouseOverOnElement(pieChartSlice);
             WebElement tooltipElement = drone.findAndWait(By.xpath(TOOLTIP_DATA));
+
             String [] items = tooltipElement.getAttribute(ORIGINAL_TITLE_ATTRIBUTE).split(":");
             
             StringBuilder builder = new StringBuilder();
@@ -735,6 +738,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
                 
                 String [] types = eventTypeItem.split("<br />");
                 String type = types[0];
+
                 String [] counts = eventCountsItem.trim().split(" ");
                 String count = counts[0].replaceAll("[^0-9]", "");
                 

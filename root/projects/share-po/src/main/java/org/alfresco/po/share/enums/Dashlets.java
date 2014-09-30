@@ -32,7 +32,9 @@ public enum Dashlets
     WEB_VIEW("Web View"),
     WELCOME_SITE("Welcome Site"),
     WIKI("Wiki"),
-    ADHOC_ANALYZER("Analyzer Report");
+    USER_ACTIVITY_REPORT("User Activity Report"),
+    HOT_CONTENT_REPORT("Hot Content Report"),
+    ADHOC_ANALYZER("Custom Reports");
 
     private String dashletName;
 

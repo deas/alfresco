@@ -101,7 +101,8 @@ public class AdhocAnalyzerPage extends SharePage
     {
         try
         {
-            WebElement noAnalyses = drone.find(By.xpath(THERE_ARE_NO_ANALYSES));
+            drone.waitForElement(By.xpath(THERE_ARE_NO_ANALYSES), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+            WebElement noAnalyses = drone.findAndWait(By.xpath(THERE_ARE_NO_ANALYSES), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
             return noAnalyses.isDisplayed();
         }
         catch (NoSuchElementException nse)
