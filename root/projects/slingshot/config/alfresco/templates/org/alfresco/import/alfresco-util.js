@@ -654,7 +654,7 @@ var AlfrescoUtil =
                pathUrl += "/" + folders[x];
                paths.push(
                {
-                  href: targetPage + (y - x == 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl),
+                  href: targetPage + (y - x == 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl).replace(/%25/g,"%2525"),
                   label: folders[x],
                   cssClass: "folder-link " + (y - x == 1 ? "folder-closed" : "folder-open")
                });
@@ -679,7 +679,7 @@ var AlfrescoUtil =
                pathUrl += "/" + folders[x];
                paths.push(
                {
-                  href: targetPage + (y - x < 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl),
+                  href: targetPage + (y - x < 2 ? "?file=" + encodeURIComponent(item.fileName) + "&path=" : "?path=") + encodeURIComponent(pathUrl).replace(/%25/g,"%2525"),
                   label: folders[x],
                   cssClass: "folder-link folder-open"
                });

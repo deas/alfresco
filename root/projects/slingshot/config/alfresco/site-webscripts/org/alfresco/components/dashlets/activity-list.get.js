@@ -295,7 +295,7 @@ function itemPageUrl(activity, summary)
       var splitted = localPage.split(splitter, 2);
       if (splitted.length == 2)
       {
-         localPage = splitted[0] + splitter + encodeURIComponent(splitted[1]);
+         localPage = splitted[0] + splitter + encodeURIComponent(splitted[1]).replace(/%25/g, "%2525");
       }
    }
    else
