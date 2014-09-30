@@ -1336,7 +1336,7 @@
       <!-- <str name="lookupImpl">org.apache.solr.spelling.suggest.jaspell.JaspellLookupFactory</str> -->
       <str name="lookupImpl">org.apache.solr.spelling.suggest.fst.WFSTLookupFactory</str>  
       <str name="field">suggest</str>
-      <str name="suggestAnalyzerFieldType">text_shingle</str>#      
+      <str name="suggestAnalyzerFieldType">text_shingle</str>
       <str name="buildOnCommit">false</str>
     </lst>
   </searchComponent>
