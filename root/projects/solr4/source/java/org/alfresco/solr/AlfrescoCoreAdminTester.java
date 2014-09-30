@@ -7034,7 +7034,7 @@ public class AlfrescoCoreAdminTester
         for (int i = 1; i < 16; i++)
         {
             Long dbId = new Long(i);
-            String id = AlfrescoSolrDataModel.getNodeDocumentId(AlfrescoSolrDataModel.DEFAULT_TENANT, aclId, dbId);
+            String id = SearchLanguageConversion.escapeLuceneQuery(AlfrescoSolrDataModel.getNodeDocumentId(AlfrescoSolrDataModel.DEFAULT_TENANT, aclId, dbId));
             testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":" + id, 1, null, null, null,
                         null, null, (String) null);
         }

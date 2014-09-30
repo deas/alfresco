@@ -2108,11 +2108,17 @@ public class AlfrescoSolrDataModel implements QueryConstants
       */
      public String  mapProperty(String  potentialProperty,  FieldUse fieldUse)
      {
+         if(potentialProperty.equals("asc") || potentialProperty.equals("desc") || potentialProperty.equals("_docid_") || potentialProperty.equals("score"))
+         {
+             return potentialProperty;
+         }
+         
          AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(getNamespaceDAO(),  getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
 
-         String luceneField =  functionContext.getLuceneFieldName(potentialProperty);
+         Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(potentialProperty);
+         String luceneField =  functionContext.getLuceneFieldName(fieldNameAndEnding.getFirst());
 
-         Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(luceneField);
+         
          PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(NamespaceService.CONTENT_MODEL_1_0_URI, getNamespaceDAO(), getDictionaryService(CMISStrictDictionaryService.DEFAULT), fieldNameAndEnding.getFirst());
          
          String solrSortField = null;

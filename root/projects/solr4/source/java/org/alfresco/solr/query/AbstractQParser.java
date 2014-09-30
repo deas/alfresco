@@ -456,7 +456,7 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                 c = sortStr.charAt(i);
                 if(propertyBuilder == null)
                 {
-                    if(c == '@')
+                    if(!Character.isWhitespace(c))
                     {
                         propertyBuilder = new StringBuilder();
                         propertyBuilder.append(c);

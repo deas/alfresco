@@ -1814,11 +1814,11 @@ public class SolrInformationServer implements InformationServer
                 }
                 qNameBuffer.append(ISO9075.getXPathName(childAssocRef.getQName()));
                 assocTypeQNameBuffer.append(ISO9075.getXPathName(childAssocRef.getTypeQName()));
-                doc.addField(FIELD_PARENT, childAssocRef.getParentRef());
+                doc.addField(FIELD_PARENT, childAssocRef.getParentRef().toString());
 
                 if (childAssocRef.isPrimary())
                 {
-                    doc.addField(FIELD_PRIMARYPARENT, childAssocRef.getParentRef());
+                    doc.addField(FIELD_PRIMARYPARENT, childAssocRef.getParentRef().toString());
                     doc.addField(FIELD_PRIMARYASSOCTYPEQNAME,
                                 ISO9075.getXPathName(childAssocRef.getTypeQName()));
                     doc.addField(FIELD_PRIMARYASSOCQNAME, ISO9075.getXPathName(childAssocRef.getQName()));
@@ -1842,6 +1842,9 @@ public class SolrInformationServer implements InformationServer
     {
         for (QName propertyQName : properties.keySet())
         {
+            newDoc.addField(FIELD_PROPERTIES, propertyQName.toString());
+            newDoc.addField(FIELD_PROPERTIES, propertyQName.getPrefixString());
+            
             PropertyValue value = properties.get(propertyQName);
             if(value != null)
             {
@@ -2063,6 +2066,7 @@ public class SolrInformationServer implements InformationServer
                 String fieldName = field.getField();
                 Object cachedFieldValue = cachedDoc.getFieldValue(fieldName);
                 newDoc.addField(fieldName, cachedFieldValue);
+                addFieldIfNotSet(newDoc, field);
             }
 
             String transformationStatusFieldName = getSolrFieldNameForContentPropertyMetadata(propertyQName, 
@@ -2219,6 +2223,7 @@ public class SolrInformationServer implements InformationServer
             {
                 cachedDoc.addField(field.getField(), textContent);
             }
+            addFieldIfNotSet(cachedDoc, field);
         }
     }
 
@@ -2333,6 +2338,7 @@ public class SolrInformationServer implements InformationServer
                 doc.addField(field.getField(), mlTextPropertyValue.getValue(locale));
             }
         }
+        addFieldIfNotSet(doc, field);
     }
     
     private static void addStringPropertyToDoc(SolrInputDocument doc, FieldInstance field, StringPropertyValue stringPropertyValue, Map<QName, PropertyValue> properties) throws IOException
@@ -2364,6 +2370,27 @@ public class SolrInformationServer implements InformationServer
         { 
             doc.addField(field.getField(), stringPropertyValue.getValue());
         }
+        addFieldIfNotSet(doc, field);
+    }
+    
+    private static void  addFieldIfNotSet(SolrInputDocument doc, FieldInstance field)
+    {
+        Collection<Object> values = doc.getFieldValues(FIELD_FIELDS);
+        if(values != null)
+        {
+            for(Object o : values)
+            {
+                if(o instanceof String)
+                {
+                    if( ((String)o).equals(field.getField()))
+                    {
+                        return;
+                    }
+
+                }
+            }
+        }
+        doc.addField(FIELD_FIELDS, field.getField()); 
     }
     
     private boolean mayHaveChildren(NodeMetaData nodeMetaData)

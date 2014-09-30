@@ -858,7 +858,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = super.getWildcardQuery(field.getField(), "*");
+                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.toString());
                     if (presenceQuery != null)
                     {
                         query.add(presenceQuery, Occur.SHOULD);
@@ -891,7 +891,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = super.getWildcardQuery(field.getField(), "*");
+                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.toString());
                     if (presenceQuery != null)
                     {
                         if(query.getClauses().length == 0)
@@ -934,7 +934,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = super.getWildcardQuery(field.getField(), "*");
+                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.toString());
                     if (presenceQuery != null)
                     {
                         query.add(typeQuery, Occur.MUST);
@@ -2497,9 +2497,24 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 }
                 else if (propertyDef.getDataType().getName().equals(DataTypeDefinition.CONTENT))
                 {
-                    if (fieldNameAndEnding.getSecond().equals(FIELD_SIZE_SUFFIX))
+                    String solrField = null;
+                    switch(fieldNameAndEnding.getSecond())
                     {
-                        String solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), ContentFieldType.SIZE, FieldUse.ID).getFields().get(0).getField();
+                    case FIELD_SIZE_SUFFIX:
+                        solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), ContentFieldType.SIZE, FieldUse.ID).getFields().get(0).getField();
+                        break;
+                    case FIELD_MIMETYPE_SUFFIX:
+                        solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), ContentFieldType.MIMETYPE, FieldUse.ID).getFields().get(0).getField();
+                        break;
+                    case FIELD_ENCODING_SUFFIX:
+                        solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), ContentFieldType.ENCODING, FieldUse.ID).getFields().get(0).getField();
+                        break;
+                    case FIELD_LOCALE_SUFFIX:
+                        solrField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), ContentFieldType.LOCALE, FieldUse.ID).getFields().get(0).getField();  
+                        break;
+                    }
+                    if(solrField != null)
+                    {
                         String start = null;
                         try
                         {
@@ -2523,7 +2538,6 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         
                         SchemaField sf = schema.getField(solrField);
                         return sf.getType().getRangeQuery(null, sf, start, end, includeLower, includeUpper);
-                        
                     }
                     else 
                     {
@@ -3353,7 +3367,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     @Override
     protected Query newWildcardQuery(Term t)
     {
-        if (t.text().contains("\\"))
+        if(t.text().equals("*"))
+        {
+            BooleanQuery bQuery = new BooleanQuery();
+            bQuery.add(createTermQuery(FIELD_FIELDS, t.field()), Occur.SHOULD);
+            bQuery.add(createTermQuery(FIELD_PROPERTIES, t.field()), Occur.SHOULD);
+            return bQuery;
+        }
+        else if (t.text().contains("\\"))
         {
             String regexp = SearchLanguageConversion.convert(SearchLanguageConversion.DEF_LUCENE, SearchLanguageConversion.DEF_REGEX, t.text());
             return new RegexpQuery(new Term(t.field(), regexp));
@@ -3589,6 +3610,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             propertyQName = QName.createQName(fieldNameAndEnding.getFirst());
         }
 
+        
+        if(queryText.equals("*"))
+        {
+            return createTermQuery(FIELD_PROPERTIES, propertyQName.toString());
+        }
+        
         if (luceneFunction != LuceneFunction.FIELD)
         {
             if ((tokenisationMode == IndexTokenisationMode.FALSE) || (tokenisationMode == IndexTokenisationMode.BOTH))
