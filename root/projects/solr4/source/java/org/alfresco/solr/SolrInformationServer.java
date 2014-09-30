@@ -2024,7 +2024,7 @@ public class SolrInformationServer implements InformationServer
                 doc.addField(fieldInstance.getField(), contentPropertyValue.getEncoding());
                 break;
             case LOCALE:
-                doc.addField(fieldInstance.getField(), contentPropertyValue.getLocale());
+                doc.addField(fieldInstance.getField(), contentPropertyValue.getLocale().toString());
                 break;
             case MIMETYPE:
                 doc.addField(fieldInstance.getField(), contentPropertyValue.getMimetype());
