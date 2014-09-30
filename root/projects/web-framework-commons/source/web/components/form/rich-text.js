@@ -135,6 +135,10 @@
          // create the editor instance
          this.editor = new Alfresco.util.RichEditor("tinyMCE", this.id, this.options.editorParameters);
          
+         if(this.options.currentValue.indexOf("mimetype=text/html") != -1)
+         {
+            this.editor.getEditor().settings.forced_root_block = "p";
+         }
          // render and register event handler
          this.editor.render();
          

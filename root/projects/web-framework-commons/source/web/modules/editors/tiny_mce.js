@@ -33,11 +33,6 @@ Alfresco.util.RichEditorManager.addEditor('tinyMCE', function(id, config)
          ];
          config.relative_urls = true;
          config.convert_urls = false;
-         // MNT-10971 fix,  if forced_root_block was already provided through custom config - then use it
-         if (typeof config.forced_root_block === "undefined")
-         {
-            config.forced_root_block = "p";
-         }
          if (!config.init_instance_callback) 
          {
             config.init_instance_callback = function(o)
