@@ -692,7 +692,6 @@
       _setPreviewerElementHeight: function PdfJs_setPreviewerElementHeight()
       {
          // Is the viewer maximized?
-         console.log("_setPreviewerElementHeight");
          if (!this.maximized)
          {
             var dialogPane;

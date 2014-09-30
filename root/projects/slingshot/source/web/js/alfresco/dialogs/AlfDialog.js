@@ -47,7 +47,7 @@ define(["dojo/_base/declare",
         "dojo/html",
         "dojo/aspect",
         "dijit/registry"], 
-        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin, lang, sniff, array, 
+        function(declare, Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin, lang, sniff, array,
                  domConstruct, domClass, domStyle, domGeom, html, aspect, registry) {
    
    return declare([Dialog, AlfCore, CoreWidgetProcessing, ResizeMixin, _FocusMixin], {
@@ -189,6 +189,28 @@ define(["dojo/_base/declare",
             // setting basic text content in an confirmation dialog...
             html.set(this.bodyNode, this.encodeHTML(this.textContent));
          }
+      },
+      
+      /**
+       * Called when the dialog is shown.
+       * Disable the outer page scrolling ability by the user when a dialog is showing.
+       *
+       * @instance
+       */
+      onShow: function alfresco_dialogs_AlfDialog__onShow() {
+         this.inherited(arguments);
+         domStyle.set(document.documentElement, "overflow", "hidden");
+      },
+      
+      /**
+       * Called when the dialog is hidden.
+       * Enable the outer page scrolling - disabled in onShow().
+       *
+       * @instance
+       */
+      onHide: function alfresco_dialogs_AlfDialog__onHide() {
+         this.inherited(arguments);
+         domStyle.set(document.documentElement, "overflow", "");
       },
 
       /**

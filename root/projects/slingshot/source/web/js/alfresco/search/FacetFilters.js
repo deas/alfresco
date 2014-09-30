@@ -30,11 +30,10 @@ define(["dojo/_base/declare",
         "alfresco/search/FacetFilter",
         "dojo/_base/lang",
         "dojo/_base/array",
-        "dojo/dom-construct",
         "dojo/dom-class",
         "dojo/on",
         "dijit/registry"], 
-        function(declare, AlfDocumentFilters, FacetFilter, lang, array, domConstruct, domClass, on, registry) {
+        function(declare, AlfDocumentFilters, FacetFilter, lang, array, domClass, on, registry) {
 
    return declare([AlfDocumentFilters], {
       

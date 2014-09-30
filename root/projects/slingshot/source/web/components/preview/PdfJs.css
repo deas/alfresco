@@ -2,7 +2,6 @@
 /* vim: set shiftwidth=4 tabstop=8 autoindent cindent expandtab: */
 .previewer.PdfJs {
 	background-color: #fafafa;
-	font-family: Helvetica, Arial, Verdana, sans-serif;
 	margin: 0px;
 	padding: 0px;
    border-bottom: 1px solid #ccc;
@@ -93,8 +92,7 @@
 	padding-right: 20px;
 }
 
-.previewer.PdfJs .controls span,.previewer.PdfJs .controls input,.previewer.PdfJs .controls select
-	{
+.previewer.PdfJs .controls span,.previewer.PdfJs .controls input,.previewer.PdfJs .controls select {
 	vertical-align: middle;
 }
 
