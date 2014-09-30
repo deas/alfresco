@@ -22,7 +22,7 @@
  * representing Alfresco document or folder actions generated for a specific node or an entirely custom action
  * list. It exists as mixin to support multipe ways of rendering actions (e.g. either in a menu bar or in a
  * context menu)</p>.
- * 
+ *
  * @module alfresco/renderers/_ActionsMixin
  * @mixes module:alfresco/core/Core
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin
@@ -43,7 +43,7 @@ define(["dojo/_base/declare",
    return declare([AlfCore, _AlfDocumentListTopicMixin, _PublishPayloadMixin], {
 
       /**
-       * Indicates whether or not actions should be filtered according to the 
+       * Indicates whether or not actions should be filtered according to the
        * [allowedActions array]{@link module:alfresco/renderers/Actions#allowedActions}.
        *
        * @instance
@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
        *  This is used to filter out actions that the actions API returns, but haven't yet been implemented.
        *  TODO: Remove this once all actions have been implemented by the actions service.
        *  Currently - all actions of type link and pagelink should work.
-       * 
+       *
        * @instance
        * @type {array}
        * @default null
@@ -69,7 +69,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        */
-      addActions: function alfresco_renderers__ActionsMixin__postCreate() {
+      addActions: function alfresco_renderers__ActionsMixin__addActions() {
          // Iterate over the actions to create a menu item for each of them...
          if (this.customActions != null && this.customActions.length > 0)
          {
@@ -80,9 +80,9 @@ define(["dojo/_base/declare",
             array.forEach(this.currentItem.actions, lang.hitch(this, "addAction"));
          }
       },
-      
+
       /**
-       * 
+       *
        * @instance
        * @param {object} action The configuration for the action to add
        * @param (integer} index The index of the action

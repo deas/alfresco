@@ -20,17 +20,17 @@
 /**
  * The simple view takes up less vertical height than the details view but provides
  * less information on each node.
- * 
- * @module alfresco/documentlibrary/views/AlfDetailedView
+ *
+ * @module alfresco/documentlibrary/views/AlfSimpleView
  * @extends module:alfresco/documentlibrary/views/AlfDocumentListView
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/documentlibrary/views/AlfDocumentListView"], 
+        "alfresco/documentlibrary/views/AlfDocumentListView"],
         function(declare, AlfDocumentListView, template) {
-   
+
    return declare([AlfDocumentListView], {
-      
+
       /**
        * By default the detailed view should have no borders
        *
@@ -42,14 +42,14 @@ define(["dojo/_base/declare",
 
       /**
        * Returns the name of the view that is used when saving user view preferences.
-       * 
+       *
        * @instance
        * @returns {string} "simple"
        */
       getViewName: function alfresco_documentlibrary_views_AlfDocumentListView__getViewName() {
          return "simple";
       },
-      
+
       /**
        * The configuration for selecting the view (configured the menu item)
        * @instance
@@ -61,10 +61,10 @@ define(["dojo/_base/declare",
          label: "doclist.view.simple.label",
          iconClass: "alf-simplelist-icon"
       },
-      
+
       /**
-       * The definition of how a single item is represented in the view. 
-       * 
+       * The definition of how a single item is represented in the view.
+       *
        * @instance
        * @type {object[]}
        */

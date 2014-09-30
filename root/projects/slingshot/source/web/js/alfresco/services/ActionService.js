@@ -526,12 +526,20 @@ define(["dojo/_base/declare",
             url = lang.replace(url, { nodeRef: this._currentNode.parent.nodeRef});
          }
 
-         // Make a request to navigation to a the URL (relative to the Share page content) within the current window...
-         this.alfPublish(this.navigateToPageTopic, {
+         var publishPayload = {
             type: this.sharePageRelativePath,
             url: url,
             target: this.currentTarget
-         });
+            },
+            site = lang.getObject("location.site.name", false, document);
+
+         if (site)
+         {
+            publishPayload.site = site;
+         }
+
+         // Make a request to navigation to a the URL (relative to the Share page content) within the current window...
+         this.alfPublish(this.navigateToPageTopic, publishPayload);
       },
 
       /**

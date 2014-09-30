@@ -95,6 +95,7 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} data An object containing the information about the page to navigate to.
+       * @todo explain what data can contain...
        */
       navigateToPage: function alfresco_services_NavigationService__navigateToPage(data) {
          if (data.type != this.hashPath && (typeof data.url == "undefined" || data.url == null || data.url === ""))
@@ -110,7 +111,16 @@ define(["dojo/_base/declare",
                 data.type === "" ||
                 data.type == this.sharePageRelativePath)
             {
-               url = AlfConstants.URL_PAGECONTEXT + data.url;
+               var siteStem = "site/" + data.site + "/";
+
+               url = data.url;
+
+               // Cater for site urls that are sent from a non-site context.
+               if (data.site && url.indexOf(siteStem) === -1)
+               {
+                  url = siteStem + url;
+               }
+               url = AlfConstants.URL_PAGECONTEXT + url;
             }
             else if (data.type == this.contextRelativePath)
             {
@@ -126,7 +136,6 @@ define(["dojo/_base/declare",
             {
                hash(data.url);
             }
-
             else if (typeof data.target == "undefined" ||
                 data.target == null ||
                 data.target === "" ||
