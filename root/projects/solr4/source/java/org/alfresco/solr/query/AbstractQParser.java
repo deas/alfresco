@@ -252,6 +252,9 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                                     append(") AND NOT (").
                                     append(denyQuery).
                                     append(")");
+                                // Record that the clause has been added.
+                                // We only ever set this to true for solr4+
+                                req.getContext().put("processedDenies", Boolean.TRUE);
                             }
                             searchParameters.setQuery(authQuery.toString());
                         }

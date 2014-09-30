@@ -1825,6 +1825,7 @@
       <str>clearLocale</str>
       <str>rewriteFacetCounts</str>
       <!-- <str>addTxId</str> -->
+      <str>setProcessedDenies</str>
     </arr>
   </requestHandler>
 
@@ -1856,6 +1857,7 @@
       <str>rewriteFacetCounts</str>
       <!-- <str>addTxId</str> -->
       <str>spellcheck</str>
+      <str>setProcessedDenies</str>
     </arr>
   </requestHandler>
 
@@ -1875,6 +1877,7 @@
       <str>clearLocale</str>
       <str>rewriteFacetCounts</str>
       <!--<str>addTxId</str>-->
+      <str>setProcessedDenies</str>
     </arr>
   </requestHandler>
 
@@ -1887,6 +1890,7 @@
   <searchComponent name="clearLocale"   class="org.alfresco.solr.component.ClearLocaleComponent" />
   <searchComponent name="rewriteFacetParameters"     class="org.alfresco.solr.component.RewriteFacetParametersComponent" />
   <searchComponent name="rewriteFacetCounts"     class="org.alfresco.solr.component.RewriteFacetCountsComponent" />
+  <searchComponent name="setProcessedDenies"     class="org.alfresco.solr.component.SetProcessedDeniesComponent" />
 
 
 </config>
