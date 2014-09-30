@@ -46,7 +46,8 @@
 .alfresco-forms-controls-BaseFormControl > .title-row > img.validationInProgress {
    width: 16px;
    height: 16px;
-   margin: 5px;
+   margin: 0 5px;
+   vertical-align: top;
 }
 
 .alfresco-forms-controls-BaseFormControl > .title-row > img.validationInProgress.hidden {
@@ -59,14 +60,14 @@
    height: 16px;
    width: 16px;
    background-repeat: no-repeat;
-   margin: 5px;
+   margin: 0 5px;
 }
 
 .alfresco-forms-controls-BaseFormControl > .title-row > .validation-message {
    display: none;
    color: #ED2525;
    font-weight: bold;
-   margin: 5px;
+   margin: 0 5px;
 }
 
 .alfresco-forms-controls-BaseFormControl > .title-row > .validation-message.display {

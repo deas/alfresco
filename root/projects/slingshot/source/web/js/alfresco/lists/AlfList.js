@@ -765,6 +765,15 @@ define(["dojo/_base/declare",
          else
          {
             var items = lang.getObject(this.itemsProperty, false, payload.response);
+            if (items == null)
+            {
+               // As a fallback we're going to check the actual payload object...
+               // It would be reasonable to ask why we don't just look in payload initially and
+               // expect the "itemsProperty" to include "response", however that is not the most common
+               // scenario and this approach catches the edge cases...
+               items = lang.getObject(this.itemsProperty, false, payload);
+            }
+
             if (items)
             {
                this.currentData = {};
