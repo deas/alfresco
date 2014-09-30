@@ -44,6 +44,15 @@ define(["dojo/_base/declare",
       cssRequirements: [{cssFile:"./css/SearchThumbnail.css"}],
 
       /**
+       * Overrides the inherited value to reference the property provided by the search API
+       *
+       * @instance
+       * @type {string}
+       * @default "lastThumbnailModification"
+       */
+      lastThumbnailModificationProperty: "lastThumbnailModification",
+      
+      /**
        * Generates the publication payload by calling the mixed in 
        * [generatePayload]{@link module:alfresco/renderers/_SearchResultLinkMixin#generatePayload}
        * function and then wraps the property in an anchor element by calling the mixed in 
