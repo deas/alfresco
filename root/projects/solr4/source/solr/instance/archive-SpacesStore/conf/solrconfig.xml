@@ -1248,7 +1248,7 @@
 
         http://wiki.apache.org/solr/SpellCheckComponent
      -->
-  <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
+  <searchComponent name="spellcheck" class="org.alfresco.solr.component.spellcheck.AlfrescoSpellCheckComponent">
 
     <str name="queryAnalyzerFieldType">text_shingle</str>
 
@@ -1825,6 +1825,7 @@
       <str>clearLocale</str>
       <str>rewriteFacetCounts</str>
       <!-- <str>addTxId</str> -->
+      <str>setProcessedDenies</str>
     </arr>
   </requestHandler>
 
@@ -1832,6 +1833,16 @@
   <requestHandler name="/afts" class="org.apache.solr.handler.component.AlfrescoSearchHandler" lazy="true" >
     <lst name="defaults">
      <str name="defType">afts</str>
+
+     <str name="spellcheck">false</str>
+     <str name="spellcheck.extendedResults">false</str>
+     <str name="spellcheck.count">5</str>
+     <str name="spellcheck.alternativeTermCount">2</str>
+     <str name="spellcheck.maxResultsForSuggest">5</str>
+     <str name="spellcheck.collate">true</str>
+     <str name="spellcheck.collateExtendedResults">true</str>
+     <str name="spellcheck.maxCollationTries">5</str>
+     <str name="spellcheck.maxCollations">3</str>
     </lst>
     <arr name="components">
       <str>setLocale</str>
@@ -1845,6 +1856,8 @@
       <str>clearLocale</str>
       <str>rewriteFacetCounts</str>
       <!-- <str>addTxId</str> -->
+      <str>spellcheck</str>
+      <str>setProcessedDenies</str>
     </arr>
   </requestHandler>
 
@@ -1864,6 +1877,7 @@
       <str>clearLocale</str>
       <str>rewriteFacetCounts</str>
       <!--<str>addTxId</str>-->
+      <str>setProcessedDenies</str>
     </arr>
   </requestHandler>
 
@@ -1876,6 +1890,7 @@
   <searchComponent name="clearLocale"   class="org.alfresco.solr.component.ClearLocaleComponent" />
   <searchComponent name="rewriteFacetParameters"     class="org.alfresco.solr.component.RewriteFacetParametersComponent" />
   <searchComponent name="rewriteFacetCounts"     class="org.alfresco.solr.component.RewriteFacetCountsComponent" />
+  <searchComponent name="setProcessedDenies"     class="org.alfresco.solr.component.SetProcessedDeniesComponent" />
 
 
 </config>
