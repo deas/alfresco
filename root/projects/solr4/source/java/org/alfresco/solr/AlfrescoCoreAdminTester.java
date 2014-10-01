@@ -6901,22 +6901,22 @@ public class AlfrescoCoreAdminTester
 
             testQuery(dataModel, report, solrIndexSearcher, "ISUNSET:\""
                         + QName.createQName(TEST_NAMESPACE, "null").toString() + "\"", 1);
-            // testQuery(dataModel, report, solrIndexSearcher, "ISNULL:\"" + QName.createQName(TEST_NAMESPACE,
-            // "null").toString() + "\"", 34);
+            testQuery(dataModel, report, solrIndexSearcher, "ISNULL:\"" + QName.createQName(TEST_NAMESPACE,
+             "null").toString() + "\"", 16);
             testQuery(dataModel, report, solrIndexSearcher,
                         "ISUNSET:\"" + QName.createQName(TEST_NAMESPACE, "path-ista").toString() + "\"", 0);
-            // testQuery(dataModel, report, solrIndexSearcher, "ISNULL:\"" + QName.createQName(TEST_NAMESPACE,
-            // "path-ista").toString() + "\"", 33);
+             testQuery(dataModel, report, solrIndexSearcher, "ISNULL:\"" + QName.createQName(TEST_NAMESPACE,
+             "path-ista").toString() + "\"", 15);
             testQuery(dataModel, report, solrIndexSearcher, "ISNOTNULL:\""
                         + QName.createQName(TEST_NAMESPACE, "null").toString() + "\"", 0);
             testQuery(dataModel, report, solrIndexSearcher,
                         "ISNOTNULL:\"" + QName.createQName(TEST_NAMESPACE, "path-ista").toString() + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher,
-                        "ISUNSET:\"" + QName.createQName(TEST_NAMESPACE, "aspectProperty").toString() + "\"", 1);
-            // testQuery(dataModel, report, solrIndexSearcher, "ISNULL:\"" + QName.createQName(TEST_NAMESPACE,
-            // "aspectProperty").toString() + "\"", 34);
+                        "ISUNSET:\"" + QName.createQName(TEST_NAMESPACE, "aspectProperty").toString() + "\"", 0);
+             testQuery(dataModel, report, solrIndexSearcher, "ISNULL:\"" + QName.createQName(TEST_NAMESPACE,
+             "aspectProperty").toString() + "\"", 15);
             testQuery(dataModel, report, solrIndexSearcher,
-                        "ISNOTNULL:\"" + QName.createQName(TEST_NAMESPACE, "aspectProperty").toString() + "\"", 0);
+                        "ISNOTNULL:\"" + QName.createQName(TEST_NAMESPACE, "aspectProperty").toString() + "\"", 1);
         }
         finally
         {

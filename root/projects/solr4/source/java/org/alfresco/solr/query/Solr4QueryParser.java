@@ -858,7 +858,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.toString());
+                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.getField());
                     if (presenceQuery != null)
                     {
                         query.add(presenceQuery, Occur.SHOULD);
@@ -891,12 +891,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.toString());
+                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.getField());
                     if (presenceQuery != null)
                     {
                         if(query.getClauses().length == 0)
                         {
-                            query.add(new MatchAllDocsQuery(), Occur.MUST);
+                            query.add(createIsNodeQuery("T"), Occur.MUST);
                         }
                         query.add(presenceQuery, Occur.MUST_NOT);
                     }
@@ -911,7 +911,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             Query presenceQuery = getWildcardQuery(queryText, "*");
             if (presenceQuery != null)
             {
-                query.add(new MatchAllDocsQuery(), Occur.MUST);
+                query.add(createIsNodeQuery("T"), Occur.MUST);
                 query.add(presenceQuery, Occur.MUST_NOT);
             }
             return query;
@@ -934,7 +934,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             {
                 if(!field.isLocalised())
                 {
-                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.toString());
+                    Query presenceQuery = createTermQuery(FIELD_FIELDS, field.getField());
                     if (presenceQuery != null)
                     {
                         query.add(typeQuery, Occur.MUST);
