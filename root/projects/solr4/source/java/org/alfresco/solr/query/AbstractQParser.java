@@ -20,10 +20,14 @@ package org.alfresco.solr.query;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import org.alfresco.error.AlfrescoRuntimeException;
@@ -45,6 +49,7 @@ import org.alfresco.solr.AlfrescoSolrDataModel.ContentFieldType;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
 import org.alfresco.solr.AlfrescoSolrDataModel.IndexedField;
 import org.alfresco.util.Pair;
+import org.apache.commons.io.IOUtils;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
@@ -54,6 +59,8 @@ import org.apache.solr.search.QParser;
 import org.apache.solr.search.QueryParsing;
 import org.apache.solr.search.SortSpec;
 import org.apache.solr.search.SyntaxError;
+import org.apache.solr.update.processor.DetectedLanguage;
+import org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +68,11 @@ import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.extensions.surf.util.I18NUtil;
+
+import com.cybozu.labs.langdetect.Detector;
+import com.cybozu.labs.langdetect.DetectorFactory;
+import com.cybozu.labs.langdetect.LangDetectException;
+import com.cybozu.labs.langdetect.Language;
 
 /**
  * @author Andy
@@ -77,6 +89,30 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
 
     private static final String TENANT_FILTER_FROM_JSON = "TENANT_FILTER_FROM_JSON";
 
+    static final String languages[] = {
+        "af", "ar", "bg", "bn", "cs", "da", "de", "el", "en", "es", "et", "fa", "fi", "fr", "gu",
+        "he", "hi", "hr", "hu", "id", "it", "ja", "kn", "ko", "lt", "lv", "mk", "ml", "mr", "ne",
+        "nl", "no", "pa", "pl", "pt", "ro", "ru", "sk", "sl", "so", "sq", "sv", "sw", "ta", "te",
+        "th", "tl", "tr", "uk", "ur", "vi", "zh-cn", "zh-tw"
+      };
+    
+    static 
+    {
+        try {
+            List<String> profileData = new ArrayList<>();
+            for (String language : languages) {
+                InputStream stream = LangDetectLanguageIdentifierUpdateProcessor.class.getResourceAsStream("langdetect-profiles/" + language);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+                profileData.add(new String(IOUtils.toCharArray(reader)));
+                reader.close();
+            }
+            DetectorFactory.loadProfile(profileData);
+            DetectorFactory.setSeed(0);
+        } catch (Exception e) {
+            throw new RuntimeException("Couldn't load profile data, will return empty languages always!", e);
+        }
+    }
+    
     /**
      * @param qstr
      * @param localParams
@@ -344,6 +380,8 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
                     String textAttribute = textAttributes.getString(i);
                     searchParameters.addAllAttribute(textAttribute);
                 }
+                
+                
                 searchParameters.setQueryConsistency(QueryConsistency.valueOf(json.getString("queryConsistency")));
 
             }
@@ -377,11 +415,45 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
             searchParameters.setDefaultFieldName(defaultField);
         }
 
+        String searchTerm = getParam("spellcheck.q");
+        if (searchTerm != null)
+        {
+            searchParameters.setSearchTerm(searchTerm);
+            List<DetectedLanguage> detetcted = detectLanguage(searchTerm);
+            if((detetcted != null) && (detetcted.size() > 0))
+            {
+                Locale detectedLocale = Locale.forLanguageTag(detetcted.get(0).getLangCode());
+                if(localeIsNotIncluded(searchParameters, detectedLocale))
+                {
+                    searchParameters.addLocale( Locale.forLanguageTag(detectedLocale.getLanguage()));
+                }
+            }
+                    
+        }
+        
         // searchParameters.setMlAnalaysisMode(getMLAnalysisMode());
         searchParameters.setNamespace(NamespaceService.CONTENT_MODEL_1_0_URI);
 
         return new Pair<SearchParameters, Boolean>(searchParameters, isFilter);
     }
+
+    /**
+     * @param searchParameters
+     * @param detectedLocale
+     * @return
+     */
+    private boolean localeIsNotIncluded(SearchParameters searchParameters, Locale detectedLocale)
+    {
+        for(Locale locale : searchParameters.getLocales())
+        {
+            if(locale.getLanguage().equals(detectedLocale.getLanguage()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * @param authorityList
@@ -503,4 +575,50 @@ public abstract class AbstractQParser extends QParser implements QueryConstants
 
  
     
+    private List<DetectedLanguage> detectLanguage(String content) {
+        if (content.trim().length() == 0) { // to be consistent with the tika impl?
+            log.debug("No input text to detect language from, returning empty list");
+            return Collections.emptyList();
+        }
+
+        try {
+            Detector detector = DetectorFactory.create();
+            detector.append(content);
+            ArrayList<Language> langlist = detector.getProbabilities();
+            ArrayList<DetectedLanguage> solrLangList = new ArrayList<>();
+            for (Language l: langlist) {
+                solrLangList.add(new DetectedLanguage(l.lang, l.prob));
+            }
+            return solrLangList;
+        } catch (LangDetectException e) {
+            log.debug("Could not determine language, returning empty list: ", e);
+            return Collections.emptyList();
+        }
+    }
+    
+    public class DetectedLanguage {
+        private final String langCode;
+        private final Double certainty;
+
+        DetectedLanguage(String lang, Double certainty) {
+            this.langCode = lang;
+            this.certainty = certainty;
+        }
+
+        /**
+         * Returns the detected language code
+         * @return language code as a string
+         */
+        public String getLangCode() {
+            return langCode;
+        }
+
+        /**
+         * Returns the detected certainty for this language
+         * @return certainty as a value between 0.0 and 1.0 where 1.0 is 100% certain
+         */
+        public Double getCertainty() {
+            return certainty;
+        }
+    }
 }
