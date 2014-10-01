@@ -234,7 +234,9 @@ define(["dojo/_base/declare",
          if (this.containerNode != null)
          {
             // It is necessary to clone the widget definition to prevent them being modified for future iterations...
-            var clonedWidgets = lang.clone(this.widgets);
+            // var clonedWidgets = lang.clone(this.widgets);
+            // Intentionally switched from lang.clone to native JSON approach to cloning for performance...
+            var clonedWidgets = JSON.parse(JSON.stringify(this.widgets));
             this.processWidgets(clonedWidgets, this.containerNode);
          }
          else
