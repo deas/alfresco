@@ -109,6 +109,13 @@ define(["dojo/_base/declare",
                hashString = (locallyStoredHash !== null) ? locallyStoredHash : "";
                this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.updateLocallyStoredHash));
             }
+            else if (hashString !== "" && 
+                     this.useLocalStorageHashFallback === true && 
+                     ("localStorage" in window && window["localStorage"] !== null))
+            {
+               // Store the initial hash...
+               localStorage.setItem(this.useLocalStorageHashFallbackKey, hash());
+            }
 
             var currHash = ioQuery.queryToObject(hashString);
             if(!this._payloadContainsUpdateableVar(currHash))
