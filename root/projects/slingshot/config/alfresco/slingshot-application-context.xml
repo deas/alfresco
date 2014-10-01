@@ -311,9 +311,6 @@
    <bean id="site.module.evaluator" class="org.alfresco.web.extensibility.SlingshotSiteModuleEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>
-   <bean id="portlet.module.evaluator" class="org.alfresco.web.extensibility.SlingshotPortletModuleEvaluator">
-      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
-   </bean>
    <bean id="group.module.evaluator" class="org.alfresco.web.extensibility.SlingshotGroupModuleEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>
@@ -337,9 +334,6 @@
       <property name="configService" ref="web.config" />
    </bean>
    <bean id="equals.component.evaluator" class="org.alfresco.web.extensibility.SlingshotEqualsComponentElementEvaluator"/>
-   <bean id="portlet.component.evaluator" class="org.alfresco.web.extensibility.SlingshotPortletComponentElementEvaluator">
-      <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
-   </bean>
    <bean id="group.component.evaluator" class="org.alfresco.web.extensibility.SlingshotGroupComponentElementEvaluator">
       <property name="slingshotEvaluatorUtil" ref="slingshot.evaluator.utility" />
    </bean>

@@ -9,14 +9,7 @@
       if (loc.hash === "" && loc.search !== "")
       {
          var qs, q, url = loc.protocol + "//" + loc.host + loc.pathname, hash = "";
-
-      <#if PORTLET>
-         qs = {};
-         <#if url.args.page??>qs.page = "${(url.args.page!"")?js_string}";</#if>
-         <#if url.args.filter??>qs.filter = "${(url.args.filter!"")?js_string}";</#if>
-      <#else>
          qs = Alfresco.util.getQueryStringParameters();
-      </#if>
 
          var hashParams =
          {
@@ -45,12 +38,8 @@
          
          if (hash.length > 0)
          {
-         <#if PORTLET>
-            top.location.hash = hash.substring(1);
-         <#else>
             url += Alfresco.util.toQueryString(qs) + "#" + hash.substring(1);
             window.location.replace(url);
-         </#if>
          }
       }
    })();

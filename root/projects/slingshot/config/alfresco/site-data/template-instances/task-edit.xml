@@ -15,17 +15,9 @@
          <region-id>tasks-navigation</region-id>
          <url>/components/workflow/task-toolbar</url>
       </component>
-      <component>
-         <region-id>portlet-tasks-navigation</region-id>
-         <url>/components/workflow/task-toolbar</url>
-      </component>
 
       <component>
          <region-id>workflows-navigation</region-id>
-         <url>/components/workflow/workflow-toolbar</url>
-      </component>
-      <component>
-         <region-id>portlet-workflows-navigation</region-id>
          <url>/components/workflow/workflow-toolbar</url>
       </component>
    </components>

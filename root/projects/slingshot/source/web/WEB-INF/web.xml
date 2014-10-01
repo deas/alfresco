@@ -29,7 +29,7 @@
    </filter>
    
    <filter>
-      <description>MT authentication support - NOTE: does not support portlets</description>
+      <description>MT authentication support</description>
       <filter-name>MTAuthentationFilter</filter-name>
       <filter-class>org.alfresco.web.site.servlet.MTAuthenticationFilter</filter-class>
    </filter>

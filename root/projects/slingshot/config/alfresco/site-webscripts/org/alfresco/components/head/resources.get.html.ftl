@@ -3,11 +3,9 @@
    RESOURCES
 -->
 <@markup id="favicons">
-    <#if !PORTLET>
-    <!-- Icons -->
-    <link rel="shortcut icon" href="${url.context}/res/favicon.ico" type="image/vnd.microsoft.icon" />
-    <link rel="icon" href="${url.context}/res/favicon.ico" type="image/vnd.microsoft.icon" />
-    </#if>
+   <!-- Icons -->
+   <link rel="shortcut icon" href="${url.context}/res/favicon.ico" type="image/vnd.microsoft.icon" />
+   <link rel="icon" href="${url.context}/res/favicon.ico" type="image/vnd.microsoft.icon" />
 </@markup>
 
 <@markup id="yui">
@@ -57,8 +55,6 @@
       Alfresco.constants.SITE = "<#if page??>${(page.url.templateArgs.site!"")?js_string}</#if>";
       Alfresco.constants.PAGECONTEXT = "<#if page??>${(page.url.templateArgs.pagecontext!"")?js_string}</#if>";
       Alfresco.constants.PAGEID = "<#if page??>${(page.url.templateArgs.pageid!"")?js_string}</#if>";
-      Alfresco.constants.PORTLET = ${PORTLET?string};
-      Alfresco.constants.PORTLET_URL = unescape("${(context.attributes.portletUrl!"")?js_string}");
       Alfresco.constants.JS_LOCALE = "${locale}";
       Alfresco.constants.USERPREFERENCES = "${preferences?js_string}";
       Alfresco.constants.CSRF_POLICY = {
@@ -92,18 +88,11 @@
       Alfresco.constants.MENU_ARROW_SYMBOL = "&#9662;";
 
       Alfresco.constants.TINY_MCE_SUPPORTED_LOCALES = "${config.global["I18N"].getChildValue("tiny-mce-supported-locales")}";
-      
-      <#if PORTLET>
-      document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=";
-      </#if>
    </@>
 </@>
 
 <@markup id="alfrescoResources">
    <!-- Alfresco web framework common resources -->
-    <#if PORTLET>
-       <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/portlet.css" group="template-common" />
-    </#if>
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/base.css" group="template-common" />
    <@link rel="stylesheet" type="text/css" href="${url.context}/res/css/yui-layout.css" group="template-common" />
    <@script type="text/javascript" src="${url.context}/res/js/flash/AC_OETags.js" group="template-common"/>

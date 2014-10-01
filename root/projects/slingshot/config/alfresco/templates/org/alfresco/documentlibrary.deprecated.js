@@ -95,7 +95,7 @@ var objLocation = getLocationType(),
    scopeType = objLocation.siteId !== null ? "" : "repo-";
 
 model.doclibType = doclibType == "" ? scopeType : doclibType + "-";
-model.appType = context.attributes.portletHost ? "portlet-" : "";
+model.appType = "";
 
 // Repository Library root node
 var rootNode = "alfresco://company/home",
@@ -106,4 +106,3 @@ if (repoConfig !== null)
 }
 
 model.rootNode = rootNode;
-

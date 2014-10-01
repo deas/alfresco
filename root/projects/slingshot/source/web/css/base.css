@@ -53,12 +53,6 @@ blockquote
    height: 50px;
 }
 
-.login-panel .login-portlet
-{
-   padding: 132px 56px 64px 0px;
-   text-align: center;
-}
-
 /* Font fallback defaults */
 
 .sticky-wrapper,

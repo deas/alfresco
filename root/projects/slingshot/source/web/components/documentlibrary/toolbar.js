@@ -487,12 +487,6 @@
             {
                nodeRef: this.doclistMetadata.parent.nodeRef
             });
-
-            // Portlet fix: parameter might be encoded
-            if (anchor.href.indexOf("%7BnodeRef%7D") !== -1)
-            {
-               anchor.href = anchor.href.replace("%7BnodeRef%7D", encodeURIComponent(this.doclistMetadata.parent.nodeRef));
-            }
          }
       },
 

@@ -60,8 +60,6 @@ function getMaxItems()
 
 function getSiteUrl(relativeURL, siteId)
 {
-   var portlet = (context.attributes.portletHost != null) ? context.attributes.portletHost : false;
-   var portlet_url = (context.attributes.portletUrl != null) ? context.attributes.portletUrl : "";
    var site_url = relativeURL;
 
    if (!siteId)
@@ -82,15 +80,7 @@ function getSiteUrl(relativeURL, siteId)
    {
       site_url = "page/" + site_url;
    }
-   site_url = "/" + site_url;
+   site_url = url.context + "/" + site_url;
 
-   if (portlet)
-   {
-      site_url = portlet_url.replace(/%24%24scriptUrl%24%24/g, encodeURIComponent(site_url.replace(/&amp;/g, "&")));
-   }
-   else
-   {
-      site_url = url.context + site_url;
-   }
    return site_url;
 }

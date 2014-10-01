@@ -209,15 +209,7 @@
          }
          else
          {
-            // Nowhere sensible to go other than the default page unless we're in a portal
-            if (Alfresco.constants.PORTLET)
-            {
-               window.location.href = $siteURL("repository");
-            }
-            else
-            {
-               window.location.href = Alfresco.constants.URL_CONTEXT;
-            }
+            window.location.href = Alfresco.constants.URL_CONTEXT;
          }
       }
    });

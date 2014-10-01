@@ -565,7 +565,6 @@
 
       <!--
          If set, will present a WebDAV link for the current item on the Document and Folder details pages.
-         Also used to generate the "View in Alfresco Explorer" action for folders.
       -->
       <!--
       <repository-url>http://localhost:8080/alfresco</repository-url>
@@ -1132,14 +1131,6 @@
             </permissions>
          </action>
 
-         <!-- View in Explorer client -->
-         <action id="view-in-explorer" type="link" label="actions.folder.explorer-view">
-            <param name="href">{explorerViewUrl}</param>
-            <param name="target">_blank</param>
-            <!-- repository-url config set, not in portlet mode -->
-            <evaluator>evaluator.doclib.action.viewInExplorer</evaluator>
-         </action>
-
          <!-- View on Google Maps -->
          <action id="document-view-googlemaps" type="pagelink" label="actions.document.view-google-map">
             <param name="page">geographic-map?nodeRef={node.nodeRef}</param>
@@ -1152,7 +1143,7 @@
             <!-- calculated from siteId, item.location.repositoryId, replicationUrlMapping from share-config-custom.xml and node.type -->
             <param name="href">{sourceRepositoryUrl}</param>
             <param name="target">_blank</param>
-            <!-- aspect trx:transferred, not portlet mode -->
+            <!-- aspect trx:transferred -->
             <evaluator>evaluator.doclib.action.transferred</evaluator>
          </action>
 
@@ -1303,7 +1294,6 @@
             <action index="180" id="document-manage-repo-permissions" icon="folder-manage-permissions" label="actions.folder.manage-permissions" />
             <action index="190" id="document-manage-aspects" label="actions.folder.manage-aspects" />
             <action index="200" id="document-change-type" label="actions.folder.change-type" />
-            <action index="210" id="view-in-explorer" />
             <action index="220" id="document-view-in-source-repository" label="actions.folder.view-source-repository" />
             <action index="350" id="document-view-googlemaps" />
             <action index="360" id="document-cloud-sync" />

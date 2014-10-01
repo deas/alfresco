@@ -41,9 +41,6 @@ define(["dojo/_base/lang"],
       <#assign DEBUG=(globalConfig("client-debug", "false") = "true")>
       <#assign AUTOLOGGING=(globalConfig("client-debug-autologging", "false") = "true")>
       
-      <#-- Portlet container detection -->
-      <#assign PORTLET=(context.attributes.portletHost!false)>
-
       DEBUG: ${DEBUG?string},
       AUTOLOGGING: ${AUTOLOGGING?string},
       PROXY_URI: window.location.protocol + "//" + window.location.host + "${url.context}/proxy/alfresco/",
@@ -55,8 +52,6 @@ define(["dojo/_base/lang"],
       URL_SERVICECONTEXT: "${url.context}/service/",
       URL_FEEDSERVICECONTEXT: "${url.context}/feedservice/",
       USERNAME: "${(user.name!"")?js_string}",
-      PORTLET: ${PORTLET?string},
-      PORTLET_URL: unescape("${(context.attributes.portletUrl!"")?js_string}"),
       <#if config.scoped["CSRFPolicy"]??>
       CSRF_POLICY: {
          enabled: <#if config.scoped["CSRFPolicy"]["filter"]??>${((config.scoped["CSRFPolicy"]["filter"].getChildren("rule")?size > 0)?string)!false}<#else>false</#if>,

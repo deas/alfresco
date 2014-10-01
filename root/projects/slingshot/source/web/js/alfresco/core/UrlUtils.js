@@ -76,8 +76,8 @@ define(["dojo/_base/declare",
                template = AlfConstants.URI_TEMPLATES["userprofilepage"],
                uri = "";
 
-         // If the "userprofilepage" template doesn't exist or is empty, or we're in portlet mode we'll just return the user's fullName || userName
-         if (disableLink || YAHOO.lang.isUndefined(template) || template.length === 0 || lang.getObject("Alfresco.constants.PORTLET"))
+         // If the "userprofilepage" template doesn't exist or is empty, we'll just return the user's fullName || userName
+         if (disableLink || YAHOO.lang.isUndefined(template) || template.length === 0)
          {
             return '<span>' + html + '</span>';
          }
@@ -188,22 +188,10 @@ define(["dojo/_base/declare",
             uri = this.combinePaths(AlfConstants.URL_PAGECONTEXT, uri);
          }
 
-         // Portlet scriptUrl mapping required?
-         if (AlfConstants.PORTLET)
-         {
-            // Remove the context prefix
-            if (uri.indexOf(AlfConstants.URL_CONTEXT) === 0)
-            {
-               uri = this.combinePaths("/", uri.substring(AlfConstants.URL_CONTEXT.length));
-            }
-
-            uri = AlfConstants.PORTLET_URL.replace("$$scriptUrl$$", encodeURIComponent(decodeURIComponent(uri.replace(/%25/g, "%2525").replace(/%26/g, "%252526"))));
-         }
-
          // Absolute URI needs current protocol and host
          if (absolute && (uri.indexOf(location.protocol + "//") !== 0))
          {
-            // Don't use combinePaths in case the PORTLET_URL encoding is fragile
+            // Don't use combinePaths in case the encoding is fragile
             if (uri.substring(0, 1) !== "/")
             {
                uri = "/" + uri;
@@ -250,7 +238,6 @@ define(["dojo/_base/declare",
                actionUrls.workingCopyUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.workingCopyNodeRef || strNodeRef), site);
                actionUrls.workingCopySourceUrl = this.generatePageUrl("document-details?nodeRef=" + (workingCopy.sourceNodeRef || strNodeRef), site);
                actionUrls.viewGoogleDocUrl = workingCopy.googleDocUrl + "\" target=\"_blank";
-               actionUrls.explorerViewUrl = this.combinePaths(repositoryUrl, "/n/showSpaceDetails/", nodeRefUri, site) + "\" target=\"_blank";
                actionUrls.cloudViewUrl = this.combinePaths(AlfConstants.URL_SERVICECONTEXT, "cloud/cloudUrl?nodeRef=" + strNodeRef);
                actionUrls.sourceRepositoryUrl = this.viewInSourceRepositoryURL(record, actionUrls) + "\" target=\"_blank";
             }
