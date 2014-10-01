@@ -1306,7 +1306,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                             break;
                         }
                     }
-                    if (!found && (testText.length()  == 1))
+                    if (!found && (list.size() == 0))
                     {
                         // Add new token followed by * not given by the tokeniser
                         org.apache.lucene.analysis.Token newToken = new org.apache.lucene.analysis.Token("", 0, 0);
@@ -1815,7 +1815,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             String termText = nextToken.toString(); 
             if (termText.contains("*") || termText.contains("?"))
             {
-                return newWildcardQuery(new Term(field, getLowercaseExpandedTerms() ? termText.toLowerCase() : termText));
+                return newWildcardQuery(new Term(field, termText));
             }
             else
             {
@@ -1837,7 +1837,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         String termText = nextToken.toString();
                         if (termText.contains("*") || termText.contains("?"))
                         {
-                            currentQuery = newWildcardQuery(new Term(field, getLowercaseExpandedTerms() ? termText.toLowerCase() : termText));
+                            currentQuery = newWildcardQuery(new Term(field, termText));
                         }
                         else
                         {

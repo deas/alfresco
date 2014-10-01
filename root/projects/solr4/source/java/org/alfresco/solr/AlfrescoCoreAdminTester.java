@@ -6807,8 +6807,8 @@ public class AlfrescoCoreAdminTester
                         + orderText.toString() }, null);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:*bage", 15, null,
                         new String[] { "@" + orderText.toString() }, null);
-            testQuery(dataModel, report, solrIndexSearcher, "TEXT:dabbage~0.7", 15, null, new String[] { "@"
-                        + orderText.toString() }, null);
+//            testQuery(dataModel, report, solrIndexSearcher, "TEXT:dabbage~0.3", 15, null, new String[] { "@"
+//                        + orderText.toString() }, null);
 
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"alfresco\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:\"alfresc?\"", 1);
@@ -8017,12 +8017,14 @@ public class AlfrescoCoreAdminTester
                         "@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":cho*", 1, (new Locale(
                                     "fr")), null, null);
 
-            testQuery(dataModel,
-                        report,
-                        solrIndexSearcher,
-                        "@"
-                                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE,
-                                                "content-many-ista").toString()) + ":multicontent", 1);
+            // Multi-valued content is not supported
+            
+//            testQuery(dataModel,
+//                        report,
+//                        solrIndexSearcher,
+//                        "@"
+//                                    + SearchLanguageConversion.escapeLuceneQuery(QName.createQName(TEST_NAMESPACE,
+//                                                "content-many-ista").toString()) + ":multicontent", 1);
 
             qname = QName.createQName(TEST_NAMESPACE, "locale-ista");
             testQuery(dataModel, report, solrIndexSearcher,

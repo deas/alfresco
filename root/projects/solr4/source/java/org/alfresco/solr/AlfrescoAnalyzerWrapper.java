@@ -44,6 +44,19 @@ public class AlfrescoAnalyzerWrapper extends AnalyzerWrapper
         super(Analyzer.PER_FIELD_REUSE_STRATEGY);
         this.schema = schema;
     }
+    
+    
+
+    /* (non-Javadoc)
+     * @see org.apache.lucene.analysis.AnalyzerWrapper#getPositionIncrementGap(java.lang.String)
+     */
+    @Override
+    public int getPositionIncrementGap(String fieldName)
+    {
+        return 100;
+    }
+
+
 
     /* (non-Javadoc)
      * @see org.apache.lucene.analysis.AnalyzerWrapper#getWrappedAnalyzer(java.lang.String)

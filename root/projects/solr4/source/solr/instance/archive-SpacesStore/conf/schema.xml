@@ -10,11 +10,11 @@
    <types>
       <!-- ID and version to support SOLR cloud -->
 
-      <fieldType name="identifier" class="solr.StrField" sortMissingLast="true" />
+      <fieldType name="identifier" class="solr.StrField" sortMissingLast="true" positionIncrementGap="100" />
       <fieldType name="version" class="solr.TrieLongField" precisionStep="64" positionIncrementGap="0" />
 
 
-      <fieldType name="lowercase_id" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+      <fieldType name="lowercase_id" class="solr.TextField" sortMissingLast="true" omitNorms="true" positionIncrementGap="100" >
          <analyzer>
  	    <tokenizer class="solr.KeywordTokenizerFactory"/>
             <filter class="solr.LowerCaseFilterFactory" />
@@ -58,19 +58,6 @@
                units="degrees" />
 
 
-<!--
-      <fieldType name="site" class="solr.TextField" >
-         <analyzer type="index">
-            <tokenizer class="solr.PatternTokenizerFactory" pattern=";"/>
-            <filter class="solr.PatternReplaceFilterFactory" pattern="/\{http\://www\.alfresco\.org/model/application/1\.0\}company\_home/\{http\://www\.alfresco\.org/model/site/1\.0\}sites/\{http\://www\.alfresco\.org/model/content/1.0}([^/]*)/.*" replacement="$1"/>
-            <filter class="solr.PatternReplaceFilterFactory" pattern="/.*" replacement="_REPOSITORY_"/>
-         </analyzer>
-         <analyzer type="query">
-            <tokenizer class="solr.KeywordTokenizerFactory"/>
-         </analyzer>
-      </fieldType>
--->
-
       <!-- Suggestion -->
 
       <fieldType name="text_shingle" class="solr.TextField" positionIncrementGap="100">
@@ -99,19 +86,10 @@
                     splitOnNumerics="1"
                     preserveOriginal="1"
                     stemEnglishPossessive="1"/>
-            <!-- <filter class="org.apache.solr.analysis.LowerCaseFilterFactory" /> -->
-            <filter class="solr.ICUNormalizer2FilterFactory" name="nfkc_cf" mode="compose"/>
+            <filter class="solr.ICUFoldingFilterFactory"/>
          </analyzer>
       </fieldType>
 
-
-      <!-- Cross locale generic collation -->
-      <!-- TODO: Consider a mix of language specific collation and ROOT collation by extending TextField as we do for ML Text -->
-
-
-      <fieldType name="collatedROOT" class="solr.ICUCollationField"
-           locale=""
-           strength="primary" />
 
       <fieldType name="alfrescoCollatableTextFieldType" class="org.alfresco.solr.AlfrescoCollatableTextFieldType" sortMissingLast="true" />
 
