@@ -34,7 +34,8 @@ public enum Dashlets
     WIKI("Wiki"),
     USER_ACTIVITY_REPORT("User Activity Report"),
     HOT_CONTENT_REPORT("Hot Content Report"),
-    ADHOC_ANALYZER("Custom Reports");
+    ADHOC_ANALYZER("Custom Reports"),
+    CUSTOM_SITE_REPORTS("Custom Site Reports");
 
     private String dashletName;
 

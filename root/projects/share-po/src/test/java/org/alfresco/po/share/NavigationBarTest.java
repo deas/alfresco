@@ -321,9 +321,19 @@ public class NavigationBarTest extends AbstractTest
         ShareUtil.logout(drone);
         SharePage page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
         AdhocAnalyzerPage adhocAnalyzePage = page.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Adhoc Analyze");       
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Custom Reports");       
+        ShareUtil.logout(drone);
+    }
+    
+    @Test(groups= "Enterprise-only", priority=999)
+    public void navigateToSiteAnalyze() throws Exception
+    {   
+        //logout as admin and log in as pentaho business analyst
+        ShareUtil.logout(drone);
+        SharePage page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
+        AdhocAnalyzerPage adhocAnalyzePage = page.getNav().selectAnalyzeSite().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Custom Site Reports");       
         ShareUtil.logout(drone);
     }
     **/
-    
  }

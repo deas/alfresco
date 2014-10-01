@@ -28,6 +28,8 @@ import org.alfresco.po.share.dashlet.AdhocAnalyzerDashlet;
 import org.alfresco.po.share.dashlet.MyTasksDashlet;
 import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
+import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.InviteMembersPage;
 import org.alfresco.po.share.site.NewFolderPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -50,6 +52,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
@@ -66,6 +69,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     private static Log logger = LogFactory.getLog(AdhocAnalyzerPageTest.class);
 
     private static final String CUSTOM_REPORTS = "Custom Reports";
+    private static final String CUSTOM_SITE_REPORTS = "Custom Site Reports";
     private static final String UNSAVED_REPORT = "Unsaved Report";
     private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
     private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
@@ -80,8 +84,20 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     private String siteName = "Site_" + System.currentTimeMillis();
     private String folderName = "Folder_" + System.currentTimeMillis();
     private String fileName = "File_" + System.currentTimeMillis();
-    
+    private String siteName1 = "Site1_" + System.currentTimeMillis();
 
+    @AfterClass(alwaysRun = true)
+    public void closeWebDrone()
+    {
+        if (logger.isTraceEnabled())
+        {
+            logger.trace("Closing web drone");
+        }
+        // Close the browser
+        drone.quit();
+        drone = null;
+    }
+    
     @Test
     public void loadFiles() throws Exception
     {
@@ -95,7 +111,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         //run fact generation
         factTableGeneration();
         
-        page = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD); 
+        page = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
         adhocAnalyzePage = page.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
 
@@ -351,7 +367,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
      */
     
     @Test(dependsOnMethods = "testCreateSaveOpenEditReport")
-    public void testOpenReportInDashlet()
+    public void testOpenReportInUserboardDashlet()
     {
         DashBoardPage dashboardPage = (DashBoardPage)createEditAdhocReportPage.getNav().selectMyDashBoard().render();
         CustomiseUserDashboardPage customiseUserDashboardPage = dashboardPage.getNav().selectCustomizeUserDashboard().render();
@@ -397,7 +413,106 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
 
-        logout(drone);
+       // logout(drone);
+        
     }
     
+    @Test(dependsOnMethods = "testOpenReportInUserboardDashlet")
+    public void testOpenReportInSiteboardDashlet()
+    {
+        //DashBoardPage dashboardPage = (DashBoardPage)createEditAdhocReportPage.getNav().selectMyDashBoard().render();
+        page = drone.getCurrentPage().render();
+        adhocAnalyzePage = page.getNav().selectAnalyzeSite().render();
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_SITE_REPORTS); 
+        
+        
+        adhocAnalyzePage.clickOnAnalyzeButton();
+        createEditAdhocReportPage = adhocAnalyzePage.clickOnCreateReportButton();
+        Assert.assertEquals(createEditAdhocReportPage.getPageTitle(), CUSTOM_SITE_REPORTS);
+        Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
+        Assert.assertEquals(createEditAdhocReportPage.getReportTitle(), UNSAVED_REPORT);
+
+        // create new report
+        createEditAdhocReportPage.doubleClickOnSiteNameField();
+        createEditAdhocReportPage.doubleClickOnEventTypeField();
+        createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
+         
+        // click on Save button
+        createEditAdhocReportPage.clickOnSaveReportButton();
+        
+        //check popup is displayed
+        Assert.assertTrue(createEditAdhocReportPage.isSaveAnalysisDispalayed());
+
+        // Enter report name
+        reportName = "NewReport1-" + System.currentTimeMillis();
+        createEditAdhocReportPage.enterAnalisysName(reportName);
+
+        logger.info("Saving "+ reportName);
+        
+        // Click on Ok button to save report
+        createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
+
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+        
+        logger.info("Report "+ reportName + " successfully saved.");
+        
+        
+        //user creates site
+        SiteUtil.createSite(drone, siteName1, "description", "public");
+        
+        SitePage site = drone.getCurrentPage().render();
+        CustomiseSiteDashboardPage customiseSiteDashBoard = site.getSiteNav().selectCustomizeDashboard().render();
+        SiteDashboardPage siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.CUSTOM_SITE_REPORTS, 1).render();
+        
+        //DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
+        
+        AdhocAnalyzerDashlet adhocAnalyzerDashlet = siteDashBoard.getDashlet("adhoc-analyzer").render();
+        Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
+        Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
+        Assert.assertTrue(adhocAnalyzerDashlet.isSiteDashletMessageDisplayed());
+        adhocAnalyzerDashlet.clickOnOpenDropdown();
+        adhocAnalyzerDashlet.clickOnExistingReport(reportName);
+        Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
+ 
+        int counter = 0;
+        int waitInMilliSeconds = 8000;
+        while (counter < 3)
+        {
+            synchronized (this)
+            {
+                try
+                {
+                    this.wait(waitInMilliSeconds);
+                }
+                catch (InterruptedException e)
+                {
+                }
+            }
+            if (createEditAdhocReportPage.isSiteNameDisplayed())
+            {
+                break;
+            }
+            else
+            {
+                counter++;
+                drone.refresh();
+            }
+            // double wait time  
+            waitInMilliSeconds = (waitInMilliSeconds * 2);
+
+        }
+ 
+        Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
+        Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
+
+        logout(drone);
+        
+        logger.info("testOpenreportInSiteboardDashlet - logout");
+        
+        drone.quit();
+    }
    }

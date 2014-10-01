@@ -172,6 +172,7 @@ public class FactorySharePage implements PageFactory
         pages.put("inplace", InPlaceBulkImportPage.class);
         pages.put("Home", PentahoUserConsolePage.class);
         pages.put("analyze", AdhocAnalyzerPage.class);
+        pages.put("analyze-site", AdhocAnalyzerPage.class);
     }
 
     public HtmlPage getPage(WebDrone drone)

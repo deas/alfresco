@@ -253,7 +253,27 @@ public class Navigation extends SharePage
         throw new PageOperationException("Analyze option is not found in the Reporting options");
     }
       
-       
+    
+    /**
+     * Select Analyze Site from Reporting dropdown.
+     * @return
+     */
+    public AdhocAnalyzerPage selectAnalyzeSite()
+    {
+        try
+        {
+            selectReportingDropdown(); 
+            drone.findAndWait(By.cssSelector("td#HEADER_PENTAHO_ANALYZE_SITE_text a")).click();
+            return new AdhocAnalyzerPage(drone);
+        }
+        catch(TimeoutException toe)
+        {
+            logger.error("Analyze Site option is not found in the Reporting options", toe);
+        }
+        throw new PageOperationException("Analyze Site option is not found in the Reporting options");
+    }
+    
+    
     /**
      * Selects the user link on main navigation. As this link is created by Java
      * script, a wait is implemented to ensure the link is rendered.
