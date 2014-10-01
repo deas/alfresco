@@ -31,7 +31,7 @@ public class FileTransferMainEmbedded
     {
         ApplicationContext appCtx = new ClassPathXmlApplicationContext("classpath*:ftr-launcher-context.xml");
         Tomcat tomcat = (Tomcat) appCtx.getBean("embeddedTomcat");
-        tomcat.addWebapp("/alfresco-ftr", "file-transfer-receiver.war");
+        tomcat.addWebapp("/alfresco-ftr", System.getProperty("user.dir")+"/webapps/file-transfer-receiver.war");
         tomcat.start();
         tomcat.getServer().await();
     }

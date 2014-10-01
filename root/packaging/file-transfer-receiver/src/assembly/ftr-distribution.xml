@@ -30,6 +30,7 @@
                 <include>*:*:jar</include>
             </includes>
             <useStrictFiltering>true</useStrictFiltering>
+            <useProjectArtifact>false</useProjectArtifact>
         </dependencySet>
         <dependencySet>
             <outputDirectory>webapps</outputDirectory>
