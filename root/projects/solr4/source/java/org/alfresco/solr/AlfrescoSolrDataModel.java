@@ -79,14 +79,14 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.solr.AlfrescoClientDataModelServicesFactory.DictionaryKey;
 import org.alfresco.solr.client.AlfrescoModel;
-import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
-import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
 import org.alfresco.solr.query.Lucene4QueryBuilderContextSolrImpl;
 import org.alfresco.solr.query.Solr4QueryParser;
+import org.alfresco.solr.tracker.pool.DefaultTrackerPoolFactory;
+import org.alfresco.solr.tracker.pool.TrackerPoolFactory;
 import org.alfresco.util.ISO9075;
-import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.alfresco.util.NumericEncoder;
 import org.alfresco.util.Pair;
+import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.CapabilityJoin;
 import org.apache.chemistry.opencmis.commons.enums.CmisVersion;
@@ -189,10 +189,7 @@ public class AlfrescoSolrDataModel implements QueryConstants
            ThreadPoolExecutor threadPool = trackerPoolFactory.create();
            compiledModelsCache.setThreadPoolExecutor(threadPool);
            
-        
            dictionaryDAO.setDictionaryRegistryCache(compiledModelsCache);
-           // TODO: use config ....
-           dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
            dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
            dictionaryDAO.init();
         }
@@ -200,10 +197,6 @@ public class AlfrescoSolrDataModel implements QueryConstants
         {
             throw new AlfrescoRuntimeException("Failed to create dictionaryDAO ", e);
         }
-        
-        // TODO: use config ....
-        dictionaryDAO.setDefaultAnalyserResourceBundleName("alfresco/model/dataTypeAnalyzers");
-        dictionaryDAO.setResourceClassLoader(getResourceClassLoader());
 
         namespaceDAO = dictionaryDAO;
 
@@ -213,7 +206,6 @@ public class AlfrescoSolrDataModel implements QueryConstants
         dictionaryComponent.setMessageLookup(new StaticMessageLookup());
 
         cmisDictionaryServices = AlfrescoClientDataModelServicesFactory.constructDictionaries(qnameFilter, namespaceDAO, dictionaryComponent, dictionaryDAO);
-
     }
 
     public static String getTenantId(String tenant)
@@ -402,11 +394,13 @@ public class AlfrescoSolrDataModel implements QueryConstants
         FileSystemXmlApplicationContext ctx = null;
 
         File resourceDirectory = getResourceDirectory();
-        File filterContext = new File(resourceDirectory, "alfresco/model/opencmis-qnamefilter-context.xml");
+        // If we ever need to filter out models in the future, then we must put a filter somewhere.
+        // Currently, we do not need to filter any models, so this filter does not exist.
+        File filterContext = new File(resourceDirectory, "opencmis-qnamefilter-context.xml");
 
         if(!filterContext.exists())
         {
-            log.warn("No type filter context found at " + filterContext.getAbsolutePath() + ", no type filtering");
+            log.info("No type filter context found at " + filterContext.getAbsolutePath() + ", no type filtering");
             return qnameFilter;
         }
         
@@ -441,11 +435,9 @@ public class AlfrescoSolrDataModel implements QueryConstants
      */
     public ClassLoader getResourceClassLoader()
     {
-
         File f = getResourceDirectory();
         if (f.canRead() && f.isDirectory())
         {
-
             URL[] urls = new URL[1];
 
             try

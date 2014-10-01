@@ -76,7 +76,7 @@ public class ModelTracker extends AbstractTracker implements Tracker
     {
         super(scheduler, p, client, coreName, informationServer);
         alfrescoModelDir = locateModelHome(solrHome);
-        log.warn("Alfresco Model dir " + alfrescoModelDir);
+        log.info("Alfresco Model dir " + alfrescoModelDir);
         if (!alfrescoModelDir.exists())
         {
             alfrescoModelDir.mkdir();
