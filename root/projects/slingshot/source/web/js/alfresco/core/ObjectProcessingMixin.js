@@ -128,25 +128,21 @@ define(["dojo/_base/declare",
             var v = o[key];
             if (ObjectTypeUtils.isString(v))
             {
-               array.forEach(functions, function(f) {
-                  if (typeof f == "function")
-                  {
-                     v = f.apply(this, [v]);
-                  }
-                  else if (typeof this[f] == "function")
-                  {
-                    v = this[f].apply(this, [v]);
-                  }
-                  else
-                  {
-                     this.alfLog("warn", "The supplied function was not valid", f, this);
-                  }
-               }, this);
-               o[key] = v;
+               array.forEach(functions, lang.hitch(this, this.applyFunction, o, key));
             }
             else if (ObjectTypeUtils.isArray(v))
             {
-               array.forEach(v, lang.hitch(this, this.processObject, functions));
+               array.forEach(v, function(entry, index) {
+                  // Needs special handling for arrays of strings...
+                  if (ObjectTypeUtils.isString(entry))
+                  {
+                     array.forEach(functions, lang.hitch(this, this.applyFunction, v, index));
+                  }
+                  else
+                  {
+                     this.processObject(functions, entry);
+                  }
+               }, this);
             }
             else if (ObjectTypeUtils.isObject(v))
             {
@@ -154,6 +150,31 @@ define(["dojo/_base/declare",
             }
          }
          return o;
+      },
+
+      /**
+       * Apply the supplied function to the value of the supplied key in the supplied object
+       * 
+       * @instance
+       * @param {object} o The object to get the value from
+       * @param {string} key The key of the object to use
+       * @param {string} f The name of the function to apply
+       */
+      applyFunction: function alfresco_core_ObjectProcessingMixin__applyFunction(o, key, f) {
+         var v = o[key];
+         if (typeof f == "function")
+         {
+            v = f.apply(this, [v]);
+         }
+         else if (typeof this[f] == "function")
+         {
+           v = this[f].apply(this, [v]);
+         }
+         else
+         {
+            this.alfLog("warn", "The supplied function was not valid", f, this);
+         }
+         o[key] = v;
       }
    });
 });
