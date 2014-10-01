@@ -488,6 +488,8 @@
       {
         this.recordData.jsNode.setNodeRef(complete.successful[0].nodeRef);
         var mydocumentDetailsUrl = this.getActionUrls(this.recordData).documentDetailsUrl + "#newVersionUpload";
+        var oldNodeRef = this.recordData.jsNode.nodeRef.nodeRef,
+            newNodeRef = this.recordData.nodeRef;
         
         Alfresco.Share.postActivity(this.options.siteId, "org.alfresco.documentlibrary.file-updated", complete.successful[0].fileName, "document-details?nodeRef="+complete.successful[0].nodeRef, 
         {
@@ -495,8 +497,11 @@
             nodeRef: complete.successful[0].nodeRef
 
         }, function() {
-            window.location = mydocumentDetailsUrl;
-            window.location.reload();
+              window.location = mydocumentDetailsUrl;
+              if (oldNodeRef == newNodeRef)
+              {
+                 window.location.reload();
+              }
         }); 
 
       },
