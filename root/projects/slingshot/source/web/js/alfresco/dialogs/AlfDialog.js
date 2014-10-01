@@ -228,7 +228,7 @@ define(["dojo/_base/declare",
 
          if (this.handleOverflow === true)
          {
-            domStyle.set(this.bodyNode, "overflow", "auto");
+            domClass.add(this.domNode, "handleOverflow");
          }
 
          if (this.fixedWidth === true)

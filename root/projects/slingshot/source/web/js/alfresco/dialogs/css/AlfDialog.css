@@ -38,6 +38,10 @@
    overflow: hidden !important; /* Wouldn't normally use !important but has to override direct element setting! */
 }
 
+.alfresco-dialog-AlfDialog.handleOverflow .dijitDialogPaneContent {
+   overflow: auto !important; /* Wouldn't normally use !important but has to override direct element setting! */
+}
+
 .alfresco-dialog-AlfDialog .dijitDialogTitleBar {
    background-color: @primary-theme-color;
    background-image: none;

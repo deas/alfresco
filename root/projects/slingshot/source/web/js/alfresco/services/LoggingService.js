@@ -107,6 +107,7 @@ define(["dojo/_base/declare",
             this.pubSubLog = new AlfDialog({
                title: this.message("logging.pubSubLog.title"),
                fixedWidth: true,
+               handleOverflow: true,
                widgetsContent: [
                   {
                      name: "alfresco/logging/SubscriptionLog"
