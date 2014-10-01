@@ -5,8 +5,7 @@
 .alfresco-integration-IFrame > div {
    display: table;
    margin: 0 auto;
-   padding-top: 4em;
-   padding-bottom: 4em;
+   padding: 4em 2em;
 }
 
 .alfresco-integration-IFrame > div > div {
