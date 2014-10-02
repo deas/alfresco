@@ -1331,6 +1331,7 @@
   </requestHandler>
 
   <searchComponent name="suggest" class="solr.SuggestComponent">
+  <!-- <searchComponent name="suggest" class="org.alfresco.solr.component.AsyncBuildSuggestComponent"> -->
     <lst name="suggester">
       <str name="name">shingleBasedSuggestions</str>
       <!-- <str name="lookupImpl">org.apache.solr.spelling.suggest.jaspell.JaspellLookupFactory</str> -->
