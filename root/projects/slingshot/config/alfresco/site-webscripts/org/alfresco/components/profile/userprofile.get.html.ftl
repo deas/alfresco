@@ -57,7 +57,7 @@
                <#if biohtml?? && biohtml?length!=0>
                <div class="biorow">
                   <hr/>
-                  <div>${biohtml}</div>
+                  <div>${biohtml?html}</div>
                </div>
                </#if>
             </@markup>
