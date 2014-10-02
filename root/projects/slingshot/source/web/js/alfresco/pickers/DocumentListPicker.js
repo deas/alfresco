@@ -136,9 +136,10 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {object} payload
+       * @todo Refactor this code to accept the same payload format as {@link module:alfresco/documentlibrary/AlfDocumentList#onItemClick}
        */
       onFolderClick: function alfresco_pickers_DocumentListPicker__onFolderClick(payload) {
-         var targetNode = lang.getObject("item.nodeRef", false, payload) || payload.nodeRef;
+         var targetNode = lang.getObject("item.nodeRef", false, payload) || lang.getObject("node.nodeRef", false, payload) || payload.nodeRef;
          if (targetNode != null)
          {
             this.nodeRef = targetNode;
@@ -146,7 +147,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            this.alfLog("warn", "A 'url' attribute was expected to be provided for an item click", payload, this);
+            this.alfLog("warn", "A 'nodeRef' attribute was expected to be provided for a folder click", payload, this);
          }
       },
 
@@ -157,7 +158,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} payload
        */
-      onDocumentClick: function alfresco_pickers_DocumentListPicker__onFolderClick(payload) {
+      onDocumentClick: function alfresco_pickers_DocumentListPicker__onDocumentClick(payload) {
          // No action.
       },
 

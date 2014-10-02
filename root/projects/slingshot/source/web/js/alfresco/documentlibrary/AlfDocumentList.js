@@ -18,35 +18,36 @@
  */
 
 /**
- * 
+ *
  * @module alfresco/documentlibrary/AlfDocumentList
  * @extends alfresco/lists/AlfSortablePaginatedList
  * @mixes module:alfresco/core/FullScreenMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/lists/AlfSortablePaginatedList", 
+        "alfresco/lists/AlfSortablePaginatedList",
         "alfresco/core/JsNode",
         "dojo/_base/array",
         "dojo/_base/lang",
         "dojo/hash",
-        "dojo/io-query"], 
-        function(declare, AlfSortablePaginatedList, JsNode, array, lang, hash, ioQuery) {
-   
+        "dojo/io-query",
+        "alfresco/core/NodeUtils"],
+        function(declare, AlfSortablePaginatedList, JsNode, array, lang, hash, ioQuery, NodeUtils) {
+
    return declare([AlfSortablePaginatedList], {
-      
+
       /**
        * An array of the i18n files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfDocumentList.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfDocumentList.properties"}],
-      
+
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance cssRequirements {Array}
        * @type {object[]}
        * @default [{cssFile:"./css/AlfDocumentList.css"}]
@@ -68,11 +69,20 @@ define(["dojo/_base/declare",
        * @default null
        */
       currentFilter: null,
-      
+
+      /**
+       * Used to trigger an event to navigate up a directory.
+       *
+       * @instance
+       * @type {String}
+       * @default "ALF_DOCLIST_PARENT_NAV"
+       */
+      parentNavTopic: "ALF_DOCLIST_PARENT_NAV",
+
       /**
        * Extends the [inherited function]{@link module:alfresco/lists/AlfSortablePaginatedListt#postMixInProperties}
        * to set a default filter to be a root path.
-       * 
+       *
        * @instance
        */
       postMixInProperties: function alfresco_documentlibrary_AlfDocumentList__postMixInProperties() {
@@ -96,6 +106,7 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.filterSelectionTopic, lang.hitch(this, this.onFilterChanged));
          this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, this.onDocumentSelection));
          this.alfSubscribe(this.showFoldersTopic, lang.hitch(this, this.onShowFolders));
+         this.alfSubscribe(this.parentNavTopic, lang.hitch(this, this.onParentNav));
       },
 
       /**
@@ -169,7 +180,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       *
        *
        * @instance
        * @param {object} payload The details of the changed filter
@@ -203,7 +214,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       *
        *
        * @instance
        * @param {object} payload The details of the changed tag
@@ -253,7 +264,7 @@ define(["dojo/_base/declare",
        * This function is called whenever the [linkClickTopic]{@link module:alfresco/documentlibrary/AlfDocumentList#linkClickTopic}
        * is published. It processes the payload and updates the current filter and then refreshes the current
        * data by calling [loadData]{@link module:alfresco/documentlibrary/AlfDocumentList#loadData}.
-       * 
+       *
        * @instance
        * @param {object} payload
        */
@@ -267,11 +278,11 @@ define(["dojo/_base/declare",
          {
             this.onDocumentClick(payload);
          }
-         
+
       },
 
       /**
-       * 
+       *
        * @instance
        * @param {object} payload
        */
@@ -288,7 +299,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       *
        * @instance
        * @param {object} payload
        */
@@ -297,7 +308,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * 
+       *
        * @instance
        * @param {object} payload
        */
@@ -308,7 +319,45 @@ define(["dojo/_base/declare",
             if (this._readyToLoad) this.loadData();
          }
       },
-      
+
+      /**
+       * Triggered when a request to navigate to the current items parent is shown.
+       *
+       * @param payload
+       */
+      onParentNav: function alfresco_documentlibrary_AlfDocumentList__onParentNav(payload) {
+         // Get current item's parent:
+         var responseTopic = this.generateUuid() + "_parentNavSuccess",
+            subscriptionHandles = [this.alfSubscribe(responseTopic, lang.hitch(this, this.onParentNavSuccess), true)];
+
+         // We want to get the parent's parent of the current items that are displayed.
+         var parentNodeRef = lang.getObject("currentData.metadata.parent.nodeRef", false, this);
+
+         if (parentNodeRef) {
+            this.alfPublish("ALF_DOC_GET_PARENT_NODEREF", {
+               nodeRef: parentNodeRef,
+               originalResponseTopic: responseTopic, // not alfResponseTopic - as this needs passing through another response cycle.
+               subscriptionHandles: subscriptionHandles
+            }, true)
+
+         }
+         else
+         {
+            this.alfLog("error", "Cannot retrieve parent nodeRef", this);
+         }
+      },
+
+      /**
+       * Triggered when we have the parent node object. (call back from onParentNav)
+       *
+       * @param payload
+       */
+      onParentNavSuccess: function alfresco_documentlibrary_AlfDocumentList__onParentNavSuccess(payload) {
+
+         // We've received the nodeRef back, let's send it on to the click handler.
+         this.alfPublish(this.linkClickTopic, payload);
+      },
+
       /**
        * Extends the [inherited function]{@link module:alfresco/lists/AlfSortablePaginatedList#updateLoadDataPayload} to
        * add the additional document library related data.
@@ -331,7 +380,7 @@ define(["dojo/_base/declare",
             payload.nodeRef = this.nodeRef.toString();
          }
       },
-      
+
       /**
        * This is an extension point function for extending modules to perform processing on the loaded
        * data once it's existence has been verified
@@ -343,7 +392,7 @@ define(["dojo/_base/declare",
          array.forEach(this.currentData, function(item, index) {
             item.jsNode = new JsNode(item.node);
          }, this);
-         
+
          // Publish the details of the metadata returned from the data request...
          if (response.metadata)
          {
@@ -351,11 +400,11 @@ define(["dojo/_base/declare",
                node: response.metadata
             });
 
-            // Publish the details of the permissions for the current user. This will 
+            // Publish the details of the permissions for the current user. This will
             // only be available when the a specific node is shown rather than a set
             // of results across multiple nodes (e.g. the result of a filter request)
-            if (response.metadata.parent && 
-                response.metadata.parent.permissions && 
+            if (response.metadata.parent &&
+                response.metadata.parent.permissions &&
                 response.metadata.parent.permissions.user)
             {
                this.alfPublish(this.userAccessChangeTopic, {
@@ -364,8 +413,8 @@ define(["dojo/_base/declare",
             }
          }
          this.inherited(arguments);
-      }, 
-      
+      },
+
       /**
        * @instance
        * @param {object} payload The published details of the selected items
@@ -374,7 +423,7 @@ define(["dojo/_base/declare",
          this.alfLog("log", "Documents Selected: ", payload);
          // TODO!
       },
-      
+
       /**
        * @instance
        * @param {object} payload The details of the request
