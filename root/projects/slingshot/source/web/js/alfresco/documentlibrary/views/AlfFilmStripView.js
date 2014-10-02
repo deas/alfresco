@@ -98,6 +98,16 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Override the default selector to match items in the FilmStrip view. This is required because the view
+       * doesn't render table rows.
+       *
+       * @instance
+       * @type {string}
+       * @default "tr"
+       */
+      renderFilterSelectorQuery: "div.items ol li",
+
+      /**
        * Extends the [inherited function]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#onViewShown}
        * to ensure that both carousels are sized appropriately after being added into the view.
        *
