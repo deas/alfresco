@@ -7009,11 +7009,16 @@ public class AlfrescoCoreAdminTester
             testQuery(dataModel, report, solrIndexSearcher,
                         "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[a TO b]", 1);
             testQuery(dataModel, report, solrIndexSearcher,
-                        "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[a TO \uFFFF]", 15);
+                        "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[a TO \uFFFF]", 14);
             testQuery(dataModel, report, solrIndexSearcher,
-                        "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[\u0000 TO b]", 2);
+                        "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[* TO b]", 2);
+            testQuery(dataModel, report, solrIndexSearcher,
+                    "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[\u0000 TO b]", 2);
             testQuery(dataModel, report, solrIndexSearcher,
                         "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[d TO \uFFFF]", 12);
+            testQuery(dataModel, report, solrIndexSearcher,
+                    "\\@" + SearchLanguageConversion.escapeLuceneQuery(orderText.toString()) + ":[d TO *]", 12);
+            
 
         }
         finally
@@ -7046,10 +7051,6 @@ public class AlfrescoCoreAdminTester
                     1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", SearchLanguageConversion.escapeLuceneQuery(FIELD_DOC_TYPE) + ":" + SolrInformationServer.DOC_TYPE_TX,
                     1, null, null, null, null, null, (String) null);
-
-        // LID is used internally via ID if a node ref is provided
-        testQueryByHandler(report, core, "/afts", FIELD_SOLR4_ID + ":\"" + nodeRef + "\"", 1, null, null,
-                    null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/afts", FIELD_PARENT + ":\"" + nodeRef + "\"", 4, null, null,
                     null, null, null, (String) null);
@@ -7158,7 +7159,7 @@ public class AlfrescoCoreAdminTester
 
         // TYPE and ASPECT is covered in other tests
 
-        testQueryByHandler(report, core, "/afts", FIELD_FTSSTATUS + ":\"Clean\"", 16, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_FTSSTATUS + ":\"New\"", 2, null, null, null,
                     null, null, (String) null);
 
         testQueryByHandler(report, core, "/afts", FIELD_DBID + ":1", 1, null, null, null, null, null,
@@ -7203,7 +7204,7 @@ public class AlfrescoCoreAdminTester
         testQueryByHandler(report, core, "/afts", FIELD_TXID + ":1", 1, null, null, null, null, null,
                     (String) null);
 
-        testQueryByHandler(report, core, "/afts", FIELD_INTXID + ":1", 33, null, null, null, null, null,
+        testQueryByHandler(report, core, "/afts", FIELD_INTXID + ":1", 17, null, null, null, null, null,
                     (String) null);
 
         testQueryByHandler(report, core, "/afts", FIELD_ACLTXID + ":1", 1, null, null, null, null, null,

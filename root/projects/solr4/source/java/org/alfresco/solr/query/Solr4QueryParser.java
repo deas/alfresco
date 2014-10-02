@@ -2344,12 +2344,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     protected Query getRangeQuery(String field, String part1, String part2,   boolean startInclusive,
             boolean endInclusive)  throws ParseException
     {
-        return getRangeQuery(field, part1, part2, startInclusive, endInclusive, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+        return getRangeQuery(field, part1, part2, startInclusive, endInclusive, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
     }
 
     protected Query getRangeQuery(String field, String part1, String part2, boolean inclusive)  throws ParseException
     {
-        return getRangeQuery(field, part1, part2, inclusive, inclusive, AnalysisMode.DEFAULT, LuceneFunction.FIELD);
+        return getRangeQuery(field, part1, part2, inclusive, inclusive, AnalysisMode.IDENTIFIER, LuceneFunction.FIELD);
     }
     
     /**
@@ -4546,24 +4546,53 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     {
         FieldInstance fieldInstance = getFieldInstance(expandedFieldName, pDef, locale, preferredTokenisationMode);
         
-        StringBuilder builder = new StringBuilder(part1.length() + 10);
-        if(fieldInstance.isLocalised())
+        String firstString = null;
+        if((part1 != null) && !part1.equals("\u0000"))
         {
-            builder.append("\u0000").append(locale.toString()).append("\u0000");
+            StringBuilder builder = new StringBuilder(part1.length() + 10);
+            if(fieldInstance.isLocalised())
+            {
+                builder.append("{").append(locale.getLanguage()).append("}");
+            }
+            builder.append(part1);
+            firstString = builder.toString();   
         }
-        builder.append(part1);
-        String firstString = builder.toString();
+        else
+        {
+            if(fieldInstance.isLocalised())
+            {
+                firstString = "{" + locale.getLanguage() + "}";
+            }
+            else
+            {
+                firstString  = null;
+            }
+        }
        
-
-        builder = new StringBuilder(part2.length() + 10);
-        if(fieldInstance.isLocalised())
+        String lastString = null;
+        if((part2 != null) && !part2.equals("\uffff"))
         {
-            builder.append("\u0000").append(locale.toString()).append("\u0000");
+            StringBuilder builder = new StringBuilder(part2.length() + 10);
+            if(fieldInstance.isLocalised())
+            {
+                builder.append("{").append(locale.toString()).append("}");
+            }
+            builder.append(part2);
+            lastString = builder.toString();
         }
-        builder.append(part2);
-        String lastString = builder.toString();
+        else
+        {
+            if(fieldInstance.isLocalised())
+            {
+                lastString = "{" + locale.getLanguage() + "}\uffff";
+            }
+            else
+            {
+                lastString  = null;
+            }
+        }
 
-        TermRangeQuery query = new TermRangeQuery(fieldInstance.getField(), new BytesRef(firstString), new BytesRef(lastString), includeLower, includeUpper);
+        TermRangeQuery query = new TermRangeQuery(fieldInstance.getField(), firstString == null ? null : new BytesRef(firstString), lastString == null ? null : new BytesRef(lastString), includeLower, includeUpper);
         booleanQuery.add(query, Occur.SHOULD);
     }
 
