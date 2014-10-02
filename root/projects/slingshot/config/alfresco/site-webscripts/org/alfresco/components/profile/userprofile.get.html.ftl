@@ -54,10 +54,10 @@
                   <#if profile.location?? && profile.location?length!=0><div class="fieldlabel">${profile.location?html}</div></#if>
                   <#if profile.properties.userStatus?? && profile.properties.userStatus?length!=0><div class="fieldlabel"><div class="user-status">${profile.properties.userStatus?html} <span class="time">(<span class="relativeTime">${profile.properties.userStatusTime}</span>)</span></div></div></#if>
                </div>
-               <#if biohtml?? && biohtml?length!=0>
+               <#if bio?? && bio?length!=0>
                <div class="biorow">
                   <hr/>
-                  <div>${biohtml?html}</div>
+                  <div>${bio?html}</div>
                </div>
                </#if>
             </@markup>

@@ -27,23 +27,19 @@ function main()
       // if no profile specified, must be current user which will allow editing
       model.profile = user.getUser(user.id);
    }
-   
-   // convert biography text to use <br/> line breaks
-   var bio = model.profile.biography;
-   if (bio != null)
-   {
-      model.biohtml = stringUtils.replaceLineBreaks(bio);
-   }
-   
+
+   // biography used to support display of HTML content, but now we just pass it as text. ACE-2852
+   model.bio = model.profile.biography;
+
    // editable if request profile is for the current user
    model.isEditable = (profileId == null || profileId == user.name);
-   
+
    // add follow/unfollow buttons if request profile is not for the current user
    if (!model.isEditable)
    {
       var params = new Array(1);
       params.push(page.url.templateArgs["userid"]);
-      
+
       var connector = remote.connect("alfresco");
       var result = connector.post("/api/subscriptions/" + encodeURIComponent(user.name) + "/follows",
                                   jsonUtils.toJSONString(params),
@@ -53,10 +49,10 @@ function main()
          model.follows = JSON.parse(result)[0][page.url.templateArgs["userid"]];
       }
    }
-   
+
    // Widget instantiation metadata...
    var userProfile = {
-      id : "UserProfile", 
+      id : "UserProfile",
       name : "Alfresco.UserProfile",
       options : {
          userId : user.name,

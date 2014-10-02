@@ -19,7 +19,7 @@
 
 /**
  * ConsoleUsers tool component.
- * 
+ *
  * @namespace Alfresco
  * @class Alfresco.ConsoleUsers
  */
@@ -31,7 +31,7 @@
    var Dom = YAHOO.util.Dom,
        Event = YAHOO.util.Event,
        Element = YAHOO.util.Element;
-   
+
    /**
     * Alfresco Slingshot aliases
     */
@@ -39,7 +39,7 @@
 
    /**
     * ConsoleUsers constructor.
-    * 
+    *
     * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.ConsoleUsers} The new ConsoleUsers instance
     * @constructor
@@ -51,24 +51,24 @@
 
       /* Register this component */
       Alfresco.util.ComponentManager.register(this);
-      
+
       /* Load YUI Components */
       Alfresco.util.YUILoaderHelper.require(["button", "container", "datasource", "datatable", "json", "history"], this.onComponentsLoaded, this);
-      
+
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("viewUserClick", this.onViewUserClick, this);
 
       /* Define panel handlers */
       var parent = this;
-      
+
       // NOTE: the panel registered first is considered the "default" view and is displayed first
-      
+
       /* Search Panel Handler */
       SearchPanelHandler = function SearchPanelHandler_constructor()
       {
          SearchPanelHandler.superclass.constructor.call(this, "search");
       };
-      
+
       YAHOO.extend(SearchPanelHandler, Alfresco.ConsolePanelHandler,
       {
 
@@ -100,7 +100,7 @@
             parent.widgets.searchButton = Alfresco.util.createYUIButton(parent, "search-button", parent.onSearchClick);
             parent.widgets.newuserButton = Alfresco.util.createYUIButton(parent, "newuser-button", parent.onNewUserClick);
             parent.widgets.uploadUsersButton = Alfresco.util.createYUIButton(parent, "uploadusers-button", parent.onUploadUsersClick);
-            
+
             var newuserSuccess = function(res)
             {
                if (!res.json.data.creationAllowed)
@@ -109,9 +109,9 @@
                   parent.widgets.uploadUsersButton.set("disabled", true);
                }
             };
-            
+
             // make an ajax call to get authentication mutability - "creationAllowed" will be returned as true
-            // in the response if the administrator is able to create new users on the alfresco server 
+            // in the response if the administrator is able to create new users on the alfresco server
             Alfresco.util.Ajax.jsonGet(
             {
                url: Alfresco.constants.PROXY_URI + "api/authentication",
@@ -122,7 +122,7 @@
                },
                failureMessage: parent._msg("message.authenticationdetails-failure", $html(parent.group))
             });
-            
+
             // DataTable and DataSource setup
             parent.widgets.dataSource = new YAHOO.util.DataSource(Alfresco.constants.PROXY_URI + "api/people",
             {
@@ -137,18 +137,18 @@
                   }
                }
             });
-            
+
             var me = this;
-            
+
             // Work to be performed after data has been queried but before display by the DataTable
             parent.widgets.dataSource.doBeforeParseData = function PeopleFinder_doBeforeParseData(oRequest, oFullResponse)
             {
                var updatedResponse = oFullResponse;
-               
+
                if (oFullResponse)
                {
                   var items = oFullResponse.people;
-                  
+
                   // remove GUEST(s)
                   for (var i = 0; i < items.length; i++)
                   {
@@ -157,14 +157,14 @@
                          items.splice(i, 1);
                       }
                   }
-                  
+
                   // we need to wrap the array inside a JSON object so the DataTable gets the object it expects
                   updatedResponse =
                   {
                      "people": items
                   };
                }
-               
+
                // update Results Bar message with number of results found
                if (items.length < parent.options.maxSearchResults)
                {
@@ -174,22 +174,22 @@
                {
                   me._setResultsMessage("message.maxresults", parent.options.maxSearchResults);
                }
-               
+
                return updatedResponse;
             };
-            
+
             // Setup the main datatable
             this._setupDataTable();
-            
+
             // register the "enter" event on the search text field
             var searchText = Dom.get(parent.id + "-search-text");
-            
+
             new YAHOO.util.KeyListener(searchText,
             {
                keys: YAHOO.util.KeyListener.KEY.ENTER
             },
             {
-               fn: function() 
+               fn: function()
                {
                   parent.onSearchClick();
                },
@@ -197,41 +197,41 @@
                correctScope: true
             }, "keydown").enable();
          },
-         
+
          onShow: function onShow()
          {
             Dom.get(parent.id + "-search-text").focus();
          },
-         
+
          onUpdate: function onUpdate()
          {
             // update the text field - as this event could come from bookmark, navigation or a search button click
             var searchTermElem = Dom.get(parent.id + "-search-text");
             searchTermElem.value = parent.searchTerm;
-            
+
             // check search length again as we may have got here via history navigation
             if (!this.isSearching && parent.searchTerm !== undefined && parent.searchTerm.length >= parent.options.minSearchTermLength)
             {
                this.isSearching = true;
 
                var me = this;
-               
+
                // Reset the custom error messages
                me._setDefaultDataTableErrors(parent.widgets.dataTable);
-               
+
                // Don't display any message
                parent.widgets.dataTable.set("MSG_EMPTY", parent._msg("message.searching"));
-               
+
                // Empty results table
                parent.widgets.dataTable.deleteRows(0, parent.widgets.dataTable.getRecordSet().getLength());
-               
+
                var successHandler = function ConsoleUsers__ps_successHandler(sRequest, oResponse, oPayload)
                {
-                  me._enableSearchUI();                  
+                  me._enableSearchUI();
                   me._setDefaultDataTableErrors(parent.widgets.dataTable);
                   parent.widgets.dataTable.onDataReturnInitializeTable.call(parent.widgets.dataTable, sRequest, oResponse, oPayload);
                };
-               
+
                var failureHandler = function ConsoleUsers__ps_failureHandler(sRequest, oResponse)
                {
                   me._enableSearchUI();
@@ -320,7 +320,7 @@
              * Each cell has a custom renderer defined as a custom function. See YUI documentation for details.
              * These MUST be inline in order to have access to the parent instance (via the "parent" variable).
              */
-            
+
             /**
              * User avatar custom datacell formatter
              *
@@ -331,7 +331,7 @@
                Dom.setStyle(elCell, "min-height", "64px");
                Dom.setStyle(elCell.parentNode, "width", oColumn.width + "px");
                Dom.setStyle(elCell.parentNode, "border-right", "1px solid #D7D7D7");
-               
+
                // apply the avatar image as a background
                var avatarUrl = Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
                if (oRecord.getData("avatar") !== undefined)
@@ -341,12 +341,12 @@
                Dom.setStyle(elCell, "background-image", "url('" + avatarUrl + "')");
                Dom.setStyle(elCell, "background-repeat", "no-repeat");
                Dom.setStyle(elCell, "background-position", "22px 50%");
-               
+
                // overlay the account enabled/disabled indicator image
                var enabled = (oRecord.getData("enabled") ? 'enabled' : 'disabled');
                elCell.innerHTML = '<img class="indicator" alt="' + parent._msg("label." + enabled) + '" src="' + Alfresco.constants.URL_RESCONTEXT + 'components/images/account_' + enabled + '.png" alt="" />';
             };
-            
+
             /**
              * User full name custom datacell formatter
              *
@@ -371,7 +371,7 @@
                }, null, parent);
                elCell.appendChild(viewUserLink);
             };
-            
+
             /**
              * Quota custom datacell formatter
              *
@@ -383,7 +383,7 @@
                var display = (quota !== -1 ? Alfresco.util.formatFileSize(quota) : "");
                elCell.innerHTML = display;
             };
-            
+
             /**
              * Usage custom datacell formatter
              *
@@ -393,7 +393,7 @@
             {
                elCell.innerHTML = Alfresco.util.formatFileSize(oRecord.getData("sizeCurrent"));
             };
-            
+
             /**
              * Generic HTML-safe custom datacell formatter
              */
@@ -401,7 +401,7 @@
             {
                elCell.innerHTML = $html(oData);
             };
-            
+
             /**
              * Usage custom datacell sorter
              */
@@ -409,14 +409,14 @@
             {
                var numA = a.getData("sizeCurrent"),
                    numB = b.getData("sizeCurrent");
-               
+
                if (desc)
                {
                   return (numA < numB ? 1 : (numA > numB ? -1 : 0));
                }
                return (numA < numB ? -1 : (numA > numB ? 1 : 0));
             };
-            
+
             /**
              * Quota custom datacell sorter
              */
@@ -424,14 +424,14 @@
             {
                var numA = a.getData("quota"),
                    numB = b.getData("quota");
-               
+
                if (desc)
                {
                   return (numA < numB ? 1 : (numA > numB ? -1 : 0));
                }
                return (numA < numB ? -1 : (numA > numB ? 1 : 0));
             };
-            
+
             // DataTable column defintions
             var columnDefinitions =
             [
@@ -443,7 +443,7 @@
                { key: "usage", label: parent._msg("label.usage"), sortable: true, sortOptions: {sortFunction: sortCellUsage}, formatter: renderCellUsage },
                { key: "quota", label: parent._msg("label.quota"), sortable: true, sortOptions: {sortFunction: sortCellQuota}, formatter: renderCellQuota }
             ];
-            
+
             // DataTable definition
             parent.widgets.dataTable = new YAHOO.widget.DataTable(parent.id + "-datatable", columnDefinitions, parent.widgets.dataSource,
             {
@@ -475,7 +475,7 @@
                MSG_EMPTY: parent._msg("message.empty")
             });
          },
-         
+
          /**
           * Resets the YUI DataTable errors to our custom messages
           * NOTE: Scope could be YAHOO.widget.DataTable, so can't use "this"
@@ -490,7 +490,7 @@
             dataTable.set("MSG_EMPTY", parent._msg("message.empty", "Alfresco.ConsoleUsers"));
             dataTable.set("MSG_ERROR", parent._msg("message.error", "Alfresco.ConsoleUsers"));
          },
-         
+
          /**
           * Build URI parameters for People List JSON data webscript
           *
@@ -502,10 +502,10 @@
          {
             return "?filter=" + encodeURIComponent(searchTerm) + "&maxResults=" + parent.options.maxSearchResults;
          },
-         
+
          /**
           * Set the message in the Results Bar area
-          * 
+          *
           * @method _setResultsMessage
           * @param messageId {string} The messageId to display
           * @private
@@ -517,13 +517,13 @@
          }
       });
       new SearchPanelHandler();
-      
+
       /* View Panel Handler */
       ViewPanelHandler = function ViewPanelHandler_constructor()
       {
          ViewPanelHandler.superclass.constructor.call(this, "view");
       };
-      
+
       YAHOO.extend(ViewPanelHandler, Alfresco.ConsolePanelHandler,
       {
          onLoad: function onLoad()
@@ -533,7 +533,7 @@
             parent.widgets.deleteuserButton = Alfresco.util.createYUIButton(parent, "deleteuser-button", parent.onDeleteUserClick);
             parent.widgets.edituserButton = Alfresco.util.createYUIButton(parent, "edituser-button", parent.onEditUserClick);
          },
-         
+
          onBeforeShow: function onBeforeShow()
          {
             // Hide the main panel area before it is displayed - so we don't show
@@ -541,12 +541,12 @@
             Dom.get(parent.id + "-view-title").innerHTML = "";
             Dom.setStyle(parent.id + "-view-main", "visibility", "hidden");
          },
-         
+
          onShow: function onShow()
          {
             window.scrollTo(0, 0);
          },
-         
+
          onUpdate: function onUpdate()
          {
             var success = function(res)
@@ -555,9 +555,9 @@
                {
                   Dom.get(parent.id + id).innerHTML = val ? $html(val) : "";
                };
-               
+
                var person = YAHOO.lang.JSON.parse(res.serverResponse.responseText);
-               
+
                // apply avatar image URL
                var photos = Dom.getElementsByClassName("view-photoimg", "img");
                for (var i in photos)
@@ -566,7 +566,7 @@
                         Alfresco.constants.PROXY_URI + person.avatar + "?c=force" :
                         Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
                }
-               
+
                // About section fields
                var firstName = person.firstName,
                   lastName = person.lastName,
@@ -575,10 +575,8 @@
                fnSetter("-view-name", fullName);
                fnSetter("-view-jobtitle", person.jobtitle);
                fnSetter("-view-organization", person.organization);
-               // biography is a special html field
-               var bio = person.persondescription ? person.persondescription : "";
-               Dom.get(parent.id + "-view-bio").innerHTML = bio.replace(/\n/g, "<br/>");
-               
+               fnSetter("-view-bio", person.persondescription ? person.persondescription : "");
+
                // Contact section fields
                fnSetter("-view-location", person.location);
                fnSetter("-view-email", person.email);
@@ -587,7 +585,7 @@
                fnSetter("-view-skype", person.skype);
                fnSetter("-view-instantmsg", person.instantmsg);
                fnSetter("-view-googleusername", person.googleusername);
-               
+
                // Company section fields
                fnSetter("-view-companyname", person.organization);
                // build the company address up and set manually - encoding each value
@@ -600,7 +598,7 @@
                fnSetter("-view-companytelephone", person.companytelephone);
                fnSetter("-view-companyfax", person.companyfax);
                fnSetter("-view-companyemail", person.companyemail);
-               
+
                // More section fields
                fnSetter("-view-username", parent.currentUserId);
                fnSetter("-view-enabled", person.enabled ? parent._msg("label.enabled") : parent._msg("label.disabled"));
@@ -612,11 +610,11 @@
                }
                for (var i = 0, j = person.groups.length; i < j; person.groups[i++].toString = fnGroupToString) {}
                fnSetter("-view-groups", person.groups.join(", "));
-               
+
                // Make main panel area visible
                Dom.setStyle(parent.id + "-view-main", "visibility", "visible");
             };
-            
+
             // make an ajax call to get user details
             Alfresco.util.Ajax.request(
             {
@@ -627,37 +625,37 @@
                   fn: success,
                   scope: parent
                },
-               failureMessage: parent._msg("message.getuser-failure", $html(parent.currentUserId))   
+               failureMessage: parent._msg("message.getuser-failure", $html(parent.currentUserId))
             });
          }
       });
       new ViewPanelHandler();
-      
+
       /* Create User Panel Handler */
       CreatePanelHandler = function CreatePanelHandler_constructor()
       {
          CreatePanelHandler.superclass.constructor.call(this, "create");
       };
-      
+
       YAHOO.extend(CreatePanelHandler, Alfresco.ConsolePanelHandler,
       {
          _visible: false,
-         
+
          _groups: [],
-         
+
          _form: null,
-         
+
          onLoad: function onLoad()
          {
             // events we are interested in
             YAHOO.Bubbling.on("itemSelected", this.onGroupSelected, this);
             YAHOO.Bubbling.on("removeGroupCreate", this.onRemoveGroupCreate, this);
-            
+
             // Buttons
             parent.widgets.createuserOkButton = Alfresco.util.createYUIButton(parent, "createuser-ok-button", parent.onCreateUserOKClick);
             parent.widgets.createuserAnotherButton = Alfresco.util.createYUIButton(parent, "createuser-another-button", parent.onCreateUserAnotherClick);
             parent.widgets.createuserCancelButton = Alfresco.util.createYUIButton(parent, "createuser-cancel-button", parent.onCreateUserCancelClick);
-            
+
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-create-form");
             form.setSubmitElements([parent.widgets.createuserOkButton, parent.widgets.createuserAnotherButton]);
@@ -705,7 +703,7 @@
             // Initialise the form
             form.init();
             this._form = form;
-            
+
             // Load in the Groups Finder component from the server
             Alfresco.util.Ajax.request(
             {
@@ -723,16 +721,16 @@
                execScripts: true
             });
          },
-         
+
          onGroupFinderLoaded: function onGroupFinderLoaded(res)
          {
             // Inject the component from the XHR request into it's placeholder DIV element
             var finderDiv = Dom.get(parent.id + "-create-groupfinder");
             finderDiv.innerHTML = res.serverResponse.responseText;
-            
+
             // Find the Group Finder by container ID
             parent.modules.createGroupFinder = Alfresco.util.ComponentManager.get(parent.id + "-create-groupfinder");
-            
+
             // Set the correct options for our use
             parent.modules.createGroupFinder.setOptions(
             {
@@ -741,12 +739,12 @@
                wildcardPrefix: false
             });
          },
-         
+
          /**
           * Group selected event handler.
           * This event can be fired from either Groups picker - so we much ensure
           * the event is for the current panel by checking panel visibility.
-          * 
+          *
           * @method onGroupSelected
           * @param e {object} DomEvent
           * @param args {array} Event parameters (depends on event type)
@@ -758,7 +756,7 @@
                this.addGroup(args[1]);
             }
          },
-         
+
          /**
           * Add a group to the list of selected groups
           *
@@ -776,11 +774,11 @@
                   break;
                }
             }
-            
+
             if (!found)
             {
                this._groups.push(group);
-               
+
                var groupDiv = Dom.get(parent.id + "-create-groups");
                var idx = (this._groups.length - 1);
                var groupEl = document.createElement("span");
@@ -800,7 +798,7 @@
                }, { idx: idx, group: group });
             }
          },
-         
+
          getGroups: function getGroups()
          {
             var groups = [];
@@ -813,7 +811,7 @@
             }
             return groups;
          },
-         
+
          /**
           * Group removed event handler
           *
@@ -828,23 +826,23 @@
             el.parentNode.removeChild(el);
             this._groups[i] = null;
          },
-         
+
          onBeforeShow: function onBeforeShow()
          {
             // Hide the main panel area before it is displayed - so we don't show
             // old data to the user before the onShow() method paints the results
             Dom.setStyle(parent.id + "-create-main", "visibility", "hidden");
-            
+
             this.clear();
          },
-         
+
          clear: function clear()
          {
             var fnClearEl = function(id)
             {
                Dom.get(parent.id + id).value = "";
             };
-            
+
             // clear data fields
             fnClearEl("-create-firstname");
             fnClearEl("-create-lastname");
@@ -854,12 +852,12 @@
             fnClearEl("-create-verifypassword");
             fnClearEl("-create-quota");
             Dom.get(parent.id + "-create-disableaccount").checked = false;
-            
+
             // reset quota selection drop-down
             Dom.get(parent.id + "-create-quotatype").value = "gb";
-            
+
             // clear selected groups
-            this._groups = [];            
+            this._groups = [];
             Dom.get(parent.id + "-create-groups").innerHTML = "";
             if (parent.modules.createGroupFinder)
             {
@@ -877,53 +875,53 @@
             });
 
          },
-         
+
          onShow: function onShow()
          {
             this._visible = true;
             window.scrollTo(0, 0);
-            
+
             // Make main panel area visible
             Dom.setStyle(parent.id + "-create-main", "visibility", "visible");
-            
+
             Dom.get(parent.id + "-create-firstname").focus();
          },
-         
+
          onHide: function onHide()
          {
             this._visible = false;
          }
       });
       new CreatePanelHandler();
-      
+
       /* Update User Panel Handler */
       UpdatePanelHandler = function UpdatePanelHandler_constructor()
       {
          UpdatePanelHandler.superclass.constructor.call(this, "update");
       };
-      
+
       YAHOO.extend(UpdatePanelHandler, Alfresco.ConsolePanelHandler,
       {
          _visible: false,
-         
+
          _removedGroups: [],
          _addedGroups: [],
          _originalGroups: [],
          _groups: [],
          _photoReset: false,
          _form: null,
-         
+
          onLoad: function onLoad()
          {
             // events we are interested in
             YAHOO.Bubbling.on("itemSelected", this.onGroupSelected, this);
             YAHOO.Bubbling.on("removeGroupUpdate", this.onRemoveGroupUpdate, this);
-            
+
             // Buttons
             parent.widgets.updateuserSaveButton = Alfresco.util.createYUIButton(parent, "updateuser-save-button", parent.onUpdateUserOKClick);
             parent.widgets.updateuserCancelButton = Alfresco.util.createYUIButton(parent, "updateuser-cancel-button", parent.onUpdateUserCancelClick);
             parent.widgets.updateuserClearPhotoButton = Alfresco.util.createYUIButton(parent, "updateuser-clearphoto-button", parent.onUpdateUserClearPhotoClick);
-            
+
             // Form definition
             var form = new Alfresco.forms.Form(parent.id + "-update-form");
             form.setSubmitElements(parent.widgets.updateuserSaveButton);
@@ -933,11 +931,11 @@
             form.addValidation(parent.id + "-update-email", Alfresco.forms.validation.mandatory, null, "keyup");
             form.addValidation(parent.id + "-update-email", Alfresco.forms.validation.email, null, "keyup");
             form.addValidation(parent.id + "-update-quota", Alfresco.forms.validation.number, null, "keyup");
-            
+
             // Initialise the form
             form.init();
             this._form = form;
-            
+
             // Load in the Groups Finder component from the server
             Alfresco.util.Ajax.request(
             {
@@ -955,16 +953,16 @@
                execScripts: true
             });
          },
-         
+
          onGroupFinderLoaded: function onGroupFinderLoaded(res)
          {
             // Inject the component from the XHR request into it's placeholder DIV element
             var finderDiv = Dom.get(parent.id + "-update-groupfinder");
             finderDiv.innerHTML = res.serverResponse.responseText;
-            
+
             // Find the Group Finder by container ID
             parent.modules.updateGroupFinder = Alfresco.util.ComponentManager.get(parent.id + "-update-groupfinder");
-            
+
             // Set the correct options for our use
             parent.modules.updateGroupFinder.setOptions(
             {
@@ -973,12 +971,12 @@
                wildcardPrefix: false
             });
          },
-         
+
          /**
           * Group selected event handler.
           * This event can be fired from either Groups picker - so we much ensure
           * the event is for the current panel by checking panel visibility.
-          * 
+          *
           * @method onGroupSelected
           * @param e {object} DomEvent
           * @param args {array} Event parameters (depends on event type)
@@ -990,7 +988,7 @@
                this.addGroup(args[1]);
             }
          },
-         
+
          /**
           * Add a group to the list of selected groups
           *
@@ -1046,7 +1044,7 @@
                }
             }
          },
-         
+
          /**
           * Group removed event handler
           *
@@ -1074,17 +1072,17 @@
                Alfresco.util.arrayRemove(this._addedGroups, group.itemName);
             }
          },
-         
+
          getAddedGroups: function getAddedGroups()
          {
             return this._addedGroups;
          },
-         
+
          getRemovedGroups: function getRemovedGroups()
          {
             return this._removedGroups;
          },
-         
+
          resetGroups: function resetGroups()
          {
             this._groups = [];
@@ -1092,17 +1090,17 @@
             this._removedGroups = [];
             Dom.get(parent.id + "-update-groups").innerHTML = "";
          },
-         
+
          setPhotoReset: function setPhotoReset()
          {
             this._photoReset = true;
          },
-         
+
          getPhotoReset: function getPhotoReset()
          {
             return this._photoReset;
          },
-         
+
          onBeforeShow: function onBeforeShow()
          {
             // Hide the main panel area before it is displayed - so we don't show
@@ -1110,18 +1108,18 @@
             Dom.get(parent.id + "-update-title").innerHTML = "";
             Dom.setStyle(parent.id + "-update-main", "visibility", "hidden");
          },
-         
+
          onShow: function onShow()
          {
             this._visible = true;
             window.scrollTo(0, 0);
          },
-          
+
          onHide: function onHide()
          {
             this._visible = false;
          },
-         
+
          onUpdate: function onUpdate()
          {
             var me = this;
@@ -1138,9 +1136,9 @@
                      Dom.get(parent.id + id).setAttribute("disabled", true);
                   }
                };
-               
+
                var person = YAHOO.lang.JSON.parse(res.serverResponse.responseText);
-               
+
                // apply avatar image URL
                var photos = Dom.getElementsByClassName("update-photoimg", "img");
                for (var i in photos)
@@ -1149,7 +1147,7 @@
                         Alfresco.constants.PROXY_URI + person.avatar + "?c=force" :
                         Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
                }
-               
+
                // About section fields
                var firstName = person.firstName,
                   lastName = person.lastName,
@@ -1171,7 +1169,7 @@
                fnSetter("-update-old-password", "");
                fnSetter("-update-password", "");
                fnSetter("-update-verifypassword", "");
-               
+
                // convert quota to closest value type
                var quota = person.quota;
                if (quota !== -1)
@@ -1200,10 +1198,10 @@
                {
                   fnSetter("-update-quota", "");
                }
-               
+
                // account enabled/disabled
                Dom.get(parent.id + "-update-disableaccount").checked = (person.enabled == false);
-               
+
                // add groups the user is already assigned to and maintain a copy of the original group list
                me.resetGroups();
                YAHOO.Bubbling.fire("allItemsDeselected",
@@ -1227,7 +1225,7 @@
                      "displayName": person.groups[i].displayName
                   });
                }
-               
+
                // Hide or show the old password field - only required if user changing own password
                if (parent.currentUserId.toLowerCase() === Alfresco.constants.USERNAME.toLowerCase())
                {
@@ -1237,13 +1235,13 @@
                {
                   Dom.setStyle(parent.id + "-oldpassword-wrapper", "display", "none");
                }
-               
+
                // Make main panel area visible
                Dom.setStyle(parent.id + "-update-main", "visibility", "visible");
-               
+
                me._form.validate();
             };
-            
+
             // make an ajax call to get user details
             Alfresco.util.Ajax.request(
             {
@@ -1259,12 +1257,12 @@
          }
       });
       new UpdatePanelHandler();
-      
+
       CSVResultsPanelHandler = function CSVResultsPanelHandler_constructor()
       {
          CSVResultsPanelHandler.superclass.constructor.call(this, "csvresults");
       };
-      
+
       YAHOO.extend(CSVResultsPanelHandler, Alfresco.ConsolePanelHandler,
       {
          /**
@@ -1279,7 +1277,7 @@
          {
             parent.widgets.csvGobackButton = Alfresco.util.createYUIButton(parent, "csv-goback-button", parent.onGoBackClick);
          },
-         
+
          onShow: function onShow()
          {
             if (parent.csvResults)
@@ -1289,20 +1287,20 @@
                if (successful &&  successful.length > 0 && parent.csvResults.successful[0].response)
                {
                   successful = successful[0].response;
-                  
+
                   // If the response contains the "successful" array containing an element then it does not necessarily
                   // mean that the CSV upload succeeded. This simply means that the upload request was successfully processed
                   // (i.e. the file was received)
                   if (successful.data && successful.data.users)
                   {
                      parent.fileUpload.hide();
-                     
+
                      // If the successful response contains a data object with a "users" attribute then we at least know that
                      // some users have been processed so can construct a result table using that data...
                      dataSource = new YAHOO.util.DataSource(successful.data.users);
                      dataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
                      dataSource.responseSchema = { fields: [ "username", "uploadStatus" ]};
-                     
+
                      // Show a pop-up with the summary data...
                      if (successful.data.addedUsers == 0)
                      {
@@ -1321,7 +1319,7 @@
                         });
                      }
                      else
-                     {                     
+                     {
                         // Some of the users could not be added.
                         var failedUsers = successful.data.totalUsers - successful.data.addedUsers;
                         Alfresco.util.PopupManager.displayMessage(
@@ -1329,34 +1327,34 @@
                            text: parent._msg("message.csvupload.partialSuccess", successful.data.addedUsers, failedUsers)
                         });
                      }
-                     
+
                      var columnDefs = [{key:"username", label: parent._msg("label.username"), sortable: true, resizeable: true},
                                        {key:"uploadStatus", label: parent._msg("label.uploadStatus"), sortable: true, resizeable: true}];
-                     
+
                      var resultsTable = new YAHOO.widget.DataTable(parent.id + "-csvresults-datatable",
                                                                    columnDefs,
                                                                    dataSource);
-                     
+
                      Dom.removeClass(parent.id + "-csvresults-success", "hidden");
                      Dom.addClass(parent.id + "-csvresults-failure", "hidden");
                   }
                   else
                   {
                      parent.fileUpload.hide();
-                     
-                     // The CSV upload failed            
+
+                     // The CSV upload failed
                      Alfresco.util.PopupManager.displayMessage(
                      {
                         text: parent._msg("message.csvupload.error")
                      });
-                     
+
                      Dom.get(parent.id + "-csvresults-error").innerHTML = successful.message;
-                     
+
                      Dom.addClass(parent.id + "-csvresults-success", "hidden");
                      Dom.removeClass(parent.id + "-csvresults-failure", "hidden");
                   }
-                  
-                  
+
+
                }
                else
                {
@@ -1366,10 +1364,10 @@
          }
       });
       new CSVResultsPanelHandler();
-      
+
       return this;
    };
-   
+
    YAHOO.extend(Alfresco.ConsoleUsers, Alfresco.ConsoleTool,
    {
       /**
@@ -1382,66 +1380,66 @@
       {
          /**
           * Number of characters required for a search.
-          * 
+          *
           * @property minSearchTermLength
           * @type int
           * @default 1
           */
          minSearchTermLength: 1,
-         
+
          /**
           * Maximum number of items to display in the results list
-          * 
+          *
           * @property maxSearchResults
           * @type int
           * @default 100
           */
          maxSearchResults: 100,
-         
+
          /**
           * Minimum length of a username
-          * 
+          *
           * @property minUsernameLength
           * @type int
           * @default 2
           */
          minUsernameLength: 2,
-         
+
          /**
           * Minimum length of a password
-          * 
+          *
           * @property minPasswordLength
           * @type int
           * @default 3
           */
          minPasswordLength: 3
       },
-      
+
       /**
        * Current user id for an action.
-       * 
+       *
        * @property currentUserId
        * @type string
        */
       currentUserId: "",
-      
+
       /**
        * Current search term, obtained from form input field.
-       * 
+       *
        * @property searchTerm
        * @type string
        */
       searchTerm: undefined,
-      
+
       /**
        * The result of the last CSV upload.
-       * 
+       *
        * @property csvResults
        * @type object
        */
       csvResults: undefined,
-      
-      
+
+
       /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -1451,7 +1449,7 @@
       onReady: function ConsoleUsers_onReady()
       {
          // Generate the popup dialog for confirmation of deleting a user
-         this.popups.deleteDialog = Alfresco.util.createYUIPanel("deleteDialog", 
+         this.popups.deleteDialog = Alfresco.util.createYUIPanel("deleteDialog",
          {
             width: "36em",
             text: '<div class="yui-u" style="text-align:center"><br/>' + this._msg("panel.delete.msg") + '<br/><br/>' + this._msg("panel.delete.note") + '<br/><br/></div>',
@@ -1477,18 +1475,18 @@
          {
             type: YAHOO.widget.SimpleDialog
          });
-         
+
          this.popups.deleteDialog.setHeader(this._msg("panel.delete.header"));
-         
+
          // Call super-class onReady() method
          Alfresco.ConsoleUsers.superclass.onReady.call(this);
       },
-      
+
       /**
        * YUI WIDGET EVENT HANDLERS
        * Handlers for standard events fired from YUI widgets, e.g. "click"
        */
-      
+
       /**
        * History manager state change event handler (override base class)
        *
@@ -1499,33 +1497,33 @@
       onStateChanged: function ConsoleUsers_onStateChanged(e, args)
       {
          var state = this.decodeHistoryState(args[1].state);
-         
+
          // test if panel has actually changed?
          if (state.panel)
          {
             this.showPanel(state.panel);
          }
-         
+
          if (state.search !== undefined && this.currentPanelId === "search")
          {
             // keep track of the last search performed
             var searchTerm = state.search;
             this.searchTerm = searchTerm;
-            
+
             this.updateCurrentPanel();
          }
-         
+
          if (state.userid &&
              (this.currentPanelId === "view" ||
               this.currentPanelId === "create" ||
               this.currentPanelId === "update"))
          {
             this.currentUserId = state.userid;
-            
+
             this.updateCurrentPanel();
          }
       },
-      
+
       /**
        * Search button click event handler
        *
@@ -1537,7 +1535,7 @@
       {
          var searchTermElem = Dom.get(this.id + "-search-text");
          var searchTerm = YAHOO.lang.trim(searchTermElem.value);
-         
+
          // inform the user if the search term entered is too small
          if (searchTerm.replace(/\*/g, "").length < this.options.minSearchTermLength)
          {
@@ -1547,10 +1545,10 @@
             });
             return;
          }
-         
+
          this.refreshUIState({"search": searchTerm});
       },
-      
+
       /**
        * Upload Users button click event handler
        *
@@ -1565,9 +1563,9 @@
          // picks up the wrong JSESSIONID cookie which causes the upload to fail.
          if (!this.fileUpload)
          {
-            this.fileUpload = Alfresco.util.ComponentManager.findFirst("Alfresco.HtmlUpload") 
+            this.fileUpload = Alfresco.util.ComponentManager.findFirst("Alfresco.HtmlUpload")
          }
-         
+
          // Show uploader for single file select - override the upload URL to use appropriate upload service
          var uploadConfig =
          {
@@ -1579,15 +1577,15 @@
                scope: this
             }
          };
-         
+
          this.fileUpload.show(uploadConfig);
-         
+
          // Make sure the "use Flash" tip is hidden just in case Flash is enabled...
          var singleUploadTip = Dom.get(this.fileUpload.id + "-singleUploadTip-span");
          Dom.addClass(singleUploadTip, "hidden");
          Event.preventDefault(e);
       },
-      
+
       /**
        * Users Upload complete event handler
        *
@@ -1599,7 +1597,7 @@
          this.csvResults = complete;
          this.refreshUIState({"panel": "csvresults"});
       },
-      
+
       /**
        * New User button click event handler
        *
@@ -1611,7 +1609,7 @@
       {
          this.refreshUIState({"panel": "create"});
       },
-      
+
       /**
        * Edit User button click event handler
        *
@@ -1623,7 +1621,7 @@
       {
          this.refreshUIState({"panel": "update"});
       },
-      
+
       /**
        * View User event handler
        *
@@ -1660,7 +1658,7 @@
       {
          this.popups.deleteDialog.show();
       },
-      
+
       /**
        * Fired when the admin confirms that they want to delete a User.
        *
@@ -1681,7 +1679,7 @@
             failureMessage: this._msg("panel.delete.fail")
          });
       },
-      
+
       /**
        * Fired on successful deletion of a user.
        *
@@ -1698,7 +1696,7 @@
          });
          this.refreshUIState({"panel": "search"});
       },
-      
+
       /**
        * Fired when the admin cancels the operation to delete a User.
        *
@@ -1709,7 +1707,7 @@
       {
          this.popups.deleteDialog.hide();
       },
-      
+
       /**
        * Fired when the Create User OK button is clicked.
        *
@@ -1738,7 +1736,7 @@
             form._setAllFieldsAsVisited();
          }
       },
-      
+
       /**
        * Fired when the Create User and Create Another button is clicked.
        *
@@ -1770,7 +1768,7 @@
             form._setAllFieldsAsVisited();
          }
       },
-      
+
       /**
        * Fired when the Create User Cancel button is clicked.
        *
@@ -1782,7 +1780,7 @@
       {
          this.refreshUIState({"panel": "search"});
       },
-      
+
       /**
        * Fired when the Update User OK button is clicked.
        *
@@ -1812,7 +1810,7 @@
             form._setAllFieldsAsVisited();
          }
       },
-      
+
       /**
        * Fired when the Update User Cancel button is clicked.
        *
@@ -1824,7 +1822,7 @@
       {
          this.refreshUIState({"panel": "view"});
       },
-      
+
       /**
        * Fired when the Use Default button is clicked to clear user photo.
        *
@@ -1837,11 +1835,11 @@
          Dom.get(this.id + "-update-photoimg").src = Alfresco.constants.URL_RESCONTEXT + "components/images/no-user-photo-64.png";
          this._getCurrentPanel().setPhotoReset();
       },
-      
+
       /**
        * Encode state object into a packed string for use as url history value.
        * Override base class.
-       * 
+       *
        * @method encodeHistoryState
        * @param obj {object} state object
        * @private
@@ -1862,7 +1860,7 @@
          {
             stateObj.search = this.searchTerm;
          }
-         
+
          // convert to encoded url history state - overwriting with any supplied values
          var state = "";
          if (obj.panel || stateObj.panel)
@@ -1887,14 +1885,14 @@
          }
          return state;
       },
-      
+
       /**
        * PRIVATE FUNCTIONS
        */
-      
+
       /**
        * Create a user - returning true on success, false on any error.
-       * 
+       *
        * @method _createUser
        * @param handler {function} Handler function to be called on successful creation
        * @private
@@ -1902,13 +1900,13 @@
       _createUser: function ConsoleUsers__createUser(handler)
       {
          // TODO: respect minimum field length for username/password
-         
+
          var me = this;
          var fnGetter = function(id)
          {
             return YAHOO.lang.trim(Dom.get(me.id + id).value);
          };
-         
+
          // verify password against second field
          var password = fnGetter("-create-password");
          var verifypw = fnGetter("-create-verifypassword");
@@ -1920,14 +1918,14 @@
             });
             return;
          }
-         
+
          // gather up the data for our JSON PUT request
          var username = fnGetter("-create-username");
          var quota = this._calculateQuota(me.id + "-create");
-         
+
          // gather the selected groups from the panel
          var groups = this._getCurrentPanel().getGroups();
-         
+
          var personObj =
          {
             userName: username,
@@ -1939,7 +1937,7 @@
             quota: quota,
             groups: groups
          };
-         
+
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.PROXY_URI + "api/people",
@@ -1979,10 +1977,10 @@
             }
          });
       },
-      
+
       /**
        * Update a user - returning true on success, false on any error.
-       * 
+       *
        * @method _updateUser
        * @param handler {function} Handler function to be called on successful update
        * @private
@@ -1990,14 +1988,14 @@
       _updateUser: function ConsoleUsers__updateUser(handler)
       {
          var me = this;
-         
+
          var isCurrentUser = (this.currentUserId.toLowerCase() === Alfresco.constants.USERNAME.toLowerCase());
-         
+
          var fnGetter = function(id)
          {
             return Dom.get(me.id + id).value;
          };
-         
+
          var updateSuccess = function(res)
          {
             var completed = function(res)
@@ -2012,7 +2010,7 @@
                   {
                      passwordObj.oldpw = YAHOO.lang.trim(fnGetter("-update-old-password"));
                   }
-                  
+
                   // update the password for the user
                   Alfresco.util.Ajax.request(
                   {
@@ -2025,7 +2023,7 @@
                         fn: handler,
                         scope: me
                      },
-                     failureMessage: me._msg("message.password-failure")   
+                     failureMessage: me._msg("message.password-failure")
                   });
                }
                else
@@ -2033,7 +2031,7 @@
                   handler.call();
                }
             };
-            
+
             if (this._getCurrentPanel().getPhotoReset())
             {
                Alfresco.util.Ajax.request(
@@ -2067,7 +2065,7 @@
                completed.call();
             }
          };
-         
+
          // verify password against second field
          var oldPw = fnGetter("-update-old-password");
          var password = fnGetter("-update-password");
@@ -2099,14 +2097,14 @@
                return;
             }
          }
-         
+
          // gather up the data for our JSON PUT request
          var quota = this._calculateQuota(me.id + "-update");
-         
+
          // gather the groups for addition and groups for removal from the panel
          var addGroups = this._getCurrentPanel().getAddedGroups();
          var removeGroups = this._getCurrentPanel().getRemovedGroups();
-         
+
          var personObj =
          {
             firstName: fnGetter("-update-firstname"),
@@ -2117,7 +2115,7 @@
             addGroups: addGroups,
             removeGroups: removeGroups
          };
-         
+
          Alfresco.util.Ajax.request(
          {
             url: Alfresco.constants.PROXY_URI + "api/people/" + encodeURIComponent(this.currentUserId),
@@ -2144,10 +2142,10 @@
             }
          });
       },
-      
+
       /**
        * Return the quota value as input by the user - converted to bytes.
-       * 
+       *
        * @method _calculateQuota
        * @param idPrefix {string} ID prefix of the quota UI elements
        * @return the quota value as input by the user - converted to bytes
@@ -2191,7 +2189,7 @@
          }
          return quota;
       },
-      
+
       /**
        * Gets a custom message
        *
