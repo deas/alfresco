@@ -20,6 +20,10 @@
         display: none;
     }
 
+    &.no-borders {
+        border: none;
+    }
+
     > div.alfresco-twister {
         padding-left: 20px !important; /* Important is only required to override base.css use of important */
         background-position: 0 3px !important;

@@ -579,6 +579,7 @@ function getFilters() {
       name: "alfresco/documentlibrary/AlfDocumentFilters",
       config: {
          label: "filter.label.documents",
+         additionalCssClasses: "no-borders",
          widgets: [
             {
                name: "alfresco/documentlibrary/AlfDocumentFilter",
@@ -663,6 +664,7 @@ function getPathTree(siteId, containerId, rootNode) {
       name: "alfresco/layout/Twister",
       config: {
          label: "twister.library.label",
+         additionalCssClasses: "no-borders",
          widgets: [
             {
                name: "alfresco/navigation/PathTree",
@@ -684,6 +686,7 @@ function getTags(siteId, containerId, rootNode) {
       name: "alfresco/documentlibrary/AlfTagFilters",
       config: {
          label: "filter.label.tags",
+         additionalCssClasses: "no-borders",
          siteId: siteId,
          containerId: containerId,
          rootNode: rootNode
@@ -697,6 +700,7 @@ function getCategories() {
       name: "alfresco/layout/Twister",
       config: {
          label: "twister.categories.label",
+         additionalCssClasses: "no-borders",
          widgets: [
             {
                name: "alfresco/navigation/CategoryTree"

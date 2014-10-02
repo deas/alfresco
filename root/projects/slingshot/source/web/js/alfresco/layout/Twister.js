@@ -37,8 +37,10 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/array",
         "dojo/dom-construct",
+        "dojo/dom-class",
         "dojo/dom-attr"], 
-        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing, lang, array, domConstruct, domAttr) {
+        function(declare, _WidgetBase, _TemplatedMixin, template,  AlfCore, CoreWidgetProcessing,
+                 lang, array, domConstruct, domClass, domAttr) {
    return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
 
       /**
@@ -83,6 +85,10 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_layout_Twister__postCreate() {
 
+         if (this.additionalCssClasses != null)
+         {
+            domClass.add(this.domNode, this.additionalCssClasses);
+         }
          if(this.headingLevel && (isNaN(this.headingLevel) || this.headingLevel < 1 || this.headingLevel > 6))
          {
             this.alfLog("error", "A heading must have a numeric level from 1 to 6 and must have a label", this);
