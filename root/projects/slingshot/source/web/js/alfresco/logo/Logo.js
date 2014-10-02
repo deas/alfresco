@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -18,6 +18,9 @@
  */
 
 /**
+ * Displays an image typically used as an application logo. Provides a number of Alfresco and
+ * Surf logos out-of-the-box but can be configured with a specific URL to render any image.
+ * 
  * @module alfresco/logo/Logo
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
