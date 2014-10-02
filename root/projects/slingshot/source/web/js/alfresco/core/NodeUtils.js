@@ -130,7 +130,7 @@ define(["dojo/_base/lang",
          }
          else
          {
-            nodeRef = record.parent.nodeRef;
+            nodeRef = lang.getObject("record.parent.nodeRef", false, this);
          }
 
          return nodeRef;
