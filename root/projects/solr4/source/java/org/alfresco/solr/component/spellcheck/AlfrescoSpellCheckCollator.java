@@ -25,8 +25,6 @@ import org.apache.solr.search.EarlyTerminatingCollectorException;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.spelling.PossibilityIterator;
 import org.apache.solr.spelling.QueryConverter;
-import org.apache.solr.spelling.SpellCheckCollation;
-import org.apache.solr.spelling.SpellCheckCollator;
 import org.apache.solr.spelling.SpellCheckCorrection;
 import org.apache.solr.spelling.SpellingResult;
 import org.json.JSONException;
@@ -46,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AlfrescoSpellCheckCollator
 {
-    private final static Logger LOG = LoggerFactory.getLogger(AbstractQParser.class);
+    private final static Logger LOG = LoggerFactory.getLogger(AlfrescoSpellCheckCollator.class);
 
     private int maxCollations = 1;
     private int maxCollationTries = 0;
