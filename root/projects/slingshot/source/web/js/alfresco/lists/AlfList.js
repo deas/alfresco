@@ -783,6 +783,14 @@ define(["dojo/_base/declare",
                this.currentData = {};
                this.currentData.items = items;
                foundItems = true;
+
+               // We lose metaData unless we store that as well.
+               var metadata = lang.getObject("metadata", false, payload.response);
+               if (metadata)
+               {
+                  this.currentData.metadata = metadata;
+               }
+
             }
             else
             {
