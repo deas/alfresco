@@ -243,12 +243,12 @@
                }
                args.pattern = /([\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)/;
                args.match = false;
-               return Alfresco.forms.validation.regexMatch(field, args, event, form, silent, message);
+               var valid = Alfresco.forms.validation.regexMatch(field, args, event, form, silent, message);
+               // Disable the addTagButton if not valid
+               addTagButton.set("disabled", !valid);
+               return valid;
             };
-            
-            var regexArgs = {};
-            regexArgs.pattern = /([\*\\\>\<\?\/\:\|]+)|([\.]?[\.]+$)/;
-            regexArgs.match = false;
+
             var msg = Alfresco.util.message("validation-hint.tagName");
             tagFormsRuntime.addValidation(this.id + "-tag-input-field", tagNameValidation, null, "keyup", msg);
             tagFormsRuntime.addValidation(this.id + "-tag-input-field", Alfresco.forms.validation.mandatory);
@@ -264,7 +264,7 @@
                scope.balloon.html(msg);
                scope.balloon.show();
             };
-            
+
             this.formsRuntime = tagFormsRuntime;
          }
       },
