@@ -1,0 +1,83 @@
+.alfresco-share .dijitIcon {
+   background-repeat: no-repeat;
+   height: 20px;
+   width: 20px;
+
+   &.alf-sites-icon {
+      background-image: url("../../css/images/site-24.png");
+      height: 24px;
+      width: 24px;
+   }
+
+   &.alf-my-sites-icon {
+      background-image: url("../../css/images/recent-site.png");
+   }
+
+   &.alf-recent-site-icon {
+      background-image: url("../../css/images/recent-site.png");
+   }
+
+   &.alf-favourite-site-icon {
+      background-image: url("../../css/images/favourite-site.png");
+   }
+
+   &.alf-add-favourite-site-icon {
+      background-image: url("../../css/images/add-favourite.png");
+   }
+
+   &.alf-remove-favourite-site-icon {
+      background-image: url("../../css/images/remove-site.png");
+   }
+
+   &.alf-site-finder-icon {
+      background-image: url("../../css/images/site-finder.png");
+   }
+
+   &.alf-create-site-icon {
+      background-image: url("../../css/images/create-site.png");
+   }
+
+   &.alf-user-status-icon {
+      background-image: url("../../css/images/user-status.png");
+   }
+
+   &.alf-user-profile-icon {
+      background-image: url("../../css/images/user-profile.png");
+   }
+
+   &.alf-user-help-icon {
+      background-image: url("../../css/images/user-help.png");
+   }
+
+   &.alf-user-logout-icon {
+      background-image: url("../../css/images/user-logout.png");
+   }
+
+   &.alf-user-password-icon {
+      background-image: url("../../css/images/user-password.png");
+   }
+
+   &.alf-admin-icon {
+      background-image: url("../../css/images/admin.png");
+   }
+
+   &.alf-loading-icon {
+      background-image: url("../../css/images/wait.gif");
+   }
+
+   &.alf-mytasks-icon {
+      background-image: url("../../css/images/my-tasks.png");
+   }
+
+   &.alf-myworkflows-icon {
+      background-image: url("../../css/images/my-workflows.png");
+   }
+
+   &.alf-folder-up-icon {
+      background-image: url("../../css/images/folder-up-16.png");
+      width: 16px;
+      height: 16px;
+   }
+}
+
+

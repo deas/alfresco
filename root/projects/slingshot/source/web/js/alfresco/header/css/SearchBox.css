@@ -71,7 +71,7 @@
         display: none;
 
         .wait {
-            background: url("./images/wait.gif") center no-repeat;
+            background: url("../../css/images/wait.gif") center no-repeat;
         }
 
         .alf-livesearch-title {
@@ -120,10 +120,11 @@
                 float: left;
             }
 
-            .alf-livesearch-item {
-                margin-left: 40px;
-                line-height: 1.3em;
-                font-size: 93%;
+            .alf-livesearch-item
+            {
+               margin-left: 40px;
+               line-height: 1.3em;
+               font-size: 93%;
 
                 span,
                 span a {

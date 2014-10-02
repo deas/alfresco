@@ -51,7 +51,7 @@ define(["dojo/_base/declare",
        * @type {object[]}
        * @default [{cssFile:"./css/_AlfMenuItemMixin.css"}]
        */
-      cssRequirements: [{cssFile:"./css/_AlfMenuItemMixin.css"}],
+      cssRequirements: [{cssFile: "./css/_AlfMenuItemMixin.css"}],
 
       /**
        * Defines the image width for the menu item icon. An image is only used if no explicit CSS class is set.
