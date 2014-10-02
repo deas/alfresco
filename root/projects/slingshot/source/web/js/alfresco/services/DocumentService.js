@@ -171,6 +171,16 @@ define(["dojo/_base/declare",
        */
       cancelEditSuccessTopic: "ALF_DOC_CANCEL_EDIT_SUCCESS",
 
+
+      /**
+       * Get the node ref for the current node's parent.
+       *
+       * @instance
+       * @type {String}
+       * @default "ALF_DOC_GET_PARENT_NODEREF"
+       */
+      parentNodeRefTopic: "ALF_DOC_GET_PARENT_NODEREF",
+
       /**
        *
        * @instance
@@ -191,6 +201,8 @@ define(["dojo/_base/declare",
          this.alfSubscribe(this.downloadNodeTopic, lang.hitch(this, this.onDownloadFile));
 
          this.alfSubscribe(this.cancelEditTopic, lang.hitch(this, this.onCancelEdit));
+
+         this.alfSubscribe(this.parentNodeRefTopic, lang.hitch(this, this.onGetParentNodeRef));
 
       },
 
@@ -233,7 +245,8 @@ define(["dojo/_base/declare",
                alfTopic: alfTopic,
                url: url,
                method: "GET",
-               callbackScope: this
+               callbackScope: this,
+               originalPayload: payload
             };
             this.serviceXhr(config);
          }
@@ -612,7 +625,7 @@ define(["dojo/_base/declare",
        *
        * @param {String} nodeRef nodeRef to cancel the editing on.
        */
-      onCancelEditNode: function alfresco_services_DocumentService_onCancelEditNode(nodeRef) {
+      onCancelEditNode: function alfresco_services_DocumentService__onCancelEditNode(nodeRef) {
 
          var nodeRefObj = NodeUtils.processNodeRef(nodeRef);
 
@@ -633,8 +646,52 @@ define(["dojo/_base/declare",
        *
        * @param payload The payload from the event trigger
        */
-      onCancelEditNodeSuccess: function alfresco_services_DocumentService_onCancelEditNodeSuccess(payload) {
+      onCancelEditNodeSuccess: function alfresco_services_DocumentService__onCancelEditNodeSuccess(payload) {
          this.alfPublish(this.cancelEditSuccessTopic, payload);
+      },
+
+      /**
+       * Retrieve the nodeRef for a given node's parent, by requesting the details for that node.
+       *
+       * @param payload {Object} The publish event payload.
+       */
+      onGetParentNodeRef: function alfresco_services_DocumentService__onGetParentNodeRef(payload) {
+
+         var responseTopic = this.generateUuid(),
+            subscriptionHandle = this.alfSubscribe(responseTopic + "_SUCCESS", lang.hitch(this, this.onGetParentNodeRefSuccess));
+
+         if (lang.isArray(payload.subscriptionHandles))
+         {
+            payload.subscriptionHandles.push(subscriptionHandle);
+         }
+
+         payload.alfResponseTopic = responseTopic;
+
+         this.alfPublish("ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST", payload);
+      },
+
+      /**
+       * Triggered by onGetParentNodeRef when the request returns successfully.
+       * This method processes the response to pull out the parent node, then triggers the originalResponseTopic
+       * that was passed into the request to get the parent nodeRef.
+       *
+       * @param payload {Object} The publish event payload.
+       */
+      onGetParentNodeRefSuccess: function alfresco_services_DocumentService__onGetParentNodeRefSuccess(payload) {
+
+         var responseTopic = lang.getObject("requestConfig.originalPayload.originalResponseTopic", false, payload),
+            publishPayload = {
+               node: payload.response.item.parent
+            };
+
+         if (responseTopic)
+         {
+            this.alfPublish(responseTopic, publishPayload);
+         }
+         else
+         {
+            this.alfLog("error", "Unable to retrieve originalResponseTopic, so can't let the original caller know we have the parentNode Ref. :-(")
+         }
       }
    });
 });
