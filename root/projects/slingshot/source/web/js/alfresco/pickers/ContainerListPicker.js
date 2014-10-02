@@ -53,7 +53,10 @@ define(["dojo/_base/declare",
           * @type {object[]}
           * @default [{cssFile:"./css/ContainerListPicker.css"}]
           */
-         cssRequirements: [{cssFile:"./css/ContainerListPicker.css"}],
+         cssRequirements: [
+            {cssFile:"./css/ContainerListPicker.css"},
+            {cssFile:"../core/css/Icons.css"}
+         ],
 
          /**
           * Sets some relevant messages to display
@@ -79,6 +82,19 @@ define(["dojo/_base/declare",
             var config = [{
                name: "alfresco/documentlibrary/views/AlfDocumentListView",
                config: {
+                  widgetsForHeader: [
+                     {
+                        name: "alfresco/buttons/AlfButton",
+                        id: "ContainerListPickerParentNav",
+                        config: {
+                           label: this.message("containerPicker.button.parentNav.label"),
+                           additionalCssClasses: "ContainerListPickerParentNav",
+                           publishTopic: "ALF_DOCLIST_PARENT_NAV",
+                           showLabel: false,
+                           iconClass: "alf-folder-up-icon"
+                        }
+                     }
+                  ],
                   widgets: [
                      {
                         name: "alfresco/documentlibrary/views/layouts/Row",
