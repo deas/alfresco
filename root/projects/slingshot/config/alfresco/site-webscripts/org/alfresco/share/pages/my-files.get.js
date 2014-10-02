@@ -12,6 +12,7 @@ var docLibWidgets = getDocumentLibraryModel(null, null, user.properties['userHom
 services.push("alfresco/services/PreferenceService",
               "alfresco/services/NavigationService",
               "alfresco/services/SearchService",
+              "alfresco/services/ContentService",
               "alfresco/services/ActionService",
               "alfresco/services/DocumentService",
               "alfresco/services/TagService",

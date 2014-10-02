@@ -51,19 +51,19 @@ define(["dojo/_base/declare",
       i18nRequirements: [{i18nFile: "../../../WEB-INF/classes/alfresco/site-webscripts/org/alfresco/components/documentlibrary/toolbar.get.properties"}],
       
       /**
-       * Sets up the subscriptions for the NavigationService
+       * Sets up the subscriptions for the ContentService
        * 
        * @instance
        * @param {array} args Constructor arguments
        */
       constructor: function alfresco_services_ContentService__constructor(args) {
          lang.mixin(this, args);
-         this.alfSubscribe("ALF_CURRENT_NODEREF_CHANGED", lang.hitch(this, "handleCurrentNodeChange"));
-         this.alfSubscribe("ALF_SHOW_UPLOADER", lang.hitch(this, "showUploader"));
-         this.alfSubscribe("ALF_CONTENT_SERVICE_UPLOAD_REQUEST_RECEIVED", lang.hitch(this, "onFileUploadRequest"));
-         this.alfSubscribe("ALF_CREATE_NEW_FOLDER", lang.hitch(this, "createNewFolder"));
-         this.alfSubscribe("ALF_CREATE_CONTENT_REQUEST", lang.hitch(this, "onCreateContent"));
-         this.alfSubscribe("ALF_UPDATE_CONTENT_REQUEST", lang.hitch(this, "onUpdateContent"));
+         this.alfSubscribe("ALF_CURRENT_NODEREF_CHANGED", lang.hitch(this, this.handleCurrentNodeChange));
+         this.alfSubscribe("ALF_SHOW_UPLOADER", lang.hitch(this, this.showUploader));
+         this.alfSubscribe("ALF_CONTENT_SERVICE_UPLOAD_REQUEST_RECEIVED", lang.hitch(this, this.onFileUploadRequest));
+         this.alfSubscribe("ALF_CREATE_NEW_FOLDER", lang.hitch(this, this.createNewFolder));
+         this.alfSubscribe("ALF_CREATE_CONTENT_REQUEST", lang.hitch(this, this.onCreateContent));
+         this.alfSubscribe("ALF_UPDATE_CONTENT_REQUEST", lang.hitch(this, this.onUpdateContent));
       },
       
       /**
@@ -74,7 +74,7 @@ define(["dojo/_base/declare",
        */
       onCreateContent: function alfresco_services_ContentService__onCreateFolder(payload) {
 
-         if (payload.alf_destination == null || payload.alf_destination == "")
+         if (payload.alf_destination == null || payload.alf_destination === "")
          {
             payload.alf_destination = this._currentNode.parent.nodeRef;
          }
@@ -87,7 +87,7 @@ define(["dojo/_base/declare",
          {
             type = payload.type;
          }
-         var url = AlfConstants.PROXY_URI + "api/type/" + type + "/formprocessor"
+         var url = AlfConstants.PROXY_URI + "api/type/" + type + "/formprocessor";
          this.serviceXhr({url : url,
                           data: payload,
                           method: "POST",

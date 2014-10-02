@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -86,8 +86,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} domNode The DOM node to remove drag and drop capabilities from
        */
-      removeUploadDragAndDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__removeUploadDragAndDrop(domNode)
-      {
+      removeUploadDragAndDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__removeUploadDragAndDrop(domNode) {
          this.alfLog("log", "Removing drag and drop upload handlers");
          
          // Clean up any previously created event handlers...
@@ -115,13 +114,45 @@ define(["dojo/_base/declare",
       dndUploadEventHandlers: null,
       
       /**
+       * Adds subscriptions to topics providing information on the changes to the current node being represented. This 
+       * has been primarily added to support widgets that change the displayed view.
+       * 
+       * @instance
+       */
+      subscribeToCurrentNodeChanges: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__subscribeToCurrentNodeChanges() {
+         if (this.dndUploadCapable)
+         {
+            // Handle updates to the metadata (this is required in order for the view to know what
+            // root it represents if )
+            this.alfSubscribe(this.metadataChangeTopic, lang.hitch(this, this.onCurrentNodeChange));
+         }
+      },
+
+      /**
+       * Handles changes to the the current node that is represented by the widget that mixes in this module. For example
+       * when the path that a view is displaying changes.
+       * 
+       * @instance
+       */
+      onCurrentNodeChange: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onCurrentNodeChange(payload) {
+         if (payload && payload.node)
+         {
+            this.alfLog("log", "Updating current nodeRef to: ", payload.node);
+            this._currentNode = payload.node;
+         }
+         else
+         {
+            this.alfLog("error", "A request was made to update the current NodeRef, but no 'node' property was provided in the payload: ", payload);
+         }
+      },
+
+      /**
        * Adds HTML5 drag and drop listeners to the supplied DOM node
        *
        * @instance
        * @param {object} domNode The DOM node to add drag and drop listeners to
        */
-      addUploadDragAndDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__addUploadDragAndDrop(domNode)
-      {
+      addUploadDragAndDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__addUploadDragAndDrop(domNode) {
          if (this.dndUploadCapable)
          {
             this.alfLog("log", "Adding DND upload capabilities", this);
@@ -165,8 +196,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} e HTML5 drag and drop event
        */
-      swallowDragStart: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDragStart(e)
-      {
+      swallowDragStart: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDragStart(e) {
          e.stopPropagation();
          e.preventDefault();
       },  
@@ -179,8 +209,7 @@ define(["dojo/_base/declare",
        * @param {object} e HTML5 drag and drop event
        * 
        */
-      swallowDragEnter: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDragEnter(e)
-      {
+      swallowDragEnter: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDragEnter(e) {
          e.stopPropagation();
          e.preventDefault();
       },
@@ -193,8 +222,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} e HTML5 drag and drop event
        */
-      swallowDragOver: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDragOver(e)
-      {
+      swallowDragOver: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDragOver(e) {
          e.dataTransfer.dropEffect = "none";
          e.stopPropagation();
          e.preventDefault();
@@ -208,8 +236,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param e {object} HTML5 drag and drop event
        */
-      swallowDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDrop(e)
-      {
+      swallowDrop: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__swallowDrop(e) {
          this.alfLog("log", "Swallowing drop");
          e.stopPropagation();
          e.preventDefault();
@@ -221,8 +248,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} e HTML5 drag and drop event
        */
-      onDndUploadDragEnter: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onDndUploadDragEnter(e)
-      {
+      onDndUploadDragEnter: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onDndUploadDragEnter(e) {
          if (dom.isDescendant(e.target, this.dragAndDropNode) &&
              this.checkApplicable(e.target, "onDndUploadDragEnter"))
          {
@@ -243,8 +269,7 @@ define(["dojo/_base/declare",
        * @instance
        * @param {object} e HTML5 drag and drop event
        */
-      onDndUploadDragOver: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onDndUploadDragOver(e)
-      {
+      onDndUploadDragOver: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onDndUploadDragOver(e) {
          // Firefox 3.6 set effectAllowed = "move" for files, however the "copy" effect is more accurate for uploads
 //         e.dataTransfer.dropEffect = Math.floor(YAHOO.env.ua.gecko) === 1 ? "move" : "copy";
          e.stopPropagation();
@@ -407,16 +432,15 @@ define(["dojo/_base/declare",
                this.alfLog("warn", "Failed to generate upload configuration", e);
             }
          }
-         else if (this.currentData &&
-                  this.currentData.metadata &&
-                  this.currentData.metadata.parent &&
-                  this.currentData.metadata.parent.nodeRef)
+         else if (this._currentNode &&
+                  this._currentNode.parent &&
+                  this._currentNode.parent.nodeRef)
          {
             try
             {
                // Best guess for document list view...
                config = {
-                  destination: this.currentData.metadata.parent.nodeRef
+                  destination: this._currentNode.parent.nodeRef
                };
             }
             catch (e)

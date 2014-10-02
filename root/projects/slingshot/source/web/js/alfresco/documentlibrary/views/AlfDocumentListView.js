@@ -139,6 +139,8 @@ define(["dojo/_base/declare",
             this.noItemsMessage = this.message(this.noItemsMessage);
          }
 
+         // Call DND upload mixin functions to add support for uploading behaviour...
+         this.subscribeToCurrentNodeChanges();
          this.addUploadDragAndDrop(this.domNode);
 
          if (this.subscribeToDocRequests)

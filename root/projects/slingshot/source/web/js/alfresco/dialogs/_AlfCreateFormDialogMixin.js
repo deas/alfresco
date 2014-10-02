@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -60,17 +60,11 @@ define(["dojo/_base/declare",
          // UUID. This should ensure that only this instance will handle the publications. This
          // should avoid the form being created/displayed accidentally...
          this.publishTopic = this.generateUuid(); // This gets passed to the button, etc
+         this._formConfirmationTopic = this.generateUuid();
          this.publishGlobal = true;
-         this.alfSubscribe(this.publishTopic, lang.hitch(this, "onCreateFormDialogRequest"), true);
-         this.alfSubscribe(this._formConfirmationTopic, lang.hitch(this, "onDialogConfirmation"));
+         this.alfSubscribe(this.publishTopic, lang.hitch(this, this.onCreateFormDialogRequest), true);
+         this.alfSubscribe(this._formConfirmationTopic, lang.hitch(this, this.onDialogConfirmation));
       },
-
-      /**
-       * @instance
-       * @type {string}
-       * @default "ALF_CREATE_FORM_DIALOG_MIXIN_CONFIRMATION_TOPIC"
-       */
-      _formConfirmationTopic: "ALF_CREATE_FORM_DIALOG_MIXIN_CONFIRMATION_TOPIC",
 
       /**
        * Keeps a reference to any dialogs that are created. Old dialogs are destroyed before
@@ -215,8 +209,24 @@ define(["dojo/_base/declare",
        */
       formSubmissionTopic: null,
 
+      /**
+       * Whether or not the [formSubmissionTopic]{@link module:alfresco/dialogs/_AlfCreateFormDialogMixin#formSubmissionTopic} 
+       * should be published globally.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
       formSubmissionGlobal: true,
 
+      /**
+       * Whether or not the [formSubmissionTopic]{@link module:alfresco/dialogs/_AlfCreateFormDialogMixin#formSubmissionTopic} 
+       * should be published on the mixing widgets parent pubSubScope.
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
       formSubmissionToParent: false,
 
       /**
