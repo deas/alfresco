@@ -23,18 +23,21 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/menus/AlfMenuItem"], 
+        "alfresco/menus/AlfMenuItem"],
         function(declare, AlfMenuItem) {
-   
+
    return declare([AlfMenuItem], {
-      
+
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{cssFile:"./css/AlfMenuItem.css"}]
        */
-      cssRequirements: [{cssFile:"./css/AlfMenuItem.css"}]
+      cssRequirements: [
+         {cssFile:"./css/AlfMenuItem.css"},
+         {cssFile: "../core/css/Icons.css"}
+      ]
    });
 });
