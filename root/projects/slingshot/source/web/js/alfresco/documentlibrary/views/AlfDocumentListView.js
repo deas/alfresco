@@ -145,10 +145,6 @@ define(["dojo/_base/declare",
 
          if (this.subscribeToDocRequests)
          {
-            // if (this.useHash === true)
-            // {
-            //    this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onFilterChange));
-            // }
             this.alfSubscribe(this.documentSubscriptionTopic, lang.hitch(this, this.onDocumentsLoaded));
          }
          if (this.currentData != null)

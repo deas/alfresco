@@ -119,12 +119,14 @@ define(["dojo/_base/declare",
        * 
        * @instance
        */
-      subscribeToCurrentNodeChanges: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__subscribeToCurrentNodeChanges() {
+      subscribeToCurrentNodeChanges: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__subscribeToCurrentNodeChanges(domNode) {
          if (this.dndUploadCapable)
          {
             // Handle updates to the metadata (this is required in order for the view to know what
-            // root it represents if )
+            // root Node it represents is)
+            this.dragAndDropNode = domNode;
             this.alfSubscribe(this.metadataChangeTopic, lang.hitch(this, this.onCurrentNodeChange));
+            this.alfSubscribe(this.hashChangeTopic, lang.hitch(this, this.onFilterChange));
          }
       },
 
@@ -133,8 +135,9 @@ define(["dojo/_base/declare",
        * when the path that a view is displaying changes.
        * 
        * @instance
+       * @param {object} payload The published payload
        */
-      onCurrentNodeChange: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onCurrentNodeChange(payload) {
+      onCurrentNodeChange: function alfresco_documentlibrary___AlfDndDocumentUploadMixin__onCurrentNodeChange(payload) {
          if (payload && payload.node)
          {
             this.alfLog("log", "Updating current nodeRef to: ", payload.node);
@@ -143,6 +146,24 @@ define(["dojo/_base/declare",
          else
          {
             this.alfLog("error", "A request was made to update the current NodeRef, but no 'node' property was provided in the payload: ", payload);
+         }
+      },
+
+      /**
+       * Handles changes the current filter. If the filter isn't path based then drag and drop uploading is disabled.
+       * 
+       * @instance
+       * @param {object} payload The published payload
+       */
+      onFilterChange: function alfresco_documentlibrary___AlfDndDocumentUploadMixin__onFilterChange(payload) {
+         var path = lang.getObject("path", false, payload);
+         if (path == null)
+         {
+            this.removeUploadDragAndDrop(this.dragAndDropNode);
+         }
+         else
+         {
+            this.addUploadDragAndDrop(this.dragAndDropNode);
          }
       },
 
