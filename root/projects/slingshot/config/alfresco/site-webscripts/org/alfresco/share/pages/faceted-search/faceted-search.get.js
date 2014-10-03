@@ -13,7 +13,7 @@ function getUserPreferences() {
 }
 
 var userPreferences = getUserPreferences();
-var viewRendererName =  "simple";
+var viewRendererName =  "detailed";
 try
 {
    viewRendererName = userPreferences.org.alfresco.share.searchList.viewRendererName;

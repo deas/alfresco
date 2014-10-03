@@ -40,7 +40,7 @@ define(["dojo/_base/declare",
        * @property {string|null} iconClass The class to place next to the label
        */
       viewSelectionConfig: {
-         label: "doclist.view.simple.label",
+         label: "doclist.view.detailed.label",
          iconClass: "alf-detailedlist-icon"
       },
       
@@ -51,7 +51,7 @@ define(["dojo/_base/declare",
        * @returns {string} "detailed"
        */
       getViewName: function alfresco_documentlibrary_views_AlfDocumentListView__getViewName() {
-         return "simple";
+         return "detailed";
       },
       
       /**
