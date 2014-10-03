@@ -1101,6 +1101,21 @@
        */
       _processUploadFailure: function DND__processUploadFailure(fileInfo, status)
       {
+         if (status === 401)
+         {
+            var redirect = fileInfo.request.getResponseHeader["Location"];
+            if (redirect)
+            {
+               window.location.href = window.location.protocol + "//" + window.location.host + redirect;
+               return;
+            }
+            else
+            {
+               window.location.reload(true);
+               return;
+            }
+         }
+
          fileInfo.state = this.STATE_FAILURE;
          var errormsg = fileInfo.request.status+" "+fileInfo.request.statusText; //default
          
