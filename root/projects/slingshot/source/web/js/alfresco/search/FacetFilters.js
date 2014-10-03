@@ -193,6 +193,7 @@ define(["dojo/_base/declare",
 
          // Sort the filters...
          filters = this.sortFacetFilters(filters);
+         filters = array.filter(filters, lang.hitch(this, this.filterFacetFilters));
 
          // Set a count of the filters to add...
          var filtersToAdd = this.maxFilters;
@@ -248,6 +249,18 @@ define(["dojo/_base/declare",
          {
             domClass.remove(this.domNode, "hidden");
          }
+      },
+
+      /**
+       * Filters out any filter values that do not meet the hits or value length requirements.
+       *
+       * @instance
+       * @param {object} filter The filter to test
+       * @param {number} index The index of the filter
+       */
+      filterFacetFilters: function alfresco_search_FacetFilters__filterFacetFilters(filter, index) {
+         return ((this.hitThreshold == null || this.hitThreshold <= filter.hits) &&
+                 (this.minFilterValueLength == null || filter.value.length > this.minFilterValueLength));
       },
 
       /**
