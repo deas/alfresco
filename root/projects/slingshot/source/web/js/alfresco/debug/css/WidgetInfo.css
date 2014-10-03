@@ -13,11 +13,11 @@
    background-color: rgba(255,180,0,0.2);
 }
 
-.alfresco-developer-mode-Enabled .alfresco-debug-WidgetInfo {
+.alfresco-developer-mode-Enabled .alfresco-debug-Info > .alfresco-debug-WidgetInfo {
    display: block;
 }
 
-.alfresco-debug-WidgetInfo {
+.alfresco-debug-Info > .alfresco-debug-WidgetInfo {
    position: absolute;
    top: 3px;
    right: 3px;
