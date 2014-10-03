@@ -23,19 +23,19 @@
 
       <!-- Fixed analysis for numeric types - query, range, facet, and sorting-->
 
-      <fieldType name="int" class="solr.TrieIntField" precisionStep="4" positionIncrementGap="0"/>
-      <fieldType name="float" class="solr.TrieFloatField" precisionStep="4" positionIncrementGap="0"/>
-      <fieldType name="long" class="solr.TrieLongField" precisionStep="6" positionIncrementGap="0"/>
-      <fieldType name="double" class="solr.TrieDoubleField" precisionStep="6" positionIncrementGap="0"/>
-      <fieldType name="date" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0"/>
+      <fieldType name="int" class="solr.TrieIntField" precisionStep="4" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="float" class="solr.TrieFloatField" precisionStep="4" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="long" class="solr.TrieLongField" precisionStep="6" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="double" class="solr.TrieDoubleField" precisionStep="6" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="date" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="100" sortMissingLast="true" />
 
       <!-- Fixed stats analysis for numeric types - stats -->
 
-      <fieldType name="stats_int" class="solr.TrieIntField" precisionStep="32" positionIncrementGap="0"/>
-      <fieldType name="stats_float" class="solr.TrieFloatField" precisionStep="64" positionIncrementGap="0"/>
-      <fieldType name="stats_long" class="solr.TrieLongField" precisionStep="32" positionIncrementGap="0"/>
-      <fieldType name="stats_double" class="solr.TrieDoubleField" precisionStep="64" positionIncrementGap="0"/>
-      <fieldType name="stats_date" class="solr.TrieDateField" precisionStep="64" positionIncrementGap="0"/>
+      <fieldType name="stats_int" class="solr.TrieIntField" precisionStep="32" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="stats_float" class="solr.TrieFloatField" precisionStep="64" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="stats_long" class="solr.TrieLongField" precisionStep="32" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="stats_double" class="solr.TrieDoubleField" precisionStep="64" positionIncrementGap="100" sortMissingLast="true" />
+      <fieldType name="stats_date" class="solr.TrieDateField" precisionStep="64" positionIncrementGap="100" sortMissingLast="true" />
 
       <!-- All text fields are handled via the Alfresco data model -->
       <!-- All anlysis is defined in dummy field types which this field type uses -->
@@ -550,50 +550,50 @@
       <field name="id"                    type="identifier"  indexed="true"  omitNorms="true"  stored="true"   multiValued="false"  required="true"  docValues="true"/>
 
       <!-- Special fields -->
-      <field name="LID"                   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <field name="LID"                   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <field name="PARENT"                type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="PATH"                  type="path"        indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="ANCESTOR"              type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
       <field name="QNAME"                 type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="PRIMARYASSOCQNAME"     type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="PRIMARYASSOCTYPEQNAME" type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="ISNODE"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <field name="PRIMARYASSOCQNAME"     type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="PRIMARYASSOCTYPEQNAME" type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="ISNODE"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <field name="ASSOCTYPEQNAME"        type="path"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
-      <field name="PRIMARYPARENT"         type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="TYPE"                  type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <field name="PRIMARYPARENT"         type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="TYPE"                  type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
       <field name="ASPECT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="PROPERTIES"            type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="FIELDS"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
-      <field name="FTSSTATUS"             type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="DBID"                  type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false"  docValues="true" />
-      <field name="TXID"                  type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" />
-      <field name="INTXID"                type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="ACLTXID"               type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" />
-      <field name="INACLTXID"             type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="TXCOMMITTIME"          type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="ACLTXCOMMITTIME"       type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="EXCEPTIONMESSAGE"      type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="EXCEPTIONSTACK"        type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="ACLID"                 type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <field name="FTSSTATUS"             type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="DBID"                  type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <field name="TXID"                  type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" sortMissingLast="true" />
+      <field name="INTXID"                type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="ACLTXID"               type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" sortMissingLast="true" />
+      <field name="INACLTXID"             type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="TXCOMMITTIME"          type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="ACLTXCOMMITTIME"       type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="EXCEPTIONMESSAGE"      type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="EXCEPTIONSTACK"        type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="ACLID"                 type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
       <field name="READER"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="DENIED"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
       <field name="OWNER"                 type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
-      <field name="PARENTASSOCCRC"        type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <field name="TENANT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <field name="PARENTASSOCCRC"        type="long"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <field name="TENANT"                type="identifier"            indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
 
       <!-- Used to store the last transaction and acl transaction for real time get -->
-      <field name="S_TXID"                  type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
-      <field name="S_INTXID"                type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
-      <field name="S_ACLTXID"               type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
-      <field name="S_INACLTXID"             type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
-      <field name="S_TXCOMMITTIME"          type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
-      <field name="S_ACLTXCOMMITTIME"       type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" />
+      <field name="S_TXID"                  type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" sortMissingLast="true" />
+      <field name="S_INTXID"                type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" sortMissingLast="true" />
+      <field name="S_ACLTXID"               type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" sortMissingLast="true" />
+      <field name="S_INACLTXID"             type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" sortMissingLast="true" />
+      <field name="S_TXCOMMITTIME"          type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" sortMissingLast="true" />
+      <field name="S_ACLTXCOMMITTIME"       type="long"            indexed="true"  omitNorms="true"  stored="true"  multiValued="false" sortMissingLast="true" />
 
       <!-- SOLR doc type -->
-      <field name="DOC_TYPE"   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <field name="DOC_TYPE"   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
 
       <!-- GEO -->
-      <field name="GEO"  type="location_rpt"  indexed="true" stored="false"  multiValued="false" /> 
+      <field name="GEO"  type="location_rpt"  indexed="true" stored="false"  multiValued="false" sortMissingLast="true" /> 
 
 
 
@@ -609,31 +609,31 @@
 
 
       <!-- Single value indexed  -->
-      <dynamicField name="any@s_@*"           type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="encrypted@s_@*"     type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="int@s_@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="long@s_@*"          type="long"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="float@s_@*"         type="float"             indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="double@s_@*"        type="double"            indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="date@s_@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="datetime@s_@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="boolean@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="qname@s_@*"         type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="category@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="noderef@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="childassocref@s_@*" type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="assocref@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="path@s_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="locale@s_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="period@s_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicField name="any@s_@*"           type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="encrypted@s_@*"     type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="int@s_@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="long@s_@*"          type="long"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="float@s_@*"         type="float"             indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="double@s_@*"        type="double"            indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="date@s_@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="datetime@s_@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="boolean@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="qname@s_@*"         type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="category@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="noderef@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="childassocref@s_@*" type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="assocref@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="path@s_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="locale@s_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="period@s_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
 
       <!-- Single + doc values value wildcard matches -->
-      <dynamicField name="int@sd@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="long@sd@*"          type="long"              indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="float@sd@*"         type="float"             indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="double@sd@*"        type="double"            indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="date@sd@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="datetime@sd@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
+      <dynamicField name="int@sd@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="long@sd@*"          type="long"              indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="float@sd@*"         type="float"             indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="double@sd@*"        type="double"            indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="date@sd@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="datetime@sd@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
 
 
       <!-- Multi - value indexed  -->
@@ -664,13 +664,13 @@
       <dynamicField name="datetime@md@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
 
 
-      <dynamicField name="text@s____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="text@s____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="text@s__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
       <dynamicField name="text@s__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
       <dynamicField name="text@s___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="false" />
-      <dynamicField name="text@s__sort@*"        type="alfrescoCollatableTextFieldType"      indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="text@s__sort@*"        type="alfrescoCollatableTextFieldType"      indexed="true" omitNorms="true"   stored="false"  multiValued="false" sortMissingLast="true" />
 
-      <dynamicField name="text@sd___@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" docValues="true" />
+      <dynamicField name="text@sd___@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" docValues="true" sortMissingLast="true" />
 
       <dynamicField name="text@m____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="text@m__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
@@ -683,16 +683,16 @@
       <dynamicField name="mltext@m__l_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="true" />
       <dynamicField name="mltext@m__lt@*"          type="alfrescoFieldType" indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
       <dynamicField name="mltext@m___t@*"          type="text___"           indexed="true" omitNorms="false"  stored="false"  multiValued="true" />
-      <dynamicField name="mltext@m__sort@*"        type="alfrescoCollatableMLTextFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="false" />
+      <dynamicField name="mltext@m__sort@*"        type="alfrescoCollatableMLTextFieldType" indexed="true" omitNorms="true"   stored="false"  multiValued="false" sortMissingLast="true" />
 
-      <dynamicField name="content@s__size@*"             type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="content@s__locale@*"           type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="content@s__mimetype@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" />
-      <dynamicField name="content@s__encoding@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" />
-      <dynamicField name="content@s__docid@*"            type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" />
-      <dynamicField name="content@s__tr_ex@*"            type="text___"      indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="content@s__tr_time@*"          type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
-      <dynamicField name="content@s__tr_status@*"        type="lowercase_id" indexed="true"  omitNorms="true"  stored="false"  multiValued="false" />
+      <dynamicField name="content@s__size@*"             type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="content@s__locale@*"           type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="content@s__mimetype@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" sortMissingLast="true" />
+      <dynamicField name="content@s__encoding@*"         type="identifier"   indexed="true"  omitNorms="true"  stored="false"  multiValued="false" docValues="true" sortMissingLast="true" />
+      <dynamicField name="content@s__docid@*"            type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
+      <dynamicField name="content@s__tr_ex@*"            type="text___"      indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="content@s__tr_time@*"          type="long"         indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="content@s__tr_status@*"        type="lowercase_id" indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
 
 
       <dynamicField name="content@s____@*"          type="identifier"        indexed="true" omitNorms="true"   stored="false"  multiValued="false" termPositions="false" />

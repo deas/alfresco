@@ -6069,46 +6069,48 @@ public class AlfrescoCoreAdminTester
         NamedList<Object> report = new SimpleOrderedMap<Object>();
         before.add("Sort", report);
 
+        // Note: Sorting by _docid_ is no longer reliable with the TieredMergePolicy  
+        // If sorting is done keys that are equal the sub ordering is unreliable as a result 
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8,
                     9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "ID desc", new int[] { 16, 15, 14, 13, 12,
                     11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "_docid_ asc", new int[] { 1, 2, 3, 4, 5, 6,
-                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "_docid_ desc", new int[] { 16, 15, 14, 13,
-                    12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score asc", new int[] { 1, 2, 3, 4, 5, 6, 7,
-                    8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score desc", new int[] { 1, 2, 3, 4, 5, 6,
-                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdDate + " asc", new int[] { 1,
-                    16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 }, null, null, null, (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "_docid_ asc", new int[] { 1, 2, 3, 4, 5, 6,
+//                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "_docid_ desc", new int[] { 16, 15, 14, 13,
+//                    12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score asc", new int[] { 1, 2, 3, 4, 5, 6, 7,
+//                    8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "score desc", new int[] { 1, 2, 3, 4, 5, 6,
+//                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdDate + " asc", new int[] {
+                    16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdDate + " desc", new int[] { 2,
                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdTime + " asc", new int[] { 1,
-                    16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdTime + " asc", new int[] { 
+                    16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + createdTime + " desc", new int[] { 2,
                     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_MODIFIED + " asc",
-                    new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
-                    (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_MODIFIED + " desc",
-                    new int[] { 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }, null, null, null,
-                    (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderDouble + " asc", new int[] { 1,
-                    15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null, null, null, (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_MODIFIED + " asc",
+//                    new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null,
+//                    (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_MODIFIED + " desc",
+//                    new int[] { 15, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }, null, null, null,
+//                    (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderDouble + " asc", new int[] { 
+                    15, 13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderDouble + " desc", new int[] { 16,
                     14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderFloat + " asc", new int[] { 1, 15,
-                    13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderFloat + " asc", new int[] { 15,
+                    13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderFloat + " desc", new int[] { 16,
                     14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLong + " asc", new int[] { 1, 15,
-                    13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLong + " asc", new int[] { 15,
+                    13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLong + " desc", new int[] { 16,
                     14, 12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderInt + " asc", new int[] { 1, 15,
-                    13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderInt + " asc", new int[] { 15,
+                    13, 11, 9, 7, 5, 3, 2, 4, 6, 8, 10, 12, 14, 16, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderInt + " desc", new int[] { 16, 14,
                     12, 10, 8, 6, 4, 2, 3, 5, 7, 9, 11, 13, 15, 1 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderText + " asc", new int[] { 1, 15,
@@ -6171,19 +6173,18 @@ public class AlfrescoCoreAdminTester
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + orderLocalisedMLText + " desc",
                     new int[] { 6, 5, 4, 3, 2, 13, 12, 11, 10, 9, 8, 14, 7, 15, 16, 1 }, new Locale("es"), null, null,
                     (String) null);
-        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "PRIMARYPARENT desc", new int[] { 1, 2, 3, 4, 5, 6,
-                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
+//        testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "PRIMARYPARENT desc", new int[] { 1, 2, 3, 4, 5, 6,
+//                    7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16,
-                    "@" + ContentModel.PROP_CONTENT + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                                13, 14, 16, 15 }, null, null, null, (String) null);
+                    "@" + ContentModel.PROP_CONTENT + ".size asc", new int[] { 15 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT
-                    + ".size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null,
+                    + ".size desc", new int[] { 15 }, null, null,
                     null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT
-                    + ".mimetype asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null,
+                    + ".mimetype asc", new int[] { 15 }, null, null,
                     null, (String) null);
         testQueryByHandler(report, core, "/alfresco", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT
-                    + ".mimetype desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null,
+                    + ".mimetype desc", new int[] { 15 }, null,
                     null, null, (String) null);
     }
 
@@ -6207,33 +6208,25 @@ public class AlfrescoCoreAdminTester
         before.add("AFS and Sort", report);
 
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT.toString()
-                    + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null,
+                    + ".size asc", new int[] { 15 }, null, null,
                     null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@" + ContentModel.PROP_CONTENT.toString()
-                    + ".size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null,
+                    + ".size desc", new int[] { 15}, null, null,
                     null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, ContentModel.PROP_CONTENT.toString()
-                    + ".size asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null,
+                    + ".size asc", new int[] { 15 }, null, null,
                     null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, ContentModel.PROP_CONTENT.toString()
-                    + ".size desc", new int[] { 15, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null,
+                    + ".size desc", new int[] { 15 }, null, null,
                     null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@cm:content.size asc", new int[] { 1, 2, 3, 4,
-                    5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@cm:content.size desc", new int[] { 15, 1, 2, 3,
-                    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "cm:content.size asc", new int[] { 1, 2, 3, 4, 5,
-                    6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "cm:content.size desc", new int[] { 15, 1, 2, 3,
-                    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@content.size asc", new int[] { 1, 2, 3, 4, 5,
-                    6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@content.size desc", new int[] { 15, 1, 2, 3, 4,
-                    5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "content.size asc", new int[] { 1, 2, 3, 4, 5, 6,
-                    7, 8, 9, 10, 11, 12, 13, 14, 16, 15 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "content.size desc", new int[] { 15, 1, 2, 3, 4,
-                    5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@cm:content.size asc", new int[] {15 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@cm:content.size desc", new int[] { 15 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "cm:content.size asc", new int[] {15 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "cm:content.size desc", new int[] { 15}, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@content.size asc", new int[] {15 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "@content.size desc", new int[] { 15 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "content.size asc", new int[] { 15 }, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "content.size desc", new int[] { 15}, null, null, null, (String) null);
         // testQueryByHandler(report, core, "/afts", "-eager or -dog", 16,
         // "@"+ContentModel.PROP_NODE_UUID.toString()+" asc", new int[] { 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4,
         // 3, 2, 1 });
@@ -6322,7 +6315,7 @@ public class AlfrescoCoreAdminTester
 
             ModifiableSolrParams newParams = new ModifiableSolrParams(solrReq.getParams());
             newParams.set("alfresco.getSolrDocumentList", true);
-            newParams.set("defType", handler.substring("/".length()));
+            //newParams.set("defType", handler.substring("/".length()));
             newParams.set("q", query);
             if (rows != null)
             {
@@ -6390,10 +6383,12 @@ public class AlfrescoCoreAdminTester
                 {
                     queryReport.add("Found", ds.size());
                 }
-                int sz = ds.size();
 
+              
                 if (sorted != null)
                 {
+                    int sz = sorted.length;
+                    
                     int[] dbids = new int[sz];
                     SolrIndexSearcher searcher = solrReq.getSearcher();
                     Iterator<SolrDocument> iterator = ds.iterator();
@@ -7215,10 +7210,10 @@ public class AlfrescoCoreAdminTester
         testQueryByHandler(report, core, "/afts", FIELD_INACLTXID + ":2", 0, null, null, null, null,
                     null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null,
+        testQueryByHandler(report, core, "/select", FIELD_TXCOMMITTIME + ":*", 1, null, null, null, null,
                     null, (String) null);
 
-        testQueryByHandler(report, core, "/afts", FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null,
+        testQueryByHandler(report, core, "/select", FIELD_ACLTXCOMMITTIME + ":*", 1, null, null, null,
                     null, null, (String) null);
 
         // AbstractLuceneQueryParser.FIELD_EXCEPTION_MESSAGE
@@ -7463,11 +7458,11 @@ public class AlfrescoCoreAdminTester
                     9, 10, 11, 12, 13, 14, 15, 16 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6, 7, 8,
                     9, 10, 11, 12, 13, 14, 15, 16 }, null, 20, 0, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6 }, null,
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 6, "DBID asc", new int[] { 1, 2, 3, 4, 5, 6 }, null,
                     6, 0, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 7, 8, 9, 10, 11, 12 },
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 6, "DBID asc", new int[] { 7, 8, 9, 10, 11, 12 },
                     null, 6, 6, (String) null);
-        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 16, "DBID asc", new int[] { 13, 14, 15, 16 }, null,
+        testQueryByHandler(report, core, "/afts", "PATH:\"//.\"", 4, "DBID asc", new int[] { 13, 14, 15, 16 }, null,
                     6, 12, (String) null);
     }
 
