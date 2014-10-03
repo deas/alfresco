@@ -33,6 +33,25 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class SolrContentUrlBuilderTest
 {
     @Test
+    public void miscellaneousMetadata()
+    {
+        String url1 = SolrContentUrlBuilder
+                .start()
+                .add("AAA", "AAA-VALUE")
+                .add("BBB", "BBB-VALUE")
+                .get();
+        String url1Check = SolrContentUrlBuilder
+                .start()
+                .add("BBB", "BBB-VALUE")
+                .add("AAA", "AAA-VALUE")
+                .get();
+        Assert.assertEquals(url1, url1Check);
+        
+        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://default/misc/"));
+        Assert.assertTrue("Incorrect URL: " + url1, url1.endsWith(".gz"));
+    }
+
+    @Test
     public void tenantOnly()
     {
         String url1 = SolrContentUrlBuilder
@@ -50,8 +69,8 @@ public class SolrContentUrlBuilderTest
                 .get();
         Assert.assertNotEquals(url1, url2);
         
-        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://bob/"));
-        Assert.assertTrue("File extension not present.", url1.endsWith(".bin"));
+        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://bob/misc/"));
+        Assert.assertTrue("File extension not present.", url1.endsWith(".gz"));
     }
 
     @Test
@@ -72,8 +91,7 @@ public class SolrContentUrlBuilderTest
                 .get();
         Assert.assertNotEquals(url1, url2);
         
-        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://default/"));
-        Assert.assertTrue("File extension not present.", url1.endsWith(".bin"));
+        Assert.assertEquals("Incorrect URL: " + url1, "solr://default/db/1234/5.gz", url1);
     }
 
     @Test
@@ -82,17 +100,16 @@ public class SolrContentUrlBuilderTest
         String url1 = SolrContentUrlBuilder
                 .start()
                 .add(SolrContentUrlBuilder.KEY_TENANT, "bob")
-                .add(SolrContentUrlBuilder.KEY_DB_ID, "12345")
+                .add(SolrContentUrlBuilder.KEY_DB_ID, "123456")
                 .get();
         String url1Check = SolrContentUrlBuilder
                 .start()
-                .add(SolrContentUrlBuilder.KEY_DB_ID, "12345")
+                .add(SolrContentUrlBuilder.KEY_DB_ID, "123456")
                 .add(SolrContentUrlBuilder.KEY_TENANT, "bob")
                 .get();
         Assert.assertEquals(url1, url1Check);
         
-        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://bob/123/45"));
-        Assert.assertTrue("File extension not present.", url1.endsWith(".bin"));
+        Assert.assertEquals("Incorrect URL: " + url1, "solr://bob/db/1234/56.gz", url1);
     }
 
     @Test
@@ -101,17 +118,16 @@ public class SolrContentUrlBuilderTest
         String url1 = SolrContentUrlBuilder
                 .start()
                 .add(SolrContentUrlBuilder.KEY_TENANT, "bob")
-                .add(SolrContentUrlBuilder.KEY_ACL_ID, "12345")
+                .add(SolrContentUrlBuilder.KEY_ACL_ID, "123456")
                 .get();
         String url1Check = SolrContentUrlBuilder
                 .start()
-                .add(SolrContentUrlBuilder.KEY_ACL_ID, "12345")
+                .add(SolrContentUrlBuilder.KEY_ACL_ID, "123456")
                 .add(SolrContentUrlBuilder.KEY_TENANT, "bob")
                 .get();
         Assert.assertEquals(url1, url1Check);
         
-        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://bob/123/45"));
-        Assert.assertTrue("File extension not present.", url1.endsWith(".bin"));
+        Assert.assertEquals("Incorrect URL: " + url1, "solr://bob/acl/1234/56.gz", url1);
     }
 
     @Test
@@ -131,8 +147,7 @@ public class SolrContentUrlBuilderTest
                 .get();
         Assert.assertEquals(url1, url1Check);
         
-        Assert.assertTrue("Incorrect URL: " + url1, url1.startsWith("solr://bob/543/211/234/5"));
-        Assert.assertTrue("File extension not present.", url1.endsWith(".bin"));
+        Assert.assertEquals("Incorrect URL: " + url1, "solr://bob/db/5432/1.gz", url1);
     }
 
     @Test

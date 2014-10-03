@@ -31,6 +31,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class that wraps up the creation of SOLR content URLs given arbitrary,
  * string-based metadata.
+ * <p/>
+ * The URL is constructed from a 19 digit number (zero-padded long), which is built from
+ * the ACL ID, the DB ID or a CRC32 of the provided metadata, and a numerical version starting with "000".<br/>
+ * For example, the DB ID "4775808" will generate
+ * <tt>"someprefix://<tenant>/db/4775/808.gz"</tt><br/>
+ * The 
  * 
  * @author Derek Hulley
  * @since 5.0
@@ -43,6 +49,7 @@ public class SolrContentUrlBuilder
      */
     public static final String SOLR_PROTOCOL = "solr";
     public static final String SOLR_PROTOCOL_PREFIX = SOLR_PROTOCOL + ContentStore.PROTOCOL_DELIMITER;
+    public static final String FILE_EXTENSION = ".gz";
 
     /** The key for the tenant name */
     public static final String KEY_TENANT = "tenant";
@@ -133,52 +140,61 @@ public class SolrContentUrlBuilder
         {
             throw new IllegalStateException("No metadata added.  Usage add.");
         }
-        // Calculate the CRC
-        CRC32 crc = new CRC32();
-        try
-        {
-            for (Map.Entry<String, String> entry : metadata.entrySet())
-            {
-                // This is ordered, so just add each entry as "key = value".
-                // DO NOT USE entry.toString() because the format is not a contract
-                // and we have to have the same string for the same metadata
-                String entryStr = entry.getKey() + "=" + entry.getValue() + "; ";
-                crc.update(entryStr.getBytes("UTF-8"));
-            }
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            // Yeah, right.
-            throw new RuntimeException("UTF-8 is not supported.", e);
-        }
+        
+        StringBuilder sb = new StringBuilder(72);
         // Is there a 'tenant'?
         String tenant = metadata.get(KEY_TENANT);
         if (tenant == null)             // We checked it for length before
         {
             tenant = "default";
         }
+        sb.append(SOLR_PROTOCOL_PREFIX).append(tenant).append("/");
 
         // Build a numeric value using the CRC and special IDs, if available
         StringBuilder numSb = new StringBuilder(52);
         if (metadata.containsKey(KEY_DB_ID))
         {
+            sb.append("db/");
+            // We have a unique DB ID, which can be used by itself
             numSb.append(metadata.get(KEY_DB_ID));
         }
-        if (metadata.containsKey(KEY_ACL_ID))
+        else if (metadata.containsKey(KEY_ACL_ID))
         {
+            sb.append("acl/");
+            // We have a unique ACL ID, which can be used completely
             numSb.append(metadata.get(KEY_ACL_ID));
         }
-        numSb.append(crc.getValue());
+        else
+        {
+            sb.append("misc/");
+            // Calculate the CRC
+            CRC32 crc = new CRC32();
+            try
+            {
+                for (Map.Entry<String, String> entry : metadata.entrySet())
+                {
+                    // This is ordered, so just add each entry as "key = value".
+                    // DO NOT USE entry.toString() because the format is not a contract
+                    // and we have to have the same string for the same metadata
+                    String entryStr = entry.getKey() + "=" + entry.getValue() + "; ";
+                    crc.update(entryStr.getBytes("UTF-8"));
+                }
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                // Yeah, right.
+                throw new RuntimeException("UTF-8 is not supported.", e);
+            }
+            numSb.append(crc.getValue());
+        }
         String numStr = numSb.toString();
         
-        StringBuilder sb = new StringBuilder(72);
-        sb.append(SOLR_PROTOCOL_PREFIX).append(tenant).append("/");
         // We use 3 characters at a time from the CRC, which gives up to 999 entries per path element of the URL
         int pathCharCount = 0;
         for (int i = 0; i < numStr.length(); i++)
         {
-            // If we have 3 chars in a path part (and we have more chars) then we have a folder
-            if (pathCharCount == 3)
+            // If we have 4 chars in a path part (and we have more chars) then we add a separator
+            if (pathCharCount == 4)
             {
                 sb.append("/");
                 pathCharCount = 0;
@@ -188,7 +204,7 @@ public class SolrContentUrlBuilder
             pathCharCount++;
         }
         // We always have a numeric value ending, never '/'.  That's it.  Just give it an extension.
-        sb.append(".bin");
+        sb.append(FILE_EXTENSION);
         String url = sb.toString();
         
         // Done

@@ -27,13 +27,16 @@ import org.alfresco.repo.content.ContentContext;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link SolrContentStoreTest}
@@ -196,7 +199,37 @@ public class SolrContentStoreTest
         reader = store.getReader(url);
         Assert.assertNotNull(reader);
         Assert.assertFalse(reader.exists());
+        
+        // Delete when already gone; should just not fail
+        store.delete(url);
     }
+//
+//    See ACE-2896.  There is actually no way of ensuring that the cached document is latest or perfect.
+//    /**
+//     * This store allows the same URL to be used but does redirection to the latest version under the covers
+//     */
+//    @Test
+//    public void rewrite() throws Exception
+//    {
+//        SolrContentStore store = new SolrContentStore(rootStr);
+//        
+//        ContentContext ctx = createContentContext("abc");
+//        ContentWriter writer1 = store.getWriter(ctx);
+//        ContentWriter writer2 = store.getWriter(ctx);
+//        assertNotEquals(
+//                "Different writers should use different URLs: writer1=" + writer1 + ", writer2=" + writer2,
+//                writer1.getContentUrl(), writer2.getContentUrl());
+//        assertTrue(
+//                "Second URL must be 'greater' than first: writer1=" + writer1 + ", writer2=" + writer2,
+//                writer1.getContentUrl().compareTo(writer2.getContentUrl()) < 0);
+//        
+//        writer1.putContent("Text1");
+//        writer2.putContent("Text2");
+//        
+//        // Now get the reader
+//        ContentReader reader = store.getReader(ctx.getContentUrl());
+//        assertEquals("Text2", reader.getContentString());
+//    }
     
     /**
      * A demonstration of how the store might be used.
