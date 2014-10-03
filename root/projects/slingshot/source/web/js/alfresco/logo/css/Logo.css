@@ -4,12 +4,15 @@
    padding-right: 14px;
 }
 
+.alfresco-logo-Logo > div.no-background-image {
+   background: none;
+}
+
 .alfresco-logo-Logo .alfresco-logo-large {
    background-image: url("./images/AlfrescoLogo.PNG");
    background-repeat: no-repeat;
    height: 48px;
    width: 184px;
-   margin-right: 10px;
 }
 
 .alfresco-logo-Logo .alfresco-logo-only {
@@ -17,15 +20,6 @@
    background-repeat: no-repeat;
    height: 48px;
    width: 48px;
-   margin-right: 10px;
-}
-
-.alfresco-logo-Logo .alfresco-logo-3d {
-   background-image: url("./images/alfresco3d.jpg");
-   background-repeat: no-repeat;
-   height: 168px;
-   width: 520px;
-   margin-right: 10px;
 }
 
 .alfresco-logo-Logo .surf-logo-large {
@@ -33,7 +27,6 @@
    background-repeat: no-repeat;
    height: 85px;
    width: 200px;
-   margin-right: 10px;
 }
 
 .alfresco-logo-Logo .surf-logo-small {
@@ -41,5 +34,4 @@
    background-repeat: no-repeat;
    height: 34px;
    width: 32px;
-   margin-right: 10px;
 }
