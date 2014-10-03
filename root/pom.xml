@@ -133,6 +133,7 @@
     <dir.root>${test.working.dir}/alf_test_data</dir.root>
     <img.exe>convert</img.exe>
     <swf.exe>pdf2swf</swf.exe>
+    <index.subsystem.name>lucene</index.subsystem.name>
 
     <!-- Maven specific build properties -->
     <maven.build.sourceVersion>1.7</maven.build.sourceVersion>
@@ -558,6 +559,8 @@
                         <!-- BDE-91 -->
                         <alfresco.rmi.services.retries>30</alfresco.rmi.services.retries>
                         <alfresco.rmi.services.retryInterval>2000</alfresco.rmi.services.retryInterval>
+                        <!-- Enables Lucene in continuous integration -->
+                        <index.subsystem.name>${index.subsystem.name}</index.subsystem.name>
                     </systemPropertyVariables>
                     <enableAssertions>false</enableAssertions>
                 </configuration>
