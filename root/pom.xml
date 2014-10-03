@@ -6,7 +6,7 @@
   <groupId>org.alfresco</groupId>
   <artifactId>alfresco-parent</artifactId>
   <packaging>pom</packaging>
-  <version>5.0.b-SNAPSHOT</version>
+  <version>5.0.b</version>
   <name>Alfresco</name>
 
   <url>http://www.alfresco.org/</url>
@@ -151,7 +151,7 @@
     <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
     <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/public</maven.repository.url>
     <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/snapshots</maven.distributionManagement.snapshot.url>
-    <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/releases</maven.distributionManagement.url>
+    <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-staging</maven.distributionManagement.url>
     <maven.license.name>GNU Lesser General Public License v3.0 or later</maven.license.name>
     <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
 
@@ -904,7 +904,7 @@
             <maven.scm.url>https://fisheye.alfresco.com/changelog/alfresco-enterprise</maven.scm.url>
             <maven.repository.url>https://artifacts.alfresco.com/nexus/content/groups/private</maven.repository.url>
             <maven.distributionManagement.snapshot.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</maven.distributionManagement.snapshot.url>
-            <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</maven.distributionManagement.url>
+            <maven.distributionManagement.url>https://artifacts.alfresco.com/nexus/content/repositories/internal-staging</maven.distributionManagement.url>
             <maven.license.name>Alfresco Enterprise License</maven.license.name>
             <maven.license.url>http://www.alfresco.com/legal</maven.license.url>
         </properties>
@@ -936,6 +936,7 @@
             <module>projects/share</module>
             <module>projects/system-build-test</module>
             <module>enterpriseprojects/packaging</module>
+            <module>enterpriseprojects/packaging/rpm</module>
             <module>privatemodules</module>
         </modules>
 
