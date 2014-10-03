@@ -133,7 +133,7 @@
     <dir.root>${test.working.dir}/alf_test_data</dir.root>
     <img.exe>convert</img.exe>
     <swf.exe>pdf2swf</swf.exe>
-    <index.subsystem.name>lucene</index.subsystem.name>
+    <index.subsystem.name>buildonly</index.subsystem.name>
 
     <!-- Maven specific build properties -->
     <maven.build.sourceVersion>1.7</maven.build.sourceVersion>
