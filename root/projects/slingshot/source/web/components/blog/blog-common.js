@@ -26,7 +26,7 @@ Alfresco.util.blog = {};
 
 /**
  * Generate the REST url for a given blog post
- * 
+ *
  * @method Alfresco.util.blog.generatePublishingRestURL
  * @param site {string} the site id
  * @param container {string} the container id
@@ -45,7 +45,7 @@ Alfresco.util.blog.generatePublishingRestURL = function generatePublishingRestUR
 
 /**
  * Generate a view url for a given site, container and blog post id.
- * 
+ *
  * @param postId the id/name of the post
  * @return an url to access the post
  */
@@ -77,7 +77,7 @@ Alfresco.util.blog.generatePostStatusLabel = function generatePostStatusLabel(me
       }
 
       if (data.isPublished)
-      {                  
+      {
          if (data.outOfDate)
          {
             return status + "(" + me._msg("status.published.outofsync") + ")";
@@ -105,8 +105,8 @@ Alfresco.util.blog.generatePostStatusLabel = function generatePostStatusLabel(me
  * @param data the blog post data
  * @param tagName the tag name to use for the actions. This will either be div or span, depending
  *                whether the actions are for the simple or detailed view.
- */         
-Alfresco.util.blog.generateBlogPostActions = function generateBlogPostActions(me, data, tagName, showPublishingActions)
+ */
+Alfresco.util.blog.generateBlogPostActions = function generateBlogPostActions(me, data, tagName)
 {
    var desc = '';
    // begin actions
@@ -114,21 +114,6 @@ Alfresco.util.blog.generateBlogPostActions = function generateBlogPostActions(me
    if (data.permissions.edit)
    {
       desc += '<' + tagName + ' class="onEditBlogPost"><a href="#" class="blogpost-action-link-' + tagName + '"><span>' + me._msg("action.edit") + '</span></a></' + tagName + '>';
-   }
-   if (data.permissions.edit && ! data.isDraft && showPublishingActions)
-   {
-      if (data.isPublished)
-      {
-         if (data.outOfDate)
-         {
-            desc += '<' + tagName + ' class="onUpdateExternal"><a href="#" class="blogpost-action-link-' + tagName + '"><span>' + me._msg("action.updateexternal") + '</span></a></' + tagName + '>';
-         }
-         desc += '<' + tagName + ' class="onUnpublishExternal"><a href="#" class="blogpost-action-link-' + tagName + '"><span>' + me._msg("action.unpublishexternal") + '</span></a></' + tagName + '>';
-      }
-      else
-      {
-         desc += '<' + tagName + ' class="onPublishExternal"><a href="#" class="blogpost-action-link-' + tagName + '"><span>' + me._msg("action.publishexternal") + '</span></a></' + tagName + '>';
-      }
    }
    if (data.permissions['delete'])
    {

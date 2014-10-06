@@ -1,8 +1,8 @@
 /**
  * BlogPostView component.
- * 
+ *
  * Component to view a blog post
- * 
+ *
  * @namespace Alfresco
  * @class Alfresco.BlogPostView
  */
@@ -19,10 +19,10 @@
     * Alfresco Slingshot aliases
     */
    var $html = Alfresco.util.encodeHTML;
-    
+
    /**
     * BlogPostView constructor.
-    * 
+    *
     * @param {String} htmlId The HTML id of the parent element
     * @return {Alfresco.BlogPostView} The new Post instance
     * @constructor
@@ -32,7 +32,7 @@
       /* Mandatory properties */
       this.name = "Alfresco.BlogPostView";
       this.id = htmlId;
-      
+
       /* Initialise prototype properties */
       this.widgets = {};
       this.tagId =
@@ -40,19 +40,19 @@
          id: 0,
          tags: {}
       };
-      
+
       /* Register this component */
       Alfresco.util.ComponentManager.register(this);
 
       /* Load YUI Components */
       Alfresco.util.YUILoaderHelper.require(["json", "connection", "event", "button", "menu"], this.onComponentsLoaded, this);
-      
+
       /* Decoupled event listeners */
       YAHOO.Bubbling.on("tagSelected", this.onTagSelected, this);
 
       return this;
    };
-   
+
    Alfresco.BlogPostView.prototype =
    {
       /**
@@ -65,12 +65,12 @@
       {
          /**
           * Current siteId.
-          * 
+          *
           * @property siteId
           * @type string
           */
          siteId: "",
-         
+
          /**
           * ContainerId representing root container
           *
@@ -79,51 +79,43 @@
           * @default "blog"
           */
          containerId: "blog",
-         
+
          /**
           * Id of the displayed blog post.
           */
          postId: ""
       },
-      
+
       /**
        * Stores the data displayed by this component
        */
       blogPostData: null,
-      
+
       /**
        * Object container for storing YUI widget instances.
-       * 
+       *
        * @property widgets
        * @type object
        */
       widgets : null,
-      
+
       /**
        * Object literal used to generate unique tag ids
-       * 
+       *
        * @property tagId
        * @type object
        */
       tagId: null,
-      
+
       /**
        * Tells whether an action is currently ongoing.
-       * 
+       *
        * @property busy
        * @type boolean
        * @see setBusy/releaseBusy
        */
       busy: false,
-      
-      /**
-       * True if publishing actions should be displayed
-       * 
-       * @property showPublishingActions
-       * @type boolean
-       */
-      showPublishingActions: false,
-      
+
       /**
        * Set multiple initialization options at once.
        *
@@ -148,7 +140,7 @@
          Alfresco.util.addMessages(obj, this.name);
          return this;
       },
-      
+
       /**
        * Fired by YUILoaderHelper when required component script files have
        * been loaded into the browser.
@@ -159,7 +151,7 @@
       {
          Event.onContentReady(this.id, this.onReady, this, true);
       },
-   
+
       /**
        * Fired by YUI when parent element is available for scripting.
        * Component initialisation, including instantiation of YUI widgets and event listener binding.
@@ -169,7 +161,7 @@
       onReady: function BlogPostView_onReady()
       {
          var me = this;
-         
+
          // Hook action events.
          var fnActionHandlerDiv = function BlogPostView_fnActionHandlerDiv(layer, args)
          {
@@ -187,17 +179,17 @@
             return true;
          };
          YAHOO.Bubbling.addDefaultAction("blogpost-action-link-div", fnActionHandlerDiv);
-         
+
          // Hook tag clicks
          Alfresco.util.tags.registerTagActionHandler(this);
-          
+
          // initialize the mouse over listener
          Alfresco.util.rollover.registerHandlerFunctions(this.id, this.onPostElementMouseEntered, this.onPostElementMouseExited, this);
-          
+
          // load the post data
          this._loadBlogPostData();
       },
-      
+
       /**
        * Loads the comments for the provided nodeRef and refreshes the ui
        */
@@ -210,7 +202,7 @@
             container: this.options.containerId,
             postId: this.options.postId
          });
-         
+
          // execute ajax request
          Alfresco.util.Ajax.request(
          {
@@ -227,7 +219,7 @@
       /**
        * Success handler for a blog post request. Updates the UI using the blog post data
        * provided in the response object.
-       * 
+       *
        * @param response {object} the ajax request response
        */
       loadBlogPostDataSuccess: function BlogPostView_loadCommentsSuccess(response)
@@ -235,22 +227,21 @@
          // store the returned data locally
          var data = response.json.item;
          this.blogPostData = data;
-         this.showPublishingActions = response.json.metadata.externalBlogConfig;
-         
+
          // get the container div to insert the the post into
          var viewDiv = Dom.get(this.id + '-post-view-div');
-         
+
          // render the blog post and insert it into the div
          var html = this.renderBlogPost(data);
          viewDiv.innerHTML = html;
-         
+
          // attach the rollover listeners
          Alfresco.util.rollover.registerListenersByClassName(this.id, 'post', 'div');
-         
+
          // inform interested comment components about the loaded blog post
          this.sendCommentedNodeEvent();
       },
-      
+
       /**
        * Sends out a setCommentedNode bubble event.
        */
@@ -268,7 +259,7 @@
          };
          YAHOO.Bubbling.fire("setCommentedNode", eventData);
       },
-      
+
       /**
        * Renders the blog post given a blog post data object returned by the server.
        */
@@ -284,16 +275,16 @@
          {
             authorLink = Alfresco.util.people.generateUserLink(data.author);
          }
-          
+
          var html = '<div id="' + this.id + '-postview" class="node post postview theme-bg-color-6 theme-border-3">';
-         html += Alfresco.util.blog.generateBlogPostActions(this, data, 'div', this.showPublishingActions);
-  
+         html += Alfresco.util.blog.generateBlogPostActions(this, data, 'div');
+
          // content
          html += '<div class="nodeContent">';
          html += '<div class="nodeTitle"><a href="' + postViewUrl + '">' + $html(data.title) + '</a> ';
          html += '<span class="theme-color-2 nodeStatus">' + statusLabel + '</span>';
          html += '</div>';
-          
+
          html += '<div class="published">';
          if (!data.isDraft)
          {
@@ -301,7 +292,7 @@
             html += '<span class="nodeAttrValue">' + Alfresco.util.formatDate(data.releasedOn) + '</span>';
             html += '<span class="separator">&nbsp;</span>';
          }
- 
+
          html += '<span class="nodeAttrLabel">' + this._msg("post.author") + ': </span>';
          html += '<span class="nodeAttrValue">' + authorLink + '</span>';
 
@@ -311,7 +302,7 @@
             html += '<span class="nodeAttrLabel">' + this._msg("post.externalLink") + ': </span>';
             html += '<span class="nodeAttrValue"><a target="_blank" href="' + data.postLink + '">' + this._msg("post.clickHere") + '</a></span>';
          }
-         
+
          html += '<span class="separator">&nbsp;</span>';
          html += '<span class="nodeAttrLabel tagLabel">' + this._msg("label.tags") + ': </span>';
          if (data.tags.length > 0)
@@ -330,15 +321,15 @@
             html += '<span class="nodeAttrValue">' + this._msg("post.noTags") + '</span>';
          }
          html += '</div>';
-      
+
          html += '<div class="content yuieditor">' + data.content + '</div>';
          html += '</div></div>';
          return html;
       },
 
-      
+
       // Actions
-      
+
       /**
        * Tag selected handler.
        *
@@ -372,13 +363,13 @@
          {
             site: this.options.siteId,
             postId: postId
-         });    
+         });
          window.location = url;
       },
 
       /**
        * Blog post deletion implementation
-       * 
+       *
        * @method onDeleteBlogPost
        * @param postId {string} the id of the blog post to delete
        */
@@ -408,10 +399,10 @@
             }]
          });
       },
-      
+
       /**
        * Blog post deletion implementation
-       * 
+       *
        * @method _deleteBlogPostConfirm
        * @param postId {string} the id of the blog post to delete
        */
@@ -422,21 +413,21 @@
          {
             return;
          }
-          
+
          // ajax request success handler
          var onDeletedSuccess = function BlogPostList_onDeletedSuccess(response)
          {
             // remove busy message
             this._releaseBusy();
-            
+
             // load the blog post list page
             var url = YAHOO.lang.substitute(Alfresco.constants.URL_PAGECONTEXT + "site/{site}/blog-postlist",
             {
                site: this.options.siteId
-            });    
+            });
             window.location = url;
          };
-         
+
          // get the url to call
          var url = YAHOO.lang.substitute(Alfresco.constants.PROXY_URI + "api/blog/post/site/{site}/{container}/{postId}?page={page}",
          {
@@ -445,7 +436,7 @@
             postId: encodeURIComponent(postId),
             page: "blog-postlist"
          });
-         
+
          // execute ajax request
          Alfresco.util.Ajax.request(
          {
@@ -469,11 +460,11 @@
             }
          });
       },
-       
-       
+
+
       /**
        * Publishing of a blog post
-       * 
+       *
        * @method onPublishExternal
        * @param postId {string} the id of the blog post to publish
        */
@@ -484,20 +475,20 @@
          {
             return;
          }
-         
+
          // ajax call success handler
          var onPublishedSuccess = function BlogPostList_onPublishedSuccess(response)
          {
             // remove busy message
             this._releaseBusy();
-            
+
             // re-render the post
             this.loadBlogPostDataSuccess(response);
          };
-         
+
          // get the url to call
          var url = Alfresco.util.blog.generatePublishingRestURL(this.options.siteId, this.options.containerId, postId);
-         
+
          // execute ajax request
          Alfresco.util.Ajax.request(
          {
@@ -523,11 +514,11 @@
             }
          });
       },
-      
+
 
       /**
        * Updating of an external published blog post implementation
-       * 
+       *
        * @method onUpdateExternal
        * @param postId {string} the id of the blog post to update
        */
@@ -538,20 +529,20 @@
          {
             return;
          }
-         
+
          // ajax request success handler
          var onUpdatedSuccess = function BlogPostList_onUpdatedSuccess(response)
          {
             // remove busy message
             this._releaseBusy();
-            
+
             // re-render the post
             this.loadBlogPostDataSuccess(response);
          };
-         
+
          // get the url to call
          var url = Alfresco.util.blog.generatePublishingRestURL(this.options.siteId, this.options.containerId, postId);
-         
+
          // execute ajax request
          Alfresco.util.Ajax.request(
          {
@@ -581,7 +572,7 @@
 
       /**
        * Unpublishing of an external published blog post implementation
-       * 
+       *
        * @method onUnpublishExternal
        * @param postId {string} the id of the blog post to update
        */
@@ -592,20 +583,20 @@
          {
             return;
          }
-         
+
          // ajax request success handler
          var onUnpublishedSuccess = function BlogPostList_onUnpublishedSuccess(response)
          {
             // remove busy message
             this._releaseBusy();
-            
+
             // re-render the post
             this.loadBlogPostDataSuccess(response);
          };
-          
+
          // get the url to call
          var url = Alfresco.util.blog.generatePublishingRestURL(this.options.siteId, this.options.containerId, postId);
-         
+
          // execute ajax request
          Alfresco.util.Ajax.request(
          {
@@ -632,9 +623,9 @@
          });
       },
 
-      
+
       // mouse hover functionality
-      
+
       /** Called when the mouse enters into a list item. */
       onPostElementMouseEntered: function BlogPostView_onListElementMouseEntered(layer, args)
       {
@@ -644,17 +635,17 @@
          {
             return;
          }
-          
+
          Dom.addClass(args[1].target, 'over');
       },
-      
+
       /** Called whenever the mouse exits a list item. */
       onPostElementMouseExited: function BlogPostView_onListElementMouseExited(layer, args)
       {
          Dom.removeClass(args[1].target, 'over');
       },
 
-   
+
       /**
        * PRIVATE FUNCTIONS
        */
@@ -662,7 +653,7 @@
       /**
        * Displays the provided busyMessage but only in case
        * the component isn't busy set.
-       * 
+       *
        * @return true if the busy state was set, false if the component is already busy
        */
       _setBusy: function BlogPostList__setBusy(busyMessage)
@@ -680,7 +671,7 @@
          });
          return true;
       },
-      
+
       /**
        * Removes the busy message and marks the component as non-busy
        */
