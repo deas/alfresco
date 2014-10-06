@@ -1,20 +1,29 @@
 package org.alfresco.solr.component;
 
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This file is part of Alfresco
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * 
+ * This file is based upon code copied from the Solr project and modified.
+ * The original code is licensed to the Apache Software Foundation. Please see:
+ * 
+ *   http://lucene.apache.org/solr/
+ *   http://www.apache.org/licenses/LICENSE-2.0
  */
 
 import java.io.IOException;
@@ -66,9 +75,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SuggestComponent: interacts with multiple {@link SolrSuggester} to serve up suggestions
- * Responsible for routing commands and queries to the appropriate {@link SolrSuggester}
- * and for initializing them as specified by SolrConfig
+ * Originally taken from {@link SuggestComponent} and modified, this
+ * class provides a {@link SearchComponent} that builds {@link SolrSuggester}
+ * objects asynchronously to avoid blocking search
+ * requests or increasing startup time of the servlet container.
+ * 
+ * @see org.apache.solr.handler.component.SuggestComponent
  */
 public class AsyncBuildSuggestComponent extends SearchComponent implements SolrCoreAware, SuggesterParams, Accountable {
   private static final Logger LOG = LoggerFactory.getLogger(AsyncBuildSuggestComponent.class);
