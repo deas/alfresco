@@ -32,21 +32,27 @@ define(["dojo/_base/lang",
        * Converts the supplied NodeRef string into an object containing its composite attributes.
        *
        * @instance
-       * @param {string} nodeRef
+       * @param {string} nodeRefInput
        * @return {object}
        */
-      processNodeRef: function alfresco_core_NodeUtils__processNodeRef(nodeRef) {
+      processNodeRef: function alfresco_core_NodeUtils__processNodeRef(nodeRefInput) {
          try
          {
-            var uri = nodeRef.replace(":/", ""),
-                arr = uri.split("/");
+
+            // Split the nodeRef and rebuild from composite parts, for clarity and to support input of uri node refs.
+            var arr = nodeRefInput.replace(":/", "").split("/"),
+               storeType = arr[0],
+               storeId = arr[1],
+               id = arr[2],
+               uri = storeType + "/" + storeId + "/" + id,
+               nodeRef = storeType + "://" + storeId + "/" + id;
 
             return (
             {
                nodeRef: nodeRef,
-               storeType: arr[0],
-               storeId: arr[1],
-               id: arr[2],
+               storeType: storeType,
+               storeId: storeId,
+               id: id,
                uri: uri,
                toString: function()
                {

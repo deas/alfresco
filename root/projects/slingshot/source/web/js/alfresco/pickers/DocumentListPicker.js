@@ -29,13 +29,14 @@
  */
 define(["dojo/_base/declare",
         "alfresco/documentlibrary/AlfDocumentList",
-        "dojo/_base/lang"],
-        function(declare, AlfDocumentList, lang) {
+        "dojo/_base/lang",
+        "alfresco/core/ArrayUtils"],
+        function(declare, AlfDocumentList, lang, arrayUtils) {
 
    return declare([AlfDocumentList], {
 
       /**
-       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfList#waitForPageWidgets} to ensure that pickers
+       * Overrides the [inherited value]{@link module:alfresco/lists/AlfList#waitForPageWidgets} to ensure that pickers
        * don't wait for the page to be loaded (as typically the page will be loaded long before the picker is opened).
        * This can still be overridden again in configuration when creating a new picker.
        *
@@ -46,7 +47,7 @@ define(["dojo/_base/declare",
       waitForPageWidgets: false,
 
       /**
-       * Overrides the [inherited value]{@link moduule:alfresco/lists/AlfHashList#useHash} to indicate that the location
+       * Overrides the [inherited value]{@link module:alfresco/lists/AlfHashList#useHash} to indicate that the location
        * should not be driven by changes to the browser URL hash
        *
        * @instance
@@ -54,6 +55,26 @@ define(["dojo/_base/declare",
        * @default false
        */
       useHash: false,
+
+      /**
+       * This nodeRefRef is used to limit navigation up the directory, to constrain the picker to the a certain path.
+       * It can be passed in on config, but if not, it will be set the first time loadData is called.
+       *
+       * @instance
+       * @type {String}
+       * @default null
+       */
+      rootNodeRef: null,
+
+      /**
+       * Enable site mode.
+       * In site mode the peer folders of the documentlibrary container are hidden and we skip straight to documentlibrary's children
+       *
+       * @instance
+       * @type {Boolean}
+       * @default false
+       */
+      siteMode: false,
 
       /**
        * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
@@ -160,6 +181,75 @@ define(["dojo/_base/declare",
        */
       onDocumentClick: function alfresco_pickers_DocumentListPicker__onDocumentClick(payload) {
          // No action.
+      },
+
+      /**
+       * Extends [loadData]{@link module:alfresco/documentlibrary/AlfSearchList#loadData} to store the rootNodeRef.
+       * @instance
+       */
+      loadData: function alfresco_pickers_DocumentListPicker__loadData() {
+         if (!this.rootNodeRef) {
+            this.rootNodeRef = this.nodeRef;
+         }
+
+         // Enable or disable the parent navigation
+         if (this.nodeRef === this.rootNodeRef)
+         {
+            this.alfPublish("ALF_INVALID_CONTROL", {});
+         }
+         else
+         {
+            this.alfPublish("ALF_VALID_CONTROL", {});
+         }
+
+         this.inherited(arguments);
+      },
+
+      /**
+       * Overrides [onDataLoadSuccess]{@link module:alfresco/documentlibrary/AlfList#onDataLoadSuccess} to skip children.
+       *
+       * @param payload
+       */
+      onDataLoadSuccess: function alfresco_pickers_DocumentListPicker__onDataLoadSuccess(payload) {
+         var parentType = lang.getObject("response.metadata.parent.type", false, payload);
+
+         // Allow parent nav functionality to work when node information passed in was a well known node.
+         if (this.rootNodeRef.indexOf("alfresco://") !== -1)
+         {
+            // If an alfresco:// prefixed path was passed in, we need to update it to the nodeRef now we have it
+            var parentNodeRef = lang.getObject("response.metadata.parent.nodeRef", false, payload);
+            if (parentNodeRef)
+            {
+               this.rootNodeRef = parentNodeRef;
+            }
+            else
+            {
+               this.alfLog("warn", "Couldn't retrieve parentNodeRef, this means the back parent nav button will appear when it shouldn't");
+            }
+         }
+
+         // If we're in site mode and the returned items are direct children of a site node, skip to the documentlibrary
+         if (this.siteMode && parentType === "st:site")
+         {
+            // Find the "documentLibrary" node in the response items
+            var items = lang.getObject("response.items", false, payload),
+               doclibNode = arrayUtils.findInArray(items, "documentLibrary", "fileName"),
+               doclibNodeRef = lang.getObject("node.nodeRef", false, doclibNode);
+            if (doclibNodeRef)
+            {
+               // once we have the node ref, load it using the same mechanism as before.
+               this.rootNodeRef = doclibNodeRef;
+               this.onFolderClick({nodeRef: doclibNodeRef});
+            }
+            else
+            {
+               this.alfLog("error", "Unable to retrieve nodeRef for documentLibrary folder.");
+            }
+         }
+         else
+         {
+            this.inherited(arguments);
+         }
       },
 
       /**

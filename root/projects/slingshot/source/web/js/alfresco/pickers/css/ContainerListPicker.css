@@ -31,5 +31,9 @@
       margin-top: -35px;
       position: absolute;
       margin-left: -5px;
+
+      &.dijitButtonDisabled {
+         display:none;
+      }
    }
 }

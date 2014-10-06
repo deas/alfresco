@@ -91,7 +91,8 @@ define(["dojo/_base/declare",
                            additionalCssClasses: "ContainerListPickerParentNav",
                            publishTopic: "ALF_DOCLIST_PARENT_NAV",
                            showLabel: false,
-                           iconClass: "alf-folder-up-icon"
+                           iconClass: "alf-folder-up-icon",
+                           disableOnInvalidControls: true
                         }
                      }
                   ],
