@@ -20,12 +20,22 @@ package org.alfresco.solr.query;
 
 import java.io.IOException;
 
+import org.alfresco.repo.search.adaptor.lucene.QueryConstants;
+import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.solr.cache.CacheConstants;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.FixedBitSet;
+import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.BitDocSet;
+import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 
@@ -48,21 +58,31 @@ public class SolrOwnerSetScorer extends AbstractSolrCachingScorer
 
     public static SolrOwnerSetScorer createOwnerSetScorer(Weight weight, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher, String authorities) throws IOException
     {
-        // The set of docs owned by all of the authorities
-        DocSet authorityOwnedDocs = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
-
-        // Split the authorities. The first character in the authorities String
-        // specifies the separator, e.g. ",jbloggs,abeecher"
-        String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
         
-        for (String current : auths)
+        DocSet authorityOwnedDocs = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_OWNERLOOKUP_CACHE, authorities);
+        
+        if(authorityOwnedDocs == null)
         {
-            DocSet currentAuthDocs = searcher.getDocSet(new SolrOwnerQuery(current));
-            // Add to the doc set owned by the set of authorities.
-            authorityOwnedDocs = authorityOwnedDocs.union(currentAuthDocs);
-        }
+            // Split the authorities. The first character in the authorities String
+            // specifies the separator, e.g. ",jbloggs,abeecher"
+            String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
 
+            BooleanQuery bQuery = new BooleanQuery();
+            for(String current : auths)
+            {
+                if (AuthorityType.getAuthorityType(current) == AuthorityType.USER)
+                {
+                    bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_OWNER, current)), Occur.SHOULD);
+                }
+            }
+
+            authorityOwnedDocs = searcher.getDocSet(bQuery);
+        
+            searcher.cacheInsert(CacheConstants.ALFRESCO_OWNERLOOKUP_CACHE, authorities, authorityOwnedDocs);
+        }
+        
         // TODO: Cache the final set? e.g. searcher.cacheInsert(authorities, authorityOwnedDocs)
         return new SolrOwnerSetScorer(weight, authorityOwnedDocs, context, acceptDocs, searcher);
+       
     }
 }

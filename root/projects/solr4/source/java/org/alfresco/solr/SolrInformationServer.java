@@ -551,7 +551,9 @@ public class SolrInformationServer implements InformationServer
             params.set("q", query)
                 .set("fl", FIELD_SOLR4_ID)
                 .set("rows", rows)
-                .set("start", start);
+                .set("start", start)
+                .set("sort", "_docid_ asc");
+                // no scoring !!
             List<TenantAclIdDbId> docIds = new ArrayList<>();
             SolrDocumentList docList = cloud.getSolrDocumentList(selectRequestHandler, request, params);
             if (docList != null)

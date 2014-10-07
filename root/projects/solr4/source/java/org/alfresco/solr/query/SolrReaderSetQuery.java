@@ -71,7 +71,7 @@ public class SolrReaderSetQuery extends AbstractAuthoritySetQuery
         public Scorer scorer(AtomicReaderContext context, Bits acceptDocs) throws IOException
         {
             AtomicReader reader = context.reader();
-            return SolrReaderSetScorer.createReaderSetScorer(this, context, acceptDocs, searcher, authorities, reader);
+            return SolrReaderSetScorer2.createReaderSetScorer(this, context, acceptDocs, searcher, authorities, reader);
         }
     }
 }

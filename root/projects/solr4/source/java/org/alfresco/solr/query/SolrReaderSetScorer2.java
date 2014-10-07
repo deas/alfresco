@@ -40,65 +40,64 @@ import org.apache.solr.search.DocIterator;
 import org.apache.solr.search.DocSet;
 import org.apache.solr.search.SolrIndexSearcher;
 
-public class SolrDenySetScorer extends AbstractSolrCachingScorer
+public class SolrReaderSetScorer2 extends AbstractSolrCachingScorer
 {
 
-    SolrDenySetScorer(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
+    SolrReaderSetScorer2(Weight weight, DocSet in, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher)
     {
         super(weight, in, context, acceptDocs, searcher);
     }
 
-    public static SolrDenySetScorer createDenySetScorer(Weight weight, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
+    public static SolrReaderSetScorer2 createReaderSetScorer(Weight weight, AtomicReaderContext context, Bits acceptDocs, SolrIndexSearcher searcher, String authorities, AtomicReader reader) throws IOException
     {
-        DocSet deniedDocSet = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_DENIED_CACHE, authorities);
+        
+        DocSet readableDocSet = (DocSet) searcher.cacheLookup(CacheConstants.ALFRESCO_READER_CACHE, authorities);
 
-        if (deniedDocSet == null)
+        if (readableDocSet == null)
         {
 
             String[] auths = authorities.substring(1).split(authorities.substring(0, 1));
 
-            deniedDocSet = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
+            readableDocSet = new BitDocSet(new FixedBitSet(searcher.maxDoc()));
 
             BooleanQuery bQuery = new BooleanQuery();
             for(String current : auths)
             {
-                bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_DENIED, current)), Occur.SHOULD);
+                bQuery.add(new TermQuery(new Term(QueryConstants.FIELD_READER, current)), Occur.SHOULD);
             }
 
             DocSet aclDocs = searcher.getDocSet(bQuery);
+            
+            HashSet<Long> aclsFound = new HashSet<Long>(aclDocs.size());
+            NumericDocValues aclDocValues = searcher.getAtomicReader().getNumericDocValues(QueryConstants.FIELD_ACLID);
             
             BooleanQuery aQuery = new BooleanQuery();
             for (DocIterator it = aclDocs.iterator(); it.hasNext(); /**/)
             {
                 int docID = it.nextDoc();
                 // Obtain the ACL ID for this ACL doc.
-                long aclID = searcher.getAtomicReader().getNumericDocValues(QueryConstants.FIELD_ACLID).get(docID);
-                SchemaField schemaField = searcher.getSchema().getField(QueryConstants.FIELD_ACLID);
-                Query query = schemaField.getType().getFieldQuery(null, schemaField, Long.toString(aclID));
-                aQuery.add(query,  Occur.SHOULD);
-                
-                if((aQuery.clauses().size() > 999) || !it.hasNext())
+                long aclID = aclDocValues.get(docID);
+                aclsFound.add(Long.valueOf(aclID));
+            }
+         
+            for(int i = 0; i < searcher.maxDoc(); i ++)
+            {
+                long aclID = aclDocValues.get(i);
+                Long key = Long.valueOf(aclID);
+                if(aclsFound.contains(key))
                 {
-                    DocSet docsForAclId = searcher.getDocSet(aQuery);                
-                    deniedDocSet = deniedDocSet.union(docsForAclId);
-                       
-                    aQuery = new BooleanQuery();
+                    readableDocSet.add(i);
                 }
             }
-          
             
             // Exclude the ACL docs from the results, we only want real docs that match.
             // Probably not very efficient, what we really want is remove(docID)
-            deniedDocSet = deniedDocSet.andNot(aclDocs);
-            searcher.cacheInsert(CacheConstants.ALFRESCO_DENIED_CACHE, authorities, deniedDocSet);
+            readableDocSet = readableDocSet.andNot(aclDocs);
+            searcher.cacheInsert(CacheConstants.ALFRESCO_READER_CACHE, authorities, readableDocSet);
         }
         
         // TODO: cache the full set? e.g. searcher.cacheInsert(CacheConstants.ALFRESCO_READERSET_CACHE, authorities, readableDocSet)
         // plus check of course, for presence in cache at start of method.
-        return new SolrDenySetScorer(weight, deniedDocSet, context, acceptDocs, searcher);
-        
-        
-        
+        return new SolrReaderSetScorer2(weight, readableDocSet, context, acceptDocs, searcher);
     }
-
 }
