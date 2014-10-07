@@ -544,7 +544,10 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
               // firstSearcher event
               try {
                 LOG.info("Loading suggester index for: " + suggester.getName());
+                final long startMillis = System.currentTimeMillis();
                 suggester.reload(core, searcher);
+                final long timeTakenMillis = System.currentTimeMillis() - startMillis;
+                LOG.info("Loaded suggester " + suggester.getName() + ", took " + timeTakenMillis + " ms");
               } catch (IOException e) {
                 LOG.error("Exception in reloading suggester index for: " + suggester.getName(), e);
               }
@@ -572,7 +575,10 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     private void buildSuggesterIndex(SolrSuggester suggester, SolrIndexSearcher newSearcher) {
       try {
         LOG.info("Building suggester index for: " + suggester.getName());
+        final long startMillis = System.currentTimeMillis();
         suggester.build(core, newSearcher);
+        final long timeTakenMillis = System.currentTimeMillis() - startMillis;
+        LOG.info("Built suggester " + suggester.getName() + ", took " + timeTakenMillis + " ms");
       } catch (Exception e) {
         LOG.error("Exception in building suggester index for: " + suggester.getName(), e);
       }
