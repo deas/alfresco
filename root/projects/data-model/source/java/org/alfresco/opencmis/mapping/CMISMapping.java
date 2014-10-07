@@ -509,8 +509,7 @@ public class CMISMapping implements InitializingBean
         // AND any that are derived from them.
         if (       dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_VERSIONABLE)
                 || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_AUDITABLE)
-                || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE)
-                || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_LOCALIZED))
+                || dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE))
         {
             return false;
         }
@@ -551,8 +550,7 @@ public class CMISMapping implements InitializingBean
         	// AND any that are derived from them.
         	if (       dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_VERSIONABLE)
         			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_AUDITABLE)
-        			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE)
-        			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_LOCALIZED))
+        			|| dictionaryService.isSubClass(aspectDef.getName(), ContentModel.ASPECT_REFERENCEABLE))
         	{
         		return false;
         	}
