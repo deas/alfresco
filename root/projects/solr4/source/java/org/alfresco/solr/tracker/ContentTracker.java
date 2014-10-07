@@ -57,6 +57,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack() throws Exception
     {
+        checkShutdown();
         int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
         if(registeredSearcherCount >= getMaxLiveSearchers())
         {
@@ -64,10 +65,10 @@ public class ContentTracker extends AbstractTracker implements Tracker
             return;
         }
         
-        checkShutdown();
         final int ROWS = contentReadBatchSize;
         int start = 0;
         long totalDocs = 0l;
+        checkShutdown();
         List<TenantAclIdDbId> docs = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
         while (!docs.isEmpty())
         {
@@ -81,6 +82,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
                 if (docsUpdatedSinceLastCommit == contentUpdateBatchSize)
                 {
                     super.waitForAsynchronous();
+                    checkShutdown();
                     this.infoSrv.commit();
                     docsUpdatedSinceLastCommit = 0;
                 }
@@ -89,10 +91,12 @@ public class ContentTracker extends AbstractTracker implements Tracker
             if (docsUpdatedSinceLastCommit > 0)
             {
                 super.waitForAsynchronous();
+                checkShutdown();
                 this.infoSrv.commit();
             }
             totalDocs += docs.size();
             start += ROWS;
+            checkShutdown();
             docs = this.infoSrv.getDocsWithUncleanContent(start, ROWS);
         }
         
@@ -114,6 +118,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
         @Override
         protected void doWork() throws Exception
         {
+            checkShutdown();
             this.infoServer.updateContentToIndexAndCache(doc.dbId, doc.tenant);
         }
     }
