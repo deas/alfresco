@@ -584,6 +584,7 @@
               size="${solr.authorityCache.size:128}"
               initialSize="${solr.authorityCache.initialSize:64}"
               autowarmCount="${solr.authorityCache.autowarmCount:4}"
+              regenerator="org.alfresco.solr.cache.AuthorityCacheRegenerator"
               />
               
     <cache name="alfrescoPathCache"
