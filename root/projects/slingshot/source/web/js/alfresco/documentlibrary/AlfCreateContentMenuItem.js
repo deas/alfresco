@@ -23,7 +23,7 @@
  * at the current rendered location. This was created for use in the document library (for items in the "Create..." menu
  * but is applicable for use anywhere where user access rights need to be verified.
  * 
- * @module alfresco/documentlibrary/AlfFilteringMenuItem
+ * @module alfresco/documentlibrary/AlfCreateContentMenuItem
  * @extends module:alfresco/menus/AlfMenuBarPopup
  * @mixes module:alfresco/documentlibrary/_AlfCreateContentPermissionsMixin
  * @mixes module:alfresco/documentlibrary/_AlfDocumentListTopicMixin

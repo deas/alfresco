@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -63,7 +63,7 @@ define(["dojo/_base/declare",
        * @param {string} renditionName
        * @returns {string}
        */
-      generateThumbnailUrl: function DL_generateThumbnailUrl(renditionName) {
+      generateThumbnailUrl: function alfresco_renderers_SmallThumbnail__generateThumbnailUrl(renditionName) {
          var url,
              jsNode = this.currentItem.jsNode;
          if (jsNode.isContainer || (jsNode.isLink && jsNode.linkedNode.isContainer))
@@ -73,7 +73,8 @@ define(["dojo/_base/declare",
          }
          else
          {
-            url = AlfConstants.URL_RESCONTEXT + "components/images/filetypes/" + Alfresco.util.getFileIcon(this.currentItem.node.properties["cm:name"]);
+            var fileIcon = Alfresco.util.getFileIconByMimetype(this.currentItem.node.mimetype);
+            url = AlfConstants.URL_RESCONTEXT + "components/images/filetypes/" + fileIcon;
             // TODO: Preview
          }
          return url;

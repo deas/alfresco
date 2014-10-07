@@ -678,7 +678,7 @@ public class DojoDependencyHandler
                {
                   // The first folder in the path is a module alias, we don't need to make any changes...
                   usesModuleAlias = true;
-                  String s = dependencyPath.replace(firstFolder, alias);
+                  String s = dependencyPath.replaceFirst(firstFolder, alias);
                   sb.append(s);
                }
            }

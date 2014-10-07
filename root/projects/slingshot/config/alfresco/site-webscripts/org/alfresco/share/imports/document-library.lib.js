@@ -185,132 +185,217 @@ for (var i = 0; i < multiSelectActions.size(); i++)
 var createContent = [];
 
 // Create content config items
-var createContentConfig = config.scoped["DocumentLibrary"]["create-content"];
-if (createContentConfig !== null)
-{
-   var contentConfigs = createContentConfig.getChildren("content");
-   if (contentConfigs)
-   {
-      var attr, content, contentConfig, paramConfigs, paramConfig, permissionsConfigs, permissionConfigs, permissionConfig;
-      for (var i = 0; i < contentConfigs.size(); i++)
-      {
-         contentConfig = contentConfigs.get(i);
-         attr = contentConfig.attributes;
+// var createContentConfig = config.scoped["DocumentLibrary"]["create-content"];
+// if (createContentConfig !== null)
+// {
+//    var contentConfigs = createContentConfig.getChildren("content");
+//    if (contentConfigs)
+//    {
+//       var attr, content, contentConfig, paramConfigs, paramConfig, permissionsConfigs, permissionConfigs, permissionConfig;
+//       for (var i = 0; i < contentConfigs.size(); i++)
+//       {
+//          contentConfig = contentConfigs.get(i);
+//          attr = contentConfig.attributes;
 
-         var getCreateContentImage = function(attr) {
-            var imageUrl = url.context + "/res/components/images/filetypes/";
-            if (attr["icon"])
-            {
-               imageUrl += attr["icon"];
-            }
-            else if (attr["id"])
-            {
-               imageUrl += attr["id"];
-            }
-            else
-            {
-               imageUrl += generic;
-            }
-            imageUrl += "-file-16.png";
-            return imageUrl;
-         };
+//          var getCreateContentImage = function(attr) {
+//             var imageUrl = url.context + "/res/components/images/filetypes/";
+//             if (attr["icon"])
+//             {
+//                imageUrl += attr["icon"];
+//             }
+//             else if (attr["id"])
+//             {
+//                imageUrl += attr["id"];
+//             }
+//             else
+//             {
+//                imageUrl += generic;
+//             }
+//             imageUrl += "-file-16.png";
+//             return imageUrl;
+//          };
          
-         var content = {
-            name: "alfresco/documentlibrary/AlfCreateContentMenuItem",
-            config: {
-               iconImage: getCreateContentImage(attr),
-               label: attr["label"] ? attr["label"].toString() : attr["id"] ? "create-content." + attr["id"].toString() : null,
-               index: parseInt(attr["index"] || "0"),
-               permission: "CreateChildren",
-               publishTopic: "ALF_CREATE_CONTENT",
-               publishPayload: {
-                  action: attr["id"] ? attr["id"].toString() : "",
-                  type: attr["type"] ? attr["type"].toString() : null,
-                  params: {},
-               }
-            }
-         };
+//          var content = {
+//             name: "alfresco/documentlibrary/AlfCreateContentMenuItem",
+//             config: {
+//                iconImage: getCreateContentImage(attr),
+//                label: attr["label"] ? attr["label"].toString() : attr["id"] ? "create-content." + attr["id"].toString() : null,
+//                index: parseInt(attr["index"] || "0"),
+//                permission: "CreateChildren",
+//                publishTopic: "ALF_CREATE_CONTENT",
+//                publishPayload: {
+//                   action: attr["id"] ? attr["id"].toString() : "",
+//                   type: attr["type"] ? attr["type"].toString() : null,
+//                   params: {},
+//                }
+//             }
+//          };
 
-         // Read params
-         paramConfigs = contentConfig.getChildren("param");
-         for (var pi = 0; pi < paramConfigs.size(); pi++)
-         {
-            paramConfig = paramConfigs.get(pi);
-            if (paramConfig.attributes["name"])
-            {
-               content.config.publishPayload.params[paramConfig.attributes["name"]] = (paramConfig.value || "").toString();
-            }
-         }
+//          // Read params
+//          paramConfigs = contentConfig.getChildren("param");
+//          for (var pi = 0; pi < paramConfigs.size(); pi++)
+//          {
+//             paramConfig = paramConfigs.get(pi);
+//             if (paramConfig.attributes["name"])
+//             {
+//                content.config.publishPayload.params[paramConfig.attributes["name"]] = (paramConfig.value || "").toString();
+//             }
+//          }
 
-         // Read permissions
-         permissionsConfigs = contentConfig.getChildren("permissions");
-         if (permissionsConfigs.size() > 0)
-         {
-            var allow, deny, value, match;
-            permissionConfigs = permissionsConfigs.get(0).getChildren("permission");
-            for (var pi = 0; pi < permissionConfigs.size(); pi++)
-            {
-               permissionConfig = permissionConfigs.get(pi);
-               allow = permissionConfig.attributes["allow"];
-               deny = permissionConfig.attributes["deny"];
-               value = (permissionConfig.value || "").toString();
-               if (value.length() > 0)
+//          // Read permissions
+//          permissionsConfigs = contentConfig.getChildren("permissions");
+//          if (permissionsConfigs.size() > 0)
+//          {
+//             var allow, deny, value, match;
+//             permissionConfigs = permissionsConfigs.get(0).getChildren("permission");
+//             for (var pi = 0; pi < permissionConfigs.size(); pi++)
+//             {
+//                permissionConfig = permissionConfigs.get(pi);
+//                allow = permissionConfig.attributes["allow"];
+//                deny = permissionConfig.attributes["deny"];
+//                value = (permissionConfig.value || "").toString();
+//                if (value.length() > 0)
+//                {
+//                   match = true;
+//                   if (allow != null)
+//                   {
+//                      match = (allow == "true");
+//                   }
+//                   else if (deny != null)
+//                   {
+//                      match = (deny == "false");
+//                   }
+//                   content.config.permission += (content.config.permission.length == 0 ? "" : ",") + (value + ":" + match);
+//                }
+//             }
+//          }
+
+//          if (!content.config.publishPayload.type)
+//          {
+//             /**
+//              * Support simple/old configs like below by making them of type "pagelink" pointing to the create-content page.
+//              * <content id="xml" mimetype="text/xml" label="create-content.xml" itemid="cm:content" permission="Write" formid=""/>
+//              */
+//             var permission = attr["permission"] ? attr["permission"].toString() : null,
+//                 mimetype = attr["mimetype"] ? attr["mimetype"].toString() : null,
+//                 itemid = attr["itemid"] ? attr["itemid"].toString() : null,
+//                 formid = attr["formid"] ? attr["formid"].toString() : null,
+//                 _url = "create-content?destination={node.nodeRef}";
+//             if (permission)
+//             {
+//                content.config.permission += (content.config.permission.length == 0 ? "" : ",") + permission;
+//             }
+//             if (itemid)
+//             {
+//                _url += "&itemId=" + itemid;
+//             }
+//             if (formid)
+//             {
+//                _url += "&formId=" + formid;
+//             }
+//             if (mimetype)
+//             {
+//                _url += "&mimeType=" + mimetype;
+//             }
+
+//             content.config.publishPayload.type = "pagelink";
+//             content.config.publishPayload.params.page = _url;
+//          }
+
+//          createContent.push(content);
+//       }
+//    }
+// }
+
+
+function generateCreateContentMenuItem(menuItemLabel, dialogTitle, iconClass, modelType, mimeType, contentWidgetName, contentWidgetConfig, additionalWidgets) {
+   var menuItem = {
+      name: "alfresco/documentlibrary/AlfCreateContentMenuItem",
+      config: {
+         label: menuItemLabel,
+         iconClass: iconClass,
+         publishTopic: "ALF_CREATE_FORM_DIALOG_REQUEST",
+         publishPayloadType: "PROCESS",
+         publishPayloadModifiers: ["processCurrentItemTokens"],
+         publishPayload: {
+            dialogTitle: dialogTitle,
+            dialogConfirmationButtonTitle: "Create",
+            dialogCancellationButtonTitle: "Cancel",
+            formSubmissionTopic: "ALF_CREATE_CONTENT_REQUEST",
+            formSubmissionPayloadMixin: {
+               type: modelType,
+               prop_mimetype: (mimeType != null ? mimeType : "")
+            },
+            fixedWidth: true,
+            widgets: [
                {
-                  match = true;
-                  if (allow != null)
-                  {
-                     match = (allow == "true");
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: msg.get("create.content.name.label"),
+                     name: "prop_cm_name",
+                     value: "",
+                     requirementConfig: {
+                        initialValue: true
+                     }
                   }
-                  else if (deny != null)
-                  {
-                     match = (deny == "false");
+               },
+               {
+                  name: "alfresco/forms/controls/DojoValidationTextBox",
+                  config: {
+                     label: msg.get("create.content.title.label"),
+                     name: "prop_cm_title",
+                     value: ""
                   }
-                  content.config.permission += (content.config.permission.length == 0 ? "" : ",") + (value + ":" + match);
+               },
+               {
+                  name: "alfresco/forms/controls/DojoTextarea",
+                  config: {
+                     label: msg.get("create.content.description.label"),
+                     name: "prop_cm_description",
+                     value: ""
+                  }
                }
-            }
+            ]
          }
-
-         if (!content.config.publishPayload.type)
-         {
-            /**
-             * Support simple/old configs like below by making them of type "pagelink" pointing to the create-content page.
-             * <content id="xml" mimetype="text/xml" label="create-content.xml" itemid="cm:content" permission="Write" formid=""/>
-             */
-            var permission = attr["permission"] ? attr["permission"].toString() : null,
-                mimetype = attr["mimetype"] ? attr["mimetype"].toString() : null,
-                itemid = attr["itemid"] ? attr["itemid"].toString() : null,
-                formid = attr["formid"] ? attr["formid"].toString() : null,
-                _url = "create-content?destination={node.nodeRef}";
-            if (permission)
-            {
-               content.config.permission += (content.config.permission.length == 0 ? "" : ",") + permission;
-            }
-            if (itemid)
-            {
-               _url += "&itemId=" + itemid;
-            }
-            if (formid)
-            {
-               _url += "&formId=" + formid;
-            }
-            if (mimetype)
-            {
-               _url += "&mimeType=" + mimetype;
-            }
-
-            content.config.publishPayload.type = "pagelink";
-            content.config.publishPayload.params.page = _url;
-         }
-
-         createContent.push(content);
       }
+   };
+   // If a content widget name has been specified then define the additional widget
+   // and add in any additionally supplied configuration for it
+   if (contentWidgetName != null)
+   {
+      var contentWidget = {
+         name: contentWidgetName,
+         config: {
+            label: msg.get("create.content.content.label"),
+            name: "prop_cm_content",
+            value: ""
+         }
+      };
+      if (contentWidgetConfig != null)
+      {
+         for (var key in contentWidgetConfig)
+         {
+            contentWidget.config[key] = contentWidgetConfig[key];
+         }
+      }
+      menuItem.config.publishPayload.widgets.push(contentWidget);
    }
+
+   // Add in any additional widgets requested...
+   menuItem.config.publishPayload.widgets.concat(additionalWidgets != null ? additionalWidgets : []);
+   return menuItem;
 }
+
+// Add in the create content options...
+var folder = generateCreateContentMenuItem(msg.get("create.folder.label"), msg.get("create.folder.title"), "alf-showfolders-icon", "cm:folder", null);
+var plainText = generateCreateContentMenuItem(msg.get("create.text-document.label"), msg.get("create.text-document.title"), "alf-textdoc-icon", "cm:content", "text/plain", "alfresco/forms/controls/DojoTextarea");
+var html = generateCreateContentMenuItem(msg.get("create.html-document.label"), msg.get("create.html-document.title"), "alf-htmldoc-icon", "cm:content", "text/html", "alfresco/forms/controls/TinyMCE");
+var xml = generateCreateContentMenuItem(msg.get("create.xml-document.label"), msg.get("create.xml-document.title"), "alf-xmldoc-icon", "cm:content", "text/xml", "alfresco/forms/controls/CodeMirrorEditor", { editMode: "xml"});
+createContent.splice(0, 0, folder, plainText, html, xml);
 
 // Create content by template
 var createContentByTemplateConfig = config.scoped["DocumentLibrary"]["create-content-by-template"];
 createContentByTemplateEnabled = createContentByTemplateConfig !== null ? createContentByTemplateConfig.value.toString() == "true" : false;
-
 if (createContentByTemplateEnabled)
 {
    createContent.push({
@@ -318,160 +403,6 @@ if (createContentByTemplateEnabled)
    });
 }
 
-// Add the option to create folders...
-createContent.splice(0, 0, {
-   name: "alfresco/menus/AlfFormDialogMenuItem",
-   config: {
-      label: "Create Folder",
-      iconClass: "alf-showfolders-icon",
-      dialogTitle: "Create Folder",
-      formSubmissionTopic: "ALF_CREATE_CONTENT_REQUEST",
-      widgets: [
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               name: "type",
-               value: "cm:folder",
-               visibilityConfig: {
-                  initialValue: false
-               }
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               label: "Name",
-               description: "The name to give the new folder",
-               name: "prop_cm_name",
-               value: "",
-               requirementConfig: {
-                  initialValue: true
-               }
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoValidationTextBox",
-            config: {
-               label: "Title",
-               description: "The title to give to the new folder",
-               name: "prop_cm_title",
-               value: ""
-            }
-         },
-         {
-            name: "alfresco/forms/controls/DojoTextarea",
-            config: {
-               label: "Description",
-               description: "A description of the folder",
-               name: "prop_cm_description",
-               value: ""
-            }
-         }
-      ]
-   }
-});
-
-// createContent.push({
-//    name: "alfresco/menus/AlfMenuItem",
-//    config: {
-//       label: "Create JSON Content",
-//       iconClass: "alf-textdoc-icon",
-//       publishTopic: "ALF_SHOW_DIALOG_REQUEST",
-//       publishPayload: {
-//          id: "ALF_CREATE_JSONCONTENT"
-//       }
-//    }
-// })
-
-function addCreateContentMenuItem(menuLabel, menuIcon, dialogTitle, editMode, mimeType) {
-   return {
-      name: "alfresco/menus/AlfFormDialogMenuItem",
-      config: {
-         label: menuLabel,
-         iconClass: menuIcon,
-         dialogTitle: dialogTitle,
-         formSubmissionTopic: "ALF_CREATE_CONTENT_REQUEST",
-         widgets: [
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  name: "type",
-                  value: "cm:content",
-                  visibilityConfig: {
-                     initialValue: false
-                  }
-               }
-            },
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  name: "prop_mimetype",
-                  value: mimeType,
-                  visibilityConfig: {
-                     initialValue: false
-                  }
-               }
-            },
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  name: "prop_app_editInline",
-                  value: true,
-                  visibilityConfig: {
-                     initialValue: false
-                  }
-               }
-            },
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  label: "Name",
-                  description: "The name to give the new document",
-                  name: "prop_cm_name",
-                  value: "",
-                  requirementConfig: {
-                     initialValue: true
-                  }
-               }
-            },
-            {
-               name: "alfresco/forms/controls/DojoValidationTextBox",
-               config: {
-                  label: "Title",
-                  description: "The title to give to the new document",
-                  name: "prop_cm_title",
-                  value: ""
-               }
-            },
-            {
-               name: "alfresco/forms/controls/DojoTextarea",
-               config: {
-                  label: "Description",
-                  description: "A description of the folder",
-                  name: "prop_cm_description",
-                  value: ""
-               }
-            },
-            {
-               name: "alfresco/forms/controls/AceEditor",
-               config: {
-                  editMode: editMode,
-                  label: "Content",
-                  description: "The HTML content for the document",
-                  name: "prop_cm_content",
-                  value: ""
-               }
-            }
-         ]
-      }
-   };
-}
-
-// TODO: These are inline create content menu options...
-// createContent.push(addCreateContentMenuItem("Plain Text", "alf-textdoc-icon", "Create Text Content", "text", "text/plain"));
-// createContent.push(addCreateContentMenuItem("HTML", "alf-htmldoc-icon", "Create HTML Content", "html", "text/plain"));
-// createContent.push(addCreateContentMenuItem("XML", "alf-xmldoc-icon", "Create XML Content", "xml", "text/xml"));
-// createContent.push(addCreateContentMenuItem("JavaScript", "alf-textdoc-icon", "Create JavaScript Content", "javascript", "text/javascript"));
 
 /**
  * Helper function to retrieve configuration values.
@@ -795,6 +726,145 @@ function getSortOptions() {
    return sortOptions;
 }
 
+/* *********************************************************************************
+ *                                                                                 *
+ * DOCUMENT LIST CONFIG MENU CONSTRUCTION                                          *
+ *                                                                                 *
+ ***********************************************************************************/
+function getDocumentListConfigMenu(showFolders, hideBreadcrumbTrail, showSidebar) {
+   return {
+      id: "DOCLIB_CONFIG_MENU",
+      name: "alfresco/menus/AlfMenuBarPopup",
+      config: {
+         iconClass: "alf-configure-icon",
+         widgets: [
+            {
+               id: "DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP",
+               name: "alfresco/documentlibrary/AlfViewSelectionGroup"
+            },
+            // The actions to toggle full-screen and full-window have been left in place
+            // for the time being, however the function is not working correctly due to
+            // issues with absolutely positioned popups used for menus that are not shown.
+            // Theses issues need to be resolved before this can be released.
+            {
+               id: "DOCLIB_CONFIG_MENU_VIEW_MODE_GROUP",
+               name: "alfresco/menus/AlfMenuGroup",
+               config: {
+                  label: msg.get("doclib.viewModes.label"),
+                  widgets: [
+                     {
+                        id: "DOCLIB_FULL_WINDOW_OPTION",
+                        name: "alfresco/menus/AlfCheckableMenuItem",
+                        config: {
+                           label: msg.get("doclib.fullwindow.label"),
+                           iconClass: "alf-fullscreen-icon",
+                           checked: false,
+                           publishTopic: "ALF_FULL_WINDOW"
+                        }
+                     },
+                     {
+                        id: "DOCLIB_FULL_SCREEN_OPTION",
+                        name: "alfresco/menus/AlfCheckableMenuItem",
+                        config: {
+                           label: msg.get("doclib.fullscreen.label"),
+                           iconClass: "alf-fullscreen-icon",
+                           checked: false,
+                           publishTopic: "ALF_FULL_SCREEN"
+                        }
+                     }
+                  ]
+               }
+            },
+            {
+               id: "DOCLIB_CONFIG_MENU_OPTIONS_GROUP",
+               name: "alfresco/menus/AlfMenuGroup",
+               config: {
+                  label: msg.get("doclib.options.label"),
+                  widgets: [
+                     {
+                        id: "DOCLIB_SHOW_FOLDERS_OPTION",
+                        name: "alfresco/menus/AlfCheckableMenuItem",
+                        config: {
+                           label: msg.get("show-folders.label"),
+                           iconClass: "alf-showfolders-icon",
+                           checked: showFolders,
+                           publishTopic: "ALF_DOCLIST_SHOW_FOLDERS"
+                        }
+                     },
+                     {
+                        id: "DOCLIB_SHOW_PATH_OPTION",
+                        name: "alfresco/menus/AlfCheckableMenuItem",
+                        config: {
+                           label: msg.get("show-path.label"),
+                           checked: !hideBreadcrumbTrail,
+                           iconClass: "alf-showpath-icon",
+                           publishTopic: "ALF_DOCLIST_SHOW_PATH"
+                        }
+                     },
+                     {
+                        id: "DOCLIB_SHOW_SIDEBAR_OPTION",
+                        name: "alfresco/menus/AlfCheckableMenuItem",
+                        config: {
+                           label: msg.get("show-sidebar.label"),
+                           iconClass: "alf-showsidebar-icon",
+                           checked: showSidebar,
+                           publishTopic: "ALF_DOCLIST_SHOW_SIDEBAR"
+                        }
+                     }
+                  ]
+               }
+            }
+         ]
+      }
+   };
+}
+
+/* *********************************************************************************
+ *                                                                                 *
+ * DOCUMENT LIST CONSTRUCTION                                                      *
+ *                                                                                 *
+ ***********************************************************************************/
+function getDocumentLibraryList(siteId, containerId, rootNode) {
+   return {
+      id: "DOCLIB_DOCUMENT_LIST",
+      name: "alfresco/documentlibrary/AlfDocumentList",
+      config: {
+         useHash: true,
+         hashVarsForUpdate: [
+            "path",
+            "filter",
+            "tag",
+            "category"
+         ],
+         siteId: siteId,
+         containerId: containerId,
+         rootNode: rootNode,
+         usePagination: true,
+         showFolders: showFolders,
+         sortAscending: sortAscending,
+         sortField: sortField,
+         view: viewRendererName,
+         widgets: [
+            {
+               name: "alfresco/documentlibrary/views/AlfSimpleView"
+            },
+            {
+               name: "alfresco/documentlibrary/views/AlfDetailedView"
+            },
+            {
+               name: "alfresco/documentlibrary/views/AlfGalleryView"
+            },
+            {
+               name: "alfresco/documentlibrary/views/AlfTableView"
+            },
+            {
+               name: "alfresco/documentlibrary/views/AlfFilmStripView"
+            }
+         ]
+      }
+   };
+}
+
 /**
  * Builds the JSON model for rendering a DocumentLibrary. 
  * 
@@ -863,7 +933,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                           id: "DOCLIB_SYNC_TO_CLOUD_BUTTON",
                                           name: "alfresco/documentlibrary/AlfCloudSyncFilteredMenuBarItem",
                                           config: {
-                                             label: "Sync to Cloud",
+                                             label: msg.get("actions.document.cloud-sync"),
                                              publishTopic: "ALF_SYNC_CURRENT_LOCATION"
                                           }
                                        },
@@ -871,7 +941,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                           id: "DOCLIB_UNSYNC_FROM_CLOUD_BUTTON",
                                           name: "alfresco/documentlibrary/AlfCloudSyncFilteredMenuBarItem",
                                           config: {
-                                             label: "Unsync from Cloud",
+                                             label: msg.get("actions.document.cloud-unsync"),
                                              invertFilter: true,
                                              publishTopic: "ALF_UNSYNC_CURRENT_LOCATION"
                                           }
@@ -928,91 +998,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                                              ]
                                           }
                                        },
-                                       {
-                                          id: "DOCLIB_CONFIG_MENU",
-                                          name: "alfresco/menus/AlfMenuBarPopup",
-                                          config: {
-                                             iconClass: "alf-configure-icon",
-                                             widgets: [
-                                                {
-                                                   id: "DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP",
-                                                   name: "alfresco/documentlibrary/AlfViewSelectionGroup"
-                                                },
-                                                // The actions to toggle full-screen and full-window have been left in place
-                                                // for the time being, however the function is not working correctly due to
-                                                // issues with absolutely positioned popups used for menus that are not shown.
-                                                // Theses issues need to be resolved before this can be released.
-                                                {
-                                                   id: "DOCLIB_CONFIG_MENU_VIEW_MODE_GROUP",
-                                                   name: "alfresco/menus/AlfMenuGroup",
-                                                   config: {
-                                                      label: msg.get("doclib.viewModes.label"),
-                                                      widgets: [
-                                                         {
-                                                            id: "DOCLIB_FULL_WINDOW_OPTION",
-                                                            name: "alfresco/menus/AlfCheckableMenuItem",
-                                                            config: {
-                                                               label: msg.get("doclib.fullwindow.label"),
-                                                               iconClass: "alf-fullscreen-icon",
-                                                               checked: false,
-                                                               publishTopic: "ALF_FULL_WINDOW"
-                                                            }
-                                                         },
-                                                         {
-                                                            id: "DOCLIB_FULL_SCREEN_OPTION",
-                                                            name: "alfresco/menus/AlfCheckableMenuItem",
-                                                            config: {
-                                                               label: msg.get("doclib.fullscreen.label"),
-                                                               iconClass: "alf-fullscreen-icon",
-                                                               checked: false,
-                                                               publishTopic: "ALF_FULL_SCREEN"
-                                                            }
-                                                         }
-                                                      ]
-                                                   }
-                                                },
-                                                {
-                                                   id: "DOCLIB_CONFIG_MENU_OPTIONS_GROUP",
-                                                   name: "alfresco/menus/AlfMenuGroup",
-                                                   config: {
-                                                      label: msg.get("doclib.options.label"),
-                                                      widgets: [
-                                                         {
-                                                            id: "DOCLIB_SHOW_FOLDERS_OPTION",
-                                                            name: "alfresco/menus/AlfCheckableMenuItem",
-                                                            config: {
-                                                               label: msg.get("show-folders.label"),
-                                                               iconClass: "alf-showfolders-icon",
-                                                               checked: showFolders,
-                                                               publishTopic: "ALF_DOCLIST_SHOW_FOLDERS"
-                                                            }
-                                                         },
-                                                         {
-                                                            id: "DOCLIB_SHOW_PATH_OPTION",
-                                                            name: "alfresco/menus/AlfCheckableMenuItem",
-                                                            config: {
-                                                               label: msg.get("show-path.label"),
-                                                               checked: !hideBreadcrumbTrail,
-                                                               iconClass: "alf-showpath-icon",
-                                                               publishTopic: "ALF_DOCLIST_SHOW_PATH"
-                                                            }
-                                                         },
-                                                         {
-                                                            id: "DOCLIB_SHOW_SIDEBAR_OPTION",
-                                                            name: "alfresco/menus/AlfCheckableMenuItem",
-                                                            config: {
-                                                               label: msg.get("show-sidebar.label"),
-                                                               iconClass: "alf-showsidebar-icon",
-                                                               checked: showSidebar,
-                                                               publishTopic: "ALF_DOCLIST_SHOW_SIDEBAR"
-                                                            }
-                                                         }
-                                                      ]
-                                                   }
-                                                }
-                                             ]
-                                          }
-                                       }
+                                       getDocumentListConfigMenu(showFolders, hideBreadcrumbTrail, showSidebar)
                                     ]
                                  }
                               }
@@ -1026,44 +1012,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                            hide: hideBreadcrumbTrail
                         }
                      },
-                     {
-                        id: "DOCLIB_DOCUMENT_LIST",
-                        name: "alfresco/documentlibrary/AlfDocumentList",
-                        config: {
-                           useHash: true,
-                           hashVarsForUpdate: [
-                              "path",
-                              "filter",
-                              "tag",
-                              "category"
-                           ],
-                           siteId: siteId,
-                           containerId: containerId,
-                           rootNode: rootNode,
-                           usePagination: true,
-                           showFolders: showFolders,
-                           sortAscending: sortAscending,
-                           sortField: sortField,
-                           view: viewRendererName,
-                           widgets: [
-                              {
-                                 name: "alfresco/documentlibrary/views/AlfSimpleView"
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/views/AlfDetailedView"
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/views/AlfGalleryView"
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/views/AlfTableView"
-                              },
-                              {
-                                 name: "alfresco/documentlibrary/views/AlfFilmStripView"
-                              }
-                           ]
-                        }
-                     },
+                     getDocumentLibraryList(siteId, containerId, rootNode),
                      {
                         name: "alfresco/upload/AlfUpload"
                      }
