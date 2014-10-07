@@ -269,10 +269,10 @@ define(["dojo/_base/declare",
                this.label = {};
                array.forEach(["title"], lang.hitch(this, function(key) {
                   this.label[key] = this.message(key);
+                  if (this.title) {
+                     this.label[key] = this.title;
+                  }
                }));
-               if (this.title) {
-                  this.label[key] = this.title;
-               }
             }
 
          });
