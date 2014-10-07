@@ -11,3 +11,8 @@
 .alfresco-preview-AlfDocumentPreview .previewer.StrobeMediaPlayback {
    height: 480px;
 }
+
+.alfresco-preview-AlfDocumentPreview .previewer .message {
+   text-align: center;
+   margin: 100px 0;
+}
