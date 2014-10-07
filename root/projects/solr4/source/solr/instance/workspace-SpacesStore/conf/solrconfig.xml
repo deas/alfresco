@@ -592,6 +592,7 @@
               size="${solr.pathCache.size:256}"
               initialSize="${solr.pathCache.initialSize:128}"
               autowarmCount="${solr.pathCache.autowarmCount:4}"
+              regenerator="org.alfresco.solr.cache.PathCacheRegenerator"
               />
               
     <!-- Lazy Field Loading
