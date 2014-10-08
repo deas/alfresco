@@ -159,9 +159,8 @@ var DocumentList =
       data.deps.css = [];
       
       // Iterate over the view-renderer configuration...
-      var docListConfig = config.scoped["DocumentLibrary"]["doclist"];
-      var viewRenderersConfig = docListConfig.getChild("view-renderers");
-      var viewRendererList = viewRenderersConfig.getChildren("view-renderer");
+      var docListViewConfig = config.scoped["DocumentLibraryViews"]["view-renderers"];
+      var viewRendererList = docListViewConfig.getChildren("view-renderer");
       for (var i=0; i<viewRendererList.size(); i++)
       {
          // Get the attributes of the current view...
