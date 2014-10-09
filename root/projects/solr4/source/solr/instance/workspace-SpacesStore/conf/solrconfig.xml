@@ -591,7 +591,7 @@
               class="solr.LRUCache"
               size="${solr.pathCache.size:256}"
               initialSize="${solr.pathCache.initialSize:128}"
-              autowarmCount="${solr.pathCache.autowarmCount:4}"
+              autowarmCount="${solr.pathCache.autowarmCount:32}"
               regenerator="org.alfresco.solr.cache.PathCacheRegenerator"
               />
               
