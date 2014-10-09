@@ -132,6 +132,7 @@ public class SolrInformationServer implements InformationServer
      * 
      */
     private static final String NO_SITE = "_REPOSITORY_";
+    private static final String SHARED_FILES = "_SHARED_FILES_";
     public static final String AND = " AND ";
     public static final String OR = " OR ";
     public static final String REQUEST_HANDLER_ALFRESCO_FULL_TEXT_SEARCH = "/afts";
@@ -153,6 +154,8 @@ public class SolrInformationServer implements InformationServer
  
     private static final Pattern CAPTURE_SITE = Pattern.compile("^/\\{http\\://www\\.alfresco\\.org/model/application/1\\.0\\}company\\_home/\\{http\\://www\\.alfresco\\.org/model/site/1\\.0\\}sites/\\{http\\://www\\.alfresco\\.org/model/content/1\\.0}([^/]*)/.*" ); 
     private static final Pattern CAPTURE_TAG = Pattern.compile("^/\\{http\\://www\\.alfresco\\.org/model/content/1\\.0\\}taggable/\\{http\\://www\\.alfresco\\.org/model/content/1\\.0\\}([^/]*)/\\{\\}member");
+    private static final Pattern CAPTURE_SHARED_FILES = Pattern.compile("^/\\{http\\://www\\.alfresco\\.org/model/application/1\\.0\\}company\\_home/\\{http\\://www\\.alfresco\\.org/model/application/1\\.0\\}shared/.*" ); 
+
     
     /* 4096 is 2 to the power of (6*2), and we do this because the precision step for the long is 6, 
      * and the transactions are long
@@ -1740,33 +1743,38 @@ public class SolrInformationServer implements InformationServer
                
         doc.addField(FIELD_TENANT, AlfrescoSolrDataModel.getTenantId(nodeMetaData.getTenantDomain()));
 
-        boolean addedRepo = false;
+        boolean repoOnly = true;
         for (Pair<String, QName> path : nodeMetaData.getPaths())
         {
-            boolean wasSiteOrTag = false;
-            
             doc.addField(FIELD_PATH, path.getFirst());
+            
             Matcher matcher = CAPTURE_SITE.matcher(path.getFirst());
             if(matcher.find())
             {
-                wasSiteOrTag = true;
+                repoOnly = false;
                 doc.addField(FIELD_SITE, matcher.group(1));
+            }
+            
+            matcher = CAPTURE_SHARED_FILES.matcher(path.getFirst());
+            if(matcher.find())
+            {
+                repoOnly = false;
+                doc.addField(FIELD_SITE, SHARED_FILES);
             }
             
             matcher = CAPTURE_TAG.matcher(path.getFirst());
             if(matcher.find())
             {
-                wasSiteOrTag = true;
                 String tag = matcher.group(1);
                 doc.addField(FIELD_TAG, tag);
                 doc.addField(FIELD_SUGGEST, tag);
             }
-            
-            if(!addedRepo && !wasSiteOrTag)
-            {
-                addedRepo = true;
-                doc.addField(FIELD_SITE, NO_SITE);
-            }
+           
+        }
+        
+        if(repoOnly)
+        {
+            doc.addField(FIELD_SITE, NO_SITE);
         }
 
         for(List<String> namePath : nodeMetaData.getNamePaths())
