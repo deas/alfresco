@@ -31,7 +31,7 @@ public class FacetedSearchView
     private static final By CONFIGURE_VIEW_BUTTON = By.cssSelector("img[class='alf-configure-icon']");
     
     private static final By CONFIGURE_VIEW_ITEMS = By.cssSelector("div#DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP td[class='dijitReset dijitMenuItemLabel']");    
-    private static final By SIMPLE_VIEW_RESULTS = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell");
+    private static final By DETAILED_VIEW_RESULTS = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell");
     private static final By GALLERY_VIEW_RESULTS = By.cssSelector("div[class='displayName']");
     private static final String DISPLAY_NAMES = ".displayName";    
     private static final By GALLERY_VIEW_ICON = By.cssSelector("div[class='selectBar share-hidden']>div>div>div>div>div");
@@ -43,7 +43,7 @@ public class FacetedSearchView
     private WebElement sortOrderButton;
     private WebElement configureViewButton;
     private List<WebElement> menuElements = new ArrayList<WebElement>();
-    private WebElement simpleViewResults;
+    private WebElement detailedViewResults;
     private WebElement galleryViewResults;    
 
     /**
@@ -148,14 +148,14 @@ public class FacetedSearchView
     }
     
     /**
-     * Verify is results displayed in simple view
+     * Verify is results displayed in detailed view
      */
-    public boolean isSimpleViewResultsDisplayed()
+    public boolean isDetailedViewResultsDisplayed()
     {
         try
         {
-        	simpleViewResults = drone.findAndWait(SIMPLE_VIEW_RESULTS);
-        	if(simpleViewResults.isDisplayed())
+        	detailedViewResults = drone.findAndWait(DETAILED_VIEW_RESULTS);
+        	if(detailedViewResults.isDisplayed())
         	{        		
         		return true;        		       		 
         	}

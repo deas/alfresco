@@ -278,15 +278,16 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     @Test(groups = { "Enterprise-only" })
     public void searchSelectViewTest() throws Exception
     {       
-        SearchBox search = dashBoard.getSearch();
+    	
+    	SearchBox search = dashBoard.getSearch();
         FacetedSearchPage facetedSearchPage = search.search("ipsum").render();
         Assert.assertNotNull(facetedSearchPage); 
-        Assert.assertTrue(facetedSearchPage.getView().isSimpleViewResultsDisplayed(),"Simple view option is matching");        
+        Assert.assertTrue(facetedSearchPage.getView().isDetailedViewResultsDisplayed(),"Detailed view option is matching");        
         facetedSearchPage.getView().selectViewByLabel("Gallery View");
         Assert.assertNotNull(facetedSearchPage);
         Assert.assertTrue(facetedSearchPage.getView().isGalleryViewResultsDisplayed(),"Gallery view option is matching");
-        facetedSearchPage.getView().selectViewByLabel("Simple View");
-        Assert.assertTrue(facetedSearchPage.getView().isSimpleViewResultsDisplayed(),"Simple view option is matching");
+        facetedSearchPage.getView().selectViewByLabel("Detailed View");
+        Assert.assertTrue(facetedSearchPage.getView().isDetailedViewResultsDisplayed(),"Detailed view option is matching");
         Assert.assertNotNull(facetedSearchPage);
         facetedSearchPage.getView().selectViewByLabel("Gallery View");
         Assert.assertNotNull(facetedSearchPage);
@@ -294,8 +295,8 @@ public class FacetedSearchResultsPageTest extends AbstractTest
         Assert.assertTrue(galleryViewPopupPage.isTitlePresent("Project Overview.ppt"));
         galleryViewPopupPage.selectClose().render();
         Assert.assertNotNull(facetedSearchPage);
-        facetedSearchPage.getView().selectViewByLabel("Simple View");
-        Assert.assertTrue(facetedSearchPage.getView().isSimpleViewResultsDisplayed(),"Simple view option is matching");
+        facetedSearchPage.getView().selectViewByLabel("Detailed View");
+        Assert.assertTrue(facetedSearchPage.getView().isDetailedViewResultsDisplayed(),"Detailed view option is matching");      
         
      }
     
