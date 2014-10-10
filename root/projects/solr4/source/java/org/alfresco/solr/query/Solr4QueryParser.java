@@ -93,6 +93,7 @@ import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanOrQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper.TopTermsSpanBooleanQueryRewrite;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.apache.solr.schema.IndexSchema;
@@ -136,8 +137,18 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     private MLAnalysisMode mlAnalysisMode = MLAnalysisMode.EXACT_LANGUAGE_AND_ALL;
 
     private int internalSlop = 0;
+    
+    int topTermSpanRewriteLimit =  1000;
 
     
+    /**
+     * @param topTermSpanRewriteLimit the topTermSpanRewriteLimit to set
+     */
+    public void setTopTermSpanRewriteLimit(int topTermSpanRewriteLimit)
+    {
+        this.topTermSpanRewriteLimit = topTermSpanRewriteLimit;
+    }
+
     /**
      * @param searchParameters
      */
@@ -1314,7 +1325,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         if (requiresMLTokenDuplication)
                         {
                             Locale locale = I18NUtil.parseLocale(localeString);
-                            MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, mlAnalysisMode);
+                            MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, MLAnalysisMode.EXACT_LANGUAGE);
                             Iterator<org.apache.lucene.analysis.Token> it = duplicator.buildIterator(newToken);
                             if (it != null)
                             {
@@ -1411,7 +1422,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                             if (requiresMLTokenDuplication)
                             {
                                 Locale locale = I18NUtil.parseLocale(localeString);
-                                MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, mlAnalysisMode);
+                                MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, MLAnalysisMode.EXACT_LANGUAGE);
                                 Iterator<org.apache.lucene.analysis.Token> it = duplicator.buildIterator(newToken);
                                 if (it != null)
                                 {
@@ -1476,7 +1487,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         if (requiresMLTokenDuplication)
                         {
                             Locale locale = I18NUtil.parseLocale(localeString);
-                            MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, mlAnalysisMode);
+                            MLTokenDuplicator duplicator = new MLTokenDuplicator(locale, MLAnalysisMode.EXACT_LANGUAGE);
                             Iterator<org.apache.lucene.analysis.Token> it = duplicator.buildIterator(newToken);
                             if (it != null)
                             {
@@ -1939,7 +1950,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                 if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                                 {
                                     org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
-                                    nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
+                                    SpanMultiTermQueryWrapper wrapper = new SpanMultiTermQueryWrapper<>(wildQuery);
+                                    wrapper.setRewriteMethod(new TopTermsSpanBooleanQueryRewrite(topTermSpanRewriteLimit));
+                                    nextSpanQuery = wrapper;
                                 }
                                 else
                                 {
@@ -1999,7 +2012,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                                 if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                                 {
                                     org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
-                                    nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
+                                    SpanMultiTermQueryWrapper wrapper = new SpanMultiTermQueryWrapper<>(wildQuery);
+                                    wrapper.setRewriteMethod(new TopTermsSpanBooleanQueryRewrite(topTermSpanRewriteLimit));
+                                    nextSpanQuery = wrapper;
                                 }
                                 else
                                 {
@@ -2066,7 +2081,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
                             org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
-                            nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
+                            SpanMultiTermQueryWrapper wrapper = new SpanMultiTermQueryWrapper<>(wildQuery);
+                            wrapper.setRewriteMethod(new TopTermsSpanBooleanQueryRewrite(topTermSpanRewriteLimit));
+                            nextSpanQuery = wrapper;
                         }
                         else
                         {
@@ -2125,7 +2142,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         if ((termText != null) && (termText.contains("*") || termText.contains("?")))
                         {
                             org.apache.lucene.search.WildcardQuery wildQuery = new org.apache.lucene.search.WildcardQuery(term);
-                            nextSpanQuery = new SpanMultiTermQueryWrapper<>(wildQuery);
+                            SpanMultiTermQueryWrapper wrapper = new SpanMultiTermQueryWrapper<>(wildQuery);
+                            wrapper.setRewriteMethod(new TopTermsSpanBooleanQueryRewrite(topTermSpanRewriteLimit));
+                            nextSpanQuery = wrapper;
                         }
                         else
                         {
@@ -2480,7 +2499,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         }
                         for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                         {
-                            addLocaleSpecificUntokenisedTextRangeFunction(expandedFieldName, propertyDef, part1, part2, includeLower, includeUpper, luceneFunction, booleanQuery, mlAnalysisMode,
+                            addLocaleSpecificUntokenisedTextRangeFunction(expandedFieldName, propertyDef, part1, part2, includeLower, includeUpper, luceneFunction, booleanQuery,
                                     locale, tokenisationMode);
                         }
                         return booleanQuery;
@@ -2556,7 +2575,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                     {
 
-                        addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                        addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, locale);
 
                     }
                     return booleanQuery;
@@ -3535,8 +3554,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
-                addMLTextSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
-                        mlAnalysisMode, locale);
+                addMLTextSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, locale);
             }
             return booleanQuery;
         }
@@ -3551,7 +3569,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                 expandedLocales.addAll(MLAnalysisMode.getLocales(mlAnalysisMode, locale, addContentCrossLocaleWildcards()));
             }
 
-            return addContentSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, expandedLocales, mlAnalysisMode);
+            return addContentSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, expandedLocales);
 
         }
         else if ((propertyDef != null) && (propertyDef.getDataType().getName().equals(DataTypeDefinition.TEXT)))
@@ -3566,7 +3584,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
 
-                addTextSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                addTextSpanQuery(field, propertyDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, locale);
 
             }
             return booleanQuery;
@@ -3611,7 +3629,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         }
 
         
-        if(queryText.equals("*"))
+        if(isAllStar(queryText))
         {
             return createTermQuery(FIELD_PROPERTIES, propertyQName.toString());
         }
@@ -3721,8 +3739,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
-                addMLTextAttributeQuery(field, propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, propertyDef, tokenisationMode, booleanQuery,
-                        mlAnalysisMode, locale);
+                addMLTextAttributeQuery(field, propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, locale);
             }
             return getNonEmptyBooleanQuery(booleanQuery);
         }
@@ -3767,7 +3784,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
 
-                addTextAttributeQuery(field, propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+                addTextAttributeQuery(field, propertyDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, locale);
 
             }
             return getNonEmptyBooleanQuery(booleanQuery);
@@ -3866,6 +3883,27 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
     
+    /**
+     * @param queryText
+     * @return
+     */
+    private boolean isAllStar(String queryText)
+    {
+        if((queryText == null) || (queryText.length() == 0))
+        {
+            return false;
+        }
+        for(char c : queryText.toCharArray())
+        {
+            if(c != '*')
+            {
+                return false;
+            }
+        }
+        return true;
+        
+    }
+
     /**
      * @param dateAndResolution
      * @return
@@ -4076,7 +4114,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
 
-                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, propertyDef, queryText, luceneFunction, booleanQuery, mlAnalysisMode, locale, tokenisationMode);
+                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, propertyDef, queryText, luceneFunction, booleanQuery, locale, tokenisationMode);
 
             }
             return booleanQuery;
@@ -4104,7 +4142,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
             }
             for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
             {
-                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, propertyDef, queryText, luceneFunction, booleanQuery, mlAnalysisMode, locale, tokenisationMode);
+                addLocaleSpecificUntokenisedMLOrTextFunction(expandedFieldName, propertyDef, queryText, luceneFunction, booleanQuery, locale, tokenisationMode);
 
             }
             return booleanQuery;
@@ -4308,7 +4346,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
    
     protected void addLocaleSpecificUntokenisedMLOrTextFunction(String expandedFieldName, PropertyDefinition pDef, String queryText, LuceneFunction luceneFunction, BooleanQuery booleanQuery,
-            MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode)
+            Locale locale, IndexTokenisationMode tokenisationMode)
     {
 //        Query subQuery = new CaseInsensitiveFieldQuery(new Term(getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE), getFixedFunctionQueryText(
 //                queryText, locale, tokenisationMode, IndexTokenisationMode.FALSE)));
@@ -4400,7 +4438,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
     
     protected void addLocaleSpecificUntokenisedTextRangeFunction(String expandedFieldName, PropertyDefinition pDef, String lower, String upper, boolean includeLower, boolean includeUpper,
-            LuceneFunction luceneFunction, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale, IndexTokenisationMode tokenisationMode) throws ParseException
+            LuceneFunction luceneFunction, BooleanQuery booleanQuery, Locale locale, IndexTokenisationMode tokenisationMode) throws ParseException
     {
 //        String field = getFieldName(expandedFieldName, locale, tokenisationMode, IndexTokenisationMode.FALSE);
 //
@@ -4421,15 +4459,15 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
    
     protected void addMLTextAttributeQuery(String field, PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
-            String expandedFieldName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode,
+            String expandedFieldName, PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery,
             Locale locale) throws ParseException
     {
 
-        addMLTextOrTextAttributeQuery(field, pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextAttributeQuery(field, pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, locale);
     }
 
     private void addMLTextOrTextAttributeQuery(String field, PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
-            String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
+            String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, Locale locale) throws ParseException
     {
 
         boolean lowercaseExpandedTerms = getLowercaseExpandedTerms();
@@ -4479,10 +4517,10 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
   
     protected void addTextAttributeQuery(String field, PropertyDefinition pDef, String queryText, SubQuery subQueryBuilder, AnalysisMode analysisMode, LuceneFunction luceneFunction,
-            String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
+            String expandedFieldName, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, Locale locale) throws ParseException
     {
 
-        addMLTextOrTextAttributeQuery(field, pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextAttributeQuery(field, pDef, queryText, subQueryBuilder, analysisMode, luceneFunction, expandedFieldName, tokenisationMode, booleanQuery, locale);
     }
 
   
@@ -4508,7 +4546,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
  
     protected void addTextRange(String field, PropertyDefinition pDef, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, String fieldName,
-            PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale) throws ParseException
+            PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, Locale locale) throws ParseException
     {
         switch (tokenisationMode)
         {
@@ -4598,14 +4636,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
   
     protected void addTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
-            BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
+            BooleanQuery booleanQuery, Locale locale)
     {
-        addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, locale);
     }
 
    
     protected org.apache.lucene.search.Query addContentSpanQuery(String afield, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName,
-            List<Locale> expandedLocales, MLAnalysisMode mlAnalysisMode) 
+            List<Locale> expandedLocales) 
     {
         try
         {
@@ -4713,13 +4751,13 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
  
     protected void addMLTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, PropertyDefinition propertyDef,
-            IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
+            IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, Locale locale)
     {
-        addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, mlAnalysisMode, locale);
+        addMLTextOrTextSpanQuery(field, pDef, first, last, slop, inOrder, expandedFieldName, tokenisationMode, booleanQuery, locale);
     }
 
     private void addMLTextOrTextSpanQuery(String afield, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
-            BooleanQuery booleanQuery, MLAnalysisMode mlAnalysisMode, Locale locale)
+            BooleanQuery booleanQuery, Locale locale)
     {
         try
         {

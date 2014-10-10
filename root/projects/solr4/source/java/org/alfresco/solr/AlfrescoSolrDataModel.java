@@ -102,6 +102,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.util.Version;
+import org.apache.solr.core.CoreDescriptorDecorator;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.SyntaxError;
 import org.slf4j.Logger;
@@ -2028,6 +2029,10 @@ public class AlfrescoSolrDataModel implements QueryConstants
          //parser.setDefaultSearchMLAnalysisMode(getMLAnalysisMode());
          //parser.setIndexReader(indexReader);
          parser.setAllowLeadingWildcard(true);
+         
+         Properties props = new CoreDescriptorDecorator(req.getCore().getCoreDescriptor()).getCoreProperties();
+         int topTermSpanRewriteLimit = Integer.parseInt(props.getProperty("alfresco.topTermSpanRewriteLimit", "1000"));
+         parser.setTopTermSpanRewriteLimit(topTermSpanRewriteLimit);
 
          return parser;
      }

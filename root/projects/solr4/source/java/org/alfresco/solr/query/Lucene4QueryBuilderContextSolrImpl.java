@@ -18,6 +18,8 @@
  */
 package org.alfresco.solr.query;
 
+import java.util.Properties;
+
 import org.alfresco.repo.search.MLAnalysisMode;
 import org.alfresco.repo.search.adaptor.lucene.LuceneQueryParserAdaptor;
 import org.alfresco.repo.search.impl.querymodel.impl.lucene.LuceneQueryBuilderContext;
@@ -32,6 +34,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.util.Version;
+import org.apache.solr.core.CoreDescriptorDecorator;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.SyntaxError;
 
@@ -70,6 +73,10 @@ public class Lucene4QueryBuilderContextSolrImpl implements LuceneQueryBuilderCon
 //        lqp.setAllowLeadingWildcard(true);
 //        this.namespacePrefixResolver = namespacePrefixResolver;
         
+          Properties props = new CoreDescriptorDecorator(req.getCore().getCoreDescriptor()).getCoreProperties();
+          int topTermSpanRewriteLimit = Integer.parseInt(props.getProperty("alfresco.topTermSpanRewriteLimit", "1000"));
+          lqp.setTopTermSpanRewriteLimit(topTermSpanRewriteLimit);
+          
           lqpa = new Lucene4QueryParserAdaptor(lqp);
     }
 
