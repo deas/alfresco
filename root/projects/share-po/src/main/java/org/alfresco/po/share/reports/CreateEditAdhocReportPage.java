@@ -38,8 +38,11 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private static Log logger = LogFactory.getLog(CreateEditAdhocReportPage.class);
 
     // save button
-    private final static String SAVE_BUTTON = "span[id^='alfresco_buttons_AlfButton'] span[id^='alfresco_buttons_AlfButton']";
+    private final static String SAVE_BUTTON = "//span[text()='Save']";
 
+    //delete button
+    private final static String DELETE_BUTTON = "//span[text()='Delete']";
+    
     // Site name
     private final static String SITE_NAME = "div[formula='[Sites].[Site Name]']";
 
@@ -77,7 +80,6 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private final static String DAY_TABLE = "td[formula='[Date].[Day]']";
     
     // Save Analysis title Save Analysis
-    //private final static String SAVE_ANALYSIS = "//span[text()='Save Analysis']";
     private final static String SAVE_ANALYSIS = "//span[text()='Save Report']";
 
     // Save file input field
@@ -142,7 +144,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     {
         try
         {
-            WebElement openButton = drone.find(By.cssSelector(SAVE_BUTTON));
+            WebElement openButton = drone.find(By.xpath(SAVE_BUTTON));
             return openButton.isDisplayed();
         }
         catch (NoSuchElementException nse)
@@ -159,7 +161,7 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     {
         try
         {
-            WebElement saveButton = drone.findAndWait(By.cssSelector(SAVE_BUTTON));
+            WebElement saveButton = drone.findAndWait(By.xpath(SAVE_BUTTON));
             saveButton.click();
             return new CreateEditAdhocReportPage(drone);
 
@@ -171,6 +173,27 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         throw new PageException("Unable to find save button element.");
     }
 
+    
+    /**
+     * Clicks on Delete button
+     */
+    public AdhocAnalyzerPage clickOnDeleteReportButton()
+    {
+        try
+        {
+            WebElement deleteButton = drone.findAndWait(By.xpath(DELETE_BUTTON));
+            deleteButton.click();
+            return new AdhocAnalyzerPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find delete button. " + te);
+        }
+        throw new PageException("Unable to find delete button element.");
+    }
+    
+    
     /**
      * Rightclicks on Site Name field
      */
