@@ -36,8 +36,7 @@ define(["dojo/_base/declare",
        * @default [{cssFile:"./css/AlfMenuItem.css"}]
        */
       cssRequirements: [
-         {cssFile:"./css/AlfMenuItem.css"},
-         {cssFile: "../core/css/Icons.css"}
+         {cssFile:"./css/AlfMenuItem.css"}
       ]
    });
 });

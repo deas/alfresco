@@ -604,6 +604,22 @@ define(["dojo/_base/declare",
       },
 
       /**
+       * Iterates over all the views and calls their 
+       * [clearOldView]{@link module:alfresco/documentlibrary/views/AlfDocumentListView#clearOldView} function.
+       *
+       * @instance
+       */
+      clearViews: function alfresco_lists_AlfList__clearViews() {
+         for (var view in this.viewMap)
+         {
+            if (typeof view.clearOldView === "function")
+            {
+               view.clearOldView();
+            }
+         }
+      },
+
+      /**
        * Hides all the children of the supplied DOM node by applying the "share-hidden" CSS class to them.
        *
        * @instance
@@ -705,7 +721,7 @@ define(["dojo/_base/declare",
             // Clear the previous data only when not configured to use infinite scroll...
             if (!this.useInfiniteScroll)
             {
-               this.alfPublish(this.clearDocDataTopic);
+               this.clearViews();
             }
 
             var payload;

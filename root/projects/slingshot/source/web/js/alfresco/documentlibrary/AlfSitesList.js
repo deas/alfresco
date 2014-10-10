@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -85,7 +85,7 @@ define(["dojo/_base/declare",
 
          if (this.site != null)
          {
-            documentPayload.site = this.site
+            documentPayload.site = this.site;
          }
 
          if (this.usePagination)
@@ -96,7 +96,7 @@ define(["dojo/_base/declare",
 
          if (!this.useInfiniteScroll)
          {
-            this.alfPublish(this.clearDocDataTopic);
+            this.clearViews();
          }
 
          this.alfPublish(this.dataRequestTopic, documentPayload);

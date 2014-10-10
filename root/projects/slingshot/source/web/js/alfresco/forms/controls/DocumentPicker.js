@@ -34,6 +34,16 @@ define(["alfresco/forms/controls/Picker",
    return declare([Picker], {
 
       /**
+       * Overrides the default itemKey to be "nodeRef" as this is likely to be the most important attribute
+       * when selecting a Document.
+       *
+       * @instance
+       * @type {string}
+       * @default "nodeRef"
+       */
+      itemKey: "nodeRef",
+
+      /**
        * Currently defines exactly the same default widget model as the standard [picker form control]{@link module:alfresco/forms/controls/Picker}
        * so this could be removed, but has been left in case the default picker model should ever change.
        *

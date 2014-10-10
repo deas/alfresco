@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -57,7 +57,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       loadData: function alfresco_documentlibrary_QuaddsList__loadData() {
-         this.alfPublish(this.clearDocDataTopic);
+         this.clearViews();
          this.showLoadingMessage();
 
          // Set a response topic that is scoped to this widget...

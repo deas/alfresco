@@ -152,10 +152,7 @@ define(["dojo/_base/declare",
             // Render the initial data - make sure any previous data is cleared (not that there should be any!)
             this.renderView(false);
          }
-
          this._renderOptionalElements();
-
-         this.alfSubscribe(this.clearDocDataTopic, lang.hitch(this, "clearOldView"));
       },
 
       /**
@@ -311,6 +308,11 @@ define(["dojo/_base/declare",
          {
             try
             {
+               if (this.messageNode != null)
+               {
+                  domConstruct.destroy(this.messageNode);
+               }
+               
                // If we don't want to preserve the current data (e.g. if infinite scroll isn't being used)
                // then we should destroy the previous renderer...
                if (preserveCurrentData === false && this.docListRenderer != null)

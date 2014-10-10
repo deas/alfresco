@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -265,12 +265,6 @@ define(["dojo/_base/declare"],
        * @default "ALF_SCROLL_RETURN"
        */
       scrollReturn: "ALF_SCROLL_RETURN",
-
-      /**
-       * Used to clear the currentData object in the view.
-       *
-       */
-      clearDocDataTopic: "ALF_DOCLIST_CLEAR_DATA",
 
       /**
        * Indicates that a document request has started. Usually used in conjunction with requestFinishedTopic.

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -164,9 +164,30 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PropertyLink",
                                        config: {
+                                          propertyToRender: "node.properties.cm:title",
+                                          renderAsLink: true,
+                                          publishTopic: "ALF_DOCLIST_NAV",
+                                          renderFilter: [
+                                             {
+                                                property: "node.type",
+                                                values: ["st:site"]
+                                             }
+                                          ]
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/renderers/PropertyLink",
+                                       config: {
                                           propertyToRender: "node.properties.cm:name",
                                           renderAsLink: true,
-                                          publishTopic: "ALF_DOCLIST_NAV"
+                                          publishTopic: "ALF_DOCLIST_NAV",
+                                          renderFilter: [
+                                             {
+                                                property: "node.type",
+                                                values: ["st:site"],
+                                                negate: true
+                                             }
+                                          ]
                                        }
                                     }
                                  ]
