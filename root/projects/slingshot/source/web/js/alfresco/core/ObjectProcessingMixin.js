@@ -55,6 +55,21 @@ define(["dojo/_base/declare",
 
       /**
        * This utility function will perform token substitution on the supplied string value using the
+       * values from the calling object. If the token cannot be found in the calling object then it will be left 
+       * as is (including the curly braces).
+       *
+       * @instance
+       * @param {string} v The value to process.
+       * @returns The processed value
+       */
+      processInstanceTokens: function alfresco_core_ObjectProcessingMixin__processInstanceTokens(v) {
+         // Only replace a value if it actually exists, otherwise leave the token exactly as is.
+         var u = lang.replace(v, lang.hitch(this, this.safeReplace, this));
+         return u;
+      },
+
+      /**
+       * This utility function will perform token substitution on the supplied string value using the
        * values from currentItem. If the token cannot be found in the currnentItem then it will be left 
        * as is (including the curly braces).
        *
@@ -64,7 +79,7 @@ define(["dojo/_base/declare",
        */
       processCurrentItemTokens: function alfresco_core_ObjectProcessingMixin__processCurrentItemTokens(v) {
          // Only replace a value if it actually exists, otherwise leave the token exactly as is.
-         var u = lang.replace(v, lang.hitch(this, this.safeReplace));
+         var u = lang.replace(v, lang.hitch(this, this.safeReplace, this.currentItem));
          return u;
       },
 
@@ -81,15 +96,15 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * This replace funtcion is called from [processCurrentItemTokens]{@link module:alfresco/core/ObjectProcessingMixin#processCurrentItemTokens}
-       * and updates the default Dojo replace function to only replace tokens if the token is a key in the currentItem
+       * This replace function updates the default Dojo replace function to only replace tokens if the token is a key in the supplied object.
        *
+       * @param {object} sourceObject The object to retrieve values from.
        * @param {string} tokenIncudingBraces The token including braces (e.g. "{token}")
        * @param {string} tokenWithoutBraces The token without braces (e.g. "token")
        * @return {string} The replacement value
        */
-      safeReplace: function alfresco_code_ObjectProcessingMixin__safeReplace(tokenIncudingBraces, tokenWithoutBraces) {
-         var existingValue = lang.getObject(tokenWithoutBraces, false, this.currentItem);
+      safeReplace: function alfresco_code_ObjectProcessingMixin__safeReplace(sourceObject, tokenIncudingBraces, tokenWithoutBraces) {
+         var existingValue = lang.getObject(tokenWithoutBraces, false, sourceObject);
          if (existingValue == null)
          {
             return tokenIncudingBraces;

@@ -1211,10 +1211,13 @@ define(["dojo/_base/declare",
          
          // Set the label...
          var widgetId = lang.getObject("id", false, this.wrappedWidget);
-         if (this.label != null && lang.trim(this.label) !== "" && widgetId != null)
+         if (this.label != null && lang.trim(this.label) !== "")
          {
             this._labelNode.innerHTML = this.encodeHTML(this.message(this.label));
-            domAttr.set(this._labelNode, "for", this.wrappedWidget.id);
+            if (widgetId != null)
+            {
+               domAttr.set(this._labelNode, "for", this.wrappedWidget.id);
+            }
          }
          else
          {

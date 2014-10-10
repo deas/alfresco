@@ -77,6 +77,56 @@ define(["dojo/_base/declare",
       siteMode: false,
 
       /**
+       * This topic that is published when a document is picked. By default it is the topic that indicates
+       * that the document has been selected.
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_ITEM_SELECTED"
+       */
+      publishTopic: "ALF_ITEM_SELECTED",
+
+      /**
+       * This is the type of payload published when a document is picked. By default it is the current
+       * item type.
+       *
+       * @instance
+       * @type {string}
+       * @default "CURRENT_ITEM"
+       */
+      publishPayloadType: "CURRENT_ITEM",
+
+      /**
+       * This is the configured payload published when a document is picked. By default it is null
+       *
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      publishPayload: null,
+
+      /**
+       * This indicates whether the current item should be mixed into the published payload. By
+       * default this is false (because the default type is to just publish the current item)
+       * 
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      publishPayloadItemMixin: false,
+
+      /**
+       * The modifiers to apply to the publish payload. This should only be set if the
+       * [publishPayloadType]{@link module:alfresco/pickers/DocumentListPicker#publishPayloadType}
+       * is set to "PROCESS".
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      publishPayloadModifiers: null,
+
+      /**
        * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
        * view for selecting documents.
        *
@@ -130,7 +180,11 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/PublishAction",
                                        config: {
-                                          publishPayloadType: "CURRENT_ITEM",
+                                          publishTopic: this.publishTopic,
+                                          publishPayloadType: this.publishPayloadType,
+                                          publishPayload: this.publishPayload,
+                                          publishPayloadItemMixin: this.publishPayloadItemMixin,
+                                          publishPayloadModifiers: this.publishPayloadModifiers,
                                           renderFilter: [
                                              {
                                                 property: "node.isContainer",

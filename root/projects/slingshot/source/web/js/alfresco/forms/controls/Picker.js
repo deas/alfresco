@@ -30,16 +30,18 @@
  * @module alfresco/forms/controls/Picker
  * @extends module:alfresco/forms/controls/BaseFormControl
  * @mixes module:alfresco/core/CoreWidgetProcessing
+ * @mixes module:alfresco/core/ObjectProcessingMixin
  * @author Dave Draper
  */
 define(["alfresco/forms/controls/BaseFormControl",
         "alfresco/core/CoreWidgetProcessing",
+        "alfresco/core/ObjectProcessingMixin",
         "dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/array"], 
-        function(BaseFormControl, CoreWidgetProcessing, declare, lang, array) {
+        function(BaseFormControl, CoreWidgetProcessing, ObjectProcessingMixin, declare, lang, array) {
    
-   return declare([BaseFormControl, CoreWidgetProcessing], {
+   return declare([BaseFormControl, CoreWidgetProcessing, ObjectProcessingMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -79,10 +81,13 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @param {object} config The configuration object for instantiating the picker form control
        */
       createFormControl: function alfresco_forms_controls_Picker__createFormControl(config) {
-         this.alfSubscribe("ALF_ITEMS_SELECTED", lang.hitch(this, "onItemsSelected"));
+
+         this.itemSelectionPubSubScope = this.generateUuid();
+         this.alfSubscribe(this.itemSelectionPubSubScope + "ALF_ITEMS_SELECTED", lang.hitch(this, "onItemsSelected"), true);
          
          // Update the model to set the main picked items display and the overall picker config
          var clonedWidgetsForControl = lang.clone(this.widgetsForControl);
+         this.processObject(["processInstanceTokens"], clonedWidgetsForControl);
          if (this.configForPickedItems != null)
          {
             this.setModelPickedItemsConfig(lang.clone(this.configForPickedItems), config.value, clonedWidgetsForControl);
@@ -94,7 +99,7 @@ define(["alfresco/forms/controls/BaseFormControl",
          
          // Set the value...
          this.setModelPickerWidgetValue(config.value, clonedWidgetsForControl);
-         return this.processWidgets(clonedWidgetsForControl, this.domNode);
+         return this.processWidgets(clonedWidgetsForControl, this._controlNode);
       },
 
       /**
@@ -109,6 +114,7 @@ define(["alfresco/forms/controls/BaseFormControl",
        * @param {object} widgetsForControl A cloned copy of the defined widgets for the picked items
        */
       setModelPickedItemsConfig: function alfresco_forms_controls_Picker__setModelPickedItemsConfig(config, value, widgetsForControl) {
+         config.pubSubScope = this.itemSelectionPubSubScope;
          lang.setObject("0.config.widgets.0.config", config, widgetsForControl);
          lang.setObject("0.config.widgets.0.config.value", value, widgetsForControl);
       },
@@ -282,7 +288,10 @@ define(["alfresco/forms/controls/BaseFormControl",
                widgets: [
                   {
                      name: "alfresco/pickers/PickedItems",
-                     assignTo: "pickedItemsWidget"
+                     assignTo: "pickedItemsWidget",
+                     config: {
+                        pubSubScope: "{itemSelectionPubSubScope}"
+                     }
                   },
                   {
                      name: "alfresco/buttons/AlfButton",
@@ -304,7 +313,8 @@ define(["alfresco/forms/controls/BaseFormControl",
                                  name: "alfresco/buttons/AlfButton",
                                  config: {
                                     label: "picker.ok.label",
-                                    publishTopic: "ALF_ITEMS_SELECTED"
+                                    publishTopic: "ALF_ITEMS_SELECTED",
+                                    pubSubScope: "{itemSelectionPubSubScope}"
                                  }
                               },
                               {
@@ -315,7 +325,8 @@ define(["alfresco/forms/controls/BaseFormControl",
                                  }
                               }
                            ]
-                        }
+                        },
+                        publishGlobal: true
                      }
                   },
                   {
@@ -326,7 +337,8 @@ define(["alfresco/forms/controls/BaseFormControl",
                         publishTopic: "ALF_ITEMS_SELECTED",
                         publishPayload: {
                            pickedItems: []
-                        }
+                        },
+                        pubSubScope: "{itemSelectionPubSubScope}"
                      }
                   }
                ]

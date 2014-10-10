@@ -49,7 +49,10 @@ define(["alfresco/forms/controls/Picker",
                widgets: [
                   {
                      name: "alfresco/pickers/PickedItems",
-                     assignTo: "pickedItemsWidget"
+                     assignTo: "pickedItemsWidget",
+                     config: {
+                        pubSubScope: "{itemSelectionPubSubScope}"
+                     }
                   },
                   {
                      name: "alfresco/buttons/AlfButton",
@@ -70,7 +73,8 @@ define(["alfresco/forms/controls/Picker",
                                  name: "alfresco/buttons/AlfButton",
                                  config: {
                                     label: "picker.ok.label",
-                                    publishTopic: "ALF_ITEMS_SELECTED"
+                                    publishTopic: "ALF_ITEMS_SELECTED",
+                                    pubSubScope: "{itemSelectionPubSubScope}"
                                  }
                               },
                               {
@@ -81,7 +85,8 @@ define(["alfresco/forms/controls/Picker",
                                  }
                               }
                            ]
-                        }
+                        },
+                        publishGlobal: true
                      }
                   },
                   {
@@ -92,7 +97,8 @@ define(["alfresco/forms/controls/Picker",
                         publishTopic: "ALF_ITEMS_SELECTED",
                         publishPayload: {
                            pickedItems: []
-                        }
+                        },
+                        pubSubScope: "{itemSelectionPubSubScope}"
                      }
                   }
                ]
