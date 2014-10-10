@@ -248,11 +248,11 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Login as Test user
         userLogin();
         
-        // Do a search for the letter 'e'
-        doretrySearch("e");
+        // Do a search for the letter 'test'
+        doretrySearch("test");
 
         // Check the results
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' there should be some search results");
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for 'test' there should be some search results");
 
         // Sort by the 3rd item in the sort menu (probably Title)
         facetedSearchPage.getSort().sortByIndex(2);
@@ -261,7 +261,7 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage.render();
 
         // Check the results again
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by Title there should be some search results");
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for 'test' and sorting by Title there should be search results sorted by title");
 
         // Toggle the sorting of the results
         facetedSearchPage.getSort().toggleSortOrder();
@@ -270,17 +270,8 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage.render();
 
         // Check the results again
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and toggling the sort order there should be some search results");
-
-        // Sort by the 20th item in the sort menu (does not exist)
-        facetedSearchPage.getSort().sortByIndex(20);
-
-        // Reload the page objects
-        facetedSearchPage.render();
-
-        // Check the results again
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by an item (outside of the dropdown list size) there should still be some search results");
-
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for 'test' and toggling the sort order there should be search results in toggled sort order");
+           
         // Sort by 'Creator'
         facetedSearchPage.getSort().sortByLabel("Creator");
 
@@ -288,17 +279,8 @@ public class FacetedSearchPageTest extends AbstractUtils
         facetedSearchPage.render();
 
         // Check the results again
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by 'Creator' there should still be some search results");
-
-        // Sort by 'Time of day' (does not exist)
-        facetedSearchPage.getSort().sortByLabel("Time of day");
-
-        // Reload the page objects
-        facetedSearchPage.render();
-
-        // Check the results again
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for the letter 'e' and sorting by a non-existant option there should still be some search results");
-
+        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for 'test' and sorting by 'Creator' there should be search results sorted by creator");
+       
         // Clear the search
         facetedSearchPage.getSearchForm().clearSearchTerm();
 
@@ -640,8 +622,8 @@ public class FacetedSearchPageTest extends AbstractUtils
         // Check the results
         Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for '" + obscureSearchWord + "' there should be some search results");
 
-        // Verify the results are in Simple View
-        Assert.assertTrue(facetedSearchPage.getView().isSimpleViewResultsDisplayed(),"Results not dispalyed in SimpleView");
+        // Verify the results are in Detailed View
+        Assert.assertTrue(facetedSearchPage.getView().isDetailedViewResultsDisplayed(),"Results not dispalyed in SimpleView");
         
         //Select the Gallery View option
         facetedSearchPage.getView().selectViewByLabel("Gallery View");
@@ -652,8 +634,8 @@ public class FacetedSearchPageTest extends AbstractUtils
         //Verify the results are displayed as Gallery View
         Assert.assertTrue(facetedSearchPage.getView().isGalleryViewResultsDisplayed(), "gallery view not displayed");
         
-        //Select the Gallery View optionS
-        facetedSearchPage.getView().selectViewByLabel("Simple View");
+        //Select the Detailed View optionS
+        facetedSearchPage.getView().selectViewByLabel("Detailed View");
        
         // Logout
         ShareUser.logout(drone);
