@@ -2303,6 +2303,7 @@ public class SolrInformationServer implements InformationServer
                     .add(SolrContentUrlBuilder.KEY_TENANT, tenant)
                     .add(SolrContentUrlBuilder.KEY_DB_ID, String.valueOf(dbId))
                     .getContentContext();
+        this.solrContentStore.delete(contentContext.getContentUrl());
         ContentWriter writer = this.solrContentStore.getWriter(contentContext);
         try (
                     OutputStream contentOutputStream = writer.getContentOutputStream();
