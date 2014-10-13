@@ -271,7 +271,15 @@
                      this.options.target = rss.target;
 
                      // Update title and items are with new rss 
-                     this._loadFeed();
+                     if (rss.content)
+                     {
+                        this.feedElement.innerHTML = rss.content;
+                        this.titleElement.innerHTML = rss.title;
+                     }
+                     else
+                     {
+                        this._loadFeed();
+                     }
                   },
                   scope: this
                },

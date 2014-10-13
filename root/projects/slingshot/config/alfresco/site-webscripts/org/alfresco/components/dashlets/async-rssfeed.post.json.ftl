@@ -8,7 +8,9 @@
       <h3>${msg("label.noItems")}</h3>
    </#if>
 </#assign>
+<#escape x as jsonUtils.encodeJSONString(x)>
 {
   "title": "${title!msg("label.header")}",
-  "html": "${html?js_string?replace("\\'", "\'")?replace("\\>", ">")}"
+  "html": "${html?replace('"', '\"')}"
 }
+</#escape>
