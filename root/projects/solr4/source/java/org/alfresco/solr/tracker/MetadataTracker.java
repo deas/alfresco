@@ -518,7 +518,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
             ArrayList<Transaction> txBatch = new ArrayList<>();
             for (Transaction info : transactions.getTransactions())
             {
-                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
+                boolean isInIndex = (info.getCommitTimeMs() <= state.getLastIndexedTxCommitTime()) &&  this.infoSrv.isInIndex(AlfrescoSolrDataModel.getTransactionDocumentId(info.getId()));
                 if (isInIndex)
                 {
                     txnsFound.add(info);

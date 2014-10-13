@@ -79,12 +79,15 @@ public class ContentTracker extends AbstractTracker implements Tracker
                 super.threadHandler.scheduleTask(ciwr);
                 docsUpdatedSinceLastCommit ++;
                 
-                if (docsUpdatedSinceLastCommit == contentUpdateBatchSize)
+                if (docsUpdatedSinceLastCommit >= contentUpdateBatchSize)
                 {
-                    super.waitForAsynchronous();
-                    checkShutdown();
-                    this.infoSrv.commit();
-                    docsUpdatedSinceLastCommit = 0;
+                    if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
+                    {
+                        super.waitForAsynchronous();
+                        checkShutdown();
+                        this.infoSrv.commit();
+                        docsUpdatedSinceLastCommit = 0;
+                    }
                 }
             }
             

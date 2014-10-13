@@ -78,7 +78,7 @@ public interface InformationServer
 
     int getRegisteredSearcherCount();
 
-    boolean isInIndex(String ids) throws IOException;
+    boolean isInIndex(String id) throws IOException;
 
     Set<Long> getErrorDocIds() throws IOException;
 

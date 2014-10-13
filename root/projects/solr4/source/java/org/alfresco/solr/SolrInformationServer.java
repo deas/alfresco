@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -115,6 +116,7 @@ import org.apache.solr.update.CommitUpdateCommand;
 import org.apache.solr.update.DeleteUpdateCommand;
 import org.apache.solr.update.RollbackUpdateCommand;
 import org.apache.solr.update.processor.UpdateRequestProcessor;
+import org.apache.solr.util.ConcurrentLRUCache;
 import org.apache.solr.util.RefCounted;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -180,6 +182,8 @@ public class SolrInformationServer implements InformationServer
     
     protected final static Logger log = LoggerFactory.getLogger(SolrInformationServer.class);
     protected enum FTSStatus {New, Dirty, Clean};
+    
+    private ConcurrentLRUCache<String, Boolean> isIdIndexCache = new ConcurrentLRUCache<String, Boolean>(60*60*100, 60*60*50);
     
     // write a BytesRef as a byte array
     JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver() {
@@ -633,6 +637,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void deleteByAclId(Long aclId) throws IOException
     {
+        isIdIndexCache.clear();
         deleteById(FIELD_ACLID, aclId);
     }
     
@@ -645,6 +650,7 @@ public class SolrInformationServer implements InformationServer
     @Override
     public void deleteByTransactionId(Long transactionId) throws IOException
     {
+        isIdIndexCache.clear();
         deleteById(FIELD_INTXID, transactionId);
     }
     
@@ -1929,9 +1935,15 @@ public class SolrInformationServer implements InformationServer
 
     private void deleteNode(UpdateRequestProcessor processor, SolrQueryRequest request, Node node) throws IOException
     {
-        DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(request);
-        delDocCmd.setQuery(FIELD_DBID + ":" + node.getId());
-        processor.processDelete(delDocCmd);
+        String errorDocId = PREFIX_ERROR + node.getId();
+        String nodeDocId = AlfrescoSolrDataModel.getNodeDocumentId(node.getTenant(), 
+                node.getAclId(), node.getId());
+        DeleteUpdateCommand delErrorDocCmd = new DeleteUpdateCommand(request);
+        delErrorDocCmd.setId(errorDocId);
+        processor.processDelete(delErrorDocCmd);
+        DeleteUpdateCommand delNodeDocCmd = new DeleteUpdateCommand(request);
+        delNodeDocCmd.setId(nodeDocId);
+        processor.processDelete(delNodeDocCmd);
     }
 
     private boolean isContentIndexedForNode(Map<QName, PropertyValue> properties)
@@ -2572,7 +2584,26 @@ public class SolrInformationServer implements InformationServer
      * @param 
      */
     @Override
-    public boolean isInIndex(String ids) throws IOException
+    public boolean isInIndex(String id) throws IOException
+    {
+        Boolean found = isIdIndexCache.get(id);
+        if(found != null)
+        {
+            return found;
+        }
+        else
+        {
+            boolean isInIndex = isInIndexImpl(id);
+            if(isInIndex)
+            {
+                isIdIndexCache.put(id, Boolean.TRUE);
+            }
+            return isInIndex;
+        }
+    }
+    
+   
+    private boolean isInIndexImpl(String ids) throws IOException
     {
         SolrQueryRequest request = null;
         try

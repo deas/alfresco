@@ -668,7 +668,7 @@ public class AclTracker extends AbstractTracker
             ArrayList<AclChangeSet> changeSetBatch = new ArrayList<AclChangeSet>();
             for (AclChangeSet changeSet : aclChangeSets.getAclChangeSets())
             {
-                boolean isInIndex = this.infoSrv.isInIndex(AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
+                boolean isInIndex = (changeSet.getCommitTimeMs() <= state.getLastIndexedChangeSetCommitTime()) && this.infoSrv.isInIndex(AlfrescoSolrDataModel.getAclChangeSetDocumentId(changeSet.getId()));
                 if (isInIndex) 
                 {
                     changeSetsFound.add(changeSet);
