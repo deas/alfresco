@@ -1350,14 +1350,18 @@ function getHeaderServices() {
       "alfresco/services/NavigationService",
       "alfresco/services/UserService",
       "alfresco/services/SiteService",
-      "alfresco/services/LogoutService",
-      "alfresco/services/ErrorReporter"
+      "alfresco/services/LogoutService"
    ];
    // Only add the logging service when in client-debug mode...
    if (config.global.flags.getChildValue("client-debug") == "true")
    {
       services.push("alfresco/services/LoggingService");
    }
+   if (config.global.flags.getChildValue("post-client-debug") == "true")
+   {
+      services.push("alfresco/services/ErrorReporter");
+   }
+
    return services;
 }
 

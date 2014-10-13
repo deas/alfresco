@@ -19,6 +19,12 @@
             This flag automatically activates logging on page load.
          -->
          <client-debug-autologging>false</client-debug-autologging>
+
+         <!--
+            When this is set to true any Aikau based errors will be posted back to the server and 
+            captured by the server side logging. This can be useful to detect when errors occur in 
+            a users browser -->
+         <post-client-debug>false</post-client-debug>
       </flags>
 
       <I18N>
