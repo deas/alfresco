@@ -610,8 +610,9 @@ define(["dojo/_base/declare",
        * @instance
        */
       clearViews: function alfresco_lists_AlfList__clearViews() {
-         for (var view in this.viewMap)
+         for (var viewName in this.viewMap)
          {
+            var view = this.viewMap[viewName];
             if (typeof view.clearOldView === "function")
             {
                view.clearOldView();
