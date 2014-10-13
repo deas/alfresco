@@ -740,7 +740,6 @@
             controlHeight = !this.fullscreen ? controlRegion.height : 0,
             newHeight = previewRegion.height - controlHeight -1; // Allow for bottom border
          
-         console.log("_setViewerHeight");
          if (newHeight === 0)
          {
             if (!this.maximized)
