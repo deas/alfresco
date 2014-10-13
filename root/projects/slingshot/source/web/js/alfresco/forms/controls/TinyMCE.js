@@ -44,7 +44,8 @@ define(["alfresco/forms/controls/BaseFormControl",
             id : this.generateUuid(),
             name: this.name,
             initialContent: this.value,
-            initiallyDisabled: (this.disablementConfig && this.disablementConfig.initialValue === true)
+            initiallyDisabled: (this.disablementConfig && this.disablementConfig.initialValue === true),
+            immediateInit: false
          };
       },
       
@@ -55,8 +56,18 @@ define(["alfresco/forms/controls/BaseFormControl",
        */
       createFormControl: function alfresco_forms_controls_TinyMCE__createFormControl(config) {
          var editor = new TinyMCE(config);
-         // this.lastValue = editor.getValue();
          return editor;
+      },
+
+      /**
+       * TinyMCE requires that the editor DOM element is in the document rather than in a fragment
+       * so we delay initialising the editor until it is placed into the document.
+       *
+       * @instance
+       */
+      placeWidget: function alfresco_forms_controls_BaseFormControl__placeWrappedWidget() {
+         this.inherited(arguments);
+         this.wrappedWidget.init();
       },
 
       /**

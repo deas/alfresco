@@ -103,37 +103,65 @@ define(["dojo/_base/declare",
       intialContent: "",
 
       /**
+       * Indicates whether or not the editor should be initialized as soon as it is created. This defaults to
+       * true but should be configured to false if the editor is being created in a DOM fragment and the init
+       * function should only be called once the DOM fragment has been placed into the document.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      immediateInit: true,
+
+      /**
        * 
        * @instance
        */
       postCreate: function alfresco_editors_TinyMCE__postCreate() {
          // Mix the custom editor config overrides into the default editor config...
+         var config = lang.clone(this.defaultEditorConfig);
          if (this.editorConfig != null)
          {
-            lang.mixin(this.defaultEditorConfig, this.editorConfig);
+            lang.mixin(config, this.editorConfig);
          }
 
          // Check that the language requested is supported...
-         if (this.defaultEditorConfig.language)
+         if (config.language)
          {
             var locales = this.supportedLocales.split(",");
             var locale = "en";
             for (var i = 0, j = locales.length; i < j; i++)
             {
-               if (locales[i] == this.defaultEditorConfig.language)
+               if (locales[i] == config.language)
                {
-                  locale = this.defaultEditorConfig.language;
+                  locale = config.language;
                   break;
                }
             }
-            this.defaultEditorConfig.language = locale;
+            config.language = locale;
          }
-         this.init(this.defaultEditorConfig);
-         this.editor.render();
-         this.editor.save();
+
+         if (this.immediateInit === true)
+         {
+            this.init(config);
+         }
+         else
+         {
+            this._delayedInitConfig = config;
+         }
       },
 
+      /**
+       * 
+       * @instance
+       * @param {object} config The configuration to initialise the editor with
+       */
       init: function alfresco_editors_TinyMCE__init(config) {
+         if (config == null)
+         {
+            config = this._delayedInitConfig;
+         }
+
          config.theme = "modern";
          if (!config.toolbar)
          {
@@ -160,6 +188,7 @@ define(["dojo/_base/declare",
          config.convert_urls = false;
          config.init_instance_callback = lang.hitch(this, this.editorInitialized);
     
+         // this.editorNode.id = "TEST";
          this.editor = new tinymce.Editor(this.editorNode, config, tinymce.EditorManager);
          
          // Allow back the 'embed' tag as TinyMCE now removes it - this is allowed by our this.editors
@@ -167,7 +196,8 @@ define(["dojo/_base/declare",
          var extValidElements = config.extended_valid_elements;
          extValidElements = (extValidElements && extValidElements !== "") ? (extValidElements = extValidElements + ",") : "";
          config.extended_valid_elements = extValidElements + "embed[src|type|width|height|flashvars|wmode]";
-         
+         this.editor.render();
+         this.editor.save();
          return this;
       },
 
@@ -194,6 +224,18 @@ define(["dojo/_base/declare",
          editor.setContent(this.initialContent);
          this._editorInitialized = true;
          this.setDisabled(this.initiallyDisabled);
+      },
+
+      /**
+       *
+       *
+       * @instance
+       * @param {boolean} preserveDom Indicates whether or not the DOM should be left after destroying.
+       */
+      destroy: function alfresco_editors_TinyMCE__destroy(preserveDom) {
+         // tinymce.remove('textarea');
+         // this.editor.destroy(true);
+         this.inherited(arguments);
       },
 
       /**
