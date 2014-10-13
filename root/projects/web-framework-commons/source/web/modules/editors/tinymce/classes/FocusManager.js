@@ -155,6 +155,10 @@ define("tinymce/FocusManager", [
 				}
 
 				editor.lastRng = null;
+
+                if (Env.ie) {
+                    editor.selection.collapse(false);
+                }
 			});
 
 			editor.on('focusout', function() {
