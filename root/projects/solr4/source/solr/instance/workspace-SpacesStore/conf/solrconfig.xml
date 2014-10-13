@@ -1334,15 +1334,14 @@
     </arr>
   </requestHandler>
 
-  <searchComponent name="suggest" class="solr.SuggestComponent">
-  <!-- <searchComponent name="suggest" class="org.alfresco.solr.component.AsyncBuildSuggestComponent"> -->
+  <searchComponent name="suggest" class="org.alfresco.solr.component.AsyncBuildSuggestComponent">
     <lst name="suggester">
       <str name="name">shingleBasedSuggestions</str>
       <!-- <str name="lookupImpl">org.apache.solr.spelling.suggest.jaspell.JaspellLookupFactory</str> -->
       <str name="lookupImpl">org.apache.solr.spelling.suggest.fst.WFSTLookupFactory</str>  
       <str name="field">suggest</str>
       <str name="suggestAnalyzerFieldType">text_shingle</str>
-      <str name="buildOnCommit">false</str>
+      <str name="buildOnCommit">true</str>
     </lst>
   </searchComponent>
 
