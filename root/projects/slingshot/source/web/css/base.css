@@ -366,6 +366,7 @@ span.navigation-separator-alt
 .share-form .form-container .caption
 {
    text-align: right;
+   width: 820px; /* ACE-2036 */
 }
 
 .share-form .form-container .form-fields
