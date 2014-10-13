@@ -324,11 +324,11 @@
             var href;
             if (data.isEditable)
             {
-               href = $siteURL('task-edit?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.editTask");
+               href = $siteURL('task-edit?taskId=' + taskId) + '" class="theme-color-1" title="' + this.msg("title.editTask");
             }
             else
             {
-               href = $siteURL('task-details?taskId=' + taskId + '&referrer=tasks') + '" class="theme-color-1" title="' + this.msg("title.viewTask");
+               href = $siteURL('task-details?taskId=' + taskId) + '" class="theme-color-1" title="' + this.msg("title.viewTask");
             }
 
             var messageDesc = '<h3><a href="' + href + '">' + $html(message) + '</a></h3>',
@@ -365,9 +365,9 @@
          {
             if (data.isEditable)
             {
-               desc += '<a href="' + $siteURL('task-edit?taskId=' + data.id + '&referrer=tasks') + '" class="edit-task" title="' + this.msg("title.editTask") + '">&nbsp;</a>';
+               desc += '<a href="' + $siteURL('task-edit?taskId=' + data.id) + '" class="edit-task" title="' + this.msg("title.editTask") + '">&nbsp;</a>';
             }
-            desc += '<a href="' + $siteURL('task-details?taskId=' + data.id + '&referrer=tasks') + '" class="view-task" title="' + this.msg("title.viewTask") + '">&nbsp;</a>';
+            desc += '<a href="' + $siteURL('task-details?taskId=' + data.id) + '" class="view-task" title="' + this.msg("title.viewTask") + '">&nbsp;</a>';
          }
 
          elCell.innerHTML = desc;

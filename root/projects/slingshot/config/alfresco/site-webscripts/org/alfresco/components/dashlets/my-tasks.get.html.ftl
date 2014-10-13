@@ -32,7 +32,7 @@
                </select>
                <span class="align-right yui-button-align">
                   <span class="first-child">
-                     <a href="${url.context}/page/start-workflow?referrer=tasks" class="theme-color-1">
+                     <a href="${url.context}/page/start-workflow" class="theme-color-1">
                         <img src="${url.context}/res/components/images/workflow-16.png" style="vertical-align: text-bottom" width="16" />
                         ${msg("link.startWorkflow")}</a>
                   </span>
