@@ -123,28 +123,28 @@ public class CmisQParserPlugin extends QParserPlugin
 
                             String luceneField =  AlfrescoSolrDataModel.getInstance().getCMISFunctionEvaluationContext(CMISQueryMode.CMS_WITH_ALFRESCO_EXTENSIONS,cmisVersion,altDic).getLuceneFieldName(propertyName);
 
-                            Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(luceneField);
-                            PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), AlfrescoSolrDataModel.getInstance().getNamespaceDAO(), AlfrescoSolrDataModel.getInstance().getDictionaryService(altDic), fieldNameAndEnding.getFirst());
-                            
-                            String solrSortField = null;
-                            if(propertyDef != null)
-                            {
-
-                                IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(),  AlfrescoSolrDataModel.getInstance().getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
-                                if(fields.getFields().size() > 0)
-                                {
-                                    solrSortField = fields.getFields().get(0).getField();
-                                }
-                            }
-                            else
-                            {
-                                solrSortField =  AlfrescoSolrDataModel.getInstance().mapNonPropertyFields(luceneField);
-                            }
+//                            Pair<String, String> fieldNameAndEnding = QueryParserUtils.extractFieldNameAndEnding(luceneField);
+//                            PropertyDefinition propertyDef = QueryParserUtils.matchPropertyDefinition(searchParameters.getNamespace(), AlfrescoSolrDataModel.getInstance().getNamespaceDAO(), AlfrescoSolrDataModel.getInstance().getDictionaryService(altDic), fieldNameAndEnding.getFirst());
+//                            
+//                            String solrSortField = null;
+//                            if(propertyDef != null)
+//                            {
+//
+//                                IndexedField fields = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(),  AlfrescoSolrDataModel.getInstance().getTextField(fieldNameAndEnding.getSecond()), FieldUse.SORT);
+//                                if(fields.getFields().size() > 0)
+//                                {
+//                                    solrSortField = fields.getFields().get(0).getField();
+//                                }
+//                            }
+//                            else
+//                            {
+//                                solrSortField =  AlfrescoSolrDataModel.getInstance().mapNonPropertyFields(luceneField);
+//                            }
                             if(sortParameter.length() > 0)
                             {
                                 sortParameter.append(", ");
                             }
-                            sortParameter.append(solrSortField).append(" ");
+                            sortParameter.append(luceneField).append(" ");
                             if(ordering.getOrder() == Order.DESCENDING)
                             {
                                 sortParameter.append("desc");

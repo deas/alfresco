@@ -371,6 +371,11 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         }
         else
         {
+            if(propertyName.equalsIgnoreCase("Score"))
+            {
+                return propertyName.toLowerCase();
+            }
+                    
             throw new FTSQueryException("Unknown property: " + fullQName.toString());
         }
 
