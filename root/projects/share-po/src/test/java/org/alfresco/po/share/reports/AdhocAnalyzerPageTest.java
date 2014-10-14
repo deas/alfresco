@@ -68,11 +68,11 @@ public class AdhocAnalyzerPageTest extends AbstractTest
 {
     private static Log logger = LogFactory.getLog(AdhocAnalyzerPageTest.class);
 
-    private static final String CUSTOM_REPORTS = "Custom Reports";
-    private static final String CUSTOM_SITE_REPORTS = "Custom Site Reports";
+    private static final String CUSTOM_REPORTS = "My Reports";
+    private static final String CUSTOM_SITE_REPORTS = "Site Reports";
     private static final String UNSAVED_REPORT = "Unsaved Report";
-    private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
-    private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
+    //private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
+    //private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
     private static final String pentahoBusinessAnalystGroup = "ANALYTICS_BUSINESS_ANALYSTS";
     
     private static String reportName = null;
@@ -277,7 +277,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     public void testOpenReportInUserboardDashlet() throws Exception
     {
         
-        DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        //DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        DashBoardPage dashboardPage = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
         
@@ -310,6 +311,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         // Click on Ok button to save report
         createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
 
+       
         Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
@@ -409,7 +411,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     @Test(dependsOnMethods = "testOpenReportInUserboardDashlet")
     public void testOpenReportInSiteboardDashlet() throws Exception
     {
-        DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        //DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        DashBoardPage dashboardPage = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyzeSite().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_SITE_REPORTS); 
         
@@ -508,7 +511,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     @Test(dependsOnMethods = "testOpenReportInSiteboardDashlet")
     public void testDeleteReport() throws Exception
     {
-        DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        //DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        DashBoardPage dashboardPage = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzerPage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzerPage.getPageTitle(), CUSTOM_REPORTS); 
         
@@ -531,7 +535,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     @Test(dependsOnMethods = "testDeleteReport")
     public void testDeleteSiteReport() throws Exception
     {
-        DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        //DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
+        DashBoardPage dashboardPage = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzerPage = dashboardPage.getNav().selectAnalyzeSite().render();
         Assert.assertEquals(adhocAnalyzerPage.getPageTitle(), CUSTOM_SITE_REPORTS); 
         

@@ -48,6 +48,11 @@ public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;    
     private String siteName;
+
+    private static final String pentahoBusinessAnalystGroup = "ANALYTICS_BUSINESS_ANALYSTS";
+    private String businessAnalystsUserName = "BusinessAnalystUser_" + System.currentTimeMillis();
+    
+    
     @BeforeClass(groups={"alfresco-one"}, alwaysRun=true)
     public void setup() throws Exception
     {
@@ -314,25 +319,29 @@ public class NavigationBarTest extends AbstractTest
      * @throws Exception
      */
     /**
-    @Test(groups= "Enterprise-only", priority=999)
+   @Test(groups= "Enterprise-only", priority=999)
     public void navigateToAnalyze() throws Exception
     {   
         //logout as admin and log in as pentaho business analyst
         ShareUtil.logout(drone);
-        SharePage page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
+        DashBoardPage dashBoard = loginAs(username, password);
+        UserSearchPage userSearchpage = dashBoard.getNav().getUsersPage().render();
+        NewUserPage newPage = userSearchpage.selectNewUser().render();
+        newPage.createEnterpriseUserWithGroup(businessAnalystsUserName, businessAnalystsUserName, businessAnalystsUserName, businessAnalystsUserName + "@test.com", UNAME_PASSWORD, pentahoBusinessAnalystGroup);
+        logout(drone);
+        SharePage page = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzePage = page.getNav().selectAnalyze().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Custom Reports");       
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "My Reports");       
         ShareUtil.logout(drone);
     }
     
-    @Test(groups= "Enterprise-only", priority=999)
+    @Test(groups= "Enterprise-only", dependsOnMethods= "navigateToAnalyze")
     public void navigateToSiteAnalyze() throws Exception
     {   
-        //logout as admin and log in as pentaho business analyst
-        ShareUtil.logout(drone);
-        SharePage page = loginAs("pentahoBusinessAnalyst", "pentahoBusinessAnalyst");
+        //log in as pentaho business analyst
+        SharePage page = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzePage = page.getNav().selectAnalyzeSite().render();
-        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Custom Site Reports");       
+        Assert.assertEquals(adhocAnalyzePage.getPageTitle(), "Site Reports");       
         ShareUtil.logout(drone);
     }
     **/

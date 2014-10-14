@@ -65,8 +65,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
     private static String testPassword = DEFAULT_PASSWORD;
     protected String testUser;
     protected String siteName = "";
-    private static final String CUSTOM_REPORTS = "Custom Reports";
-    private static final String CUSTOM_SITE_REPORTS = "Custom Site Reports";
+    private static final String CUSTOM_REPORTS = "My Reports";
+    private static final String CUSTOM_SITE_REPORTS = "Site Reports";
     private static final String UNSAVED_REPORT = "Unsaved Report";
     private static final String PIE_CHART_TYPE = "pie";
     private static final String AREA_CHART_TYPE = "area";
