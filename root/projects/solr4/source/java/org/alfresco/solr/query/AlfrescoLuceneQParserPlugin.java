@@ -85,7 +85,8 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
             try
             {
                 // escape / not in a string and not already escaped
-                query = qp.parse(searchParameters.getQuery().replaceAll("([^\\\\])/(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)", "$1\\\\/"));
+                String escapedQ = escape(searchParameters.getQuery());
+                query = qp.parse(escapedQ);
             }
             catch (ParseException pe)
             {
@@ -97,6 +98,41 @@ public class AlfrescoLuceneQParserPlugin extends QParserPlugin
                 log.debug("Lucene QP query as lucene:\t    "+contextAwareQuery);
             }
             return contextAwareQuery;
+        }
+        
+        protected String escape(String in)
+        {
+            if (in.indexOf('/') == -1)
+            {
+                // If we have no forward slashes, there is nothing to do.
+                return in;
+            }
+            
+            StringBuilder sb = new StringBuilder(in);
+            boolean quoted = false;
+            boolean escaped = false;
+            for (int i = 0; i < sb.length(); i++)
+            {
+                char c = sb.charAt(i);
+                if (c == '"')
+                {
+                    quoted = !quoted;
+                    continue;
+                }
+                else if (c == '\\')
+                {
+                    escaped = true;
+                    continue;
+                }
+                if (c == '/' && !quoted && !escaped)
+                {
+                    sb.insert(i, "\\");
+                    i++; // jump over modification, avoid infinite loop.
+                }
+                escaped = false;
+            }
+            String out = sb.toString();
+            return out;
         }
     }
 
