@@ -54,29 +54,6 @@ public class CompiledModelsCache extends AbstractAsynchronouslyRefreshedCache<Di
     }
 
     /**
-     * @param tenantId the tenantId of cache that will be removed from live cache
-     * @return removed DictionaryRegistry
-     */
-    public void remove(final String tenantId)
-    {
-        //TODO Should be reworked when ACE-2001 will be implemented
-        liveLock.writeLock().lock();
-        try
-        {
-            DictionaryRegistry dictionaryRegistry = live.get(tenantId);
-            if (dictionaryRegistry != null)
-            {
-                live.remove(tenantId);
-                dictionaryRegistry.remove();
-            }
-        }
-        finally
-        {
-            liveLock.writeLock().unlock();
-        }
-    }
-
-    /**
      * @param dictionaryDAO the dictionaryDAOImpl to set
      */
     public void setDictionaryDAO(DictionaryDAOImpl dictionaryDAO)

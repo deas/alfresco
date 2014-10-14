@@ -857,9 +857,9 @@ public class DictionaryDAOImpl implements DictionaryDAO, NamespaceDAO,
 
     private void removeDictionaryRegistry(String tenantDomain)
     {
-        // TODO Should be reworked when ACE-2001 will be implemented
+    	DictionaryRegistry registryToRemove = dictionaryRegistryCache.get(tenantDomain);
         dictionaryRegistryCache.remove(tenantDomain);
-        dictionaryRegistryCache.refresh(tenantDomain);
+        registryToRemove.remove();
     }
 
     /**
