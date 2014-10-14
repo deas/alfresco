@@ -482,6 +482,177 @@
                 </plugins>
             </build>
         </profile>
+        
+        <profile>
+         <id>install-pentaho-alfresco</id>
+         <build>
+            <plugins>
+               <!-- Download and install the latest enterprise alfresco installer -->
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>fetch-installer</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <echo>Recreating database...</echo>
+                              <sql driver="org.postgresql.Driver" url="jdbc:postgresql:template1" userid="alfresco" password="alfresco" autocommit="true">drop database if exists alfresco; create database alfresco</sql>
+                              <echo>Downloading Pentaho Installer...</echo>
+                              <sshexec username="tomcat" host="pbld01.alfresco.com" keyfile="${user.home}/.ssh/id_rsa" outputproperty="installerPath" command="ls -rt /bamboo/artifacts/INTEGRATIONS-PENTAHO/JOB1/build*/PentahoDistribution/alfresco-reporting-*.zip | tail -1 | tr ' ' '?' " />
+                              <scp remoteFile="tomcat@pbld01.alfresco.com:${installerPath}" localTofile="target/alfresco-reporting.zip" keyfile="${user.home}/.ssh/id_rsa" />
+                              <chmod file="target/alfresco-reporting.zip" perm="a+x" verbose="true" />
+                              <echo>Unzip the Alfresco Reporting...</echo>
+                              <unpack artifact="${basedir}/target/alfresco-reporting.zip" outputDirectory="${basedir}/target" silent="true" />
+                              <chmod file="${basedir}/target/alfresco-reporting/activemq/bin/activemq" perm="a+x" verbose="true" />
+                              <chmod file="${basedir}/target/alfresco-reporting/ba-server/*.sh" perm="a+x" verbose="true" />
+                              <chmod file="${basedir}/target/alfresco-reporting/ba-server/tomcat/bin/*.sh" perm="a+x" verbose="true" />
+                              
+                              <echo>Downloading Alfresco installer...</echo>
+                              <sshexec username="tomcat" host="pbld01.alfresco.com" keyfile="${user.home}/.ssh/id_rsa" outputproperty="installerPath" command="ls -rt /data/nightlybuilds/Enterprise?${enterprise.installer.version}/build*/ALL/alfresco-enterprise-*-installer-linux-x64.??? | tail -1 | tr ' ' '?' " />
+                              <scp remoteFile="tomcat@pbld01.alfresco.com:${installerPath}" localTofile="target/alf-installer.bin" keyfile="${user.home}/.ssh/id_rsa" />
+                              <chmod file="target/alf-installer.bin" perm="a+x" verbose="true" />
+                              <echo>Installing Alfresco...</echo>
+                              <exec executable="${basedir}/target/alf-installer.bin" dir="target" failonerror="true">
+                                 <arg line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation" />
+                              </exec>
+                              <echo></echo>
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+                  <dependencies>
+                     <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.8.2</version>
+                     </dependency>
+                     <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>9.1-901-1.jdbc4</version>
+                     </dependency>
+                  </dependencies>
+               </plugin>
+               <plugin>
+               <artifactId>exec-maven-plugin</artifactId>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <executions>
+                        <execution><!-- Run our version calculation script -->
+                            <id>Version Calculation</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>${basedir}/target/alfresco-reporting/ba-server/data/mysql5/create_*.sql | mysql -u alfresco --password=alfresco</executable>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>modify-properties</id>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <property name="alf.prop"
+                                        location="target/alf-installation/tomcat/shared/classes/alfresco-global.properties" />
+                                    <echo append="true" output="${alf.prop}" />
+                                    <echo append="true" output="${alf.prop}">
+                                        # Adding Pentaho Messaging and Event Sub Systems - automatically
+                                        added by the build
+                                        messaging.broker.url=failover:(tcp://localhost:61616)?timeout=3000
+                                        messaging.subsystem.autoStart=true
+                                        events.subsystem.autoStart=true
+                                        pentaho.ba-server.url=http://alfrescora.my.com/pentaho/
+                                    </echo>
+                                    <echo append="true" output="${alf.prop}" />
+                                    <copy failonerror="false" verbose="true"
+                                        todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license"
+                                        file="${user.home}/binaries/build-classpath/4.3/WEB-INF/alfresco/license/Enterprise43-All.lic" />
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+               <plugin>
+                  <groupId>org.alfresco.maven.plugin</groupId>
+                  <artifactId>alfresco-maven-plugin</artifactId>
+                  <extensions>true</extensions>
+                  <executions>
+                     <execution>
+                        <id>install-server-amp</id>
+                        <goals>
+                           <goal>install</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                           <backup>true</backup>
+                           <ampLocation>${basedir}/target/alfresco-reporting/amps/pentaho-repo.amp</ampLocation>
+                           <warLocation>${project.build.directory}/alf-installation/tomcat/webapps/alfresco.war</warLocation>
+                           <classifier>amp</classifier>
+                        </configuration>
+                     </execution>
+                     <execution>
+                        <id>install-share-amp</id>
+                        <goals>
+                           <goal>install</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                           <backup>true</backup>
+                           <ampLocation>${basedir}/target/alfresco-reporting/amps/pentaho-share.amp</ampLocation>
+                           <warLocation>${project.build.directory}/alf-installation/tomcat/webapps/share.war</warLocation>
+                           <classifier>amp</classifier>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>fetch-installer</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <echo>Start ActiveMQ</echo>
+                              <exec executable="${basedir}/target/alfresco-reporting/activemq/bin/activemq" failonerror="true" />
+                              <echo>Start Message Listener</echo>
+                              
+                              <echo></echo>
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+                  <dependencies>
+                     <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.8.2</version>
+                     </dependency>
+                     <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>9.1-901-1.jdbc4</version>
+                     </dependency>
+                  </dependencies>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
     </profiles>
 
 </project>
