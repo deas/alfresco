@@ -13,6 +13,7 @@
     <modules>
         <module>file-transfer-receiver</module>
         <module>wcmqs</module>
+        <module>solr1</module>
         <module>distribution</module>
         <module>installer</module>
     </modules>
