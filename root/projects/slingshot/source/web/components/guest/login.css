@@ -43,6 +43,12 @@
    margin-top: -8px;
 }
 
+.login .error
+{
+   max-width: 428px;
+   padding-top: 16px;
+}
+
 /*
  * Override button colour for enterprise
  */
