@@ -99,6 +99,9 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   
   /** SolrConfig label to identify boolean value to build suggesters on optimize */
   private static final String BUILD_ON_OPTIMIZE_LABEL = "buildOnOptimize";
+
+  /** SolrConfig label to identify boolean value describing whether suggesters should be built at all. */
+  private static final String ENABLED_LABEL = "enabled";
   
   private static final String ASYNC_CACHE_KEY = "suggester";
   
@@ -138,7 +141,8 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
           SolrSuggester suggester = new SolrSuggester();
           boolean buildOnCommit = Boolean.parseBoolean((String) suggesterParams.get(BUILD_ON_COMMIT_LABEL));
           boolean buildOnOptimize = Boolean.parseBoolean((String) suggesterParams.get(BUILD_ON_OPTIMIZE_LABEL));
-          SuggesterCache suggesterCache = new SuggesterCache(core, suggesterParams, buildOnCommit, buildOnOptimize);
+          boolean enabled = Boolean.parseBoolean((String) suggesterParams.get(ENABLED_LABEL));          
+          SuggesterCache suggesterCache = new SuggesterCache(core, suggesterParams, enabled, buildOnCommit, buildOnOptimize);
           
           String dictionary = suggester.init(suggesterParams, core);
           if (dictionary != null) {
@@ -516,13 +520,15 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     private final SolrCore core;
     private final AtomicBoolean isNewSearcher = new AtomicBoolean(false);
     private final NamedList suggesterParams;
-    private boolean buildOnCommit;
-    private boolean buildOnOptimize;
+    private final boolean buildOnCommit;
+    private final boolean buildOnOptimize;
+    private final boolean enabled;
     
-    public SuggesterCache(SolrCore core, NamedList suggesterParams, boolean buildOnCommit, boolean buildOnOptimize)
+    public SuggesterCache(SolrCore core, NamedList suggesterParams, boolean enabled, boolean buildOnCommit, boolean buildOnOptimize)
     {
         this.core = core;
         this.suggesterParams = suggesterParams;
+        this.enabled = enabled;
         this.buildOnCommit = buildOnCommit;
         this.buildOnOptimize = buildOnOptimize;
         setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
@@ -541,6 +547,12 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
             // Create and configure the suggester
             SolrSuggester suggester = new SolrSuggester();
             suggester.init(suggesterParams, core);
+            
+            if (!enabled)
+            {
+                // When disabled, provide an empty, yet initialised suggester. 
+                return suggester;
+            }
             
             if (!isNewSearcher.getAndSet(true)) {
               // firstSearcher event

@@ -1337,6 +1337,7 @@
   <searchComponent name="suggest" class="org.alfresco.solr.component.AsyncBuildSuggestComponent">
     <lst name="suggester">
       <str name="name">shingleBasedSuggestions</str>
+      <str name="enabled">${solr.suggester.enabled:true}</str>
       <!-- <str name="lookupImpl">org.apache.solr.spelling.suggest.jaspell.JaspellLookupFactory</str> -->
       <str name="lookupImpl">org.apache.solr.spelling.suggest.fst.WFSTLookupFactory</str>  
       <str name="field">suggest</str>
