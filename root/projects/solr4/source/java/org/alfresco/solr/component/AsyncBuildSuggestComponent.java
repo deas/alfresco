@@ -523,6 +523,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     private final boolean buildOnCommit;
     private final boolean buildOnOptimize;
     private final boolean enabled;
+    private final SolrSuggester initialSuggester;
     
     public SuggesterCache(SolrCore core, NamedList suggesterParams, boolean enabled, boolean buildOnCommit, boolean buildOnOptimize)
     {
@@ -534,11 +535,56 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
         setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
         BlockingQueue<Runnable> threadPool = new LinkedBlockingQueue<Runnable>();
         setThreadPoolExecutor(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, threadPool));
+        
+        // Create and configure the initial empty suggester
+        initialSuggester = new SolrSuggester();
+        initialSuggester.init(suggesterParams, core);
     }
     
+    /**
+     * The abstract base class' get() method will block if a value for key has
+     * not previously been calculated (e.g. there is no 'live' value).
+     * <p>
+     * We don't want to block, we just want to return an empty suggester. The
+     * newSearcher events will make sure that a suggester is built and put live
+     * when possible, so it is fine to do this.
+     */
+    @Override
+    public SolrSuggester get(String key)
+    {
+        liveLock.readLock().lock();
+        try
+        {
+            if (live.get(key) == null)
+            {
+                if (LOG.isDebugEnabled())
+                {
+                    LOG.debug("Cache has no live suggester yet, return empty one while we wait.");
+                }
+                return initialSuggester;
+            }
+            else
+            {
+                // Since we have a live suggester, return it.
+                return super.get(key);
+            }
+        }
+        finally
+        {
+            liveLock.readLock().unlock();
+        }
+    }
+
+
     @Override
     protected SolrSuggester buildCache(String key)
     {
+        if (!enabled)
+        {
+            // When disabled, provide an empty, yet initialised suggester. 
+            return initialSuggester;
+        }
+        
         RefCounted<SolrIndexSearcher> refCountedSearcher = core.getSearcher();
         try
         {
@@ -547,12 +593,6 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
             // Create and configure the suggester
             SolrSuggester suggester = new SolrSuggester();
             suggester.init(suggesterParams, core);
-            
-            if (!enabled)
-            {
-                // When disabled, provide an empty, yet initialised suggester. 
-                return suggester;
-            }
             
             if (!isNewSearcher.getAndSet(true)) {
               // firstSearcher event
