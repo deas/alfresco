@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.extensions.surf</groupId>
         <artifactId>spring-surf-parent</artifactId>
-        <version>5.0-preview</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
