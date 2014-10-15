@@ -1237,61 +1237,59 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
         Set<Integer> wildcardPoistions = getWildcardPositions(testText);
         
-        TokenStream source;
-//        if((localePrefix.length() == 0) || (wildcardPoistions.size() > 0) || (analysisMode == AnalysisMode.IDENTIFIER))
-//        {
-            source = getAnalyzer().tokenStream(field, new StringReader(toTokenise));
-//        }
-//        else
-//        {
-//            source = getAnalyzer().tokenStream(field, new StringReader("\u0000"+localePrefix.substring(1, localePrefix.length()-1)+"\u0000"+toTokenise));
-//            localePrefix = "";
-//        }
-
+        TokenStream source = null;   
         ArrayList<org.apache.lucene.analysis.Token> list = new ArrayList<org.apache.lucene.analysis.Token>();
-        org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
+        boolean severalTokensAtSamePosition = false;
         org.apache.lucene.analysis.Token nextToken;
         int positionCount = 0;
-        boolean severalTokensAtSamePosition = false;
 
-        source.reset();
-        while (source.incrementToken())
-        {
-            CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
-            OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
-            TypeAttribute typeAtt = null;
-            if(source.hasAttribute(TypeAttribute.class))
-            {
-                typeAtt = source.getAttribute(TypeAttribute.class);
-            }
-            PositionIncrementAttribute posIncAtt = null;
-            if(source.hasAttribute(PositionIncrementAttribute.class))
-            {
-                posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
-            }
-            nextToken = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
-            if(typeAtt != null)
-            {
-                nextToken.setType(typeAtt.type());
-            }
-            if(posIncAtt != null)
-            {
-                nextToken.setPositionIncrement(posIncAtt.getPositionIncrement());
-            }
-            
-            list.add(nextToken);
-            if (nextToken.getPositionIncrement() != 0)
-                positionCount += nextToken.getPositionIncrement();
-            else
-                severalTokensAtSamePosition = true;
-        }
         try
         {
-            source.close();
+            org.apache.lucene.analysis.Token reusableToken = new org.apache.lucene.analysis.Token();
+            
+            source = getAnalyzer().tokenStream(field, new StringReader(toTokenise));
+            source.reset();
+            while (source.incrementToken())
+            {
+                CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
+                OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
+                TypeAttribute typeAtt = null;
+                if(source.hasAttribute(TypeAttribute.class))
+                {
+                    typeAtt = source.getAttribute(TypeAttribute.class);
+                }
+                PositionIncrementAttribute posIncAtt = null;
+                if(source.hasAttribute(PositionIncrementAttribute.class))
+                {
+                    posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
+                }
+                nextToken = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
+                if(typeAtt != null)
+                {
+                    nextToken.setType(typeAtt.type());
+                }
+                if(posIncAtt != null)
+                {
+                    nextToken.setPositionIncrement(posIncAtt.getPositionIncrement());
+                }
+
+                list.add(nextToken);
+                if (nextToken.getPositionIncrement() != 0)
+                    positionCount += nextToken.getPositionIncrement();
+                else
+                    severalTokensAtSamePosition = true;
+            }
         }
-        catch (IOException e)
+        finally
         {
-            // ignore
+            try
+            {
+                if(source != null) {source.close();}
+            }
+            catch (IOException e)
+            {
+                // ignore
+            }
         }
         
         // add any alpha numeric wildcards that have been missed
@@ -2575,7 +2573,14 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     for (Locale locale : (((expandedLocales == null) || (expandedLocales.size() == 0)) ? Collections.singletonList(I18NUtil.getLocale()) : expandedLocales))
                     {
 
-                        addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, locale);
+                        try
+                        {
+                            addTextRange(field, propertyDef, part1, part2, includeLower, includeUpper, analysisMode, expandedFieldName, propertyDef, tokenisationMode, booleanQuery, locale);
+                        }
+                        catch (IOException e)
+                        {
+                            throw new ParseException("Failed to tokenise: <"+ part1 + "> or <" +part2 +">   for " + propertyDef.getName() );
+                        }
 
                     }
                     return booleanQuery;
@@ -2729,8 +2734,6 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
                 tokenised = token.toString();
             }
-
-            source.close();
             return tokenised;
         }
         catch (IOException e)
@@ -4546,7 +4549,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
 
  
     protected void addTextRange(String field, PropertyDefinition pDef, String part1, String part2, boolean includeLower, boolean includeUpper, AnalysisMode analysisMode, String fieldName,
-            PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, Locale locale) throws ParseException
+            PropertyDefinition propertyDef, IndexTokenisationMode tokenisationMode, BooleanQuery booleanQuery, Locale locale) throws ParseException, IOException
     {
         switch (tokenisationMode)
         {
@@ -4580,20 +4583,25 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
     private void addLocaleSpecificTextRange(String expandedFieldName, PropertyDefinition pDef, String part1, String part2, boolean includeLower, boolean includeUpper, BooleanQuery booleanQuery,
-            Locale locale, AnalysisMode analysisMode, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredTokenisationMode) throws ParseException
+            Locale locale, AnalysisMode analysisMode, IndexTokenisationMode tokenisationMode, IndexTokenisationMode preferredTokenisationMode) throws ParseException, IOException
     {
         FieldInstance fieldInstance = getFieldInstance(expandedFieldName, pDef, locale, preferredTokenisationMode);
         
         String firstString = null;
         if((part1 != null) && !part1.equals("\u0000"))
         {
-            StringBuilder builder = new StringBuilder(part1.length() + 10);
             if(fieldInstance.isLocalised())
             {
-                builder.append("{").append(locale.getLanguage()).append("}");
+                firstString = getFirstTokenForRange(getLocalePrefixedText(part1, locale), fieldInstance);
+                if(firstString == null)
+                {
+                    firstString = "{" + locale.getLanguage() + "}";
+                }
             }
-            builder.append(part1);
-            firstString = builder.toString();   
+            else
+            {
+                firstString = getFirstTokenForRange(part1, fieldInstance);
+            }
         }
         else
         {
@@ -4610,13 +4618,18 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         String lastString = null;
         if((part2 != null) && !part2.equals("\uffff"))
         {
-            StringBuilder builder = new StringBuilder(part2.length() + 10);
             if(fieldInstance.isLocalised())
             {
-                builder.append("{").append(locale.toString()).append("}");
+                lastString = getFirstTokenForRange(getLocalePrefixedText(part2, locale), fieldInstance);
+                if(lastString == null)
+                {
+                    lastString = "{" + locale.getLanguage() + "}\uffff";
+                }
             }
-            builder.append(part2);
-            lastString = builder.toString();
+            else
+            {
+                lastString = getFirstTokenForRange(part2, fieldInstance);
+            }
         }
         else
         {
@@ -4635,6 +4648,56 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     }
 
   
+    private String getFirstTokenForRange(String string, FieldInstance field) throws IOException
+    {
+        org.apache.lucene.analysis.Token nextToken;
+        TokenStream source = null;;
+
+        try
+        {
+            source = getAnalyzer().tokenStream(field.getField(), new StringReader(string));
+            source.reset();
+            while (source.incrementToken())
+            {
+                CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
+                OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
+                TypeAttribute typeAtt = null;
+                if(source.hasAttribute(TypeAttribute.class))
+                {
+                    typeAtt = source.getAttribute(TypeAttribute.class);
+                }
+                PositionIncrementAttribute posIncAtt = null;
+                if(source.hasAttribute(PositionIncrementAttribute.class))
+                {
+                    posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
+                }
+                nextToken = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
+                if(typeAtt != null)
+                {
+                    nextToken.setType(typeAtt.type());
+                }
+                if(posIncAtt != null)
+                {
+                    nextToken.setPositionIncrement(posIncAtt.getPositionIncrement());
+                }
+
+                return nextToken.toString();
+            }
+        }
+        finally
+        {
+            try
+            {
+                if(source != null) {source.close(); }
+            }
+            catch (IOException e)
+            {
+                // ignore
+            }
+        }
+        return null;
+    }
+    
     protected void addTextSpanQuery(String field, PropertyDefinition pDef, String first, String last, int slop, boolean inOrder, String expandedFieldName, IndexTokenisationMode tokenisationMode,
             BooleanQuery booleanQuery, Locale locale)
     {
@@ -4707,43 +4770,50 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
         SpanOrQuery spanOrQuery = new SpanOrQuery();
 
         org.apache.lucene.analysis.Token nextToken;
-        TokenStream source = getAnalyzer().tokenStream(field.getField(), new StringReader(first));
+        TokenStream source = null;
 
-        source.reset();
-        while (source.incrementToken())
-        {
-            CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
-            OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
-            TypeAttribute typeAtt = null;
-            if(source.hasAttribute(TypeAttribute.class))
-            {
-                typeAtt = source.getAttribute(TypeAttribute.class);
-            }
-            PositionIncrementAttribute posIncAtt = null;
-            if(source.hasAttribute(PositionIncrementAttribute.class))
-            {
-                posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
-            }
-            nextToken = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
-            if(typeAtt != null)
-            {
-                nextToken.setType(typeAtt.type());
-            }
-            if(posIncAtt != null)
-            {
-                nextToken.setPositionIncrement(posIncAtt.getPositionIncrement());
-            }
-
-            SpanQuery termQuery = new SpanTermQuery(new Term(field.getField(), nextToken.toString()));
-            spanOrQuery.addClause(termQuery);
-        }
         try
         {
-            source.close();
+            source = getAnalyzer().tokenStream(field.getField(), new StringReader(first));
+            source.reset();
+            while (source.incrementToken())
+            {
+                CharTermAttribute cta = source.getAttribute(CharTermAttribute.class);
+                OffsetAttribute offsetAtt = source.getAttribute(OffsetAttribute.class);
+                TypeAttribute typeAtt = null;
+                if(source.hasAttribute(TypeAttribute.class))
+                {
+                    typeAtt = source.getAttribute(TypeAttribute.class);
+                }
+                PositionIncrementAttribute posIncAtt = null;
+                if(source.hasAttribute(PositionIncrementAttribute.class))
+                {
+                    posIncAtt = source.getAttribute(PositionIncrementAttribute.class);
+                }
+                nextToken = new Token(cta.buffer(), 0, cta.length(), offsetAtt.startOffset(), offsetAtt.endOffset());
+                if(typeAtt != null)
+                {
+                    nextToken.setType(typeAtt.type());
+                }
+                if(posIncAtt != null)
+                {
+                    nextToken.setPositionIncrement(posIncAtt.getPositionIncrement());
+                }
+
+                SpanQuery termQuery = new SpanTermQuery(new Term(field.getField(), nextToken.toString()));
+                spanOrQuery.addClause(termQuery);
+            }
         }
-        catch (IOException e)
+        finally
         {
-            // ignore
+            try
+            {
+                if(source != null) {source.close();}
+            }
+            catch (IOException e)
+            {
+                // ignore
+            }
         }
 
         return spanOrQuery;

@@ -1332,7 +1332,7 @@ public class AlfrescoCoreAdminTester
                         .put(ContentModel.PROP_CONTENT,
                                     "The quick brown fox jumped over the lazy dog and ate the Alfresco Tutorial, in pdf format, along with the following stop words;  a an and are"
                                                 + " as at be but by for if in into is it no not of on or such that the their then there these they this to was will with: "
-                                                + " and random charcters \u00E0\u00EA\u00EE\u00F0\u00F1\u00F6\u00FB\u00FF");
+                                                + " and random charcters \u00E0\u00EA\u00EE\u00F0\u00F1\u00F6\u00FB\u00FF score");
             NodeRef content00NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content00QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "Alfresco Tutorial");
             ChildAssociationRef content00CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder00NodeRef,
@@ -1361,7 +1361,7 @@ public class AlfrescoCoreAdminTester
             content01Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date01)));
             HashMap<QName, String> content01Content = new HashMap<QName, String>();
-            content01Content.put(ContentModel.PROP_CONTENT, "One Zebra Apple");
+            content01Content.put(ContentModel.PROP_CONTENT, "One Zebra Apple score score score score score score score score score score score");
             NodeRef content01NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content01QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "AA%");
             ChildAssociationRef content01CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder01NodeRef,
@@ -1389,7 +1389,7 @@ public class AlfrescoCoreAdminTester
             content02Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date02)));
             HashMap<QName, String> content02Content = new HashMap<QName, String>();
-            content02Content.put(ContentModel.PROP_CONTENT, "Two Zebra Banana");
+            content02Content.put(ContentModel.PROP_CONTENT, "Two Zebra Banana score score score score score score score score score score pad");
             NodeRef content02NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content02QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "BB_");
             ChildAssociationRef content02CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder02NodeRef,
@@ -1417,7 +1417,7 @@ public class AlfrescoCoreAdminTester
             content03Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date03)));
             HashMap<QName, String> content03Content = new HashMap<QName, String>();
-            content03Content.put(ContentModel.PROP_CONTENT, "Three Zebra Clementine");
+            content03Content.put(ContentModel.PROP_CONTENT, "Three Zebra Clementine score score score score score score score score score pad pad");
             NodeRef content03NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content03QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "CC\\");
             ChildAssociationRef content03CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder03NodeRef,
@@ -1445,7 +1445,7 @@ public class AlfrescoCoreAdminTester
             content04Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date04)));
             HashMap<QName, String> content04Content = new HashMap<QName, String>();
-            content04Content.put(ContentModel.PROP_CONTENT, "Four zebra durian");
+            content04Content.put(ContentModel.PROP_CONTENT, "Four zebra durian score score score score score score score score pad pad pad");
             NodeRef content04NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content04QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "DD\'");
             ChildAssociationRef content04CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder04NodeRef,
@@ -1480,7 +1480,7 @@ public class AlfrescoCoreAdminTester
             content05Properties.put(ContentModel.PROP_LOCK_OWNER, new StringPropertyValue("andy"));
             content05Properties.put(ContentModel.PROP_LOCK_TYPE, new StringPropertyValue("WRITE_LOCK"));
             HashMap<QName, String> content05Content = new HashMap<QName, String>();
-            content05Content.put(ContentModel.PROP_CONTENT, "Five zebra Ebury");
+            content05Content.put(ContentModel.PROP_CONTENT, "Five zebra Ebury score score score score score score score pad pad pad pad");
             NodeRef content05NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content05QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "EE.aa");
             ChildAssociationRef content05CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder05NodeRef,
@@ -1509,7 +1509,7 @@ public class AlfrescoCoreAdminTester
             content06Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date06)));
             HashMap<QName, String> content06Content = new HashMap<QName, String>();
-            content06Content.put(ContentModel.PROP_CONTENT, "Six zebra fig");
+            content06Content.put(ContentModel.PROP_CONTENT, "Six zebra fig score score score score score score pad pad pad pad pad");
             NodeRef content06NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content06QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "FF.EE");
             ChildAssociationRef content06CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder06NodeRef,
@@ -1548,7 +1548,7 @@ public class AlfrescoCoreAdminTester
             content07Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date07)));
             HashMap<QName, String> content07Content = new HashMap<QName, String>();
-            content07Content.put(ContentModel.PROP_CONTENT, "Seven zebra grapefruit");
+            content07Content.put(ContentModel.PROP_CONTENT, "Seven zebra grapefruit score score score score score pad pad pad pad pad pad");
             NodeRef content07NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content07QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "GG*GG");
             ChildAssociationRef content07CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder07NodeRef,
@@ -1588,7 +1588,7 @@ public class AlfrescoCoreAdminTester
             content08Properties.put(ContentModel.PROP_MODIFIED,
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date08)));
             HashMap<QName, String> content08Content = new HashMap<QName, String>();
-            content08Content.put(ContentModel.PROP_CONTENT, "Eight zebra jackfruit");
+            content08Content.put(ContentModel.PROP_CONTENT, "Eight zebra jackfruit score score score score pad pad pad pad pad pad pad");
             NodeRef content08NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content08QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "HH?HH");
             ChildAssociationRef content08CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder08NodeRef,
@@ -1629,7 +1629,7 @@ public class AlfrescoCoreAdminTester
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date09)));
             content09Properties.put(ContentModel.PROP_VERSION_LABEL, new StringPropertyValue("label"));
             HashMap<QName, String> content09Content = new HashMap<QName, String>();
-            content09Content.put(ContentModel.PROP_CONTENT, "Nine zebra kiwi");
+            content09Content.put(ContentModel.PROP_CONTENT, "Nine zebra kiwi score score score pad pad pad pad pad pad pad pad");
             NodeRef content09NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content09QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "aa");
             ChildAssociationRef content09CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder09NodeRef,
@@ -1671,7 +1671,7 @@ public class AlfrescoCoreAdminTester
                         new StringPropertyValue(DefaultTypeConverter.INSTANCE.convert(String.class, date10)));
             content10Properties.put(ContentModel.PROP_VERSION_LABEL, new StringPropertyValue("label"));
             HashMap<QName, String> content10Content = new HashMap<QName, String>();
-            content10Content.put(ContentModel.PROP_CONTENT, "Ten zebra kiwi thumb");
+            content10Content.put(ContentModel.PROP_CONTENT, "Ten zebra kiwi thumb score pad pad pad pad pad pad pad pad pad");
             NodeRef content10NodeRef = new NodeRef(new StoreRef("workspace", "SpacesStore"), createGUID());
             QName content10QName = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "aa-thumb");
             ChildAssociationRef content10CAR = new ChildAssociationRef(ContentModel.ASSOC_CONTAINS, folder09NodeRef,
@@ -2675,7 +2675,7 @@ public class AlfrescoCoreAdminTester
 
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId", 11,
                     null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
-        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectTypeId",
+        testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectTypeId, cmis:objectId",
                     11, null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis", "SELECT  cmis:objectId FROM cmis:folder ORDER BY cmis:objectId ASC",
                     11, null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
@@ -2716,71 +2716,71 @@ public class AlfrescoCoreAdminTester
                     11, null, new int[] { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 }, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP", 11,
-                    null, new int[] { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }, null, null, null, (String) null);
+                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('score') ORDER BY MEEP", 11,
+                    null, new int[] { 13, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT SCORE(), cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY SEARCH_SCORE", 11,
-                    null, new int[] { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }, null, null, null, (String) null);
+                    "SELECT SCORE(), cmis:objectId FROM cmis:document where CONTAINS('score') ORDER BY SEARCH_SCORE", 11,
+                    null, new int[] { 13, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14  }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP ASC",
-                    11, null, new int[] { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }, null, null, null, (String) null);
+                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('score') ORDER BY MEEP ASC",
+                    11, null, new int[] { 13, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('*') ORDER BY MEEP DESC",
-                    11, null, new int[] { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }, null, null, null, (String) null);
+                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:document where CONTAINS('score') ORDER BY MEEP DESC",
+                    11, null, new int[] { 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 13 }, null, null, null, (String) null);
 
         testQueryByHandler(
                     report,
                     core,
                     "/cmis",
-                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP",
+                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP, cmis:objectId",
                     11, null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(
                     report,
                     core,
                     "/cmis",
-                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP ASC",
+                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP ASC, cmis:objectId",
                     11, null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(
                     report,
                     core,
                     "/cmis",
-                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP DESC",
+                    "SELECT SCORE() AS MEEP, cmis:objectId FROM cmis:folder where CONTAINS('cmis:name:*') ORDER BY MEEP DESC, cmis:objectId",
                     11, null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
 
         // other
 
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId ASC", 11, null, new int[] {
+                    "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId ASC, cmis:objectId", 11, null, new int[] {
                                 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId DESC", 11, null, new int[] {
+                    "SELECT cmis:objectTypeId FROM cmis:folder ORDER BY cmis:objectTypeId DESC , cmis:objectId", 11, null, new int[] {
                                 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
 
-        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy ASC",
+        testQueryByHandler(report, core, "/cmis", "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy ASC, cmis:objectId",
                     11, null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy DESC", 11, null, new int[] { 2, 3,
+                    "SELECT cmis:createdBy FROM cmis:folder ORDER BY cmis:createdBy DESC, cmis:objectId", 11, null, new int[] { 2, 3,
                                 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate ASC", 11, null, new int[] {
+                    "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate ASC, cmis:objectId", 11, null, new int[] {
                                 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate DESC", 11, null, new int[] {
+                    "SELECT cmis:creationDate FROM cmis:folder ORDER BY cmis:creationDate DESC, cmis:objectId", 11, null, new int[] {
                                 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy ASC", 11, null,
+                    "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy ASC, cmis:objectId", 11, null,
                     new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy DESC", 11, null,
+                    "SELECT cmis:lastModifiedBy FROM cmis:folder ORDER BY cmis:lastModifiedBy DESC, cmis:objectId", 11, null,
                     new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate ASC", 11,
+                    "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate ASC, cmis:objectId", 11,
                     null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
         testQueryByHandler(report, core, "/cmis",
-                    "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate DESC", 11,
+                    "SELECT cmis:lastModificationDate FROM cmis:folder ORDER BY cmis:lastModificationDate DESC, cmis:objectId", 11,
                     null, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, null, null, null, (String) null);
 
         testQueryByHandler(report, core, "/cmis", "SELECT cmis:name FROM cmis:folder ORDER BY cmis:name ASC", 11, null,
@@ -5650,7 +5650,7 @@ public class AlfrescoCoreAdminTester
         // testOrderablePropertyFail("cmistest:multipleMLTextTokenised");
         // testOrderablePropertyFail("cmistest:multipleMLTextBoth");
 
-        asc = new int[] { 200, 201, 202, 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009 };
+        asc = new int[] { 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 200, 201, 202  };
         desc = new int[] { 1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 200, 201, 202 };
 
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleFloat", asc, desc);
@@ -5659,7 +5659,7 @@ public class AlfrescoCoreAdminTester
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDouble", asc, desc);
         // testOrderablePropertyFail("cmistest:multipleDouble");
 
-        asc = new int[] { 200, 201, 202, 1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009 };
+        asc = new int[] {1000, 100, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 200, 201, 202  };
         desc = new int[] { 1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 100, 1001, 1000, 200, 201, 202 };
 
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleInteger", asc, desc);
@@ -5668,7 +5668,7 @@ public class AlfrescoCoreAdminTester
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleLong", asc, desc);
         // testOrderablePropertyFail("cmistest:multipleLong");
 
-        asc = new int[] { 200, 201, 202, 100, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009 };
+        asc = new int[] { 100, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 200, 201, 202 };
         desc = new int[] { 1009, 1008, 1007, 1006, 1005, 1004, 1003, 1002, 1001, 100, 1000, 200, 201, 202 };
 
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDate", asc, desc);
@@ -5677,7 +5677,7 @@ public class AlfrescoCoreAdminTester
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleDatetime", asc, desc);
         // testOrderablePropertyFail("cmistest:multipleDatetime");
 
-        asc = new int[] { 200, 201, 202, 1001, 1003, 1005, 1007, 1009, 100, 1000, 1002, 1004, 1006, 1008 };
+        asc = new int[] { 1001, 1003, 1005, 1007, 1009, 100, 1000, 1002, 1004, 1006, 1008, 200, 201, 202,  };
         desc = new int[] { 100, 1000, 1002, 1004, 1006, 1008, 1001, 1003, 1005, 1007, 1009, 200, 201, 202 };
 
         checkOrderableProperty(rsp, core, dataModel, report, "cmistest:singleBoolean", asc, desc);
@@ -6296,6 +6296,7 @@ public class AlfrescoCoreAdminTester
             newParams.set("alfresco.getSolrDocumentList", true);
             //newParams.set("defType", handler.substring("/".length()));
             newParams.set("q", query);
+            newParams.set("fl", "score,DEBID");
             if (rows != null)
             {
                 newParams.set("rows", "" + rows);
@@ -6374,7 +6375,7 @@ public class AlfrescoCoreAdminTester
                     for (int i = 0; i < sz; i++)
                     {
                         SolrDocument doc = iterator.next();
-                        dbids[i] = Integer.valueOf(((StoredField)doc.getFirstValue("DBID")).stringValue());
+                        dbids[i] = Integer.valueOf(((IndexableField)doc.getFirstValue("DBID")).stringValue());
 
                         if (ordered)
                         {
@@ -6405,6 +6406,10 @@ public class AlfrescoCoreAdminTester
                         }
                         queryReport.add("Sorted as ", builder.toString());
                     }
+                }
+                else
+                {
+                    
                 }
 
                 if (passed)

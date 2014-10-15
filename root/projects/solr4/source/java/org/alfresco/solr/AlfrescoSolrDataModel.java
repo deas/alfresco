@@ -2105,9 +2105,14 @@ public class AlfrescoSolrDataModel implements QueryConstants
       */
      public String  mapProperty(String  potentialProperty,  FieldUse fieldUse)
      {
-         if(potentialProperty.equals("asc") || potentialProperty.equals("desc") || potentialProperty.equals("_docid_") || potentialProperty.equals("score"))
+         if(potentialProperty.equals("asc") || potentialProperty.equals("desc") || potentialProperty.equals("_docid_"))
          {
              return potentialProperty;
+         }
+         
+         if(potentialProperty.equalsIgnoreCase("score") || potentialProperty.equalsIgnoreCase("SEARCH_SCORE"))
+         {
+             return "score";
          }
          
          AlfrescoFunctionEvaluationContext functionContext = new AlfrescoFunctionEvaluationContext(getNamespaceDAO(),  getDictionaryService(CMISStrictDictionaryService.DEFAULT), NamespaceService.CONTENT_MODEL_1_0_URI);
