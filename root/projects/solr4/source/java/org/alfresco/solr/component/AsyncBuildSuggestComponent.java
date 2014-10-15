@@ -100,6 +100,8 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   /** SolrConfig label to identify boolean value to build suggesters on optimize */
   private static final String BUILD_ON_OPTIMIZE_LABEL = "buildOnOptimize";
   
+  private static final String ASYNC_CACHE_KEY = "suggester";
+  
   @SuppressWarnings("unchecked")
   protected NamedList initParams;
   
@@ -197,7 +199,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
       querysuggesters = new ArrayList<SolrSuggester>(suggesterCaches.size());
       for (SuggesterCache cache : suggesterCaches)
       {
-          querysuggesters.add(cache.get(null));
+          querysuggesters.add(cache.get(ASYNC_CACHE_KEY));
       }
     } else {
       querysuggesters = getSuggesters(params);
@@ -383,7 +385,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   public long ramBytesUsed() {
     long sizeInBytes = 0;
     for (String key : suggesters.keySet()) {
-      sizeInBytes += suggesters.get(key).get(null).ramBytesUsed();
+      sizeInBytes += suggesters.get(key).get(ASYNC_CACHE_KEY).ramBytesUsed();
     }
     return sizeInBytes;
   }
@@ -391,7 +393,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   private Set<SolrSuggester> getSuggesters(SolrParams params) {
     Set<SolrSuggester> solrSuggesters = new HashSet<>();
     for(String suggesterName : getSuggesterNames(params)) {
-      SolrSuggester curSuggester = suggesters.get(suggesterName).get(null);
+      SolrSuggester curSuggester = suggesters.get(suggesterName).get(ASYNC_CACHE_KEY);
       if (curSuggester != null) {
         solrSuggesters.add(curSuggester);
       } else {
@@ -497,7 +499,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     @Override
     public void newSearcher(SolrIndexSearcher newSearcher,
                             SolrIndexSearcher currentSearcher) {
-        suggesterCache.refresh(null);
+        suggesterCache.refresh(ASYNC_CACHE_KEY);
     }
 
     @Override
