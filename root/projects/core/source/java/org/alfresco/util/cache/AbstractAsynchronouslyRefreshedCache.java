@@ -19,11 +19,9 @@
 package org.alfresco.util.cache;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -58,28 +56,24 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	    
 	    private static Log logger = LogFactory.getLog(AbstractAsynchronouslyRefreshedCache.class);
 
-	    private enum ActionState
+	    private enum RefreshState
 	    {
 	        IDLE, WAITING, RUNNING, DONE
 	    };
 
-            private enum CacheAction
-            {
-                REFRESH, REMOVE;
-            };
 	    private ThreadPoolExecutor threadPoolExecutor;
 	    private AsynchronouslyRefreshedCacheRegistry registry;
 
 	    // State
 
 	    private List<RefreshableCacheListener> listeners = new LinkedList<RefreshableCacheListener>();
-	    private final ReentrantReadWriteLock liveLock = new ReentrantReadWriteLock();
-	    private final ReentrantReadWriteLock actionLock = new ReentrantReadWriteLock();
+	    protected final ReentrantReadWriteLock liveLock = new ReentrantReadWriteLock();
+	    private final ReentrantReadWriteLock refreshLock = new ReentrantReadWriteLock();
 	    private final ReentrantReadWriteLock runLock = new ReentrantReadWriteLock();
-	    private HashMap<String, T> live = new HashMap<String, T>();
-	    private LinkedHashSet<Action> actionQueue = new LinkedHashSet<Action>();
+	    protected HashMap<String, T> live = new HashMap<String, T>();
+	    private LinkedHashSet<Refresh> refreshQueue = new LinkedHashSet<Refresh>();
 	    private String cacheId;
-	    private ActionState actionState = ActionState.IDLE;
+	    private RefreshState refreshState = RefreshState.IDLE;
 	    private String resourceKeyTxnData;
 
 	    @Override
@@ -138,12 +132,12 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        }
 
 	        // There was nothing to return so we build and return
-	        Action action = null;
-	        actionLock.writeLock().lock();
+	        Refresh refresh = null;
+	        refreshLock.writeLock().lock();
 	        try
 	        {
 	            // Is there anything we can wait for
-	            for (Action existing : actionQueue)
+	            for (Refresh existing : refreshQueue)
 	            {
 	                if (existing.getKey().equals(key))
 	                {
@@ -151,27 +145,27 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	                    {
 	                        logger.debug("get() found existing build to wait for  ...");
 	                    }
-	                    action = existing;
+	                    refresh = existing;
 	                }
 	            }
 
-	            if (action == null)
+	            if (refresh == null)
 	            {
 	                if (logger.isDebugEnabled())
 	                {
 	                    logger.debug("get() building from scratch");
 	                }
-	                action = new Action(key, CacheAction.REFRESH);
-	                actionQueue.add(action);
+	                refresh = new Refresh(key);
+	                refreshQueue.add(refresh);
 	            }
 
 	        }
 	        finally
 	        {
-	            actionLock.writeLock().unlock();
+	            refreshLock.writeLock().unlock();
 	        }
 	        submit();
-	        waitForBuild(action);
+	        waitForBuild(refresh);
 
 	        return get(key);
 	    }
@@ -199,15 +193,15 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        }
 	    }
 
-	    protected void waitForBuild(Action action)
+	    protected void waitForBuild(Refresh refresh)
 	    {
-	        while (action.getState() != ActionState.DONE)
+	        while (refresh.getState() != RefreshState.DONE)
 	        {
-	            synchronized (action)
+	            synchronized (refresh)
 	            {
 	                try
 	                {
-	                    action.wait(100);
+	                    refresh.wait(100);
 	                }
 	                catch (InterruptedException e)
 	                {
@@ -228,16 +222,6 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	    }
 
 	    @Override
-            public void remove(String key)
-            {
-                if (logger.isDebugEnabled())
-                {
-                    logger.debug("Async cache remove request: " + cacheId + " for tenant " + key);
-                }
-                registry.broadcastEvent(new RefreshableCacheRemoveEvent(cacheId, key), true);
-            }
-
-	    @Override
 	    public void onRefreshableCacheEvent(RefreshableCacheEvent refreshableCacheEvent)
 	    {
 	        if (logger.isDebugEnabled())
@@ -249,13 +233,8 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	            return;
 	        }
 
-                CacheAction action = CacheAction.REFRESH;
-                if (refreshableCacheEvent instanceof RefreshableCacheRemoveEvent)
-                {
-                    action = CacheAction.REMOVE;
-                }
-
 	        // If in a transaction delay the refresh until after it commits
+
 	        if (TransactionSupportUtil.getTransactionId() != null)
 	        {
 	            if (logger.isDebugEnabled())
@@ -263,13 +242,13 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	                logger.debug("Async cache adding" + refreshableCacheEvent.getKey() + " to post commit list");
 	            }
 	            TransactionData txData = getTransactionData();
-	            txData.actions.put(refreshableCacheEvent.getKey(), action);
+	            txData.keys.add(refreshableCacheEvent.getKey());
 	        }
 	        else
 	        {
-	            LinkedHashMap<String, CacheAction> actions = new LinkedHashMap<String, CacheAction>();
-	            actions.put(refreshableCacheEvent.getKey(), action);
-	            queueActionsAndSubmit(actions);
+	            LinkedHashSet<String> keys = new LinkedHashSet<String>();
+	            keys.add(refreshableCacheEvent.getKey());
+	            queueRefreshAndSubmit(keys);
 	        }
 	    }
 	    
@@ -283,7 +262,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        {
 	            data = new TransactionData();
 	            // create and initialize caches
-	            data.actions = new LinkedHashMap<String, CacheAction>();
+	            data.keys = new LinkedHashSet<String>();
 
 	            // ensure that we get the transaction callbacks as we have bound the unique
 	            // transactional caches to a common manager
@@ -293,27 +272,27 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        return data;
 	    }
 
-	    private void queueActionsAndSubmit(LinkedHashMap<String, CacheAction> actions)
+	    private void queueRefreshAndSubmit(LinkedHashSet<String> tenantIds)
 	    {
-	        if ((actions == null) || (actions.size() == 0))
+	        if((tenantIds == null) || (tenantIds.size() == 0))
 	        {
 	            return;
 	        }
-	        actionLock.writeLock().lock();
+	        refreshLock.writeLock().lock();
 	        try
 	        {
-	            for (Entry<String, CacheAction> entry : actions.entrySet())
+	            for (String tenantId : tenantIds)
 	            {
 	                if (logger.isDebugEnabled())
 	                {
-	                    logger.debug("Async cache adding " + entry.getValue().toString().toLowerCase() + " to queue for " + entry.getKey());
+	                    logger.debug("Async cache adding refresh to queue for "+tenantId);
 	                }
-	                actionQueue.add(new Action(entry.getKey(), entry.getValue()));
+	                refreshQueue.add(new Refresh(tenantId));
 	            }
 	        }
 	        finally
 	        {
-	            actionLock.writeLock().unlock();
+	            refreshLock.writeLock().unlock();
 	        }
 	        submit();
 	    }
@@ -321,19 +300,19 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	    @Override
 	    public boolean isUpToDate(String key)
 	    {
-	       actionLock.readLock().lock();
+	       refreshLock.readLock().lock();
 	       try
 	       {
-	           for(Action action : actionQueue)
+	           for(Refresh refresh : refreshQueue)
 	           {
-	               if(action.getKey().equals(key))
+	               if(refresh.getKey().equals(key))
 	               {
 	                   return false;
 	               }
 	           }
 	           if (TransactionSupportUtil.getTransactionId() != null)
 	           {
-	               return (!getTransactionData().actions.containsKey(key));
+	               return (!getTransactionData().keys.contains(key));
 	           }
 	           else
 	           {
@@ -342,22 +321,22 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	       }
 	       finally
 	       {
-	           actionLock.readLock().unlock();
+	           refreshLock.readLock().unlock();
 	       }
 	    }
 	    
 	    /**
 	     * Must be run with runLock.writeLock
 	     */
-	    private Action getNextAction()
+	    private Refresh getNextRefresh()
 	    {
 	        if (runLock.writeLock().isHeldByCurrentThread())
 	        {
-	            for (Action action : actionQueue)
+	            for (Refresh refresh : refreshQueue)
 	            {
-	                if (action.state == ActionState.WAITING)
+	                if (refresh.state == RefreshState.WAITING)
 	                {
-	                    return action;
+	                    return refresh;
 	                }
 	            }
 	            return null;
@@ -377,12 +356,12 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        int count = 0;
 	        if (runLock.writeLock().isHeldByCurrentThread())
 	        {
-	            actionLock.readLock().lock();
+	            refreshLock.readLock().lock();
 	            try
 	            {
-	                for (Action action : actionQueue)
+	                for (Refresh refresh : refreshQueue)
 	                {
-	                    if (action.state == ActionState.WAITING)
+	                    if (refresh.state == RefreshState.WAITING)
 	                    {
 	                        count++;
 	                    }
@@ -391,7 +370,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	            }
 	            finally
 	            {
-	                actionLock.readLock().unlock();
+	                refreshLock.readLock().unlock();
 	            }
 	        }
 	        else
@@ -406,14 +385,14 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        runLock.writeLock().lock();
 	        try
 	        {
-	            if (actionState == ActionState.IDLE)
+	            if (refreshState == RefreshState.IDLE)
 	            {
 	                if (logger.isDebugEnabled())
 	                {
 	                    logger.debug("submit() scheduling job");
 	                }
 	                threadPoolExecutor.submit(this);
-	                actionState = ActionState.WAITING;
+	                refreshState = RefreshState.WAITING;
 	            }
 	        }
 	        finally
@@ -437,7 +416,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	            try
 	            {
 	                threadPoolExecutor.submit(this);
-	                actionState = ActionState.WAITING;
+	                refreshState = RefreshState.WAITING;
 	            }
 	            finally
 	            {
@@ -449,55 +428,44 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 
 	    private void doCall() throws Exception
 	    {
-	        Action action = setUpAction();
-	        if (action == null)
+	        Refresh refresh = setUpRefresh();
+	        if (refresh == null)
 	        {
 	            return;
 	        }
 
 	        if (logger.isDebugEnabled())
 	        {
-	            logger.debug("Building cache for key" + action.getKey()); 
+	            logger.debug("Building cache for key" + refresh.getKey()); 
 	        }
 
 	        try
 	        {
-	            doAction(action);
+	            doRefresh(refresh);
 	        }
 	        catch (Exception e)
 	        {
-	            action.setState(ActionState.WAITING);
+	            refresh.setState(RefreshState.WAITING);
 	            throw e;
 	        }
 	    }
 
-	    private void doAction(Action action)
+	    private void doRefresh(Refresh refresh)
 	    {
-                T cache = null;
-                if (action.action == CacheAction.REFRESH)
+	        if (logger.isDebugEnabled())
 	        {
-	            if (logger.isDebugEnabled())
-	            {
-	                logger.debug("Building cache for tenant" + action.getKey()+ " ......");
-	            }
-	            cache = buildCache(action.getKey());
-   	            if (logger.isDebugEnabled())
-	            {
-	                logger.debug(".... cache built for tenant" + action.getKey());
-	            }
+	            logger.debug("Building cache for tenant" + refresh.getKey()+ " ......");
+	        }
+	        T cache = buildCache(refresh.getKey());
+	        if (logger.isDebugEnabled())
+	        {
+	            logger.debug(".... cache built for tenant" + refresh.getKey());
 	        }
 
 	        liveLock.writeLock().lock();
 	        try
 	        {
-                    if (action.action == CacheAction.REFRESH)
-                    {
-                        live.put(action.getKey(), cache);
-                    }
-                    else if (action.action == CacheAction.REMOVE)
-                    {
-                        live.remove(action.getKey());
-                    }
+	            live.put(refresh.getKey(), cache);
 	        }
 	        finally
 	        {
@@ -506,22 +474,15 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 
 	        if (logger.isDebugEnabled())
 	        {
-	            logger.debug("Cache entry updated for tenant" + action.getKey());
+	            logger.debug("Cache entry updated for tenant" + refresh.getKey());
 	        }
 
-                if (action.action == CacheAction.REFRESH)
-                {
-                    broadcastEvent(new RefreshableCacheRefreshedEvent(cacheId, action.key));
-                }
-                else if (action.action == CacheAction.REMOVE)
-                {
-                    broadcastEvent(new RefreshableCacheRemovedEvent(cacheId, action.key));
-                }
+	        broadcastEvent(new RefreshableCacheRefreshedEvent(cacheId, refresh.key));
 	        
 	        runLock.writeLock().lock();
 	        try
 	        {
-	            actionLock.writeLock().lock();
+	            refreshLock.writeLock().lock();
 	            try
 	            {
 	                if (countWaiting() > 0)
@@ -531,7 +492,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	                        logger.debug("Rescheduling ... more work");
 	                    }
 	                    threadPoolExecutor.submit(this);
-	                    actionState = ActionState.WAITING;
+	                    refreshState = RefreshState.WAITING;
 	                }
 	                else
 	                {
@@ -539,14 +500,14 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	                    {
 	                        logger.debug("Nothing to do .... going idle");
 	                    }
-	                    actionState = ActionState.IDLE;
+	                    refreshState = RefreshState.IDLE;
 	                }
-	                action.setState(ActionState.DONE);
-	                actionQueue.remove(action);
+	                refresh.setState(RefreshState.DONE);
+	                refreshQueue.remove(refresh);
 	            }
 	            finally
 	            {
-	                actionLock.writeLock().unlock();
+	                refreshLock.writeLock().unlock();
 	            }
 	        }
 	        finally
@@ -555,33 +516,33 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        }
 	    }
 
-	    private Action setUpAction() throws Exception
+	    private Refresh setUpRefresh() throws Exception
 	    {
-	        Action action = null;
+	        Refresh refresh = null;
 	        runLock.writeLock().lock();
 	        try
 	        {
-	            if (actionState == ActionState.WAITING)
+	            if (refreshState == RefreshState.WAITING)
 	            {
-	                actionLock.writeLock().lock();
+	                refreshLock.writeLock().lock();
 	                try
 	                {
-	                    action = getNextAction();
-	                    if (action != null)
+	                    refresh = getNextRefresh();
+	                    if (refresh != null)
 	                    {
-	                        actionState = ActionState.RUNNING;
-	                        action.setState(ActionState.RUNNING);
-	                        return action;
+	                        refreshState = RefreshState.RUNNING;
+	                        refresh.setState(RefreshState.RUNNING);
+	                        return refresh;
 	                    }
 	                    else
 	                    {
-	                        actionState = ActionState.IDLE;
+	                        refreshState = RefreshState.IDLE;
 	                        return null;
 	                    }
 	                }
 	                finally
 	                {
-	                    actionLock.writeLock().unlock();
+	                    refreshLock.writeLock().unlock();
 	                }
 	            }
 	            else
@@ -591,9 +552,9 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        }
 	        catch (Exception e)
 	        {
-	            if (action != null)
+	            if (refresh != null)
 	            {
-	                action.setState(ActionState.WAITING);
+	                refresh.setState(RefreshState.WAITING);
 	            }
 	            throw e;
 	        }
@@ -627,17 +588,15 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	     */
 	    protected abstract T buildCache(String key);
 
-	    private static class Action
+	    private static class Refresh
 	    {
 	        private String key;
-                private CacheAction action;
 
-	        private volatile ActionState state = ActionState.WAITING;
+	        private volatile RefreshState state = RefreshState.WAITING;
 
-	        Action(String key, CacheAction action)
+	        Refresh(String key)
 	        {
 	            this.key = key;
-                    this.action = action;
 	        }
 
 	        /**
@@ -651,7 +610,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	        /**
 	         * @return the state
 	         */
-	        public ActionState getState()
+	        public RefreshState getState()
 	        {
 	            return state;
 	        }
@@ -660,7 +619,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	         * @param state
 	         *            the state to set
 	         */
-	        public void setState(ActionState state)
+	        public void setState(RefreshState state)
 	        {
 	            this.state = state;
 	        }
@@ -684,7 +643,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	                return false;
 	            if (getClass() != obj.getClass())
 	                return false;
-	            Action other = (Action) obj;
+	            Refresh other = (Refresh) obj;
 	            if (state != other.state)
 	                return false;
 	            if (key == null)
@@ -694,14 +653,6 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	            }
 	            else if (!key.equals(other.key))
 	                return false;
-                    if (action == null)
-                    {
-                        if (other.action != null)
-                            return false;
-                    }
-                    else if (!action.equals(other.action))
-                        return false;
-            
 	            return true;
 	        }
 
@@ -755,7 +706,7 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 	    public void afterCommit()
 	    {
 	        TransactionData txnData = getTransactionData();
-	        queueActionsAndSubmit(txnData.actions);
+	        queueRefreshAndSubmit(txnData.keys);
 	    }
 
 	    @Override
@@ -766,6 +717,6 @@ public abstract class AbstractAsynchronouslyRefreshedCache<T>
 
 	    private static class TransactionData
 	    {
-	        LinkedHashMap<String, CacheAction> actions;
+	        LinkedHashSet<String> keys;
 	    }
 }
