@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -64,6 +63,7 @@ import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.handler.component.SearchComponent;
 import org.apache.solr.handler.component.ShardRequest;
 import org.apache.solr.handler.component.ShardResponse;
+import org.apache.solr.handler.component.SuggestComponent;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.spelling.suggest.SolrSuggester;
 import org.apache.solr.spelling.suggest.SuggesterOptions;
@@ -104,6 +104,8 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   private static final String ENABLED_LABEL = "enabled";
   
   private static final String ASYNC_CACHE_KEY = "suggester";
+
+  private static final String MIN_SECS_BETWEEN_BUILDS = "solr.suggester.minSecsBetweenBuilds";
   
   @SuppressWarnings("unchecked")
   protected NamedList initParams;
@@ -141,7 +143,8 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
           SolrSuggester suggester = new SolrSuggester();
           boolean buildOnCommit = Boolean.parseBoolean((String) suggesterParams.get(BUILD_ON_COMMIT_LABEL));
           boolean buildOnOptimize = Boolean.parseBoolean((String) suggesterParams.get(BUILD_ON_OPTIMIZE_LABEL));
-          boolean enabled = Boolean.parseBoolean((String) suggesterParams.get(ENABLED_LABEL));          
+          boolean enabled = Boolean.parseBoolean((String) suggesterParams.get(ENABLED_LABEL));
+          long minSecsBetweenBuilds = Long.parseLong(core.getCoreDescriptor().getCoreProperty(MIN_SECS_BETWEEN_BUILDS, "-1")); 
           SuggesterCache suggesterCache = new SuggesterCache(core, suggesterParams, enabled, buildOnCommit, buildOnOptimize);
           
           String dictionary = suggester.init(suggesterParams, core);
@@ -175,10 +178,10 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
           }
           
           // Register event listeners for this Suggester
-          core.registerFirstSearcherListener(new SuggesterListener(suggesterCache));
+          core.registerFirstSearcherListener(new SuggesterListener(suggesterCache, minSecsBetweenBuilds));
           if (buildOnCommit || buildOnOptimize) {
             LOG.info("Registering newSearcher listener for suggester: " + suggester.getName());
-            core.registerNewSearcherListener(new SuggesterListener(suggesterCache));
+            core.registerNewSearcherListener(new SuggesterListener(suggesterCache, minSecsBetweenBuilds));
           }
         }
       }
@@ -492,9 +495,11 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   /** Listener to build or reload the maintained {@link SolrSuggester} by this component */
   private static class SuggesterListener implements SolrEventListener {
     private final SuggesterCache suggesterCache;
-
-    public SuggesterListener(SuggesterCache suggesterCache) {
+    private final long minSecsBetweenBuilds;
+    
+    public SuggesterListener(SuggesterCache suggesterCache, long minSecsBetweenBuilds) {
       this.suggesterCache = suggesterCache;
+      this.minSecsBetweenBuilds = minSecsBetweenBuilds;
     }
 
     @Override
@@ -503,7 +508,41 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     @Override
     public void newSearcher(SolrIndexSearcher newSearcher,
                             SolrIndexSearcher currentSearcher) {
-        suggesterCache.refresh(ASYNC_CACHE_KEY);
+        if (currentSearcher == null)
+        {
+            // firstSearcher event - always queue a suggester build.
+            if (LOG.isDebugEnabled())
+            {
+                LOG.debug("Scheduling first searcher's suggester build, core: " + newSearcher.getCore().getName());
+            }
+            suggesterCache.refresh(ASYNC_CACHE_KEY);
+        }
+        else
+        {
+            // only queue a build if the designated time has passed.
+            long now = System.currentTimeMillis();
+            long elapsedTimeMillis = now - suggesterCache.getLastBuild();
+            long elapsedTimeSecs = (elapsedTimeMillis / 1000);
+            if (elapsedTimeSecs > minSecsBetweenBuilds)
+            {
+                if (LOG.isDebugEnabled())
+                {
+                    LOG.debug("Scheduling async suggester build, time since last build " +
+                              elapsedTimeSecs + "s (" + elapsedTimeMillis + "ms), core: " +
+                              newSearcher.getCore().getName());
+                }
+                suggesterCache.refresh(ASYNC_CACHE_KEY);
+            }
+            else
+            {
+                if (LOG.isDebugEnabled())
+                {
+                    LOG.debug("Skipping async suggester build, time since last build " +
+                              elapsedTimeSecs + "s (" + elapsedTimeMillis + "ms), core: " + 
+                              newSearcher.getCore().getName());
+                }
+            }
+        }
     }
 
     @Override
@@ -524,6 +563,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     private final boolean buildOnOptimize;
     private final boolean enabled;
     private final SolrSuggester initialSuggester;
+    private long lastBuild = 0;
     
     public SuggesterCache(SolrCore core, NamedList suggesterParams, boolean enabled, boolean buildOnCommit, boolean buildOnOptimize)
     {
@@ -581,7 +621,11 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
     {
         if (!enabled)
         {
-            // When disabled, provide an empty, yet initialised suggester. 
+            // When disabled, provide an empty, yet initialised suggester.
+            if (LOG.isDebugEnabled())
+            {
+                LOG.debug("Disabled suggester builder, returning empty suggester: " + core.getName());
+            }
             return initialSuggester;
         }
         
@@ -618,12 +662,24 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
               }
             }
           }
-          return suggester;    
+          lastBuild = System.currentTimeMillis();
+          return suggester;
         }
         finally
         {
             refCountedSearcher.decref();
         }
+    }
+    
+    /**
+     * Returns the time stamp of the last completed suggester build.
+     * If no real build has taken place yet, zero is returned.
+     *  
+     * @return long
+     */
+    public long getLastBuild()
+    {
+        return lastBuild;
     }
     
     private void buildSuggesterIndex(SolrSuggester suggester, SolrIndexSearcher newSearcher) {
