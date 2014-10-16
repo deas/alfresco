@@ -1149,6 +1149,10 @@ span.item-modifier
    background: no-repeat url(../components/images/quickshare-indicator-16.png) center center;
    padding: 0 0.5em;
 }
+.quickshare-action-menu
+{
+   z-index: 9999 !important; 
+}
 .quickshare-action-menu .bd
 {
    padding: 0.75em 1em 0 1em;
