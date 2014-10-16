@@ -73,40 +73,56 @@ public class ContentTrackerTest
     @Test
     public void doTrackWithContentUpdatesContent() throws Exception
     {
-        List<TenantAclIdDbId> buckets1 = new ArrayList<>();
-        List<TenantAclIdDbId> buckets2 = new ArrayList<>();
+        List<TenantAclIdDbId> docs1 = new ArrayList<>();
+        List<TenantAclIdDbId> docs2 = new ArrayList<>();
         List<TenantAclIdDbId> emptyList = new ArrayList<>();
-        TenantAclIdDbId bucket = new TenantAclIdDbId();
-        bucket.dbId = 0l;
-        bucket.tenant = "";
         // Adds one more than the UPDATE_BATCH
         for (int i = 0; i <= UPDATE_BATCH; i++)
         {
-            buckets1.add(bucket);
-            buckets2.add(bucket);
+            TenantAclIdDbId doc = new TenantAclIdDbId();
+            doc.dbId = 1l;
+            doc.tenant = "1";
+            docs1.add(doc);
         }
-        // Keeps only UPDATE_BATCH buckets
-        buckets2.remove(UPDATE_BATCH);
+        TenantAclIdDbId thirdDoc = docs1.get(UPDATE_BATCH);
+        thirdDoc.dbId = 3l;
+        thirdDoc.tenant = "3";
+
+        // Adds UPDATE_BATCH
+        for (long i = 0; i < UPDATE_BATCH; i++)
+        {
+            TenantAclIdDbId doc = new TenantAclIdDbId();
+            doc.dbId = 2l;
+            doc.tenant = "2";
+            docs2.add(doc);
+        }
         when(this.srv.getDocsWithUncleanContent(anyInt(), anyInt()))
-            .thenReturn(buckets1)
-            .thenReturn(buckets2)
+                .thenReturn(docs1)
+                .thenReturn(docs2)
             .thenReturn(emptyList);
         this.contentTracker.doTrack();
         
         InOrder order = inOrder(srv);
         order.verify(srv).getDocsWithUncleanContent(0, READ_BATCH);
         
-        // From buckets1
-        order.verify(srv, times(UPDATE_BATCH)).updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+        /*
+         * I had to make each bunch of calls have different parameters to prevent Mockito from incorrectly failing
+         * because it was finding 5 calls instead of finding the first two calls, then the commit, then the rest...
+         * It seems that Mockito has a bug with verification in order.
+         * See https://code.google.com/p/mockito/issues/detail?id=296
+         */
+
+        // From docs1
+        order.verify(srv, times(UPDATE_BATCH)).updateContentToIndexAndCache(1l, "1");
         order.verify(srv).commit();
-        // The one extra bucket should be processed and then committed
-        order.verify(srv).updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+        // The one extra doc should be processed and then committed
+        order.verify(srv).updateContentToIndexAndCache(thirdDoc.dbId, thirdDoc.tenant);
         order.verify(srv).commit();
         
         order.verify(srv).getDocsWithUncleanContent(0 + READ_BATCH, READ_BATCH);
         
-        // From buckets2
-        order.verify(srv, times(UPDATE_BATCH)).updateContentToIndexAndCache(bucket.dbId, bucket.tenant);
+        // From docs2
+        order.verify(srv, times(UPDATE_BATCH)).updateContentToIndexAndCache(2l, "2");
         order.verify(srv).commit();
         
         order.verify(srv).getDocsWithUncleanContent(0 + READ_BATCH + READ_BATCH, READ_BATCH);

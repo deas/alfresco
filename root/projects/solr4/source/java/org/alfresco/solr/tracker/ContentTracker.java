@@ -81,7 +81,8 @@ public class ContentTracker extends AbstractTracker implements Tracker
                 
                 if (docsUpdatedSinceLastCommit >= contentUpdateBatchSize)
                 {
-                    if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
+                    registeredSearcherCount = super.infoSrv.getRegisteredSearcherCount();
+                    if (registeredSearcherCount < getMaxLiveSearchers())
                     {
                         super.waitForAsynchronous();
                         checkShutdown();
