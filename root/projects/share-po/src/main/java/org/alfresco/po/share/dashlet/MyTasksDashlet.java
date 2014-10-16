@@ -46,7 +46,8 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
 
     private static final String DATA_LIST_CSS_LOCATION = "h3 > a";
     private static final String DIV_DASHLET_CONTENT_PLACEHOLDER = "div.dashlet.my-tasks";
-    private static final String LIST_OF_TASKS = "h3>a[href*='referrer=tasks']";
+    //private static final String LIST_OF_TASKS = "h3>a[href*='referrer=tasks']";
+    private static final String LIST_OF_TASKS = "h3>a[title='Edit Task']";
 
     /**
      * Constructor.
