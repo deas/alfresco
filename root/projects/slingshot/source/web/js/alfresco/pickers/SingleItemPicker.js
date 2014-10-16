@@ -139,6 +139,7 @@ define(["dojo/_base/declare",
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
                label: item.title,
+               title: item.title,
                iconClass: "alf-sites-icon", // hard-coded sites Icon.
                publishTopic: "ALF_ADD_PICKER",
                publishPayload: {
