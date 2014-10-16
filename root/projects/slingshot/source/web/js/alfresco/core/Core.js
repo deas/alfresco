@@ -159,7 +159,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            tokens = Array.prototype.slice.call(arguments).slice(2);
+            tokens = Array.prototype.slice.call(arguments).slice(1);
          }
 
          // Emulate server-side I18NUtils implementation
