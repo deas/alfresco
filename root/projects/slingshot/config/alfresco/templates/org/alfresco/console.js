@@ -103,6 +103,13 @@ function main()
    // downstream by the console-tools component to dynamically render tool links.
    // Processing is performed here as the component binding must be set before rendering begins!
    var toolsArray = [];
+   if (toolInfo[""])
+   {
+      // add system root group tools first to the list
+      toolsArray.push(toolInfo[""]);
+   }
+   delete toolInfo[""];
+   // add other tool groups after root tools
    for each (var g in toolInfo)
    {
       toolsArray.push(g);
