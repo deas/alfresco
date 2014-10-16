@@ -1936,6 +1936,11 @@ public class SolrInformationServer implements InformationServer
                     }
                 }
             }
+            else
+            {
+                // NULL property
+                newDoc.addField(FIELD_NULLPROPERTIES, propertyQName.toString());
+            }
         }
     }
 

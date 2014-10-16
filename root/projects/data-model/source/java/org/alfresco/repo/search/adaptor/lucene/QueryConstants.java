@@ -47,6 +47,8 @@ public interface QueryConstants
     public static final String FIELD_ISNULL = "ISNULL";
 
     public static final String FIELD_ISUNSET = "ISUNSET";
+    
+    public static final String FIELD_EXISTS = "EXISTS";
 
     public static final String FIELD_ALL = "ALL";
 
@@ -179,6 +181,8 @@ public interface QueryConstants
     public static final String FIELD_PNAME = "PNAME";
     
     public static final String FIELD_PROPERTIES = "PROPERTIES";
+    
+    public static final String FIELD_NULLPROPERTIES = "NULLPROPERTIES";
     
     public static final String FIELD_FIELDS = "FIELDS";
     

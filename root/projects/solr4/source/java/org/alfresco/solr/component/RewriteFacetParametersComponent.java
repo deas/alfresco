@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 import org.alfresco.solr.AlfrescoSolrDataModel;
 import org.alfresco.solr.AlfrescoSolrDataModel.FieldUse;
+import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.handler.component.ResponseBuilder;
@@ -71,14 +72,14 @@ public class RewriteFacetParametersComponent extends SearchComponent
         HashMap<String, String> statsFacetMappings = new HashMap<>();
        
         
-        rewriteFacetFieldList(fixed, params, "facet.field", fieldMappings);
-        rewriteFacetFieldList(fixed, params, "facet.date", dateMappings);
-        rewriteFacetFieldList(fixed, params, "facet.range", rangeMappings);
-        rewriteFacetFieldList(fixed, params, "facet.pivot", pivotMappings);
-        rewriteFacetFieldList(fixed, params, "facet.interval", intervalMappings);
+        rewriteFacetFieldList(fixed, params, "facet.field", fieldMappings, rb.req);
+        rewriteFacetFieldList(fixed, params, "facet.date", dateMappings, rb.req);
+        rewriteFacetFieldList(fixed, params, "facet.range", rangeMappings, rb.req);
+        rewriteFacetFieldList(fixed, params, "facet.pivot", pivotMappings, rb.req);
+        rewriteFacetFieldList(fixed, params, "facet.interval", intervalMappings, rb.req);
         
-        rewriteFacetFieldList(fixed, params, "stats.field", statsFieldMappings);
-        rewriteFacetFieldList(fixed, params, "stats.facet", statsFacetMappings);
+        rewriteFacetFieldList(fixed, params, "stats.field", statsFieldMappings, rb.req);
+        rewriteFacetFieldList(fixed, params, "stats.facet", statsFacetMappings, rb.req);
         
         rewriteFacetFieldOptions(fixed, params, "facet.field", fieldMappings);
         rewriteFacetFieldOptions(fixed, params, "facet.date", dateMappings);
@@ -164,7 +165,7 @@ public class RewriteFacetParametersComponent extends SearchComponent
      * @param fixed
      * @param params
      */
-    private void rewriteFacetFieldList(ModifiableSolrParams fixed, SolrParams params, String paramName, HashMap<String, String> fieldMappings)
+    private void rewriteFacetFieldList(ModifiableSolrParams fixed, SolrParams params, String paramName, HashMap<String, String> fieldMappings, SolrQueryRequest req)
     {
         String[] facetFieldsOrig = params.getParams(paramName);
         if(facetFieldsOrig != null)
@@ -172,7 +173,7 @@ public class RewriteFacetParametersComponent extends SearchComponent
             ArrayList<String> newFacetFields = new ArrayList<String>();
             for(String facetField : facetFieldsOrig)
             {
-                String mappedField = AlfrescoSolrDataModel.getInstance().mapProperty(facetField, FieldUse.FACET);
+                String mappedField = AlfrescoSolrDataModel.getInstance().mapProperty(facetField, FieldUse.FACET, req);
                 if(!mappedField.equals(facetField))
                 {
                     fieldMappings.put(facetField, mappedField);

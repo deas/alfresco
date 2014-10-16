@@ -73,6 +73,7 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ASPECT);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_EXACTASPECT);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ALL);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_EXISTS);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ISUNSET);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ISNULL);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_ISNOTNULL);
@@ -109,6 +110,8 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         EXPOSED_FIELDS.add(QueryConstants.FIELD_PNAME);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_NPATH);
         EXPOSED_FIELDS.add(QueryConstants.FIELD_DOC_TYPE);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_PROPERTIES);
+        EXPOSED_FIELDS.add(QueryConstants.FIELD_NULLPROPERTIES);
         
     }
 
