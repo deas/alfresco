@@ -20,10 +20,13 @@ import java.util.List;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 
 /**
@@ -32,16 +35,18 @@ import org.openqa.selenium.WebElement;
  * @author Shan Nagarajan
  * @since 1.7.0
  */
+@SuppressWarnings("unused")
 public class CustomizeSitePage extends SitePage
 {
 
     private static final By CURRENT_PAGES = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-currentPages-ul");
-    private static final By AVAILABLE_PAGES = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-availablePages-ul");
+    private static final By AVAILABLE_PAGES = By.cssSelector("ul[id$='_default-availablePages-ul']");
     private static final By SAVE_BUTTON = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-save-button-button");
     private static final By CANCEL_BUTTON = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-save-button-button");
     private static final By THEME_MENU = By.cssSelector("#template_x002e_customise-pages_x002e_customise-site_x0023_default-theme-menu");
-    private static final By DOCUMENT_LIB = By.cssSelector("li#template_x002e_customise-pages_x002e_customise-site_x0023_default-page-documentlibrary");
-    @SuppressWarnings("unused")
+    private static final By DOCUMENT_LIB = By.cssSelector("li[id$='_default-page-documentlibrary']");
+    private static final By CURRENT_PAGES_CONTAINER = By.xpath("//ul[contains(@id, '_default-currentPages-ul')]/..");
+    private static final By CURRENT_PAGES_CONTAINER_ITEM = By.cssSelector("ul[id$='_default-currentPages-ul']>li");
     private static final String PARENT_AVAILABLE_PAGES_XPATH = "/parent::ul[contains(@id,'_default-currentPages-ul')]";
 
     public CustomizeSitePage(WebDrone drone)
@@ -115,32 +120,99 @@ public class CustomizeSitePage extends SitePage
      *
      * @return {@link SiteDashboardPage}
      */
-    public SiteDashboardPage addPages(List<SitePageType> pageTypes)
+//    public SiteDashboardPage addPages(List<SitePageType> pageTypes)
+//    {
+//       WebElement target = drone.findAndWait(CURRENT_PAGES_CONTAINER_ITEM);
+//
+//        if (getAvailablePages().containsAll(pageTypes))
+//        {
+//            for (SitePageType sitePageType : pageTypes)
+//            {
+//                try
+//                {
+//                    target.click();
+//                    waitUntilAlert();
+//                    drone.dragAndDrop(drone.findAndWait(sitePageType.getLocator()),target);
+//                    waitUntilAlert();
+//                }
+//                catch (TimeoutException e)
+//                {
+//                    throw new PageException("Not able to Site Page in the Page : " + sitePageType, e);
+//                }
+//            }
+//        }
+//        else
+//        {
+//            throw new PageException("Some of SIte Page(s) already not available to add, may be already added. " + pageTypes.toString());
+//        }
+//        if(!getAddedPages().containsAll(pageTypes))
+//        {
+//            throw new PageException("Not all pages were added!");
+//        }
+//        drone.findAndWait(SAVE_BUTTON).click();
+//        waitUntilAlert();
+//        return drone.getCurrentPage().render();
+//    }
+
+    /**
+     * Method used to add pages using coordinates for dropping
+     *
+     * @param pageTypes
+     * @return SiteDashboardPage
+     */
+    public SiteDashboardPage addPages (List<SitePageType> pageTypes)
     {
-       WebElement target = drone.findAndWait(DOCUMENT_LIB);
+        WebElement target = drone.findAndWait(CURRENT_PAGES_CONTAINER);
 
         if (getAvailablePages().containsAll(pageTypes))
         {
-            for (SitePageType sitePageType : pageTypes)
+            for (SitePageType theTypes : pageTypes)
             {
                 try
                 {
-                    target.click();
-                    drone.dragAndDrop(drone.findAndWait(sitePageType.getLocator()), target);
+                    WebDriver webDriver = ((WebDroneImpl) drone).getDriver();
+                    Actions builder = new Actions(webDriver);
+                    WebElement elem = drone.findAndWait(theTypes.getLocator());
+                    drone.dragAndDrop(elem, target);
                 }
                 catch (TimeoutException e)
                 {
-                    throw new PageException("Not able to Site Page in the Page : " + sitePageType, e);
+                    throw new PageException("Not able to Site Page in the Page : " + theTypes, e);
                 }
             }
         }
         else
         {
-            throw new PageException("Some of SIte Page(s) already not available to add, may be already added. " + pageTypes.toString());
+            throw new PageException("Some of Site Page(s) are not available to add, may be already added. " + pageTypes.toString());
         }
-
-        drone.find(SAVE_BUTTON).click();
+        if(!getAddedPages().containsAll(pageTypes))
+        {
+            throw new PageException("Not all pages were added!");
+        }
+        drone.findAndWait(SAVE_BUTTON).click();
         waitUntilAlert();
         return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method to add all available pages
+     *
+     * @return
+     */
+    public SiteDashboardPage addAllPages ()
+    {
+        List<SitePageType> allThePages = getAvailablePages();
+        addPages(allThePages);
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method to get added pages
+     *
+     * @return
+     */
+    private List<SitePageType> getAddedPages ()
+    {
+        return getPages(CURRENT_PAGES_CONTAINER);
     }
 }

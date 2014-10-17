@@ -274,6 +274,40 @@ public class SiteMembersPage extends SharePage
     }
 
     /**
+     * Method to verify whether site user can be removed from site
+     *
+     * @param userName
+     * @param siteName
+     * @return
+     */
+    public boolean isUserCanBeRemoved (String userName, String siteName)
+    {
+        boolean isMessageOk = true;
+        try
+        {
+            drone.findAndWait(By.cssSelector("span[id$='_default-button-" + userName + "']>span>span>button")).click();
+            if (isDisplayed(PROMPT_PANEL_ID))
+            {
+                try
+                {
+                    isMessageOk = drone.findAndWait(By.cssSelector("#prompt>.bd")).getText().equals
+                        (String.format("Failed to remove user %s from site %s. A site must have at least one Manager.", userName, siteName.toLowerCase()));
+                }
+                catch (NoSuchElementException nse)
+                {
+                    throw new ShareException ("The prompt is incorrect");
+                }
+                return !isMessageOk;
+            }
+            else return isMessageOk;
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to remove the user");
+        }
+    }
+
+    /**
      * Action of selecting invite people button.
      *
      * @return {@link InviteMembersPage} page response.

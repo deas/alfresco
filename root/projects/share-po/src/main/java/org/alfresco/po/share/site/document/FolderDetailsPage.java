@@ -15,16 +15,15 @@
 package org.alfresco.po.share.site.document;
 
 import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.site.contentrule.FolderRulesPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +45,8 @@ public class FolderDetailsPage extends DetailsPage
     private static final String NODE_PATH = "div.node-path";
     private static final String DOWNLOAD_TITLE = "Download as Zip";
     private static final String VIEW_ON_GOOGLE_MAPS = "//span[text()='View on Google Maps']";
+    private static final String FOLDER_ACTION_SECTION = "div[class='folder-actions folder-details-panel']";
+    private static final String PROPERTIES_INFO = "//div[contains(@class, 'metadata-header')]/descendant::div[@class='viewmode-field']/span[@class='viewmode-label']";
 
     private final By changeTypeLink;
 
@@ -147,6 +148,24 @@ public class FolderDetailsPage extends DetailsPage
             logger.error("Element :" + FOLDER_TAGS + " OR " + CSS_PANEL + " does not exist.");
         }
         throw new PageException("Tag pane is not present!");
+    }
+
+    /**
+     * Verify that Folder Action panel displays on the details page
+     *
+     * @return boolean
+     */
+    public boolean isFolderActionsPresent()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(FOLDER_ACTION_SECTION)).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Element : " + FOLDER_ACTION_SECTION + " does not exist");
+        }
+        return false;
     }
 
     /**
@@ -303,5 +322,60 @@ public class FolderDetailsPage extends DetailsPage
             return false;
         }
 
+    }
+
+    public FolderRulesPage selectManageRules()
+    {
+        try
+        {
+            drone.findAndWait(By.cssSelector(".folder-manage-rules>a")).click();
+            return new FolderRulesPage(drone);
+        }
+        catch(TimeoutException te)
+        {
+            throw new PageOperationException("Manage Rules link is not displayed at a page");
+        }
+    }
+
+    /**
+     * Method for verify all labels that Properties section must contain on the details page
+     *
+     * @return boolean
+     */
+    public boolean isPropertiesLabelsPresent()
+    {
+        boolean present = false;
+        try
+        {
+            List<WebElement> labels = drone.findAll(By.xpath(PROPERTIES_INFO));
+
+            if(labels.size() != 3)
+                throw new Exception("Properties section doesn't contain full information");
+
+            for(WebElement label : labels)
+            {
+                present = false;
+                for(String labelName : new String[]{"Name:", "Title:", "Description:"})
+                {
+                    if(label.getText().equals(labelName))
+                        present = true;
+                }
+                if (!present)
+                    return false;
+
+            }
+
+        }
+        catch (StaleElementReferenceException sere)
+        {
+            logger.error("Element :" + PROPERTIES_INFO + " does not exist", sere);
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Element :" + PROPERTIES_INFO + " does not exist", nse);
+        } catch (Exception e) {
+            logger.error("Properties section doesn't contain full information");
+        }
+        return present;
     }
 }

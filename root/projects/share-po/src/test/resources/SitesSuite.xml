@@ -82,4 +82,14 @@
    <class name="org.alfresco.po.share.site.WikiPageTest" />
   </classes>
  </test>
+  <test name="WikiTreeMenuNavigationTest">
+  <classes>
+   <class name="org.alfresco.po.share.site.WikiTreeMenuNavigationTest" />
+  </classes>
+ </test>
+ <test name="DeleteSitePageTest">
+ 	<classes>
+ 		<class name="org.alfresco.po.share.site.DeleteSitePageTest" />
+ 	</classes>
+ </test>
 </suite>

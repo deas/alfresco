@@ -27,6 +27,7 @@ import java.util.Map;
 import org.alfresco.po.share.site.document.Categories;
 import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentAspect;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
@@ -366,6 +367,16 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.TEMPLATABLE);
 
+        List<Property<?>> properties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+
+        for(Property property: properties)
+        {
+            if(property.getId().equals("cm:template"))
+            {
+                Assert.assertTrue(templateNodeRef.contains(property.getValueAsString()) , "Verifying Template noderef matches");
+            }
+        }
+
         ShareUser.logout(drone);
     }
 
@@ -381,6 +392,20 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         removeAspect(cmisBinding, userName, DOMAIN, folderNodeRef, aspectsToRemove);
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, folderNodeRef, folderName, siteName, DocumentAspect.TEMPLATABLE);
+
+        List<Property<?>> properties = getProperties(cmisBinding, userName, DOMAIN, folderNodeRef);
+
+        boolean isPropertyExists = false;
+        for(Property property: properties)
+        {
+            if(property.getId().equals("cm:template"))
+            {
+                isPropertyExists = true;
+                break;
+            }
+        }
+
+        Assert.assertFalse(isPropertyExists, "Verifying that the \"cm:template\" property doesn't exists");
 
         ShareUser.logout(drone);
     }
@@ -519,6 +544,9 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         DetailsPage detailsPage = getDetailsPage(drone, siteName, folderName);
         Assert.assertTrue(detailsPage.isViewOnGoogleMapsLinkVisible(), "Verifying \"View on Google Maps\" link is displayed");
 
+        DocumentLibraryPage documentLibraryPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().renderItem(maxWaitTime, folderName);
+        Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(folderName).isGeoLocationIconDisplayed(), "Verifying \"Geolocation Metadata available\" icon is displayed");
+
         ShareUser.logout(drone);
     }
 
@@ -539,8 +567,13 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertNull(getPropertyValue(folderProperties, "longitude"));
         Assert.assertNull(getPropertyValue(folderProperties, "latitude"));
 
-        Assert.assertFalse(getDetailsPage(drone, siteName, folderName).isViewOnGoogleMapsLinkVisible(),
+        DetailsPage detailsPage = getDetailsPage(drone, siteName, folderName);
+
+        Assert.assertFalse(detailsPage.isViewOnGoogleMapsLinkVisible(),
                 "Verifying \"View on Google Maps\" link is NOT displayed");
+
+        DocumentLibraryPage documentLibraryPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().renderItem(maxWaitTime, folderName);
+        Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(folderName).isGeoLocationIconDisplayed(), "Verifying \"Geolocation Metadata available\" icon is NOT displayed");
 
         ShareUser.logout(drone);
     }
@@ -559,6 +592,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         double focalLength = 12.5;
         double xResolution = 400.4;
         double yResolution = 32.5;
+        double exposureTime = 10.0;
         String model = "test-model";
         String software = "test-software";
         int orientation = 12;
@@ -583,6 +617,7 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         propertyMap.put("exif:pixelXDimension", pixelXDimension);
         propertyMap.put("exif:isoSpeedRatings", isoSpeedRatings);
         propertyMap.put("exif:fNumber", fNumber);
+        propertyMap.put("exif:exposureTime", exposureTime);
 
         addAspect(cmisBinding, userName, DOMAIN, folderNodeRef, aspectsToAdd);
         addProperties(cmisBinding, userName, DOMAIN, folderNodeRef, propertyMap);
@@ -605,6 +640,12 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertEquals(getPropertyValue(folderProperties, "pixelXDimension"), String.valueOf(pixelXDimension));
         Assert.assertEquals(getPropertyValue(folderProperties, "isoSpeedRatings"), isoSpeedRatings);
         Assert.assertEquals(getPropertyValue(folderProperties, "fNumber"), String.valueOf(fNumber));
+        Assert.assertEquals(getPropertyValue(folderProperties, "exposureTime"), String.valueOf(exposureTime));
+
+        DetailsPage detailsPage = ShareUser.getCurrentPage(drone).render();
+        detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        Assert.assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, folderName).isEXIFIconDisplayed(), "Verifying \"EXIF Metadata icon\" is displayed");
 
         ShareUser.logout(drone);
     }
@@ -637,6 +678,12 @@ public class CmisFolderAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertNull(getPropertyValue(folderProperties, "pixelXDimension"));
         Assert.assertNull(getPropertyValue(folderProperties, "isoSpeedRatings"));
         Assert.assertNull(getPropertyValue(folderProperties, "fNumber"));
+        Assert.assertNull(getPropertyValue(folderProperties, "exposureTime"));
+
+        DetailsPage detailsPage = ShareUser.getCurrentPage(drone).render();
+        detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        Assert.assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, folderName).isEXIFIconDisplayed(), "Verifying \"EXIF Metadata icon\" is NOT displayed");
 
         ShareUser.logout(drone);
     }

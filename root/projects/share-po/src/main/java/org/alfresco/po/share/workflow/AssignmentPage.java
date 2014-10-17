@@ -14,35 +14,27 @@
  */
 package org.alfresco.po.share.workflow;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
-import org.alfresco.webdrone.ElementState;
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.*;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Assignment page is to select the cloud reviewer in the workflow start form.
- * 
+ *
  * @author Siva Kaliyappan
  * @author Shan Nagarajan
  * @since 1.6.2
@@ -57,16 +49,26 @@ public class AssignmentPage extends SharePage
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='cntrl-cancel-button']");
     private static final By SELECT_CLOUD_REVIEWER = By.cssSelector("a.add-item");
     private static final By LIST_CLOUD_REVIEWER = (By
-            .cssSelector("div[id$='_assignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr, div[id$='_assignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr"));
+            .cssSelector("div[id$='ssignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr, " +
+                    "div[id$='_assignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr, " +
+                    "div[id$='ssignees-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-data>tr"));
     private static final By SELECTED_USERS = (By
-            .cssSelector("div[id$='_assignee-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr, div[id$='_assignment-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr"));
-    private static final By SEARCH_RESULTS_SECTION = (By.cssSelector("div[id$='_assignee-cntrl-picker-results'], div[id$='_assignment-cntrl-picker-results']"));
+            .cssSelector("div[id$='ssignee-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr, " +
+                    "div[id$='_assignment-cntrl-picker-right']>div[id$='-cntrl-picker-selectedItems']>table>tbody.yui-dt-data>tr"));
+    private static final By SEARCH_RESULTS_SECTION = (By.cssSelector("div[id$='ssignee-cntrl-picker-results'], " +
+            "div[id$='_assignment-cntrl-picker-results'], " +
+            "div[id$='ssignees-cntrl-picker-results']"));
     private static final By SELECTED_ITEMS_SECTION = (By
-            .cssSelector("div[id$='_assignee-cntrl-picker-selectedItems'], div[id$='_assignment-cntrl-picker-selectedItems']"));
+            .cssSelector("div[id$='ssignee-cntrl-picker-selectedItems'], " +
+                    "div[id$='_assignment-cntrl-picker-selectedItems'], " +
+                    "div[id$='bpm_assignees-cntrl-picker-selectedItems']"));
     private static final By CLOSE_BUTTON = (By
-            .cssSelector("div[id$='_assignee-cntrl-picker']>a.container-close, div[id$='_assignment-cntrl-picker']>a.container-close"));
+            .cssSelector("div[id$='ssignee-cntrl-picker']>a.container-close, " +
+                    "div[id$='_assignment-cntrl-picker']>a.container-close, " +
+                    "div[id$='ssignees-cntrl-picker']>a.container-close "));
     private static final By ENTER_A_SEARCH_TERM_MESSAGE = (By
-            .cssSelector("div[id$='-cntrl-picker-left']>div[id$='_assignee-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner, div[id$='-cntrl-picker-left']>div[id$='_assignment-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner"));
+            .cssSelector("div[id$='-cntrl-picker-left']>div[id$='ssignee-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner, " +
+                    "div[id$='-cntrl-picker-left']>div[id$='_assignment-cntrl-picker-results']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div.yui-dt-liner"));
     private static final By WARNING_MESSAGE = (By.cssSelector("div#message_c>div#message>div.bd>span.message"));
 
     private final RenderElement searchFieldElement = new RenderElement(SEARCH_TEXT, ElementState.PRESENT);
@@ -79,9 +81,8 @@ public class AssignmentPage extends SharePage
 
     /**
      * Constructor.
-     * 
-     * @param drone
-     *            WebDriver to access page
+     *
+     * @param drone WebDriver to access page
      */
     public AssignmentPage(WebDrone drone)
     {
@@ -112,7 +113,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to add multiple Users
-     * 
+     *
      * @param userNames
      */
     public void selectUsers(List<String> userNames)
@@ -125,7 +126,8 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to add a single user
-     * Move this as a util in qa-share 
+     * Move this as a util in qa-share
+     *
      * @param userName
      */
     @Deprecated
@@ -133,9 +135,9 @@ public class AssignmentPage extends SharePage
     {
         boolean found = false;
         // TODO: Add this as a test property
-        int retryCount = 3;
+        int retryCount = 10;
 
-        while (!found && retryCount>0)
+        while (!found && retryCount > 0)
         {
             try
             {
@@ -151,17 +153,17 @@ public class AssignmentPage extends SharePage
             }
         }
     }
-    
+
     /**
      * Method to add a single user
-     * 
+     *
      * @param userName
-     * @return 
+     * @return
      */
     public boolean selectUser(String userName)
     {
         boolean userFound = false;
-        
+
         if (StringUtils.isEmpty(userName))
         {
             throw new IllegalArgumentException("User Name can't empty or null.");
@@ -172,7 +174,7 @@ public class AssignmentPage extends SharePage
         for (WebElement webElement : elements)
         {
 
-            if (webElement.findElement(By.cssSelector(".item-name")).getText().toLowerCase().contains("(" + userName + ")"))
+            if (webElement.findElement(By.cssSelector(".item-name")).getText().toLowerCase().contains(userName))
             {
                 drone.mouseOver(webElement.findElement(SELECT_CLOUD_REVIEWER));
                 webElement.findElement(SELECT_CLOUD_REVIEWER).click();
@@ -196,9 +198,9 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to select the cloud reviewer and submit.
-     * 
+     *
      * @return Assignment Page return type clod sync cloud user part will be
-     *         modified after completing other page objects.
+     * modified after completing other page objects.
      */
     public HtmlPage selectReviewers(List<String> userNames)
     {
@@ -209,9 +211,9 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to select the cloud assignee and submit.
-     * 
+     *
      * @return Assignment Page return type clod sync cloud user part will be
-     *         modified after completing other page objects.
+     * modified after completing other page objects.
      */
     public void selectAssignee(String userName)
     {
@@ -233,7 +235,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to get the cloud reviewers or list of assignees
-     * 
+     *
      * @return List of users
      */
     public List<WebElement> retrieveUsers(String userName)
@@ -246,7 +248,7 @@ public class AssignmentPage extends SharePage
         {
             searchForUser(userName);
             drone.waitForElement(LIST_CLOUD_REVIEWER, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
-            return drone.findDisplayedElements(LIST_CLOUD_REVIEWER);
+            return drone.findAndWaitForElements(LIST_CLOUD_REVIEWER);
         }
         catch (TimeoutException toe)
         {
@@ -257,7 +259,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to search for given user
-     * 
+     *
      * @param userName
      */
     public void searchForUser(String userName)
@@ -292,7 +294,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to check if "No items found" message is displayed
-     * 
+     *
      * @param userName
      * @return True if "No items found" message is displayed
      */
@@ -305,7 +307,7 @@ public class AssignmentPage extends SharePage
         try
         {
             searchForUser(userName);
-            WebElement message = drone.find(By.cssSelector("div[id$='_assignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-message>tr div, div[id$='_assignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-message>tr div"));
+            WebElement message = drone.find(By.cssSelector("div[id$='ssignment-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-message>tr div, div[id$='_assignee-cntrl-picker-left']>div[id$='-cntrl-picker-results']>table>tbody.yui-dt-message>tr div"));
             return message.isDisplayed() && message.getText().equals("No items found");
         }
         catch (NoSuchElementException nse)
@@ -316,7 +318,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to check if a given user found after search.
-     * 
+     *
      * @param userName
      * @return True if given user found
      */
@@ -345,7 +347,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to check "Enter a search term" message is displayed
-     * 
+     *
      * @return
      */
     public boolean isEnterASearchTermMessageDisplayed()
@@ -397,7 +399,7 @@ public class AssignmentPage extends SharePage
      * Method to get the warning message (Eg: "Enter at least 1 character(s) to search")
      * Returns empty string if unable to find the element
      * This method should be called as soon as the warning message disappears quickly.
-     * 
+     *
      * @return Warning Message
      */
     public String getWarningMessage()
@@ -418,14 +420,14 @@ public class AssignmentPage extends SharePage
 
     /**
      * This method gets the User Search results content.
-     * 
+     *
      * @return String
      */
     public String getContent()
     {
         try
         {
-            WebElement el = drone.findAndWait(By.cssSelector("div[id$='_assignee-cntrl-picker-results'] tbody[class$='message'] div"));
+            WebElement el = drone.findAndWait(By.cssSelector("div[id$='ssignee-cntrl-picker-results'] tbody[class$='message'] div"));
             String s = el.getText();
             return s;
         }
@@ -437,7 +439,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to get User list after search
-     * 
+     *
      * @param userName
      * @return List of users
      */
@@ -454,7 +456,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to verify Add Icon is present for a given user
-     * 
+     *
      * @param userName
      * @return True if Add icon is present
      */
@@ -480,7 +482,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to get Selected User elements
-     * 
+     *
      * @return List of User Elements
      */
     private List<WebElement> getSelectedUserElements()
@@ -493,12 +495,12 @@ public class AssignmentPage extends SharePage
         {
             logger.error("No Users found", nse);
         }
-        return Collections.<WebElement> emptyList();
+        return Collections.<WebElement>emptyList();
     }
 
     /**
      * Method to verify if the given user is selected or not
-     * 
+     *
      * @param userName
      * @return True if selected
      */
@@ -523,7 +525,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to remove a user from Selected Users list
-     * 
+     *
      * @param userName
      */
     public void removeUser(String userName)
@@ -565,7 +567,7 @@ public class AssignmentPage extends SharePage
 
     /**
      * Method to remove given users from Selected Users list
-     * 
+     *
      * @param userNames List
      */
     public void removeUsers(List<String> userNames)

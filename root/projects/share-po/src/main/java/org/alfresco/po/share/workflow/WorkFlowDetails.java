@@ -19,7 +19,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * Representation of Workflow details that can be used to verify Workflow details
- * 
+ *
  * @author Ranjith Manyam
  * @since 1.7.1
  */
@@ -33,6 +33,12 @@ public class WorkFlowDetails
     private DateTime endDate;
     private WorkFlowType type;
     private WorkFlowDescription description;
+    private Priority priority;
+
+    private boolean isViewHistoryDisplayed;
+    private boolean isCancelWorkFlowDisplayed;
+    private boolean isDeleteWorkFlowDisplayed;
+
 
     public String getWorkFlowName()
     {
@@ -54,10 +60,12 @@ public class WorkFlowDetails
         try
         {
             this.due = DateTimeFormat.forPattern("dd MMM, yyyy").parseDateTime(due);
+            setDueDateString(due.toString());
         }
         catch (IllegalArgumentException e)
         {
             this.due = null;
+            setDueDateString(due);
         }
     }
 
@@ -109,5 +117,45 @@ public class WorkFlowDetails
     public void setDescription(String description)
     {
         this.description = WorkFlowDescription.getWorkFlowDescription(description);
+    }
+
+    public Priority getPriority()
+    {
+        return priority;
+    }
+
+    public void setPriority(String priority)
+    {
+        this.priority = Priority.getPriority(priority);
+    }
+
+    public boolean isViewHistoryDisplayed()
+    {
+        return isViewHistoryDisplayed;
+    }
+
+    public void setViewHistoryDisplayed(boolean isViewHistoryDisplayed)
+    {
+        this.isViewHistoryDisplayed = isViewHistoryDisplayed;
+    }
+
+    public boolean isCancelWorkFlowDisplayed()
+    {
+        return isCancelWorkFlowDisplayed;
+    }
+
+    public void setCancelWorkFlowDisplayed(boolean isCancelWorkFlowDisplayed)
+    {
+        this.isCancelWorkFlowDisplayed = isCancelWorkFlowDisplayed;
+    }
+
+    public boolean isDeleteWorkFlowDisplayed()
+    {
+        return isDeleteWorkFlowDisplayed;
+    }
+
+    public void setDeleteWorkFlowDisplayed(boolean isDeleteWorkFlowDisplayed)
+    {
+        this.isDeleteWorkFlowDisplayed = isDeleteWorkFlowDisplayed;
     }
 }

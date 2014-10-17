@@ -14,36 +14,43 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.Set;
-
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.SharePopup;
+import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.Set;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 /**
  * Create site page object, to do a sign up to google Account Google.
- * 
+ *
  * @author Subashni Prasanna
  * @since 1.5
  */
 public class GoogleSignUpPage extends SharePage
 {
-    private static final By GOOGLE_USERNAME = By.cssSelector("input#Email");
-    private static final By GOOGLE_PASSWORD = By.cssSelector("input#Passwd");
-    private static final By SIGNUP_BUTTON = By.cssSelector("input#signIn");
+    private static final By GOOGLE_USERNAME = By.xpath("//input[@name='Email']");
+    private static final By GOOGLE_PASSWORD = By.xpath("//input[@name='Passwd']");
+    private static final By SIGNUP_BUTTON = By.xpath("//input[@type='submit']");
     private static final String googleAccountTitle = "Google Accounts";
 
     private boolean isGoogleCreate;
     private String documentVersion;
+
+    private static Log logger = LogFactory.getLog(GoogleSignUpPage.class);
 
     /**
      * Constructor and switch to the sign up window
@@ -72,7 +79,7 @@ public class GoogleSignUpPage extends SharePage
 
     /**
      * Ensures that the 'checked out' message is visible.
-     * 
+     *
      * @param timer Max time to wait
      * @return {@link GoogleSignUpPage}
      */
@@ -80,34 +87,9 @@ public class GoogleSignUpPage extends SharePage
     @Override
     public GoogleSignUpPage render(RenderTime timer)
     {
-        while (true)
-        {
-            switchToGoogleSignIn();
-            timer.start();
-            synchronized (this)
-            {
-                try
-                {
-                    this.wait(200L);
-                }
-                catch (InterruptedException ite)
-                {
-                }
-            }
-            try
-            {
-                if (isSignupWindowDisplayed())
-                {
-                    // It's there and visible
-                    break;
-                }
-            }
-            catch (NoSuchElementException nse)
-            {
-                // Keep waiting for it
-            }
-            timer.end();
-        }
+        switchToGoogleSignIn();
+        elementRender(timer, getVisibleRenderElement(GOOGLE_USERNAME), getVisibleRenderElement(GOOGLE_PASSWORD),
+                getVisibleRenderElement(SIGNUP_BUTTON));
         return this;
     }
 
@@ -120,7 +102,7 @@ public class GoogleSignUpPage extends SharePage
 
     /**
      * Verify if googleSignup Dialog is displayed.
-     * 
+     *
      * @return true if dialog is displayed.
      */
     public boolean isSignupWindowDisplayed()
@@ -137,11 +119,45 @@ public class GoogleSignUpPage extends SharePage
 
     /**
      * Enter the Username , password and Click on Sign up button.
-     * 
+     *
      * @return-EditInGoogleDocsPage
      */
     public EditInGoogleDocsPage signUp(String username, String password)
     {
+        try
+        {
+            WebElement usernameInput = drone.findAndWait(GOOGLE_USERNAME);
+            usernameInput.clear();
+            usernameInput.sendKeys(username);
+
+            WebElement passwordInput = drone.findAndWait(GOOGLE_PASSWORD);
+            passwordInput.clear();
+            passwordInput.sendKeys(password);
+
+            WebElement submitButton = drone.find(SIGNUP_BUTTON);
+            submitButton.click();
+            switchToShare();
+            waitUntilAlert(5);
+            return new EditInGoogleDocsPage(drone, documentVersion, isGoogleCreate);
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("Google Sign up page timeout", te);
+        }
+    }
+
+    /**
+     * Enter the Username , password and Click on Sign up button.
+     * use for old format doc., xls., ppt.
+     *
+     * @param username
+     * @param password
+     * @param confirmUpgrade
+     * @return HtmlPage
+     */
+    public HtmlPage signUpOldFormat(String username, String password, boolean confirmUpgrade)
+    {
+        SharePopup upgrade;
         try
         {
             WebElement usernameInput = drone.findAndWait(GOOGLE_USERNAME);
@@ -160,23 +176,81 @@ public class GoogleSignUpPage extends SharePage
         {
             throw new TimeoutException("Google Sign up page timeout", te);
         }
-        String message = "Editing in Google Docs";
-        if (isGoogleCreate)
+        waitUntilAlert();
+        upgrade = drone.getCurrentPage().render();
+        if (confirmUpgrade)
         {
-            message = "Creating Google Docs";
+
+            upgrade.clickYes();
+            String message = "Editing in Google Docs";
+            if (isGoogleCreate)
+            {
+                message = "Creating Google Docs";
+            }
+            drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), message, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), message, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            String errorMessage = "";
+            try
+            {
+                errorMessage = drone.find(By.cssSelector("div.bd>span.message")).getText();
+            }
+            catch (NoSuchElementException e)
+            {
+                return new EditInGoogleDocsPage(drone, documentVersion, isGoogleCreate);
+            }
+            throw new PageException(errorMessage);
         }
-        drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), message, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-        drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), message, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-        String errorMessage = "";
-        try
+        else
         {
-            errorMessage = drone.find(By.cssSelector("div.bd>span.message")).getText();
+            upgrade.cancelNo();
+            return drone.getCurrentPage().render();
         }
-        catch (NoSuchElementException e)
+    }
+
+    /**
+     * Choose edit google doc from "Document Library" without authentication
+     * use if authentication was made previously
+     * use method from Document Library
+     *
+     * @param filename
+     * @param confirmUpgrade
+     * @return HtmlPage
+     */
+    public HtmlPage signUpOldFormatWithoutAuth(String filename, boolean confirmUpgrade)
+    {
+        SharePopup upgrade;
+        DocumentLibraryPage docLibPage = drone.getCurrentPage().render();
+        docLibPage.getFileDirectoryInfo(filename).selectEditInGoogleDocs().render();
+        waitUntilAlert(3);
+
+        upgrade = drone.getCurrentPage().render();
+        if (confirmUpgrade)
         {
-            return new EditInGoogleDocsPage(drone, documentVersion, isGoogleCreate);
+
+            upgrade.clickYes();
+            String message = "Editing in Google Docs";
+            if (isGoogleCreate)
+            {
+                message = "Creating Google Docs";
+            }
+            drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), message, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), message, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            String errorMessage = "";
+            try
+            {
+                errorMessage = drone.find(By.cssSelector("div.bd>span.message")).getText();
+            }
+            catch (NoSuchElementException e)
+            {
+                return new EditInGoogleDocsPage(drone, documentVersion, isGoogleCreate);
+            }
+            throw new PageException(errorMessage);
         }
-        throw new PageException(errorMessage);
+        else
+        {
+            upgrade.cancelNo().render();
+            return drone.getCurrentPage().render();
+        }
     }
 
     /**
@@ -212,7 +286,7 @@ public class GoogleSignUpPage extends SharePage
         for (String windowHandle : windowHandles)
         {
             drone.switchToWindow(windowHandle);
-            if (drone.getTitle().endsWith(googleAccountTitle))
+            if (drone.getTitle().contains(googleAccountTitle))
             {
                 break;
             }
@@ -241,4 +315,24 @@ public class GoogleSignUpPage extends SharePage
             }
         }
     }
+
+    /**
+     * Switch to google docs edit.
+     */
+    private void switchToGoogleDocsEdit()
+    {
+        Set<String> windowHandles = drone.getWindowHandles();
+        for (String windowHandle : windowHandles)
+        {
+            drone.switchToWindow(windowHandle);
+            if (drone.getTitle() != null)
+            {
+                if ((drone.getTitle().endsWith("Google Docs Editor")))
+                {
+                    break;
+                }
+            }
+        }
+    }
+
 }

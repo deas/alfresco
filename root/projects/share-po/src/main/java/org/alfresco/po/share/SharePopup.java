@@ -18,9 +18,16 @@ import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Share Error popup page object, holds all the methods relevant to Share Error popup
@@ -33,6 +40,7 @@ public class SharePopup extends SharePage
     private static final String FAILURE_PROMPT = "div[id='prompt']";
     private static final String DEFAULT_BUTTON = "span.yui-button";
     private static final String ERROR_BODY = "div.bd";
+    private static final By BUTTON_TAG_NAME = By.tagName("button");
 
     /**
      * Constructor.
@@ -169,6 +177,51 @@ public class SharePopup extends SharePage
         catch (NoSuchElementException nse)
         {
             return null;
+        }
+    }
+
+    /**
+     * Clicks on the No button for no upgrade document for google docs.
+     *
+     * @return HtmlPage
+     */
+    public HtmlPage cancelNo()
+    {
+        try
+        {
+            WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+            WebElement cancelButton = findButton("No", elements);
+            cancelButton.click();
+        }
+        catch (TimeoutException nse)
+        {
+            throw new TimeoutException("upgrade prompt was not found", nse);
+        }
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Clicks on the submit button to allow upgrade document for google docs.
+     *
+     */
+    public void clickYes()
+    {
+        try
+        {
+            WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+            WebElement okButton = findButton("Yes", elements);
+            okButton.click();
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("upgrade prompt was not found", te);
+        }
+        catch (NoSuchElementException te)
+        {
+            throw new PageOperationException("authorisation prompt was not found", te);
         }
     }
 

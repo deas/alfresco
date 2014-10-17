@@ -67,8 +67,6 @@ public class LinksPageTest extends AbstractSiteDashletTest
     public void createLink()
     {
         assertTrue(linksPage.isCreateLinkEnabled());
-        addLinkForm = linksPage.clickNewLink().render();
-        assertNotNull(addLinkForm);
         linksDetailsPage = linksPage.createLink(text, url).render();
         assertEquals(linksDetailsPage.getLinkTitle(), text);
         assertNotNull(linksDetailsPage);

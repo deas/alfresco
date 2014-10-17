@@ -17,14 +17,22 @@ package org.alfresco.po.share.dashlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareLink;
+import org.alfresco.po.share.exception.ShareException;
+import org.alfresco.po.share.util.PageUtils;
+import org.alfresco.po.thirdparty.firefox.RssFeedPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -34,10 +42,17 @@ import org.openqa.selenium.WebElement;
  * @author Michael Suzuki
  * @since 1.3
  */
+@SuppressWarnings("unused")
 public class MyActivitiesDashlet extends AbstractDashlet implements Dashlet
 {
-    private static final String DIV_CLASS_DASHLET_PLACEHOLDER = "div[id$='default-activityList']";
+    private final Log logger = LogFactory.getLog(this.getClass());
+    private static final By DIV_CLASS_DASHLET_PLACEHOLDER = By.cssSelector("div[id$='default-activityList']");
     private static final String DASHLET_DIV_PLACEHOLDER = "div.dashlet.activities";
+    private static final By MY_ACTIVITIES_BUTTON = By.cssSelector("button[id$='default-user-button']");
+    private static final By MY_ACTIVITIES_ITEM = By.cssSelector("div.activities div.visible ul.first-of-type li a");
+    private static final By RSS_FEED_BUTTON = By.cssSelector(".titleBarActionIcon.rss");
+    private static final By HISTORY_BUTTON = By.cssSelector("button[id$='default-range-button']");
+    private static final By DASHLET_LIST_OF_FILTER = By.cssSelector("div.activities div.visible ul.first-of-type li a");
 
     public enum LinkType
     {
@@ -78,7 +93,7 @@ public class MyActivitiesDashlet extends AbstractDashlet implements Dashlet
         activity = new ArrayList<ActivityShareLink>();
         try
         {
-            List<WebElement> links = drone.findAll(By.cssSelector(DIV_CLASS_DASHLET_PLACEHOLDER + " > div.activity"));
+            List<WebElement> links = drone.findAll(By.cssSelector("div[id$='default-activityList'] > div.activity"));
 
             for (WebElement div : links)
             {
@@ -255,4 +270,152 @@ public class MyActivitiesDashlet extends AbstractDashlet implements Dashlet
         }
         return activity;
     }
+
+    /**
+     * Select option from "My Activities" drop down
+     * 
+     * @param myActivitiesOption
+     * @return {@link ShareLink} collection
+     * @author Cristina.Axinte
+     */
+    public HtmlPage selectOptionFromUserActivities(String myActivitiesOption)
+    {
+        if (myActivitiesOption == null)
+        {
+            throw new UnsupportedOperationException("Activity type is required");
+        }
+        try
+        {
+            WebElement myActivities = drone.find(MY_ACTIVITIES_BUTTON);
+            myActivities.click();
+
+            List<WebElement> filterElements = drone.findAll(MY_ACTIVITIES_ITEM);
+            if (filterElements != null)
+            {
+                for (WebElement webElement : filterElements)
+                {
+                    if (webElement.getText().equals(myActivitiesOption))
+                    {
+                        webElement.click();
+                        return FactorySharePage.resolvePage(drone);
+                    }
+                }
+            }
+
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("My Activities option not present" + nse.getMessage());
+        }
+        throw new PageOperationException(myActivitiesOption + " option not present.");
+
+    }
+
+    /**
+     * Select option from history filter drop down
+     * 
+     * @param SiteActivitiesHistoryFilter
+     * @return {@link ShareLink} collection
+     * @author Cristina.Axinte
+     */
+    public HtmlPage selectOptionFromHistoryFilter(SiteActivitiesHistoryFilter lastDays)
+    {
+        drone.findAndWait(HISTORY_BUTTON).click();
+        List<WebElement> filterElements = drone.findDisplayedElements(DASHLET_LIST_OF_FILTER);
+        if (filterElements != null)
+        {
+            for (WebElement webElement : filterElements)
+            {
+                if (webElement.getText().equals(lastDays.getDescription()))
+                {
+                    webElement.click();
+                }
+            }
+        }
+        return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Method for navigate to RSS Feed Page from site activity dashlet.
+     * 
+     * @param username
+     * @param password
+     * @return RssFeedPage
+     * @author Cristina.Axinte
+     */
+    public RssFeedPage selectRssFeedPage(String username, String password)
+    {
+        try
+        {
+            String currentUrl = drone.getCurrentUrl();
+            String rssUrlPart = (String) drone.executeJavaScript("return activities.link");
+            String protocolVar = PageUtils.getProtocol(currentUrl);
+            String address = PageUtils.getAddress(currentUrl);
+            String rssUrl = String.format("%s%s:%s@%s%s", protocolVar, username, password, address, rssUrlPart);
+            drone.navigateTo(rssUrl);
+            return new RssFeedPage(drone).render();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Exceeded the time to find css.", nse);
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Exceeded the time to find css.", e);
+        }
+        throw new PageOperationException("Not able to select RSS Feed option");
+    }
+
+    /**
+     * Method returns if the specified option is selected in My Activities button
+     * 
+     * @param myActivitiesOption
+     * @return
+     * @author Cristina.Axinte
+     */
+    public boolean isOptionSelected(String myActivitiesOption)
+    {
+
+        try
+        {
+            WebElement dropdown = drone.findAndWait(MY_ACTIVITIES_BUTTON);
+            String actualOption = dropdown.getText();
+            actualOption = actualOption.substring(0, actualOption.length() - 2);
+            if (actualOption.equals(myActivitiesOption))
+                return true;
+            return false;
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the 'My activities' button");
+        }
+
+    }
+
+    /**
+     * Method returns if the specified option is selected in history button
+     * 
+     * @param historyOption
+     * @return
+     * @author Cristina.Axinte
+     */
+    public boolean isHistoryOptionSelected(SiteActivitiesHistoryFilter lastDays)
+    {
+        
+        try
+        {
+            WebElement dropdown = drone.findAndWait(HISTORY_BUTTON);
+            String actualOption = dropdown.getText();
+            actualOption = actualOption.substring(0, actualOption.length() - 2);
+            if (actualOption.equals(lastDays.getDescription()))
+                return true;
+            return false;
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the 'My activities' button");
+        }
+
+    }
+
 }

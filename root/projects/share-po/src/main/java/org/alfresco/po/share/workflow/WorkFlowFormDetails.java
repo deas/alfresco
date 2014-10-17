@@ -14,11 +14,11 @@
  */
 package org.alfresco.po.share.workflow;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This is workflow object to hold info for workflow form details.
@@ -36,7 +36,7 @@ public class WorkFlowFormDetails
     private String message;
     private String dueDate;
     private TaskType taskType = TaskType.SIMPLE_CLOUD_TASK;
-    private Priority taskPriority = Priority.MEDIUM;
+    private  Priority taskPriority = Priority.MEDIUM;
     private KeepContentStrategy contentStrategy = KeepContentStrategy.KEEPCONTENTREMOVESYNC;
     private boolean lockOnPremise;
 

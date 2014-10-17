@@ -1,43 +1,317 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Sprint BY Data Prep Suite" verbose="1" preserve-order="true" parallel="classes" thread-count="5">
-    <groups>
-        <run>
-            <include name="DataPrep.*"/>
-            <exclude name="Enterprise4.2"/>
-			<exclude name="Sanity"/>
-            <exclude name="NonGrid"/>
-        </run>
-    </groups>
-
-    <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
-    </listeners>
-
-    <test name="Site sanity tests Suite" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.sanity.SiteTest"/>
-        </classes>
-    </test>
-
-    <test name="Site Members sanity tests Suite" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.sanity.MembersSiteTest"/>
-        </classes>
-    </test>
-	
-	<test name="Site Permissions sanity tests Suite" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.sanity.SitePermissionsSanityTest"/>
-        </classes>
-    </test>
-    <test name="Shared Files sanity tests Suite" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.sanity.SharedFilesTest">
-            <methods>
-                <include name="dataPrep_ALF_3062"/>
-                <include name="dataPrep_ALF_3066"/>
-            </methods>
-        </class>
-        </classes>
-    </test>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Sprint BY Data Prep Suite" preserve-order="true" parallel="classes" thread-count="2">
+<test name="Common tests" parallel="classes" thread-count="5">
+<classes>
+<class name="org.alfresco.share.dashlet.SavedSearchMyDashboardAdvancedTest">
+<methods>
+<include name="dataPrep_AONE_14664"/>
+<include name="dataPrep_AONE_14665"/>
+<include name="dataPrep_AONE_14666"/>
+<include name="dataPrep_AONE_14667"/>
+<include name="dataPrep_AONE_14668"/>
+<include name="dataPrep_AONE_14669"/>
+<include name="dataPrep_AONE_14670"/>
+<include name="dataPrep_AONE_14671"/>
+<include name="dataPrep_AONE_14672"/>
+<include name="dataPrep_AONE_14673"/>
+<include name="dataPrep_AONE_14674"/>
+<include name="dataPrep_AONE_14675"/>
+<include name="dataPrep_AONE_14676"/>
+<include name="dataPrep_AONE_14677"/>
+<include name="dataPrep_AONE_14678"/>
+<include name="dataPrep_AONE_14679"/>
+<include name="dataPrep_AONE_14680"/>
+<include name="dataPrep_AONE_14681"/>
+<include name="dataPrep_AONE_14682"/>
+<include name="dataPrep_AONE_14683"/>
+<include name="dataPrep_AONE_14684"/>
+<include name="dataPrep_AONE_14685"/>
+<include name="dataPrep_AONE_14686"/>
+<include name="dataPrep_AONE_14687"/>
+<include name="dataPrep_AONE_14689"/>
+<include name="dataPrep_AONE_14690"/>
+<include name="dataPrep_AONE_14692"/>
+<include name="dataPrep_AONE_14693"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SavedSearchMyDashboardBasicTest">
+<methods>
+<include name="dataPrep_AONE_14650"/>
+<include name="dataPrep_AONE_14651"/>
+<include name="dataPrep_AONE_14652"/>
+<include name="dataPrep_AONE_14653"/>
+<include name="dataPrep_AONE_14654"/>
+<include name="dataPrep_AONE_14659"/>
+<include name="dataPrep_AONE_14661"/>
+<include name="dataPrep_AONE_14662"/>
+<include name="dataPrep_AONE_14663"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest">
+<methods>
+<include name="dataPrep_AONE_14708"/>
+<include name="dataPrep_AONE_14709"/>
+<include name="dataPrep_AONE_14710"/>
+<include name="dataPrep_AONE_14711"/>
+<include name="dataPrep_AONE_14712"/>
+<include name="dataPrep_AONE_14713"/>
+<include name="dataPrep_AONE_14714"/>
+<include name="dataPrep_AONE_14715"/>
+<include name="dataPrep_AONE_14716"/>
+<include name="dataPrep_AONE_14717"/>
+<include name="dataPrep_AONE_14718"/>
+<include name="dataPrep_AONE_14719"/>
+<include name="dataPrep_AONE_14720"/>
+<include name="dataPrep_AONE_14721"/>
+<include name="dataPrep_AONE_14722"/>
+<include name="dataPrep_AONE_14723"/>
+<include name="dataPrep_AONE_14724"/>
+<include name="dataPrep_AONE_14725"/>
+<include name="dataPrep_AONE_14726"/>
+<include name="dataPrep_AONE_14727"/>
+<include name="dataPrep_AONE_14728"/>
+<include name="dataPrep_AONE_14729"/>
+<include name="dataPrep_AONE_14730"/>
+<include name="dataPrep_AONE_14731"/>
+<include name="dataPrep_AONE_14733"/>
+<include name="dataPrep_AONE_14734"/>
+<include name="dataPrep_AONE_14736"/>
+<include name="dataPrep_AONE_14737"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardBasicTest">
+<methods>
+<include name="dataPrep_AONE_14694"/>
+<include name="dataPrep_AONE_14695"/>
+<include name="dataPrep_AONE_14696"/>
+<include name="dataPrep_AONE_14697"/>
+<include name="dataPrep_AONE_14698"/>
+<include name="dataPrep_AONE_14703"/>
+<include name="dataPrep_AONE_14705"/>
+<include name="dataPrep_AONE_14706"/>
+<include name="dataPrep_AONE_14707"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SiteNoticetDashletTest">
+<methods>
+<include name="dataPrep_AONE_13966"/>
+<include name="dataPrep_AONE_13967"/>
+<include name="dataPrep_AONE_13968"/>
+<include name="dataPrep_AONE_13969"/>
+<include name="dataPrep_AONE_13970"/>
+<include name="dataPrep_AONE_13971"/>
+<include name="dataPrep_AONE_13972"/>
+<include name="dataPrep_AONE_13973"/>
+<include name="dataPrep_AONE_13974"/>
+<include name="dataPrep_AONE_13975"/>
+<include name="dataPrep_AONE_13976"/>
+<include name="dataPrep_AONE_13977"/>
+<include name="dataPrep_AONE_13978"/>
+<include name="dataPrep_AONE_13979"/>
+<include name="dataPrep_AONE_13980"/>
+<include name="dataPrep_AONE_13981"/>
+<include name="dataPrep_AONE_13982"/>
+<include name="dataPrep_AONE_13983"/>
+<include name="dataPrep_AONE_13984"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SiteSearchDashletTest">
+<methods>
+<include name="dataPrep_AONE_14774"/>
+<include name="dataPrep_AONE_14775"/>
+<include name="dataPrep_AONE_14776"/>
+<include name="dataPrep_AONE_14781"/>
+<include name="dataPrep_AONE_14782"/>
+<include name="dataPrep_AONE_14783"/>
+<include name="dataPrep_AONE_14784"/>
+<include name="dataPrep_AONE_14785"/>
+<include name="dataPrep_AONE_14786"/>
+<include name="dataPrep_AONE_14787"/>
+<include name="dataPrep_AONE_14788"/>
+<include name="dataPrep_AONE_14789"/>
+<include name="dataPrep_AONE_14790"/>
+<include name="dataPrep_AONE_14791"/>
+<include name="dataPrep_AONE_14792"/>
+<include name="dataPrep_AONE_14793"/>
+<include name="dataPrep_AONE_14794"/>
+<include name="dataPrep_AONE_14795"/>
+<include name="dataPrep_AONE_14796"/>
+<include name="dataPrep_AONE_14797"/>
+<include name="dataPrep_AONE_14798"/>
+<include name="dataPrep_AONE_14799"/>
+<include name="dataPrep_AONE_14800"/>
+<include name="dataPrep_AONE_14802"/>
+<include name="dataPrep_AONE_14803"/>
+<include name="dataPrep_AONE_14804"/>
+<include name="dataPrep_AONE_14805"/>
+<include name="dataPrep_AONE_14806"/>
+<include name="dataPrep_AONE_14807"/>
+<include name="dataPrep_AONE_14808"/>
+<include name="dataPrep_AONE_14809"/>
+<include name="dataPrep_AONE_14811"/>
+<include name="dataPrep_AONE_14812"/>
+<include name="dataPrep_AONE_14813"/>
+<include name="dataPrep_AONE_14814"/>
+<include name="dataPrep_AONE_14815"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
+<methods>
+<include name="dataPrep_AONE_15837"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.search.AdvanceSearchTest">
+<methods>
+<include name="dataPrep_AdvSearch_AONE_13919"/>
+<include name="dataPrep_AdvSearch_AONE_13920"/>
+<include name="dataPrep_AdvSearch_AONE_13921"/>
+<include name="dataPrep_AdvSearch_AONE_13922"/>
+<include name="dataPrep_AdvSearch_AONE_13923"/>
+<include name="dataPrep_AdvSearch_AONE_13924"/>
+<include name="dataPrep_AdvSearch_AONE_13925"/>
+<include name="dataPrep_AdvSearch_AONE_13926"/>
+<include name="dataPrep_AdvSearch_AONE_13927"/>
+<include name="dataPrep_AdvSearch_AONE_13931"/>
+<include name="dataPrep_AdvSearch_AONE_13934"/>
+<include name="dataPrep_AdvSearch_AONE_13935"/>
+<include name="dataPrep_AdvSearch_AONE_13936"/>
+<include name="dataPrep_AdvSearch_AONE_13937"/>
+<include name="dataPrep_AdvSearch_AONE_13938"/>
+<include name="dataPrep_AdvSearch_AONE_13939"/>
+<include name="dataPrep_AdvSearch_AONE_13940"/>
+<include name="dataPrep_AdvSearch_AONE_13941"/>
+<include name="dataPrep_AdvSearch_AONE_13942"/>
+<include name="dataPrep_AdvSearch_AONE_13943"/>
+<include name="dataPrep_AdvSearch_AONE_13944"/>
+<include name="dataPrep_AdvSearch_AONE_13945"/>
+<include name="dataPrep_AdvSearch_AONE_13946"/>
+<include name="dataPrep_AdvSearch_AONE_13947"/>
+<include name="dataPrep_AdvSearch_AONE_13949"/>
+<include name="dataPrep_AdvSearch_AONE_13950"/>
+</methods>
+</class>
+<class name="org.alfresco.share.search.AdvanceSearchTest2">
+<methods>
+<include name="dataPrep_AdvSearch_AONE_13905"/>
+<include name="dataPrep_AdvSearch_AONE_13906"/>
+<include name="dataPrep_AdvSearch_AONE_13907"/>
+<include name="dataPrep_AdvSearch_AONE_13908"/>
+<include name="dataPrep_AdvSearch_AONE_13909"/>
+<include name="dataPrep_AdvSearch_AONE_13910"/>
+<include name="dataPrep_AdvSearch_AONE_13911"/>
+<include name="dataPrep_AdvSearch_AONE_13912"/>
+<include name="dataPrep_AdvSearch_AONE_13913"/>
+<include name="dataPrep_AdvSearch_AONE_13914"/>
+<include name="dataPrep_AdvSearch_AONE_13915"/>
+<include name="dataPrep_AdvSearch_AONE_13916"/>
+<include name="dataPrep_AdvSearch_AONE_13917"/>
+<include name="dataPrep_AdvSearch_AONE_13918"/>
+<include name="dataPrep_AdvSearch_AONE_13900"/>
+<include name="dataPrep_AdvSearch_AONE_13901"/>
+<include name="dataPrep_AdvSearch_AONE_13902"/>
+<include name="dataPrep_AdvSearch_AONE_13903"/>
+<include name="dataPrep_AdvSearch_AONE_13904"/>
+<include name="dataPrep_AdvSearch_AONE_13932"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ManagePermissionTest">
+<methods>
+<include name="dataPrep_AONE_14128"/>
+<include name="dataPrep_AONE_14129"/>
+<include name="dataPrep_AONE_14130"/>
+<include name="dataPrep_AONE_14131"/>
+<include name="dataPrep_AONE_14132"/>
+<include name="dataPrep_AONE_14133"/>
+<include name="dataPrep_AONE_14134"/>
+<include name="dataPrep_AONE_14135"/>
+<include name="dataPrep_AONE_14136"/>
+<include name="dataPrep_AONE_14137"/>
+<include name="dataPrep_AONE_14138"/>
+<include name="dataPrep_AONE_14139"/>
+<include name="dataPrep_AONE_14140"/>
+<include name="dataPrep_AONE_14141"/>
+<include name="dataPrep_AONE_14142"/>
+<include name="dataPrep_AONE_14143"/>
+<include name="dataPrep_AONE_14144"/>
+<include name="dataPrep_AONE_14145"/>
+<include name="dataPrep_AONE_14146"/>
+<include name="dataPrep_AONE_14150"/>
+<include name="dataPrep_AONE_14151"/>
+<include name="dataPrep_AONE_14152"/>
+<include name="dataPrep_AONE_14153"/>
+<include name="dataPrep_AONE_14154"/>
+<include name="dataPrep_AONE_14155"/>
+<include name="dataPrep_AONE_14156"/>
+<include name="dataPrep_AONE_14157"/>
+<include name="dataPrep_AONE_14158"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ToolbarTest">
+<methods>
+<include name="dataPrep_AONE_13998"/>
+<include name="dataPrep_AONE_13999"/>
+<include name="dataPrep_AONE_14000"/>
+<include name="dataPrep_AONE_14001"/>
+<include name="dataPrep_AONE_14002"/>
+<include name="dataPrep_AONE_14003"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.HeaderBarTest">
+<methods>
+<include name="dataPrep_AONE_14117" />
+<include name="dataPrep_AONE_14118" />
+<include name="dataPrep_AONE_14106" />
+<include name="dataPrep_AONE_14107" />
+<include name="dataPrep_AONE_14108" />
+<include name="dataPrep_AONE_14109" />
+<include name="dataPrep_AONE_14110" />
+<include name="dataPrep_AONE_14111" />
+<include name="dataPrep_AONE_14112" />
+</methods>
+</class>
+<class name="org.alfresco.share.user.trashcan.TrashcanTest2">
+<methods>
+<include name="dataPrep_TrashCan_AONE_14180"/>
+<include name="dataPrep_TrashCan_AONE_14181"/>
+<include name="dataPrep_TrashCan_AONE_14182"/>
+<include name="dataPrep_TrashCan_AONE_14173"/>
+<include name="dataPrep_TrashCan_AONE_14174"/>
+<include name="dataPrep_TrashCan_AONE_14176"/>
+<include name="dataPrep_TrashCan_AONE_14177"/>
+<include name="dataPrep_TrashCan_AONE_14178"/>
+<exclude name=".*"/>
+</methods>
+</class>
+    <class name="org.alfresco.share.repository.RepositoryFolderTests1">
+        <methods>
+            <include name="dataPrep_AONE_3566"/>
+            <include name="dataPrep_AONE_3572"/>
+            <include name="dataPrep_AONE_3573"/>
+            <include name="dataPrep_AONE_3578"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+    <class name="org.alfresco.share.repository.RepositoryFolderTests3">
+        <methods>
+            <include name="dataPrep_AONE_3565"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+</classes>
+</test>
+<suite-files>
+    <suite-file path="dataprep_BY_sanity.xml"/>
+    <suite-file path="dataprep_BY_doclib.xml"/>-->
+    <!--<suite-file path="dataprep_BY_repository.xml"/>-->
+</suite-files>
 </suite>

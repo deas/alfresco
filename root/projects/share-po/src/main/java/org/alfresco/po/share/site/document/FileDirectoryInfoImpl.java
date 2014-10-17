@@ -12,6 +12,16 @@
  */
 package org.alfresco.po.share.site.document;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
@@ -20,27 +30,28 @@ import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
 import org.alfresco.po.share.user.CloudSignInPage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
-import org.alfresco.webdrone.*;
+import org.alfresco.webdrone.HtmlElement;
+import org.alfresco.webdrone.HtmlPage;
+import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * Entity that models the list of file or directories as it appears on the {@link DocumentLibraryPage}. The list models the HTML element representing
  * the file or directory.
- *
+ * 
  * @author Michael Suzuki
  * @author Shan Nagarajan
  * @author mbhave
@@ -56,7 +67,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     protected static final By CATEGORY_LINK = By.cssSelector("span.category > a");
     private static final By BLACK_MESSAGE = By.cssSelector("div#message>div.bd>span");
     private static final By CLOUD_SYNC_LINK = By.cssSelector("div#onActionCloudSync a");
-    private static final By PUBLISH_LINK = By.cssSelector("div#onActionPublish>a[title='Publish']");
     private static final String CLOUD_SYNC_ICON = "a[data-action='onCloudSyncIndicatorAction']";
     private static final String EDITED_ICON = "img[alt='editing']";
     private static final String WORKFLOW_ICON = "img[alt='active-workflows']";
@@ -64,7 +74,6 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     private static final String FILE_EDIT_INFO = "div.yui-dt-liner div:nth-of-type(1)";
     private static final String TAG_INFO = "span[title='Tag'] + form + span.item";
     private static final String TAG_COLLECTION = TAG_INFO + " > span.tag > a";
-    private static final String ADD_TAG = "span[title='Tag']";
     private static final String IMG_FOLDER = "/documentlibrary/images/folder";
     private static final String FAVOURITE_CONTENT = "a[class*='favourite-action']";
     private static final String LIKE_CONTENT = "a[class*='like-action']";
@@ -106,6 +115,12 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     protected String rowElementXPath = null;
     protected String MORE_ACTIONS;
     protected String VIEW_ORIGINAL_DOCUMENT = "div.document-view-original>a";
+    private static final By TAGS_FIELD = By.cssSelector("div.detail span.item span.faded");
+    protected String DESCRIPTION_INFO = "div.detail>span.faded";
+
+    protected String LOCATE_FILE = "div.document-locate>a";
+
+    protected By DETAIL_WINDOW = By.xpath("//div[@class='alf-detail-thumbnail']/../../..");
 
     public FileDirectoryInfoImpl(String nodeRef, WebElement webElement, WebDrone drone)
     {
@@ -346,7 +361,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     /**
      * Selects the 'Actions' menu link on the select data row on DocumentLibrary
      * Page.
-     *
+     * 
      * @return {@link WebElement} WebElement that allows access to Actions menu for the selected Content
      */
     public WebElement selectContentActions()
@@ -356,7 +371,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Selects the 'Actions' menu link on the select data row on DocumentLibrary Page.
-     *
+     * 
      * @return List of {@link WebElement} available for the selected Content
      */
     public List<WebElement> getContentActions()
@@ -535,12 +550,12 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     {
         try
         {
-            
+
             WebElement inputTagName = findAndWait(By.cssSelector(INPUT_TAG_NAME));
             inputTagName.clear();
             inputTagName.sendKeys(tagName + "\n");
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             throw new PageOperationException("Exceeded time to find the tag input css.", te);
         }
@@ -597,7 +612,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     /**
      * Get NodeRef for the content on the selected data row on DocumentLibrary
      * Page.
-     *
+     * 
      * @return {String} Node Ref / GUID
      */
     @Override
@@ -646,7 +661,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * This method gets the list of in line tags after clicking on tag info icon.
-     *
+     * 
      * @return List<WebElement> collection of tags
      */
     private List<WebElement> getInlineTagList()
@@ -678,11 +693,9 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                 timer.start();
                 WebElement tagInfo = findAndWait(By.cssSelector(TAG_INFO));
                 getDrone().mouseOver(tagInfo);
-                drone.waitUntilElementClickable(By.cssSelector(ADD_TAG), 10);
-                // Wait till pencil icon appears
-                WebElement addTagBtn = findElement(By.cssSelector(ADD_TAG));
-                // Select to get focus
-                addTagBtn.click();
+                By addTagButton = By.xpath(String.format("//h3/span/a[text()='%s']/../../../div/span[@title='Tag']", getName()));
+                drone.waitUntilElementClickable(addTagButton, SECONDS.convert(WAIT_TIME_3000, MILLISECONDS));
+                drone.executeJavaScript("arguments[0].click();", drone.findAndWait(addTagButton));
                 if (findElement(By.cssSelector(INPUT_TAG_NAME)).isDisplayed())
                 {
                     break;
@@ -754,7 +767,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * This method finds the remove button on tag element and returns button
-     *
+     * 
      * @param tagName
      * @return WebElement
      */
@@ -867,7 +880,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     /**
      * Returns true if content in the selected data row on DocumentLibrary is
      * folder Page.
-     *
+     * 
      * @return {boolean} <tt>true</tt> if the content is of type folder.
      */
     @Override
@@ -1020,7 +1033,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
      * with an added resolveStaleness.
      * If we encounter the staleness exception we refresh the web
      * element we are working with and re-do the search.
-     *
+     * 
      * @param cssSelector By
      * @return {@link WebElement}
      */
@@ -1059,7 +1072,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
      * Performs the find with an added resolveStaleness.
      * If we encounter the staleness exception we refresh the web
      * element we are working with and re-do the search.
-     *
+     * 
      * @param cssSelector By
      * @return colelction {@link WebElement}
      */
@@ -1180,7 +1193,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         editLink.click();
         String text = "Editing in Google Docs";
         drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxTime, MILLISECONDS));
-        drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxTime, MILLISECONDS));
+        drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxTime, MILLISECONDS));
+        // drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxTime, MILLISECONDS));
         if (!drone.getCurrentUrl().contains(GOOGLE_DOCS_URL))
         {
             return new GoogleDocsAuthorisation(drone, null, false);
@@ -1277,7 +1291,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         unSyncToCloud.click();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.alfresco.po.share.site.document.FileDirectoryInfo#selectForceUnSyncInCloud()
      */
     @Override
@@ -1287,7 +1302,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         {
             WebElement forceUnSync = findAndWait(By.cssSelector("div#onActionCloudUnsync>a[title='Force Unsync']"));
             forceUnSync.click();
-    
+
             List<WebElement> buttonElements = getDrone().findAndWaitForElements(By.cssSelector("div>span.button-group>span>span.first-child"));
             for (WebElement webElement : buttonElements)
             {
@@ -1299,9 +1314,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
                     break;
                 }
             }
-        }catch(TimeoutException toe)
+        }
+        catch (TimeoutException toe)
         {
-            throw new PageOperationException("Timeout finding the element"+toe.getMessage());
+            throw new PageOperationException("Timeout finding the element" + toe.getMessage());
         }
         return FactorySharePage.resolvePage(drone).render();
     }
@@ -1508,11 +1524,11 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             findAndWait(By.cssSelector("div.folder-manage-rules > a")).click();
             return drone.getCurrentPage();
         }
-        catch(TimeoutException te)
+        catch (TimeoutException te)
         {
             throw new PageOperationException("Manage Rules link is not displayed for selected data row", te);
         }
-    }   
+    }
 
     /*
      * (non-Javadoc)
@@ -1848,6 +1864,10 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
             resolveStaleness();
             selectEditOffline();
         }
+        catch (Exception e)
+        {
+            throw new PageException("Robot not working");
+        }
         throw new PageException("Unable to find Edit Offline link");
     }
 
@@ -1922,7 +1942,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Wait until the black message box appear with text then wait until same black message disappear with text.
-     *
+     * 
      * @param text - Text to be checked in the black message.
      */
     protected void waitUntilMessageAppearAndDisappear(String text)
@@ -1933,8 +1953,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Wait until the black message box appear with text then wait until same black message disappear with text.
-     *
-     * @param text          - Text to be checked in the black message.
+     * 
+     * @param text - Text to be checked in the black message.
      * @param timeInSeconds - Time to wait in seconds.
      */
     protected void waitUntilMessageAppearAndDisappear(String text, long timeInSeconds)
@@ -1962,7 +1982,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Check if quick share link is present.
-     *
+     * 
      * @return
      */
     @Override
@@ -2341,7 +2361,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         catch (TimeoutException e)
         {
             logger.error("Exceeded the time to find css.", e);
-            throw new PageException("Exceeded the time to find css.");
+            throw new PageException("Exceeded the time to find css. ACE-3037");
         }
         throw new PageException("Not able to category name: " + categoryName);
     }
@@ -2443,105 +2463,105 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         throw new PageOperationException("Error in finding and clicking on modifier link.");
     }
 
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isNodeRefColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("NodeRef column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isNodeRefColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("NodeRef column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isStatusColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Status column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isStatusColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Status column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isThumbnailColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Thumbnail column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isThumbnailColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Thumbnail column is not available in current view.");
+    // }
     //
-    //    @Override
-    //    public boolean isNameColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Name column is not available in current view.");
-    //    }
+    // @Override
+    // public boolean isNameColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Name column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isTitleColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Title column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isTitleColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Title column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isDescriptionColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Description column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isDescriptionColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Description column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isCreatorColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Creator column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isCreatorColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Creator column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isCreatedColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Created column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isCreatedColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Created column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isModifierColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Modifier column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isModifierColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Modifier column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isModifiedColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Modified column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isModifiedColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Modified column is not available in current view.");
+    // }
     //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public boolean isActionsColHeaderVisible()
-    //    {
-    //        throw new UnsupportedOperationException("Actions column is not available in current view.");
-    //    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // public boolean isActionsColHeaderVisible()
+    // {
+    // throw new UnsupportedOperationException("Actions column is not available in current view.");
+    // }
 
     /**
      * (non-Javadoc)
-     *
+     * 
      * @see FileDirectoryInfo#getPreViewUrl()
      */
     @Override
@@ -2570,7 +2590,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Check if the file is shared.
-     *
+     * 
      * @return
      */
     @Override
@@ -2600,7 +2620,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Check if the save link is visible.
-     *
+     * 
      * @return
      */
     @Override
@@ -2611,7 +2631,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Check if the save link is visible.
-     *
+     * 
      * @return
      */
     @Override
@@ -2622,7 +2642,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
     /**
      * Check if the link is visible.
-     *
+     * 
      * @return
      */
     private boolean isLinkVisible(String linkText)
@@ -2638,10 +2658,8 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
         return false;
     }
 
-
     /*
      * (non-Javadoc)
-     *
      */
     @Override
     public boolean isViewOriginalLinkPresent()
@@ -2676,7 +2694,7 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
 
         return new DocumentDetailsPage(drone);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -2684,5 +2702,195 @@ public abstract class FileDirectoryInfoImpl extends HtmlElement implements FileD
     public String getThumbnailURL()
     {
         throw new UnsupportedOperationException("Not implemented in current view.");
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface.isGeoLocationIconDisplayed()
+     */
+    @Override
+    public boolean isGeoLocationIconDisplayed()
+    {
+        try
+        {
+            WebElement geoLocation = findElement(By.cssSelector("img[title='Geolocation metadata available']"));
+            return geoLocation.isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find Geolocation Metadata available icon");
+            }
+        }
+
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface.isEXIFIconDisplayed()
+     */
+    @Override
+    public boolean isEXIFIconDisplayed()
+    {
+        try
+        {
+            WebElement exifIcon = findElement(By.cssSelector("img[title='EXIF metadata available']"));
+            return exifIcon.isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Unable to find EXIF Metadata available icon");
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isDownloadPresent()
+    {
+        try
+        {
+            return drone.find(By.cssSelector(DOWNLOAD_DOCUMENT)).isDisplayed();
+
+        }
+        catch (NoSuchElementException nse)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Manage permission link is not displayed for selected data row", nse);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isMoreMenuButtonPresent()
+    {
+        try
+        {
+            return drone.find(MORE_ACTIONS_MENU).isDisplayed();
+        }
+        catch (NoSuchElementException te)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("More+ menu is not displayed", te);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isTagsFieldPresent()
+    {
+        try
+        {
+            return drone.find(TAGS_FIELD).isDisplayed();
+        }
+        catch (NoSuchElementException te)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Tags field is not displayed", te);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<String> getDescriptionList()
+    {
+        List<String> descriptionsList = new ArrayList<String>();
+        try
+        {
+            List<WebElement> categoryElements = findElements(By.cssSelector("div.detail span.item"));
+            for (WebElement webElement : categoryElements)
+            {
+                descriptionsList.add(webElement.getText());
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageOperationException("Not able to find description", e);
+        }
+        return descriptionsList;
+    }
+
+    @Override
+    public String getDescriptionFromInfo()
+    {
+        try
+        {
+            return findAndWait(By.cssSelector(DESCRIPTION_INFO)).getText();
+        }
+        catch (TimeoutException te)
+        {
+        }
+        return "";
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectLocateFile()
+     */
+    @Override
+    public void selectLocateFile()
+    {
+        try
+        {
+            WebElement menuOption = findElement(By.cssSelector(LOCATE_FILE));
+            menuOption.click();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element", exception);
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditOfflineAndCloseFileWindow()
+     */
+    @Override
+    public DocumentLibraryPage selectEditOfflineAndCloseFileWindow()
+    {
+        try
+        {
+            WebElement cancelEditing = findAndWait(By.linkText(drone.getValue("edit.offline.link.text")));
+            cancelEditing.click();
+            waitUntilMessageAppearAndDisappear("edited");
+
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_ESCAPE);
+            robot.keyRelease(KeyEvent.VK_ESCAPE);
+
+            return new DocumentLibraryPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (TimeoutException exception)
+        {
+            logger.error("Not able to find the web element", exception);
+        }
+        catch (StaleElementReferenceException st)
+        {
+            resolveStaleness();
+            selectEditOfflineAndCloseFileWindow();
+        }
+        catch (Exception e)
+        {
+            throw new PageException("Robot not working");
+        }
+        throw new PageException("Unable to find Edit Offline link");
     }
 }

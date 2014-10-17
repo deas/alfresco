@@ -18,18 +18,8 @@
  */
 package org.alfresco.share.site.document;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
-import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -42,6 +32,12 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * Test the Default view of Document Library. Share Refresh > FilmStrip View
@@ -63,7 +59,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_16715
+     * DataPreparation method - AONE_14099
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -73,7 +69,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_ALF_16715() throws Exception
+    public void dataPrep_AONE_14099() throws Exception
     {
         String testName = getTestName();
 
@@ -84,7 +80,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
-    public void ALF_16715() throws Exception
+    public void AONE_14099() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -94,7 +90,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_16715
+     * DataPreparation method - AONE_14099
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -104,7 +100,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_ALF_16718() throws Exception
+    public void dataPrep_AONE_14100() throws Exception
     {
         String testName = getTestName();
 
@@ -114,8 +110,8 @@ public class DefaultViewDocLibTest extends AbstractUtils
     /**
      * @throws Exception
      */
-    @Test(groups = "AlfrescoOne")
-    public void ALF_16718() throws Exception
+    @Test(groups = {"AlfrescoOne", "IntermittentBugs"})
+    public void AONE_14100() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -125,7 +121,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_16715
+     * DataPreparation method - AONE_14099
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -135,7 +131,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_ALF_16719() throws Exception
+    public void dataPrep_AONE_14101() throws Exception
     {
         String testName = getTestName();
 
@@ -146,7 +142,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
-    public void ALF_16719() throws Exception
+    public void AONE_14101() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -156,7 +152,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_16720
+     * DataPreparation method - AONE_14102
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -166,7 +162,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_ALF_16720() throws Exception
+    public void dataPrep_AONE_14102() throws Exception
     {
         String testName = getTestName();
 
@@ -177,7 +173,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
-    public void ALF_16720() throws Exception
+    public void AONE_14102() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -187,7 +183,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_16726
+     * DataPreparation method - AONE_14103
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -197,7 +193,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_ALF_16726() throws Exception
+    public void dataPrep_AONE_14103() throws Exception
     {
         String testName = getTestName();
 
@@ -208,7 +204,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
-    public void ALF_16726() throws Exception
+    public void AONE_14103() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -246,7 +242,7 @@ public class DefaultViewDocLibTest extends AbstractUtils
         docLibPage = ShareUser.createFolderInFolder(drone, subFolderNameCollab, subFolderNameCollab, folderName);
 
         // Select OTHER view (e.g. "Table View") for SubFolder
-        docLibPage.selectFolder(subFolderNameCollab).render();
+        docLibPage = docLibPage.selectFolder(subFolderNameCollab).render();
         docLibPage = ShareUserSitePage.selectView(drone, ViewType.TABLE_VIEW);
         assertEquals(docLibPage.getViewType(), ViewType.TABLE_VIEW);
 
@@ -262,8 +258,8 @@ public class DefaultViewDocLibTest extends AbstractUtils
 
         // Select different view (e.g. "Table View") for subFolder
         docLibPage.selectFolder(subFolderNameContri).render();
-        docLibPage = ShareUserSitePage.selectView(drone, ViewType.TABLE_VIEW);
-        assertEquals(docLibPage.getViewType(), ViewType.TABLE_VIEW);
+        docLibPage = ShareUserSitePage.selectView(drone, ViewType.AUDIO_VIEW);
+        assertEquals(docLibPage.getViewType(), ViewType.AUDIO_VIEW);
 
         // "Set "ANY View" as default for this folder " ("Table View")
         docLibPage = docLibPage.getNavigation().selectSetCurrentViewToDefault().render();
@@ -282,7 +278,9 @@ public class DefaultViewDocLibTest extends AbstractUtils
         String siteName = getSiteName(testName);
 
         String fileName1 = getFileName(testName + "1");
+        String fileName2 = getFileName(testName + "2");
         String fileName3 = getFileName(testName + "3");
+        String fileName4 = getFileName(testName + "4");
 
         String folderName = getFolderName(testName);
         String subFolderName = getFolderName("sub" + testName);
@@ -333,7 +331,9 @@ public class DefaultViewDocLibTest extends AbstractUtils
                 ShareUser.openSiteDashboard(drone, siteName);
                 ShareUser.createFolderInFolder(drone, subFolderName, subFolderName, folderNameWithAccess);
                 ShareUser.uploadFileInFolder(drone, new String[] { fileName1, folderNameWithAccess });
+                ShareUser.uploadFileInFolder(drone, new String[] { fileName2, folderNameWithAccess });
                 ShareUser.uploadFileInFolder(drone, new String[] { fileName3, subFolderPath });
+                ShareUser.uploadFileInFolder(drone, new String[] { fileName4, subFolderPath });
             }
             ShareUser.logout(drone);
         }

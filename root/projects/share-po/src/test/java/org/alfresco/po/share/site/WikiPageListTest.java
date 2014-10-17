@@ -1,18 +1,14 @@
 /*
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,6 +20,7 @@ import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.site.wiki.WikiPageList;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -36,7 +33,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 /**
- *
  * @author Marina.Nenadovets
  */
 
@@ -51,6 +47,10 @@ public class WikiPageListTest extends AbstractSiteDashletTest
     String wikiTitle = getClass().getSimpleName();
     String editedTitle = wikiTitle + "edited";
     List<String> textLines = new ArrayList<>();
+    List<String> tagList = new ArrayList<>();
+    String wikiPageText = "This is a wiki!";
+    String tagName = "tag_wiki";
+
     String editedTxtLines = "Edited wiki text";
     Double toVersion = 1.0;
 
@@ -62,7 +62,7 @@ public class WikiPageListTest extends AbstractSiteDashletTest
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
         customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite();
-        List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
+        List<SitePageType> addPageTypes = new ArrayList<>();
         addPageTypes.add(SitePageType.WIKI);
         customizeSitePage.addPages(addPageTypes);
         wikiPageList = siteDashBoard.getSiteNav().selectWikiPage().clickWikiPageListBtn();
@@ -74,45 +74,101 @@ public class WikiPageListTest extends AbstractSiteDashletTest
     {
         SiteUtil.deleteSite(drone, siteName);
     }
+
     @Test
-    public void createWikiPage ()
+    public void createWikiPage()
     {
-        textLines.add("This is a wiki!");
-        wikiPage = wikiPageList.createWikiPage(wikiTitle, textLines).render();
+        textLines.add(wikiPageText);
+        tagList.add(tagName);
+        wikiPage = wikiPageList.createWikiPage(wikiTitle, textLines, tagList).render();
         assertNotNull(wikiPage);
         wikiPageList = wikiPage.clickWikiPageListBtn().render();
     }
 
-    @Test (dependsOnMethods = "createWikiPage", enabled=false)
-    public void editWikiPage ()
+    @Test(dependsOnMethods = "createWikiPage")
+    public void isWikiPagePresent()
+    {
+        Assert.assertTrue(wikiPageList.isWikiPagePresent(wikiTitle));
+    }
+
+    @Test(dependsOnMethods = "isWikiPagePresent")
+    public void getWikiPageTextFromPageList()
+    {
+        Assert.assertTrue((wikiPageList.getWikiPageTextFromPageList(wikiTitle)).contains(wikiPageText));
+    }
+
+    @Test(dependsOnMethods = "getWikiPageTextFromPageList")
+    public void checkTags()
+    {
+        Assert.assertTrue(wikiPageList.checkTags(wikiTitle, tagName));
+    }
+
+    @Test(dependsOnMethods = "checkTags")
+    public void editWikiPage()
     {
         wikiPageList.editWikiPage(wikiTitle, editedTxtLines);
         assertNotNull(wikiPage);
         assertEquals(wikiPage.getWikiText(), editedTxtLines);
     }
 
-    @Test (dependsOnMethods = "editWikiPage", enabled=false)
-    public void renameWikiPage ()
+    @Test(dependsOnMethods = "editWikiPage")
+    public void renameWikiPage()
     {
         wikiPage.renameWikiPage(editedTitle);
         assertEquals(wikiPage.getWikiTitle(), editedTitle);
     }
 
-    @Test (dependsOnMethods = "renameWikiPage", enabled=false)
+    @Test(dependsOnMethods = "renameWikiPage")
     public void revertToVersion()
     {
         wikiPage.clickDetailsLink();
-        Double expVersion = wikiPage.getCurrentWikiVersion()+0.1;
+        Double expVersion = wikiPage.getCurrentWikiVersion() + 0.1;
         wikiPage.revertToVersion(toVersion);
         assertEquals(wikiPage.getCurrentWikiVersion(), expVersion);
     }
 
-    @Test (dependsOnMethods = "revertToVersion", enabled=false)
-    public void deleteWikiPage ()
+    @Test(dependsOnMethods = "revertToVersion")
+    public void removeTag()
+    {
+        wikiPageList = wikiPage.clickWikiPageListBtn().render();
+        String[] removeTags = { tagName };
+        wikiPage = wikiPageList.removeTag(editedTitle, removeTags);
+        wikiPageList = wikiPage.clickWikiPageListBtn().render();
+        Assert.assertTrue(wikiPageList.checkTags(editedTitle, null));
+    }
+
+    @Test(dependsOnMethods = "removeTag")
+    public void clickWikiPage()
+    {
+        Assert.assertTrue(wikiPageList.isWikiPagePresent(editedTitle));
+        wikiPage = wikiPageList.clickWikiPage(editedTitle);
+        assertNotNull(wikiPage);
+        assertEquals(wikiPage.getWikiText(), wikiPageText);
+    }
+
+    @Test(dependsOnMethods = "clickWikiPage")
+    public void clickWikiPageDetails()
+    {
+        wikiPageList = wikiPage.clickWikiPageListBtn().render();
+        Assert.assertTrue(wikiPageList.isWikiPagePresent(editedTitle));
+        wikiPage = wikiPageList.clickWikiPageDetails(editedTitle);
+        assertEquals(wikiPage.getWikiText(), wikiPageText);
+    }
+
+    @Test(dependsOnMethods = "clickWikiPageDetails")
+    public void deleteWikiPage()
     {
         wikiPageList = wikiPage.clickWikiPageListBtn();
-        int expCount = wikiPageList.getWikiCount()-1;
+        int expCount = wikiPageList.getWikiCount() - 1;
         wikiPageList = wikiPageList.deleteWikiWithConfirm(editedTitle);
         assertEquals(wikiPageList.getWikiCount(), expCount);
+    }
+
+    @Test(dependsOnMethods = "deleteWikiPage")
+    public void isNoWikiPagesDisplayed()
+    {
+        wikiPageList = wikiPage.clickWikiPageListBtn();
+        wikiPageList = wikiPageList.deleteWikiWithConfirm(wikiTitle);
+        Assert.assertTrue(wikiPageList.isNoWikiPagesDisplayed());
     }
 }

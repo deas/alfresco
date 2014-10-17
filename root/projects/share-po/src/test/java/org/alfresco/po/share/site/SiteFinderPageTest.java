@@ -78,7 +78,7 @@ public class SiteFinderPageTest extends AbstractTest
         return siteFinder;        
     }
     
-    @Test
+    @Test(priority=1)
     public void test100zeroResults() throws IOException
     {
         Assert.assertEquals(siteFinder.hasResults(), false);
@@ -88,7 +88,7 @@ public class SiteFinderPageTest extends AbstractTest
         this.saveScreenShot("Prepare");
     }
     
-    @Test
+    @Test(priority=2)
     public void test101nonZeroResults()
     {
         siteFinder = siteFinder.searchForSite(siteName).render();
@@ -97,28 +97,35 @@ public class SiteFinderPageTest extends AbstractTest
         Assert.assertTrue(siteFinder.isButtonForSitePresent(siteName, ButtonType.Leave));
     }
     
-    @Test
+    @Test(priority=3, expectedExceptions={IllegalArgumentException.class})
     public void test102SearchForSitesWithNull()
     {
-        siteFinder = siteFinder.searchForSite(null).render();
-        Assert.assertEquals(siteFinder.hasResults(), true);        
+        siteFinder.searchForSite(null);
+    }
+
+    
+    @Test(priority=4)
+    public void test102SearchForSitesWithEmpty()
+    {
+        siteFinder = siteFinder.searchForSite("").render();
+        Assert.assertEquals(siteFinder.hasResults(), true);
     }
     
-    @Test
+    @Test(priority=5)
     public void test103SearchForSitesWithEmpty()
     {
         siteFinder = siteFinder.searchForSite("").render();
         Assert.assertEquals(siteFinder.hasResults(), true);
     }
     
-    @Test
+    @Test(priority=6)
     public void test104SearchForSitesModerated()
     {
         siteFinder = siteFinder.searchForSite(siteNameModerated).render(); 
         Assert.assertEquals(siteFinder.getSiteList().size(), 1);
     }
     
-    @Test
+    @Test(priority=7)
     public void test105SearchForSitesPrivate()
     {
         siteFinder = siteFinder.searchForSite(siteNamePrivate).render();
@@ -126,46 +133,46 @@ public class SiteFinderPageTest extends AbstractTest
         Assert.assertEquals(siteFinder.getSiteList().get(0), siteNamePrivate);
     }
     
-    @Test
+    @Test(priority=8)
     public void test106SearchForSitesNonExistent()
     {
         siteFinder =  siteFinder.searchForSite("zzzz"+System.currentTimeMillis()).render();
         Assert.assertEquals(siteFinder.getSiteList().size(), 0);
     }
     
-    @Test
+    @Test(priority=9)
     public void test107SelectSiteModerated()
     {
         siteFinder = siteFinder.searchForSite(siteNameModerated).render();
-        SiteDashboardPage siteDash = siteFinder.selectSite(siteNameModerated);        
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteNameModerated);
         Assert.assertEquals(siteDash.render().isSite(siteNameModerated), true);
     }    
     
-    @Test
+    @Test(priority=10)
     public void test108SelectSitePrivate()
     {
         siteFinder = siteFinder.searchForSite(siteNamePrivate).render();
-        SiteDashboardPage siteDash = siteFinder.selectSite(siteNamePrivate);        
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteNamePrivate);
         Assert.assertEquals(siteDash.render().isSite(siteNamePrivate), true);
     }
     
-    @Test
+    @Test(priority=11)
     public void test109SelectSitePublic()
     {
         siteFinder = siteFinder.searchForSite(siteName).render();
-        SiteDashboardPage siteDash = siteFinder.selectSite(siteNamePublic);        
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteNamePublic);
         Assert.assertEquals(siteDash.render().isSite(siteNamePublic), true);
     }
     
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class, priority=12)
     public void test110SelectSiteNull()
     {
         siteFinder = siteFinder.searchForSite(siteName).render();
-        SiteDashboardPage siteDash = siteFinder.selectSite(null);        
+        SiteDashboardPage siteDash = siteFinder.selectSite(null);
         Assert.assertEquals(siteDash.render().isSite(siteName), true);
     }
     
-    @Test
+    @Test(priority=13)
     public void test111DeleteSite()
     {
         siteFinder = siteFinder.searchForSite(siteName).render();

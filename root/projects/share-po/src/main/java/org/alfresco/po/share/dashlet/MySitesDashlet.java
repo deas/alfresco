@@ -38,12 +38,14 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
     private static final String DASHLET_CONTENT_DIV_ID_PLACEHOLDER = "div[id$='default-sites']";
     private static final String DASHLET_EMPTY_PLACEHOLDER = "table>tbody>tr>td.yui-dt-empty>div";
     private static final String ROW_OF_SITE = "div[id$='default-sites'] tr[class*='yui-dt-rec']";
-    private static final String SITE_NAME_IN_ROW ="div h3[class$='site-title']"; 
-    private static final String DELETE_SYMB_IN_ROW ="a[class*='delete-site']";
+    private static final String SITE_NAME_IN_ROW = "div h3[class$='site-title']";
+    private static final String DELETE_SYMB_IN_ROW = "a[class*='delete-site']";
     private static final String MY_SITES_BUTTON = "div[class*='my-sites'] div span span button";
     private static final String SITES_TYPE = "div[class*='my-sites'] div.bd ul li a";
     private static final String DELETE_CONFIRM = "div#prompt div.ft span span button";
-    private static final String DELETE_RE_CONFIRM= "div#prompt div.ft span span button";
+    private static final String DELETE_RE_CONFIRM = "div#prompt div.ft span span button";
+
+    private static final String FAVORITE_SYMB_IN_ROW = "a[class*='favourite-action']";
 
     /**
      * Constructor.
@@ -184,6 +186,10 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
     {
         try
         {
+            if (siteName == null)
+            {
+                throw new UnsupportedOperationException("Name of the site is required");
+            }
             WebElement siteRow = getSiteRow(siteName);
 
             // If site is favourite, anchor does not contain any text. Checking
@@ -206,54 +212,58 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
      */
     private WebElement getSiteRow(String siteName)
     {
-        if (siteName == null)
-        {
-            throw new UnsupportedOperationException("Name of the site is required");
-        }
+
         return this.dashlet.findElement(By.xpath("//h3[a='" + siteName + "']/.."));
     }
 
-    
     public enum FavouriteType
     {
-        ALL, MyFavourtites, Recent;
+        ALL, 
+        MyFavorites
+        {
+            public String toString()
+            {
+                return "My Favorites";
+            }
+        },
+        Recent;
     }
-        
-        
-        
-           
+
     /**
      * Delete site from the delete symbol of My site Dashlets.
+     * 
      * @param siteName
      * @return
      */
     public HtmlPage deleteSite(String siteName)
     {
+        if (siteName == null)
+        {
+            throw new UnsupportedOperationException("Name of the site is required");
+        }
         try
         {
             List<WebElement> elements = drone.findAll(By.cssSelector(ROW_OF_SITE));
             for (WebElement webElement : elements)
             {
-                if(webElement.findElement(By.cssSelector(SITE_NAME_IN_ROW)).getText().equals(siteName))
+                if (webElement.findElement(By.cssSelector(SITE_NAME_IN_ROW)).getText().equals(siteName))
                 {
                     drone.mouseOverOnElement(webElement);
                     webElement.findElement(By.cssSelector(DELETE_SYMB_IN_ROW)).click();
                     confirmDelete();
                     drone.refresh();// Temporary will be removed once ConfirmDeletePAge is been included.
                     return FactorySharePage.resolvePage(drone);
-                }                
+                }
             }
-            
-            throw new PageOperationException("Site  is not present in the dashlet :"+siteName);
+
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             logger.error("My Site  Dashlet is not present", nse);
         }
         throw new PageOperationException("My Site  Dashlet is not present in the page.");
     }
 
-    
     /**
      * Action of selecting ok on confirm delete pop up dialog.
      */
@@ -270,35 +280,69 @@ public class MySitesDashlet extends AbstractDashlet implements Dashlet
         {
             logger.error("Delete dialouge not present");
         }
+
     }
-    
-    
+
     /**
      * Select My Favourties sites from My Sites Dashlets.
+     * 
      * @param type
      * @return
      */
     public HtmlPage selectMyFavourites(FavouriteType type)
     {
+        if (type == null)
+        {
+            throw new UnsupportedOperationException("Favpurite type is required");
+        }
         try
         {
             WebElement myFavourties = drone.find(By.cssSelector(MY_SITES_BUTTON));
             myFavourties.click();
             List<WebElement> types = drone.findAll(By.cssSelector(SITES_TYPE));
             for (WebElement typeFav : types)
-            {               
-                if(type.toString().equalsIgnoreCase(typeFav.getText()))
+            {
+                if (type.toString().equalsIgnoreCase(typeFav.getText()))
                 {
                     typeFav.click();
                     return FactorySharePage.resolvePage(drone);
                 }
-            }           
-            throw new PageOperationException("My Site DashLets not present.");
+            }
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
-            logger.error("My Sites option not present");
+            logger.error("My Sites option not present" + nse.getMessage());
         }
         throw new PageOperationException("My Site DashLets not present.");
     }
+
+    /**
+     * Select favorite for a site in My site Dashlets.
+     * 
+     * @param siteName
+     */
+    public void selectFavorite(String siteName)
+    {
+        if (siteName == null)
+        {
+            throw new UnsupportedOperationException("Name of the site is required");
+        }
+        try
+        {
+            List<WebElement> elements = drone.findAll(By.cssSelector(ROW_OF_SITE));
+            for (WebElement webElement : elements)
+            {
+                if (webElement.findElement(By.cssSelector(SITE_NAME_IN_ROW)).getText().equals(siteName))
+                {
+                    drone.mouseOverOnElement(webElement);
+                    webElement.findElement(By.cssSelector(FAVORITE_SYMB_IN_ROW)).click();
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("My Site  Dashlet is not present", nse);
+        }
+    }
+
 }

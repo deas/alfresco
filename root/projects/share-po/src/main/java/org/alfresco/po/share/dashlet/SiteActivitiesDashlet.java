@@ -27,10 +27,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +44,11 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
 {
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.dashlet.activities");
     private static final By RSS_FEED_BUTTON = By.cssSelector(".titleBarActionIcon.rss");
-    
+
     private static final String DEFAULT_USER_BUTTON = "button[id$='_default-user-button']";
     private static final String DEFAULT_TYPE_BUTTON = "button[id$='_default-activities-button']";
     private static final String DEFAULT_HISTORY_BUTTON = "button[id$='_default-range-button']";
-    private static final String DASHLET_LIST_OF_FILTER_BUTTONS = "div[class*='yui-button-menu yui-menu-button-menu visible']>div.bd>ul.first-of-type>li>a";
+    private static final By DASHLET_LIST_OF_FILTER = By.cssSelector("ul.first-of-type>li>a");
 
     private List<ShareLink> userLinks;
     private List<ShareLink> documetLinks;
@@ -119,6 +116,10 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
         catch (NoSuchElementException nse)
         {
             throw new PageException("Unable to access dashlet data", nse);
+        }
+        catch (StaleElementReferenceException e)
+        {
+            populateData();
         }
     }
 
@@ -357,7 +358,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
         List<SiteActivitiesUserFilter> list = new ArrayList<SiteActivitiesUserFilter>();
         try
         {
-            for (WebElement element : drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS)))
+            for (WebElement element : drone.findDisplayedElements(DASHLET_LIST_OF_FILTER))
             {
                 String text = element.getText();
                 if (text != null)
@@ -384,7 +385,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
         List<SiteActivitiesTypeFilter> list = new ArrayList<SiteActivitiesTypeFilter>();
         try
         {
-            for (WebElement element : drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS)))
+            for (WebElement element : drone.findDisplayedElements(DASHLET_LIST_OF_FILTER))
             {
                 String text = element.getText();
                 if (text != null)
@@ -411,7 +412,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
         List<SiteActivitiesHistoryFilter> list = new ArrayList<SiteActivitiesHistoryFilter>();
         try
         {
-            for (WebElement element : drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS)))
+            for (WebElement element : drone.findDisplayedElements(DASHLET_LIST_OF_FILTER))
             {
                 String text = element.getText();
                 if (text != null)
@@ -437,7 +438,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     public HtmlPage selectUserFilter(SiteActivitiesUserFilter users)
     {
         clickUserButton();
-        List<WebElement> filterElements = drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS));
+        List<WebElement> filterElements = drone.findDisplayedElements(DASHLET_LIST_OF_FILTER);
         if (filterElements != null)
         {
             for (WebElement webElement : filterElements)
@@ -460,7 +461,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     public HtmlPage selectTypeFilter(SiteActivitiesTypeFilter type)
     {
         clickTypeButton();
-        List<WebElement> filterElements = drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS));
+        List<WebElement> filterElements = drone.findDisplayedElements(DASHLET_LIST_OF_FILTER);
         if (filterElements != null)
         {
             for (WebElement webElement : filterElements)
@@ -483,7 +484,7 @@ public class SiteActivitiesDashlet extends AbstractDashlet implements Dashlet
     public HtmlPage selectHistoryFilter(SiteActivitiesHistoryFilter lastXDays)
     {
         clickHistoryButton();
-        List<WebElement> filterElements = drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS));
+        List<WebElement> filterElements = drone.findDisplayedElements(DASHLET_LIST_OF_FILTER);
         if (filterElements != null)
         {
             for (WebElement webElement : filterElements)

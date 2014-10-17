@@ -10,6 +10,8 @@ import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.alfresco.share.util.AbstractUtils.webDriverWait;
+
 /**
  * @author Olga Antonik
  */
@@ -28,7 +30,7 @@ public class WikiUtils
      */
     public static WikiPage openWikiPage(WebDrone driver, String siteName)
     {
-        WikiPage wikiPage = ShareUser.openSiteDashboard(driver, siteName).render().getSiteNav().selectSiteWikiPage().render();
+        WikiPage wikiPage = ShareUser.openSiteDashboard(driver, siteName).render().getSiteNav().selectWikiPage().render();
         logger.info("Opened Wiki page");
 
         return wikiPage;
@@ -49,7 +51,7 @@ public class WikiUtils
     public static WikiPage createWikiPage(WebDrone driver, String siteName, String wikiTitle, String text, String tag)
     {
         SiteDashboardPage siteDashboardPage = ShareUser.openSiteDashboard(driver, siteName).render();
-        WikiPage wikiPage = siteDashboardPage.getSiteNav().selectSiteWikiPage().render();
+        WikiPage wikiPage = siteDashboardPage.getSiteNav().selectWikiPage().render();
         List<String> wikiText = new ArrayList<>();
         wikiText.add(text);
         List<String> wikiTag = new ArrayList<>();
@@ -71,7 +73,8 @@ public class WikiUtils
         WikiPage wikiPage = WikiUtils.openWikiPage(driver, siteName);
         WikiPageList wikiPageList = wikiPage.clickWikiPageListBtn().render();
         wikiPage = ShareUser.getCurrentPage(driver).render();
-        wikiPage = wikiPageList.getWikiPageDirectoryInfo(wikiTitle.replace("_", " ")).clickDetails();
+        wikiPage = wikiPageList.getWikiPageDirectoryInfo(wikiTitle.replace("_", " ")).clickDetails().render();
+        webDriverWait(driver, 3000);
         return wikiPage.getTagName();
     }
 

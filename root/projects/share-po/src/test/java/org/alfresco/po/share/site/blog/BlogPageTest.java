@@ -6,6 +6,8 @@ import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SitePageType;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.po.thirdparty.firefox.RssFeedPage;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -14,11 +16,14 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static org.alfresco.po.share.enums.BlogPostStatus.UPDATED;
+import static org.alfresco.po.share.site.blog.BlogTreeMenuNavigation.PostsMenu.*;
 import static org.testng.Assert.*;
 
 /**
  * Holds tests for Blog page web elements
- *
+ * 
  * @author Marina.Nenadovets
  */
 
@@ -30,12 +35,21 @@ public class BlogPageTest extends AbstractSiteDashletTest
     CustomizeSitePage customizeSitePage;
     BlogPage blogPage = null;
     PostViewPage postViewPage = null;
+    RssFeedPage rssFeedPage = null;
     String text = getClass().getSimpleName();
+    List<String> postStatus;
+
     String editedText = text + " edited";
     String externalTitle = "Hi, everyone! Today is " + Calendar.getInstance().getTime();
     String externalMessage = "Today is " + Calendar.getInstance().getTime();
+    String tagName = "blog-tag";
+    String postName = "postName";
+    String postText = "postText";
+    List<String> tags = new ArrayList<>();
+    String newPostName = "editPostName";
+    String newPostText = "editPostText";
 
-    @BeforeClass
+    @BeforeClass        
     public void createSite() throws Exception
     {
         dashBoard = loginAs(username, password);
@@ -61,69 +75,149 @@ public class BlogPageTest extends AbstractSiteDashletTest
         assertNotNull(blogPage);
     }
 
-    @Test(dependsOnMethods = "addBlogPage", priority = 3)
+    @Test(dependsOnMethods = "addBlogPage")
+    public void blogTreeMenuNavigation()
+    {
+        BlogTreeMenuNavigation blogTreeMenuNavigation = blogPage.getLeftMenus().render();
+        assertTrue(blogTreeMenuNavigation.isMenuTreeVisible());
+        assertTrue(blogTreeMenuNavigation.isMenuExpanded());
+        blogPage = blogTreeMenuNavigation.selectListNode(ALL).render();
+        assertNotNull(blogPage);
+        blogPage = blogTreeMenuNavigation.selectListNode(LATEST).render();
+        assertNotNull(blogPage);
+        blogPage = blogTreeMenuNavigation.selectListNode(MY_DRAFTS).render();
+        assertNotNull(blogPage);
+        blogPage = blogTreeMenuNavigation.selectListNode(MY_PUBLISHED).render();
+        assertNotNull(blogPage);
+        blogTreeMenuNavigation.selectListNode(ALL).render();
+    }
+
+    @Test(dependsOnMethods = "saveAsDraft")
     public void createBlogPostInternally()
     {
+        blogPage = postViewPage.clickBackLink().render();
         assertTrue(blogPage.isNewPostEnabled());
-        postViewPage = blogPage.createPostInternally(text, text).render();
+        postViewPage = blogPage.createPostInternally(text, text, tagName).render();
         assertNotNull(postViewPage);
-        assertTrue(postViewPage.verifyPostExists(text));
-    }   
 
-    @Test(dependsOnMethods = "addBlogPage", priority = 2)
+        assertTrue(postViewPage.verifyPostExists(text));
+
+    }
+
+    @Test(dependsOnMethods = "blogTreeMenuNavigation")
     public void saveAsDraft()
     {
         assertTrue(blogPage.isNewPostEnabled());
-        postViewPage = blogPage.saveAsDraft(text, text).render();
+        postViewPage = blogPage.saveAsDraft(text + "draft", text, null).render();
         assertNotNull(postViewPage);
-        assertTrue(postViewPage.verifyPostExists(text));
+
+        assertTrue(postViewPage.verifyPostExists(text + "draft"));
     }
 
-    @Test(dependsOnMethods = "createBlogPostInternally", enabled=false)
+    @Test(dependsOnMethods = "createBlogPostInternally")
     public void openPost()
     {
         blogPage = siteDashBoard.getSiteNav().selectBlogPage().render();
+        assertNotNull(blogPage);
         postViewPage = blogPage.openBlogPost(text).render();
         assertNotNull(postViewPage);
         assertTrue(postViewPage.verifyPostExists(text));
-    }   
+    }
 
-    @Test(dependsOnMethods = "openPost", enabled=false)
+
+    @Test(dependsOnMethods = "openPost")
     public void createPostComment()
     {
         assertTrue(postViewPage.isAddCommentDisplayed());
-        postViewPage.createBlogComment(text);
+        postViewPage.createBlogComment(text).render();
+        assertTrue(postViewPage.isCommentCorrect(text));
     }
 
-    @Test (dependsOnMethods = "openPost", enabled=false)
-    public void editBlogPostAndSaveAsDraft ()
-    {
-        postViewPage.editBlogPostAndSaveAsDraft(editedText, editedText);
-    }
-
-    @Test (dependsOnMethods = "createPostComment", enabled=false)
-    public void editPostComment ()
+    @Test(dependsOnMethods = "createPostComment")
+    public void editPostComment()
     {
         postViewPage.editBlogComment(text, editedText);
         assertNotNull(postViewPage);
+        assertTrue(postViewPage.isCommentCorrect(editedText));
     }
 
-    @Test (dependsOnMethods = "editPostComment", enabled=false)
-    public void deletePostComment ()
+    @Test(dependsOnMethods = "editPostComment")
+    public void deletePostComment()
     {
         int expCount = postViewPage.getCommentCount();
         postViewPage.deleteCommentWithConfirm(editedText);
-        assertEquals(postViewPage.getCommentCount(), expCount-1);
+        assertEquals(postViewPage.getCommentCount(), expCount - 1);
         assertNotNull(postViewPage);
     }
 
-    @Test (dependsOnMethods = "deletePostComment", enabled=false)
-    public void deletePostWithConfirm ()
+
+    @Test(dependsOnMethods = "deletePostComment")
+    public void editBlogPostAndSaveAsDraft()
+    {
+        postViewPage.editBlogPostAndUpdate(editedText, editedText, null);
+    }
+
+    @Test(dependsOnMethods = "editBlogPostAndSaveAsDraft")
+    public void getPostStatus()
+    {
+        postStatus = postViewPage.getPostStatus();
+        assertTrue(postStatus.contains(UPDATED.getPostStatus()), "The post status is incorrect");
+    }
+
+    @Test(dependsOnMethods = "getPostStatus")
+    public void deletePostWithConfirm()
     {
         blogPage = postViewPage.clickBackLink().render();
         int expCount = blogPage.getPostsCount();
         blogPage.openBlogPost(editedText);
         blogPage = postViewPage.deleteBlogPostWithConfirm().render();
-        assertEquals(blogPage.getPostsCount(), expCount-1);
+        assertEquals(blogPage.getPostsCount(), expCount - 1);
+    }
+
+    @Test(dependsOnMethods = "deletePostWithConfirm")
+    public void isPostPresented()
+    {
+        assertTrue(blogPage.isNewPostEnabled());
+        postViewPage = blogPage.createPostInternally(postName, postText, tagName).render();
+        blogPage = postViewPage.clickBackLink().render();
+        Assert.assertTrue(blogPage.isPostPresented(postName), "Expected post with title '" + postName + "'");
+    }
+
+    @Test(dependsOnMethods = "isPostPresented")
+    public void checkTags()
+    {
+        Assert.assertTrue(blogPage.checkTags(postName, tagName), "Expected tag for post with title '" + postName + "' isn't presented");
+    }
+
+    @Test(dependsOnMethods = "checkTags", priority = 1, groups="ChromeIssue")
+    public void clickRssFeedBtn()
+    {
+        rssFeedPage = postViewPage.clickRssFeedBtn(username, password).render();
+        assertTrue(rssFeedPage.isDisplayedInFeed(postName), "The post isn't displayed in Feed");
+        assertTrue(rssFeedPage.isSubscribePanelDisplay(), "Subscribe panel isn't available");
+        postViewPage = (PostViewPage) rssFeedPage.clickOnFeedContent(postName);
+        assertNotNull(postViewPage);
+    }
+
+    @Test(dependsOnMethods = "checkTags", priority = 2)
+    public void editPost()
+    {
+        if(!(drone.getCurrentPage() instanceof BlogPage))
+        {
+            blogPage = postViewPage.clickBackLink().render();
+        }
+        blogPage.editPost(postName, newPostName, newPostText, tagName, false).render();
+        assertTrue(postViewPage.verifyPostExists(newPostName));
+        assertFalse(postViewPage.verifyPostExists(postName));
+        postViewPage.clickBackLink().render();
+    }
+
+    @Test(dependsOnMethods = "editPost")
+    public void removeTag()
+    {
+        blogPage.editPost(newPostName, newPostName, newPostText, tagName, true).render();
+        assertTrue(postViewPage.verifyPostExists(newPostName));
+        postViewPage.clickBackLink().render();
+        assertTrue(blogPage.checkTags(newPostName, null));
     }
 }

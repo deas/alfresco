@@ -1,7 +1,5 @@
 package org.alfresco.share.search;
 
-import java.util.List;
-
 import org.alfresco.po.share.search.LiveSearchDocumentResult;
 import org.alfresco.po.share.search.LiveSearchDropdown;
 import org.alfresco.po.share.search.LiveSearchPeopleResult;
@@ -19,16 +17,17 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserLiveSearch;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.exception.PageException;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
  * Live search tests
- *
+ * 
  * @author jcule
  */
 @Listeners(FailedTestListener.class)
@@ -51,17 +50,17 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3023
+     * DataPreparation method - AONE_14200
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create and upload file with content
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3023() throws Exception
+    public void dataPrep_LiveSearch_AONE_14200() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -78,7 +77,6 @@ public class LiveSearchTest extends AbstractUtils
         SiteUtil.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Uploading files with testName as document title.
-
         String[] fileInfo = { testName };
         ShareUser.uploadFileInFolder(drone, fileInfo);
 
@@ -97,7 +95,7 @@ public class LiveSearchTest extends AbstractUtils
      * 7) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3023()
+    public void AONE_14200()
     {
 
         // live search term is document title
@@ -110,9 +108,29 @@ public class LiveSearchTest extends AbstractUtils
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, testName);
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
 
+        if (liveSearchDocumentResults.size() == 0)
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, testName);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        }
+
         // Checks document titles
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+
+        if (!documentTitles.contains(testName))
+        {
+            drone.refresh();
+            drone.getCurrentPage();
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, testName);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+            documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        }
+
         Assert.assertTrue(documentTitles.contains(testName));
 
         // Checks document sites name
@@ -133,7 +151,7 @@ public class LiveSearchTest extends AbstractUtils
         List<String> peopleNames = ShareUserLiveSearch.getLiveSearchUserNames(liveSearchPeopleResults);
         for (String peopleName : peopleNames)
         {
-            Assert.assertTrue(peopleName.indexOf(testUser) != -1);
+            Assert.assertTrue(peopleName.contains(testUser));
         }
 
         // Clicks on document title
@@ -166,22 +184,22 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3024
+     * DataPreparation method - AONE_14201
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create and upload different types of files
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3024() throws Exception
+    public void dataPrep_LiveSearch_AONE_14201() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
         String[] testUserInfo = new String[] { testUser };
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName + 1);
 
         // Files
         String[] extensions = { "xlsx", "txt", "msg", "pdf", "xml", "html", "eml", "opd", "ods", "odt", "xls", "xsl", "doc", "docx", "pptx", "pot", "xsd",
@@ -233,12 +251,12 @@ public class LiveSearchTest extends AbstractUtils
      * 11) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3024()
+    public void AONE_14201()
     {
 
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName + 1);
 
         String searchTerm1 = testName + ".xml";
 
@@ -249,9 +267,29 @@ public class LiveSearchTest extends AbstractUtils
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
 
+        if (liveSearchDocumentResults.size() != 0)
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        }
+
         // Checks document titles
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+
+        if (documentTitles.contains(getFileName(testName + "." + "xml")))
+        {
+            drone.refresh();
+            drone.getCurrentPage();
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+            documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        }
+
         Assert.assertTrue(documentTitles.contains(getFileName(testName + "." + "xml")));
 
         // Checks document sites name
@@ -265,11 +303,12 @@ public class LiveSearchTest extends AbstractUtils
         // Checks site result
         Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        //Checks people result
+        // Checks people result
         Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
         // Clicks on document title
-        DocumentDetailsPage documentDetailsPage = ShareUserLiveSearch.clickOnDocumentSearchResultTitle(liveSearchDropdown, getFileName(testName + "." + "xml")).render();
+        DocumentDetailsPage documentDetailsPage = ShareUserLiveSearch.clickOnDocumentSearchResultTitle(liveSearchDropdown, getFileName(testName + "." + "xml"))
+                .render();
         Assert.assertEquals(getFileName(testName + "." + "xml"), documentDetailsPage.getDocumentTitle());
 
         // Clicks on document site name
@@ -293,17 +332,17 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3025
+     * DataPreparation method - AONE_14202
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create and upload file with fileName = "}{+_)(&^%$#@!"
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3025() throws Exception
+    public void dataPrep_LiveSearch_AONE_14202() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -353,14 +392,14 @@ public class LiveSearchTest extends AbstractUtils
      * 10)User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3025()
+    public void AONE_14202()
     {
 
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
 
-        //String searchTerm1 = "!@#$%^&*()_+:\"|<>?;";
-        //String searchTerm2 = "}{+_)(&^%$#@!";
+        // String searchTerm1 = "!@#$%^&*()_+:\"|<>?;";
+        // String searchTerm2 = "}{+_)(&^%$#@!";
 
         String searchTerm1 = "!@#";
         String searchTerm2 = "}{";
@@ -384,17 +423,17 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3026
+     * DataPreparation method - AONE_14203
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Log out
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3026() throws Exception
+    public void dataPrep_LiveSearch_AONE_14203() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -430,7 +469,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3026()
+    public void AONE_14203()
     {
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -449,18 +488,18 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3027
+     * DataPreparation method - AONE_14204
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create folders and files
      * 4) Log out
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3027() throws Exception
+    public void dataPrep_LiveSearch_AONE_14204() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -526,7 +565,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3027()
+    public void AONE_14204()
     {
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -538,6 +577,18 @@ public class LiveSearchTest extends AbstractUtils
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+
+        if (!documentTitles.contains("H0us8 my 31"))
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+            documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        }
+
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
 
@@ -548,17 +599,17 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3039
+     * DataPreparation method - AONE_14208
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create folders and files
      * 4) Log out
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3039() throws Exception
+    public void dataPrep_LiveSearch_AONE_14208() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -615,8 +666,6 @@ public class LiveSearchTest extends AbstractUtils
         }
     }
 
-
-
     /**
      * 1) User logs in
      * 2) Performs live search with search term "h0us8 31"
@@ -626,7 +675,7 @@ public class LiveSearchTest extends AbstractUtils
      * 6) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3039()
+    public void AONE_14208()
     {
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -639,31 +688,43 @@ public class LiveSearchTest extends AbstractUtils
 
         // Check document results
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
-        List<String> documentTitles  = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+
+        if (!documentTitles.contains("H0us8 my 31"))
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+            documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        }
+
         Assert.assertTrue(documentTitles.contains("H0us8 my 31"));
         Assert.assertFalse(documentTitles.contains("T3chn0 my"));
 
         // Checks site result
         Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        //Checks people result
+        // Checks people result
         Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
         ShareUser.logout(drone);
     }
 
     /**
-     * DataPreparation method - ALF_3034
+     * DataPreparation method - AONE_13893
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create folders and files
      * 4) Log out
-     *
+     * 
      * @throws Exception
      */
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3040() throws Exception
+    public void dataPrep_LiveSearch_AONE_14209() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -728,7 +789,7 @@ public class LiveSearchTest extends AbstractUtils
      * 5) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3040()
+    public void AONE_14209()
     {
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -742,40 +803,51 @@ public class LiveSearchTest extends AbstractUtils
         // Check document results
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+
+        if (!documentTitles.contains("H0us8 my 21"))
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+            documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+        }
+
         Assert.assertTrue(documentTitles.contains("H0us8 my 21"));
 
         // Checks site result
         Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        //Checks people result
+        // Checks people result
         Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
         ShareUser.logout(drone);
     }
 
     /**
-     * DataPreparation method - ALF_3028
+     * DataPreparation method - AONE_13892
      * 1) Login
      * 2) Create User that is not system tenant i.e. not alfresco.com user
      * 3) Create Site
      * 4) Create and upload file with content
-     *
+     * 
      * @throws Exception
      */
 
-
     /**
-     * DataPreparation method - ALF_3029
+     * DataPreparation method - AONE_14205
      * 1) Login
      * 2) Create User that is not system tenant i.e. not alfresco.com user
      * 3) Create site with site name = "n3w s1t3 creat3ed 88"
      * 4) Create site with site name = "n3w s1t3 creat3ed 99"
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3029() throws Exception
+    public void dataPrep_LiveSearch_AONE_14205() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -818,7 +890,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3029()
+    public void AONE_14205()
     {
 
         // live search term is document title
@@ -832,6 +904,18 @@ public class LiveSearchTest extends AbstractUtils
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
         List<LiveSearchSiteResult> liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
         List<String> sitesNames = ShareUserLiveSearch.getLiveSearchSitesTitles(liveSearchSitesResults);
+
+        if (!sitesNames.contains("n3w s1t3 creat3ed 88"))
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm1);
+            liveSearchSitesResults = ShareUserLiveSearch.getLiveSearchSitesResults(liveSearchDropdown);
+            sitesNames = ShareUserLiveSearch.getLiveSearchSitesTitles(liveSearchSitesResults);
+        }
+
         Assert.assertFalse(sitesNames.contains("n3w s1t3 creat3ed 99"));
 
         // Query issue to fix? !!!!!!
@@ -840,17 +924,17 @@ public class LiveSearchTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF_3030
+     * DataPreparation method - AONE_14206
      * 1) Login
      * 2) Create user that is not system tenant i.e. not alfresco.com user with user name = "n3w us3r creat3ed 77"
      * 3) Create user that is not system tenant i.e. not alfresco.com user with user name = "n3w us3r creat3ed 55"
      * 4) Create site with site name = "n3w s1t3 creat3ed 99"
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3030() throws Exception
+    public void dataPrep_LiveSearch_AONE_14206() throws Exception
     {
         String testName = getTestName();
         String testUser1 = "n3w.us3r.77" + "@" + DOMAIN_LIVE_SEARCH;
@@ -888,7 +972,7 @@ public class LiveSearchTest extends AbstractUtils
      */
 
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3030()
+    public void AONE_14206()
     {
 
         testName = getTestName();
@@ -901,28 +985,40 @@ public class LiveSearchTest extends AbstractUtils
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
         List<LiveSearchPeopleResult> liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
         List<String> peopleNames = ShareUserLiveSearch.getLiveSearchUserNames(liveSearchPeopleResults);
+
+        if (!peopleNames.get(0).contains(testUser1))
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser1, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+            liveSearchPeopleResults = ShareUserLiveSearch.getLiveSearchPeopleResults(liveSearchDropdown);
+            peopleNames = ShareUserLiveSearch.getLiveSearchUserNames(liveSearchPeopleResults);
+        }
+
         for (String peopleName : peopleNames)
         {
-            Assert.assertTrue(peopleName.indexOf(testUser1) != -1);
-            Assert.assertTrue(peopleName.indexOf(testUser2) == -1);
+            Assert.assertTrue(peopleName.contains(testUser1));
+            Assert.assertTrue(!peopleName.contains(testUser2));
         }
 
     }
 
     /**
-     * DataPreparation method - ALF_3032
+     * DataPreparation method - AONE_15127
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create two files: fileName1=file-1234-0 and fileContent1 = "w0rd1 w0rd3 w0rd5"
      * fileName2=file-1234-1 and fileContent1 = "w0rd1 w0rd7 w0rd9"
      * 4) Log out
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch", "EnterpriseOnly" })
-    public void dataPrep_LiveSearch_ALF_3032() throws Exception
+    public void dataPrep_LiveSearch_AONE_15127() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -971,49 +1067,59 @@ public class LiveSearchTest extends AbstractUtils
      * 5) Verify there are no sites and people results
      */
     @Test(groups = { "TestLiveSearch", "EnterpriseOnly" })
-    public void ALF_3032()
+    public void AONE_15127()
     {
         // live search term is document title
         testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
-        //String siteName = getSiteName(testName);
+        // String siteName = getSiteName(testName);
 
         String searchTerm = "w0rd1 w0rd5";
         String fileName1 = "file-1234-0";
         String fileName2 = "file-1234-1";
-
 
         ShareUser.login(drone, testUser, testPassword);
 
         LiveSearchDropdown liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
 
+        if (liveSearchDocumentResults.size() == 0)
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, searchTerm);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        }
+
         // Checks document titles
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
+
         Assert.assertTrue(documentTitles.contains(fileName1));
         Assert.assertFalse(documentTitles.contains(fileName2));
 
         // Checks site result
         Assert.assertFalse(liveSearchDropdown.isSitesTitleVisible());
 
-        //Checks people result
+        // Checks people result
         Assert.assertFalse(liveSearchDropdown.isPeopleTitleVisible());
 
     }
 
     /**
-     * DataPreparation method - ALF_3033
+     * DataPreparation method - AONE_14207
      * 1) Login
      * 2) Create User
      * 3) Create Site
      * 4) Create and upload file with content
-     *
+     * 
      * @throws Exception
      */
 
     @Test(groups = { "DataPrepLiveSearch" })
-    public void dataPrep_LiveSearch_ALF_3033() throws Exception
+    public void dataPrep_LiveSearch_AONE_14207() throws Exception
     {
         String testName = getTestName();
         String testUser = testName + "@" + DOMAIN_LIVE_SEARCH;
@@ -1059,7 +1165,7 @@ public class LiveSearchTest extends AbstractUtils
      * 5) User logs out
      */
     @Test(groups = { "TestLiveSearch" })
-    public void ALF_3033()
+    public void AONE_14207()
     {
 
         // live search term is document title
@@ -1072,17 +1178,26 @@ public class LiveSearchTest extends AbstractUtils
 
         List<LiveSearchDocumentResult> liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
 
+        if (liveSearchDocumentResults.size() != 0)
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser, testPassword);
+            liveSearchDropdown = ShareUserLiveSearch.liveSearch(drone, testName);
+            liveSearchDocumentResults = ShareUserLiveSearch.getLiveSearchDocumentResults(liveSearchDropdown);
+        }
+
         // Checks document titles
         Assert.assertTrue(liveSearchDocumentResults.size() > 0);
         List<String> documentTitles = ShareUserLiveSearch.getLiveSearchDocumentTitles(liveSearchDocumentResults);
         Assert.assertTrue(documentTitles.contains(testName));
 
-        //Checks number of results and more link
+        // Checks number of results and more link
         Assert.assertTrue(liveSearchDocumentResults.size() < 5);
         Assert.assertFalse(liveSearchDropdown.isMoreResultsVisible());
         ShareUser.logout(drone);
 
     }
-
 
 }

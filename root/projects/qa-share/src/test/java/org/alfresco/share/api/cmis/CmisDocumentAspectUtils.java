@@ -26,15 +26,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.po.share.site.document.Categories;
+import org.alfresco.po.share.site.document.ContentDetails;
+import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.DetailsPage;
 import org.alfresco.po.share.site.document.DocumentAspect;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserAdmin;
 import org.alfresco.share.util.ShareUserSearchPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -64,6 +69,24 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         }
         ShareUser.logout(drone);
     }
+
+    public void dataPrepIndexControlAspect(WebDrone drone, String userName, String testName, String siteName) throws Exception
+    {
+        String fileName = getFileName(testName);
+
+        ShareUser.login(drone, userName, DEFAULT_PASSWORD);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        if (!ShareUserSitePage.isFileVisible(drone, fileName))
+        {
+            String content = "Content: " + testName;
+            ContentDetails contentDetails = new ContentDetails(fileName, null, null, content);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        }
+        ShareUser.logout(drone);
+    }
+
 
     public void dataPrepSecondaryObjectTypeIDsProperty(WebDrone drone, String userName, String testName, String siteName) throws Exception
     {
@@ -208,6 +231,8 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         propertyMap.put("cm:identifier", "test-identifier");
         propertyMap.put("cm:rights", "test-rights");
         propertyMap.put("cm:coverage", "test-coverage");
+        propertyMap.put("cm:dcsource", "test-source");
+        propertyMap.put("cm:description", "test-description");
 
         addAspect(cmisBinding, userName, DOMAIN, documentNodeRef, aspectsToAdd);
         addProperties(cmisBinding, userName, DOMAIN, documentNodeRef, propertyMap);
@@ -222,6 +247,21 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertEquals(properties.get("Identifier"), "test-identifier");
         Assert.assertEquals(properties.get("Rights"), "test-rights");
         Assert.assertEquals(properties.get("Coverage"), "test-coverage");
+        Assert.assertEquals(properties.get("Source"), "test-source");
+        Assert.assertEquals(properties.get("Description"), "test-description");
+
+        DocumentDetailsPage documentDetailsPage = ShareUser.getSharePage(drone).render();
+        EditDocumentPropertiesPage editPropertiesPage = documentDetailsPage.selectEditProperties().render();
+
+        Assert.assertEquals(editPropertiesPage.getContributor(), "test-contributor");
+        Assert.assertEquals(editPropertiesPage.getPublisher(), "test-publisher");
+        Assert.assertEquals(editPropertiesPage.getSubject(), "test-subject");
+        Assert.assertEquals(editPropertiesPage.getType(), "test-type");
+        Assert.assertEquals(editPropertiesPage.getIdentifier(), "test-identifier");
+        Assert.assertEquals(editPropertiesPage.getRights(), "test-rights");
+        Assert.assertEquals(editPropertiesPage.getCoverage(), "test-coverage");
+        Assert.assertEquals(editPropertiesPage.getSource(), "test-source");
+        Assert.assertEquals(editPropertiesPage.getDescription(), "test-description");
 
         ShareUser.logout(drone);
     }
@@ -246,6 +286,20 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertNull(properties.get("Identifier"));
         Assert.assertNull(properties.get("Rights"));
         Assert.assertNull(properties.get("Coverage"));
+        Assert.assertNull(properties.get("Source"));
+
+        DocumentDetailsPage documentDetailsPage = ShareUser.getSharePage(drone).render();
+        EditDocumentPropertiesPage editPropertiesPage = documentDetailsPage.selectEditProperties().render();
+
+        Assert.assertTrue(editPropertiesPage.getContributor().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getPublisher().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getSubject().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getType().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getIdentifier().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getRights().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getCoverage().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getSource().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getDescription().isEmpty());
 
         ShareUser.logout(drone);
     }
@@ -378,6 +432,16 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
 
         verifyAspectIsAdded(drone, cmisBinding, userName, DOMAIN, documentNodeRef, fileName, siteName, DocumentAspect.TEMPLATABLE);
 
+        List<Property<?>> properties = getProperties(cmisBinding, userName, DOMAIN, documentNodeRef);
+
+        for(Property property: properties)
+        {
+            if(property.getId().equals("cm:template"))
+            {
+                Assert.assertTrue(templateNodeRef.contains(property.getValueAsString()) , "Verifying Template noderef matches");
+            }
+        }
+
         ShareUser.logout(drone);
     }
 
@@ -393,6 +457,20 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         removeAspect(cmisBinding, userName, DOMAIN, documentNodeRef, aspectsToRemove);
 
         verifyAspectIsRemoved(drone, cmisBinding, userName, DOMAIN, documentNodeRef, fileName, siteName, DocumentAspect.TEMPLATABLE);
+
+        List<Property<?>> properties = getProperties(cmisBinding, userName, DOMAIN, documentNodeRef);
+
+        boolean isPropertyExists = false;
+        for(Property property: properties)
+        {
+            if(property.getId().equals("cm:template"))
+            {
+                isPropertyExists = true;
+                break;
+            }
+        }
+
+        Assert.assertFalse(isPropertyExists, "Verifying that the \"cm:template\" property doesn't exists");
 
         ShareUser.logout(drone);
     }
@@ -523,7 +601,11 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertEquals(properties.get("Longitude"), String.valueOf(longitude));
         Assert.assertEquals(properties.get("Latitude"), String.valueOf(latitude));
 
-        Assert.assertTrue(getDetailsPage(drone, siteName, fileName).isViewOnGoogleMapsLinkVisible(), "Verifying \"View on Google Maps\" link is displayed");
+        DetailsPage detailsPage = getDetailsPage(drone, siteName, fileName);
+        Assert.assertTrue(detailsPage.isViewOnGoogleMapsLinkVisible(), "Verifying \"View on Google Maps\" link is displayed");
+
+        DocumentLibraryPage documentLibraryPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().renderItem(maxWaitTime, fileName);
+        Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isGeoLocationIconDisplayed(), "Verifying \"Geolocation Metadata available\" icon is displayed");
 
         ShareUser.logout(drone);
     }
@@ -544,7 +626,12 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertNull(properties.get("Longitude"));
         Assert.assertNull(properties.get("Latitude"));
 
-        Assert.assertFalse(getDetailsPage(drone, siteName, fileName).isViewOnGoogleMapsLinkVisible(), "Verifying \"View on Google Maps\" link is NOT displayed");
+        DetailsPage detailsPage = getDetailsPage(drone, siteName, fileName);
+
+        Assert.assertFalse(detailsPage.isViewOnGoogleMapsLinkVisible(), "Verifying \"View on Google Maps\" link is NOT displayed");
+
+        DocumentLibraryPage documentLibraryPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().renderItem(maxWaitTime, fileName);
+        Assert.assertFalse(documentLibraryPage.getFileDirectoryInfo(fileName).isGeoLocationIconDisplayed(), "Verifying \"Geolocation Metadata available\" icon is NOT displayed");
 
         ShareUser.logout(drone);
     }
@@ -563,6 +650,7 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         double focalLength = 12.5;
         double xResolution = 400.4;
         double yResolution = 32.5;
+        int exposureTime = 10;
         String model = "test-model";
         String software = "test-software";
         int orientation = 12;
@@ -587,6 +675,7 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         propertyMap.put("exif:pixelXDimension", pixelXDimension);
         propertyMap.put("exif:isoSpeedRatings", isoSpeedRatings);
         propertyMap.put("exif:fNumber", fNumber);
+        propertyMap.put("exif:exposureTime", exposureTime);
 
         addAspect(cmisBinding, userName, DOMAIN, documentNodeRef, aspectsToAdd);
         addProperties(cmisBinding, userName, DOMAIN, documentNodeRef, propertyMap);
@@ -608,6 +697,12 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertEquals(properties.get("ImageWidth"), String.valueOf(pixelXDimension));
         Assert.assertEquals(properties.get("ISOSpeed"), isoSpeedRatings);
         Assert.assertEquals(properties.get("FNumber"), String.valueOf(fNumber));
+        Assert.assertEquals(properties.get("ExposureTime"), String.valueOf(exposureTime));
+
+        DetailsPage detailsPage = ShareUser.getCurrentPage(drone).render();
+        detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        Assert.assertTrue(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isEXIFIconDisplayed(), "Verifying \"EXIF Metadata icon\" is displayed");
 
         ShareUser.logout(drone);
     }
@@ -639,6 +734,12 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         Assert.assertNull(properties.get("ImageWidth"));
         Assert.assertNull(properties.get("ISOSpeed"));
         Assert.assertNull(properties.get("FNumber"));
+        Assert.assertNull(properties.get("ExposureTime"));
+
+        DetailsPage detailsPage = ShareUser.getCurrentPage(drone).render();
+        detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+
+        Assert.assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).isEXIFIconDisplayed(), "Verifying \"EXIF Metadata icon\" is NOT displayed");
 
         ShareUser.logout(drone);
     }
@@ -725,7 +826,7 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         ShareUser.logout(drone);
     }
 
-    public void addIndexControlAspect(WebDrone drone, String userName, String fileName, String siteName, CMISBinding cmisBinding) throws Exception
+    public void addIndexControlAspect(WebDrone drone, String userName, String fileName, String content, String siteName, CMISBinding cmisBinding) throws Exception
     {
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
         String documentNodeRef = getNodeRef(cmisBinding, userName, DOMAIN, siteName, "", fileName);
@@ -752,6 +853,10 @@ public class CmisDocumentAspectUtils extends AbstractCmisSecondaryTypeIDTests
         ShareUserSearchPage.basicSearch(drone, fileName, false);
         // Code amended to cater for Eventual consistency
         Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, fileName, fileName, false),
+                "Document NOT found in search results after adding the INDEX_CONTROL aspect");
+
+        ShareUserSearchPage.basicSearch(drone, content, false);
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, content, fileName, false),
                 "Document NOT found in search results after adding the INDEX_CONTROL aspect");
 
         ShareUser.logout(drone);

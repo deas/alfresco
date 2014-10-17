@@ -1,7 +1,11 @@
 package org.alfresco.share.util;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.alfresco.po.share.RepositoryPage;
@@ -127,7 +131,7 @@ public class ShareUserSitePage extends AbstractUtils
      * @return DocumentLibraryPage
      * @throws SkipException if error in this API
      */
-    public static DocumentLibraryPage uploadFile(WebDrone driver, File file) throws Exception
+    public static HtmlPage uploadFile(WebDrone driver, File file) throws Exception
     {
         DocumentLibraryPage docPage;
         checkIfDriverNull(driver);
@@ -804,7 +808,7 @@ public class ShareUserSitePage extends AbstractUtils
         inlineEditPage = docLibPage.getFileDirectoryInfo(fileName).selectInlineEdit().render();
         EditTextDocumentPage editTextDocumentPage = inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
 
-        return editTextDocumentPage.saveWithValidation(details).render();
+        return editTextDocumentPage.createWithValidation(details).render();
     }
 
     /**
@@ -1002,8 +1006,7 @@ public class ShareUserSitePage extends AbstractUtils
      *            not(send false).
      * @return
      */
-    public static boolean getDocTreeMenuWithRetry(WebDrone driver, String contentName, DocumentsMenu docMenuItem, boolean entryPresent)
-    {
+    public static boolean getDocTreeMenuWithRetry(WebDrone driver, String contentName, DocumentsMenu docMenuItem, boolean entryPresent) throws InterruptedException {
         Boolean found = false;
         Boolean resultAsExpected = false;
 
@@ -1025,9 +1028,10 @@ public class ShareUserSitePage extends AbstractUtils
                 refreshSharePage(driver).render();
             }
 
-            TreeMenuNavigation treeMenu = docLibPage.getLeftMenus();
+            TreeMenuNavigation treeMenu = docLibPage.getLeftMenus().render();
 
             docLibPage = treeMenu.selectDocumentNode(docMenuItem).render();
+            Thread.sleep(1000);
             found = docLibPage.isFileVisible(contentName);
 
             // Loop again if result is not as expected: To cater for solr lag:
@@ -1159,5 +1163,27 @@ public class ShareUserSitePage extends AbstractUtils
         FileDirectoryInfo content = ShareUserSitePage.getFileDirectoryInfo(drone, contentName);
         content.selectLike();
         return getSharePage(drone).render();
+    }
+
+    /**
+     * Util method to get Modified Date property of a document
+     * Method assumes that the user is already in Document Details page
+     * @param drone
+     * @return {@link java.util.Date}
+     */
+    public static Date getModifiedDate(WebDrone drone)
+    {
+        DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+
+        Map<String, Object> properties = detailsPage.getProperties();
+        SimpleDateFormat format = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss");
+        Date modifiedDate = null;
+        try
+        {
+            modifiedDate = format.parse(properties.get("ModifiedDate").toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return modifiedDate;
     }
 }

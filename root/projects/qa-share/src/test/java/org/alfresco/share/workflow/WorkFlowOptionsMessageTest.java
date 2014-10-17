@@ -1,23 +1,10 @@
 package org.alfresco.share.workflow;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.task.TaskInfo;
-import org.alfresco.po.share.workflow.CloudTaskOrReviewPage;
-import org.alfresco.po.share.workflow.KeepContentStrategy;
-import org.alfresco.po.share.workflow.MyWorkFlowsPage;
-import org.alfresco.po.share.workflow.Priority;
-import org.alfresco.po.share.workflow.TaskHistoryPage;
-import org.alfresco.po.share.workflow.TaskType;
-import org.alfresco.po.share.workflow.WorkFlowDetailsGeneralInfo;
-import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
-import org.alfresco.po.share.workflow.WorkFlowFormDetails;
-import org.alfresco.po.share.workflow.WorkFlowTitle;
+import org.alfresco.po.share.workflow.*;
 import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserWorkFlow;
@@ -28,6 +15,8 @@ import org.apache.commons.lang.StringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Ranjith Manyam
@@ -68,7 +57,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15186:Message - Empty
+     * AONE-15646:Message - Empty
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -76,17 +65,17 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "DataPrepHybrid")
-    public void dataPrep_15186() throws Exception
+    public void dataPrep_AONE_15646() throws Exception
     {
         dataPrep(getTestName());
         // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     /**
-     * ALF-15186:Message - Empty
+     * AONE-15646:Message - Empty
      */
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15186() throws Exception
+    @Test(groups = {"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15646() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -98,7 +87,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
         String[] fileInfo1 = { fileName1, DOCLIB };
 
         String defaultWorkFlowName = "(No Message)";
-        String defaultTaskName = "Review Task";
+        String defaultTaskName = "(No Message)";
         String dueDate = getDueDateString();
 
         try
@@ -176,9 +165,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
             // Temp-Fix
             //TaskDetailsPage taskDetailsPage = ShareUserWorkFlow.navigateToTaskDetailsPage(hybridDrone, defaultWorkFlowName);
             TaskInfo taskDetailsInfo = taskDetailsPage.getTaskDetailsInfo();
-            assertEquals(taskDetailsInfo.getMessage(), defaultTaskName);
-            // Temp-Fix
-            //assertEquals(taskDetailsInfo.getMessage(), NONE);
+            assertEquals(taskDetailsInfo.getMessage(), NONE);
 
             ShareUser.logout(hybridDrone);
         }
@@ -203,7 +190,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15187:Message - Single line
+     * AONE-15647:Message - Single line
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -211,17 +198,17 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "DataPrepHybrid")
-    public void dataPrep_15187() throws Exception
+    public void dataPrep_AONE_15647() throws Exception
     {
         dataPrep(getTestName());
         // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     /**
-     * ALF-15187:Message - Single line
+     * AONE-15647:Message - Single line
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15187() throws Exception
+    public void AONE_15647() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -335,7 +322,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15188:Message - Multiple lines
+     * AONE-15648:Message - Multiple lines
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -343,7 +330,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "DataPrepHybrid")
-    public void dataPrep_15188() throws Exception
+    public void dataPrep_AONE_15648() throws Exception
     {
         dataPrep(getTestName());
         // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
@@ -351,10 +338,10 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
 
     // TODO - Extra spaces in Message if the workflow is created with message contains multiple lines (ALF-20523)
     /**
-     * ALF-15188:Message - Multiple lines
+     * AONE-15648:Message - Multiple lines
      */
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15188() throws Exception
+    @Test(groups = {"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15648() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -473,7 +460,7 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15189:Message - Negative case
+     * AONE-15649:Message - Negative case
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -481,17 +468,17 @@ public class WorkFlowOptionsMessageTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "DataPrepHybrid")
-    public void dataPrep_15189() throws Exception
+    public void dataPrep_AONE_15649() throws Exception
     {
         dataPrep(getTestName());
         // TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps.
     }
 
     /**
-     * ALF-15189:Message - Negative case
+     * AONE-15649:Message - Negative case
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15189() throws Exception
+    public void AONE_15649() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);

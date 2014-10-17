@@ -12,13 +12,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Page object to hold Site Calendar dashlet
- *
+ * 
  * @author Marina.Nenadovets
  */
 public class SiteCalendarDashlet extends AbstractDashlet implements Dashlet
 {
     private static final By DASHLET_CONTAINER_PLACEHOLDER = By.cssSelector("div.calendar");
     private static final By EVENTS_LINKS = By.cssSelector(".details2>div>span>a");
+    private static final By EVENTS_DETAILS = By.cssSelector(".details2>div>span");
 
     /**
      * Constructor.
@@ -117,7 +118,7 @@ public class SiteCalendarDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Gets count of Events displayed in Dashlet
-     *
+     * 
      * @return
      */
     public int getEventsCount()
@@ -127,7 +128,7 @@ public class SiteCalendarDashlet extends AbstractDashlet implements Dashlet
 
     /**
      * Return true if link with eventName Displayed.
-     *
+     * 
      * @param eventName
      * @return
      */
@@ -138,11 +139,52 @@ public class SiteCalendarDashlet extends AbstractDashlet implements Dashlet
         for (WebElement eventLink : eventLinks)
         {
             String linkText = eventLink.getText();
-            if (eventName.equals(linkText))
+            if (linkText.contains(eventName))
             {
                 return eventLink.isDisplayed();
             }
         }
+        return false;
+    }
+
+    /**
+     * @param eventDetail
+     * @return boolean
+     */
+    public boolean isEventsWithDetailDisplayed(String eventDetail)
+    {
+        checkNotNull(eventDetail);
+        List<WebElement> eventLinks = dashlet.findElements(EVENTS_DETAILS);
+        for (WebElement eventLink : eventLinks)
+        {
+            String linkText = eventLink.getText();
+            if (linkText.contains(eventDetail))
+            {
+                return eventLink.isDisplayed();
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Return the name of the event.
+     * 
+     * @param eventName
+     * @return boolean
+     */
+    public boolean isRepeating(String event)
+    {
+        checkNotNull(event);
+        List<WebElement> eventLinks = getEventLinksElem();
+        for (WebElement eventLink : eventLinks)
+        {
+            String linkText = eventLink.getText();
+            if (linkText.equalsIgnoreCase(event))
+                ;
+            Boolean repeating = eventLink.getText().contains("Repeating");
+            return repeating;
+        }
+
         return false;
     }
 }

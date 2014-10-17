@@ -1,25 +1,18 @@
 package org.alfresco.share.search;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.search.AdvanceSearchPage;
 import org.alfresco.po.share.search.SearchResult;
-import org.alfresco.po.share.search.SearchResultItem;
+import org.alfresco.po.share.search.SiteResultsPage;
+import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserMembers;
-import org.alfresco.share.util.ShareUserSearchPage;
-import org.alfresco.share.util.ShareUserSitePage;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +20,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Listeners(FailedTestListener.class)
 @SuppressWarnings("unused")
@@ -42,15 +38,38 @@ public class AdvanceSearchTest2 extends AbstractUtils
 
     protected String siteName = "";
 
-    private static final String TEST_HTML_FILE = "Test1.html";
-    private static final String TEST_TXT_FILE = "Test2.txt";
-    private static final String TEST_DOC_FILE = "Test3.doc";
-    private static final String TEST_JPG_FILE = "Test4.jpg";
-    private static final String TEST_PDF_FILE = "TestPDFImap.pdf";
-    private static final String TEST_GIF_FILE = "Test6.gif";
-    private static final String TEST_FILE_WITH_1KB_SIZE = "ALF-5024-1KB-FILE.txt";
-    private static final String TEST_FILE_WITH_1MB_SIZE = "ALF-5024-1MB-FILE.txt";
-    private static final String TEST_FILE_WITH_2MB_SIZE = "ALF-5024-2MB-FILE.txt";
+    protected void advancedSearch(WebDrone drone, List<String> searchInfo, Map<String, String> keyWordSearchText, String entryToBeFound) throws Exception
+    {
+
+        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        boolean searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, entryToBeFound);
+
+        if (!searchOk)
+        {
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        }
+    }
+
+    protected void advancedSearchWithRetry(WebDrone drone, List<String> searchInfo, Map<String, String> keyWordSearchText, String searchType, String searchTerm, String entryToBeFound, Boolean isEntryVisible)
+            throws Exception
+    {
+
+        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        boolean searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, searchType, searchTerm, entryToBeFound, isEntryVisible);
+
+        if (!searchOk)
+        {
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        }
+    }
 
     /**
      * Class includes: Tests from TestLink in Area: Advanced Search Tests
@@ -59,7 +78,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * </ul>
      */
     @Override
-    @BeforeClass(alwaysRun=true)
+    @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
     {
         super.setup();
@@ -69,7 +88,7 @@ public class AdvanceSearchTest2 extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-4978
+     * DataPreparation method - AONE-13906
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -79,39 +98,28 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4978() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13906() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
         String fileName = "}{+_)(&^%$#@!";
 
-        try
-        {
-            // User
-            String[] testUserInfo = new String[] { testUser };
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        String[] testUserInfo = new String[] { testUser };
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            String[] fileInfo = { fileName };
-            ShareUser.uploadFileInFolder(drone, fileInfo);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        String[] fileInfo = { fileName };
+        ShareUser.uploadFileInFolder(drone, fileInfo);
     }
 
     /**
-     * Test - ALF-4978:Wildcard search (Content type)
+     * Test - AONE-13906:Wildcard search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Content form</li>
@@ -121,9 +129,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>In the Keyword search field of the content search form enter }{+_)(&^%$#@!</li>
      * <li>Validate the search results are returned as zero</li>
      * </ul>
+     * 
+     * @throws Exception
+     * @throws PageException
      */
-    @Test
-    public void ALF_4978()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13906() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -132,74 +143,53 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String searchText_1 = "!@#$%^&*()_+:\"|<>?;";
         String searchText_2 = "}{+_)(&^%$#@!";
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
 
         // Initialise search data
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
         boolean searchOk;
 
-        try
-        {
-            // Login
-            ShareUser.login(drone, testUser, testPassword);
+        // Login
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Doing the first invalid Search
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_1);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Doing the first invalid Search
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_1);
+        advancedSearch(drone, searchInfo, keyWordSearchText, SERACH_ZERO_CONTENT);
 
-            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+        searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+        Assert.assertTrue(searchOk);
 
-            Assert.assertTrue(searchOk);
+        // Searching for valid string with content
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_2);
+        advancedSearch(drone, searchInfo, keyWordSearchText, SERACH_ZERO_CONTENT);
 
-            // Searching for valid string with content
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_2);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+        Assert.assertTrue(searchOk);
 
-            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
-            Assert.assertTrue(searchOk);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
     }
 
     /**
-     * DataPreparation method - ALF-4979
+     * DataPreparation method - AONE-13907
      * <ul>
      * <li>Create User</li>
      * </ul>
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4979() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13907() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
     }
 
     /**
-     * Test - ALF-4978:Empty search (Folder type)
+     * Test - AONE-13906:Empty search (Folder type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -208,8 +198,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * </ul>
      */
 
-    @Test
-    public void ALF_4979()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13907() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -218,60 +208,41 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
 
         boolean searchOk;
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
 
-        try
-        {
-            List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
+        List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        advancedSearch(drone, searchInfo, keyWordSearchText, SERACH_ZERO_CONTENT);
 
-            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
-            Assert.assertTrue(searchOk);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+
+        Assert.assertTrue(searchOk);
+
     }
 
     /**
-     * DataPreparation method - ALF-4980
+     * DataPreparation method - AONE-13908
      * <ul>
      * <li>Create User</li>
      * </ul>
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4980() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13908() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
     }
 
     /**
-     * Test - ALF-4980:Empty search (Content type)
+     * Test - AONE-13908:Empty search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Content form</li>
@@ -279,8 +250,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as zero</li>
      * </ul>
      */
-    @Test
-    public void ALF_4980()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13908() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -289,30 +260,20 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
 
         boolean searchOk;
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
 
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
+        advancedSearch(drone, searchInfo, keyWordSearchText, SERACH_ZERO_CONTENT);
 
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
-            Assert.assertTrue(searchOk);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+        Assert.assertTrue(searchOk);
+
     }
 
     /**
-     * DataPreparation method - ALF-4981
+     * DataPreparation method - AONE-13909
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -322,38 +283,27 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4981() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13909() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
         String folderName = "}{+_)(&^%$#@!";
-        String folderDescription = folderName;
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            ShareUserSitePage.createFolder(drone, folderName, folderDescription);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        ShareUserSitePage.createFolder(drone, folderName, folderName);
+
     }
 
     /**
-     * Test - ALF-4981:Wildcard search (Folder type)
+     * Test - AONE-13909:Wildcard search (Folder type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -364,8 +314,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as zero</li>
      * </ul>
      */
-    @Test
-    public void ALF_4981()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13909() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -377,43 +327,31 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String searchText_1 = "!@#$%^&*()_+:\"|<>?;";
         String searchText_2 = "}{+_)(&^%$#@!";
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         boolean searchOk;
 
-        try
-        {
-            List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_1);
+        List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_1);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Doing the first invalid Search
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Doing the first invalid Search
+        advancedSearch(drone, searchInfo, keyWordSearchText, SERACH_ZERO_CONTENT);
 
-            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
-            Assert.assertTrue(searchOk);
+        searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+        Assert.assertTrue(searchOk);
 
-            // Searching for valid string with content
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_2);
+        // Searching for valid string with content
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText_2);
+        advancedSearch(drone, searchInfo, keyWordSearchText, SERACH_ZERO_CONTENT);
 
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-
-            searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
-            Assert.assertTrue(searchOk);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        searchOk = ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, SERACH_ZERO_CONTENT);
+        Assert.assertTrue(searchOk);
 
     }
 
     /**
-     * DataPreparation method - ALF-4982
+     * DataPreparation method - AONE-13910
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -422,34 +360,24 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4982() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13910() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
         String siteName = getSiteName(testName);
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
     }
 
     /**
-     * Test - ALF-4982:Too Long Data Search (Content type)
+     * Test - AONE-13910:Too Long Data Search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -457,8 +385,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Verify the symbols entered successfully and entered data is cut to 1024 symbols</li>
      * </ul>
      */
-    @Test
-    public void ALF_4982()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13910() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -468,48 +396,38 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String searchText = ShareUser.getRandomStringWithNumders(1030);
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH);
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
 
-            // Open User DashBoard
-            ShareUser.openUserDashboard(drone);
+        ShareUser.login(drone, testUser, testPassword);
 
-            AdvanceSearchPage contentSearchPage = ShareUserSearchPage.navigateToAdvanceSearch(drone, searchInfo);
+        // Open User DashBoard
+        ShareUser.openUserDashboard(drone);
 
-            // Search too long text in KEYWORD textbox
-            contentSearchPage.inputKeyword(searchText);
-            String valueEntered = contentSearchPage.getKeyword();
-            Assert.assertEquals(valueEntered.length(), 1024);
-            
-            // Search too long text in NAME textbox
-            contentSearchPage.inputName(searchText);
-            valueEntered = contentSearchPage.getName();
-            Assert.assertEquals(valueEntered.length(), 1024, "ALF-4839 - No restriction of length for Name field.");
-            
-            // Search too long text in TITLE textbox
-            contentSearchPage.inputTitle(searchText);
-            valueEntered = contentSearchPage.getTitle();
-            Assert.assertEquals(valueEntered.length(), 1024, "ALF-4839 - No restriction of length for Title field.");
-            
-            // Search too long text in DESCRIPTION textbox
-            contentSearchPage.inputDescription(searchText);
-            valueEntered = contentSearchPage.getDescription();
-            Assert.assertEquals(valueEntered.length(), 1024, "ALF-4839 - No restriction of length for Description field.");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        AdvanceSearchPage contentSearchPage = ShareUserSearchPage.navigateToAdvanceSearch(drone, searchInfo);
+
+        // Search too long text in KEYWORD textbox
+        contentSearchPage.inputKeyword(searchText);
+        String valueEntered = contentSearchPage.getKeyword();
+        Assert.assertEquals(valueEntered.length(), 1024);
+
+        // Search too long text in NAME textbox
+        contentSearchPage.inputName(searchText);
+        valueEntered = contentSearchPage.getName();
+        Assert.assertEquals(valueEntered.length(), 1024, "ALF-4839 - No restriction of length for Name field.");
+
+        // Search too long text in TITLE textbox
+        contentSearchPage.inputTitle(searchText);
+        valueEntered = contentSearchPage.getTitle();
+        Assert.assertEquals(valueEntered.length(), 1024, "ALF-4839 - No restriction of length for Title field.");
+
+        // Search too long text in DESCRIPTION textbox
+        contentSearchPage.inputDescription(searchText);
+        valueEntered = contentSearchPage.getDescription();
+        Assert.assertEquals(valueEntered.length(), 1024, "ALF-4839 - No restriction of length for Description field.");
 
     }
 
     /**
-     * DataPreparation method - ALF-4983
+     * DataPreparation method - AONE-13911
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -519,13 +437,13 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4983() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13911() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
-        String siteName = getSiteName(testName + "1");
+        String siteName = getSiteName(testName).replace("-", "");
 
         String[] folders = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] filesWithNoContent = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
@@ -533,64 +451,53 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] fileContents = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] fileInfo = new String[1];
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null);
-            ShareUserSitePage.createFolder(drone, folders[1], null);
-            ShareUserSitePage.createFolder(drone, folders[2], null);
-            ShareUserSitePage.createFolder(drone, folders[3], null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null);
+        ShareUserSitePage.createFolder(drone, folders[1], null);
+        ShareUserSitePage.createFolder(drone, folders[2], null);
+        ShareUserSitePage.createFolder(drone, folders[3], null);
 
-            // Creating files
-            fileInfo[0] = filesWithNoContent[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Creating files
+        fileInfo[0] = filesWithNoContent[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo = new String[3];
-            // Creating files with given content.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(filesWithContent[0]);
-            contentDetails.setContent(fileContents[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-            
-            contentDetails.setName(filesWithContent[1]);
-            contentDetails.setContent(fileContents[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given content.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(filesWithContent[0]);
+        contentDetails.setContent(fileContents[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[2]);
-            contentDetails.setContent(fileContents[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[1]);
+        contentDetails.setContent(fileContents[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[3]);
-            contentDetails.setContent(fileContents[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(filesWithContent[2]);
+        contentDetails.setContent(fileContents[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+        contentDetails.setName(filesWithContent[3]);
+        contentDetails.setContent(fileContents[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-4983: Keyword Search (Content type)
+     * Test - AONE-13911: Keyword Search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -600,68 +507,57 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Go Back to Advance Search from</li>
      * </ul>
      */
-    @Test
-    public void ALF_4983()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13911() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
-        String siteName = getSiteName(testName + "1");
+        String siteName = getSiteName(testName).replace("-", "");
         /** Test Data Setup */
-        
+
         String testUser = getUserNameFreeDomain(testName);
 
         String[] searchText = { siteName + "_house", "*echno", "tran*" };
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid keyword string
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[0]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid keyword string
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[0]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText[0], siteName + "_My 4", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], siteName + "_My 4", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 1"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 3"));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], siteName + "_My 4", true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 1"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 3"));
 
-            // Searching for valid keyword string
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[1]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid keyword string
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[1]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText[1], siteName + "_My 4", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], siteName + "_My 4", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], siteName + "_My 4", true));
 
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 2"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 3"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_Techno my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 2"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_My 3"));
 
-            // Searching for valid keyword string
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[2]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid keyword string
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[2]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText[2], siteName + "_My 4", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], siteName + "_My 4", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], siteName + "_My 4", true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno Trance my"));
 
     }
 
     /**
-     * DataPreparation method - ALF-4984
+     * DataPreparation method - AONE-13912
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -671,13 +567,13 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4984() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13912() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         String[] folders = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] filesWithNoContent = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
@@ -685,64 +581,54 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] fileContents = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] fileInfo = new String[1];
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null);
-            ShareUserSitePage.createFolder(drone, folders[1], null);
-            ShareUserSitePage.createFolder(drone, folders[2], null);
-            ShareUserSitePage.createFolder(drone, folders[3], null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null);
+        ShareUserSitePage.createFolder(drone, folders[1], null);
+        ShareUserSitePage.createFolder(drone, folders[2], null);
+        ShareUserSitePage.createFolder(drone, folders[3], null);
 
-            // Creating files
-            fileInfo[0] = filesWithNoContent[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Creating files
+        fileInfo[0] = filesWithNoContent[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo = new String[3];
-            // Creating files with given content.
-            fileInfo[0] = filesWithContent[0];
-            fileInfo[1] = DOCLIB;
-            fileInfo[2] = fileContents[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo = new String[3];
+        // Creating files with given content.
+        fileInfo[0] = filesWithContent[0];
+        fileInfo[1] = DOCLIB;
+        fileInfo[2] = fileContents[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[1];
-            fileInfo[2] = fileContents[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo[0] = filesWithContent[1];
+        fileInfo[2] = fileContents[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[2];
-            fileInfo[2] = fileContents[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo[0] = filesWithContent[2];
+        fileInfo[2] = fileContents[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[3];
-            fileInfo[2] = fileContents[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        fileInfo[0] = filesWithContent[3];
+        fileInfo[2] = fileContents[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+
     }
 
     /**
-     * Test - ALF-4984: Keyword Search (Folder type)
+     * Test - AONE-13912: Keyword Search (Folder type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -751,58 +637,51 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4984()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13912() throws Exception
     {
         /** Start Test */
         testName = getTestName();
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
         /** Test Data Setup */
 
         String testUser = getUserNameFreeDomain(testName);
         String[] searchText = { siteName + "_house", "*echno", "tran*" };
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid keyword string
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[0]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid keyword string
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[0]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance",
+                true));
 
-            // Searching for valid keyword string
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[1]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid keyword string
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[1]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_FOLDER_SEARCH, searchText[1], siteName + "_Techno", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_Techno", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_Techno", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance",
+                true));
 
-            // Searching for valid keyword string
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[2]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid keyword string
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchText[2]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance",
+                true));
+
     }
 
     /**
-     * DataPreparation method - ALF-4985
+     * DataPreparation method - AONE-13913
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -812,8 +691,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4985() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13913() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -826,64 +705,54 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] fileContents = { "House", "Techno", "House Techno", "House Techno Trance" };
         String[] fileInfo = new String[1];
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null);
-            ShareUserSitePage.createFolder(drone, folders[1], null);
-            ShareUserSitePage.createFolder(drone, folders[2], null);
-            ShareUserSitePage.createFolder(drone, folders[3], null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null);
+        ShareUserSitePage.createFolder(drone, folders[1], null);
+        ShareUserSitePage.createFolder(drone, folders[2], null);
+        ShareUserSitePage.createFolder(drone, folders[3], null);
 
-            // Creating files
-            fileInfo[0] = filesWithNoContent[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Creating files
+        fileInfo[0] = filesWithNoContent[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo = new String[3];
-            // Creating files with given content.
-            fileInfo[0] = filesWithContent[0];
-            fileInfo[1] = DOCLIB;
-            fileInfo[2] = fileContents[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo = new String[3];
+        // Creating files with given content.
+        fileInfo[0] = filesWithContent[0];
+        fileInfo[1] = DOCLIB;
+        fileInfo[2] = fileContents[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[1];
-            fileInfo[2] = fileContents[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo[0] = filesWithContent[1];
+        fileInfo[2] = fileContents[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[2];
-            fileInfo[2] = fileContents[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo[0] = filesWithContent[2];
+        fileInfo[2] = fileContents[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[3];
-            fileInfo[2] = fileContents[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        fileInfo[0] = filesWithContent[3];
+        fileInfo[2] = fileContents[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+
     }
 
     /**
-     * Test - ALF-4985: Name Search (Content type)
+     * Test - AONE-13913: Name Search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -892,8 +761,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4985()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13913() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -902,48 +771,37 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String[] searchText = { "house", "*echno", "tran*" };
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Name string
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name string
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText[0], "House Techno Trance my", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], "House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House Techno my"));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[0], "House Techno Trance my", true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House Techno my"));
 
-            // Searching for valid Name string
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[1]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name string
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[1]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText[1], "House Techno Trance my", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], "House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "Techno my"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House Techno my"));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[1], "House Techno Trance my", true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "Techno my"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House Techno my"));
 
-            // Searching for valid Name string
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[2]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name string
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[2]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText[2], "House Techno Trance my", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], "House Techno Trance my", true));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText[2], "House Techno Trance my", true));
 
     }
 
     /**
-     * DataPreparation method - ALF-4986
+     * DataPreparation method - AONE-13914
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -953,13 +811,13 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4986() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13914() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         String[] folders = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] filesWithNoContent = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
@@ -967,64 +825,54 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] fileContents = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] fileInfo = new String[1];
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null);
-            ShareUserSitePage.createFolder(drone, folders[1], null);
-            ShareUserSitePage.createFolder(drone, folders[2], null);
-            ShareUserSitePage.createFolder(drone, folders[3], null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null);
+        ShareUserSitePage.createFolder(drone, folders[1], null);
+        ShareUserSitePage.createFolder(drone, folders[2], null);
+        ShareUserSitePage.createFolder(drone, folders[3], null);
 
-            // Creating files
-            fileInfo[0] = filesWithNoContent[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        // Creating files
+        fileInfo[0] = filesWithNoContent[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo[0] = filesWithNoContent[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo);
+        fileInfo[0] = filesWithNoContent[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo);
 
-            fileInfo = new String[3];
-            // Creating files with given content.
-            fileInfo[0] = filesWithContent[0];
-            fileInfo[1] = DOCLIB;
-            fileInfo[2] = fileContents[0];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo = new String[3];
+        // Creating files with given content.
+        fileInfo[0] = filesWithContent[0];
+        fileInfo[1] = DOCLIB;
+        fileInfo[2] = fileContents[0];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[1];
-            fileInfo[2] = fileContents[1];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo[0] = filesWithContent[1];
+        fileInfo[2] = fileContents[1];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[2];
-            fileInfo[2] = fileContents[2];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+        fileInfo[0] = filesWithContent[2];
+        fileInfo[2] = fileContents[2];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
 
-            fileInfo[0] = filesWithContent[3];
-            fileInfo[2] = fileContents[3];
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        fileInfo[0] = filesWithContent[3];
+        fileInfo[2] = fileContents[3];
+        ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
+
     }
 
     /**
-     * Test - ALF-4986: Name Search (Folder type)
+     * Test - AONE-13914: Name Search (Folder type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -1033,57 +881,50 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4986()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13914() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
         /** Test Data Setup */
         String testUser = getUserNameFreeDomain(testName);
         String[] searchText = { siteName + "_house", "*echno", "tran*" };
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Name string
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name string
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[0]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno"));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[0], siteName + "_House Techno Trance",
+                true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno"));
 
-            // Searching for valid Name string
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[1]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name string
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[1]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_Techno"));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno"));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[1], siteName + "_House Techno Trance",
+                true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_Techno"));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, siteName + "_House Techno"));
 
-            // Searching for valid Name string
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[2]);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name string
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), searchText[2]);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance", true));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, searchText[2], siteName + "_House Techno Trance",
+                true));
+
     }
 
     /**
-     * DataPreparation method - ALF-4987
+     * DataPreparation method - AONE-13915
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1093,8 +934,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4987() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13915() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1104,45 +945,35 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] folderTitles = { "House", "Techno" };
         String[] filesWithTitle = { "House my 1", "House my 2", "Techno my" };
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], folderTitles[0], null);
-            ShareUserSitePage.createFolder(drone, folders[1], folderTitles[1], null);
-            ShareUserSitePage.createFolder(drone, folders[2], folderTitles[0], null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], folderTitles[0], null);
+        ShareUserSitePage.createFolder(drone, folders[1], folderTitles[1], null);
+        ShareUserSitePage.createFolder(drone, folders[2], folderTitles[0], null);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(filesWithTitle[0]);
-            contentDetails.setTitle(folderTitles[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(filesWithTitle[0]);
+        contentDetails.setTitle(folderTitles[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithTitle[1]);
-            contentDetails.setTitle(folderTitles[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithTitle[1]);
+        contentDetails.setTitle(folderTitles[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithTitle[2]);
-            contentDetails.setTitle(folderTitles[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(filesWithTitle[2]);
+        contentDetails.setTitle(folderTitles[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-4987: Title Search (Content type)
+     * Test - AONE-13915: Title Search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -1151,8 +982,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4987()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13915() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -1161,33 +992,22 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String searchText = "house";
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Title string
-            keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Title string
+        keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText, "House my 1", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "Techno my"));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "House my 1", true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "Techno my"));
 
     }
 
     /**
-     * DataPreparation method - ALF-4988
+     * DataPreparation method - AONE-13916
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1197,8 +1017,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4988() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13916() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1210,65 +1030,55 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] filesWithTitle = { "House my 1", "House my 2", "Techno my" };
         String[] filesWithContentAndTitle = { "My 1", "My 2", "My 3" };
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-            
-            ShareUser.openDocumentLibrary(drone); 
-            
-            ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(filesWithTitle[0]);
-            contentDetails.setTitle(folderTitles[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        ShareUser.openDocumentLibrary(drone);
 
-            contentDetails.setName(filesWithTitle[1]);
-            contentDetails.setTitle(folderTitles[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
 
-            contentDetails.setName(filesWithTitle[2]);
-            contentDetails.setTitle(folderTitles[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(filesWithTitle[0]);
+        contentDetails.setTitle(folderTitles[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating files with given Title and description.
-            contentDetails.setName(filesWithContentAndTitle[0]);
-            contentDetails.setTitle(folderTitles[0]);
-            contentDetails.setDescription(folderTitles[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithTitle[1]);
+        contentDetails.setTitle(folderTitles[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContentAndTitle[1]);
-            contentDetails.setTitle(folderTitles[0]);
-            contentDetails.setDescription(folderTitles[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithTitle[2]);
+        contentDetails.setTitle(folderTitles[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContentAndTitle[2]);
-            contentDetails.setTitle(folderTitles[1]);
-            contentDetails.setDescription(folderTitles[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-            
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], folderTitles[0], null);
-            ShareUserSitePage.createFolder(drone, folders[1], folderTitles[1], null);
-            ShareUserSitePage.createFolder(drone, folders[2], folderTitles[0], null);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // Creating files with given Title and description.
+        contentDetails.setName(filesWithContentAndTitle[0]);
+        contentDetails.setTitle(folderTitles[0]);
+        contentDetails.setDescription(folderTitles[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+        contentDetails.setName(filesWithContentAndTitle[1]);
+        contentDetails.setTitle(folderTitles[0]);
+        contentDetails.setDescription(folderTitles[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+        contentDetails.setName(filesWithContentAndTitle[2]);
+        contentDetails.setTitle(folderTitles[1]);
+        contentDetails.setDescription(folderTitles[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], folderTitles[0], null);
+        ShareUserSitePage.createFolder(drone, folders[1], folderTitles[1], null);
+        ShareUserSitePage.createFolder(drone, folders[2], folderTitles[0], null);
+
     }
 
     /**
-     * Test - ALF-4988: Title Search (Folder type)
+     * Test - AONE-13916: Title Search (Folder type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -1277,8 +1087,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4988()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13916() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -1287,40 +1097,29 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String searchText = "house";
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Title string
-            keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-            
-            SearchResult searchResultItem = ShareUserSearchPage.findInFacetSearchResults(drone,"House 1");
-            
-            Assert.assertNotNull(searchResultItem);
-            Assert.assertTrue(searchResultItem.isFolder());
-            
-            searchResultItem = ShareUserSearchPage.findInFacetSearchResults(drone,"Techno");
-            
-            Assert.assertNotNull(searchResultItem);
-            Assert.assertTrue(searchResultItem.isFolder());
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        // Searching for valid Title string
+        keyWordSearchText.put(SearchKeys.TITLE.getSearchKeys(), searchText);
+        advancedSearch(drone, searchInfo, keyWordSearchText, "House 1");
+
+        SearchResult searchResultItem = ShareUserSearchPage.findInFacetSearchResults(drone, "House 1");
+
+        Assert.assertNotNull(searchResultItem);
+        Assert.assertTrue(searchResultItem.isFolder());
+
+        searchResultItem = ShareUserSearchPage.findInFacetSearchResults(drone, "Techno");
+
+        Assert.assertNotNull(searchResultItem);
+        Assert.assertTrue(searchResultItem.isFolder());
 
     }
 
     /**
-     * DataPreparation method - ALF-4989
+     * DataPreparation method - AONE-13917
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1330,8 +1129,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4989() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13917() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1342,45 +1141,35 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] descriptions = { "House", "Techno" };
         String[] files = { "House my 1", "House my 2", "Techno my" };
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], descriptions[0]);
-            ShareUserSitePage.createFolder(drone, folders[1], descriptions[1]);
-            ShareUserSitePage.createFolder(drone, folders[2], descriptions[0]);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], descriptions[0]);
+        ShareUserSitePage.createFolder(drone, folders[1], descriptions[1]);
+        ShareUserSitePage.createFolder(drone, folders[2], descriptions[0]);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(files[0]);
-            contentDetails.setDescription(descriptions[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(files[0]);
+        contentDetails.setDescription(descriptions[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[1]);
-            contentDetails.setDescription(descriptions[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[1]);
+        contentDetails.setDescription(descriptions[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[2]);
-            contentDetails.setDescription(descriptions[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(files[2]);
+        contentDetails.setDescription(descriptions[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-4989: Description Search (Content type)
+     * Test - AONE-13917: Description Search (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -1389,8 +1178,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4989()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13917() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -1399,33 +1188,22 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String searchText = "house";
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Description string
-            keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Description string
+        keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchText, "Techno my", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "Techno my", true));
-            Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House my 1"));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchText, "Techno my", true));
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, "House my 1"));
 
     }
 
     /**
-     * DataPreparation method - ALF-4990
+     * DataPreparation method - AONE-13918
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1435,8 +1213,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4990() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13918() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1448,66 +1226,55 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] files = { "House my 1", "House my 2", "Techno my" };
         String[] filesWithContentAndDescription = { "My 1", "My 2", "My 3" };
 
-        try
-        {
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-            
-            ShareUser.openDocumentLibrary(drone);
-            
-            ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(files[0]);
-            contentDetails.setDescription(descriptions[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        ShareUser.openDocumentLibrary(drone);
 
-            contentDetails.setName(files[1]);
-            contentDetails.setDescription(descriptions[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
 
-            contentDetails.setName(files[2]);
-            contentDetails.setDescription(descriptions[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(files[0]);
+        contentDetails.setDescription(descriptions[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating files with given content and description.
-            contentDetails.setName(filesWithContentAndDescription[0]);
-            contentDetails.setContent(descriptions[0]);
-            contentDetails.setDescription(descriptions[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[1]);
+        contentDetails.setDescription(descriptions[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContentAndDescription[1]);
-            contentDetails.setContent(descriptions[0]);
-            contentDetails.setDescription(descriptions[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[2]);
+        contentDetails.setDescription(descriptions[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContentAndDescription[2]);
-            contentDetails.setContent(descriptions[1]);
-            contentDetails.setDescription(descriptions[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);            
+        // Creating files with given content and description.
+        contentDetails.setName(filesWithContentAndDescription[0]);
+        contentDetails.setContent(descriptions[0]);
+        contentDetails.setDescription(descriptions[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], descriptions[0]);
-            ShareUserSitePage.createFolder(drone, folders[1], descriptions[1]);
-            ShareUserSitePage.createFolder(drone, folders[2], descriptions[0]);
-            
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(filesWithContentAndDescription[1]);
+        contentDetails.setContent(descriptions[0]);
+        contentDetails.setDescription(descriptions[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+        contentDetails.setName(filesWithContentAndDescription[2]);
+        contentDetails.setContent(descriptions[1]);
+        contentDetails.setDescription(descriptions[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], descriptions[0]);
+        ShareUserSitePage.createFolder(drone, folders[1], descriptions[1]);
+        ShareUserSitePage.createFolder(drone, folders[2], descriptions[0]);
+
     }
 
     /**
-     * Test - ALF-4990: Description Search (Folder type)
+     * Test - AONE-13918: Description Search (Folder type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search Folder form</li>
@@ -1516,8 +1283,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4990()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13918() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -1526,40 +1293,28 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String searchText = "house";
 
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Description string
-            keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Description string
+        keyWordSearchText.put(SearchKeys.DESCRIPTION.getSearchKeys(), searchText);
+        advancedSearch(drone, searchInfo, keyWordSearchText, "House 1");
 
-            SearchResult searchResult = ShareUserSearchPage.findInFacetSearchResults(drone,"House 1");
-            
-            Assert.assertNotNull(searchResult);
-            Assert.assertTrue(searchResult.isFolder());
+        SearchResult searchResult = ShareUserSearchPage.findInFacetSearchResults(drone, "House 1");
+        Assert.assertNotNull(searchResult);
+        Assert.assertTrue(searchResult.isFolder());
 
-            searchResult = ShareUserSearchPage.findInFacetSearchResults(drone,"Techno");
-            
-            Assert.assertNotNull(searchResult);
-            Assert.assertTrue(searchResult.isFolder());
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        searchResult = ShareUserSearchPage.findInFacetSearchResults(drone, "Techno");
+
+        Assert.assertNotNull(searchResult);
+        Assert.assertTrue(searchResult.isFolder());
 
     }
 
     /**
-     * DataPreparation method - ALF-4974
+     * DataPreparation method - AONE-13901
      * <ul>
      * <li>Login</li>
      * <li>Create Users</li>
@@ -1569,12 +1324,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4974() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13901() throws Exception
     {
         String testName = getTestName();
 
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         String mainUser = getUserNameFreeDomain(testName);
         String testUser = getUserNameFreeDomain(testName + "1");
@@ -1586,67 +1341,57 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] files = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
         String[] filesWithContent = { siteName + "_My 1", siteName + "_My 2", siteName + "_My 3", siteName + "_My 4" };
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, mainUser, testPassword);
+        // Login
+        ShareUser.login(drone, mainUser, testPassword);
 
-            // Site
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE).render(maxWaitTime);
+        // Site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PRIVATE).render(maxWaitTime);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null, null);
-            ShareUserSitePage.createFolder(drone, folders[1], null, null);
-            ShareUserSitePage.createFolder(drone, folders[2], null, null);
-            ShareUserSitePage.createFolder(drone, folders[3], null, null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null, null);
+        ShareUserSitePage.createFolder(drone, folders[1], null, null);
+        ShareUserSitePage.createFolder(drone, folders[2], null, null);
+        ShareUserSitePage.createFolder(drone, folders[3], null, null);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(files[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(files[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating files with given Title and description.
-            contentDetails.setName(filesWithContent[0]);
-            contentDetails.setContent(folders[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title and description.
+        contentDetails.setName(filesWithContent[0]);
+        contentDetails.setContent(folders[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[1]);
-            contentDetails.setContent(folders[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[1]);
+        contentDetails.setContent(folders[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[2]);
-            contentDetails.setContent(folders[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[2]);
+        contentDetails.setContent(folders[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[3]);
-            contentDetails.setContent(folders[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(filesWithContent[3]);
+        contentDetails.setContent(folders[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-4974: Searching for item in private site (Content type)
+     * Test - AONE-13901: Searching for item in private site (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search form</li>
@@ -1654,41 +1399,39 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4974()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13901() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName + "1");
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         /** Test Data Setup */
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Searching for valid keyword.
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), siteName + "_house");
+        List<SearchResult> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        if(list.size() != 0)
         {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
             ShareUser.login(drone, testUser, testPassword);
+            list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        }
 
-            // Searching for valid keyword.
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), siteName + "_house");
-            List<SearchResult> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-
-            Assert.assertTrue(list.size() == 0);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(list.size() == 0);
 
     }
 
     /**
-     * DataPreparation method - ALF-4975
+     * DataPreparation method - AONE-13902
      * <ul>
      * <li>Login</li>
      * <li>Create Users</li>
@@ -1698,12 +1441,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4975() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13902() throws Exception
     {
         String testName = getTestName();
 
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         String mainUser = getUserNameFreeDomain(testName);
         String testUser = getUserNameFreeDomain(testName + "1");
@@ -1714,67 +1457,57 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] files = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
         String[] filesWithContent = { siteName + "_My 1", siteName + "_My 2", siteName + "_My 3", siteName + "_My 4" };
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, mainUser, testPassword);
+        // Login
+        ShareUser.login(drone, mainUser, testPassword);
 
-            // Site
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_MODERATED).render(maxWaitTime);
+        // Site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_MODERATED).render(maxWaitTime);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null, null);
-            ShareUserSitePage.createFolder(drone, folders[1], null, null);
-            ShareUserSitePage.createFolder(drone, folders[2], null, null);
-            ShareUserSitePage.createFolder(drone, folders[3], null, null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null, null);
+        ShareUserSitePage.createFolder(drone, folders[1], null, null);
+        ShareUserSitePage.createFolder(drone, folders[2], null, null);
+        ShareUserSitePage.createFolder(drone, folders[3], null, null);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(files[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(files[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating files with given Title and description.
-            contentDetails.setName(filesWithContent[0]);
-            contentDetails.setContent(folders[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title and description.
+        contentDetails.setName(filesWithContent[0]);
+        contentDetails.setContent(folders[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[1]);
-            contentDetails.setContent(folders[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[1]);
+        contentDetails.setContent(folders[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[2]);
-            contentDetails.setContent(folders[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[2]);
+        contentDetails.setContent(folders[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[3]);
-            contentDetails.setContent(folders[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(filesWithContent[3]);
+        contentDetails.setContent(folders[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-4975: Searching for item in moderated site (Content type)
+     * Test - AONE-13902: Searching for item in moderated site (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search form</li>
@@ -1782,41 +1515,39 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test
-    public void ALF_4975()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13902() throws Exception
     {
         /** Start Test */
         testName = AbstractUtils.getTestName();
         String testUser = getUserNameFreeDomain(testName + "1");
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         /** Test Data Setup */
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
+        ShareUser.login(drone, testUser, testPassword);
+
+        // Searching for valid Keyword.
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), siteName + "_house");
+        List<SearchResult> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        if(list.size() != 0)
         {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
             ShareUser.login(drone, testUser, testPassword);
+            list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        }
 
-            // Searching for valid Keyword.
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), siteName + "_house");
-            List<SearchResult> list = ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-
-            Assert.assertTrue(list.size() == 0);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(list.size() == 0);
 
     }
 
     /**
-     * DataPreparation method - ALF-4976
+     * DataPreparation method - AONE-13903
      * <ul>
      * <li>Login</li>
      * <li>Create Users</li>
@@ -1827,15 +1558,15 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    
-     /* Note : This requires and Site Manager approval process, once it is automated this test will be uncommented.
-      * 
-      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4976() throws Exception
+
+    /*
+     * Note : This requires and Site Manager approval process, once it is automated this test will be uncommented.
+     */
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13903() throws Exception
     {
         String testName = getTestName();
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
         String mainUser = getUserNameFreeDomain(testName);
         String[] mainUserInfo = new String[] { mainUser };
         String testUser = getUserNameFreeDomain(testName + "1");
@@ -1843,71 +1574,64 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] folders = { siteName + "_House", siteName + "_Techno", siteName + "_House Techno", siteName + "_House Techno Trance" };
         String[] files = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
         String[] filesWithContent = { siteName + "_My 1", siteName + "_My 2", siteName + "_My 3", siteName + "_My 4" };
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, mainUser, testPassword);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Site
-            ShareUser.createSite(drone, siteName, ShareUser.SITE_VISIBILITY_MODERATED);
+        // Login
+        ShareUser.login(drone, mainUser, testPassword);
 
-            ShareUser.openDocumentLibrary(drone);
-            ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
+        // Site
+        ShareUser.createSite(drone, siteName, ShareUser.SITE_VISIBILITY_MODERATED);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
+        ShareUser.openDocumentLibrary(drone);
+        ShareUserSitePage.selectView(drone, ViewType.SIMPLE_VIEW);
 
-            contentDetails.setName(files[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
 
-            contentDetails.setName(files[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating files with given Title and description.
-            contentDetails.setName(filesWithContent[0]);
-            contentDetails.setContent(folders[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[1]);
-            contentDetails.setContent(folders[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title and description.
+        contentDetails.setName(filesWithContent[0]);
+        contentDetails.setContent(folders[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[2]);
-            contentDetails.setContent(folders[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[1]);
+        contentDetails.setContent(folders[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[3]);
-            contentDetails.setContent(folders[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-                       
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null, null);
-            ShareUserSitePage.createFolder(drone, folders[1], null, null);
-            ShareUserSitePage.createFolder(drone, folders[2], null, null);
-            ShareUserSitePage.createFolder(drone, folders[3], null, null);
+        contentDetails.setName(filesWithContent[2]);
+        contentDetails.setContent(folders[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            ShareUserMembers.inviteUserToSiteWithRole(drone, mainUser, testUser, siteName, UserRole.COLLABORATOR);
+        contentDetails.setName(filesWithContent[3]);
+        contentDetails.setContent(folders[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null, null);
+        ShareUserSitePage.createFolder(drone, folders[1], null, null);
+        ShareUserSitePage.createFolder(drone, folders[2], null, null);
+        ShareUserSitePage.createFolder(drone, folders[3], null, null);
+
+        ShareUserMembers.inviteUserToSiteWithRole(drone, mainUser, testUser, siteName, UserRole.COLLABORATOR);
+
     }
-     
 
     /**
-     * Test - ALF-4976: Searching for item in moderated site where user is invited (Content type)
+     * Test - AONE-13903: Searching for item in moderated site where user is invited (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search form</li>
@@ -1915,47 +1639,37 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    // TODO: Watch: https://issues.alfresco.com/jira/browse/ACE-1085
-    @Test(groups={"ACEBug"})
-    public void ALF_4976()
+
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13903() throws Exception
     {
         /** Start Test */
         testName = getTestName();
         String testUser = getUserNameFreeDomain(testName + "1");
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         /** Test Data Setup */
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
         String searchTerm = siteName + "_house";
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
-            // Searching for valid Keyword.
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        ShareUser.login(drone, testUser, testPassword);
+        // Searching for valid Keyword.
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
-            Assert.assertTrue(ShareUserSearchPage
-                    .checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my",
+                true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
+
     }
 
     /**
-     * DataPreparation method - ALF-4977
+     * DataPreparation method - AONE-13904
      * <ul>
      * <li>Login</li>
      * <li>Create Users</li>
@@ -1966,12 +1680,12 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_4977() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13904() throws Exception
     {
         String testName = getTestName();
 
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         String mainUser = getUserNameFreeDomain(testName);
         String[] mainUserInfo = new String[] { mainUser };
@@ -1982,67 +1696,57 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String[] files = { siteName + "_House my", siteName + "_Techno my", siteName + "_House Techno my", siteName + "_House Techno Trance my" };
         String[] filesWithContent = { siteName + "_My 1", siteName + "_My 2", siteName + "_My 3", siteName + "_My 4" };
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, mainUserInfo);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, mainUser, testPassword);
+        // Login
+        ShareUser.login(drone, mainUser, testPassword);
 
-            // Site
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        // Site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
-            // Creating folders
-            ShareUserSitePage.createFolder(drone, folders[0], null, null);
-            ShareUserSitePage.createFolder(drone, folders[1], null, null);
-            ShareUserSitePage.createFolder(drone, folders[2], null, null);
-            ShareUserSitePage.createFolder(drone, folders[3], null, null);
+        // Creating folders
+        ShareUserSitePage.createFolder(drone, folders[0], null, null);
+        ShareUserSitePage.createFolder(drone, folders[1], null, null);
+        ShareUserSitePage.createFolder(drone, folders[2], null, null);
+        ShareUserSitePage.createFolder(drone, folders[3], null, null);
 
-            // Creating files with given Title.
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName(files[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title.
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(files[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(files[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(files[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Creating files with given Title and description.
-            contentDetails.setName(filesWithContent[0]);
-            contentDetails.setContent(folders[0]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating files with given Title and description.
+        contentDetails.setName(filesWithContent[0]);
+        contentDetails.setContent(folders[0]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[1]);
-            contentDetails.setContent(folders[1]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[1]);
+        contentDetails.setContent(folders[1]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[2]);
-            contentDetails.setContent(folders[2]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName(filesWithContent[2]);
+        contentDetails.setContent(folders[2]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName(filesWithContent[3]);
-            contentDetails.setContent(folders[3]);
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        contentDetails.setName(filesWithContent[3]);
+        contentDetails.setContent(folders[3]);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-4977: Searching for item in moderated site where user is not invited (Content type)
+     * Test - AONE-13904: Searching for item in moderated site where user is not invited (Content type)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search form</li>
@@ -2050,46 +1754,36 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the search results are returned as expected</li>
      * </ul>
      */
-    @Test(groups = "Enterprise42Bug")
-    public void ALF_4977()
+    @Test(groups = "alfrescoBug")
+    public void AONE_13904() throws Exception
     {
         /** Start Test */
         testName = getTestName();
         String testUser = getUserNameFreeDomain(testName + "1");
-        String siteName = getSiteName(testName);
+        String siteName = getSiteName(testName).replace("-", "");
 
         /** Test Data Setup */
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
         String searchTerm = siteName + "_house";
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Searching for valid Keyword.
-            keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Keyword.
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), searchTerm);
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House my", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno my", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_House Techno Trance my",
+                true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 1", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 3", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, searchTerm, siteName + "_My 4", true));
     }
 
     /**
-     * DataPreparation method - ALF-10769
+     * DataPreparation method - AONE-13905
      * <ul>
      * <li>Login</li>
      * <li>Create Users</li>
@@ -2099,8 +1793,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepAdvanceSearch"})
-    public void dataPrep_AdvSearch_ALF_10769() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13905() throws Exception
     {
         String testName = getTestName();
 
@@ -2109,34 +1803,24 @@ public class AdvanceSearchTest2 extends AbstractUtils
         String testUser = getUserNameFreeDomain(testName);
         String[] testUserInfo = new String[] { testUser };
 
-        try
-        {
-            // User
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
-            // Login
-            ShareUser.login(drone, testUser, testPassword);
+        // Login
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Site
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        // Site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName("test 1");
-            contentDetails.setContent("test");
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName("test 1");
+        contentDetails.setContent("test");
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+
     }
 
     /**
-     * Test - ALF-10769: Modified date search (zeros handling)
+     * Test - AONE-13905: Modified date search (zeros handling)
      * <ul>
      * <li>Login</li>
      * <li>From My Dashboard access the Advance Search form</li>
@@ -2144,8 +1828,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * <li>Validate the date</li>
      * </ul>
      */
-    @Test
-    public void ALF_10769()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13905() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -2153,44 +1837,34 @@ public class AdvanceSearchTest2 extends AbstractUtils
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        try
-        {
-            ShareUser.login(drone, testUser, testPassword);
+        ShareUser.login(drone, testUser, testPassword);
 
-            AdvanceSearchPage contentSearchPage = ShareUserSearchPage.navigateToAdvanceSearch(drone, searchInfo);
+        AdvanceSearchPage contentSearchPage = ShareUserSearchPage.navigateToAdvanceSearch(drone, searchInfo);
 
-            // Enter the valid modified from date
-            contentSearchPage.inputFromDate(dateFormat.format(todayDate));
-            String valueEntered = contentSearchPage.getFromDate();
+        // Enter the valid modified from date
+        contentSearchPage.inputFromDate(dateFormat.format(todayDate));
+        String valueEntered = contentSearchPage.getFromDate();
 
-            // Enter the invalid modified from date with day as 0
-            valueEntered = valueEntered.replaceFirst(valueEntered.split("/")[0], "0");
-            contentSearchPage.inputFromDate(valueEntered);
+        // Enter the invalid modified from date with day as 0
+        valueEntered = valueEntered.replaceFirst(valueEntered.split("/")[0], "0");
+        contentSearchPage.inputFromDate(valueEntered);
 
-            Assert.assertFalse(contentSearchPage.isValidFromDate());
+        Assert.assertFalse(contentSearchPage.isValidFromDate());
 
-            // Enter the valid modified from date with day as 06
-            valueEntered = valueEntered.replaceFirst(valueEntered.split("/")[0], "06");
-            contentSearchPage.inputFromDate(valueEntered);
+        // Enter the valid modified from date with day as 06
+        valueEntered = valueEntered.replaceFirst(valueEntered.split("/")[0], "06");
+        contentSearchPage.inputFromDate(valueEntered);
 
-            Assert.assertTrue(contentSearchPage.isValidFromDate());
+        Assert.assertTrue(contentSearchPage.isValidFromDate());
 
-            String actualValueEntered = contentSearchPage.getFromDate();
+        String actualValueEntered = contentSearchPage.getFromDate();
 
-            Assert.assertEquals(actualValueEntered, valueEntered.replaceFirst(valueEntered.split("/")[0], "6"));
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertEquals(actualValueEntered, valueEntered.replaceFirst(valueEntered.split("/")[0], "6"));
+
     }
 
     /**
-     * Test - ALF-10819:Verify results for advanced searches with quotes
+     * Test - AONE-13933:Verify results for advanced searches with quotes
      * <ul>
      * <li>Login</li>
      * <li>Crate and upload two files</li>
@@ -2200,8 +1874,8 @@ public class AdvanceSearchTest2 extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups="Enterprise42Bug")
-    public void ALF_10819() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13933() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -2213,47 +1887,156 @@ public class AdvanceSearchTest2 extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
         /** Test Data Setup */
-        Map<String, String> keyWordSearchText = new HashMap<String, String>();
+        Map<String, String> keyWordSearchText = new HashMap<>();
         List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        try
-        {
-            // Login
-            ShareUser.login(drone, testUser, testPassword);
+        // Login
+        ShareUser.login(drone, testUser, testPassword);
 
-            // Site
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        // Site
+        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
 
-            // Creating documents with quoted
-            ContentDetails contentDetails = new ContentDetails();
-            contentDetails.setName("string M.txt");
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        // Creating documents with quoted
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName("string M.txt");
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            contentDetails.setName("string alt M.txt");
-            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+        contentDetails.setName("string alt M.txt");
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
 
-            // Searching for valid Name.
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), "string M");
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name.
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), "string M");
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, "string M", "string M.txt", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string M.txt", true));
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string alt M.txt", true),
-                    "MNT-8476 - Search returning inconsistent results.");
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string M.txt", true));
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "string M", "string alt M.txt", true),
+                "MNT-8476 - Search returning inconsistent results.");
 
-            // Searching for valid Name.
-            keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), "string M");
-            ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+        // Searching for valid Name.
+        keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), "string M");
+        advancedSearchWithRetry(drone, searchInfo, keyWordSearchText, ADV_CONTENT_SEARCH, "\"string M\"", "string M.txt", true);
 
-            Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "\"string M\"", "string M.txt", true),
-                    "MNT-8476 - Search returning inconsistent results.");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
+        Assert.assertTrue(ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, "\"string M\"", "string M.txt", true),
+                "MNT-8476 - Search returning inconsistent results.");
+
+    }
+
+    /**
+     * DataPreparation method - AONE-13900
+     * <ul>
+     * <li>Create User</li>
+     * </ul>
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13900() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+    }
+
+    /**
+     * Test - AONE-13900: Verify Advanced search page and link
+     */
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13900() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        ShareUser.login(drone, testUserInfo);
+
+        // Click Search Options menu for Search field - Menu is expanded, Advanced search link is displayed;
+        SharePage sharePage = ShareUser.getSharePage(drone);
+        Assert.assertTrue(sharePage.getNav().isAdvSearchLinkPresent(), "Advanced search link isn't available");
+
+        // Click Advanced search link
+        AdvanceSearchPage advanceSearchPage = sharePage.getNav().selectAdvanceSearch().render();
+        Assert.assertTrue(advanceSearchPage != null);
+
+        // Verify items are displayed
+        Assert.assertTrue(advanceSearchPage.isAdvSearchPageCorrectlyDisplayed(), "Some elements are missing");
+    }
+
+    /**
+     * DataPreparation method - AONE-13932: Back to.. link
+     * <ul>
+     * <li>Create User</li>
+     * <li>Create Site</li>
+     * <li>Create Content</li>
+     * </ul>
+     * 
+     * @throws Exception
+     */
+    // @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AdvSearch_AONE_13932() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        ShareUser.login(drone, testUserInfo);
+
+        // Any site "Test" is created in Alfresco Share;
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        // Any content item is created
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName(testName);
+        ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
+    }
+
+    // todo not relevant for 5.0
+    // @Test(groups = { "AlfrescoOne" })
+    public void AONE_13932() throws Exception
+    {
+        String testName = getTestName();
+        String siteName = getSiteName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+
+        ShareUser.login(drone, testUser);
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        SharePage sharePage = ShareUser.getSharePage(drone);
+        AdvanceSearchPage advanceSearchPage;
+        Map<String, String> keyWordSearchText = new HashMap<>();
+
+        // Initialise search data
+        List<String> searchInfo = Arrays.asList(ADV_CONTENT_SEARCH);
+        keyWordSearchText.put(SearchKeys.KEYWORD.getSearchKeys(), testName);
+        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
+
+        // Click Go to Advanced Search link
+        //
+        SiteResultsPage siteResultsPage = new SiteResultsPage(drone);
+        siteResultsPage.goBackToAdvanceSearch().render();
+
+        Assert.assertTrue(ShareUser.getSharePage(drone) instanceof AdvanceSearchPage, "The user isn't redirected to Advanced Search page");
+
+        // Click "Back to Results" link;
+        advanceSearchPage = new AdvanceSearchPage(drone).render();
+        // todo ACE-2877
+        advanceSearchPage.clickBackToResults().render();
+        Assert.assertTrue(ShareUser.getSharePage(drone) instanceof SiteResultsPage, "The user isn't redirected to Advanced Search page");
+
+        // Click site name for 'testing" item;
+        siteResultsPage.getResults().get(0).clickSiteName();
+
+        Assert.assertTrue(ShareUser.getSharePage(drone) instanceof SiteDashboardPage, "The user isn't redirected to SiteDashboard page");
+
+        // Click "Advanced search" link in "search options" drop-down list;
+        advanceSearchPage = sharePage.getNav().selectAdvanceSearch().render();
+
+        // Click "Back to Test Site" link;
+        advanceSearchPage.clickBackToSite();
+        Assert.assertTrue(ShareUser.getSharePage(drone) instanceof SiteDashboardPage, "The user isn't redirected to SiteDashboard page");
     }
 }

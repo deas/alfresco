@@ -14,31 +14,23 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.Pagination;
+import org.alfresco.po.share.enums.ViewType;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.webdrone.*;
+import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.Pagination;
-import org.alfresco.po.share.enums.ViewType;
-import org.alfresco.po.share.site.SitePage;
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
-import org.alfresco.webdrone.WebDroneUtil;
-import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.webdrone.exception.PageOperationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Site document library page object, holds all element of the HTML page relating to share's site document library page.
@@ -78,6 +70,7 @@ public class DocumentLibraryPage extends SitePage
     private static final By ALL_CATEGORIES_PRESENT_ON_DOC_LIB = By.xpath("//span[text()='Category Root']/ancestor-or-self::table/parent::div/child::div/div");
     private static String CATEGORY_ROOT_SPACER = "//span[text()='Category Root']/ancestor-or-self::table[contains(@class, 'depth0')]";
     private static By CATEGORY_ROOT_SPACER_LINK = By.xpath(CATEGORY_ROOT_SPACER + "//a");
+    private static final String CHECK_BOX = "input[id^='checkbox-yui']";
 
     public enum Optype
     {
@@ -587,6 +580,7 @@ public class DocumentLibraryPage extends SitePage
         try
         {
             selectEntry(title).click();
+            waitUntilAlert();
         }
         catch(TimeoutException e)
         {
@@ -1035,8 +1029,8 @@ public class DocumentLibraryPage extends SitePage
             throw new IllegalArgumentException("Title is required");
         }
 
-        WebElement row = null;
-        String nodeRef = null;
+        WebElement row;
+        String nodeRef;
 
         try
         {
@@ -1401,7 +1395,7 @@ public class DocumentLibraryPage extends SitePage
      * @param templateName
      * @return {@link DocumentLibraryPage}
      */
-    public DocumentLibraryPage createContentFromTemplate(String templateName)
+    public HtmlPage createContentFromTemplate(String templateName)
     {
         try
         {
@@ -1411,7 +1405,7 @@ public class DocumentLibraryPage extends SitePage
                 WebElement template = getTemplate(templateName);
                 template.click();
 
-                return  new DocumentLibraryPage(drone).render();
+                return  FactorySharePage.resolvePage(drone);
         }
         }
         catch (StaleElementReferenceException ste)
@@ -1429,7 +1423,7 @@ public class DocumentLibraryPage extends SitePage
      * @param templateName
      * @return {@link DocumentLibraryPage}
      */
-    public DocumentLibraryPage createFolderFromTemplate(String templateName)
+    public HtmlPage createFolderFromTemplate(String templateName)
     {
         try{
             if(!templateName.isEmpty()){
@@ -1441,7 +1435,7 @@ public class DocumentLibraryPage extends SitePage
                 waitUntilMessageAppearAndDisappear("Folder", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 DocumentLibraryPage page = FactorySharePage.getPage(drone.getCurrentUrl(), drone).render();
                 page.setShouldHaveFiles(true);
-                return page.render();
+                return FactorySharePage.resolvePage(drone);
             }
         }
         catch (StaleElementReferenceException ste)
@@ -1452,7 +1446,6 @@ public class DocumentLibraryPage extends SitePage
         throw new PageOperationException(String.format("Template didn't found [%s]", templateName));
 
     }
-
 
     /**
      * find all existing templates.
@@ -1546,4 +1539,22 @@ public class DocumentLibraryPage extends SitePage
 
     }
 
+    /**
+     * Method checks if check-box present at a page
+     *
+     * @return true if present
+     */
+    public boolean isCheckBoxPresent()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(CHECK_BOX)).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error(CHECK_BOX + " isn't present at a page");
+            return false;
+        }
+
+    }
 }

@@ -12,78 +12,15 @@
         <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
     
-     <test name="SiteSearchDashlet Tests" verbose="1" time-out="600000">
+    <test name="SiteNoticetDashletTest" verbose="1" time-out="600000">
         <classes>
-            <class name="org.alfresco.share.dashlet.SiteSearchDashletTest" />
-        </classes>
-    </test>
-    
-    <test name="SavedSearchMyDashboard" verbose="1" time-out="600000">
-        <classes>
-            <class name="org.alfresco.share.dashlet.SavedSearchMyDashboardBasicTest" />
+            <class name="org.alfresco.share.dashlet.SiteNoticetDashletTest">
+                <methods>
+                    <exclude name="AONE_13979"/>
+                    <exclude name="AONE_13980"/>
+                </methods>
+            </class>
         </classes>
     </test>
 
-    <test name="SavedSearchSiteDashboard" verbose="1" time-out="600000">
-        <classes>
-            <class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardBasicTest" />
-        </classes>
-    </test>
-   
-    <test name="SavedSearchMyDashboardAdvanced" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.SavedSearchMyDashboardAdvancedTest" />
-        </classes>
-    </test>
-     
-    <test name="SavedSearchSiteDashboardAdvanced" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest" />
-        </classes>
-    </test>    
-    <test name="MyDashboardMyDiscussionTests" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.MyDashboardMyDiscussionTests" />
-        </classes>
-    </test>  
-     <test name="RecentlyModifiedDashletTest" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.RecentlyModifiedDashletTest" />
-        </classes>
-    </test>
-    <test name="RecentlyModifiedSiteContentDashlet" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet" />
-        </classes>
-    </test>
-     <test name="SiteDashboardMyDiscussionTests" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.SiteDashboardMyDiscussionTests" />
-        </classes>
-    </test>
-      <test name="SiteNoticetDashletTest" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.SiteNoticetDashletTest" />
-        </classes>
-    </test>
-    <test name="SiteSearchMyDashboardTest" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.SiteSearchMyDashboardTest" />
-        </classes>
-    </test>
-      <test name="WelcomeDashletCreateDelete" verbose="1" time-out="600000">
-        <classes>
-            <class
-                name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete" />
-        </classes>
-    </test>
-<!--      -->
 </suite>

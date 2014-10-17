@@ -70,6 +70,7 @@ public class FolderRulesPage extends SitePage
     {
         WebElement element = drone.findAndWait(INHERIT_RULES_TOGGLE);
         element.click();
+        waitUntilAlert(5);
         return new FolderRulesPage(drone);
     }
 

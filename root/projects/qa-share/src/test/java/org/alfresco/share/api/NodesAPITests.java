@@ -117,7 +117,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_197301() throws Exception
+    public void AONE_14242() throws Exception
     {
         // Status: 200
         ListResponse<Tag> tags = getNodeTags(testUser, DOMAIN, docGuid, null);
@@ -132,7 +132,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             getNodeTags(testUserInvalid, DOMAIN, docGuid, null);
-            Assert.fail(String.format("ALF_152001: , %s, Expected Result: %s", "get nodes tags request with incorrect auth", "Expected error 401"));
+            Assert.fail(String.format("AONE_14237: , %s, Expected Result: %s", "get nodes tags request with incorrect auth", "Expected error 401"));
         }
         catch (PublicApiException e)
         {
@@ -143,7 +143,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             getNodeTags(testUser, DOMAIN, docGuidInvalid, null);
-            Assert.fail(String.format("ALF_152001: , %s, Expected Result: %s", "get nodes tags request with incorrect nodeId - " + docGuidInvalid,
+            Assert.fail(String.format("AONE_14237: , %s, Expected Result: %s", "get nodes tags request with incorrect nodeId - " + docGuidInvalid,
                     "Expected error 404"));
         }
         catch (PublicApiException e)
@@ -166,7 +166,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_197401() throws Exception
+    public void AONE_14244() throws Exception
     {
         // Get: tags/tagId
         Tag nodeTag = new Tag("tagNew");
@@ -175,7 +175,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.getAll("nodes", docGuid, "tags", tagId, null, "Could not retrieve the tag");
-            Assert.fail(String.format("ALF_197701: , %s, Expected Result: %s", "GET nodes tag not allowed for tag", "Expected error 405"));
+            Assert.fail(String.format("AONE_14239: , %s, Expected Result: %s", "GET nodes tag not allowed for tag", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -186,7 +186,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.getAll("nodes", docGuid, "tags", "tag1", null, "Could not retrieve the tag");
-            Assert.fail(String.format("ALF_197401: , %s, Expected Result: %s", "GET nodes tag not allowed for tag and tag id", "Expected error 405"));
+            Assert.fail(String.format("AONE_14244: , %s, Expected Result: %s", "GET nodes tag not allowed for tag and tag id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -199,7 +199,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.create("nodes", docGuid, "tags", "tag1", nodeTag.toJSON().toJSONString(), "Could not create the tag");
-            Assert.fail(String.format("ALF_197401: , %s, Expected Result: %s", "POST nodes tag not allowed for tag and tag id", "Expected error 405"));
+            Assert.fail(String.format("AONE_14244: , %s, Expected Result: %s", "POST nodes tag not allowed for tag and tag id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -211,7 +211,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.update("nodes", docGuid, "tags", null, nodeTag.toJSON().toJSONString(), "Could not update the tag");
-            Assert.fail(String.format("ALF_197401: , %s, Expected Result: %s", "PUT nodes tag not allowed for tags", "Expected error 405"));
+            Assert.fail(String.format("AONE_14244: , %s, Expected Result: %s", "PUT nodes tag not allowed for tags", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -223,7 +223,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.update("nodes", docGuid, "tags", nodeTag.getNodeId(), null, "Could not update the tag");
-            Assert.fail(String.format("ALF_197401: , %s, Expected Result: %s", "PUT nodes tag not allowed for tag and tag id", "Expected error 405"));
+            Assert.fail(String.format("AONE_14244: , %s, Expected Result: %s", "PUT nodes tag not allowed for tag and tag id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -235,7 +235,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.remove("nodes", docGuid, "tags", null, "Could not delete the tag");
-            Assert.fail(String.format("ALF_197401: , %s, Expected Result: %s", "DELETE nodes tag not allowed", "Expected error 405"));
+            Assert.fail(String.format("AONE_14244: , %s, Expected Result: %s", "DELETE nodes tag not allowed", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -249,7 +249,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_197501() throws Exception
+    public void AONE_14243() throws Exception
     {
         // Post Tag
         Tag nodeTag = new Tag("tag4");
@@ -265,7 +265,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             createTag(testUserInvalid, DOMAIN, docGuid, nodeTag);
-            Assert.fail(String.format("ALF_197501: , %s, Expected Result: %s", "create nodes tags request with incorrect auth", "Expected error 401"));
+            Assert.fail(String.format("AONE_14243: , %s, Expected Result: %s", "create nodes tags request with incorrect auth", "Expected error 401"));
         }
         catch (PublicApiException e)
         {
@@ -276,7 +276,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             createTag(testUser, DOMAIN, docGuidInvalid, nodeTag);
-            Assert.fail(String.format("ALF_197501: , %s, Expected Result: %s", "get nodes tags request with incorrect nodeId - " + docGuid + "yy",
+            Assert.fail(String.format("AONE_14243: , %s, Expected Result: %s", "get nodes tags request with incorrect nodeId - " + docGuid + "yy",
                     "Expected error 404"));
         }
         catch (PublicApiException e)
@@ -286,14 +286,14 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_220801() throws Exception
+    public void AONE_14245() throws Exception
     {
         Map<String, String> param = new HashMap<String, String>();
         try
         {
             param.put("maxItems", "a");
             getNodeTags(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220801: , %s, Expected Result: %s", "getNodeTags request with incorrect maxItems - " + param, "Expected error 400"));
+            Assert.fail(String.format("AONE_14245: , %s, Expected Result: %s", "getNodeTags request with incorrect maxItems - " + param, "Expected error 400"));
         }
         catch (PublicApiException e)
         {
@@ -305,7 +305,7 @@ public class NodesAPITests extends NodesAPI
             param.clear();
             param.put("skipCount", "s");
             getNodeTags(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220801: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount - " + param, "Expected error 400"));
+            Assert.fail(String.format("AONE_14245: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount - " + param, "Expected error 400"));
         }
         catch (PublicApiException e)
         {
@@ -317,7 +317,7 @@ public class NodesAPITests extends NodesAPI
             param.clear();
             param.put("maxItems", "-1");
             getNodeTags(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220801: , %s, Expected Result: %s", "getNodeTags request with incorrect maxItems - " + param, "Expected error 400"));
+            Assert.fail(String.format("AONE_14245: , %s, Expected Result: %s", "getNodeTags request with incorrect maxItems - " + param, "Expected error 400"));
         }
         catch (PublicApiException e)
         {
@@ -329,7 +329,7 @@ public class NodesAPITests extends NodesAPI
             param.clear();
             param.put("skipCount", "-2");
             getNodeTags(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220801: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount - " + param, "Expected error 400"));
+            Assert.fail(String.format("AONE_14245: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount - " + param, "Expected error 400"));
         }
         catch (PublicApiException e)
         {
@@ -369,7 +369,7 @@ public class NodesAPITests extends NodesAPI
             param.put("skipCount", "a");
             param.put("maxItems", "b");
             getNodeTags(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220801: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount and maxItems - " + param,
+            Assert.fail(String.format("AONE_14245: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount and maxItems - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -383,7 +383,7 @@ public class NodesAPITests extends NodesAPI
             param.put("skipCount", "-1");
             param.put("maxItems", "-2");
             getNodeTags(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220801: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount and maxItems - " + param,
+            Assert.fail(String.format("AONE_14245: , %s, Expected Result: %s", "getNodeTags request with incorrect skipCount and maxItems - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -393,7 +393,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_221901() throws Exception
+    public void AONE_14246() throws Exception
     {
 
         Map<String, String> param = new HashMap<String, String>();
@@ -415,7 +415,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_152001() throws Exception
+    public void AONE_14237() throws Exception
     {
         // Status: 200
         ListResponse<NodeRating> ratings = getNodeRatings(testUser, DOMAIN, docGuid, null);
@@ -432,7 +432,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             getNodeRatings(testUserInvalid, DOMAIN, docGuid, null);
-            Assert.fail(String.format("ALF_152001: , %s, Expected Result: %s", "get nodes ratings request with incorrect auth", "Expected error 401"));
+            Assert.fail(String.format("AONE_14237: , %s, Expected Result: %s", "get nodes ratings request with incorrect auth", "Expected error 401"));
         }
         catch (PublicApiException e)
         {
@@ -443,7 +443,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             getNodeRatings(testUser, DOMAIN, docGuidInvalid, null);
-            Assert.fail(String.format("ALF_152001: , %s, Expected Result: %s", "get nodes ratings request with incorrect nodeId - " + docGuid + "a",
+            Assert.fail(String.format("AONE_14237: , %s, Expected Result: %s", "get nodes ratings request with incorrect nodeId - " + docGuid + "a",
                     "Expected error 404"));
         }
         catch (PublicApiException e)
@@ -470,7 +470,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_197701() throws Exception
+    public void AONE_14239() throws Exception
     {
         // Step 1
         NodeRating nodeRating = new NodeRating("likes", true);
@@ -484,7 +484,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.create("nodes", docGuid, "ratings", "likes", nodeRating.toJSON().toJSONString(), "Could not create the rating");
-            Assert.fail(String.format("ALF_197701: , %s, Expected Result: %s", "POST nodes rating not allowed for rating and rating id", "Expected error 405"));
+            Assert.fail(String.format("AONE_14239: , %s, Expected Result: %s", "POST nodes rating not allowed for rating and rating id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -496,7 +496,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.update("nodes", docGuid, "ratings", null, nodeRating.toJSON().toJSONString(), "Could not update the rating");
-            Assert.fail(String.format("ALF_197701: , %s, Expected Result: %s", "PUT nodes rating not allowed for rating and rating id", "Expected error 405"));
+            Assert.fail(String.format("AONE_14239: , %s, Expected Result: %s", "PUT nodes rating not allowed for rating and rating id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -508,7 +508,7 @@ public class NodesAPITests extends NodesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.update("nodes", docGuid, "ratings", nodeRating.getId(), null, "Could not update the rating");
-            Assert.fail(String.format("ALF_197701: , %s, Expected Result: %s", "PUT nodes rating not allowed for rating and rating id", "Expected error 405"));
+            Assert.fail(String.format("AONE_14239: , %s, Expected Result: %s", "PUT nodes rating not allowed for rating and rating id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -521,7 +521,7 @@ public class NodesAPITests extends NodesAPI
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             nodesClient.remove("nodes", docGuid, "ratings", null, "Could not update the rating");
             Assert.fail(String
-                    .format("ALF_197701: , %s, Expected Result: %s", "DELETE nodes rating not allowed for rating and rating id", "Expected error 405"));
+                    .format("AONE_14239: , %s, Expected Result: %s", "DELETE nodes rating not allowed for rating and rating id", "Expected error 405"));
         }
         catch (PublicApiException e)
         {
@@ -546,7 +546,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_197601() throws Exception
+    public void AONE_14238() throws Exception
     {
 
         // Status: 200
@@ -563,7 +563,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             createNodeRating(testUserInvalid, DOMAIN, docGuid, nodeRating);
-            Assert.fail(String.format("ALF_197601: , %s, Expected Result: %s", "create nodes ratings request with incorrect auth", "Expected error 401"));
+            Assert.fail(String.format("AONE_14238: , %s, Expected Result: %s", "create nodes ratings request with incorrect auth", "Expected error 401"));
         }
         catch (PublicApiException e)
         {
@@ -574,7 +574,7 @@ public class NodesAPITests extends NodesAPI
         try
         {
             createNodeRating(testUser, DOMAIN, docGuidInvalid, nodeRating);
-            Assert.fail(String.format("ALF_197601: , %s, Expected Result: %s", "POST nodes ratings request with incorrect nodeId - " + docGuidInvalid,
+            Assert.fail(String.format("AONE_14238: , %s, Expected Result: %s", "POST nodes ratings request with incorrect nodeId - " + docGuidInvalid,
                     "Expected error 404"));
         }
         catch (PublicApiException e)
@@ -584,14 +584,14 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_220901() throws Exception
+    public void AONE_14240() throws Exception
     {
         Map<String, String> param = new HashMap<String, String>();
         try
         {
             param.put("maxItems", "a");
             getNodeRatings(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220901: , %s, Expected Result: %s", "getNodeRatings request with incorrect maxItems - " + param,
+            Assert.fail(String.format("AONE_14240: , %s, Expected Result: %s", "getNodeRatings request with incorrect maxItems - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -604,7 +604,7 @@ public class NodesAPITests extends NodesAPI
             param.clear();
             param.put("skipCount", "s");
             getNodeRatings(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220901: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount - " + param,
+            Assert.fail(String.format("AONE_14240: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -617,7 +617,7 @@ public class NodesAPITests extends NodesAPI
             param.clear();
             param.put("maxItems", "-1");
             getNodeRatings(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220901: , %s, Expected Result: %s", "getNodeRatings request with incorrect maxItems - " + param,
+            Assert.fail(String.format("AONE_14240: , %s, Expected Result: %s", "getNodeRatings request with incorrect maxItems - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -630,7 +630,7 @@ public class NodesAPITests extends NodesAPI
             param.clear();
             param.put("skipCount", "-2");
             getNodeRatings(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220901: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount - " + param,
+            Assert.fail(String.format("AONE_14240: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -671,7 +671,7 @@ public class NodesAPITests extends NodesAPI
             param.put("skipCount", "a");
             param.put("maxItems", "b");
             getNodeRatings(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220901: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount and maxItems - " + param,
+            Assert.fail(String.format("AONE_14240: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount and maxItems - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -685,7 +685,7 @@ public class NodesAPITests extends NodesAPI
             param.put("skipCount", "-1");
             param.put("maxItems", "-2");
             getNodeRatings(testUser, DOMAIN, docGuid, param);
-            Assert.fail(String.format("ALF_220901: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount and maxItems - " + param,
+            Assert.fail(String.format("AONE_14240: , %s, Expected Result: %s", "getNodeRatings request with incorrect skipCount and maxItems - " + param,
                     "Expected error 400"));
         }
         catch (PublicApiException e)
@@ -695,7 +695,7 @@ public class NodesAPITests extends NodesAPI
     }
 
     @Test
-    public void ALF_222001() throws Exception
+    public void AONE_14241() throws Exception
     {
 
         Map<String, String> param = new HashMap<String, String>();

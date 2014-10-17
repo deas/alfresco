@@ -75,15 +75,15 @@ public abstract class AbstractReplyForm extends HtmlElement
         try
         {
             drone.findAndWait(SUBMIT_BTN).click();
-            return new TopicViewPage(drone).render();
+            return new TopicViewPage(drone).waitUntilAlert().render();
         }
         catch (NoSuchElementException nse)
         {
-            throw new ShareException ("Cannot find Submit button");
+            throw new ShareException("Cannot find Submit button");
         }
         catch (TimeoutException te)
         {
-            throw new ShareException ("The operation has timed out");
+            throw new ShareException("The operation has timed out");
         }
     }
 

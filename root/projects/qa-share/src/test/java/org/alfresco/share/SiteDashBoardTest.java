@@ -1,8 +1,5 @@
 package org.alfresco.share;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.dashlet.SiteContentDashlet;
 import org.alfresco.po.share.dashlet.SiteContentFilter;
 import org.alfresco.po.share.enums.UserRole;
@@ -18,6 +15,9 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SiteDashBoardTest extends AbstractUtils
 {
@@ -76,7 +76,7 @@ public class SiteDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void cloud_575()
+    public void AONE_12119()
     {
         try
         {
@@ -148,7 +148,7 @@ public class SiteDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void cloud_578()
+    public void AONE_12122()
     {
         try
         {
@@ -239,7 +239,7 @@ public class SiteDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "nonEnterprise" })
-    public void cloud_580()
+    public void AONE_12124()
     {
         try
         {
@@ -286,7 +286,7 @@ public class SiteDashBoardTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_Enterprise40x_7932() throws Exception
+    public void dataPrep_AONE_3409() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -312,7 +312,7 @@ public class SiteDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void enterprise40x_7932()
+    public void AONE_3409()
     {
         try
         {
@@ -402,7 +402,7 @@ public class SiteDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void enterprise40x_7942()
+    public void AONE_3413()
     {
         try
         {
@@ -471,7 +471,7 @@ public class SiteDashBoardTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_Enterprise40x_7942() throws Exception
+    public void dataPrep_AONE_3413() throws Exception
     {
         String testName = getTestName();
         String fileLikedByUser1 = getFileName(testName + "1");

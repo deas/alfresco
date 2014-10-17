@@ -1,8 +1,5 @@
 package org.alfresco.share.util.api;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.HttpUtil;
 import org.apache.commons.logging.Log;
@@ -14,11 +11,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -28,11 +21,13 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class AlfrescoHttpClient extends AbstractUtils
 {
     private static final int TIMEOUT_MILLISEC = (int) refreshDuration; // = 10 seconds
     private static Log logger = LogFactory.getLog(AlfrescoHttpClient.class);
-    // private AlfrescoHttpClient alfrescoHttpClient = new AlfrescoHttpClient();
 
     public AlfrescoHttpClient() throws Exception
     {
@@ -72,6 +67,21 @@ public class AlfrescoHttpClient extends AbstractUtils
             throw new UnsupportedOperationException("URL should not be null.");
         }
 
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+        HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+
+        DefaultHttpClient httpclient = new DefaultHttpClient(httpParams);
+
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(new AuthScope(AuthScope.ANY), new UsernamePasswordCredentials(username, password));
+        httpclient.setCredentialsProvider(credentialsProvider);
+
+        return httpclient;
+    }
+
+    public static HttpClient getHttpClientWithBasicAuth(String username, String password)
+    {
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
         HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
@@ -313,24 +323,20 @@ public class AlfrescoHttpClient extends AbstractUtils
         return result;
     }
 
-    public static HttpEntity executeRequest(HttpClient client, HttpPost request) throws Exception
+    public static HttpResponse executeRequest(HttpClient client, HttpPost request) throws Exception
     {
-        HttpEntity entityResponse = null;
         HttpResponse response = null;
-        
         try
         {
             response = client.execute(request);
             logger.info("Status Received:" + response.getStatusLine());
-            entityResponse = response.getEntity();
+            return response;
         }
         catch (Exception e)
         {
             logger.error(response);
             throw new RuntimeException("Error during execute request", e);
         }
-
-        return entityResponse;
     }
 
     public static HttpEntity executeRequest(HttpClient client, HttpGet request) throws Exception

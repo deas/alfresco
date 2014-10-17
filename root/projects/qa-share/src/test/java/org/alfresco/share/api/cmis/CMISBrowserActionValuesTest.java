@@ -24,9 +24,8 @@ import org.testng.annotations.Test;
 
 /**
  * Class to include: Tests for CMIS Action values for Browser binding
- * 
+ *
  * @author Abhijeet Bharade
- * 
  */
 @Listeners(FailedTestListener.class)
 @Test(groups = { "AlfrescoOne" })
@@ -60,7 +59,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159921() throws Exception
+    public void AONE_14406() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -70,7 +69,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159691() throws Exception
+    public void AONE_14407() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -79,32 +78,31 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159701() throws Exception
+    public void AONE_14408() throws Exception
     {
         createRelationship("R:cm:basis");
     }
 
     @Test
-    public void ALF_159711() throws Exception
+    public void AONE_14409() throws Exception
     {
         deleteAllVersionsTest();
     }
 
-    @Test
-    public void ALF_159741() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14410() throws Exception
     {
         updateTest();
-
     }
 
     @Test
-    public void ALF_159721() throws Exception
+    public void AONE_14411() throws Exception
     {
         queryTest();
     }
 
     @Test
-    public void ALF_159731() throws Exception
+    public void AONE_14412() throws Exception
     {
         String thisTestName = getTestName();
         String thisFolderName = getFolderName(thisTestName);
@@ -113,7 +111,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159751() throws Exception
+    public void AONE_14413() throws Exception
     {
 
         String thisTestName = getTestName();
@@ -123,7 +121,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159761() throws Exception
+    public void AONE_14414() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -133,7 +131,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159771() throws Exception
+    public void AONE_14415() throws Exception
     {
         String thisTestName = getTestName();
         String thisFolderName = getFolderName(thisTestName);
@@ -144,33 +142,34 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159781() throws Exception
+    public void AONE_14416() throws Exception
     {
         setContentTest(drone);
     }
 
-    @Test
-    public void ALF_159791() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14417() throws Exception
     {
         appendTest(drone);
     }
 
     @Test
-    public void ALF_159801() throws Exception
+    public void AONE_14418() throws Exception
     {
         deleteContentTest(drone);
     }
 
     @Test
-    public void ALF_159811() throws Exception
+    public void AONE_14419() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
         String thisFolderName = getFolderName(thisTestName);
         addObjectToFolderTest(drone, thisFileName, thisFolderName);
     }
+
     @Test
-    public void ALF_159821() throws Exception
+    public void AONE_14420() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -179,7 +178,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159831() throws Exception
+    public void AONE_14421() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -187,7 +186,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159841() throws Exception
+    public void AONE_14422() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -195,7 +194,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159851() throws Exception
+    public void AONE_14423() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -203,7 +202,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159861() throws Exception
+    public void AONE_14424() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -211,7 +210,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159871() throws Exception
+    public void AONE_14425() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -219,21 +218,21 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_159881() throws Exception
+    public void AONE_14426() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
         cancelCheckOutTest(drone, thisFileName);
     }
 
-    @Test
-    public void ALF_159911() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14427() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
-        applyACLTest(drone, thisFileName);
+        String thisFolderName = getFolderName(thisTestName);
+        applyACLTest(drone, thisFileName, thisFolderName);
     }
-    
 
     /**
      * Preconditions
@@ -252,8 +251,8 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Header Status Code: 400 Bad Request 
      * Body contains CmisInvalidArgumentException
      */
-    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
-    public void ALF_3131() 
+	@Test(expectedExceptions = org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
+	public void AONE_14428()
     {
         super.cmisItemTypeShouldNotBeQueryable();
     }
@@ -276,7 +275,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Body contains cm:homeFolder, abeecher, mjackson, admin, guest
      */
     @Test
-    public void ALF_3132()
+    public void AONE_14429()
     {
         super.cmPersonShouldFindPeople();
     }
@@ -299,7 +298,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Body contains abeecher for Enterprise and engineering for Cloud
      */
     @Test
-    public void ALF_3133()
+    public void AONE_14430()
     {
         super.cmPersonWithWhereClauseShouldFindPerson();
     }
@@ -323,7 +322,7 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Body contains the changed location "Tilbury, UK a change"
      */
     @Test
-    public void ALF_3134()
+    public void AONE_14431()
     {
         super.cmPersonCanBeUpdatedBySelf();
     }
@@ -346,8 +345,8 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Header Status Code: 400 Bad Request 
      * Body contains CmisUnauthorizedException
      */
-    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
-    public void ALF_3135()
+	@Test(expectedExceptions = org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
+	public void AONE_14432()
     {
         super.cmPersonCannotBeUpdatedByUnauthorizedUser();
     }
@@ -369,8 +368,8 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Header Status Code: 400 Bad Request 
      * Body contains CmisUnauthorizedException
      */
-    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
-    public void ALF_3136()
+	@Test(expectedExceptions = org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
+	public void AONE_14433()
     {
         super.cmPersonCannotBeDeletedByUnauthorizedUser();
     }
@@ -392,10 +391,10 @@ public class CMISBrowserActionValuesTest extends CMISActionValuesTest
      * Header Status Code: 500 Internal Server Error 
      * Body contains CmisRuntimeException
      */
-    @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
-    public void ALF_3137() 
+	@Test(expectedExceptions = org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
+	public void AONE_14434()
     {
         super.cmPersonCannotBeDeletedByAuthorizedUserViaCmis();
     }
-    
+
 }

@@ -18,13 +18,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static org.testng.Assert.assertEquals;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.SharePopup;
@@ -39,6 +32,14 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import static org.testng.Assert.assertEquals;
 /**
  * Integration test to verify document CRUD is operating correctly.
  * 
@@ -53,9 +54,13 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
     private String fileName;
     private String title;
     private File file;
+    private File file2;
     private String tagName;
     DashBoardPage dashBoard;
     SiteDashboardPage site;
+    DocumentDetailsPage detailsPage;
+    DocumentLibraryPage docLibPage;
+    EditDocumentPropertiesPage editPropertiesPage;
 
     @AfterClass(groups={"alfresco-one"})	
     public void quit()
@@ -94,13 +99,18 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
         // getDocumentLibraryPage(siteName).render();
         UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
         docPage = upLoadPage.uploadFile(file.getCanonicalPath()).render();
+
+        file2 = SiteUtil.prepareFile("EditProps");
+        upLoadPage = docPage.getNavigation().selectFileUpload().render();
+        docPage = upLoadPage.uploadFile(file2.getCanonicalPath()).render();
+
         docPage.selectFile(fileName);
     }
     
     @Test
     public void editPropertiesAndCancel() throws Exception
     {
-        DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+        detailsPage = drone.getCurrentPage().render();
         EditDocumentPropertiesPage editPage = detailsPage.selectEditProperties().render();
         Assert.assertTrue(editPage.isEditPropertiesVisible());
         Assert.assertEquals(editPage.getName(), fileName);
@@ -115,7 +125,7 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
     @Test(dependsOnMethods="editPropertiesAndCancel")
     public void editPropertiesAndSave() throws Exception
     {
-        DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+        detailsPage = drone.getCurrentPage().render();
         EditDocumentPropertiesPage editPage = detailsPage.selectEditProperties().render();
         Assert.assertTrue(editPage.isEditPropertiesVisible());
         Assert.assertEquals(editPage.getName(), fileName);
@@ -147,7 +157,7 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
     @Test(dependsOnMethods="editPropertiesAndSave")
     public void checkInputFieldsHaveUpdatedValues() throws Exception
     {
-    	DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+    	detailsPage = drone.getCurrentPage().render();
     	EditDocumentPropertiesPage editPage = detailsPage.selectEditProperties().render();
     	Assert.assertTrue(editPage.isEditPropertiesVisible());
     	Assert.assertEquals(editPage.getName(), "my.txt");
@@ -163,7 +173,7 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
     @Test(dependsOnMethods="checkInputFieldsHaveUpdatedValues")
     public void editPropertiesWithValidationAndSave() throws Exception
     {
-        DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+        detailsPage = drone.getCurrentPage().render();
         EditDocumentPropertiesPage editPage = detailsPage.selectEditProperties().render();
         editPage.setName("");
         editPage = editPage.selectSaveWithValidation().render();
@@ -186,5 +196,71 @@ public class EditDocumentPropertiesPageTest extends AbstractDocumentTest
         
         Map<String, Object> properties = detailsPage.getProperties();
         Assert.assertEquals(properties.get("Name"), "new.txt");
+    }
+
+    @Test(dependsOnMethods="editPropertiesWithValidationAndSave")
+    public void editPropertiesOfDublinCoreAspect() throws Exception
+    {
+        detailsPage = drone.getCurrentPage().render();
+        docLibPage = detailsPage.getSiteNav().selectSiteDocumentLibrary().render();
+        detailsPage = docLibPage.selectFile(file2.getName()).render();
+        List<DocumentAspect> documentAspects = new ArrayList<DocumentAspect>();
+        documentAspects.add(DocumentAspect.DUBLIN_CORE);
+        SelectAspectsPage selectAspectsPage = detailsPage.selectManageAspects();
+        selectAspectsPage.add(documentAspects);
+        selectAspectsPage.clickApplyChanges();
+        detailsPage.render();
+
+        editPropertiesPage = detailsPage.selectEditProperties().render();
+
+        Assert.assertTrue(editPropertiesPage.getContributor().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getPublisher().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getCoverage().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getIdentifier().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getRights().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getSource().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getSubject().isEmpty());
+        Assert.assertTrue(editPropertiesPage.getType().isEmpty());
+    }
+
+    @Test(dependsOnMethods="editPropertiesOfDublinCoreAspect")
+    public void addDublinCoreAspect() throws Exception
+    {
+        detailsPage = editPropertiesPage.clickCancel().render();
+        SelectAspectsPage selectAspectsPage = detailsPage.selectManageAspects().render();
+
+        List<DocumentAspect> aspectsToAdd = new ArrayList<>();
+        aspectsToAdd.add(DocumentAspect.DUBLIN_CORE);
+
+        selectAspectsPage = selectAspectsPage.add(aspectsToAdd).render();
+        detailsPage = selectAspectsPage.clickApplyChanges().render();
+
+        editPropertiesPage = detailsPage.selectEditProperties().render();
+
+        editPropertiesPage.setContributor("test-contributor");
+        editPropertiesPage.setPublisher("test-publisher");
+        editPropertiesPage.setCoverage("test-coverage");
+        editPropertiesPage.setIdentifier("test-identifier");
+        editPropertiesPage.setRights("test-rights");
+        editPropertiesPage.setSource("test-source");
+        editPropertiesPage.setSubject("test-subject");
+        editPropertiesPage.setType("test-type");
+
+        detailsPage = editPropertiesPage.selectSave().render();
+    }
+
+    @Test(dependsOnMethods="addDublinCoreAspect")
+    public void verifyProperties() throws Exception
+    {
+        editPropertiesPage = detailsPage.selectEditProperties().render();
+
+        Assert.assertEquals(editPropertiesPage.getContributor(), "test-contributor");
+        Assert.assertEquals(editPropertiesPage.getPublisher(), "test-publisher");
+        Assert.assertEquals(editPropertiesPage.getCoverage(), "test-coverage");
+        Assert.assertEquals(editPropertiesPage.getIdentifier(), "test-identifier");
+        Assert.assertEquals(editPropertiesPage.getRights(), "test-rights");
+        Assert.assertEquals(editPropertiesPage.getSource(), "test-source");
+        Assert.assertEquals(editPropertiesPage.getSubject(), "test-subject");
+        Assert.assertEquals(editPropertiesPage.getType(), "test-type");
     }
 }

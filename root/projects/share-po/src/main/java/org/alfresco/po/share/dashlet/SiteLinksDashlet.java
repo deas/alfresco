@@ -1,18 +1,22 @@
 package org.alfresco.po.share.dashlet;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.alfresco.po.share.site.links.AddLinkForm;
 import org.alfresco.po.share.site.links.LinksDetailsPage;
-import org.alfresco.po.share.site.links.LinksPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.*;
-
-import java.util.Collections;
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * Page object to hold site links dashlet
@@ -162,8 +166,11 @@ public class SiteLinksDashlet extends AbstractDashlet implements Dashlet
     public LinksDetailsPage createLink(String name, String url)
     {
         drone.findAndWait(CREATE_LINK).click();
-        LinksPage linksPage = new LinksPage(drone);
-        linksPage.createLink(name, url);
+        AddLinkForm addLinkForm = new AddLinkForm(drone);
+        addLinkForm.setTitleField(name);
+        addLinkForm.setUrlField(url);
+        addLinkForm.clickSaveBtn();
+        waitUntilAlert();
         return new LinksDetailsPage(drone).render();
     }
 

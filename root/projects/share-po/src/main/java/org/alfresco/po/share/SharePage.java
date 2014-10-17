@@ -14,32 +14,21 @@
  */
 package org.alfresco.po.share;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.alfresco.po.share.search.SearchBox;
-import org.alfresco.webdrone.ElementState;
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.Page;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.RenderWebElement;
-import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.*;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract of an Alfresco Share HTML page.
@@ -56,11 +45,13 @@ public abstract class SharePage extends Page
     protected static final By PROMPT_PANEL_ID = By.id("prompt");
     protected AlfrescoVersion alfrescoVersion;
     protected long popupRendertime;
-    protected long elementWaitInSeconds;
+    protected long elementWaitInSeconds = 1;
     protected static By LICENSE_TO = By.cssSelector(".licenseHolder");
     private static String COPYRIGHT_SEARCH_STRING = " All rights reserved.";
     protected static final By CONFIRM_DELETE = By.xpath("//span[@class='button-group']/span[1]/span/button");
     protected static final By CANCEL_DELETE = By.xpath("//span[@class='button-group']/span[2]/span/button");
+    private final static By TOP_LOGO = By.xpath("//div[@id='HEADER_LOGO']/div/img");
+    private final static By FOOTER_LOGO = By.xpath("//span[@class='copyright']/a/img");
 
     protected SharePage(WebDrone drone)
     {
@@ -153,7 +144,7 @@ public abstract class SharePage extends Page
                 selector = "div.alf-menu-title span.alf-menu-title-text";
                 break;
             default:
-                selector = ".alfresco-header-Title";
+                selector = "#HEADER_TITLE";
                 break;
         }
         return drone.find(By.cssSelector(selector)).getText().trim();
@@ -280,16 +271,16 @@ public abstract class SharePage extends Page
      */
     public boolean isLoggedIn()
     {
-        boolean loggedin = false;
+        boolean loggedIn = false;
         try
         {
-            loggedin = drone.findAndWait(USER_LOGGED_IN_LABEL).isDisplayed();
+            loggedIn = drone.findAndWait(USER_LOGGED_IN_LABEL).isDisplayed();
         }
         catch (TimeoutException e)
         {
             logger.trace("User loggedIn label didn't found.");
         }
-        return loggedin;
+        return loggedIn;
     }
 
     /**
@@ -319,7 +310,7 @@ public abstract class SharePage extends Page
             try
             {
                 timer.start();
-                WebElement deletedMessage = drone.find(By.cssSelector("div.bd"));
+                WebElement deletedMessage = drone.findAndWait(By.cssSelector("div.bd"));
                 messagePresent = deletedMessage.isDisplayed();
                 timer.end();
             }
@@ -328,6 +319,10 @@ public abstract class SharePage extends Page
                 messagePresent = false;
             }
             catch (StaleElementReferenceException se)
+            {
+                canResume(waitTime);
+            }
+            catch (NoSuchElementException nse)
             {
                 messagePresent = false;
             }
@@ -557,7 +552,7 @@ public abstract class SharePage extends Page
     {
         try
         {
-            return drone.find(locator).getText();
+            return drone.findAndWait(locator).getText();
         }
         catch (NoSuchElementException nse)
         {
@@ -680,7 +675,7 @@ public abstract class SharePage extends Page
         {
             if (logger.isTraceEnabled())
             {
-                logger.trace(exception);
+                logger.trace(exception + locator.toString());
             }
         }
 
@@ -704,17 +699,18 @@ public abstract class SharePage extends Page
     /**
      * Method for wait while balloon message about some changes hide.
      */
-    protected void waitUntilAlert()
+    public SharePage waitUntilAlert()
     {
         final long WAIT_DELETE_FROM_DOM = drone.getDefaultWaitTime() / 1000;
-        waitUntilAlert(WAIT_DELETE_FROM_DOM);
+        return waitUntilAlert(WAIT_DELETE_FROM_DOM);
     }
 
     /**
      * Method for wait while balloon message about some changes hide.
+     *
      * @param seconds
      */
-    protected void waitUntilAlert(long seconds)
+    public SharePage waitUntilAlert(long seconds)
     {
         final long WAIT_ALERT_PRESENT = 1; //hardcoded - possible temporary excess in most cases.
         try
@@ -730,6 +726,7 @@ public abstract class SharePage extends Page
                 logger.error("Alert message hide quickly", ex);
             }
         }
+        return this;
     }
 
 
@@ -829,12 +826,12 @@ public abstract class SharePage extends Page
 
     /**
      * Get background color of element or color of element (font color)
+     *
      * @param locator
-     * @param background
-     *          if needed to find color of element's background - param must be true
-     *          if needed to find color of element itself - param must be false
+     * @param background if needed to find color of element's background - param must be true
+     *                   if needed to find color of element itself - param must be false
      * @return hex
-     *         return color in Hex color model
+     * return color in Hex color model
      */
     public String getColor(By locator, boolean background)
     {
@@ -844,18 +841,18 @@ public abstract class SharePage extends Page
         try
         {
             element = drone.findAndWait(locator);
-            if(background)
+            if (background)
                 color = element.getCssValue("background-color");
             else
                 color = element.getCssValue("color");
 
             String[] numbers = color.replace("rgba(", "").replace(")", "").split(",");
-            int number1=Integer.parseInt(numbers[0]);
+            int number1 = Integer.parseInt(numbers[0]);
             numbers[1] = numbers[1].trim();
-            int number2=Integer.parseInt(numbers[1]);
+            int number2 = Integer.parseInt(numbers[1]);
             numbers[2] = numbers[2].trim();
-            int number3=Integer.parseInt(numbers[2]);
-            hex = String.format("#%02x%02x%02x", number1,number2,number3);
+            int number3 = Integer.parseInt(numbers[2]);
+            hex = String.format("#%02x%02x%02x", number1, number2, number3);
 
         }
         catch (StaleElementReferenceException e)
@@ -872,7 +869,38 @@ public abstract class SharePage extends Page
         }
 
         return hex;
+    }
 
+
+    /**
+     * Open About popUp from footer.
+     *
+     * @return
+     */
+    public AboutPopUp openAboutPopUp()
+    {
+        drone.findAndWait(FOOTER_LOGO).click();
+        return new AboutPopUp(drone);
+    }
+
+    /**
+     * Return Top Logo image url.
+     *
+     * @return
+     */
+    public String getTopLogoUrl()
+    {
+        return drone.findAndWait(TOP_LOGO).getAttribute("src");
+    }
+
+    /**
+     * Return Footer Logo image Url
+     *
+     * @return
+     */
+    public String getFooterLogoUrl()
+    {
+        return drone.findAndWait(FOOTER_LOGO).getAttribute("src");
     }
 
 }

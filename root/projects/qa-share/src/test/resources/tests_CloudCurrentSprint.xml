@@ -1,231 +1,216 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Classes" verbose="1" preserve-order="true" parallel="classes" thread-count="5">
-    <groups>
-        <run>
-            <exclude name="DataPrep.*" />
-            <exclude name="Enterprise42" />
-            <exclude name="Hybrid.*" />
-            <exclude name="NonGrid" />
-            <exclude name=".*Bug.*" />
-        </run>
-    </groups>
-    <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
-    </listeners>
-    <test name="CMIS Atom Document Aspect" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CmisAtomDocumentAspectsTests" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Document Aspect" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CmisBrowserDocumentAspectsTests" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Folder Aspects Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CmisBrowserFolderAspectsTests" />
-        </classes>
-    </test>
-
-    <test name="CMIS Atom Folder Aspects Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CmisAtomFolderAspectsTests" />
-        </classes>
-    </test>
-
-    <test name="CMIS Atom Action Values Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CMISAtomActionValuesTests" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Action Values Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CMISBrowserActionValuesTest" />
-        </classes>
-    </test>
-
-    <test name="CMIS Atom Append Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CMISAtomAppendTests" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Append Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CMISBrowserAppendTest" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Selector Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Selector more Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter2" />
-        </classes>
-    </test>
-
-    <test name="CMIS Browser Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.api.cmis.CmisBrowserTests"/>
-        </classes>
-    </test>
+<suite name="Classes" verbose="1" preserve-order="true" parallel="classes"
+	thread-count="5">
+	<groups>
+		<run>
+			<exclude name="DataPrep.*" />
+			<exclude name="Enterprise42" />
+			<exclude name="Hybrid.*" />
+			<exclude name="NonGrid" />
+			<exclude name=".*Bug.*" />
+		</run>
+	</groups>
+	<listeners>
+		<listener
+			class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+	</listeners>
     
-    <test name="Site Notification Tests" verbose="1">
+
+	<test name="Upload Items Test Cloud" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.cloud.documentlibrary.UploadItemsTests" />
+		</classes>
+	</test>
+	
+	<test name="Quick Share Tests" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.cloud.documentlibrary.QuickShareTests" />
+		</classes>
+	</test>
+	
+	<test name="Locate File/Folder from Views" verbose="1">
         <classes>
-            <class name="org.alfresco.share.user.SiteNotificationsTest"/>
+            <class name="org.alfresco.share.cloud.documentlibrary.ManageDocLibItemsTests"/>
+        </classes>
+    </test>
+	
+	
+<!--
+
+	<test name="Site Activities Dashlet Test" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.dashlet.SiteActivitiesDashletTest" />
+		</classes>
+	</test>
+	
+	<test name="Open User Dashboard when session expired" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.user.UserDashboardSesionExpired"/>
         </classes>
     </test>
 
-    <test name="My Tasks Tests" verbose="1">
-        <classes>
-            <class name="org.alfresco.share.workflow.MyTasksTest"/>
-        </classes>
-    </test>
+	 <test name="CMIS Atom Document Aspect" verbose="1"> <classes> <class 
+		name="org.alfresco.share.api.cmis.CmisAtomDocumentAspectsTests" /> </classes> 
+		</test> <test name="CMIS Browser Document Aspect" verbose="1"> <classes> 
+		<class name="org.alfresco.share.api.cmis.CmisBrowserDocumentAspectsTests" 
+		/> </classes> </test> <test name="CMIS Browser Folder Aspects Tests" verbose="1"> 
+		<classes> <class name="org.alfresco.share.api.cmis.CmisBrowserFolderAspectsTests" 
+		/> </classes> </test> <test name="CMIS Atom Folder Aspects Tests" verbose="1"> 
+		<classes> <class name="org.alfresco.share.api.cmis.CmisAtomFolderAspectsTests" 
+		/> </classes> </test> <test name="CMIS Atom Action Values Tests" verbose="1"> 
+		<classes> <class name="org.alfresco.share.api.cmis.CMISAtomActionValuesTests" 
+		/> </classes> </test> <test name="CMIS Browser Action Values Tests" verbose="1"> 
+		<classes> <class name="org.alfresco.share.api.cmis.CMISBrowserActionValuesTest" 
+		/> </classes> </test> <test name="CMIS Atom Append Tests" verbose="1"> <classes> 
+		<class name="org.alfresco.share.api.cmis.CMISAtomAppendTests" /> </classes> 
+		</test> <test name="CMIS Browser Append Tests" verbose="1"> <classes> <class 
+		name="org.alfresco.share.api.cmis.CMISBrowserAppendTest" /> </classes> </test> 
+		<test name="CMIS Browser Selector Tests" verbose="1"> <classes> <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter" 
+		/> </classes> </test> <test name="CMIS Browser Selector more Tests" verbose="1"> 
+		<classes> <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter2" 
+		/> </classes> </test> <test name="CMIS Browser Tests" verbose="1"> <classes> 
+		<class name="org.alfresco.share.api.cmis.CmisBrowserTests" /> </classes> 
+		</test> <test name="Site Notification Tests" verbose="1"> <classes> <class 
+		name="org.alfresco.share.user.SiteNotificationsTest" /> </classes> </test> 
+		<test name="My Tasks Tests" verbose="1"> <classes> <class name="org.alfresco.share.workflow.MyTasksTest" 
+		/> </classes> </test> -->
 
-    <!--<test name="Granular Manage Permission" verbose="1"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.ManagePermissionTest"> -->
-    <!--<methods> -->
-    <!--<include name="alf_10427" /> -->
-    <!--<include name="alf_10428" /> -->
-    <!--<include name="alf_10429" /> -->
-    <!--<include name="alf_10790" /> -->
-    <!--<include name="alf_10793" /> -->
-    <!--<include name="alf_10795" /> -->
-    <!--<include name="alf_10287" /> -->
-    <!--<include name="alf_10288" /> -->
-    <!--<include name="alf_10425" /> -->
-    <!--<include name="alf_10426" /> -->
-    <!--<include name="alf_10785" /> -->
-    <!--<include name="alf_10786" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Granular Manage Permission" verbose="1"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.ManagePermissionTest"> -->
+	<!--<methods> -->
+	<!--<include name="AONE_14155" /> -->
+	<!--<include name="AONE_14156" /> -->
+	<!--<include name="AONE_14157" /> -->
+	<!--<include name="AONE_14158" /> -->
+	<!--<include name="AONE_14153" /> -->
+	<!--<include name="AONE_14154" /> -->
+	<!--<include name="AONE_15098" /> -->
+	<!--<include name="AONE_15099" /> -->
+	<!--<include name="AONE_15102" /> -->
+	<!--<include name="AONE_15104" /> -->
+	<!--<include name="AONE_15100" /> -->
+	<!--<include name="AONE_15105" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Table View Tests" verbose="1"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.TableViewDocLibTest"> -->
-    <!--<methods> -->
-    <!--<include name="Alf_14549" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Table View Tests" verbose="1"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.TableViewDocLibTest"> -->
+	<!--<methods> -->
+	<!--<include name="AONE_14096" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="FilmStrip Test" verbose="1"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.FilmStripDocLibTest"> -->
-    <!--<methods> -->
-    <!--<exclude name="ALF_141*" /> -->
-    <!--<exclude name="ALF_14205" /> -->
-    <!--<exclude name="ALF_14206" /> -->
-    <!--<include name="ALF_14200" /> -->
-    <!--<include name="ALF_14210" /> -->
-    <!--<include name="ALF_14201" /> -->
-    <!--<include name="ALF_14203" /> -->
-    <!--<include name="ALF_14204" /> -->
-    <!--<include name="ALF_14207" /> -->
-    <!--<include name="ALF_14208" /> -->
-    <!--<include name="ALF_14214" /> -->
-    <!--<include name="ALF_14228" /> -->
-    <!--<include name="ALF_14233" /> -->
-    <!--<include name="ALF_14234" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="FilmStrip Test" verbose="1"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.FilmStripDocLibTest"> -->
+	<!--<methods> -->
+	<!--<exclude name="ALF_141*" /> -->
+	<!--<exclude name="AONE_14054" /> -->
+	<!--<exclude name="AONE_14055" /> -->
+	<!--<include name="AONE_14048" /> -->
+	<!--<include name="AONE_14053" /> -->
+	<!--<include name="AONE_14049" /> -->
+	<!--<include name="AONE_14051" /> -->
+	<!--<include name="AONE_14052" /> -->
+	<!--<include name="AONE_14056" /> -->
+	<!--<include name="AONE_14057" /> -->
+	<!--<include name="AONE_14058" /> -->
+	<!--<include name="AONE_14059" /> -->
+	<!--<include name="AONE_14060" /> -->
+	<!--<include name="AONE_14061" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Trashcan Tests" verbose="1" preserve-order="true"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.user.trashcan.TrashCanTest"> -->
-    <!--<methods> -->
-    <!--<include name="ALF_10465" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Trashcan Tests" verbose="1" preserve-order="true"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.user.trashcan.TrashCanTest"> -->
+	<!--<methods> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Default View" verbose="1" preserve-order="true"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.DefaultViewDocLibTest" /> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Default View" verbose="1" preserve-order="true"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.DefaultViewDocLibTest" 
+		/> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Gallery View Tests" verbose="1" preserve-order="true"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.GalleryViewTest"> -->
-    <!--<methods> -->
-    <!--<include name="alf_8717" /> -->
-    <!--<include name="alf_8718" /> -->
-    <!--<include name="alf_8749" /> -->
-    <!--<include name="alf_8663" /> -->
-    <!--<include name="alf_8667" /> -->
-    <!--<include name="alf_8678" /> -->
-    <!--<include name="alf_8679" /> -->
-    <!--<include name="alf_8755" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Gallery View Tests" verbose="1" preserve-order="true"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.GalleryViewTest"> -->
+	<!--<methods> -->
+	<!--<include name="AONE_14017" /> -->
+	<!--<include name="AONE_14018" /> -->
+	<!--<include name="AONE_14013" /> -->
+	<!--<include name="AONE_14006" /> -->
+	<!--<include name="AONE_14027" /> -->
+	<!--<include name="AONE_15057" /> -->
+	<!--<include name="AONE_14026" /> -->
+	<!--<include name="AONE_14015" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Site Notice Tests" verbose="1" preserve-order="true"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.dashlet.SiteNoticetDashletTest"> -->
-    <!--<methods> -->
-    <!--<include name="alf_10823" /> -->
-    <!--<include name="alf_10824" /> -->
-    <!--<include name="alf_10825" /> -->
-    <!--<include name="alf_10826" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Site Notice Tests" verbose="1" preserve-order="true"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.dashlet.SiteNoticetDashletTest"> -->
+	<!--<methods> -->
+	<!--<include name="AONE_13979" /> -->
+	<!--<include name="AONE_13980" /> -->
+	<!--<include name="AONE_13981" /> -->
+	<!--<include name="AONE_13982" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="GoogleDocs Test" verbose="1" preserve-order="true"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.GoogleDocsTest"> -->
-    <!--<methods> -->
-    <!--<include name="ALF_1930" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="GoogleDocs Test" verbose="1" preserve-order="true"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.GoogleDocsTest"> -->
+	<!--<methods> -->
+	<!--<include name="AONE_14624" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Document Share Tests" verbose="1" preserve-order="true"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.site.document.DocumentShareTests" /> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Document Share Tests" verbose="1" preserve-order="true"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.site.document.DocumentShareTests" /> -->
+	<!--</classes> -->
+	<!--</test> -->
 
-    <!--<test name="Header bar test" verbose="1"> -->
-    <!--<classes> -->
-    <!--<class name="org.alfresco.share.HeaderBarTest"> -->
-    <!--<methods> -->
-    <!--<include name="alf_9296" /> -->
-    <!--<include name="alf_9297" /> -->
-    <!--<include name="alf_9298" /> -->
-    <!--<include name="alf_9291" /> -->
-    <!--<include name="alf_9292" /> -->
-    <!--<include name="alf_9293" /> -->
-    <!--<include name="alf_9294" /> -->
-    <!--<include name="alf_9304" /> -->
-    <!--<include name="alf_9305" /> -->
-    <!--<include name="alf_9306" /> -->
-    <!--<include name="alf_9307" /> -->
-    <!--<include name="alf_9308" /> -->
-    <!--<include name="alf_9309" /> -->
-    <!--<include name="alf_14186" /> -->
-    <!--</methods> -->
-    <!--</class> -->
-    <!--</classes> -->
-    <!--</test> -->
+	<!--<test name="Header bar test" verbose="1"> -->
+	<!--<classes> -->
+	<!--<class name="org.alfresco.share.HeaderBarTest"> -->
+	<!--<methods> -->
+	<!--<include name="AONE_14117" /> -->
+	<!--<include name="AONE_14118" /> -->
+	<!--<include name="AONE_14119" /> -->
+	<!--<include name="AONE_14106" /> -->
+	<!--<include name="AONE_14107" /> -->
+	<!--<include name="AONE_14108" /> -->
+	<!--<include name="AONE_14109" /> -->
+	<!--<include name="AONE_14110" /> -->
+	<!--<include name="AONE_14111" /> -->
+	<!--<include name="AONE_14112" /> -->
+	<!--<include name="AONE_14113" /> -->
+	<!--<include name="AONE_14114" /> -->
+	<!--<include name="AONE_14115" /> -->
+	<!--<include name="AONE_14116" /> -->
+	<!--</methods> -->
+	<!--</class> -->
+	<!--</classes> -->
+	<!--</test> -->
 </suite>

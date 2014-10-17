@@ -15,17 +15,6 @@
 
 package org.alfresco.share.api;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -44,14 +33,24 @@ import org.alfresco.share.util.api.SitesAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.testng.Assert.*;
+
 /**
  * Class to include: Tests for Comments apis implemented in alfresco-remote-api.
- * 
+ *
  * @author Abhijeet Bharade
  */
 @Listeners(FailedTestListener.class)
@@ -59,7 +58,7 @@ import org.testng.annotations.Test;
 public class CommentsAPITests extends CommentsAPI
 {
     private static final String TEST_COMMENT = "Test Comment";
-    
+
     private String testName;
     private String testUser;
     private String anotherTestUser;
@@ -67,8 +66,10 @@ public class CommentsAPITests extends CommentsAPI
     private String siteName;
     private String fileName;
     private String fileName2;
+    private String fileName3;
     private String docGuid;
     private String docGuid2;
+    private String docGuid3;
     private String siteRef;
 
     private DocumentLibraryPage doclibPage;
@@ -93,6 +94,7 @@ public class CommentsAPITests extends CommentsAPI
         siteName = getSiteName(testName) + System.currentTimeMillis();
         fileName = getFileName(testName + "_1") + System.currentTimeMillis();
         fileName2 = getFileName(testName + "_2") + System.currentTimeMillis();
+        fileName3 = getFileName(testName + "_3") + System.currentTimeMillis();
 
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser);
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, anotherTestUser);
@@ -101,7 +103,6 @@ public class CommentsAPITests extends CommentsAPI
 
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC, true).render();
 
-
         Site site = new SitesAPI().getSiteById(testUser, DOMAIN, siteName);
         siteRef = site.getGuid();
 
@@ -109,17 +110,19 @@ public class CommentsAPITests extends CommentsAPI
 
         docGuid = ShareUser.getGuid(drone, fileName);
 
-
         ShareUser.uploadFileInFolder(drone, new String[] { fileName2 });
         docGuid2 = ShareUser.getGuid(drone, fileName2);
 
+        ShareUser.uploadFileInFolder(drone, new String[] { fileName3 });
+        docGuid3 = ShareUser.getGuid(drone, fileName3);
+
         docDetails = doclibPage.selectFile(fileName).render();
-        
+
         docDetails.addComment("<p>" + TEST_COMMENT + "</p>");
         docDetails.addComment("<p>" + TEST_COMMENT + "_1 </p>");
         docDetails.addComment("<p>" + TEST_COMMENT + "_2 </p>");
         docDetails.addComment("<p>" + TEST_COMMENT + "_3 </p>");
-        
+
         commentCount = 2;
 
         ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, anotherTestUser, siteName, UserRole.CONSUMER);
@@ -128,7 +131,7 @@ public class CommentsAPITests extends CommentsAPI
     }
 
     @Test
-    public void ALF_151701() throws Exception
+    public void AONE_14230() throws Exception
     {
         ListResponse<Comment> comments = getNodeComments(testUser, DOMAIN, null, docGuid);
 
@@ -139,7 +142,8 @@ public class CommentsAPITests extends CommentsAPI
         logger.info("Received comments - " + comment + " for doc - " + docGuid);
         assertTrue(comments.getList().get(0).getContent().contains(TEST_COMMENT), "Received comment - " + comments.getList());
 
-        if(comments.getList().size() > 1){
+        if (comments.getList().size() > 1)
+        {
             Date commentDate0 = (Date) format.parse(comments.getList().get(0).getCreatedAt());
             Date commentDate1 = (Date) format.parse(comments.getList().get(1).getCreatedAt());
             assertTrue(commentDate0.after(commentDate1), comments.getList().get(1) + " should be created before " + comments.getList().get(0));
@@ -149,7 +153,7 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             getNodeComments(testUserInvalid, DOMAIN, null, docGuid);
-            Assert.fail(String.format("ALF_151701: , %s, Expected Result: %s", "get nodes comments request with incorrect auth", "Error 401"));
+            Assert.fail(String.format("AONE_14230: , %s, Expected Result: %s", "get nodes comments request with incorrect auth", "Error 401"));
         }
         catch (PublicApiException e)
         {
@@ -160,8 +164,8 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             getNodeComments(testUser, DOMAIN, null, invalidNoderef);
-            Assert.fail(String.format("ALF_151701: , %s, Expected Result: %s", "get nodes comments request with incorrect nodeId - " + invalidNoderef,
-                    "Error 404"));
+            Assert.fail(String.format("AONE_14230: , %s, Expected Result: %s", "get nodes comments request with incorrect nodeId - " + invalidNoderef,
+                "Error 404"));
         }
         catch (PublicApiException e)
         {
@@ -172,7 +176,7 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             getNodeComments(testUser, DOMAIN, null, siteRef);
-            Assert.fail(String.format("ALF_151701: , %s, Expected Result: %s", "get nodes comments request with incorrect node id type", "Error 400"));
+            Assert.fail(String.format("AONE_14230: , %s, Expected Result: %s", "get nodes comments request with incorrect node id type", "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -181,7 +185,7 @@ public class CommentsAPITests extends CommentsAPI
     }
 
     @Test
-    public void ALF_197101() throws Exception
+    public void AONE_14234() throws Exception
     {
         publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
         HttpResponse comments = commentsClient.getAll("nodes", docGuid, "comments", null, null, "Could not retrieve the comment");
@@ -192,13 +196,13 @@ public class CommentsAPITests extends CommentsAPI
         ListResponse<Comment> nodeComments = getNodeComments(testUser, DOMAIN, null, docGuid);
         assertNotNull(comments);
         comment = nodeComments.getList().get(0);
-        
+
         // Not allowed: GET /comments/commentId
         try
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             commentsClient.getSingle("nodes", docGuid, "comments", comment.getId(), "Could not get the comment");
-            Assert.fail(String.format("ALF_197101: , %s, Expected Result: %s", "GET comments-commentId not allowed", 405));
+            Assert.fail(String.format("AONE_14234: , %s, Expected Result: %s", "GET comments-commentId not allowed", 405));
         }
         catch (PublicApiException e)
         {
@@ -210,7 +214,7 @@ public class CommentsAPITests extends CommentsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             commentsClient.create("nodes", docGuid, "comments", comment.getId(), null, "Could not create the comment");
-            Assert.fail(String.format("ALF_197101: , %s, Expected Result: %s", "POST comment not allowed", "Error 405"));
+            Assert.fail(String.format("AONE_14234: , %s, Expected Result: %s", "POST comment not allowed", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -222,7 +226,7 @@ public class CommentsAPITests extends CommentsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             commentsClient.update("nodes", docGuid, "comments", null, null, "Could not create the comment");
-            Assert.fail(String.format("ALF_197101: , %s, Expected Result: %s", "PUT comment not allowed", "Error 405"));
+            Assert.fail(String.format("AONE_14234: , %s, Expected Result: %s", "PUT comment not allowed", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -234,7 +238,7 @@ public class CommentsAPITests extends CommentsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             commentsClient.create("nodes", docGuid, "comments", comment.getId(), null, "Could not update the comment");
-            Assert.fail(String.format("ALF_197101: , %s, Expected Result: %s", "PUT comment not allowed. Bad request.", "Error 405"));
+            Assert.fail(String.format("AONE_14234: , %s, Expected Result: %s", "PUT comment not allowed. Bad request.", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -246,7 +250,7 @@ public class CommentsAPITests extends CommentsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             commentsClient.remove("nodes", docGuid, "comments", null, "Could not delete the comment");
-            Assert.fail(String.format("ALF_197101: , %s, Expected Result: %s", "DELETE comment not allowed", "Error 405"));
+            Assert.fail(String.format("AONE_14234: , %s, Expected Result: %s", "DELETE comment not allowed", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -260,7 +264,7 @@ public class CommentsAPITests extends CommentsAPI
     }
 
     @Test
-    public void ALF_218401() throws Exception
+    public void AONE_14232() throws Exception
     {
         DateFormat format = PublicApiDateFormat.getDateFormat();
         ListResponse<Comment> comments = getNodeComments(testUser, DOMAIN, null, docGuid);
@@ -287,12 +291,12 @@ public class CommentsAPITests extends CommentsAPI
         ListResponse<Comment> nodeComments = getNodeComments(testUser, DOMAIN, null, docGuid);
         assertNotNull(comments);
         comment = nodeComments.getList().get(0);
-        
+
         // Status: 404
         try
         {
             updateNodeComment(testUser, DOMAIN, invalidNoderef, comment.getId(), updatedComment);
-            Assert.fail(String.format("ALF_218401: , %s, Expected Result: %s", "PUT node comment request with incorrect noderef", "Error 404"));
+            Assert.fail(String.format("AONE_14232: , %s, Expected Result: %s", "PUT node comment request with incorrect noderef", "Error 404"));
         }
         catch (PublicApiException e)
         {
@@ -303,7 +307,7 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             updateNodeComment(testUserInvalid, DOMAIN, docGuid2, comment.getId(), updatedComment);
-            Assert.fail(String.format("ALF_218401: , %s, Expected Result: %s", "PUT node comment request with incorrect auth", "Error 401"));
+            Assert.fail(String.format("AONE_14232: , %s, Expected Result: %s", "PUT node comment request with incorrect auth", "Error 401"));
         }
         catch (PublicApiException e)
         {
@@ -314,7 +318,7 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             updateNodeComment(anotherTestUser, DOMAIN, updatedComment.getNodeId(), updatedComment.getId(), updatedComment);
-            Assert.fail(String.format("ALF_218401: , %s, Expected Result: %s", "PUT node comment request with incorrect user", "Error 403"));
+            Assert.fail(String.format("AONE_14232: , %s, Expected Result: %s", "PUT node comment request with incorrect user", "Error 403"));
         }
         catch (PublicApiException e)
         {
@@ -323,7 +327,7 @@ public class CommentsAPITests extends CommentsAPI
     }
 
     @Test
-    public void ALF_151801() throws Exception
+    public void AONE_14231() throws Exception
     {
         Comment nodeComment = new Comment("New Title", "<p>new comment1</p>");
         createNodeComment(testUser, DOMAIN, docGuid2, nodeComment);
@@ -339,12 +343,12 @@ public class CommentsAPITests extends CommentsAPI
 
         List<String> comments = docDetails.getComments();
         assertTrue(comments.contains("new comment2"), "New comment should be in comments - " + comments);
-        
+
         // Invalid Auth: 401
         try
         {
             createNodeComment(testUserInvalid, DOMAIN, docGuid2, nodeComment);
-            Assert.fail(String.format("ALF_151801: , %s, Expected Result: %s", "Post node comment request with incorrect auth", "Error 401"));
+            Assert.fail(String.format("AONE_14231: , %s, Expected Result: %s", "Post node comment request with incorrect auth", "Error 401"));
         }
         catch (PublicApiException e)
         {
@@ -355,8 +359,8 @@ public class CommentsAPITests extends CommentsAPI
         try
         {
             createNodeComment(testUser, DOMAIN, invalidNoderef, nodeComment);
-            Assert.fail(String.format("ALF_151801: , %s, Expected Result: %s", "Post node comment request with incorrect nodeId - " + invalidNoderef,
-                    "Error 404"));
+            Assert.fail(String.format("AONE_14231: , %s, Expected Result: %s", "Post node comment request with incorrect nodeId - " + invalidNoderef,
+                "Error 404"));
         }
         catch (PublicApiException e)
         {
@@ -368,7 +372,7 @@ public class CommentsAPITests extends CommentsAPI
         {
             Site site = sitesProxy.getSite(siteName);
             createNodeComment(testUser, DOMAIN, site.getGuid(), nodeComment);
-            Assert.fail(String.format("ALF_151801: , %s, Expected Result: %s", "Post node comment request with incorrect node ref type", "Error 405"));
+            Assert.fail(String.format("AONE_14231: , %s, Expected Result: %s", "Post node comment request with incorrect node ref type", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -377,7 +381,7 @@ public class CommentsAPITests extends CommentsAPI
     }
 
     @Test
-    public void ALF_220510() throws Exception
+    public void AONE_14235() throws Exception
     {
         Map<String, String> param = new HashMap<String, String>();
         try
@@ -460,7 +464,7 @@ public class CommentsAPITests extends CommentsAPI
             param.put("maxItems", "b");
             getNodeComments(testUser, DOMAIN, param, docGuid2);
             Assert.fail(String.format("Test: , %s, Expected Result: %s", "getNodecomments request with incorrect skipCount and maxItems - " + param,
-                    "Error 400"));
+                "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -474,7 +478,7 @@ public class CommentsAPITests extends CommentsAPI
             param.put("maxItems", "-2");
             getNodeComments(testUser, DOMAIN, param, docGuid2);
             Assert.fail(String.format("Test: , %s, Expected Result: %s", "getNodecomments request with incorrect skipCount and maxItems - " + param,
-                    "Error 400"));
+                "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -483,7 +487,7 @@ public class CommentsAPITests extends CommentsAPI
     }
 
     @Test
-    public void ALF_221701() throws Exception
+    public void AONE_14236() throws Exception
     {
         ShareUser.login(drone, testUser);
 
@@ -498,7 +502,7 @@ public class CommentsAPITests extends CommentsAPI
         assertNotNull(response);
         assertEquals(response.getPaging().getMaxItems(), new Integer(1));
         assertEquals(response.getPaging().getSkipCount(), new Integer(0));
-        
+
         assertTrue(response.getPaging().getHasMoreItems());
 
         param.clear();
@@ -516,6 +520,91 @@ public class CommentsAPITests extends CommentsAPI
         assertNotNull(response.getList().size());
         assertEquals(response.getPaging().getMaxItems(), new Integer(commentCount + 1));
         assertFalse(response.getPaging().getHasMoreItems());
+    }
+
+    @Test
+    public void AONE_14233() throws Exception
+    {
+        Comment nodeComment = new Comment("New Title", "<p>new comment1</p>");
+        createNodeComment(testUser, DOMAIN, docGuid3, nodeComment);
+        nodeComment = new Comment("New Title2", "<p>new comment2</p>");
+        createNodeComment(testUser, DOMAIN, docGuid3, nodeComment);
+
+        ListResponse<Comment> nodeComments = getNodeComments(testUser, DOMAIN, null, docGuid3);
+        assertNotNull(nodeComments);
+        int count = nodeComments.getList().size();
+        comment = nodeComments.getList().get(0);
+
+        // DELETE comment
+        publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
+
+        try
+        {
+
+            HttpResponse response = commentsClient.remove("nodes", comment.getNodeId(), "comments", comment.getId(), "Could not remove the comment");
+            assertEquals(response.getStatusCode(), 204, response.toString());
+        }
+        catch (PublicApiException e)
+        {
+            fail("Http response code must be 204, but actual is " + e.getHttpResponse());
+        }
+
+        publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
+
+        try
+        {
+
+            HttpResponse comments = commentsClient.getAll("nodes", docGuid3, "comments", null, null, "Could not retrieve the comment");
+            assertNotNull(comments);
+            assertTrue(comments.getStatusCode() == 200, "Response code - " + comments.getStatusCode());
+        }
+
+        catch (PublicApiException e)
+        {
+            fail("Http response code must be 200, but actual is " + e.getHttpResponse());
+        }
+
+        nodeComments = getNodeComments(testUser, DOMAIN, null, docGuid3);
+        assertNotNull(nodeComments);
+        assertEquals(nodeComments.getList().size(), count - 1, "Incorrect comment count");
+        assertFalse(nodeComments.getList().contains(comment));
+    }
+
+
+    @Test
+    public void AONE_14222() throws Exception
+    {
+        try
+        {
+            publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
+            HttpResponse activities = commentsClient.getAll("people", testUser, "activities", null, null, "Could not retrieve activities");
+            assertNotNull(activities);
+            assertTrue(activities.getStatusCode() == 200, "Response code - " + activities.getStatusCode());
+
+            JSONObject entries = activities.getJsonResponse();
+            JSONObject list = (JSONObject) entries.get("list");
+            JSONArray jArray = (JSONArray) list.get("entries");
+            JSONArray jArray2 = new JSONArray();
+            for (int i = 0; i < jArray.size(); i++)
+            {
+                JSONObject entry = (JSONObject) ((JSONObject) jArray.get(i)).get("entry");
+                assertNotNull(entry.get("activitySummary"));
+                assertNotNull(entry.get("activityType"));
+
+                if (entry.containsKey("activityType") && entry.get("activitySummary").toString().contains(docGuid))
+                {
+                    jArray2.add(entry.get("activityType"));
+                }
+            }
+
+            assertTrue(jArray2.toJSONString().contains("org.alfresco.comments.comment-created"));
+            assertTrue(jArray2.toJSONString().contains("org.alfresco.documentlibrary.file-added"));
+        }
+
+        catch (PublicApiException e)
+        {
+            fail("Http response code must be 200, but actual is " + e.getHttpResponse());
+        }
     }
 
 }

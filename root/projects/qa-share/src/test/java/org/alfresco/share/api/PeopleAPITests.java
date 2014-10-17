@@ -118,7 +118,7 @@ public class PeopleAPITests extends PeopleAPI
     // TODO: Enable test when fixed:
     // https://issues.alfresco.com/jira/browse/ALF-20594
     @Test(enabled = true)
-    public void ALF_149301() throws Exception
+    public void AONE_14253() throws Exception
     {
         // Correct Personid: Raised issue with Steve
         Preference response = getPersonPreference(testUser, DOMAIN, testUser, testpref.getId());
@@ -129,7 +129,7 @@ public class PeopleAPITests extends PeopleAPI
         {
             // Incorrect Auth
             getPersonPreference(testUserInvalid, DOMAIN, testUser, testpref.getId());
-            Assert.fail(String.format("ALF_149301: , %s, Expected Result: %s", "getFavourites request with incorrect auth", "Error 401"));
+            Assert.fail(String.format("AONE_14253: , %s, Expected Result: %s", "getFavourites request with incorrect auth", "Error 401"));
         }
         catch (PublicApiException e)
         {
@@ -140,7 +140,7 @@ public class PeopleAPITests extends PeopleAPI
         {
             // Incorrect Personid
             getPersonPreference(testUser, DOMAIN, testUserInvalid, testpref.getId());
-            Assert.fail(String.format("ALF_149301: , %s, Expected Result: %s", "getFavourites request with incorrect personId - " + testUserInvalid, "Error 404"));
+            Assert.fail(String.format("AONE_14253: , %s, Expected Result: %s", "getFavourites request with incorrect personId - " + testUserInvalid, "Error 404"));
         }
         catch (PublicApiException e)
         {
@@ -152,7 +152,7 @@ public class PeopleAPITests extends PeopleAPI
             // Incorrect Pref id
             // TODO: Define invalid Pref Id at class level, its easier to maintain e.g. testUserInvalid
             getPersonPreference(testUser, DOMAIN, testUser, testpref.getId() + "323");
-            Assert.fail(String.format("ALF_149301: , %s, Expected Result: %s", "getFavourites request with incorrect preference id", "Error 404"));
+            Assert.fail(String.format("AONE_14253: , %s, Expected Result: %s", "getFavourites request with incorrect preference id", "Error 404"));
         }
         catch (PublicApiException e)
         {
@@ -161,7 +161,7 @@ public class PeopleAPITests extends PeopleAPI
     }
 
     @Test
-    public void ALF_219501() throws Exception
+    public void AONE_14255() throws Exception
     {
         Map<String, String> param = new HashMap<String, String>();
         param.put("maxItems", "50");
@@ -184,14 +184,14 @@ public class PeopleAPITests extends PeopleAPI
     }
 
     @Test
-    public void ALF_220201() throws Exception
+    public void AONE_14254() throws Exception
     {
         Map<String, String> param = new HashMap<String, String>();
         try
         {
             param.put("maxItems", "a");
             getPersonPreferences(testUser, DOMAIN, testUser, param);
-            Assert.fail(String.format("ALF_220201: , %s, Expected Result: %s", "getFavourites request with incorrect maxItems - " + param, "Error 400 - Awaiting fix: https://issues.alfresco.com/jira/browse/ALF-20594"));
+            Assert.fail(String.format("AONE_14254: , %s, Expected Result: %s", "getFavourites request with incorrect maxItems - " + param, "Error 400 - Awaiting fix: https://issues.alfresco.com/jira/browse/ALF-20594"));
         }
         catch (PublicApiException e)
         {
@@ -203,7 +203,7 @@ public class PeopleAPITests extends PeopleAPI
             param.clear();
             param.put("skipCount", "s");
             getPersonPreferences(testUser, DOMAIN, testUser, param);
-            Assert.fail(String.format("ALF_220201: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount - " + param, "Error 400"));
+            Assert.fail(String.format("AONE_14254: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount - " + param, "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -215,7 +215,7 @@ public class PeopleAPITests extends PeopleAPI
             param.clear();
             param.put("maxItems", "-1");
             getPersonPreferences(testUser, DOMAIN, testUser, param);
-            Assert.fail(String.format("ALF_220201: , %s, Expected Result: %s", "getFavourites request with incorrect maxItems - " + param, "Error 400"));
+            Assert.fail(String.format("AONE_14254: , %s, Expected Result: %s", "getFavourites request with incorrect maxItems - " + param, "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -226,7 +226,7 @@ public class PeopleAPITests extends PeopleAPI
             param.clear();
             param.put("skipCount", "-2");
             getPersonPreferences(testUser, DOMAIN, testUser, param);
-            Assert.fail(String.format("ALF_220201: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount - " + param, "Error 400"));
+            Assert.fail(String.format("AONE_14254: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount - " + param, "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -270,7 +270,7 @@ public class PeopleAPITests extends PeopleAPI
             param.put("skipCount", "a");
             param.put("maxItems", "b");
             getPersonPreferences(testUser, DOMAIN, testUser, param);
-            Assert.fail(String.format("ALF_220201: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount and maxItems - " + param, "Error 400"));
+            Assert.fail(String.format("AONE_14254: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount and maxItems - " + param, "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -283,7 +283,7 @@ public class PeopleAPITests extends PeopleAPI
             param.put("skipCount", "-1");
             param.put("maxItems", "-5");
             getPersonPreferences(testUser, DOMAIN, testUser, param);
-            Assert.fail(String.format("ALF_220201: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount and maxItems - " + param, "Error 400"));
+            Assert.fail(String.format("AONE_14254: , %s, Expected Result: %s", "getFavourites request with incorrect skipCount and maxItems - " + param, "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -294,7 +294,7 @@ public class PeopleAPITests extends PeopleAPI
     // TODO: Enable test when fixed:
     // https://issues.alfresco.com/jira/browse/ALF-20594
     @Test(enabled = true)
-    public void ALF_196801() throws Exception
+    public void AONE_14256() throws Exception
     {
         publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
 
@@ -302,7 +302,7 @@ public class PeopleAPITests extends PeopleAPI
         try
         {
             peopleClient.create("people", testUser, "preferences", null, testpref.toString(), "Failed to create person preferences");
-            Assert.fail(String.format("ALF_196801: Post pref: Method not allowed - ERROR - 405"));
+            Assert.fail(String.format("AONE_14256: Post pref: Method not allowed - ERROR - 405"));
         }
         catch (PublicApiException e)
         {
@@ -313,7 +313,7 @@ public class PeopleAPITests extends PeopleAPI
         try
         {
             peopleClient.create("people", testUser, "preferences", testpref.getId(), testpref.toString(), "Failed to create person preferences");
-            Assert.fail(String.format("ALF_196801: Post pref/prefId: Method not allowed. ERROR - 405"));
+            Assert.fail(String.format("AONE_14256: Post pref/prefId: Method not allowed. ERROR - 405"));
         }
         catch (PublicApiException e)
         {
@@ -324,7 +324,7 @@ public class PeopleAPITests extends PeopleAPI
         try
         {
             peopleClient.update("people", testUser, "preferences", null, testpref.toString(), "Failed to update person preferences");
-            Assert.fail(String.format("ALF_196801: PUT pref: Method not allowed - ERROR - 405"));
+            Assert.fail(String.format("AONE_14256: PUT pref: Method not allowed - ERROR - 405"));
         }
         catch (PublicApiException e)
         {
@@ -335,7 +335,7 @@ public class PeopleAPITests extends PeopleAPI
         try
         {
             peopleClient.update("people", testUser, "preferences", testpref.getId(), testpref.toString(), "Failed to update person preferences");
-            Assert.fail(String.format("ALF_196801: Put pref/preferenceId: Method not allowed. ERROR - 405"));
+            Assert.fail(String.format("AONE_14256: Put pref/preferenceId: Method not allowed. ERROR - 405"));
         }
         catch (PublicApiException e)
         {
@@ -346,7 +346,7 @@ public class PeopleAPITests extends PeopleAPI
         try
         {
             peopleClient.remove("people", testUser, "preferences", null, "Failed to delete person preferences");
-            Assert.fail(String.format("ALF_196801: Delete pref: Method not allowed - ERROR - 405"));
+            Assert.fail(String.format("AONE_14256: Delete pref: Method not allowed - ERROR - 405"));
         }
         catch (PublicApiException e)
         {
@@ -357,7 +357,7 @@ public class PeopleAPITests extends PeopleAPI
         try
         {
             peopleClient.remove("people", testUser, "preferences", testpref.getId(), "Failed to delete person preferences");
-            Assert.fail(String.format("ALF_196801: Delete pref/preferenceId: Method not allowed. ERROR - 405"));
+            Assert.fail(String.format("AONE_14256: Delete pref/preferenceId: Method not allowed. ERROR - 405"));
         }
         catch (PublicApiException e)
         {
@@ -367,7 +367,7 @@ public class PeopleAPITests extends PeopleAPI
     }
 
     @Test
-    public void ALF_149201() throws Exception
+    public void AONE_14252() throws Exception
     {
         // Status: 200
         Map<String, String> param = new HashMap<String, String>();
@@ -394,7 +394,7 @@ public class PeopleAPITests extends PeopleAPI
         {
             // Incorrect Personid - 404
             getPersonPreferences(testUser, DOMAIN, testUserInvalid, null);
-            Assert.fail(String.format("ALF_149201: , %s, Expected Result: %s", "getPersonPreferences request with incorrect personId - " + testUserInvalid,
+            Assert.fail(String.format("AONE_14252: , %s, Expected Result: %s", "getPersonPreferences request with incorrect personId - " + testUserInvalid,
                     "Error 404"));
         }
         catch (PublicApiException e)
@@ -406,7 +406,7 @@ public class PeopleAPITests extends PeopleAPI
         {
             // Incorrect auth - 401
             getPersonPreferences(testUserInvalid, DOMAIN, testUser, null);
-            Assert.fail(String.format("ALF_149201: , %s, Expected Result: %s", "getPersonPreferences request with incorrect auth - " + testUserInvalid,
+            Assert.fail(String.format("AONE_14252: , %s, Expected Result: %s", "getPersonPreferences request with incorrect auth - " + testUserInvalid,
                     "Error 401"));
         }
         catch (PublicApiException e)

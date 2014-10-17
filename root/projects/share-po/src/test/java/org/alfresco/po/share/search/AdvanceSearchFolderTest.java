@@ -97,7 +97,7 @@ public class AdvanceSearchFolderTest extends AbstractTest
             {
                 counter++;
                 searchResults.goBackToAdvanceSearch().render();            }
-        }
+            }
         throw new Exception("search failed");
     }
     /**

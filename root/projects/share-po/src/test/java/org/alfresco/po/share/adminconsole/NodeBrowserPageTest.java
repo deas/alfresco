@@ -28,9 +28,11 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.*;
-import static org.alfresco.po.share.adminconsole.NodeBrowserPage.Store.*;
+import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.LUCENE;
+import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.STORE_ROOT;
+import static org.alfresco.po.share.adminconsole.NodeBrowserPage.Store.WORKSPACE_SPACE_STORE;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * @author Aliaksei Boole
@@ -62,14 +64,21 @@ public class NodeBrowserPageTest extends AbstractTest
     @Test(dependsOnMethods = "executeCustomNodeSearch", groups = "Enterprise-only")
     public void getSearchResults() throws Exception
     {
-        nodeBrowserPage.selectQueryType(LUCENE);
-        nodeBrowserPage.fillQueryField("TYPE:\"cm:category\"");
-        nodeBrowserPage.clickSearchButton();
-        List<NodeBrowserSearchResult> nodeBrowserSearchResults = nodeBrowserPage.getSearchResults();
-        Assert.assertTrue(nodeBrowserSearchResults.size() > 0);
+        try
+        {
+            nodeBrowserPage.selectQueryType(LUCENE);
+            nodeBrowserPage.fillQueryField("TYPE:\"cm:category\"");
+            nodeBrowserPage.clickSearchButton();
+            List<NodeBrowserSearchResult> nodeBrowserSearchResults = nodeBrowserPage.getSearchResults();
+            Assert.assertTrue(nodeBrowserSearchResults.size() > 0);
 
-        NodeBrowserSearchResult language = nodeBrowserPage.getSearchResults("cm:Languages");
-        Assert.assertNotNull(language);
+            NodeBrowserSearchResult language = nodeBrowserPage.getSearchResults("cm:Languages");
+            Assert.assertNotNull(language);
+        } catch (Exception e){
+            fail("ACE-3037"); ////If Ok, then move out this try-catch block.
+        }
+        fail("Please, fix me! Now I am ok!");
+
     }
 
     @Test(dependsOnMethods = "getSearchResults", groups = "Enterprise-only")

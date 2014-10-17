@@ -16,6 +16,8 @@ public enum Dashlets
     MY_DISCUSSIONS("My Discussions"),
     MY_SITES("My Sites"),
     MY_TASKS("My Tasks"),
+    MY_CALENDAR("My Calendar"),
+    MY_PROFILE("My Profile"),
     RSS_FEED("RSS Feed"),
     SAVED_SEARCH("Saved Search"),
     SITE_ACTIVITIES("Site Activities"),
@@ -32,10 +34,11 @@ public enum Dashlets
     WEB_VIEW("Web View"),
     WELCOME_SITE("Welcome Site"),
     WIKI("Wiki"),
+    MY_MEETING_WORKSPACES("My Meeting Workspaces"),
+    CUSTOM_SITE_REPORTS("Custom Site Reports"),
     USER_ACTIVITY_REPORT("User Activity Report"),
     HOT_CONTENT_REPORT("Hot Content Report"),
-    ADHOC_ANALYZER("Custom Reports"),
-    CUSTOM_SITE_REPORTS("Custom Site Reports");
+    ADHOC_ANALYZER("Custom Reports");
 
     private String dashletName;
 

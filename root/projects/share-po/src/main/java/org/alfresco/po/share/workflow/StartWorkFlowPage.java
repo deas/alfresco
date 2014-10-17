@@ -161,7 +161,7 @@ public class StartWorkFlowPage extends SharePage
         {
             throw new IllegalArgumentException("Workflow Type can't be null");
         }
-        drone.find(WORKFLOW_BUTTON).click();
+        drone.findAndWait(WORKFLOW_BUTTON).click();
         workFlowType.getTaskTypeElement(drone).click();
         return FactoryShareWorkFlow.getPage(drone, workFlowType);
     }

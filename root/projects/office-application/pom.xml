@@ -1,0 +1,179 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>office-application</artifactId>
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
+    <parent>
+        <artifactId>alfresco-parent</artifactId>
+        <groupId>org.alfresco</groupId>
+        <version>5.0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <name>office-application</name>
+    <url>http://maven.apache.org</url>
+
+    <repositories>
+        <repository>
+            <id>alfresco-public</id>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>alfresco-public-snapshot</id>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots/</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>alfresco-internal</id>
+            <name>Alfresco Releases Repository</name>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-internal-snapshots</id>
+            <name>Alfresco Snapshots Repository</name>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.1</version>
+        </dependency>
+
+        <!-- LDTP -->
+        <dependency>
+            <groupId>com.googlecode.cobra-winldtp</groupId>
+            <artifactId>ldtp</artifactId>
+            <version>4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlrpc</groupId>
+            <artifactId>xmlrpc-client</artifactId>
+            <version>3.1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>3.1.2.RELEASE</version>
+        </dependency>
+        <!-- <dependency> -->
+        <!-- <groupId>org.sikuli</groupId> -->
+        <!-- <artifactId>SikuliX-Basics</artifactId> -->
+        <!-- <version>1.1.0</version> -->
+        <!-- </dependency> -->
+
+        <!-- <dependency> -->
+        <!-- <groupId>org.sikuli</groupId> -->
+        <!-- <artifactId>SikuliX-API</artifactId> -->
+        <!-- <version>1.1.0</version> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!-- <groupId>org.sikuli</groupId> -->
+        <!-- <artifactId>SikuliX-Natives</artifactId> -->
+        <!-- <version>1.1.0</version> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!-- <groupId>org.sikuli</groupId> -->
+        <!-- <artifactId>SikuliX-Jython</artifactId> -->
+        <!-- <version>1.1.0</version> -->
+        <!-- <scope>runtime</scope> -->
+        <!-- </dependency> -->
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jndi</artifactId>
+            <version>8.1.14.v20131031</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Xms512m -Xmx1024m</argLine>
+                    <workingDirectory>target</workingDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+</project>

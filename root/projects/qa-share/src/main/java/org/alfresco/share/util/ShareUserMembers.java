@@ -90,9 +90,19 @@ public class ShareUserMembers extends AbstractUtils
             // Select Role for the User
             if (searchUsers.size() > 0)
             {
-                membersPage.selectRole(searchUsers.get(0), role);
-                membersPage.clickInviteButton();
-                retVal = true;
+                for (String theUser: searchUsers)
+                {
+                    if(theUser.equalsIgnoreCase("(" + userJoiningSite + ")"))
+                    {
+                        membersPage.selectRole(theUser, role);
+                        membersPage.clickInviteButton();
+                        retVal = true;
+                    }
+                }
+            }
+            else
+            {
+                throw new ShareException("Unable to retrieve users");
             }
         }
         catch (Exception e)
@@ -133,7 +143,7 @@ public class ShareUserMembers extends AbstractUtils
             searchUsers = members.searchUser(userJoiningSite);
 
             // Retry until User is found in the list on the invite members page.
-            for (int searchCount = 1; searchCount <= retrySearchCount; searchCount++)
+            for (int searchCount = 1; searchCount <= 5; searchCount++)
             {
                 if (searchCount > 1)
                 {
@@ -248,8 +258,8 @@ public class ShareUserMembers extends AbstractUtils
         logger.info(" User request to joins the Site " + siteName);
 
         SharePage page = ShareUser.getSharePage(driver);
-        SiteFinderPage siteFinder = page.getNav().selectSearchForSites().render();
-        siteFinder = SiteUtil.searchSiteWithRetry(driver, siteName, true);
+        page.getNav().selectSearchForSites().render();
+        SiteFinderPage siteFinder = SiteUtil.searchSiteWithRetry(driver, siteName, true);
         return siteFinder.joinSite(siteName).render();
     }
 
@@ -544,7 +554,7 @@ public class ShareUserMembers extends AbstractUtils
             }
             else
             {
-                mangPermPage = mangPermPage.selectAddUser().searchAndSelectUser(userProfile);
+                mangPermPage = mangPermPage.selectAddUser().searchAndSelectUser(userProfile).render();
                 // mangPermPage.setAccessType(userProfile, userRole);
                 mangPermPage.updateUserRole(user, userRole);
             }

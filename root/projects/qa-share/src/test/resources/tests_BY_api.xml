@@ -1,0 +1,69 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="API Tests for Sprint BY" thread-count="1">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="Download"/>
+            <exclude name="NonGrid"/>
+            <exclude name="CloudOnly" />
+            <exclude name=".*Bug.*"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+  <!--  <test name="Favourite API tests">
+        <classes>
+            <class name="org.alfresco.share.api.FavouriteAPITests"/>
+        </classes>
+    </test>
+
+    <test name="Site Membership API tests">
+        <classes>
+            <class name="org.alfresco.share.api.SiteMembershipAPITests"/>
+        </classes>
+    </test>
+
+    <test name="Site Membership API with External Domain test">
+        <classes>
+            <class name="org.alfresco.share.api.SiteMembershipExternalDomainAPITest"/>
+        </classes>
+    </test>-->
+
+    <test name="Public API test">
+    <classes>
+
+    <class name="org.alfresco.share.api.SitesAPITests">
+        <methods>
+            <include name="AONE_14259"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+
+    <class name="org.alfresco.share.api.ProcessesAPITests">
+        <methods>
+            <include name="AONE_14394"/>
+            <exclude name=".*"/>
+    </methods>
+    </class>
+
+    <class name="org.alfresco.share.api.CommentsAPITests">
+            <methods>
+                <include name="AONE_14233"/>
+                <include name="AONE_14222"/>
+                <exclude name=".*"/>
+            </methods>
+    </class>
+    </classes>
+    </test>
+
+    <test name="CommentsAPITests2">
+        <classes>
+            <class name="org.alfresco.share.api.CommentsAPITests2"/>
+        </classes>
+    </test>-->
+
+</suite>

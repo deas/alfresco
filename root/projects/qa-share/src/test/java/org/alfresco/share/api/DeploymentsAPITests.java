@@ -73,7 +73,7 @@ public class DeploymentsAPITests extends DeploymentAPI
     }
 
     @Test(groups = "Enterprise42")
-    public void ALF_2320() throws Exception
+    public void AONE_14402() throws Exception
     {
         ListResponse<Deployment> deployments = getDeployments(ADMIN_USERNAME, DOMAIN, null);
         assertNotNull(deployments);
@@ -87,13 +87,13 @@ public class DeploymentsAPITests extends DeploymentAPI
     }
 
     @Test(groups = "Enterprise42")
-    public void ALF_2321() throws Exception
+    public void AONE_14403() throws Exception
     {
         try
         {
             getDeployments(testUserInvalid, DOMAIN, null);
 
-            Assert.fail("ALF_1105: Auth failure. Invalid user - " + testUserInvalid);
+            Assert.fail("AONE_14378: Auth failure. Invalid user - " + testUserInvalid);
         }
         catch (PublicApiException e)
         {
@@ -102,7 +102,7 @@ public class DeploymentsAPITests extends DeploymentAPI
     }
 
     @Test(groups = "Enterprise42")
-    public void ALF_2322() throws Exception
+    public void AONE_14404() throws Exception
     {
         Deployment response = getDeploymentById(ADMIN_USERNAME, DOMAIN, deployment.getId());
         assertNotNull(response);
@@ -110,13 +110,13 @@ public class DeploymentsAPITests extends DeploymentAPI
     }
 
     @Test(groups = "Enterprise42")
-    public void ALF_2323() throws Exception
+    public void AONE_14405() throws Exception
     {
         try
         {
             Deployment dp = getDeploymentById(testUser, DOMAIN + 1, deployment.getId());
 
-            Assert.fail("ALF_1105: Error in tenant - " + DOMAIN + 1 + "For deployment: " + dp.getName());
+            Assert.fail("AONE_14378: Error in tenant - " + DOMAIN + 1 + "For deployment: " + dp.getName());
         }
         catch (PublicApiException e)
         {

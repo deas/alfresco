@@ -18,17 +18,16 @@
  */
 package org.alfresco.po.share;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.ShareUtil.RequiredAlfrescoVersion;
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.adminconsole.TagManagerPage;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.reports.AdhocAnalyzerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.search.FacetedSearchConfigPage;
+import org.alfresco.po.share.search.FacetedSearchHeaderSearchForm;
 import org.alfresco.po.share.search.FacetedSearchPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
@@ -47,15 +46,14 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.InvalidElementStateException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represent elements found on the HTML page relating to the main navigation bar
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -65,31 +63,33 @@ public class Navigation extends SharePage
     private static final String SITE_FINDER_LINK = "div[id$='app_sites-sites-menu']>div>ul[class^='site-finder-menuitem']>li>a";
     private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
     private static final String NETWORK_NAMES = "network.names";
-    private final String userNameDropDown ;
+    private final String userNameDropDown;
+    private static final String MY_SITES = "td[id^='HEADER_SITES_MENU_MY_SITES'] a";
     public static final String REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR = "div#HEADER_ADMIN_CONSOLE";
     public static final String SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR = "span[id='HEADER_SITES_CONSOLE_text']>a";
     private static final String SELECT_SITE_AS_FAVOURITE = "#HEADER_SITES_MENU_ADD_FAVOURITE_text";
     private static final String REMOVE_SITE_AS_FAVOURITE = "#HEADER_SITES_MENU_REMOVE_FAVOURITE_text";
     private static final String RECENT_SITES = "td[id^='HEADER_SITES_MENU_RECENT'] a";
-    private static final String MY_SITES = "td[id^='HEADER_SITES_MENU_MY_SITES'] a";
-    
     private static final String FAVOURITE_TEXT = "div[id^='HEADER_SITES_MENU_FAVOURITES'] td[class$='dijitMenuItemLabel']";
     private static final String FAVOURITE_SITES = "div[id^='HEADER_SITES_MENU_FAVOURITES'] td[class$='dijitMenuItemLabel'] a";
-    private static final String LINK_FAVOURITES= "#HEADER_SITES_MENU_FAVOURITES_text";
+    private static final String LINK_FAVOURITES = "#HEADER_SITES_MENU_FAVOURITES_text";
     private static final String SHARED_FILES_LINK = "//span[@id='HEADER_SHARED_FILES_text']/a";
     private static final String MY_FILES_LINK = "div#HEADER_MY_FILES";
+    private static final By ADV_SEARCH_DROP_DOWN = By.cssSelector("div#HEADER_SEARCH_BOX_DROPDOWN_MENU");
+    private static final By ADV_SEARCH_DROP_DOWN_MENU = By.cssSelector("#HEADER_SEARCH_BOX_DROPDOWN_MENU_dropdown");
+    private static final By ADV_SEARCH_BOX_TEXT = By.cssSelector("#HEADER_SEARCH_BOX_ADVANCED_SEARCH_text a");
     private static final String REPORTING = "div#HEADER_PENTAHO";
 
     /**
      * Constructor
-     * 
+     *
      * @param drone WebDriver browser client
      */
     public Navigation(WebDrone drone)
     {
         super(drone);
         userNameDropDown = drone.getElement("user.dropdown");       
-      
+
     }
 
     @SuppressWarnings("unchecked")
@@ -106,30 +106,30 @@ public class Navigation extends SharePage
     {
         return render(new RenderTime(maxPageLoadingTime));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Navigation render(final long time)
     {
         return render(new RenderTime(time));
     }
-    
+
 
     /**
      * Mimics the action of selecting the dashboard link.
-     * 
+     *
      * @return HtmlPage dashboard page object
      */
     public DashBoardPage selectMyDashBoard()
     {
         String selector = isDojoSupport() ? "div#HEADER_HOME" : "a[id$='-dashboard-button']";
-    	drone.find(By.cssSelector(selector)).click();
+        drone.findAndWait(By.cssSelector(selector)).click();
         return new DashBoardPage(drone);
     }
 
     /**
      * Mimics the action of selecting people finder link.
-     * 
+     *
      * @return HtmlPage people finder page object
      */
     public PeopleFinderPage selectPeople()
@@ -141,7 +141,7 @@ public class Navigation extends SharePage
 
     /**
      * Mimics the action of selecting site finder link.
-     * 
+     *
      * @return HtmlPage people finder page object
      */
     public SiteFinderPage selectSearchForSites()
@@ -149,9 +149,9 @@ public class Navigation extends SharePage
         selectSitesDropdown();
         try
         {
-            if(isDojoSupport())
+            if (isDojoSupport())
             {
-              drone.findAndWait(By.cssSelector(drone.getElement("site.finder"))).click();
+                drone.findAndWait(By.cssSelector(drone.getElement("site.finder"))).click();
             }
             else
             {
@@ -168,7 +168,7 @@ public class Navigation extends SharePage
 
     /**
      * Mimics the action of selecting create site link.
-     * 
+     *
      * @return HtmlPage people finder page object
      */
     public CreateSitePage selectCreateSite()
@@ -277,116 +277,134 @@ public class Navigation extends SharePage
     /**
      * Selects the user link on main navigation. As this link is created by Java
      * script, a wait is implemented to ensure the link is rendered.
+     * @return {@link UserPage}
      */
-    private void selectUserDropdown()
+    public UserPage selectUserDropdown()
     {
-    	WebElement userButton = drone.find(By.cssSelector(userNameDropDown));
-        userButton.click();
-    }
-
-    /**
-     * Mimics the action of selecting my profile link.
-     * 
-     * @return HtmlPage people finder page object
-     */
-    public MyProfilePage selectMyProfile()
-    {
-        selectUserDropdown();
-        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_PROFILE_text" : "div[id$='usermenu_user'] ul li:nth-of-type(2) a";
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new MyProfilePage(drone);
+        try
+        {
+            WebElement userButton = drone.find(By.cssSelector(userNameDropDown));
+            userButton.click();
+            return new UserPage(drone);
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageOperationException("User drop down is not present", e);
+        }
     }
     
     /**
-     * Mimics the action of selecting Account Settings link.
-     * 
-     * @return AccountSettingsPage
+     * Mimics the action of selecting my profile link.
+     *
+     * @return {@link MyProfilePage}
+     */
+    public MyProfilePage selectMyProfile()
+    {
+        return selectUserDropdown().render().selectMyProfile();
+    }
+
+    /**
+     * Mimics the action of selecting Account SoSettings link.
+     *
+     * @return {@link AccountSettingsPage}
      */
     public AccountSettingsPage selectAccountSettingsPage()
     {
-        selectUserDropdown();
-        if(!alfrescoVersion.isCloud())
-        {
-            throw new UnsupportedOperationException("This option is in cloud only, not available for Enterprise");
-        }
-        String selector = "td#CLOUD__NetworkAdminToolsLink_text>a.alfresco-navigation-_HtmlAnchorMixin";
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new AccountSettingsPage(drone);
+        return selectUserDropdown().render().selectAccountSettingsPage();
     }
 
     /**
      * Mimics the action of selecting my profile link.
-     * 
-     * @return HtmlPage change password page object
+     *
+     * @return {@link ChangePasswordPage}
      */
     public ChangePasswordPage selectChangePassword()
     {
-        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_CHANGE_PASSWORD_text" : "div[id$='usermenu_user'] ul li:nth-of-type(3) a";
-        selectUserDropdown();
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new ChangePasswordPage(drone); 
+        return selectUserDropdown().render().selectChangePassword();
     }
 
     /**
      * Mimics the action of selecting logout link.
      * The page returned from a logout is a LoginPage.
+     *
      * @return {@link LoginPage} page response
      */
     public LoginPage logout()
     {
-        selectUserDropdown();
-        String selector = isDojoSupport() ? "td#HEADER_USER_MENU_LOGOUT_text" : "div[id$='usermenu_user'] ul li:nth-of-type(5) a";
-        drone.findAndWait(By.cssSelector(selector)).click();
-        return new LoginPage(drone);
+        return selectUserDropdown().render().logout();
     }
 
     /**
      * Mimics the action of selecting repository link.
-     * 
+     *
      * @return HtmlPage repository page object
      */
     public RepositoryPage selectRepository()
     {
-        String selector = isDojoSupport() ? "div#HEADER_REPOSITORY" : "a[id$='app_repository-button']"; 
+        String selector = isDojoSupport() ? "div#HEADER_REPOSITORY" : "a[id$='app_repository-button']";
         drone.find(By.cssSelector(selector)).click();
         return new RepositoryPage(drone);
     }
 
+    private WebElement clickAdvSearchDropDown()
+    {
+        try
+        {
+            WebElement advSearchDropDown = drone.findAndWait(ADV_SEARCH_DROP_DOWN);
+            advSearchDropDown.click();
+            WebElement advSearchDrpDownMenu = drone.findAndWait(ADV_SEARCH_DROP_DOWN_MENU);
+            return advSearchDrpDownMenu;
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Cannot find " + ADV_SEARCH_DROP_DOWN + " or " + ADV_SEARCH_DROP_DOWN_MENU);
+        }
+    }
+
+    public boolean isAdvSearchLinkPresent()
+    {
+        return clickAdvSearchDropDown().findElement(ADV_SEARCH_BOX_TEXT).isDisplayed();
+    }
+
     /**
      * Select the advance search button from dropdown.
+     *
      * @return HtmlPage advance search page.
      */
     public AdvanceSearchContentPage selectAdvanceSearch()
     {
         try
         {
-          if(isDojoSupport())
-          {
-              // TODO ALF-19185 - Bug Advance Search
-              String usersPageURL = "/page/advsearch";
-              String currentUrl = drone.getCurrentUrl();
-              if (currentUrl != null)
-              {
-                  String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
-                  drone.navigateTo(url);
-              }
-          }
-          else
-          {
-              drone.findAndWait(By.cssSelector("button[id$='default-search_more-button']")).click();
-              drone.findAndWait(By.cssSelector("div[id$='searchmenu_more']>div>ul>li>a")).click();
-          }
-          
-          return new AdvanceSearchContentPage(drone);
+            if (isDojoSupport())
+            {
+//                // TODO ALF-19185 - Bug Advance Search
+//                String usersPageURL = "/page/advsearch";
+//                String currentUrl = drone.getCurrentUrl();
+//                if (currentUrl != null)
+//                {
+//                    String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+//                    drone.navigateTo(url);
+//                }
+                WebElement theMenu = clickAdvSearchDropDown();
+                theMenu.findElement(ADV_SEARCH_BOX_TEXT).click();
+            }
+            else
+            {
+                drone.findAndWait(By.cssSelector("button[id$='default-search_more-button']")).click();
+                drone.findAndWait(By.cssSelector("div[id$='searchmenu_more']>div>ul>li>a")).click();
+            }
+
+            return new AdvanceSearchContentPage(drone);
         }
-        catch(TimeoutException ne)
+        catch (TimeoutException ne)
         {
             throw new PageException("Advance Search is not visible");
         }
-    }    
-    
+    }
+
     /**
      * Navigates to the users page on Admin Console - Enterprise Only option.
+     *
      * @return {@link UserSearchPage} Instance of UserSearchPage
      */
     public HtmlPage getUsersPage()
@@ -395,17 +413,17 @@ public class Navigation extends SharePage
         //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
         String usersPageURL = "/page/console/admin-console/users";
         String currentUrl = drone.getCurrentUrl();
-        if(currentUrl != null)
+        if (currentUrl != null)
         {
             String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
             drone.navigateTo(url);
         }
         return new UserSearchPage(drone);
     }
-    
+
     /**
      * Selects the Network dropdown button present on UserDashBoard.
-     * 
+     *
      * @return {@link DashBoardPage}
      */
     public DashBoardPage selectNetworkDropdown()
@@ -414,19 +432,19 @@ public class Navigation extends SharePage
 
         try
         {
-           String dropDownElementId = drone.getElement(DEFAULT_NETWORK_MENU_BUTTON);
-           drone.findAndWait(By.cssSelector(dropDownElementId)).click();
-           return new DashBoardPage(drone);
+            String dropDownElementId = drone.getElement(DEFAULT_NETWORK_MENU_BUTTON);
+            drone.findAndWait(By.cssSelector(dropDownElementId)).click();
+            return new DashBoardPage(drone);
         }
         catch (TimeoutException e)
         {
             throw new PageException(this.getClass().getName() + " : selectNetworkDropdown() : failed to render in time. ", e);
         }
     }
-    
+
     /**
      * Selects the given User Network link present in list of networks.
-     * 
+     *
      * @param networkName String name
      * @return {@link DashBoardPage}
      */
@@ -461,7 +479,7 @@ public class Navigation extends SharePage
 
     /**
      * Gets the list of user networks.
-     * 
+     *
      * @return List<String>
      */
     public List<String> getUserNetworks()
@@ -473,7 +491,7 @@ public class Navigation extends SharePage
             drone.findAndWait(By.cssSelector(defaultNetworkButton)).click();
             String networkNamesid = drone.getElement(NETWORK_NAMES);
             networks = drone.findAndWaitForElements(By.cssSelector(networkNamesid));
-            if(networks != null)
+            if (networks != null)
             {
                 List<String> networkList = new ArrayList<>();
                 for (WebElement network : networks)
@@ -493,14 +511,14 @@ public class Navigation extends SharePage
     /**
      * Selects the user link on main navigation. As this link is created by Java
      * script, a wait is implemented to ensure the link is rendered.
-     * 
+     *
      * @return {@link MyTasksPage}
      */
     public MyTasksPage selectMyTasks()
     {
         if (isDojoSupport())
         {
-            if(!alfrescoVersion.isCloud())
+            if (!alfrescoVersion.isCloud())
             {
                 drone.find(By.cssSelector("#HEADER_TASKS")).click();
             }
@@ -516,6 +534,7 @@ public class Navigation extends SharePage
 
     /**
      * Method to select "Workflows I've Started" under Tasks navigation menu item
+     *
      * @return {@link MyWorkFlowsPage}
      */
     public MyWorkFlowsPage selectWorkFlowsIHaveStarted()
@@ -531,9 +550,10 @@ public class Navigation extends SharePage
             throw new PageException("Unable to find Workflows I've started link", nse);
         }
     }
-    
+
     /**
      * Navigates to the groups page on Admin Console - Enterprise Only option.
+     *
      * @return {@link GroupsPage} Instance of UserSearchPage
      */
     public GroupsPage getGroupsPage()
@@ -542,10 +562,11 @@ public class Navigation extends SharePage
         //TODO To be implemented by using UI once JIRA: https://issues.alfresco.com/jira/browse/ALF-18909 is resolved 
         String usersPageURL = "/page/console/admin-console/groups";
         String currentUrl = drone.getCurrentUrl();
-        if(currentUrl != null)
+        if (currentUrl != null)
         {
             String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
             drone.navigateTo(url);
+            drone.waitForPageLoad(3000);
         }
         return new GroupsPage(drone);
     }
@@ -560,13 +581,13 @@ public class Navigation extends SharePage
         drone.find(By.cssSelector(REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR)).click();
         return FactorySharePage.resolvePage(drone);
     }
-    
+
     /**
      * Select manage sites link from home page by Site Admin.
      *
      * @return the html page
      */
-    
+
     public HtmlPage selectManageSitesSiteAdmin()
     {
         drone.find(By.cssSelector(SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR)).click();
@@ -633,7 +654,7 @@ public class Navigation extends SharePage
      */
     public HtmlPage selectManageSitesPage()
     {
-        if(logger.isTraceEnabled())
+        if (logger.isTraceEnabled())
         {
             logger.trace("Finding the manage sites page.");
         }
@@ -651,7 +672,7 @@ public class Navigation extends SharePage
             {
                 return selectManageSitesSiteAdmin();
             }
-        } 
+        }
         catch (NoSuchElementException e)
         {
             throw new PageOperationException("Unable to select manage sites link", e);
@@ -665,7 +686,7 @@ public class Navigation extends SharePage
      */
     private void selectUserDashboardConfigurationIcon()
     {
-            drone.findAndWait(By.id("HEADER_CUSTOMIZE_USER_DASHBOARD")).click();
+        drone.findAndWait(By.id("HEADER_CUSTOMIZE_USER_DASHBOARD")).click();
     }
 
     /**
@@ -673,35 +694,37 @@ public class Navigation extends SharePage
      */
     public CustomiseUserDashboardPage selectCustomizeUserDashboard()
     {
-            if (alfrescoVersion.isDojoSupported())
-            {
-                    selectUserDashboardConfigurationIcon();
-            }
-            return new CustomiseUserDashboardPage(getDrone());
+        if (alfrescoVersion.isDojoSupported())
+        {
+            selectUserDashboardConfigurationIcon();
+        }
+        return new CustomiseUserDashboardPage(getDrone());
     }
 
     /**
-     *   Go to Node-Browser  page use direct URL.
+     * Go to Node-Browser  page use direct URL.
+     *
      * @return {@link org.alfresco.po.share.adminconsole.NodeBrowserPage}
      */
     public NodeBrowserPage getNodeBrowserPage()
     {
-            if (alfrescoVersion.isCloud())
-            {
-                    throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
-            }
-            String usersPageURL = "/page/console/admin-console/node-browser";
-            String currentUrl = drone.getCurrentUrl();
-            if (currentUrl != null)
-            {
-                    String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
-                    drone.navigateTo(url);
-            }
-            return new NodeBrowserPage(drone).render();
+        if (alfrescoVersion.isCloud())
+        {
+            throw new UnsupportedOperationException("This option is Enterprise only, not available for cloud");
+        }
+        String usersPageURL = "/page/console/admin-console/node-browser";
+        String currentUrl = drone.getCurrentUrl();
+        if (currentUrl != null)
+        {
+            String url = currentUrl.replaceFirst("^*/page.*", usersPageURL);
+            drone.navigateTo(url);
+        }
+        return new NodeBrowserPage(drone).render();
     }
 
     /**
-     *   Go to Node-Browser  page use direct URL.
+     * Go to Node-Browser  page use direct URL.
+     *
      * @return {@link org.alfresco.po.share.adminconsole.CategoryManagerPage}
      */
     public CategoryManagerPage getCategoryManagerPage()
@@ -719,9 +742,10 @@ public class Navigation extends SharePage
         }
         return new CategoryManagerPage(drone).render();
     }
-    
+
     /**
      * Check if "CreateSite" element is present in the sites menu.
+     *
      * @return
      */
     public boolean isCreateSitePresent()
@@ -737,101 +761,98 @@ public class Navigation extends SharePage
             throw new UnsupportedOperationException("Not able to find create site");
         }                    
     }
-   
-    
+
+
     /**
-     * Check for details of site is favourite or not. 
+     * Check for details of site is favourite or not.
+     *
      * @return
      */
     public boolean isSiteFavourtie()
     {
         try
-        {              
-                if(drone.getCurrentPage() instanceof SiteDashboardPage )
+        {
+            if (drone.getCurrentPage() instanceof SiteDashboardPage)
+            {
+                selectSitesDropdown();
+                if (drone.isElementDisplayed(By.cssSelector(SELECT_SITE_AS_FAVOURITE)))
                 {
-                    selectSitesDropdown();
-                    if(drone.isElementDisplayed(By.cssSelector(SELECT_SITE_AS_FAVOURITE)))
-                    {
-                        return false;
-                    }
-                    else if(drone.isElementDisplayed(By.cssSelector(REMOVE_SITE_AS_FAVOURITE)))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
-                    }                    
-                    
+                    return false;
+                }
+                else if (drone.isElementDisplayed(By.cssSelector(REMOVE_SITE_AS_FAVOURITE)))
+                {
+                    return true;
                 }
                 else
                 {
                     throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
                 }
-               
+
+            }
+
         }
         catch (NoSuchElementException nse)
         {
-                throw new PageException("No option available to check site favourtie.", nse);                
+            throw new PageException("No option available to check site favourtie.", nse);
         }
+        throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
     }
-    
+
     /**
      * Set Site as favourite.
+     *
      * @return
      */
     public HtmlPage setSiteAsFavourite()
     {
         try
-        {              
-                if(drone.getCurrentPage() instanceof SiteDashboardPage )
-                {
-                    selectSitesDropdown();
-                    drone.find(By.cssSelector(SELECT_SITE_AS_FAVOURITE)).click();                   
-                    return FactorySharePage.resolvePage(drone);
-                }
-                else
-                {
-                    throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
-                }
-               
+        {
+            if (drone.getCurrentPage() instanceof SiteDashboardPage)
+            {
+                selectSitesDropdown();
+                drone.find(By.cssSelector(SELECT_SITE_AS_FAVOURITE)).click();
+                return FactorySharePage.resolvePage(drone);
+            }
+
         }
         catch (NoSuchElementException nse)
         {
-                throw new PageException("No option available to make site favourtie.", nse);
+            logger.error("No option available to make site favourtie.", nse);
+            throw new PageException("No option available to make site favourtie.", nse);
         }
+        throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
     }
-    
+
     /**
-     * Remove site as favourite. 
+     * Remove site as favourite.
+     *
      * @return
      */
     public HtmlPage removeFavourite()
-    {       
-        
+    {
+
         try
         {
-            if(drone.getCurrentPage() instanceof SiteDashboardPage )
+            if (drone.getCurrentPage() instanceof SiteDashboardPage)
             {
                 selectSitesDropdown();
-                drone.find(By.cssSelector(REMOVE_SITE_AS_FAVOURITE)).click();                   
+                drone.find(By.cssSelector(REMOVE_SITE_AS_FAVOURITE)).click();
                 return FactorySharePage.resolvePage(drone);
-            }
-            else
-            {
-                throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
             }
         }
         catch (NoSuchElementException nse)
         {
+            logger.error("No option available to remove site from favourtie.", nse);
             throw new PageException("No option available to remove site from favourtie.", nse);
         }
+        throw new UnsupportedOperationException("User has to be in Site DashBoard page.");
     }
-    
+
     //
-    
+
     /**
-     * Get the names of all recently visited sites. 
+     * Get the names of all recently visited sites.
+     *
      * @return
      */
     public List<String> getRecentSitesPresent()
@@ -854,35 +875,34 @@ public class Navigation extends SharePage
             throw new PageOperationException("No Recent Site(s) Available", nse);
         }
     }
-    
+
     /**
      * Does any sites been selectd as favourite.
+     *
      * @return
      */
     public boolean doesAnyFavouriteSiteExist()
     {
+        boolean doesAnyFavouriteSiteExist = true;
         try
         {
             selectFavourties();
             WebElement element = drone.findFirstDisplayedElement(By.cssSelector(FAVOURITE_TEXT));
-            if ("No Favorites".equals(element.getText()))
+            if (drone.getValue("no.favourites").equals(element.getText()))
             {
-                return false;
-            }
-            else
-            {
-                return true;
+                doesAnyFavouriteSiteExist = false;
             }
         }
         catch (NoSuchElementException nse)
         {
             logger.error("Fvourties option is not found in the option", nse);
         }
-        throw new PageOperationException("Fvourties option is not found in the option");
+        return doesAnyFavouriteSiteExist;
     }
-    
+
     /**
      * Get list of favourite sites available.
+     *
      * @return
      */
     public List<String> getFavouriteSites()
@@ -904,9 +924,10 @@ public class Navigation extends SharePage
         }
         throw new PageOperationException("Fvourties option is not found in the option");
     }
-    
+
     /**
      * Select favourites.
+     *
      * @return
      */
     private HtmlPage selectFavourties()
@@ -915,21 +936,21 @@ public class Navigation extends SharePage
         {
             //Refresh is needed since sites added in favourites dont reflect.
             drone.refresh();
-            
-            selectSitesDropdown(); 
+
+            selectSitesDropdown();
             drone.findAndWait(By.cssSelector(LINK_FAVOURITES)).click();
             return FactorySharePage.resolvePage(drone);
         }
-        catch(NoSuchElementException nse)
+        catch (NoSuchElementException nse)
         {
             logger.error("Fvourties option is not found in the option", nse);
         }
         throw new PageOperationException("Fvourties option is not found in the option");
     }
-    
-    
+
     /**
      * Select My Sites from sites dropdown.
+     *
      * @return
      */
     public HtmlPage selectMySites()
@@ -938,20 +959,16 @@ public class Navigation extends SharePage
         {
             //Refresh is needed since sites added in favourites dont reflect.
             selectSitesDropdown();
-            
             drone.findAndWait(By.cssSelector(MY_SITES)).click();
             return FactorySharePage.resolvePage(drone);
         }
-        catch(NoSuchElementException nse)
+        catch (TimeoutException nse)
         {
             logger.error("My Sites option is not found in the options", nse);
         }
         throw new PageOperationException("My Sites option is not found in the options");
     }
-    
-    
-    
-    
+
     /**
      * Mimics the action of selecting shared files link.
      *
@@ -963,7 +980,7 @@ public class Navigation extends SharePage
         {
             drone.find(By.xpath(SHARED_FILES_LINK)).click();
         }
-        catch(InvalidElementStateException ise)
+        catch (InvalidElementStateException ise)
         {
         }
         return new SharedFilesPage(drone);
@@ -971,7 +988,7 @@ public class Navigation extends SharePage
 
     /**
      * Navigates to the faceted search page.
-     * 
+     *
      * @return {@link FacetedSearchPage} Instance of FacetedSearchPage
      */
     public HtmlPage getFacetedSearchPage()
@@ -1004,7 +1021,8 @@ public class Navigation extends SharePage
     }
 
     /**
-     *   Go to Admin Console page (application) use direct URL.
+     * Go to Admin Console page (application) use direct URL.
+     *
      * @return {@link org.alfresco.po.share.admin.AdminConsolePage}
      */
     public AdminConsolePage getAdminConsolePage()
@@ -1024,7 +1042,8 @@ public class Navigation extends SharePage
     }
 
     /**
-     *   Go to Tag Manager page use direct URL.
+     * Go to Tag Manager page use direct URL.
+     *
      * @return {@link org.alfresco.po.share.adminconsole.TagManagerPage}
      */
     public TagManagerPage getTagManagerPage()
@@ -1052,5 +1071,20 @@ public class Navigation extends SharePage
     {
         drone.find(By.cssSelector(MY_FILES_LINK)).click();
         return new MyFilesPage(drone);
+    }
+
+    /**
+     * Method to perfrom search using header search bar
+     *
+     * @param searchString
+     * @return
+     */
+    public FacetedSearchPage performSearch(String searchString)
+    {
+        FacetedSearchHeaderSearchForm facetedSearchHeaderSearchForm
+            = new FacetedSearchHeaderSearchForm(drone);
+        facetedSearchHeaderSearchForm.search(searchString);
+
+        return drone.getCurrentPage().render();
     }
 }

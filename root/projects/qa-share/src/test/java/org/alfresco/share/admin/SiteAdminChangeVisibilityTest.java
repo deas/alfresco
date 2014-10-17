@@ -176,7 +176,7 @@ public class SiteAdminChangeVisibilityTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
-    public void ALF_2940() throws Exception
+    public void AONE_13959() throws Exception
     {
         // login as user2
         ShareUser.login(drone, user2, DEFAULT_PASSWORD);
@@ -185,54 +185,6 @@ public class SiteAdminChangeVisibilityTest extends AbstractUtils
         ShareUser.openUserDashboard(drone);
 
         // ACE_508_02 Public to Private
-        testSiteVisibility(drone, user1PublicSite, SiteVisibility.PUBLIC, SiteVisibility.PRIVATE);
-        // ACE_508_04 Private to Public
-        testSiteVisibility(drone, user1PublicSite, SiteVisibility.PRIVATE, SiteVisibility.PUBLIC);
-
-        // ACE_508_06 Moderated to Public
-        testSiteVisibility(drone, user1ModeratedSite, SiteVisibility.MODERATED, SiteVisibility.PUBLIC);
-        // ACE_508_08 Public to Moderated
-        testSiteVisibility(drone, user1ModeratedSite, SiteVisibility.PUBLIC, SiteVisibility.MODERATED);
-
-        // ACE_508_10 Private to Moderated
-        testSiteVisibility(drone, user1PrivateSite, SiteVisibility.PRIVATE, SiteVisibility.MODERATED);
-        // ACE_508_12 Moderated to Private
-        testSiteVisibility(drone, user1PrivateSite, SiteVisibility.MODERATED, SiteVisibility.PRIVATE);
-    }
-
-    /**
-     * Test changing site visibility as the Supper Administrator (repo Admin).
-     * The test is only relevant to Alfresco Enterprise.
-     * <p>
-     * The tests are described in the following test cases:
-     * <ul>
-     * <li>ACE_508_02 change site visibility from Public to Private</li>
-     * <li>ACE_508_04 change site visibility from Private to Public</li>
-     * <li>ACE_508_06 change site visibility from Moderated to Public</li>
-     * <li>ACE_508_08 change site visibility from Public to Moderated</li>
-     * <li>ACE_508_10 change site visibility from Private to Moderated</li>
-     * <li>ACE_508_12 change site visibility from Moderated to Private</li>
-     * </ul>
-     * 
-     * @throws Exception
-     */
-    @Test(groups = "EnterpriseOnly")
-    public void ALF_2941() throws Exception
-    {
-        // We don't really need this check. however, it's added in case you run
-        // the tests within your IDE and not excluding the relevant groups.
-        if (isAlfrescoVersionCloud(drone))
-        {
-            throw new UnsupportedOperationException("This operation is not supported for Cloud.");
-        }
-
-        // login as user2
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        // Open user2 dash board page
-        ShareUser.openUserDashboard(drone);
-        
-        // ACE_508_02 Public to PRivate
         testSiteVisibility(drone, user1PublicSite, SiteVisibility.PUBLIC, SiteVisibility.PRIVATE);
         // ACE_508_04 Private to Public
         testSiteVisibility(drone, user1PublicSite, SiteVisibility.PRIVATE, SiteVisibility.PUBLIC);

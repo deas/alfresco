@@ -1,0 +1,71 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true" parallel="tests" thread-count="7">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="NonGrid.*"/>
+            <exclude name=".*Bug.*"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <test name="RepositoryDocumentWorkflowsTests">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentWorkflowsTests"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryDocumentUsersHomeTests">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentUsersHomeTests"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryFolderTests3">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests3"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryFolderTests">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryManagePermissionTest">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryManagePermissionTest"/>
+        </classes>
+    </test>
+
+
+    <test name="SecurityXssTest">
+        <classes>
+            <class name="org.alfresco.share.repository.SecurityXssTest"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryBrowserTests">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryBrowserTests"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryDocumentShareTests">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentShareTests"/>
+        </classes>
+    </test>
+
+    <test name="RepositoryFolder1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryFolderTests1"/>
+        </classes>
+    </test>
+
+</suite>

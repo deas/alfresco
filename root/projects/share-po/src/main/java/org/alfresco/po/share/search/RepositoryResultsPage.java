@@ -14,9 +14,12 @@
  */
 package org.alfresco.po.share.search;
 
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * Repository search results page object, holds all element of the html page relating to
@@ -28,7 +31,7 @@ import org.openqa.selenium.By;
  */
 public class RepositoryResultsPage extends SearchResultsPage
 {
-
+    private static final By Go_TO_ADV_SEARCH = By.cssSelector("#HEADER_ADVANCED_SEARCH_text");
     /**
      * Constructor.
      */
@@ -88,6 +91,20 @@ public class RepositoryResultsPage extends SearchResultsPage
         catch (Exception e)
         {
             return 0;
+        }
+    }
+
+    public AdvanceSearchPage goToAdvancedSearch()
+    {
+        try
+        {
+            WebElement backBtn = drone.findAndWait(Go_TO_ADV_SEARCH);
+            backBtn.click();
+            return drone.getCurrentPage().render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + Go_TO_ADV_SEARCH);
         }
     }
 

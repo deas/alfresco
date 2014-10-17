@@ -60,7 +60,7 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
         siteName = getSiteName(testName);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        
+
         // This util has been purposely used since beforeClass runs for dataprep as well as test
         SiteUtil.createSite(drone, siteName, testName, SITE_VISIBILITY_PUBLIC, true);
 
@@ -68,13 +68,13 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_158941() throws Exception
+    public void dataPrep_AONE_14435() throws Exception
     {
         dataPrepSecondaryObjectTypeIDsProperty(drone, testUser, getTestName(), siteName);
     }
 
-    @Test
-    public void ALF_158941() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14435() throws Exception
     {
         testName = getTestName();
         fileName = getFileName(testName);
@@ -88,12 +88,13 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
         for (Property property : fileProperties)
         {
             if(property.getId().equals("cmis:secondaryObjectTypeIds"))
-            {
+                {
                 Assert.assertEquals(property.getId(), "cmis:secondaryObjectTypeIds", "Verifying propertyDefinitionId");
                 Assert.assertEquals(property.getLocalName(), "secondaryObjectTypeIds", "Verifying LocalName");
                 Assert.assertEquals(property.getDisplayName(), "Secondary Object Type Ids", "Verifying DisplayName");
                 Assert.assertEquals(property.getQueryName(), "cmis:secondaryObjectTypeIds", "Verifying QueryName");
                 Assert.assertEquals(property.getType().value(), "id", "Verifying ID");
+                Assert.assertEquals(property.getDefinition().getCardinality().value(), "multi", "Verifying Cardinality");
                 Assert.assertTrue(property.getValuesAsString().contains("P:cm:titled"), "Verifying \"P:cm:titled\" value exists");
                 Assert.assertTrue(property.getValuesAsString().contains("P:sys:localized"), "Verifying \"P:sys:localized\" value exists");
             }
@@ -108,6 +109,7 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
                 Assert.assertEquals(property.getDisplayName(), "Secondary Object Type Ids", "Verifying DisplayName");
                 Assert.assertEquals(property.getQueryName(), "cmis:secondaryObjectTypeIds", "Verifying QueryName");
                 Assert.assertEquals(property.getType().value(), "id", "Verifying ID");
+                Assert.assertEquals(property.getDefinition().getCardinality().value(), "multi", "Verifying Cardinality");
                 Assert.assertTrue(property.getValuesAsString().contains("P:cm:titled"), "Verifying \"P:cm:titled\" value exists");
                 Assert.assertTrue(property.getValuesAsString().contains("P:sys:localized"), "Verifying \"P:sys:localized\" value exists");
             }
@@ -116,150 +118,150 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_158971() throws Exception
+    public void dataPrep_AONE_14436() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_158971() throws Exception
+    public void AONE_14436() throws Exception
     {
         fileName = getFileName(getTestName());
         addClasifiableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_158971")
-    public void ALF_159131() throws Exception
+    @Test (dependsOnMethods = "AONE_14436")
+    public void AONE_14449() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeClasifiableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_158981() throws Exception
+    public void dataPrep_AONE_14437() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_158981() throws Exception
+    public void AONE_14437() throws Exception
     {
         fileName = getFileName(getTestName());
         addComplianceableAspect(drone, testUser, fileName, siteName, cmisVersion);
 
     }
 
-    @Test(dependsOnMethods = "ALF_158981")
-    public void ALF_159141() throws Exception
+    @Test(dependsOnMethods = "AONE_14437")
+    public void AONE_14450() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeComplianceableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_158991() throws Exception
+    public void dataPrep_AONE_14438() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_158991() throws Exception
+    public void AONE_14438() throws Exception
     {
         fileName = getFileName(getTestName());
         addDublinCoreAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_158991")
-    public void ALF_159151() throws Exception
+    @Test (dependsOnMethods = "AONE_14438")
+    public void AONE_14451() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeDublinCoreAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159001() throws Exception
+    public void dataPrep_AONE_14439() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159001() throws Exception
+    public void AONE_14439() throws Exception
     {
         fileName = getFileName(getTestName());
         addEffectivityAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159001")
-    public void ALF_159161() throws Exception
+    @Test (dependsOnMethods = "AONE_14439")
+    public void AONE_14452() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeEffectivityAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159011() throws Exception
+    public void dataPrep_AONE_14440() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159011() throws Exception
+    public void AONE_14440() throws Exception
     {
         fileName = getFileName(getTestName());
         addSummarizableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159011")
-    public void ALF_159171() throws Exception
+    @Test (dependsOnMethods = "AONE_14440")
+    public void AONE_14453() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeSummarizableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159021() throws Exception
+    public void dataPrep_AONE_14441() throws Exception
     {
         testName = getTestName();
         dataPrepTemplatableAspect(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159021() throws Exception
+    public void AONE_14441() throws Exception
     {
         templateName = "Template-" + getFileName(getTestName());
         fileName = getFileName(getTestName());
         addTemplatableAspect(drone, testUser, fileName, siteName, templateName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159021")
-    public void ALF_159191() throws Exception
+    @Test (dependsOnMethods = "AONE_14441")
+    public void AONE_14455() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeTemplatableAspect(drone, testUser, fileName, siteName, templateName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159031() throws Exception
+    public void dataPrep_AONE_14442() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159031() throws Exception
+    public void AONE_14442() throws Exception
     {
         fileName = getFileName(getTestName());
         addEmailedAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159031")
-    public void ALF_159201() throws Exception
+    @Test (dependsOnMethods = "AONE_14442")
+    public void AONE_14456() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeEmailedAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser"})
-    public void dataPrep_ALF_159051() throws Exception
+    public void dataPrep_AONE_14443() throws Exception
     {
         testName = getTestName();
         fileName = getFileName(testName);
@@ -281,8 +283,8 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
         ShareUser.logout(drone);
     }
 
-    @Test
-    public void ALF_159051() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14443() throws Exception
     {
         testName = getTestName();
         fileName = getFileName(testName);
@@ -291,121 +293,122 @@ public class CmisBrowserDocumentAspectsTests extends CmisDocumentAspectUtils
         addTaggableAspect(drone, testUser, fileName, siteName, tag, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159051")
-    public void ALF_159221() throws Exception
+    @Test (dependsOnMethods = "AONE_14443", groups = {"IntermittentBugs"})
+    public void AONE_14457() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeTaggableAspect(drone, testUser, fileName, siteName, tag, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159071() throws Exception
+    public void dataPrep_AONE_14444() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159071() throws Exception
+    public void AONE_14444() throws Exception
     {
         fileName = getFileName(getTestName());
         addGeographicAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159071")
-    public void ALF_159241() throws Exception
+    @Test (dependsOnMethods = "AONE_14444")
+    public void AONE_14458() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeGeographicAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159081() throws Exception
+    public void dataPrep_AONE_14445() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159081() throws Exception
+    public void AONE_14445() throws Exception
     {
         fileName = getFileName(getTestName());
         addEXIFAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159081")
-    public void ALF_159251() throws Exception
+    @Test (dependsOnMethods = "AONE_14445")
+    public void AONE_14459() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeEXIFAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159091() throws Exception
+    public void dataPrep_AONE_14446() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159091() throws Exception
+    public void AONE_14446() throws Exception
     {
         fileName = getFileName(getTestName());
         addAudioAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159091")
-    public void ALF_159261() throws Exception
+    @Test (dependsOnMethods = "AONE_14446")
+    public void AONE_14460() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeAudioAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159101() throws Exception
+    public void dataPrep_AONE_14447() throws Exception
     {
-        dataPrep(drone, testUser, getTestName(), siteName);
+        dataPrepIndexControlAspect(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159101() throws Exception
+    public void AONE_14447() throws Exception
     {
         fileName = getFileName(getTestName());
-        addIndexControlAspect(drone, testUser, fileName, siteName, cmisVersion);
+        String content = "Content: " + getTestName();
+        addIndexControlAspect(drone, testUser, fileName, content, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159101")
-    public void ALF_159271() throws Exception
+    @Test (dependsOnMethods = "AONE_14447")
+    public void AONE_14461() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeIndexControlAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159121() throws Exception
+    public void dataPrep_AONE_14448() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159121() throws Exception
+    public void AONE_14448() throws Exception
     {
         fileName = getFileName(getTestName());
         addRestrictableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
-    @Test (dependsOnMethods = "ALF_159121")
-    public void ALF_159281() throws Exception
+    @Test (dependsOnMethods = "AONE_14448")
+    public void AONE_14462() throws Exception
     {
         fileName = getFileName(getTestName(getDependsOnMethodName(this.getClass())));
         removeRestrictableAspect(drone, testUser, fileName, siteName, cmisVersion);
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_159181() throws Exception
+    public void dataPrep_AONE_14454() throws Exception
     {
         dataPrepRemoveVersionableAspect(drone, testUser, getTestName(), siteName, cmisVersion);
     }
 
     @Test
-    public void ALF_159181() throws Exception
+    public void AONE_14454() throws Exception
     {
         fileName = getFileName(getTestName());
         removeVersionableAspect(drone, testUser, fileName, siteName, cmisVersion);

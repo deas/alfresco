@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.alfresco.share.site.document;
 
@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  * @author cbairaajoni
  */
 @Listeners(FailedTestListener.class)
-@Test(groups="AceBug")
+@Test(groups = "AceBug")
 public class GoogleDocsTest extends ShareUserGoogleDocs
 {
     private static Log logger = LogFactory.getLog(GoogleDocsTest.class);
@@ -66,12 +66,12 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         // Deleting cookies
         ShareUser.deleteSiteCookies(drone, googleURL);
         ShareUser.deleteSiteCookies(drone, googlePlusURL);
-        	
+
         logger.info("Deleted google cookies successfully.");
     }
 
     /**
-     * DataPreparation method - ALF-1515
+     * DataPreparation method - AONE-14617
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -80,8 +80,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1515() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14617() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -110,7 +110,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Note: Test Link Steps are changed in implementation, 4,5,6 steps come first and 1,2,3 steps later. Test - ALF-1515:Changes can be discarded.
+     * Note: Test Link Steps are changed in implementation, 4,5,6 steps come first and 1,2,3 steps later. Test - AONE-14617:Changes can be discarded.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -133,10 +133,10 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1515() throws Exception
+    public void AONE_14617() throws Exception
     {
         prepare();
-        
+
         /** Start Test */
         String testName = getTestName();
         String fileName = getFileName(testName + System.currentTimeMillis());
@@ -161,7 +161,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Select editInGoogleDocs and sign into googleDocs.
         EditInGoogleDocsPage googleDocsPage = openEditGoogleDocFromDetailsPage(drone);
-        
+
         renameGoogleDocName(newFileName, googleDocsPage);
 
         // Discard the google doc modifications.
@@ -174,7 +174,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1521
+     * DataPreparation method - AONE-14618
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -184,8 +184,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1521() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14618() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -213,7 +213,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1521:File name can be changed.
+     * Test - AONE-14618:File name can be changed.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -229,7 +229,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1521() throws Exception
+    public void AONE_14618() throws Exception
     {
         prepare();
 
@@ -275,7 +275,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1522
+     * DataPreparation method - AONE-14619
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -285,8 +285,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1522() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14619() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -319,7 +319,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Note: This test is partially implemented and once Webdrone-133 is resolved, the remaining coding will be comopleted. Test - ALF-1522:Password protected
+     * Note: This test is partially implemented and once Webdrone-133 is resolved, the remaining coding will be comopleted. Test - AONE-14619:Password protected
      * documents.
      * <ul>
      * <li>Login</li>
@@ -332,7 +332,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1522() throws Exception
+    public void AONE_14619() throws Exception
     {
         prepare();
 
@@ -355,16 +355,17 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         {
             signIntoEditGoogleDocFromDetailsPage(drone);
         }
-        catch(PageException e)
+        catch (PageException e)
         {
-            Assert.assertTrue(e.getMessage().contains("There was an error opening the document in Google Docs™. If the errors occurs again please contact your System Administrator."));
+            Assert.assertTrue(e.getMessage().contains(
+                    "There was an error opening the document in Google Docs™. If the errors occurs again please contact your System Administrator."));
         }
-        
+
         Assert.assertTrue(drone.getCurrentPage().getTitle().contains("Document Details"));
     }
 
     /**
-     * DataPreparation method - ALF-1927
+     * DataPreparation method - AONE-14621
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -374,8 +375,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1927() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14621() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -403,7 +404,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1927:Save editing document. User logged out from Alfresco.
+     * Test - AONE-14621:Save editing document. User logged out from Alfresco.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -420,7 +421,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1927() throws Exception
+    public void AONE_14621() throws Exception
     {
         prepare();
 
@@ -430,7 +431,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         String testUser = getUserNameFreeDomain(testName);
         String siteName = getSiteName(testName);
 
-        fileName = fileName +ShareUser.getRandomStringWithNumders(4)+ ".docx";
+        fileName = fileName + ShareUser.getRandomStringWithNumders(4) + ".docx";
 
         // User login.
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -440,7 +441,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Creating and saving google doc through sign in with the google doc authentication details
         createAndSavegoogleDocBySignIn(drone, fileName, ContentType.GOOGLEDOCS);
-        
+
         DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
         detailsPage.render();
 
@@ -473,7 +474,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1929
+     * DataPreparation method - AONE-14623
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -483,8 +484,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1929() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14623() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -498,7 +499,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         try
         {
             prepare();
-            
+
             // User
             CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
 
@@ -515,7 +516,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // Navigating to google account and Deleting cookies
             ShareUser.deleteSiteCookies(drone, googleURL);
             ShareUser.deleteSiteCookies(drone, googlePlusURL);
-            
+
             createAndSavegoogleDocBySignIn(drone, xlsFileName, ContentType.GOOGLESPREADSHEET);
 
             // Deleting cookies
@@ -535,7 +536,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1929::Check that document opened for editing in appropriate Google Docs editor.
+     * Test - AONE-14623::Check that document opened for editing in appropriate Google Docs editor.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -547,7 +548,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1929() throws Exception
+    public void AONE_14623() throws Exception
     {
         prepare();
 
@@ -571,6 +572,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         // open editInGoogleDocs.
         EditInGoogleDocsPage googleDocsPage = signIntoEditGoogleDocFromDetailsPage(drone);
         String docTitle = googleDocsPage.getDocumentTitle();
+
+
 
         Assert.assertTrue(docTitle.contains(fileName + "_doc"));
 
@@ -610,7 +613,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1931
+     * DataPreparation method - AONE-14625
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -620,8 +623,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1931() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14625() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -649,7 +652,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1931:Check versioning for edited document.
+     * Test - AONE-14625:Check versioning for edited document.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -668,7 +671,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1931() throws Exception
+    public void AONE_14625() throws Exception
     {
         prepare();
 
@@ -741,7 +744,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-2452
+     * DataPreparation method - AONE-14627
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -751,8 +754,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs", "Hybrid", "NonGrid"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_2452() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs", "Hybrid", "NonGrid" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14627() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -768,7 +771,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // User
             CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
             CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, testCloudUserInfo);
-            
+
             // Cloud User login
             ShareUser.login(hybridDrone, testCloudUser, DEFAULT_PASSWORD);
 
@@ -787,13 +790,13 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
 
             // Creating folder.
-           DocumentLibraryPage docsPage = ShareUserSitePage.createFolder(drone, folderName, "");
-          
+            DocumentLibraryPage docsPage = ShareUserSitePage.createFolder(drone, folderName, "");
+
             // Select network and site and click on sync
             DestinationAndAssigneeBean destinationBean = new DestinationAndAssigneeBean();
             destinationBean.setNetwork(cloudUserDomain);
             destinationBean.setSiteName(siteName);
-            
+
             docsPage = (DocumentLibraryPage) AbstractCloudSyncTest.syncContentToCloud(drone, folderName, destinationBean);
             docsPage.render();
         }
@@ -808,7 +811,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-2452:Creating Google Doc in Synced folder.
+     * Test - AONE-14627:Creating Google Doc in Synced folder.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -823,8 +826,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups = {"NonGrid", "Hybrid"}, timeOut = 400000)
-    public void ALF_2452() throws Exception
+    @Test(groups = { "NonGrid", "Hybrid" }, timeOut = 400000)
+    public void AONE_14627() throws Exception
     {
         prepare();
 
@@ -836,7 +839,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         ShareUser.deleteSiteCookies(drone, googleURL);
         ShareUser.deleteSiteCookies(drone, googlePlusURL);
-        
+
         // User login.
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
@@ -878,8 +881,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1502() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14628() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -907,7 +910,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
             String[] fileInfo4 = { TEST_PDF_FILE };
             ShareUser.uploadFileInFolder(drone, fileInfo4);
-            
+
             String[] fileInfo5 = { TEST_HTML_FILE };
             ShareUser.uploadFileInFolder(drone, fileInfo5);
         }
@@ -922,7 +925,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Note: This test will be valid for Enterprise only. Test - ALF-1502:No option to edit in Google Docs documents of un-supported MIME type.
+     * Note: This test will be valid for Enterprise only. Test - AONE-14628:No option to edit in Google Docs documents of un-supported MIME type.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -934,8 +937,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1502() throws Exception
-    { 
+    public void AONE_14628() throws Exception
+    {
         prepare();
 
         /** Start Test */
@@ -960,7 +963,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1516
+     * DataPreparation method - AONE-14629
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -969,8 +972,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1516() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14629() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -998,7 +1001,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1516:Unsupported characters in file name.
+     * Test - AONE-14629:Unsupported characters in file name.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -1013,7 +1016,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1516() throws Exception
+    public void AONE_14629() throws Exception
     {
         prepare();
 
@@ -1048,7 +1051,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Click Save to Alfresco and modify the minor version and comment , click save
         GoogleDocsUpdateFilePage googleUpdatefile = saveGoogleDocWithVersionAndComment(drone, "First Comments", true);
-        
+
         SharePopup shareErrorPopup = googleUpdatefile.submit().render();
 
         String actualMessage = shareErrorPopup.getShareMessage();
@@ -1057,7 +1060,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1934
+     * DataPreparation method - AONE-14631
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1066,8 +1069,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1934() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14631() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1089,7 +1092,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1934:Save to Alfresco. Delete document.
+     * Test - AONE-14631:Save to Alfresco. Delete document.
      * <ul>
      * <li>Login</li>
      * <li>Open Site</li>
@@ -1103,7 +1106,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1934() throws Exception
+    public void AONE_14631() throws Exception
     {
         prepare();
 
@@ -1140,7 +1143,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1935
+     * DataPreparation method - AONE-14633
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1149,8 +1152,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1935() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14633() throws Exception
     {
         String testName = getTestName();
         String siteAdmin = getUserNameFreeDomain(testName + "Admin");
@@ -1179,7 +1182,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
     /**
      * Note : WEBDRONE-219:Incorrect CSS used in UserRole enum .
-     * Test - ALF-1935:Save to Alfresco. Decrease user's rights.
+     * Test - AONE-14633:Save to Alfresco. Decrease user's rights.
      * <ul>
      * <li>Create InvitedUser</li>
      * <li>SiteAdmin login</li>
@@ -1202,8 +1205,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"GoogleDocs","Enterprise42Bug"}, timeOut = 400000)
-    public void ALF_1935() throws Exception
+    @Test(groups = { "GoogleDocs", "Enterprise42Bug" }, timeOut = 400000)
+    public void AONE_14633() throws Exception
     {
         prepare();
 
@@ -1247,17 +1250,17 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Getting second drone
         WebDrone secondDrone = getSecondDrone();
-        
+
         try
         {
             // SiteAdmin login.
             ShareUser.login(secondDrone, siteAdmin, DEFAULT_PASSWORD);
-            
-            SiteUtil.openSiteDocumentLibraryURL(secondDrone, getSiteShortname(siteName)); 
+
+            SiteUtil.openSiteDocumentLibraryURL(secondDrone, getSiteShortname(siteName));
 
             // Assign Consumer Role to InvitedUser
             DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(secondDrone, fileName);
-            
+
             detailsPage = (DocumentDetailsPage) ShareUserMembers.managePermissionsOnContent(secondDrone, testUser, fileName, UserRole.CONSUMER, false);
             detailsPage.render();
         }
@@ -1270,16 +1273,16 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             testCleanup(secondDrone, testName);
             secondDrone.quit();
         }
-        
+
         SharePopup shareErrorPopup = (SharePopup) saveGoogleDoc(drone, false);
         shareErrorPopup.render();
 
         String actualMessage = shareErrorPopup.getShareMessage();
-        Assert.assertEquals(actualMessage, expectedMessage," WEBDRONE-219:Incorrect CSS used in UserRole enum ");
+        Assert.assertEquals(actualMessage, expectedMessage, " WEBDRONE-219:Incorrect CSS used in UserRole enum ");
     }
 
     /**
-     * DataPreparation method - ALF-1936
+     * DataPreparation method - AONE-14634
      * <ul>
      * <li>Login</li>
      * <li>Create admin Users</li>
@@ -1288,8 +1291,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1936() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14634() throws Exception
     {
         String testName = getTestName();
         String siteAdmin = getUserNameFreeDomain(testName + "Admin");
@@ -1317,7 +1320,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1936:Save to Alfresco. Remove User from site members.
+     * Test - AONE-14634:Save to Alfresco. Remove User from site members.
      * <ul>
      * <li>Create Sitemember</li>
      * <li>SiteAdmin login</li>
@@ -1341,7 +1344,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "Enterprise42Bug", timeOut = 400000)
-    public void ALF_1936() throws Exception
+    public void AONE_14634() throws Exception
     {
         prepare();
 
@@ -1368,16 +1371,16 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Invite user to Site as Collaborator.
         ShareUserMembers.inviteUserToSiteWithRole(drone, siteAdmin, testUser, siteName, UserRole.COLLABORATOR);
-        
+
         ShareUser.deleteSiteCookies(drone, googleURL);
         ShareUser.deleteSiteCookies(drone, googlePlusURL);
-        
+
         ShareUser.logout(drone);
 
         // Login As testUser
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-       // Open Site Library
+        // Open Site Library
         ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         ShareUser.openDocumentDetailPage(drone, fileName);
@@ -1391,7 +1394,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         {
             // SiteAdmin login.
             ShareUser.login(secondDrone, siteAdmin, DEFAULT_PASSWORD);
-            
+
             // Remove sitemember
             ShareUserMembers.removeSiteMember(secondDrone, testUser, siteName);
         }
@@ -1405,7 +1408,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             secondDrone.quit();
         }
 
-        SharePopup shareErrorPopup =(SharePopup) saveGoogleDoc(drone, false);
+        SharePopup shareErrorPopup = (SharePopup) saveGoogleDoc(drone, false);
         shareErrorPopup.render();
 
         String actualMessage = shareErrorPopup.getShareMessage();
@@ -1413,7 +1416,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1937
+     * DataPreparation method - AONE-14635
      * <ul>
      * <li>Login</li>
      * <li>Create admin Users</li>
@@ -1422,8 +1425,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    //@Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1937() throws Exception
+    // @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14635() throws Exception
     {
         String testName = getTestName();
         String siteAdmin = getUserNamePremiumDomain(testName + "Admin");
@@ -1453,7 +1456,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1937:Save to Alfresco. User deleted.
+     * Test - AONE-14635:Save to Alfresco. User deleted.
      * <ul>
      * <li>Create Sitemember</li>
      * <li>SiteAdmin login</li>
@@ -1476,7 +1479,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = { "Enterprise42Bug", "NonGrid" }, timeOut = 400000)
-    public void ALF_1937() throws Exception
+    public void AONE_14635() throws Exception
     {
         prepare();
 
@@ -1528,7 +1531,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         {
             // login with second drone as SiteAdmin.
             ShareUser.login(secondDrone, siteAdmin, DEFAULT_PASSWORD);
-            
+
             // Removing user from users list
             deleteUser(secondDrone, testUser);
         }
@@ -1543,7 +1546,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         }
 
         // Second user tries to save the document.
-        SharePopup shareErrorPopup = (SharePopup)saveGoogleDoc(drone, false);
+        SharePopup shareErrorPopup = (SharePopup) saveGoogleDoc(drone, false);
         shareErrorPopup.render();
         // Note: Expected error popup is not displaying and not redirecting to login page, Need to have analysis on it.
         /*
@@ -1552,7 +1555,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1938
+     * DataPreparation method - AONE-14632
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1562,8 +1565,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1938() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14632() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1599,7 +1602,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1938:Save to Alfresco. Delete Site.
+     * Test - AONE-14632:Save to Alfresco. Delete Site.
      * <ul>
      * <li>User Login</li>
      * <li>Save the dashboard URL</li>
@@ -1618,7 +1621,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1938() throws Exception
+    public void AONE_14632() throws Exception
     {
         prepare();
 
@@ -1667,7 +1670,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1513
+     * DataPreparation method - AONE-14636
      * <ul>
      * <li>Login</li>
      * <li>Create 2 Users</li>
@@ -1677,8 +1680,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1513() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14636() throws Exception
     {
         String testName = getTestName();
         String siteAdmin = getUserNameFreeDomain(testName + "Admin");
@@ -1715,7 +1718,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1513:Lock Mechanism.
+     * Test - AONE-14636:Lock Mechanism.
      * <ul>
      * <li>SiteAdmin login</li>
      * <li>Add document to the site</li>
@@ -1744,7 +1747,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1513() throws Exception
+    public void AONE_14636() throws Exception
     {
         prepare();
 
@@ -1756,7 +1759,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         String siteName = getSiteName(testName);
         String docVersion = "";
         String modifiedDocVersion = "";
-        
+
         fileName = fileName + ".docx";
 
         // SiteAdmin login
@@ -1766,7 +1769,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Creating and saving google doc through sign in with the google doc authentication details
         createAndSavegoogleDocBySignIn(drone, fileName, ContentType.GOOGLEDOCS);
-        
+
         DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
 
         docVersion = detailsPage.getDocumentVersion();
@@ -1779,7 +1782,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         String url = drone.getCurrentUrl();
 
         // Select BackToAlfresco
-        detailsPage = googleDocsPage.selectBackToShare().render();       
+        detailsPage = googleDocsPage.selectBackToShare().render();
 
         ShareUser.logout(drone);
 
@@ -1837,9 +1840,9 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
         Assert.assertTrue(detailsPage.isUploadNewVersionDisplayed());
-        
+
         String latestDocVersion = detailsPage.getDocumentVersion();
-        
+
         // Uploading new version of the document.
         detailsPage = ShareUser.uploadNewVersionOfDocument(drone, fileName, "New version uploaded.");
 
@@ -1848,7 +1851,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1943
+     * DataPreparation method - AONE-14640
      * <ul>
      * <li>Login</li>
      * <li>Create 4 Users</li>
@@ -1859,8 +1862,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1943() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14640() throws Exception
     {
         String testName = getTestName();
         String siteAdmin = getUserNameFreeDomain(testName + "Admin").toLowerCase();
@@ -1891,12 +1894,12 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             // Invite users to Site as Collaborator,contributor,consumer.
             ShareUserMembers.inviteUserToSiteWithRole(drone, siteAdmin, collaborator, siteName, UserRole.COLLABORATOR);
             ShareUser.logout(drone);
-            
+
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
             ShareUserMembers.inviteUserToSiteWithRole(drone, siteAdmin, contributor, siteName, UserRole.CONTRIBUTOR);
             ShareUser.logout(drone);
-            
+
             // User login
             ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
             ShareUserMembers.inviteUserToSiteWithRole(drone, siteAdmin, consumer, siteName, UserRole.CONSUMER);
@@ -1913,7 +1916,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * This test is combination of ALF-1943/1944/1945 Test - ALF-1943:Lock Mechanism.
+     * This test is combination of AONE-14640/1944/1945 Test - AONE-14640:Lock Mechanism.
      * <ul>
      * <li>Collaborator login</li>
      * <li>Open Document library page</li>
@@ -1934,13 +1937,13 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1943() throws Exception
+    public void AONE_14640() throws Exception
     {
         prepare();
 
         /** Start Test */
         String testName = getTestName();
-        String fileName = getFileName(testName+ ShareUser.getRandomStringWithNumders(3));
+        String fileName = getFileName(testName + ShareUser.getRandomStringWithNumders(3));
         String siteAdmin = getUserNameFreeDomain(testName + "Admin");
         String collaborator = getUserNameFreeDomain(testName + "Colloaborator");
         String contributor = getUserNameFreeDomain(testName + "Contributor");
@@ -1951,13 +1954,13 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // User login
         ShareUser.login(drone, siteAdmin, DEFAULT_PASSWORD);
-        
+
         ShareUser.openSitesDocumentLibrary(drone, siteName);
         // Creating and saving google doc through sign in with the google doc authentication details
         createAndSavegoogleDocBySignIn(drone, fileName, ContentType.GOOGLEDOCS);
-        
+
         ShareUser.logout(drone);
-        
+
         ShareUser.deleteSiteCookies(drone, googleURL);
         ShareUser.deleteSiteCookies(drone, googlePlusURL);
         // Collaborator login
@@ -1980,9 +1983,9 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         detailsPage.render();
 
         String modifiedDocVersion = detailsPage.getDocumentVersion();
-        
+
         Assert.assertNotEquals(docVersion, modifiedDocVersion);
-        
+
         ShareUser.logout(drone);
 
         // Contributor login
@@ -2005,7 +2008,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1946
+     * DataPreparation method - AONE-14647
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -2015,8 +2018,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1946() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14647() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -2059,8 +2062,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Note: Alfreso Enterprise42 issue (ALF-20775) is raised for this task.  
-     * Test - ALF-1946:Check editing two documents within two different browser sessions.
+     * Note: Alfreso Enterprise42 issue (ALF-20775) is raised for this task.
+     * Test - AONE-14647:Check editing two documents within two different browser sessions.
      * <ul>
      * <li>Open Site</li>
      * <li>Open Document library page</li>
@@ -2077,7 +2080,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = { "NonGrid", "Enterprise42Bug" }, timeOut = 400000)
-    public void ALF_1946() throws Exception
+    public void AONE_14647() throws Exception
     {
         prepare();
 
@@ -2116,22 +2119,22 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         {
             // login with second drone.
             ShareUser.login(secondDrone, testUser, DEFAULT_PASSWORD);
-            
+
             // Open Site Library
             ShareUser.openSitesDocumentLibrary(secondDrone, siteName);
-            
+
             DocumentDetailsPage secondDetailsPage = ShareUser.openDocumentDetailPage(secondDrone, secondFileName);
-            
+
             // Retrieving second document version before changing it.
             secondDocVersion = secondDetailsPage.getDocumentVersion();
-            
+
             // Opening google doc through sign in with the google doc authentication details
             signIntoEditGoogleDocFromDetailsPage(secondDrone);
-            
+
             // Saving the second document changes in second browser
             GoogleDocsUpdateFilePage googleUpdatefile2 = saveGoogleDocWithVersionAndComment(secondDrone, "Second document renamed", true);
             secondDetailsPage = googleUpdatefile2.submit().render();
-            
+
             actualComments = secondDetailsPage.getCommentsOfLastCommit();
             actualDocVersion = secondDetailsPage.getDocumentVersion();
         }
@@ -2144,7 +2147,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
             testCleanup(secondDrone, testName);
             secondDrone.quit();
         }
-        
+
         // Saving the first document changes in first browser
         GoogleDocsUpdateFilePage googleUpdatefile1 = saveGoogleDocWithVersionAndComment(drone, "First document renamed", true);
         detailsPage = googleUpdatefile1.submit().render();
@@ -2163,12 +2166,12 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         Assert.assertNotSame(secondDocVersion, actualDocVersion);
         Assert.assertEquals("Second document renamed", actualComments);
-        
+
         ShareUser.logout(drone);
     }
 
     /**
-     * DataPreparation method - ALF-1947
+     * DataPreparation method - AONE-14648
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -2178,8 +2181,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1947() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14648() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -2222,7 +2225,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1947:Check editing two different documents in the same browser
+     * Test - AONE-14648:Check editing two different documents in the same browser
      * <ul>
      * <li>Open Site</li>
      * <li>Open Document library page</li>
@@ -2247,7 +2250,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1947() throws Exception
+    public void AONE_14648() throws Exception
     {
         prepare();
 
@@ -2297,7 +2300,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         detailsPage.render();
 
         Assert.assertFalse(detailsPage.isEditInGoogleDocsLinkVisible());
-        
+
         // Back to Document Library Page
         ShareUser.openDocumentLibrary(drone);
 
@@ -2342,7 +2345,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * DataPreparation method - ALF-1948
+     * DataPreparation method - AONE-14649
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -2352,8 +2355,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1948() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14649() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -2396,7 +2399,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - ALF-1948:Check editing two different documents in one browser in different tabs
+     * Test - AONE-14649:Check editing two different documents in one browser in different tabs
      * <ul>
      * <li>Open Site</li>
      * <li>Open Document library page</li>
@@ -2413,7 +2416,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1948() throws Exception
+    public void AONE_14649() throws Exception
     {
         prepare();
 
@@ -2479,7 +2482,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         ShareUser.openSitesDocumentLibrary(drone, siteName);
 
         detailsPage = ShareUser.openDocumentDetailPage(drone, firstFileName);
-        
+
         Assert.assertNotSame("First Comments", detailsPage.getCommentsOfLastCommit());
         Assert.assertNotSame(firstDocVersion, detailsPage.getDocumentVersion());
 
@@ -2491,17 +2494,17 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         ShareUser.logout(drone);
     }
-    
+
     /**
-     * DataPreparation method - ALF-15112
+     * DataPreparation method - AONE-14643
      * <ul>
      * <li>Create 1 User</li>
      * </ul>
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_15112() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14643() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -2512,12 +2515,81 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - Enterprise40x-15112:Site Dashboard - Create Google Docs™ document.
-     * This test combination of below tests:
-     * Enterprise40x-15112:Site Dashboard - Create Google Docs™ document
-     * Enterprise40x-15113:Site Dashboard - Update Google Docs™ document
-     * Enterprise40x-15115:User Dashboard - Create Google Docs™ document
-     * Enterprise40x-15116:User Dashboard - Update Google Docs™ document
+     * Test - AONE-14643:Site Dashboard - Create Google Docs™ document.
+     * <ul>
+     * <li>User login</li>
+     * <li>Create Site</li>
+     * <li>Open Document library page</li>
+     * <li>Create google docs</li>
+     * <li>Verify the activities in Site and User dashboard</li>
+     * </ul>
+     * 
+     * @throws Exception
+     */
+    @Test(groups = "NonGrid", timeOut = 400000)
+    public void AONE_14643() throws Exception
+    {
+        prepare();
+
+        /** Start Test */
+        String testName = getTestName();
+        String fileName = getFileName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName) + System.currentTimeMillis();
+
+        fileName = fileName + ".docx";
+
+        // User login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.createSite(drone, siteName, ShareUser.SITE_VISIBILITY_PUBLIC);
+
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+
+        // Creating and saving google doc through sign in with the google doc authentication details
+        createAndSavegoogleDocBySignIn(drone, fileName, ContentType.GOOGLEDOCS);
+
+        // User DashBoard Activities
+        ShareUser.openUserDashboard(drone);
+
+        // Check activity feed on: User DashBoard: Content Added
+        String activityEntry = testUser + " LName" + FEED_CONTENT_ADDED + FEED_FOR_FILE + fileName + FEED_LOCATION + siteName;
+
+        Assert.assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activityEntry, true));
+
+        // Site DashBoard Activities
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        // Check activity feed on: Site DashBoard: Content Added
+        activityEntry = testUser + " LName" + FEED_CONTENT_ADDED + FEED_FOR_FILE + fileName;
+
+        Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activityEntry, true, siteName, ActivityType.DESCRIPTION));
+
+        // Deleting the test data.
+        SiteUtil.deleteSite(drone, siteName);
+    }
+
+    /**
+     * DataPreparation method - AONE-14644
+     * <ul>
+     * <li>Create 1 User</li>
+     * </ul>
+     * 
+     * @throws Exception
+     */
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14644() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String[] testUsernInfo = new String[] { testUser };
+
+        // User
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUsernInfo);
+    }
+
+    /**
+     * Test - AONE_14644:Site Dashboard - Create Google Docs™ document.
      * <ul>
      * <li>User login</li>
      * <li>Create Site</li>
@@ -2530,7 +2602,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_15112() throws Exception
+    public void AONE_14644() throws Exception
     {
         prepare();
 
@@ -2541,7 +2613,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         String siteName = getSiteName(testName) + System.currentTimeMillis();
         String docVersion = "";
         String modifiedDocVersion = "";
-        
+
         fileName = fileName + ".docx";
 
         // User login
@@ -2553,7 +2625,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
 
         // Creating and saving google doc through sign in with the google doc authentication details
         createAndSavegoogleDocBySignIn(drone, fileName, ContentType.GOOGLEDOCS);
-        
+
         DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
 
         docVersion = detailsPage.getDocumentVersion();
@@ -2561,55 +2633,44 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         // Opening google doc through sign in with the google doc authentication details
         EditInGoogleDocsPage googleDocsPage = openEditGoogleDocFromDetailsPage(drone);
         Assert.assertTrue(googleDocsPage.isGoogleDocsIframeVisible());
-        
+
         // Saving the second document changes in second browser
         GoogleDocsUpdateFilePage googleUpdatefile = saveGoogleDocWithVersionAndComment(drone, "Comments", true);
         detailsPage = googleUpdatefile.submit().render();
-        
+
         modifiedDocVersion = detailsPage.getDocumentVersion();
 
         Assert.assertNotEquals(docVersion, modifiedDocVersion);
- 
+
         // User DashBoard Activities
         ShareUser.openUserDashboard(drone);
 
-        // Check activity feed on: User DashBoard: Content Added
-        String activityEntry = testUser + " LName" + FEED_CONTENT_ADDED + FEED_FOR_FILE + fileName + FEED_LOCATION + siteName;
+        String activityEntry = testUser + " LName" + FEED_CONTENT_UPDATED + FEED_FOR_FILE + fileName + FEED_LOCATION + siteName;
 
         Assert.assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activityEntry, true));
-        
-        // Check activity feed on: User DashBoard: Content Updated        
-        activityEntry = testUser + " LName" + FEED_CONTENT_UPDATED + FEED_FOR_FILE + fileName + FEED_LOCATION + siteName;
 
-        Assert.assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activityEntry, true));
-        
         // Site DashBoard Activities
         ShareUser.openSiteDashboard(drone, siteName);
 
         // Check activity feed on: Site DashBoard: Content Added
-        activityEntry = testUser + " LName" + FEED_CONTENT_ADDED + FEED_FOR_FILE + fileName;
-        
+        activityEntry = testUser + " LName" + FEED_CONTENT_UPDATED + FEED_FOR_FILE + fileName;
+
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activityEntry, true, siteName, ActivityType.DESCRIPTION));
 
-        // Check activity feed on: Site DashBoard: Content Updated
-        activityEntry = testUser + " LName" + FEED_CONTENT_UPDATED + FEED_FOR_FILE + fileName;
-        
-        Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activityEntry, true, siteName, ActivityType.DESCRIPTION));
-        
         // Deleting the test data.
         SiteUtil.deleteSite(drone, siteName);
     }
-    
+
     /**
-     * DataPreparation method - Enterprise40x-15114:Site Dashboard - Update non-Google Docs™ document
+     * DataPreparation method - AONE_14645:Site Dashboard - Update non-Google Docs™ document
      * <ul>
      * <li>Create 1 User</li>
      * </ul>
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_15114() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14645() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -2620,10 +2681,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
     }
 
     /**
-     * Test - Enterprise40x-15114:Site Dashboard - Update non-Google Docs™ document.
-     * This test combination of below tests:
-     * Enterprise40x-15114:Site Dashboard - Update non-Google Docs™ document
-     * Enterprise40x-15117:User Dashboard - Update non-Google Docs™ document
+     * Test - AONE_14645:Site Dashboard - Update non-Google Docs™ document.
      * <ul>
      * <li>User login</li>
      * <li>Create Site</li>
@@ -2637,7 +2695,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      */
     @SuppressWarnings("unused")
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_15114() throws Exception
+    public void AONE_14645() throws Exception
     {
         prepare();
 
@@ -2648,14 +2706,14 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         String fileName = TEST_DOCX_FILE;
         String docVersion = "";
         String modifiedDocVersion = "";
-        
-        String[] fileInfo = {fileName};
+
+        String[] fileInfo = { fileName };
 
         // User login
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
         ShareUser.createSite(drone, siteName, ShareUser.SITE_VISIBILITY_PUBLIC);
-        
+
         ShareUser.uploadFileInFolder(drone, fileInfo);
 
         DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
@@ -2665,31 +2723,31 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
         // Opening google doc through sign in with the google doc authentication details
         EditInGoogleDocsPage googleDocsPage = signIntoEditGoogleDocFromDetailsPage(drone);
         Assert.assertTrue(googleDocsPage.isGoogleDocsIframeVisible());
-        
+
         // Saving the second document changes in second browser
         GoogleDocsUpdateFilePage googleUpdatefile = saveGoogleDocWithVersionAndComment(drone, "Comments", true);
         detailsPage = googleUpdatefile.submit().render();
-        
+
         // User DashBoard Activities
         ShareUser.openUserDashboard(drone);
 
-        // Check activity feed on: User DashBoard: Content Updated  
+        // Check activity feed on: User DashBoard: Content Updated
         String activityEntry = testUser + " LName" + FEED_CONTENT_UPDATED + FEED_FOR_FILE + fileName + FEED_LOCATION + siteName;
 
         Assert.assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activityEntry, true));
-        
+
         // Site DashBoard Activities
         ShareUser.openSiteDashboard(drone, siteName);
-        
+
         // Check activity feed on: User DashBoard: Content Updated
         activityEntry = testUser + " LName" + FEED_CONTENT_UPDATED + FEED_FOR_FILE + fileName;
-        
+
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activityEntry, true, siteName, ActivityType.DESCRIPTION));
-        
+
         // Deleting the test data.
         SiteUtil.deleteSite(drone, siteName);
     }
-    
+
     /**
      * Note: This data setup valid for enterprise only.
      * <ul>
@@ -2701,8 +2759,8 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * 
      * @throws Exception
      */
-    @Test(groups={"DataPrepGoogleDocs"}, timeOut = 400000)
-    public void dataPrep_GoogleDocs_ALF_1930() throws Exception
+    @Test(groups = { "DataPrepGoogleDocs" }, timeOut = 400000)
+    public void dataPrep_GoogleDocs_AONE_14624() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -2735,7 +2793,7 @@ public class GoogleDocsTest extends ShareUserGoogleDocs
      * @throws Exception
      */
     @Test(groups = "NonGrid", timeOut = 400000)
-    public void ALF_1930() throws Exception
+    public void AONE_14624() throws Exception
     {
         prepare();
 

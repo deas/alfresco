@@ -38,20 +38,18 @@ public class HtmlSourceEditorPage extends BaseAdvancedTinyMceOptionsPage
     private static Log logger = LogFactory.getLog(HtmlSourceEditorPage.class);
 
     @RenderWebElement
-    private static By HTML_CONTENT_SOURCE = By.cssSelector("#htmlSource");
+    private static By HTML_CONTENT_SOURCE = By.xpath("//div[starts-with(@class, 'mce-container-body')]/textarea");
     @RenderWebElement
-    private static By HTML_SOURCE_LABEL = By.cssSelector(".title>label");
-    @RenderWebElement
-    private static By WRAPLINE = By.cssSelector(" #wrapline");
+    private static By HTML_SOURCE_LABEL = By.cssSelector("div.mce-reset>div.mce-window-head>div.mce-title");
 
     /**
      * Constructor.
      * 
-     * @param mainWindow
+     * @param element
      */
-    public HtmlSourceEditorPage(WebDrone drone, String mainWindow)
+    public HtmlSourceEditorPage(WebDrone drone, WebElement element)
     {
-        super(drone, mainWindow);
+        super(drone, element);
     }
 
     @SuppressWarnings("unchecked")

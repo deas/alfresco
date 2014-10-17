@@ -492,13 +492,28 @@ public interface FileDirectoryInfo
      * @return {@link DocumentLibraryPage}
      */
     DocumentLibraryPage selectEditOffline();
-
+    
+    /**
+     * Method to select Edit Offline link and close File Browse window
+     *
+     * @return {@link DocumentLibraryPage}
+     */
+    DocumentLibraryPage selectEditOfflineAndCloseFileWindow();
+    
     /**
      * Method to select Cancel Editing link
      *
      * @return {@link DocumentLibraryPage}
      */
     DocumentLibraryPage selectCancelEditing();
+    
+    
+    /**
+     * Method to select Locate File link
+     *
+     * @return {@link DocumentLibraryPage}
+     */
+    void selectLocateFile();
 
     /**
      * Returns whether the file is being edited
@@ -794,4 +809,29 @@ public interface FileDirectoryInfo
      * @return
      */
     public String getThumbnailURL();
+
+    /**
+     * This method verifies the Geolocation Metadata icon is present or not.
+     *
+     * @return boolean
+     */
+    public boolean isGeoLocationIconDisplayed();
+
+    /**
+     * This method verifies the EXIF icon is present or not.
+     *
+     * @return boolean
+     */
+    public boolean isEXIFIconDisplayed();
+
+    boolean isDownloadPresent();
+
+    boolean isMoreMenuButtonPresent();
+
+    boolean isTagsFieldPresent();
+
+    List<String> getDescriptionList();
+
+    String getDescriptionFromInfo();
+
 }

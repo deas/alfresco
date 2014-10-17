@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Dashboard page object, holds all element of the HTML page relating to share's
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -76,7 +76,7 @@ public class DashBoardPage extends SharePage implements Dashboard
 
     /**
      * Verify if home page banner web element is present
-     * 
+     *
      * @return true if exists
      */
     public boolean titlePresent()
@@ -94,7 +94,7 @@ public class DashBoardPage extends SharePage implements Dashboard
 
     /**
      * Gets dashlets in the dashboard page.
-     * 
+     *
      * @param name String title of dashlet
      * @return HtmlPage page object
      * @throws Exception
@@ -103,4 +103,5 @@ public class DashBoardPage extends SharePage implements Dashboard
     {
         return FactoryShareDashlet.getPage(drone, name);
     }
+
 }

@@ -13,8 +13,8 @@ public class FacetedSearchForm
 {
     /** Constants */
     private static final By FACETED_SEARCH_FORM = By.cssSelector("div#FCTSRCH_SEARCH_FORM");
-    private static final By SEARCH_FIELD = By.cssSelector("INPUT[name=searchTerm]");
-    private static final By SEARCH_BUTTON = By.cssSelector("span.dijitButtonNode");
+    public final By SEARCH_FIELD = By.cssSelector("INPUT[name=searchTerm]");
+    public final By SEARCH_BUTTON = By.cssSelector("span.dijitButtonNode");
 
     private WebDrone drone;
     private WebElement input;

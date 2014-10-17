@@ -31,7 +31,7 @@ public class AdvancedAdminConsolePagesTest extends AbstractTest
         }
         Assert.notNull(sysSummaryPage, "Expected page not opened. Navigate to SystemSummary page is failed");
         RepositoryServerClusteringPage repositoryServerClusteringPage;
-        repositoryServerClusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering);
+        repositoryServerClusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering).render();
         Assert.notNull(repositoryServerClusteringPage, "Expected page not opened. Navigate to Repository Server Clustering page is failed");
     }
 }

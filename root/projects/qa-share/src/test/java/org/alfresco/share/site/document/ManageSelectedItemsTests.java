@@ -46,7 +46,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_Enterprise40x_13842() throws Exception
+    public void dataPrep_AONE_1959() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -59,7 +59,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Folders - View the actions
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13842() throws Exception
+    public void AONE_1959() throws Exception
     {
 
         String testName = getTestName();
@@ -100,7 +100,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Folders - Copy to
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13844() throws Exception
+    public void AONE_1960() throws Exception
     {
 
         String testName = getTestName();
@@ -164,7 +164,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Folders - Move to
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13845() throws Exception
+    public void AONE_1961() throws Exception
     {
 
         String testName = getTestName();
@@ -233,7 +233,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_Enterprise40x_13846() throws Exception
+    public void dataPrep_AONE_1962() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -245,7 +245,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Folders - Delete
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13846() throws Exception
+    public void AONE_1962() throws Exception
     {
 
         String testName = getTestName();
@@ -292,7 +292,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_Enterprise40x_13849() throws Exception
+    public void dataPrep_AONE_1965() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -305,7 +305,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Documents - View the actions
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13849() throws Exception
+    public void AONE_1965() throws Exception
     {
 
         String testName = getTestName();
@@ -350,7 +350,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Documents - Copy to
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13850() throws Exception
+    public void AONE_1966() throws Exception
     {
 
         String testName = getTestName();
@@ -425,7 +425,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Documents - Move to
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13851() throws Exception
+    public void AONE_1967() throws Exception
     {
 
         String testName = getTestName();
@@ -506,7 +506,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_Enterprise40x_13852() throws Exception
+    public void dataPrep_AONE_1968() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -518,7 +518,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Documents - Delete
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13852() throws Exception
+    public void AONE_1968() throws Exception
     {
 
         String testName = getTestName();
@@ -579,7 +579,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_Enterprise40x_13853() throws Exception
+    public void dataPrep_AONE_1969() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -592,7 +592,7 @@ public class ManageSelectedItemsTests extends AbstractUtils
 
     // Documents - Start Workflow
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13853()
+    public void AONE_1969()
     {
 
         String testName = getTestName();

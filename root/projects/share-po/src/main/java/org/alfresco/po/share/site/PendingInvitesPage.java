@@ -1,5 +1,11 @@
 package org.alfresco.po.share.site;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -8,13 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Page object to represent Pending Invites page
@@ -102,13 +101,11 @@ public class PendingInvitesPage extends SharePage
             String text = invitee.getText();
             if (text != null && !text.isEmpty())
             {
-                if (text.contains(username))
+                if (text.equalsIgnoreCase("(" + username + ")"))
                 {
                     inviteeList.findElement(CANCEL_BTN).click();
                     break;
                 }
-                else
-                    throw new NoSuchElementException("Unable to find username provided");
             }
         }
     }

@@ -1,22 +1,23 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Classes" verbose="1" preserve-order="true">
-    <test name="debugthesetests" verbose="1" parallel="classes" thread-count="1">
-        <groups>
-            <run>
-                <exclude name="DataPrep.*" />
-                <include name="Hybrid" />
-                <exclude name="NonGrid" />
-            </run>
-        </groups>
-        
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <include name="Hybrid" />
+            <exclude name="NonGrid" />
+        </run>
+    </groups>
+
     <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+        <listener
+            class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
-            
+    <test name="debugthesetests" verbose="1" parallel="classes"
+        thread-count="1">
         <classes>
             <class name="org.alfresco.share.workflow.HybridWorkflowTest1">
                 <methods>
-                    <include name="ALF_15138" />
+                    <include name="AONE_15595" />
                 </methods>
             </class>
         </classes>

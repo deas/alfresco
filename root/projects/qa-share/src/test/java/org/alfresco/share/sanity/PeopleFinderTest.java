@@ -19,15 +19,7 @@
 
 package org.alfresco.share.sanity;
 
-import static org.testng.AssertJUnit.assertTrue;
-
-import java.util.List;
-
-import org.alfresco.po.share.ChangePasswordPage;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.PeopleFinderPage;
-import org.alfresco.po.share.ShareLink;
-import org.alfresco.po.share.UserProfilePage;
+import org.alfresco.po.share.*;
 import org.alfresco.po.share.dashlet.MyActivitiesDashlet;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.share.util.AbstractUtils;
@@ -39,6 +31,10 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.AssertJUnit.assertTrue;
 
 @Listeners(FailedTestListener.class)
 public class PeopleFinderTest extends AbstractUtils
@@ -71,7 +67,7 @@ public class PeopleFinderTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Enterprise40x-6549
+     * DataPreparation method - AONE-7634
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -80,7 +76,7 @@ public class PeopleFinderTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups={"DataPrepSearch"})
-    public void dataPrep_PeopleFinder_6549() throws Exception
+    public void dataPrep_AONE_7634() throws Exception
     {
         String testName = getTestName();
         testUser = getUserNameFreeDomain(testName);
@@ -105,7 +101,7 @@ public class PeopleFinderTest extends AbstractUtils
     }
 
     /**
-     * Enterprise40x-6549:People finder
+     * AONE-7634:People finder
      * <ul>
      * <li>Click People link on toolbar</li>
      * <li>Search for any user (e.g. for yourself)</li>
@@ -123,7 +119,7 @@ public class PeopleFinderTest extends AbstractUtils
      */
     // TODO: Abhijet: Pl enable test, comment out psuedo part, if not implemented
     @Test(enabled = false)
-    public void PeopleFinder_6549()
+    public void AONE_7634()
     {
         /** Start Test */
         String testName = getTestName();

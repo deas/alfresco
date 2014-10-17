@@ -3,6 +3,7 @@ package org.alfresco.po.share.site.links;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -26,6 +27,7 @@ public abstract class AbstractLinkForm extends SharePage
     protected static final By INTERNAL_CHKBOX = By.cssSelector("input[id$='default-internal']");
     protected static final By CANCEL_BTN = By.cssSelector("button[id$='default-cancel-button']");
     protected static final By TAG_INPUT = By.cssSelector("#template_x002e_linkedit_x002e_links-linkedit_x0023_default-tag-input-field");
+    protected static final String LINK_TAG = "//a[@class='taglibrary-action']/span[text()='%s']";
     protected static final By ADD_TAG_BUTTON = By.cssSelector("#template_x002e_linkedit_x002e_links-linkedit_x0023_default-add-tag-button");
 
     /**
@@ -57,17 +59,17 @@ public abstract class AbstractLinkForm extends SharePage
         }
     }
 
-    protected void setTitleField(final String title)
+    public void setTitleField(final String title)
     {
         setInput(drone.findAndWait(TITLE_FIELD), title);
     }
 
-    protected void setUrlField(final String title)
+    public void setUrlField(final String title)
     {
         setInput(drone.findAndWait(URL_FIELD), title);
     }
 
-    protected void setDescriptionField(final String title)
+    public void setDescriptionField(final String title)
     {
         setInput(drone.findAndWait(DESCRIPTION_FIELD), title);
     }
@@ -83,6 +85,28 @@ public abstract class AbstractLinkForm extends SharePage
         tagField.clear();
         tagField.sendKeys(tag);
         drone.find(ADD_TAG_BUTTON).click();
+    }
+
+    /**
+     * Method for removing tag
+     * method validate by LinksPageTest.removeTags
+     *
+     * @param tag
+     */
+    protected void removeTag(String tag)
+    {
+        String tagXpath = String.format(LINK_TAG, tag);
+        WebElement element;
+        try
+        {
+            element = drone.findAndWait(By.xpath(tagXpath));
+            element.click();
+            drone.waitUntilElementDisappears(By.xpath(tagXpath), 3000);
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageException("Unable to find tag " + tag + "");
+        }
     }
 
     /**

@@ -14,9 +14,19 @@
  */
 package org.alfresco.po.share.user;
 
+import java.util.concurrent.TimeUnit;
+
+import org.alfresco.po.share.InviteToAlfrescoPage;
+import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
 
 /**
  * My profile page object, holds all element of the html page relating to
@@ -24,6 +34,11 @@ import org.alfresco.webdrone.WebDrone;
  */
 public class AccountSettingsPage extends SharePage
 {
+    private final Log logger = LogFactory.getLog(this.getClass());
+
+    private static final By MANAGEUSERS_LINK = By.cssSelector("a[href='manage-users']");
+    private static final By SUB_TITLE = By.cssSelector("div[class$='first cloud-manage-users-header-title']>h1");
+    private static final By INVITE_BUTTON = By.cssSelector("button[id$='cloud-console_x0023_default-newUser-button']");
 
     /**
      * Constructor.
@@ -55,6 +70,47 @@ public class AccountSettingsPage extends SharePage
     public AccountSettingsPage render(final long time)
     {
         return render(new RenderTime(time));
+    }
+
+    /**
+     * Clicks on Manage Users link.
+     *
+     * @return {@link MyTasksPage}
+     */
+    public AccountSettingsPage selectManageUsers()
+    {
+        try
+        {
+            logger.info("Select Manage Users");
+            drone.findAndWait(MANAGEUSERS_LINK).click();
+            drone.waitForElement(SUB_TITLE, TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+            return new AccountSettingsPage(drone).render();
+        }
+        catch (NoSuchElementException te)
+        {
+            throw new PageException("Not able to find the Manage Users Page.");
+        }
+       
+    }
+
+    /**
+     * Clicks on Invite People button to invoke Invite To Alfresco Page.
+     * 
+     * @return NewUserPage
+     */
+    public InviteToAlfrescoPage selectInvitePeople()
+    {
+        try
+        {
+            logger.info("Click Invite People button");
+            WebElement newUserButton = drone.findAndWait(INVITE_BUTTON);
+            newUserButton.click();
+            return new InviteToAlfrescoPage(drone);
+        }
+        catch (NoSuchElementException te)
+        {
+            throw new PageException("Not able to find the Invite People Button.");
+        }
     }
 
 }

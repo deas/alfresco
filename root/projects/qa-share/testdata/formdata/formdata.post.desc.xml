@@ -1,0 +1,9 @@
+
+<webscript>
+    <shortname>formdata</shortname>
+    <description>formdata test</description>
+    <url>/test/formdata</url>
+    <format default="html">extension</format>
+    <authentication>user</authentication>
+    <transaction>required</transaction>
+</webscript>

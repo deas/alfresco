@@ -14,8 +14,6 @@
  */
 package org.alfresco.po.share;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -25,6 +23,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * @author nshah
@@ -111,12 +111,12 @@ public class NewGroupPage extends SharePage
         {
             case CREATE_GROUP:
                 drone.findAndWait(By.cssSelector(BUTTON_CREATE_GROUP)).click();
-                canResume();
+                waitUntilAlert();
                 return new GroupsPage(drone);
 
             case CREATE_ANOTHER:
                 drone.findAndWait(By.cssSelector(BUTTON_CREATE_ANOTHER_GROUP)).click();
-                canResume();
+                waitUntilAlert();
                 return new NewGroupPage(drone);
 
             case CANCEL_GROUP:

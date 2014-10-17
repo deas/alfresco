@@ -19,11 +19,14 @@ import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.NoSuchElementException;
 
 /**
  * My profile page object, holds all element of the html page relating to
  * share's my profile page.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -33,10 +36,11 @@ public class MyProfilePage extends SharePage
     private final By editProfileButton = By.cssSelector("button[id$='-button-edit-button'], button[id$='-button-following-button']");
     private final By userName = By.cssSelector(".namelabel");
     private final By emailName = By.cssSelector(".fieldvalue");
+    private static final By TRASHCAN_LINK = By.cssSelector("div>a[href='user-trashcan']");
 
     /**
      * Constructor.
-     * 
+     *
      * @param drone WebDriver to access page
      */
     public MyProfilePage(WebDrone drone)
@@ -68,7 +72,7 @@ public class MyProfilePage extends SharePage
 
     /**
      * Verify if home page banner web element is present
-     * 
+     *
      * @return true if exists
      */
     public boolean titlePresent()
@@ -89,18 +93,43 @@ public class MyProfilePage extends SharePage
      *
      * @return
      */
-     public String getUserName()
-     {
-         return getElementText(userName);
-     }
+    public String getUserName()
+    {
+        return getElementText(userName);
+    }
 
     /**
      * Method to get element text for email.
      *
      * @return
      */
-    public String getEmailName ()
+    public String getEmailName()
     {
         return getElementText(emailName);
+    }
+
+    /**
+     * Check that Trashcan link is displayed on page.
+     *
+     * @return true - if field displayed.
+     */
+
+    public boolean isTrashcanLinkDisplayed()
+    {
+        try
+        {
+            WebElement searchInputField = drone.findAndWait(TRASHCAN_LINK);
+            return searchInputField.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    public EditProfilePage openEditProfilePage()
+    {
+        drone.findAndWait(editProfileButton).click();
+        return new EditProfilePage(drone);
     }
 }

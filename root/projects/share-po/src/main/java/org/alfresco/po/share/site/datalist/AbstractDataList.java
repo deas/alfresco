@@ -1,17 +1,19 @@
 package org.alfresco.po.share.site.datalist;
 
-import java.util.List;
-
+import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 /**
  * An abstract of Data List
@@ -31,6 +33,7 @@ public abstract class AbstractDataList extends SharePage
     @SuppressWarnings("unused")
     private static final By CANCEL_DELETE = By.xpath("//span[@class='button-group']/span[2]/span/button");
     private static final By ITEM_CONTAINER = By.cssSelector("table>tbody>tr[class*='dt']");
+    private static final By CHECKBOX = By.cssSelector("input[type='checkbox']");
 
     protected AbstractDataList(WebDrone drone)
     {
@@ -106,6 +109,33 @@ public abstract class AbstractDataList extends SharePage
         logger.info("Duplicated the " + fieldValue + " item");
     }
 
+    private ShareDialogue clickDelete(String fieldValue)
+    {
+        try
+        {
+            WebElement theItem = locateItemActions(fieldValue);
+            theItem.findElement(DELETE_LINK).click();
+            return new ShareDialogue(drone).render();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + DELETE_LINK);
+        }
+    }
+
+    public void confirmDelete()
+    {
+        try
+        {
+            drone.findAndWait(CONFIRM_DELETE).click();
+            waitUntilAlert(5);
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageException("Unable to find" + CONFIRM_DELETE);
+        }
+    }
+
     /**
      * Method to delete an item
      *
@@ -113,17 +143,8 @@ public abstract class AbstractDataList extends SharePage
      */
     public void deleteAnItemWithConfirm(String fieldValue)
     {
-        try
-        {
-            WebElement theItem = locateItemActions(fieldValue);
-            theItem.findElement(DELETE_LINK).click();
-            drone.findAndWait(CONFIRM_DELETE).click();
-            waitUntilAlert();
-        }
-        catch (NoSuchElementException nse)
-        {
-            throw new ShareException("Unable to find " + DELETE_LINK);
-        }
+        clickDelete(fieldValue);
+        confirmDelete();
         logger.info("Deleted the " + fieldValue + " item");
     }
 
@@ -191,7 +212,8 @@ public abstract class AbstractDataList extends SharePage
         {
             return false;
         }
-        else return true;
+        else
+            return true;
     }
 
     /**
@@ -219,10 +241,11 @@ public abstract class AbstractDataList extends SharePage
 
     /**
      * Method to verify whether delete item link is available
+     *
      * @param itemName
      * @return boolean
      */
-    public boolean isDeleteDisplayed (String itemName)
+    public boolean isDeleteDisplayed(String itemName)
     {
         locateItemActions(itemName);
         return isDisplayed(DELETE_LINK);
@@ -233,16 +256,70 @@ public abstract class AbstractDataList extends SharePage
      *
      * @return number of items
      */
-    public int getItemsCount ()
+    public int getItemsCount()
     {
         try
         {
             List<WebElement> allItems = drone.findAll(ITEM_CONTAINER);
-            return allItems.size()-1;
+            return allItems.size() - 1;
         }
         catch (TimeoutException te)
         {
             throw new ShareException("Unable to find " + ITEM_CONTAINER);
+        }
+    }
+
+    protected WebElement locateAnItem(String fieldValue)
+    {
+        WebElement theItem;
+        try
+        {
+            theItem = drone.findAndWait(By.xpath(String.format("//td//div[text()='%s']/../..", fieldValue)));
+            drone.mouseOver(theItem);
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageException("Unable to find the item");
+        }
+        return theItem;
+    }
+
+    /**
+     * Method to verify whether item is selected
+     *
+     * @param itemName
+     * @return boolean
+     */
+    public boolean isCheckBoxSelected(String itemName)
+    {
+        logger.info("Verifying whether checkbox for " + itemName + "is selected");
+        try
+        {
+            WebElement theItem = locateAnItem(itemName);
+            return theItem.findElement(By.cssSelector("input[name='fileChecked']")).isSelected();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("The item is unchecked");
+        }
+        return false;
+    }
+
+    /**
+     * Method to select item's checkbox
+     *
+     * @param itemName
+     */
+    public void selectAnItem(String itemName)
+    {
+        try
+        {
+            WebElement theItem = locateAnItem(itemName);
+            theItem.findElement(CHECKBOX).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageException("Unable to find " + CHECKBOX);
         }
     }
 }

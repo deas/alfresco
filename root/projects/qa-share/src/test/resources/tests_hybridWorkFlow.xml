@@ -1,8 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="HybridWorkFlow" verbose="1" preserve-order="true" parallel="tests" thread-count="1">
-    <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
-    </listeners>
+<suite name="HybridWorkFlow" verbose="1" preserve-order="true" parallel="tests" thread-count="7">
     <groups>
         <run>
             <exclude name="DataPrep.*" />
@@ -10,6 +7,9 @@
             <exclude name="NonGrid" />
         </run>
     </groups>
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
     <test name="HybridWorkflowSanityTest" verbose="1">
         <classes>
             <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" />

@@ -38,9 +38,9 @@ public class RemoveUserFromGroupPage extends SharePage
     private static final String CONFIRM_MESSAGE = "div[class='yui-module yui-overlay yui-panel' ]>div[class='bd']";
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
 
-    public enum Action {
-        Yes,
-        No
+    public enum Action
+    {
+        Yes, No
     }
 
     /**

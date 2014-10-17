@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient;
-import org.alfresco.rest.api.tests.client.RequestContext;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -31,6 +30,8 @@ import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -46,6 +47,7 @@ import org.testng.annotations.Test;
 public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
 {
 
+    @SuppressWarnings("unused")
     private static Log logger = LogFactory.getLog(CMISBrowserSelectorParameter2.class);
     private CMISBinding cmisBinding;
 
@@ -76,7 +78,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test (groups = "DataPrepCmisBrowser" )
-    public void dataPrep_ALF_158901() throws Exception
+    public void dataPrep_AONE_14515() throws Exception
     {
         String fileName1 = getFileName(getTestName() + "-1");
         String[] fileInfo1 = { fileName1 };
@@ -118,7 +120,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test
-    public void ALF_158901() throws Exception
+    public void AONE_14515() throws Exception
     {
         String fileName1 = getFileName(getTestName() + "-1");
 
@@ -127,7 +129,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test (groups = "DataPrepCmisBrowser" )
-    public void dataPrep_ALF_158911() throws Exception
+    public void dataPrep_AONE_14516() throws Exception
     {
         String fileName = getFileName(getTestName());
         String[] fileInfo = { fileName };
@@ -147,14 +149,14 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test
-    public void ALF_158911() throws Exception
+    public void AONE_14516() throws Exception
     {
         String thisTestName = getTestName();
         selectorVersions(cmisBinding, testUser, thisTestName);
     }
 
     @Test (groups = "DataPrepCmisBrowser" )
-    public void dataPrep_ALF_158921() throws Exception
+    public void dataPrep_AONE_14517() throws Exception
     {
         String fileName = getFileName(getTestName());
         String folderName = getFolderName(getTestName());
@@ -180,7 +182,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test
-    public void ALF_158921() throws Exception
+    public void AONE_14517() throws Exception
     {
         String fileName = getFileName(getTestName());
         String folderName = getFolderName(getTestName());
@@ -188,7 +190,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test (groups = "DataPrepCmisBrowser" )
-    public void dataPrep_ALF_158931() throws Exception
+    public void dataPrep_AONE_14518() throws Exception
     {
         String fileName = getFileName(getTestName());
         String folderName = getFolderName(getTestName());
@@ -214,7 +216,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test
-    public void ALF_158931() throws Exception
+    public void AONE_14518() throws Exception
     {
         String fileName = getFileName(getTestName());
         String folderName = getFolderName(getTestName());
@@ -222,7 +224,7 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test (groups = "DataPrepCmisBrowser" )
-    public void dataPrep_ALF_159931() throws Exception
+    public void dataPrep_AONE_14519() throws Exception
     {
         String fileName1 = getFileName(getTestName() + "-1");
         String fileName2 = getFileName(getTestName() + "-2");
@@ -259,31 +261,58 @@ public class CMISBrowserSelectorParameter2 extends CMISSelectorParameter
     }
 
     @Test
-    public void ALF_159931() throws Exception
+    public void AONE_14519() throws Exception
     {
         String fileName1 = getFileName(getTestName() + "-1");
         String folderName = getFolderName(getTestName());
         selectorNotSpecified(cmisBinding, testUser, siteName, fileName1, folderName);
     }
 
-    // TODO - Working in Manually but not through API
     @Test
-    public void ALF_159941() throws Exception
+    public void AONE_14520() throws Exception
     {
-        String url = getAPIURL(drone)+DOMAIN+"/public/cmis/versions/1.1/browser";
+        String url = DOMAIN + "/public/cmis/versions/1.1/browser";
         Map<String, String> params = new HashMap<String, String>();
         params.put("cmisselector", "RepoSitoryinfo");
-        System.out.println("getAuthDetails(testUser)[0]: " + getAuthDetails(testUser)[0]);
-        System.out.println("getAuthDetails(testUser)[1]: " + getAuthDetails(testUser)[1]);
-        publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
-        HttpResponse httpResponse = publicApiClient.get(url, params);
-        System.out.println("URL: " + url );
-        System.out.println("Response: " + httpResponse.getResponse() );
+        HttpResponse httpResponse = getHttpResponse(url, params);
         assertTrue(httpResponse.getStatusCode() == 200, httpResponse.getResponse());
+
+        JSONObject jsonObject = (JSONObject) httpResponse.getJsonResponse().get(DOMAIN);
+
+        Assert.assertEquals(jsonObject.get("repositoryId"), DOMAIN, "Verifying repositoryId");
+        String expectedRepositoryDescription = "";
+        if(alfrescoVersion.isCloud())
+        {
+            expectedRepositoryDescription = DOMAIN;
+        }
+        Assert.assertEquals(jsonObject.get("repositoryDescription"), expectedRepositoryDescription, "Verifying repositoryDescription");
+        Assert.assertEquals(jsonObject.get("vendorName"), "Alfresco", "Verifying vendorName");
+        Assert.assertEquals(jsonObject.get("productName"), "Alfresco Enterprise", "Verifying productName");
+        Assert.assertNotNull(jsonObject.get("productVersion"), "Verifying productVersion");
+        Assert.assertNotNull(jsonObject.get("rootFolderId"), "Verifying rootFolderId");
+
+        JSONObject capabilities = (JSONObject) jsonObject.get("capabilities");
+
+        Assert.assertEquals(capabilities.get("capabilityContentStreamUpdatability"), "anytime", "Verifying capabilityContentStreamUpdatability");
+        Assert.assertEquals(capabilities.get("capabilityChanges"), "none", "Verifying capabilityChanges");
+        Assert.assertEquals(capabilities.get("capabilityRenditions"), "read", "Verifying capabilityRenditions");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityGetDescendants"), "Verifying capabilityGetDescendants");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityGetFolderTree"), "Verifying capabilityGetFolderTree");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityMultifiling"), "Verifying capabilityMultifiling");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityUnfiling"), "Verifying capabilityUnfiling");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityVersionSpecificFiling"), "Verifying capabilityVersionSpecificFiling");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityPWCSearchable"), "Verifying capabilityPWCSearchable");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityPWCUpdatable"), "Verifying capabilityPWCUpdatable");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityAllVersionsSearchable"), "Verifying capabilityAllVersionsSearchable");
+        Assert.assertNull(capabilities.get("capabilityOrderBy"), "Verifying capabilityOrderBy");
+        Assert.assertEquals(capabilities.get("capabilityQuery"), "bothcombined", "Verifying capabilityQuery");
+        Assert.assertEquals(capabilities.get("capabilityJoin"), "none", "Verifying capabilityJoin");
+        Assert.assertEquals(capabilities.get("capabilityACL"), "manage", "Verifying capabilityACL");
+
     }
 
     @Test
-    public void ALF_159971() throws Exception
+    public void AONE_14522() throws Exception
     {
         selectorQuery(cmisBinding, testUser);
     }

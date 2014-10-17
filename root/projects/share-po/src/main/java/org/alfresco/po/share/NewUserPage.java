@@ -14,8 +14,6 @@
  */
 package org.alfresco.po.share;
 
-import java.util.List;
-
 import org.alfresco.webdrone.ElementState;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -30,10 +28,12 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 /**
  * New User page object, holds all element of the html page relating to
  * share's New User page. Enterprise only feature for the time being
- * 
+ *
  * @author Meenal Bhave
  * @since 1.6.1
  */
@@ -61,7 +61,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Constructor.
-     * 
+     *
      * @param drone WebDriver to access page
      */
     public NewUserPage(WebDrone drone)
@@ -112,7 +112,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Verify if admin Console title is present on the page
-     * 
+     *
      * @return true if exists
      */
     protected boolean isTitlePresent()
@@ -192,7 +192,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Enter the search text is group finder text box and clicks Search on the new user page.
-     * 
+     *
      * @param user String name
      * @return UserSearchPage page response
      */
@@ -203,7 +203,12 @@ public class NewUserPage extends SharePage
             WebElement input = drone.findAndWait(By.cssSelector(GROUP_FINDER_SEARCH_TEXT));
             input.clear();
             input.sendKeys(user);
-            drone.findAndWait(By.cssSelector(GROUP_SEARCH_BUTTON)).click();
+            WebElement searchButton = drone.findAndWait(By.cssSelector(GROUP_SEARCH_BUTTON));
+            searchButton.click();
+            if (searchButton.isEnabled())
+            {
+                 searchButton.click();
+            }
             return new NewUserPage(drone);
         }
         catch (TimeoutException e)
@@ -214,7 +219,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Checks if the group search button is displayed.
-     * 
+     *
      * @return true if button is displayed
      */
     protected boolean isPageLoaded()
@@ -235,7 +240,7 @@ public class NewUserPage extends SharePage
      * Clicks on Create User Button.
      * To get the error page there is wait added to delete disappear so it may not find the exact time taken to execute method,
      * there might be delay added during error condition.
-     * 
+     *
      * @return NewUserPage
      */
     public HtmlPage selectCreateUser()
@@ -245,7 +250,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Clicks on Create and Create Another User button to invoke New User Page.
-     * 
+     *
      * @return NewUserPage
      */
     public NewUserPage selectCreateAnotherUser()
@@ -264,7 +269,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Clicks on Cancel button to cancel Create User.
-     * 
+     *
      * @return UserSearchPage
      */
     public UserSearchPage cancelCreateUser()
@@ -301,10 +306,10 @@ public class NewUserPage extends SharePage
 
     /**
      * Method to create user on Enterprise using UI.
-     * 
+     *
      * @param userName String username
-     * @param fName String firstname
-     * @param lName String lastname
+     * @param fname    String firstname
+     * @param lname    String lastname
      * @param password String password
      * @return {@link UserSearchPage}
      */
@@ -346,7 +351,7 @@ public class NewUserPage extends SharePage
 
     /**
      * Create user with a group.
-     * 
+     *
      * @param userName
      * @param fname
      * @param lname
@@ -355,7 +360,7 @@ public class NewUserPage extends SharePage
      * @param groupName
      * @return
      */
-    public HtmlPage createEnterpriseUserWithGroup(String userName, String fname, String lname, String userEmail, String password, String groupName)
+    public synchronized HtmlPage createEnterpriseUserWithGroup(String userName, String fname, String lname, String userEmail, String password, String groupName)
     {
         if (groupName == null)
         {
@@ -363,13 +368,17 @@ public class NewUserPage extends SharePage
         }
         entrpriseUserDetails(userName, fname, lname, userEmail, password);
         searchGroup(groupName).render();
-        addGroup(groupName);
+        boolean isGroupCreated  = addGroup(groupName);
+        if(!isGroupCreated){
+            logger.error("User["+userName+"] don't added to group["+groupName+"]!");
+            throw new PageOperationException();
+        }
         return selectCreateUser();
     }
 
     /**
      * Add group with User Name.
-     * 
+     *
      * @param groupName
      * @return
      */
@@ -399,8 +408,8 @@ public class NewUserPage extends SharePage
             }
             if (!isAdded)
             {
-                logger.error("Requested group doesnt exist.");
-                throw new NoSuchElementException("Requested group doesnt exist.");
+                logger.error("Requested group doesn't exist.");
+                throw new NoSuchElementException("Requested group doesn't exist.");
             }
             return isAdded;
         }
@@ -410,8 +419,8 @@ public class NewUserPage extends SharePage
         }
         catch (TimeoutException toe)
         {
-            logger.error("Group name element doesnt exist!!", toe);
+            logger.error("Group name element doesn't exist!!", toe);
         }
-        throw new PageOperationException("Group doesnt exist!!");
+        throw new PageOperationException("Group doesn't exist!!");
     }
 }

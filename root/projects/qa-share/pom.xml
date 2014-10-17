@@ -16,7 +16,7 @@
         <share-po.version>${project.version}</share-po.version>
         <office.component>libreofficecomponent</office.component>
         <enable.hybrid>false</enable.hybrid>
-        <hybrid.url>https://autohybrida.alfresco.me/alfresco/a/{network}/</hybrid.url>
+        <hybrid.url>https://myalf676a.alfresco.me/alfresco/a/{network}/</hybrid.url>
         <uniqueTestRunName>TestReports</uniqueTestRunName>
         <!-- Default suite allows a single test to be run via -Dtest=... in this case the suite will be ignored then anyway -->
         <testng.xml>src/test/resources/tests_debug.xml</testng.xml>
@@ -43,6 +43,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>ldtp-client-apps</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.2</version>
@@ -60,7 +65,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.2.1</version>
+            <version>4.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
@@ -239,21 +244,71 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.uncommons</groupId>
             <artifactId>reportng</artifactId>
             <version>1.1.4</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-webdav</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.51</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.samba.jcifs</groupId>
+            <artifactId>jcifs</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-drive</artifactId>
+            <version>v2-rev139-1.19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson</artifactId>
+            <version>1.16.0-rc</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.25</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lightbody.bmp</groupId>
+            <artifactId>browsermob-proxy</artifactId>
+            <version>2.0-beta-8</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpmime</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
-
     <build>
         <directory>target/${uniqueTestRunName}</directory>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -350,11 +405,11 @@
                                         <exec executable="${basedir}/target/alf-installer.bin" dir="target" failonerror="true">
                                             <arg line="--mode unattended --alfresco_admin_password admin --disable-components postgres,alfrescowcmqs --jdbc_username alfresco --jdbc_password alfresco --prefix ${basedir}/target/alf-installation --tomcat_server_domain ${HOSTNAME}"/>
                                         </exec>
-                                        <echo>Add custom properties to alfresco-global.properties</echo>
-                                        <propertyfile file="${basedir}/target/alf-installation/tomcat/shared/classes/alfresco-global.properties"
-                                                      comment="Patched by auto-scripts">
-                                            <entry key="notification.email.siteinvite" value="true"/>
-                                        </propertyfile>
+                                        <echo>Add custom properties to solrcore.properties</echo>
+                                                <propertyfile file="${basedir}/target/alf-installation/solr4/workspace-SpacesStore/conf/solrcore.properties"
+                                                              comment="Patched by auto-scripts">
+                                                    <entry key="alfresco.cron" value="0/3 * * * * ? *"/>
+                                                </propertyfile>
                                     </target>
                                 </configuration>
                             </execution>
@@ -469,11 +524,12 @@
                                             # Enabling hybrid in the installation - automatically added by the build
                                             hybridworkflow.enabled=true
                                             sync.cloud.url=${hybrid.url}
+                                            system.serverMode=PRODUCTION
                                         </echo>
                                         <echo append="true" output="${alf.prop}"/>
                                         <copy failonerror="false" verbose="true"
                                               todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license"
-                                              file="${user.home}/binaries/build-classpath/4.3/WEB-INF/alfresco/license/Enterprise43-All.lic"/>
+                                              file="${user.home}/binaries/build-classpath/5.0/Enterprise-5.0.lic"/>
                                     </target>
                                 </configuration>
                             </execution>

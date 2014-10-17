@@ -14,16 +14,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
@@ -38,12 +28,16 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
+import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
 import org.owasp.esapi.ESAPI;
+
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.alfresco.po.share.site.document.DocumentAction.CHNAGE_TYPE;
 
 /**
  * <li>This is a parent class for all the pages using View Details as asection.</li> <li>Functionality here is to support below details: Title, Modified
@@ -66,13 +60,14 @@ public abstract class DetailsPage extends SitePage
     private static final String ADD_FOLDER_COMMENT_BUTTON_SPAN_ID = "folder.detail.add.comment.button.section";
     private static final String ADD_COMMENT_BUTTON = "span.yui-button.yui-push-button.onAddCommentClick>span.first-child>button";
     private static final String COMMENT_PANEL = "div[id$='default-comments-list']";
+    private static final String COMMENT_SECTION = "div[class='comments-list']";
     private static final String SUBMIT_COMMENT_BUTTON_ID = "document.detail.submit.comment.button.id";
     private static final String SUBMIT_FOLDER_COMMENT_BUTTON_ID = "folder.detail.submit.comment.button.id";
     private static final String PROMPT_PANEL_ID = "prompt.panel.id";
     private static final String DIV_COMMENT_CONTENT = "//div[@class='comment-content']";
     private static final String SPAN_LIKE_COMMENT = "span.likes-count";
     private static final String THIN_DARK_TITLE_ELEMENT = "div.node-header>div.node-info>h1.thin.dark";
-    //private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
+    // private static final String PAGE_SHARE_PANEL = "div.panel-body>div.link-info>a";
     private static final String PAGE_SHARE_PANEL = "//h2[text()='Share']";
     private static final String COMMENT_LINK = "a[class*='comment']";
     private static final String MANAGE_PERMISSIONS = "div[class$='-permissions'] a";
@@ -92,29 +87,30 @@ public abstract class DetailsPage extends SitePage
     private static final String EDIT_TAGS_ICON = ".folder-tags h2 .edit";
     private static final String EDIT_PROPERTIES_ICON = ".folder-metadata-header h2 .edit";
     private static final String COMMENT_FIELD = "table[id$='add-content_tbl']";
+    private static final String COMMENT_FIELD_CSS = "form[id*='add-form']";
+
     private static final String EDIT_TAGS_ICON_DOC = ".document-tags h2 .edit";
     private static final String EDIT_PROPERTIES_ICON_DOC = ".document-metadata-header h2 .edit";
     @SuppressWarnings("unused")
     private static final String MANAGE_RULES = "div[class$='-permissions'] a";
-    
+
     public enum ShareLinks
     {
-        COPY_LINK_TO_SHARE_THIS_PAGE("Copy this link to share the current page"),
-        COPY_LINK_FOR_WEBDEV_URL("copy link for webdav url");
-        
+        COPY_LINK_TO_SHARE_THIS_PAGE("Copy this link to share the current page"), COPY_LINK_FOR_WEBDEV_URL("copy link for webdav url");
+
         String linkText;
-        
+
         private ShareLinks(String linkText)
         {
             this.linkText = linkText;
         }
-        
+
         public String getLinkText()
         {
             return linkText;
         }
     }
-    
+
     protected DetailsPage(WebDrone drone)
     {
         super(drone);
@@ -132,7 +128,7 @@ public abstract class DetailsPage extends SitePage
         }
         catch (TimeoutException e)
         {
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
             {
                 logger.trace("Page, contains Element :" + "div[id$='" + type + "-details']" + " does not exist", e);
             }
@@ -190,7 +186,7 @@ public abstract class DetailsPage extends SitePage
      */
     public HtmlPage selectLike()
     {
-        drone.findAndWait(By.cssSelector("a.like-action")).click();
+        drone.findAndWait(By.cssSelector("a[class^='like-action']")).click();
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return FactorySharePage.resolvePage(drone);
     }
@@ -473,7 +469,7 @@ public abstract class DetailsPage extends SitePage
         try
         {
             drone.findAndWait(By.cssSelector("div[id$='default-actionSet'] div." + type + "-edit-metadata a")).click();
-            return new EditDocumentPropertiesPage(drone);
+            return new EditDocumentPropertiesPage(drone).render();
         }
         catch (TimeoutException e)
         {
@@ -514,6 +510,24 @@ public abstract class DetailsPage extends SitePage
                 logger.info("Comment is not encoded");
         }
         return addComment(encodedComment);
+    }
+
+    /**
+     * Method for verify present Comment section on the details page or not.
+     * 
+     * @return boolean
+     */
+    public boolean isCommentSectionPresent()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(COMMENT_SECTION)).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            logger.error("Element :" + COMMENT_SECTION + " does not exist", e);
+        }
+        return false;
     }
 
     /**
@@ -562,32 +576,34 @@ public abstract class DetailsPage extends SitePage
             boolean isDocument = false;
             boolean isFolder = false;
             String jsElementButtonId = "";
-            //String whichPage = getTitle();
+            // String whichPage = getTitle();
             String addCommentButtonId = null;
 
             try
             {
                 isDocument = drone.find(By.cssSelector(".document-actions")).isDisplayed();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 try
                 {
                     isFolder = drone.find(By.cssSelector(".folder-actions")).isDisplayed();
                 }
-                catch(Exception f)
+                catch (Exception f)
                 {
                 }
             }
 
-            /*if (whichPage.contains("Document"))
-            {
-                isDocument = true;
-            }
-            else if (whichPage.contains("Folder"))
-            {
-                isFolder = true;
-            }*/
+            /*
+             * if (whichPage.contains("Document"))
+             * {
+             * isDocument = true;
+             * }
+             * else if (whichPage.contains("Folder"))
+             * {
+             * isFolder = true;
+             * }
+             */
 
             /*
              * Adding comment uses the rich editor to ensure it works on all
@@ -687,7 +703,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Delete the comment on detail page.
-     *
+     * 
      * @param comment to remove
      * @return DetailsPage page object response
      */
@@ -714,7 +730,8 @@ public abstract class DetailsPage extends SitePage
                 commentEl = commentElement;
             }
         }
-        if(commentEl != null){
+        if (commentEl != null)
+        {
             drone.mouseOver(commentEl);
             WebElement delete = drone.findAndWait(By.xpath("//p[text()='" + comment + "']/../..//a[@title='Delete Comment']"));
             delete.click();
@@ -1121,7 +1138,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Check is comment has edit button on details page
-     *
+     * 
      * @param comment
      * @return
      */
@@ -1148,7 +1165,8 @@ public abstract class DetailsPage extends SitePage
                     commentEl = commentElement;
                 }
             }
-            if(commentEl != null){
+            if (commentEl != null)
+            {
                 drone.mouseOver(commentEl);
                 present = commentEl.findElement(By.name(".onEditCommentClick")).isDisplayed();
 
@@ -1164,12 +1182,11 @@ public abstract class DetailsPage extends SitePage
         }
         return false;
 
-
     }
 
     /**
      * Check is comment has delete button on details page
-     *
+     * 
      * @param comment
      * @return
      */
@@ -1196,7 +1213,8 @@ public abstract class DetailsPage extends SitePage
                     commentEl = commentElement;
                 }
             }
-            if(commentEl != null){
+            if (commentEl != null)
+            {
                 drone.mouseOver(commentEl);
                 present = commentEl.findElement(By.name(".onConfirmDeleteCommentClick")).isDisplayed();
 
@@ -1211,7 +1229,6 @@ public abstract class DetailsPage extends SitePage
             }
         }
         return false;
-
 
     }
 
@@ -1421,7 +1438,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * This method finds whether the favourite link is displayed or not.
-     *
+     * 
      * @return boolean
      */
     public boolean isFavouriteLinkPresent()
@@ -1457,80 +1474,88 @@ public abstract class DetailsPage extends SitePage
     /**
      * This method finds whether the comments panel is displayed or not.
      * 
-     * @return boolean 
+     * @return boolean
      */
     public boolean isCommentsPanelPresent()
     {
         try
         {
             return drone.find(COMMENTS_PANEL_CSS).isDisplayed();
-            
+
         }
-        catch(NoSuchElementException nse) { }
-        
+        catch (NoSuchElementException nse)
+        {
+        }
+
         return false;
     }
 
     /**
      * This method finds whether the add comments button is enabled or not.
      * 
-     * @return boolean 
+     * @return boolean
      */
     public boolean isAddCommentsButtonEnbaled()
     {
         try
         {
             return drone.find(By.cssSelector(ADD_COMMENT_BUTTON)).isEnabled();
-            
+
         }
-        catch(NoSuchElementException nse) { }
-        
+        catch (NoSuchElementException nse)
+        {
+        }
+
         return false;
     }
-    
+
     /**
      * This method finds whether the CopyToShareLink is present or not.
      * 
-     * @return boolean 
+     * @return boolean
      */
     public boolean isCopyShareLinkPresent()
     {
         try
         {
-            for(WebElement element : drone.findAll(COPY_TO_SHARE_LINKS))
+            for (WebElement element : drone.findAll(COPY_TO_SHARE_LINKS))
             {
-                if(element.getText().equalsIgnoreCase(ShareLinks.COPY_LINK_TO_SHARE_THIS_PAGE.getLinkText()))
+                if (element.getText().equalsIgnoreCase(ShareLinks.COPY_LINK_TO_SHARE_THIS_PAGE.getLinkText()))
                 {
-                   return element.findElement(By.xpath("//following-sibling::div/input")).isDisplayed();
+                    return element.findElement(By.xpath("//following-sibling::div/input")).isDisplayed();
                 }
             }
         }
-        catch(NoSuchElementException nse) { }
-        
+        catch (NoSuchElementException nse)
+        {
+        }
+
         return false;
     }
-    
+
     /**
      * This method finds whether the Sync panel is present or not.
      * 
-     * @return boolean 
+     * @return boolean
      */
     public boolean isSynPanelPresent()
     {
         try
         {
             return drone.find(SYNC_SETTINGS_PANEL_CSS).isDisplayed();
-            
+
         }
-        catch(NoSuchElementException nse) { }
-        
+        catch (NoSuchElementException nse)
+        {
+        }
+
         return false;
     }
-    
+
     /**
      * This method finds whether the Permission panel is present or not.
      * 
-     * @return boolean 
+     * @return boolean
      */
     public boolean isPermissionsPanelPresent()
     {
@@ -1546,6 +1571,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Add comment by clicking 'Comment' link
+     * 
      * @return
      */
 
@@ -1558,6 +1584,7 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Click Add comment button from the comment form after clicking 'Comment' link
+     * 
      * @return
      */
     public AddCommentForm clickAddButton()
@@ -1569,13 +1596,14 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Click on Edit Tags icon from Tags panel at Details page
+     * 
      * @param folder when true is for folder details page; false - document details page
      * @return
      */
     public EditDocumentPropertiesPage clickEditTagsIcon(boolean folder)
     {
         if (folder)
-    {
+        {
             drone.findAndWait(By.cssSelector(EDIT_TAGS_ICON)).click();
         }
         else
@@ -1585,9 +1613,10 @@ public abstract class DetailsPage extends SitePage
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return new EditDocumentPropertiesPage(drone);
     }
-    
+
     /**
      * Click on Edit Properties icon from Properties panel at Details page
+     * 
      * @param folder when true is for folder details page; false - document details page
      * @return EditDocumentPropertiesPage
      */
@@ -1598,7 +1627,7 @@ public abstract class DetailsPage extends SitePage
             drone.findAndWait(By.cssSelector(EDIT_PROPERTIES_ICON)).click();
         }
         else
-    {
+        {
             drone.findAndWait(By.cssSelector(EDIT_PROPERTIES_ICON_DOC)).click();
         }
         drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
@@ -1612,7 +1641,14 @@ public abstract class DetailsPage extends SitePage
     {
         try
         {
-            return drone.findAndWait(By.cssSelector(COMMENT_FIELD)).isDisplayed();
+            if (alfrescoVersion.getVersion() > 4.2)
+            {
+                return drone.findAndWait(By.cssSelector(COMMENT_FIELD_CSS)).isDisplayed();
+            }
+            else
+            {
+                return drone.findAndWait(By.cssSelector(COMMENT_FIELD)).isDisplayed();
+            }
         }
         catch (TimeoutException toe)
         {
@@ -1623,9 +1659,9 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Verify if Link View on Google Maps is visible.
-     *
-     * @author rmanyam
+     * 
      * @return true if displayed
+     * @author rmanyam
      */
     public boolean isViewOnGoogleMapsLinkVisible()
     {
@@ -1641,10 +1677,10 @@ public abstract class DetailsPage extends SitePage
 
     /**
      * Method to verify whether Add Comment button is present
-     *
+     * 
      * @return true if displayed
      */
-    public boolean isAddCommentButtonDisplayed ()
+    public boolean isAddCommentButtonDisplayed()
     {
         try
         {
@@ -1666,12 +1702,12 @@ public abstract class DetailsPage extends SitePage
         return isEditIconPresent(PROPERTIES_PANEL);
     }
 
-    public boolean isEditPermissionsIconDisplayed ()
+    public boolean isEditPermissionsIconDisplayed()
     {
         return isEditIconPresent(PERMISSIONS_PANEL);
     }
 
-    protected boolean isEditIconPresent (By locator)
+    protected boolean isEditIconPresent(By locator)
     {
         try
         {
@@ -1683,42 +1719,6 @@ public abstract class DetailsPage extends SitePage
             throw new ShareException("Unable to locate the panel");
         }
     }
-  /**
-     * Click at any action from the Details Page
-     *
-     * @return
-     */
-    public HtmlPage selectAction (DocumentAction action)
-    {
-        DetailsPageType type;
-        try
-        {
-
-            if (this instanceof FolderDetailsPage)
-            {
-                type = DetailsPageType.FOLDER;
-            }
-            else if (this instanceof DocumentDetailsPage)
-            {
-                type = DetailsPageType.DOCUMENT;
-            }
-            else
-            {
-                throw new UnsupportedOperationException("This action is not supported.");
-            }
-            drone.find(By.cssSelector(action.getDocumentAction(type))).click();
-            return FactorySharePage.resolvePage(drone);
-
-        }
-        catch (NoSuchElementException nse)
-        {
-            if (logger.isTraceEnabled())
-            {
-                logger.trace("Action is not present Css value is :", nse);
-            }
-        }
-        throw new PageException("Action page isn't opened.");
-    }
 
     /**
      * Mimics the action of deleting a document/folder.
@@ -1729,5 +1729,114 @@ public abstract class DetailsPage extends SitePage
         button.click();
         confirmDelete();
         return new DocumentLibraryPage(drone);
+    }
+
+    /**
+     * Select link Copy to... from Actions
+     * 
+     * @return
+     */
+    public CopyOrMoveContentPage selectCopyTo()
+    {
+        return selectCopyOrMoveTo("Copy to...");
+    }
+
+    /**
+     * Select link Move to... from Actions
+     * 
+     * @return
+     */
+    public CopyOrMoveContentPage selectMoveTo()
+    {
+        return selectCopyOrMoveTo("Move to...");
+    }
+
+    private CopyOrMoveContentPage selectCopyOrMoveTo(String link)
+    {
+        try
+        {
+            WebElement toLink = drone.findAndWait(By.linkText(link));
+            toLink.click();
+            return new CopyOrMoveContentPage(drone);
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        catch (TimeoutException e)
+        {
+            if (logger.isTraceEnabled())
+            {
+                logger.trace("Action " + link + " is not displayed ", e);
+            }
+        }
+        catch (StaleElementReferenceException st)
+        {
+        }
+        throw new PageOperationException("Unable to find " + link + " Link at a page");
+    }
+
+    private void selectChangeType()
+    {
+        try
+        {
+            WebElement changeTypeLink = drone.findAndWait(By.cssSelector(CHNAGE_TYPE.getCssValue() + " a"));
+            changeTypeLink.click();
+
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + CHNAGE_TYPE);
+        }
+    }
+
+    public DetailsPage changeType(String typeValue)
+    {
+        selectChangeType();
+        ChangeTypePage changeTypePage = new ChangeTypePage(drone).render();
+        if (!changeTypePage.getTypes().contains(typeValue))
+        {
+            throw new ShareException(typeValue + "isn't present in the list");
+        }
+        changeTypePage.selectChangeType(typeValue);
+        changeTypePage.selectSave();
+        waitUntilAlert();
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Get HTML for comment
+     * 
+     * @return String HTML
+     */
+    public String getCommentHTML(String comment)
+    {
+        try
+        {
+            List<WebElement> comments = drone.findAndWaitForElements(By.xpath("//div[@class='comment-details']"));
+            if (logger.isTraceEnabled())
+            {
+                logger.trace(String.format("Are there comments on the page : %s ", comments.isEmpty()));
+            }
+
+            for (WebElement commentElement : comments)
+            {
+                WebElement targetComment = commentElement.findElement(By.xpath(DIV_COMMENT_CONTENT));
+                String commentOnPage = targetComment.getText();
+                if (comment.equals(commentOnPage))
+                {
+                    if (logger.isTraceEnabled())
+                    {
+                        logger.trace(String.format("We have found a match to comment ' %s ' : true", comment));
+                    }
+                    String html = targetComment.getAttribute("innerHTML");
+                    return html;
+                }
+            }
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return getCommentHTML(comment);
+        }
+        throw new NoSuchElementException("Required comment didn't found!");
     }
 }

@@ -50,11 +50,12 @@ import org.openqa.selenium.WebElement;
 public class ManagePermissionsPage extends SharePage
 {
     private final By lastRowPermissions = By.cssSelector("div[id$='_default-inheritedPermissions']");
-    private final By addUserButton = By.cssSelector("div.add-user-group button");
+    protected static final By addUserButton = By.cssSelector("div.add-user-group button");
     private final By saveButtonLocator = By.cssSelector("button[id$='-okButton-button']");
     private final By cancelButton = By.cssSelector("button[id$='-cancelButton-button']");
-    private final By inheritPermissionButton = By.cssSelector("div[id$='_default-inheritedButtonContainer']");
+    protected static  final By inheritPermissionButton = By.cssSelector("div[id$='_default-inheritedButtonContainer']");
     private final By inheritPermissionTable = By.cssSelector("div[id$='_default-inheritedPermissions']");
+    private final By locallyPermissionTable = By.cssSelector("div[id$='_default-directPermissions']");
     private final By accessTypeButton = By.cssSelector("span[id^='roles-'] button");
     private final By userListLocator = By.cssSelector("div[id$='default-directPermissions'] tr[class^='yui-dt-rec']");
     private final By userNameLocator = By.cssSelector("td[class$='displayName']");
@@ -214,6 +215,22 @@ public class ManagePermissionsPage extends SharePage
         try
         {
             return drone.findAndWait(inheritPermissionTable, 500).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isLocallyPermissionEnabled()
+    {
+        try
+        {
+            return drone.findAndWait(locallyPermissionTable, 500).isDisplayed();
         }
         catch (TimeoutException e)
         {
@@ -385,32 +402,32 @@ public class ManagePermissionsPage extends SharePage
     }
 
     /**
-     * Get existing permission for user/group
-     * 
-     * @param name
-     *            - First name or last name or full name <fName><space><lName>
-     * @return
-     */
-    public UserRole getExistingPermission(String name)
+ * Get existing permission for user/group
+ * 
+ * @param name
+ *            - First name or last name or full name <fName><space><lName>
+ * @return
+ */
+public UserRole getExistingPermission(String name)
+{
+    try
     {
-        try
+        List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
+        for (WebElement webElement : userList)
         {
-            List<WebElement> userList = drone.findAndWaitForElements(userListLocator);
-            for (WebElement webElement : userList)
+            if (webElement.findElement(userNameLocator).getText().contains(name))
             {
-                if (webElement.findElement(userNameLocator).getText().contains(name))
-                {
-                    String currentRole = webElement.findElement(userRoleLocator).getText().toUpperCase();
-                    return UserRole.valueOf(StringUtils.replace(currentRole, " ", ""));
-                }
+                String currentRole = webElement.findElement(userRoleLocator).getText().toUpperCase();
+                return UserRole.valueOf(StringUtils.replace(currentRole, " ", ""));
             }
         }
-        catch (TimeoutException toe)
-        {
-            logger.error("User name elementis not found!!", toe);
-        }
-        throw new PageOperationException("User name is not found!!");
     }
+    catch (TimeoutException toe)
+    {
+        logger.error("User name elementis not found!!", toe);
+    }
+    throw new PageOperationException("User name is not found!!");
+}
 
     /**
      * Update role of existing Users in permission table.
@@ -676,7 +693,7 @@ public class ManagePermissionsPage extends SharePage
          * @param userProfile
          * @return
          */
-        public ManagePermissionsPage searchAndSelectUser(UserProfile userProfile)
+        public HtmlPage searchAndSelectUser(UserProfile userProfile)
         {
             return searchAndSelect("", userProfile);
         }
@@ -685,7 +702,7 @@ public class ManagePermissionsPage extends SharePage
          * @param groupName
          * @return
          */
-        public ManagePermissionsPage searchAndSelectGroup(String groupName)
+        public HtmlPage searchAndSelectGroup(String groupName)
         {
             return searchAndSelect(groupName, null);
         }
@@ -722,7 +739,7 @@ public class ManagePermissionsPage extends SharePage
          * @param userProfile
          * @return
          */
-        private ManagePermissionsPage searchAndSelect(String groupName, UserProfile userProfile)
+        private HtmlPage searchAndSelect(String groupName, UserProfile userProfile)
         {
             String searchText = "";
             boolean isGroupSearch = false;
@@ -750,22 +767,45 @@ public class ManagePermissionsPage extends SharePage
         public List<UserSearchRow> searchUserAndGroup(String searchText) throws UnsupportedOperationException
         {
             List<UserSearchRow> searchRows = new ArrayList<UserSearchRow>();
-            drone.find(SEARCH_USER_INPUT).clear();
-            drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
-            drone.find(SEARCH_USER_BUTTON).click();
-            if (searchText.length() < SEARCH_TEXT_MIN_LEN)
+            try
             {
-                WebElement element = drone.find(By.cssSelector(".message"));
-                throw new UnsupportedOperationException(element.getText());
-            }
-            else
-            {
-                this.render();
-                By DATA_ROWS = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
-                for (WebElement element : drone.findAndWaitForElements(DATA_ROWS, maxPageLoadingTime))
+                drone.find(SEARCH_USER_INPUT).clear();
+                drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
+                drone.find(SEARCH_USER_BUTTON).click();
+                if (searchText.length() < SEARCH_TEXT_MIN_LEN)
                 {
-                    searchRows.add(new UserSearchRow(drone, element));
+                    WebElement element = drone.find(By.cssSelector(".message"));
+                    throw new UnsupportedOperationException(element.getText());
                 }
+                else
+                {
+
+                    drone.waitForElement(SEARCH_USER_INPUT, maxPageLoadingTime);
+                    drone.waitForElement(SEARCH_USER_BUTTON, maxPageLoadingTime);
+                    drone.waitForElement(cancelButton, maxPageLoadingTime);
+                    drone.waitForElement(saveButtonLocator, maxPageLoadingTime);
+                    Thread.sleep(3000);
+                    List<WebElement> elems = drone.findAll(By.xpath("//tbody/tr/td[contains(@class, 'empty')]/div"));
+                    for(WebElement elem : elems)
+                        if(elem.isDisplayed())
+                        {
+                            if(elem.getText().equals("No results"))
+                                return null;
+                        }
+
+                    this.render();
+                    By DATA_ROWS = By.cssSelector("div.finder-wrapper tbody.yui-dt-data tr");
+                    for (WebElement element : drone.findAndWaitForElements(DATA_ROWS, maxPageLoadingTime))
+                    {
+                        searchRows.add(new UserSearchRow(drone, element));
+                    }
+                }
+            }
+            catch(NoSuchElementException nse)
+            {
+                throw new PageOperationException("element not found" , nse);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             return searchRows;
@@ -778,7 +818,7 @@ public class ManagePermissionsPage extends SharePage
          * @param userProfile
          * @return
          */
-        public ManagePermissionsPage selectUserOrGroup(List<UserSearchRow> searchRows, String searchText, boolean isGroupSearch, UserProfile userProfile)
+        public HtmlPage selectUserOrGroup(List<UserSearchRow> searchRows, String searchText, boolean isGroupSearch, UserProfile userProfile)
         {
             if (StringUtils.isEmpty(searchText))
             {
@@ -810,7 +850,7 @@ public class ManagePermissionsPage extends SharePage
                     else
                         userProfile.setlName("");
 
-                    return (ManagePermissionsPage) searchRow.clickAdd();
+                    return searchRow.clickAdd();
 
                 }
             }
@@ -853,16 +893,22 @@ public class ManagePermissionsPage extends SharePage
         public String getSearchErrorMessage(String searchText) throws UnsupportedOperationException
         {
             String message = "";
-            drone.find(SEARCH_USER_INPUT).clear();
-            drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
-            drone.find(SEARCH_USER_BUTTON).click();
-            
-            WebElement element = drone.find(By.cssSelector(".message"));
-            if(element != null)
+            try
             {
-                message = element.getText();
+                drone.find(SEARCH_USER_INPUT).clear();
+                drone.find(SEARCH_USER_INPUT).sendKeys(searchText);
+                drone.find(SEARCH_USER_BUTTON).click();
+                WebElement element = drone.find(By.cssSelector(".message"));
+                if(element != null)
+                {
+                    message = element.getText();
+                }
+                 
             }
-                
+            catch(NoSuchElementException nse)
+            {
+                throw new PageOperationException("element not found" , nse);
+            }
             return message;
         }
         

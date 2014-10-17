@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="ManagePermission Tests for Sprint 33 BY" thread-count="1">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="Download"/>
+            <exclude name="NonGrid"/>
+            <exclude name="CloudOnly" />
+            <exclude name="EnterpriseOnly" />
+            <exclude name=".*Bug.*"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <test name="ManagePermissionTest2" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManagePermissionTest2" />
+        </classes>
+    </test>
+    <test name="ManagePermissionTest" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.ManagePermissionTest" />
+        </classes>
+    </test>
+</suite>

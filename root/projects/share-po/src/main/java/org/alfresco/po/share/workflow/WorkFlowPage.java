@@ -14,11 +14,6 @@
  */
 package org.alfresco.po.share.workflow;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -35,6 +30,11 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -227,7 +227,7 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
     {
         try
         {
-            return drone.find(NO_ITEM_SELECTED_MESSAGE).isDisplayed() && drone.find(NO_ITEM_SELECTED_MESSAGE).getText().equals("No items selected");
+            return drone.findAndWait(NO_ITEM_SELECTED_MESSAGE).isDisplayed() && drone.findAndWait(NO_ITEM_SELECTED_MESSAGE).getText().equals("No items selected");
         }
         catch (NoSuchElementException nse)
         {
@@ -500,7 +500,8 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
                 monthAndYearSelector.findElement(By.cssSelector("button[id$='_workflowDueDate-cntrl_nav_submit']")).click();
 
                 // Wait for the title to show the month
-                drone.waitUntilVisible(By.cssSelector("a.calnav"), dueDate.toString(DateTimeFormat.forPattern("MMMM yyyy")), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                drone.waitUntilVisible(By.cssSelector("a.calnav"), dueDate.toString(DateTimeFormat.forPattern("MMMM yyyy")),
+                        SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                 calenderElement = drone.findAndWait(By.cssSelector("table[id$='_workflowDueDate-cntrl']>tbody"));
 
                 List<WebElement> allDays = calenderElement.findElements(By.cssSelector("a.selector"));
@@ -629,4 +630,37 @@ public abstract class WorkFlowPage extends SharePage implements WorkFlow
         Select priorityDropDown = new Select(drone.findAndWait(PRIORITY_DROPDOWN));
         priorityDropDown.selectByValue(priority.getValue());
     }
+
+    /**
+     * Method to check if REMOVE_ALL_BUTTON is present
+     * 
+     * @return boolean
+     */
+    public boolean isRemoveAllButtonPresent()
+    {
+        try
+        {
+            return (drone.find(REMOVE_ALL_BUTTON).isDisplayed());
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+    
+    /**
+     * Click Start workflow button
+     */
+    public void clickStartWorkflow()
+    {
+        try
+        {
+        drone.findAndWait(SUBMIT_BUTTON).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find button Start Workflow", nse);
+        }
+    }
+
 }

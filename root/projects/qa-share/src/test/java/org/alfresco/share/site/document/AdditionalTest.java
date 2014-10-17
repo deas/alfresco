@@ -40,7 +40,7 @@ public class AdditionalTest extends AbstractUtils {
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_4037() throws Exception
+    public void dataPrep_AONE_2264() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -65,7 +65,7 @@ public class AdditionalTest extends AbstractUtils {
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_4037() throws Exception
+    public void AONE_2264() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -120,7 +120,7 @@ public class AdditionalTest extends AbstractUtils {
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_8505() throws Exception
+    public void dataPrep_AONE_2269() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -140,7 +140,7 @@ public class AdditionalTest extends AbstractUtils {
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8505() throws Exception
+    public void AONE_2269() throws Exception
     {
         /** Start Test */
         testName = getTestName();

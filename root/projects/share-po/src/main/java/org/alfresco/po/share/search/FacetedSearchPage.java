@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.site.SitePageType;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -35,6 +36,7 @@ public class FacetedSearchPage extends SharePage implements SearchResultPage
     private static final By RESULT = By.cssSelector("tr.alfresco-search-AlfSearchResult");
     private static final By CONFIGURE_SEARCH = By.cssSelector("div[id=FCTSRCH_CONFIG_PAGE_LINK]");    
     private static final Log logger = LogFactory.getLog(FacetedSearchPage.class);
+    private static final String goToAdvancedSearch = "span#HEADER_ADVANCED_SEARCH_text";
     
     private FacetedSearchHeaderSearchForm headerSearchForm;
     private FacetedSearchScopeMenu scopeMenu;
@@ -425,4 +427,62 @@ public class FacetedSearchPage extends SharePage implements SearchResultPage
 
         return FactorySharePage.getUnknownPage(drone);
     }
+    
+    public boolean isItemPresentInResultsList(SitePageType pageType, String itemName)
+    {
+        String thumbnailImg;
+        boolean isPresent = false;
+        List<SearchResult> searchResults = this.results;
+
+        for (SearchResult result : searchResults)
+        {
+            if(result.getName().equals(itemName))
+            {
+                switch (pageType)
+                {
+                    case WIKI:
+                        thumbnailImg = "wiki-page.png";
+                        break;
+                    case BLOG:
+                        thumbnailImg = "topic-post.png";
+                        break;
+                    case CALENDER:
+                        thumbnailImg = "calendar-event.png";
+                        break;
+                    case DATA_LISTS:
+                        thumbnailImg = "datalist.png";
+                        break;
+                    case DISCUSSIONS:
+                        thumbnailImg = "topic-post.png";
+                        break;
+                    case LINKS:
+                        thumbnailImg = "link.png";
+                        break;
+                    default:
+                        thumbnailImg = "doclib";
+                        break;
+                }
+
+                isPresent = result.getThumbnail().contains(thumbnailImg);
+                if(isPresent)
+                    break;
+            }
+        }
+        return isPresent;
+    }
+
+    public boolean isPageCorrect()
+    {
+        boolean isCorrect;
+        isCorrect = drone.isElementDisplayed(searchForm.SEARCH_FIELD) && drone.isElementDisplayed(searchForm.SEARCH_BUTTON) && drone.isElementDisplayed(RESULT)
+                && sort.isSortCorrect();
+        return isCorrect;
+    }
+
+    public boolean isGoToAdvancedSearchPresent()
+    {
+        return drone.isElementDisplayed(By.cssSelector(goToAdvancedSearch));
+    }
+
+
 }

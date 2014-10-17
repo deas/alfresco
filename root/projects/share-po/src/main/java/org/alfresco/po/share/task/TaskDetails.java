@@ -20,7 +20,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * Representation of Task details that can be used to verify Task details
- * 
+ *
  * @author Ranjith Manyam
  * @since 1.7.1
  */
@@ -35,6 +35,9 @@ public class TaskDetails
     private TaskDetailsType type;
     private String description;
     private String startedBy;
+    private boolean isEditTaskDisplayed;
+    private boolean isViewTaskDisplayed;
+    private boolean isViewWorkFlowDisplayed;
 
     public String getTaskName()
     {
@@ -114,5 +117,35 @@ public class TaskDetails
     public void setStartedBy(String startedBy)
     {
         this.startedBy = startedBy;
+    }
+
+    public boolean isEditTaskDisplayed()
+    {
+        return isEditTaskDisplayed;
+    }
+
+    public void setEditTaskDisplayed(boolean isEditTaskDisplayed)
+    {
+        this.isEditTaskDisplayed = isEditTaskDisplayed;
+    }
+
+    public boolean isViewTaskDisplayed()
+    {
+        return isViewTaskDisplayed;
+    }
+
+    public void setViewTaskDisplayed(boolean isViewTaskDisplayed)
+    {
+        this.isViewTaskDisplayed = isViewTaskDisplayed;
+    }
+
+    public boolean isViewWorkFlowDisplayed()
+    {
+        return isViewWorkFlowDisplayed;
+    }
+
+    public void setViewWorkFlowDisplayed(boolean isViewWorkFlowDisplayed)
+    {
+        this.isViewWorkFlowDisplayed = isViewWorkFlowDisplayed;
     }
 }

@@ -123,4 +123,58 @@ public class GoogleDocsDiscardChanges extends EditInGoogleDocsPage
         return new EditInGoogleDocsPage(drone, isGoogleCreate);
     }
 
+    /**
+     * Click OK Button on the confirmation dialog.
+     * 
+     * @return - DocumentDetailsPage
+     */
+    public HtmlPage clickOkConcurrentEditorButton()
+    {
+        String text = "Discarding Changes";
+        try
+        {
+            WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+            WebElement okButton = findButton("OK", elements);
+            okButton.click();
+            drone.waitUntilElementDisappears(PROMPT_PANEL_ID, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("Google discard Page ok button not visible", te);
+        }
+
+        waitUntilAlert(10);
+        HtmlPage page = drone.getCurrentPage().render();
+        if ((page instanceof DocumentDetailsPage) || (page instanceof DocumentLibraryPage))
+        {
+            drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return FactorySharePage.resolvePage(drone);
+        }
+        else
+        {
+            try
+            {
+                drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+                List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+                WebElement okButton = findButton("OK", elements);
+                okButton.click();
+                drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                drone.waitUntilElementDeletedFromDom(By.cssSelector("span[class='message']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+                waitUntilAlert(5);
+            }
+            catch (TimeoutException te)
+            {
+                throw new TimeoutException("Ok button is not visible", te);
+            }
+        }
+
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
+    }
+
 }

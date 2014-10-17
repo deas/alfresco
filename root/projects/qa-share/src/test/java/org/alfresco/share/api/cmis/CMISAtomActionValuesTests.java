@@ -62,7 +62,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2455() throws Exception
+    public void AONE_14523() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -73,7 +73,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test(groups = { "BambooBug" })
-    public void ALF_2456() throws Exception
+    public void AONE_14524() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -82,31 +82,31 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test(groups = { "BambooBug" })
-    public void ALF_2458() throws Exception
+    public void AONE_14525() throws Exception
     {
-        createRelationship("R:cmiscustom:assoc");
+        createRelationship("R:cm:basis");
     }
 
     @Test
-    public void ALF_2476() throws Exception
+    public void AONE_14526() throws Exception
     {
         deleteAllVersionsTest();
     }
 
-    @Test
-    public void ALF_2465() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14535() throws Exception
     {
         updateTest();
     }
 
     @Test
-    public void ALF_2461() throws Exception
+    public void AONE_14530() throws Exception
     {
         queryTest();
     }
 
     @Test
-    public void ALF_2463() throws Exception
+    public void AONE_14533() throws Exception
     {
         String thisTestName = getTestName();
         String thisFolderName = getFolderName(thisTestName);
@@ -115,7 +115,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2467() throws Exception
+    public void AONE_14537() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -124,7 +124,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2475() throws Exception
+    public void AONE_14531() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -133,7 +133,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2457() throws Exception
+    public void AONE_14527() throws Exception
     {
         String thisTestName = getTestName();
         String thisFolderName = getFolderName(thisTestName);
@@ -144,25 +144,25 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test(groups = { "BambooBug" })
-    public void ALF_2459() throws Exception
+    public void AONE_14528() throws Exception
     {
         setContentTest(drone);
     }
 
     @Test
-    public void ALF_2460() throws Exception
+    public void AONE_14529() throws Exception
     {
         appendTest(drone);
     }
 
     @Test
-    public void ALF_2462() throws Exception
+    public void AONE_14532() throws Exception
     {
         deleteContentTest(drone);
     }
 
     @Test
-    public void ALF_2464() throws Exception
+    public void AONE_14534() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -171,7 +171,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2466() throws Exception
+    public void AONE_14536() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -180,7 +180,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2468() throws Exception
+    public void AONE_14538() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -188,7 +188,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2469() throws Exception
+    public void AONE_14539() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -196,7 +196,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2470() throws Exception
+    public void AONE_14540() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -204,7 +204,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2471() throws Exception
+    public void AONE_14541() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -212,7 +212,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2472() throws Exception
+    public void AONE_14542() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
@@ -220,19 +220,20 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
     }
 
     @Test
-    public void ALF_2473() throws Exception
+    public void AONE_14543() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
         cancelCheckOutTest(drone, thisFileName);
     }
 
-    @Test
-    public void ALF_2474() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14544() throws Exception
     {
         String thisTestName = getTestName();
         String thisFileName = getFileName(thisTestName);
-        applyACLTest(drone, thisFileName);
+        String thisFolderName = getFolderName(thisTestName);
+        applyACLTest(drone, thisFileName, thisFolderName);
     }
 
     /**
@@ -256,7 +257,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains CmisInvalidArgumentException
      */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException.class)
-    public void ALF_3073() 
+    public void AONE_14545()
     {
         super.cmisItemTypeShouldNotBeQueryable();
     }
@@ -282,7 +283,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains cm:homeFolder, abeecher, mjackson, admin, guest
      */
     @Test
-    public void ALF_3074()
+    public void AONE_14546()
     {
         super.cmPersonShouldFindPeople();
     }
@@ -308,7 +309,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains contains abeecher for Enterprise and engineering for Cloud
      */
     @Test
-    public void ALF_3075()
+    public void AONE_14547()
     {
         super.cmPersonWithWhereClauseShouldFindPerson();
     }
@@ -341,7 +342,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains the changed location "Tilbury, UK a change"
      */
     @Test
-    public void ALF_3076()
+    public void AONE_14548()
     {
         super.cmPersonCanBeUpdatedBySelf();
     }
@@ -374,7 +375,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains CmisUnauthorizedException
      */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
-    public void ALF_3077()
+    public void AONE_14549()
     {
         super.cmPersonCannotBeUpdatedByUnauthorizedUser();
     }
@@ -397,7 +398,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains CmisUnauthorizedException
      */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException.class)
-    public void ALF_3078()
+    public void AONE_14550()
     {
         super.cmPersonCannotBeDeletedByUnauthorizedUser();
     }
@@ -420,7 +421,7 @@ public class CMISAtomActionValuesTests extends CMISActionValuesTest
      * Body contains CmisRuntimeException
      */
     @Test(expectedExceptions=org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException.class)
-    public void ALF_3079() 
+    public void AONE_14551()
     {
         super.cmPersonCannotBeDeletedByAuthorizedUserViaCmis();
     }

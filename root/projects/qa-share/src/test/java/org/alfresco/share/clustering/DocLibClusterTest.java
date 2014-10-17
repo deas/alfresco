@@ -18,10 +18,12 @@ import org.alfresco.share.util.ShareUserSearchPage;
 import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.exception.PageOperationException;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.collections.CollectionUtils;
 
@@ -38,6 +40,7 @@ import static org.testng.Assert.*;
 /**
  * @author Sergey Kardash
  */
+@Listeners(FailedTestListener.class)
 public class DocLibClusterTest extends AbstractUtils
 {
 
@@ -86,7 +89,7 @@ public class DocLibClusterTest extends AbstractUtils
          */
         SystemSummaryPage sysSummaryPage = ShareUtil.navigateToSystemSummary(drone, shareUrl, ADMIN_USERNAME, ADMIN_PASSWORD).render();
 
-        RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering);
+        RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering).render();
 
         Assert.assertTrue(clusteringPage.isClusterEnabled(), "Cluster isn't enabled");
 
@@ -105,7 +108,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Check on server B the file content created on server A
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3041() throws Exception
+    public void AONE_15170() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String fileName1 = getFileName(getTestName()) + ".txt";
@@ -152,7 +155,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify that the folder created on server A is presented on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3042() throws Exception
+    public void AONE_15171() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String folderName = "The first folder";
@@ -195,7 +198,10 @@ public class DocLibClusterTest extends AbstractUtils
 
         // Clicking the tagName present under Tags menu tree on Document
         // Library page.
-        docLibPage = docLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testTagName).render();
+//        docLibPage = docLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testTagName).render();
+
+        TreeMenuNavigation treeMenuNavigation = docLibPage.getLeftMenus().render();
+        docLibPage = treeMenuNavigation.selectTagNode(testTagName).render();
 
         Assert.assertTrue(docLibPage.isFileVisible(folderName), "Folder " + folderName + " isn't visible");
 
@@ -204,7 +210,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify that the file edited on server A is presented in "I'm Editing" on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3043() throws Exception
+    public void AONE_15172() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -262,7 +268,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify that changes made on server A are presented on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3044() throws Exception
+    public void AONE_15173() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -347,7 +353,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify if a rule created on server A can be observed on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3045() throws Exception
+    public void AONE_15174() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -423,7 +429,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify if rule deleted on server A is also deleted from server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3046() throws Exception
+    public void AONE_15175() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -542,7 +548,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Check if deleted from server A file and folder will be deleted from server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3047() throws Exception
+    public void AONE_15176() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -627,7 +633,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify possibility to upload different files on servers A and B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3048() throws Exception
+    public void AONE_15177() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -685,7 +691,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Check if the created on server A file can be found with simple search on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3049() throws Exception
+    public void AONE_15178() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String fileName1 = "testFile" + System.currentTimeMillis() + ".txt";
@@ -732,7 +738,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Check if the created on server A file can be found with advanced search on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3050() throws Exception
+    public void AONE_15179() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String fileName1 = "testFile" + System.currentTimeMillis() + ".txt";
@@ -783,7 +789,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify if add comment to the file and to the folder on server A is also presented on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3051() throws Exception
+    public void AONE_15180() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -865,7 +871,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify if edit content on server A is also changed on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3052() throws Exception
+    public void AONE_15181() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String fileName1 = getFileName(getTestName()) + ".txt";
@@ -925,7 +931,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify if edit comment to the file or to the folder on server A is also presented on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3053() throws Exception
+    public void AONE_15182() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -1072,7 +1078,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Check if deleted a comment to the file or to the folder from server A is also deleted from server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3054() throws Exception
+    public void AONE_15183() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
@@ -1208,7 +1214,7 @@ public class DocLibClusterTest extends AbstractUtils
 
     // Verify if a rule edited on server A is also edited on server B
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3055() throws Exception
+    public void AONE_15184() throws Exception
     {
 
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());

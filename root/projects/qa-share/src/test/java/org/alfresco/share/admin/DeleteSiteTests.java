@@ -56,7 +56,7 @@ public class DeleteSiteTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2949() throws Exception
+    public void dataPrep_AONE_14858() throws Exception
     {
         String testName = getTestName();
         String user2 = getUserNameFreeDomain(testName + "1");
@@ -77,7 +77,7 @@ public class DeleteSiteTests extends AbstractUtils
      */
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2949() throws Exception
+    public void AONE_14858() throws Exception
     {
         String testName = getTestName();
         
@@ -120,7 +120,7 @@ public class DeleteSiteTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2950() throws Exception
+    public void dataPrep_AONE_13963() throws Exception
     {
         String testName1 = getTestName();
         
@@ -147,7 +147,7 @@ public class DeleteSiteTests extends AbstractUtils
      */
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_2950() throws Exception
+    public void AONE_13963() throws Exception
     {
         String testName1 = getTestName();
         String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);
@@ -193,7 +193,7 @@ public class DeleteSiteTests extends AbstractUtils
 
     
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2952() throws Exception
+    public void dataPrep_AONE_14859() throws Exception
     {
         String testName2 = getTestName() + "1";
         String testUser2 = getUserNameFreeDomain(testName2);
@@ -213,7 +213,7 @@ public class DeleteSiteTests extends AbstractUtils
      */
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2952() throws Exception
+    public void AONE_14859() throws Exception
     {
         String testName1 = getTestName();
         
@@ -260,7 +260,7 @@ public class DeleteSiteTests extends AbstractUtils
     }    
     
     @Test(groups = { "DataPrepAdmin" })
-    public void dataPrep_ALF_2953() throws Exception
+    public void dataPrep_AONE_13965() throws Exception
     {
         String testName1 = getTestName();        
         String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);        
@@ -279,7 +279,7 @@ public class DeleteSiteTests extends AbstractUtils
      */
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_2953() throws Exception
+    public void AONE_13965() throws Exception
     {
         String testName1 = getTestName();
         String testUser1 = getUserNameForDomain(testName1, DOMAIN_PREMIUM);        

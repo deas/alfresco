@@ -16,6 +16,7 @@ public class PageUtils
     private static final String REGEXP_SHARE_URL = "\\w+\\W?\\w+\\W?\\w+\\W?\\w+\\:?\\w+?\\/(share)";
     private static final String REGEXP_IP_WITH_PORT = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(:\\d{1,5})?";
     private static final String REGEXP_DOMAIN_WITH_PORT = "(\\w+(\\.\\w+)*(\\.\\w{2,}))(:\\d{1,5})?";
+    private static final String REGEX_SITE_NAME = "\\/site\\/(.*)\\/(.*)";
 
     /**
      * Is a WebElement usable?
@@ -92,5 +93,21 @@ public class PageUtils
             }
         }
         throw new PageException("Can't extract address from URL");
+    }
+
+    /**
+     * Method to retrieve site name from the url
+     *
+     * @param shareUrl
+     * @return String
+     */
+    public static String getSiteName(String shareUrl)
+    {
+        Pattern p1 = Pattern.compile(REGEX_SITE_NAME);
+        Matcher m1 = p1.matcher(shareUrl);
+        if (m1.find())
+            return m1.group(1);
+        else
+            throw new PageException("Can't extract Share URL");
     }
 }

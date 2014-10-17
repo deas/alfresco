@@ -20,13 +20,13 @@ public class AddCommentForm extends AbstractCommentForm
         super(drone);
     }
 
-    public DocumentDetailsPage clickAddCommentButton()
+    public HtmlPage clickAddCommentButton()
     {
         click(SUBMIT_BUTTON);
         return drone.getCurrentPage().render();
     }
 
-    public DocumentDetailsPage clickCancelButton()
+    public HtmlPage clickCancelButton()
     {
         click(CANCEL_BUTTON);
         return drone.getCurrentPage().render();

@@ -15,7 +15,7 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.api.cmis.CmisBrowserFolderAspectsTests">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_ALF_158971"/>-->
+                    <!--<include name="dataPrep_AONE_14436"/>-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -25,7 +25,7 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.api.cmis.CmisBrowserDocumentAspectsTests">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_ALF_159021"/>-->
+                    <!--<include name="dataPrep_AONE_14441"/>-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -35,7 +35,7 @@
         <classes>
             <class name="org.alfresco.share.api.cmis.CmisAtomDocumentAspectsTests">
                 <methods>
-                    <include name="dataPrep_ALF_2483"/>
+                    <include name="dataPrep_AONE_14558"/>
                 </methods>
             </class>
         </classes>

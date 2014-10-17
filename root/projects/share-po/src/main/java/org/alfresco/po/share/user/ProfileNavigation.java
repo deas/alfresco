@@ -38,6 +38,7 @@ public class ProfileNavigation
     private static final By LANGUAGE_LINK = By.cssSelector("div>a[href='change-locale']");
     private static final By NOTIFICATIONS_LINK = By.cssSelector("div>a[href='user-notifications']");
     private static final By SITES_LINK = By.cssSelector("div>a[href='user-sites']");
+    private static final By CONTENT_LINK = By.cssSelector("div>a[href='user-content']");
     
     private final Log logger = LogFactory.getLog(ProfileNavigation.class);
 
@@ -135,5 +136,17 @@ public class ProfileNavigation
     {
         drone.find(SITES_LINK).click();
         return new UserSitesPage(drone);
+    }
+    
+    /**
+     * Click on the Content link
+     * 
+     * @return - {@link UserContentPage}
+     * @author bogdan - 30.06.2014
+     */
+    public UserContentPage selectContent()
+    {
+        drone.find(CONTENT_LINK).click();
+        return new UserContentPage(drone);
     }
 }

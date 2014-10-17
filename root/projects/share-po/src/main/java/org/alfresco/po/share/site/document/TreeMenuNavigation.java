@@ -19,10 +19,6 @@
 
 package org.alfresco.po.share.site.document;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -36,6 +32,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represent elements found on the HTML page relating to the document library
@@ -286,7 +286,7 @@ public class TreeMenuNavigation extends SharePage
             throw new PageException("Unable to find element " + nodeLocator, e);
         }
 
-        return FactorySharePage.resolvePage(drone);
+        return FactorySharePage.resolvePage(drone).render();
     }
 
     /**

@@ -18,21 +18,23 @@
  */
 package org.alfresco.share.site.document;
 
-import static org.alfresco.po.share.site.document.DocumentAspect.*;
-import static org.alfresco.share.util.ShareUser.openSiteDashboard;
-import static org.testng.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.site.document.*;
-import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.share.util.ShareUser;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.alfresco.po.share.site.document.DocumentAspect.*;
+import static org.alfresco.share.util.ShareUser.openSiteDashboard;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Tests related to Adding and Removing the aspects.
@@ -53,13 +55,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_9652() throws Exception
+    public void dataPrep_Dashlets_AONE_2086() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_9652() throws Exception
+    public void AONE_2086() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -72,13 +74,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_9653() throws Exception
+    public void dataPrep_Dashlets_AONE_2087() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_9653() throws Exception
+    public void AONE_2087() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -91,13 +93,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14321() throws Exception
+    public void dataPrep_Dashlets_AONE_2071() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14321() throws Exception
+    public void AONE_2071() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -110,13 +112,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14327() throws Exception
+    public void dataPrep_Dashlets_AONE_2084() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14327() throws Exception
+    public void AONE_2084() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -129,13 +131,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14326() throws Exception
+    public void dataPrep_Dashlets_AONE_2083() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14326() throws Exception
+    public void AONE_2083() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -145,16 +147,22 @@ public class ManageAspectTest extends AbstractAspectTests
         //proptery.setSizeAfterAspectAdded(12);
         
         addAspectTest(proptery);
+
+        // check that View on Google Maps link is displayed in the Document Actions section
+        DocumentDetailsPage documentDetailsPage = drone.getCurrentPage().render();
+        List<String> actionsList = documentDetailsPage.getDocumentActionList();
+        assertTrue(actionsList.contains("View on Google Maps"));
+
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14328() throws Exception
+    public void dataPrep_Dashlets_AONE_2088() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14328() throws Exception
+    public void AONE_2088() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -167,13 +175,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14338() throws Exception
+    public void dataPrep_Dashlets_AONE_2089() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14338() throws Exception
+    public void AONE_2089() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -186,13 +194,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14350() throws Exception
+    public void dataPrep_Dashlets_AONE_2101() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14350() throws Exception
+    public void AONE_2101() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -205,13 +213,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14349() throws Exception
+    public void dataPrep_Dashlets_AONE_2100() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14349() throws Exception
+    public void AONE_2100() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -224,13 +232,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14348() throws Exception
+    public void dataPrep_Dashlets_AONE_2099() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14348() throws Exception
+    public void AONE_2099() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -243,13 +251,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
     
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14346() throws Exception
+    public void dataPrep_Dashlets_AONE_2097() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14346() throws Exception
+    public void AONE_2097() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -262,13 +270,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14345() throws Exception
+    public void dataPrep_Dashlets_AONE_2096() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14345() throws Exception
+    public void AONE_2096() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -278,16 +286,21 @@ public class ManageAspectTest extends AbstractAspectTests
         //proptery.setSizeAfterAspectAdded(12);
         
         removeAspectTest(proptery);
+
+        // check that View on Google Maps link isn't displayed in the Document Actions section
+        DocumentDetailsPage documentDetailsPage = drone.getCurrentPage().render();
+        List<String> actionsList = documentDetailsPage.getDocumentActionList();
+        assertFalse(actionsList.contains("View on Google Maps"));
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14322() throws Exception
+    public void dataPrep_Dashlets_AONE_2076() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
     
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14322() throws Exception
+    public void AONE_2076() throws Exception
     {
         try
         {            
@@ -304,24 +317,22 @@ public class ManageAspectTest extends AbstractAspectTests
             
             DocumentLibraryPage documentLibraryPage = ShareUser.openDocumentLibrary(drone);
             
-            //Create File
+            // Create File
             ContentDetails contentDetails = new ContentDetails();
             contentDetails.setName(fileName);
-            
-            // TODO: Shan: Use util to create content: i.e. ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
             CreatePlainTextContentPage contentPage = documentLibraryPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
             DocumentDetailsPage documentDetailsPage = contentPage.create(contentDetails).render();                       
             
+            // Add Versinable aspect
             SelectAspectsPage aspectsPage = documentDetailsPage.selectManageAspects();
-            
             List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
             aspects.add(VERSIONABLE);
             aspectsPage = aspectsPage.add(aspects).render();
             documentDetailsPage = aspectsPage.clickApplyChanges().render();
-            
-            //TODO: Shan: Do we check notification as in Testlink: Successfully updated aspects'?
+
             documentDetailsPage = documentDetailsPage.render();
-            
+
+            // Edit metadata of the content
             EditDocumentPropertiesPage propertiesPage = documentDetailsPage.selectEditProperties();
             propertiesPage.render();
             
@@ -329,6 +340,7 @@ public class ManageAspectTest extends AbstractAspectTests
             documentDetailsPage = propertiesPage.selectSave().render();
             documentDetailsPage.render();
             
+            //Check that the version of the content is incremented
             assertEquals(documentDetailsPage.getDocumentVersion(), "1.1");
             
         }
@@ -343,13 +355,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14339() throws Exception
+    public void dataPrep_Dashlets_AONE_14988() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14339() throws Exception
+    public void AONE_14988() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -360,13 +372,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14340() throws Exception
+    public void dataPrep_Dashlets_AONE_14989() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14340() throws Exception
+    public void AONE_14989() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -377,13 +389,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14341() throws Exception
+    public void dataPrep_Dashlets_AONE_2092() throws Exception
     {
         addAspectDataPrep(getTestName());
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14341() throws Exception
+    public void AONE_2092() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -412,7 +424,6 @@ public class ManageAspectTest extends AbstractAspectTests
             aspectsPage = aspectsPage.add(aspects).render();
             documentDetailsPage = aspectsPage.clickApplyChanges().render();
 
-            //TODO: Shan: Do we check notification as in Testlink: Successfully updated aspects'?
             documentDetailsPage = documentDetailsPage.render();
 
             EditDocumentPropertiesPage propertiesPage = documentDetailsPage.selectEditProperties();
@@ -452,13 +463,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14342() throws Exception
+    public void dataPrep_Dashlets_AONE_14991() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14342() throws Exception
+    public void AONE_14991() throws Exception
     {
         AspectTestProptery proptery = new AspectTestProptery();
         proptery.setTestName(getTestName());
@@ -469,13 +480,13 @@ public class ManageAspectTest extends AbstractAspectTests
     }
 
     @Test(groups={"DataPrepDocumentLibrary"})
-    public void dataPrep_Dashlets_Enterprise40x_14344() throws Exception
+    public void dataPrep_Dashlets_AONE_2095() throws Exception
     {
         removeAspectDataPrep(getTestName());
     }
 
     @Test(groups="EnterpriseOnly")
-    public void Enterprise40x_14344()throws Exception
+    public void AONE_2095()throws Exception
     {
 
         AspectTestProptery proptery = new AspectTestProptery();

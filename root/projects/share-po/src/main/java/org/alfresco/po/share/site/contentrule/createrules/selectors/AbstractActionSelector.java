@@ -1,12 +1,13 @@
 package org.alfresco.po.share.site.contentrule.createrules.selectors;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.alfresco.po.share.site.document.CopyOrMoveContentRulesPage;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: aliaksei.bul Date: 08.07.13 Time: 12:12
@@ -66,6 +67,16 @@ public abstract class AbstractActionSelector
             scriptSelects.add(new Select(scriptOption));
         }
         scriptSelects.get(scriptSelects.size() - 1).selectByVisibleText(visibleName);
+    }
+
+    protected CopyOrMoveContentRulesPage selectDestinationName(final String destinationName, final String... folders)
+    {
+        List<WebElement> selectDestButtons = drone.findAndWaitForElements(SELECT_DESTINATION_BUTTON);
+        selectDestButtons.get(selectDestButtons.size() - 1).click();
+        CopyOrMoveContentRulesPage copyOrMoveContentPage = new CopyOrMoveContentRulesPage(drone);
+        copyOrMoveContentPage.selectDestination(destinationName).render();
+        copyOrMoveContentPage.selectPath(folders).render();
+        return copyOrMoveContentPage;
     }
 
     protected WebDrone getDrone()

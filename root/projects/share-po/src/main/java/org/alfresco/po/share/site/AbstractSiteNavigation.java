@@ -117,7 +117,8 @@ public abstract class AbstractSiteNavigation extends HtmlElement
         //bottleneck. Simple click() sometimes not work.
         try
         {
-            WebElement dashBoarLink = drone.findAndWait(By.cssSelector(dashboardLink));
+            By dashboardSelector = By.cssSelector(dashboardLink);
+            WebElement dashBoarLink = drone.findAndWait(dashboardSelector);
             drone.mouseOverOnElement(dashBoarLink);
             dashBoarLink.click();
         }

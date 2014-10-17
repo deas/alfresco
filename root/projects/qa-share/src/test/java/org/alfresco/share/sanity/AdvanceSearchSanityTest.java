@@ -18,20 +18,6 @@
  */
 package org.alfresco.share.sanity;
 
-import static org.testng.Assert.assertTrue;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.alfresco.po.share.search.SearchResult;
 import org.alfresco.po.share.search.SortType;
 import org.alfresco.po.share.site.document.ContentDetails;
@@ -50,6 +36,12 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.testng.Assert.assertTrue;
 
 /**
  * Class includes: Tests from TestLink in Area: Sanity Tests
@@ -91,7 +83,7 @@ public class AdvanceSearchSanityTest extends AbstractUtils
     }
 
     /**
-     * Enterprise40x-6553:Search for items
+     * AONE-7632:Search for items
      * <ul>
      * <li>Search for Content using Keywords search criteria</li>
      * <li>Search for Content using Name search criteria</li>
@@ -113,7 +105,7 @@ public class AdvanceSearchSanityTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = {"Sanity","Search"})
-    public void enterprise40x_6553() throws Exception
+    public void AONE_7632() throws Exception
     {
         testName = getTestName();
         String searchTerm = testName + "-" + System.currentTimeMillis();

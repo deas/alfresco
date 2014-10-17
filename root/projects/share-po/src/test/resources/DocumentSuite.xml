@@ -168,4 +168,16 @@
             <class name="org.alfresco.po.share.site.document.TreeMenuNavigationTest"/>
         </classes>
     </test>
+
+    <test name="FileDirectoryInfoGeoLocationTest">
+        <classes>
+            <class name="org.alfresco.po.share.site.document.FileDirectoryInfoGeoLocationTest"/>
+        </classes>
+    </test>
+
+    <test name="VersionDetailsTest">
+        <classes>
+            <class name="org.alfresco.po.share.site.document.VersionDetailsTest"/>
+        </classes>
+    </test>
 </suite>

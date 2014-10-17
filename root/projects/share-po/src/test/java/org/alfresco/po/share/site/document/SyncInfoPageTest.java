@@ -38,8 +38,6 @@ public class SyncInfoPageTest extends AbstractDocumentTest
     private static String siteName;   
     private static DocumentLibraryPage documentLibPage;
     private File file;
-    private final String cloudUserName = "user1@premiernet.test";
-    private final String cloudUserPassword = "password";
     private DestinationAndAssigneePage desAndAsgPage ;
     private String folder;
     private String folder2;

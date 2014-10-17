@@ -1,18 +1,12 @@
 package org.alfresco.share.util;
 
-import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.admin.AdminConsolePage;
-import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.SkipException;
-
-import java.io.File;
 
 /**
  * This class contains the utils for Application page of Admin Console

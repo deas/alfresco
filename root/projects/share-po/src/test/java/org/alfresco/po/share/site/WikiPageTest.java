@@ -26,6 +26,7 @@ import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
+import org.alfresco.po.thirdparty.firefox.RssFeedPage;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -48,11 +49,12 @@ public class WikiPageTest extends AbstractSiteDashletTest
 {
 
     DashBoardPage dashBoard;
-    CustomiseSiteDashboardPage customizeSiteDashboardPage;
-    SiteDashboardPage siteDashboardPage;
     CustomizeSitePage customizeSitePage;
     WikiPage wikiPage;
+    RssFeedPage rssFeedPage;
+    String wikiTitle = "Wiki_Page_1";
     List<String> textLines = new ArrayList<String>();
+    List<String> tagsToAdd = new ArrayList<>();
     
     @BeforeClass
     public void createSite() throws Exception
@@ -69,7 +71,7 @@ public class WikiPageTest extends AbstractSiteDashletTest
         SiteUtil.deleteSite(drone, siteName);
     }
     @Test
-    public void selectCustomizeDashboard() throws Exception
+    public void selectCustomizeDashboard()
     {
     	AlfrescoVersion version = drone.getProperties().getVersion();
         if(Enterprise42.equals(version))
@@ -89,23 +91,23 @@ public class WikiPageTest extends AbstractSiteDashletTest
     }
 
     @Test(dependsOnMethods="selectCustomizeDashboard")
-    public void testWikiPageDisplay() throws Exception
+    public void testWikiPageDisplay()
     {
     	wikiPage.clickOnNewPage();
     	Assert.assertTrue(wikiPage.isWikiPageDisplayed());
     }
     
     @Test(dependsOnMethods="testWikiPageDisplay")
-    public void testBulletListOfWikiPage() throws Exception
+    public void testBulletListOfWikiPage()
     {
-    	wikiPage.createWikiPageTitle("Wiki Page 1");
+    	wikiPage.createWikiPageTitle(wikiTitle);
     	textLines.add("This is a new Wiki text!");
     	wikiPage.insertText(textLines);
     	TinyMceEditor tinyMceEditor = wikiPage.getTinyMCEEditor();    	
     	tinyMceEditor.clickTextFormatter(FormatType.BULLET);
     	Assert.assertEquals(textLines.get(0), tinyMceEditor.getText());       
         Assert.assertTrue(tinyMceEditor.getContent().contains("<li>" + textLines.get(0) + "</li>"));
-        wikiPage.clickSaveButton().render();
+        wikiPage.clickSaveButton();
     }
     
     @Test(dependsOnMethods = "testBulletListOfWikiPage", enabled = false)
@@ -124,5 +126,42 @@ public class WikiPageTest extends AbstractSiteDashletTest
     	wikiPage.clickOnRemoveFormatting();
     	Assert.assertEquals(textLines.get(0),wikiPage.retrieveWikiText(""));
     	wikiPage.clickSaveButton();
+    }
+
+    @Test (dependsOnMethods = "testBulletListOfWikiPage")
+    public void testEditWikiPage()
+    {
+        textLines.add(1, "This is edited Wiki text");
+        tagsToAdd.add(0, "tag1");
+        wikiPage.editWikiPage(textLines.get(1), tagsToAdd);
+        wikiPage.clickDetailsLink();
+        Assert.assertTrue(wikiPage.isWikiDetailsCorrect(wikiTitle, textLines.get(1))
+            && wikiPage.getTagName().equalsIgnoreCase(tagsToAdd.get(0)), "The wiki hasn't been edited.");
+    }
+
+    @Test (dependsOnMethods = "testEditWikiPage")
+    public void testViewVersion()
+    {
+        Double versionToView = 1.0;
+        wikiPage.viewVersion(versionToView);
+        Assert.assertTrue(wikiPage.getWikiText().contentEquals(textLines.get(0))
+            && wikiPage.getCurrentWikiVersion().equals(versionToView));
+    }
+
+    @Test (dependsOnMethods = "testViewVersion", groups="ChromeIssue")
+    public void testRssFeedButton()
+    {
+        rssFeedPage = wikiPage.clickRssFeedBtn(username, password).render();
+        Assert.assertNotNull(rssFeedPage);
+        wikiPage = (WikiPage)rssFeedPage.clickOnFeedContent(wikiTitle);
+        Assert.assertNotNull(wikiPage);
+    }
+
+    @Test (dependsOnMethods = "testRssFeedButton", groups="ChromeIssue")
+    public void testOpenMainPage()
+    {
+        boolean isMainPage = wikiPage.openMainPage();
+        Assert.assertNotNull(wikiPage);
+        Assert.assertTrue(isMainPage, "Main Page isn't opened");
     }
 }

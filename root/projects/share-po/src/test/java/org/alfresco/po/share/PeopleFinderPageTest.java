@@ -75,4 +75,17 @@ public class PeopleFinderPageTest extends AbstractTest
         List<ShareLink> names = results.getResults();
         Assert.assertTrue(names.size() == 0);
     }
+    
+    
+    @Test(groups="alfresco-one")
+    public void clearAndSearchForPositiveTest()
+    {
+        PeopleFinderPage page = dashBoard.getNav().selectPeople().render();
+        PeopleFinderPage results = page.searchFor("m").render();
+        List<ShareLink> names = results.getResults();
+        Assert.assertTrue(names.size() > 0);
+        results = page.clearAndSearchFor("mike").render();
+        names = results.getResults();
+        Assert.assertTrue(names.size() > 0);
+    }
 }

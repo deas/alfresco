@@ -23,8 +23,10 @@ package org.alfresco.po.share.dashlet;
 public enum MyDiscussionsHistoryFilter
 {
 
-    LAST_DAY_TOPICS("Topics updated in the last day"), SEVEN_DAYS_TOPICS("Topics updated in the last 7 days"), FOURTEEN_DAYS_TOPICS(
-            "Topics updated in the last 14 days"), TWENTY_EIGHT_DAYS_TOPICS("Topics updated in the last 28 days");
+    LAST_DAY_TOPICS("Topics updated in the last day"), 
+    SEVEN_DAYS_TOPICS("Topics updated in the last 7 days"), 
+    FOURTEEN_DAYS_TOPICS("Topics updated in the last 14 days"), 
+    TWENTY_EIGHT_DAYS_TOPICS("Topics updated in the last 28 days");
 
     private final String description;
 

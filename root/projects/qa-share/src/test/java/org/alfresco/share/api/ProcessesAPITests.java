@@ -19,19 +19,12 @@
 
 package org.alfresco.share.api;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
-
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 import org.alfresco.po.share.workflow.WorkFlowType;
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiException;
 import org.alfresco.rest.workflow.api.model.ProcessInfo;
-import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.api.CreateUserAPI;
@@ -45,6 +38,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
+
+import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 @Listeners(FailedTestListener.class)
 public class ProcessesAPITests extends ProcessesAPI
@@ -107,7 +105,7 @@ public class ProcessesAPITests extends ProcessesAPI
     // -- -- Get Methods -- -- //
 
     @Test
-    public void ALF_1104() throws Exception
+    public void AONE_14377() throws Exception
     {
         JSONObject processJson = getProcesses(testUser, DOMAIN, null);
         
@@ -122,7 +120,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1102() throws Exception
+    public void AONE_14376() throws Exception
     {
         try
         {
@@ -141,7 +139,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1106() throws Exception
+    public void AONE_14379() throws Exception
     {
         ProcessInfo processInfo = getProcessById(testUser, DOMAIN, processId);
         
@@ -153,7 +151,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1105() throws Exception
+    public void AONE_14378() throws Exception
     {
         try
         {
@@ -168,8 +166,8 @@ public class ProcessesAPITests extends ProcessesAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_1117")
-    public void ALF_1110() throws Exception
+    @Test(dependsOnMethods = "AONE_14390")
+    public void AONE_14383() throws Exception
     {
         JSONObject itemsJson = getProcessItems(testUser, DOMAIN, processId);
 
@@ -185,7 +183,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1109() throws Exception
+    public void AONE_14382() throws Exception
     {
         try
         {
@@ -201,7 +199,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1115() throws Exception
+    public void AONE_14388() throws Exception
     {
         String varName = "newVariable" + System.currentTimeMillis();
         
@@ -241,7 +239,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1116() throws Exception
+    public void AONE_14389() throws Exception
     {
         try
         {
@@ -256,7 +254,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1108() throws Exception
+    public void AONE_14381() throws Exception
     {
         JSONObject activitiesJson = getProcessActivities(testUser, DOMAIN, processId, null);
         assertNotNull(activitiesJson);
@@ -276,7 +274,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1107() throws Exception
+    public void AONE_14380() throws Exception
     {
         try
         {
@@ -291,7 +289,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1111() throws Exception
+    public void AONE_14384() throws Exception
     {
         JSONObject tasksJson = getProcessTasks(testUser, DOMAIN, processId, null);
         assertNotNull(tasksJson);
@@ -313,7 +311,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1112() throws Exception
+    public void AONE_14385() throws Exception
     {
         try
         {
@@ -328,7 +326,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1114() throws Exception
+    public void AONE_14387() throws Exception
     {
         HttpResponse response = getProcessImage(testUser, DOMAIN, processId, null);
         assertNotNull(response);
@@ -336,7 +334,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1113() throws Exception
+    public void AONE_14386() throws Exception
     {
         try
         {
@@ -350,8 +348,8 @@ public class ProcessesAPITests extends ProcessesAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_1360")
-    public void ALF_1362() throws Exception
+    @Test(dependsOnMethods = "AONE_14398")
+    public void AONE_14400() throws Exception
     {
         HttpResponse resp = deleteProcess(testUser, DOMAIN, processId);
         assertNotNull(resp);
@@ -368,7 +366,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test(enabled = true)
-    public void ALF_1363() throws Exception
+    public void AONE_14401() throws Exception
     {
         try
         {
@@ -382,8 +380,8 @@ public class ProcessesAPITests extends ProcessesAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_1110")
-    public void ALF_1360() throws Exception
+    @Test(dependsOnMethods = "AONE_14383")
+    public void AONE_14398() throws Exception
     {
         HttpResponse resp = deleteProcessItem(testUser, DOMAIN, processId, docGuid1);
         assertNotNull(resp);
@@ -404,7 +402,7 @@ public class ProcessesAPITests extends ProcessesAPI
     }
 
     @Test
-    public void ALF_1361() throws Exception
+    public void AONE_14399() throws Exception
     {
         try
         {
@@ -420,7 +418,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1359() throws Exception
+    public void AONE_14397() throws Exception
     {
         try
         {
@@ -439,7 +437,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1120() throws Exception
+    public void AONE_14395() throws Exception
     {
         JSONObject variableBody = new JSONObject();
         variableBody.put("name", "newVariable");
@@ -469,7 +467,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1358() throws Exception
+    public void AONE_14396() throws Exception
     {
         try
         {
@@ -487,7 +485,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1355() throws Exception
+    public void AONE_14392() throws Exception
     {
         JSONObject variableBody = new JSONObject();
         variableBody.put("name", "newVariable");
@@ -514,7 +512,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1357() throws Exception
+    public void AONE_14393() throws Exception
     {
         try
         {
@@ -534,7 +532,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1117() throws Exception
+    public void AONE_14390() throws Exception
     {
         JSONObject item = new JSONObject();
         item.put("id", docGuid1);
@@ -548,7 +546,7 @@ public class ProcessesAPITests extends ProcessesAPI
 
     @SuppressWarnings("unchecked")
     @Test
-    public void ALF_1118() throws Exception
+    public void AONE_14391() throws Exception
     {
         try
         {
@@ -582,6 +580,36 @@ public class ProcessesAPITests extends ProcessesAPI
             assertTrue(ex.toString().contains("401"));
 
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void AONE_14394() throws Exception
+    {
+        JSONObject variableBody = new JSONObject();
+        variableBody.put("name", "newVariable");
+        variableBody.put("value", 1234);
+        JSONArray variableArray = new JSONArray();
+        variableArray.add(variableBody);
+        JSONObject response = createProcessVariables(ADMIN_USERNAME, DOMAIN, processId, variableArray);
+        assertNotNull(response);
+
+        // Check new Value using Get
+        response = getProcessVariables(ADMIN_USERNAME, DOMAIN, processId);
+        JSONArray entries = (JSONArray) response.get("entries");
+
+        for (int i = 0; i < entries.size(); i++)
+        {
+            JSONObject entry = (JSONObject) ((JSONObject) entries.get(i)).get("entry");
+
+            if (entry.get("name").equals("newVariable"))
+            {
+                entry.get("name").toString().equals("1234");
+                break;
+            }
+
+        }
+
     }
 
     /**

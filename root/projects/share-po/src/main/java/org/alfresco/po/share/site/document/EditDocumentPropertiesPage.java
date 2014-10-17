@@ -14,10 +14,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -30,6 +26,10 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Edit document properties page object, holds all element of the HTML page
  * relating to share's edit document properties page.
@@ -41,7 +41,7 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 {
     public enum Fields
     {
-        NAME, TITLE, DESCRIPTION, AUTHOR;
+        NAME, TITLE, DESCRIPTION, AUTHOR, PUBLISHER, CONTRIBUTOR, TYPE, IDENTIFIER, SOURCE, COVERAGE, RIGHTS, SUBJECT;
     }
 
     private final String tagName;
@@ -120,7 +120,7 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
         }
         try
         {
-            List<WebElement> tags = drone.findAll(By.cssSelector("div.itemtype-tag"));
+            List<WebElement> tags = drone.findAndWaitForElements(By.cssSelector("div.itemtype-tag"));
             for (WebElement tag : tags)
             {
                 if (name.equalsIgnoreCase(tag.getText()))
@@ -397,8 +397,7 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
 
     /**
      * Returns a map of validation messages for all the fields in the form.
-     * 
-     * @param field The reqired field
+     *
      * @return The validation message or an empty string if there is no message.
      */
     public Map<Fields, String> getMessages()
@@ -497,5 +496,149 @@ public class EditDocumentPropertiesPage extends AbstractEditProperties
     {
         clickAllProperties();
         return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param publisher
+     */
+    public void setPublisher(String publisher)
+    {
+        setInput(drone.find(INPUT_PUBLISHER_SELECTOR), publisher);
+    }
+
+    /**
+     * Get value seen on the Publisher input value.
+     */
+    public String getPublisher()
+    {
+        return getValue(INPUT_PUBLISHER_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param contributor
+     */
+    public void setContributor(String contributor)
+    {
+        setInput(drone.find(INPUT_CONTRIBUTOR_SELECTOR), contributor);
+    }
+
+    /**
+     * Get value seen on the Contributor input value.
+     */
+    public String getContributor()
+    {
+        return getValue(INPUT_CONTRIBUTOR_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param type
+     */
+    public void setType(String type)
+    {
+        setInput(drone.find(INPUT_TYPE_SELECTOR), type);
+    }
+
+    /**
+     * Get value seen on the Type input value.
+     */
+    public String getType()
+    {
+        return getValue(INPUT_TYPE_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param identifier
+     */
+    public void setIdentifier(String identifier)
+    {
+        setInput(drone.find(INPUT_IDENTIFIER_SELECTOR), identifier);
+    }
+
+    /**
+     * Get value seen on the Identifier input value.
+     */
+    public String getIdentifier()
+    {
+        return getValue(INPUT_IDENTIFIER_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param source
+     */
+    public void setSource(String source)
+    {
+        setInput(drone.find(INPUT_SOURCE_SELECTOR), source);
+    }
+
+    /**
+     * Get value seen on the Source input value.
+     */
+    public String getSource()
+    {
+        return getValue(INPUT_SOURCE_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param coverage
+     */
+    public void setCoverage(String coverage)
+    {
+        setInput(drone.find(INPUT_COVERAGE_SELECTOR), coverage);
+    }
+
+    /**
+     * Get value seen on the Coverage input value.
+     */
+    public String getCoverage()
+    {
+        return getValue(INPUT_COVERAGE_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param rights
+     */
+    public void setRights(String rights)
+    {
+        setInput(drone.find(INPUT_RIGHTS_SELECTOR), rights);
+    }
+
+    /**
+     * Get value seen on the Rights input value.
+     */
+    public String getRights()
+    {
+        return getValue(INPUT_RIGHTS_SELECTOR);
+    }
+
+    /**
+     * Enters a value in to the properties form.
+     *
+     * @param subject
+     */
+    public void setSubject(String subject)
+    {
+        setInput(drone.find(INPUT_SUBJECT_SELECTOR), subject);
+    }
+
+    /**
+     * Get value seen on the Subject input value.
+     */
+    public String getSubject()
+    {
+        return getValue(INPUT_SUBJECT_SELECTOR);
     }
 }

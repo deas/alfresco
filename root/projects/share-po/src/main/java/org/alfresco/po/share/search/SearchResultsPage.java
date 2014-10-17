@@ -24,6 +24,7 @@ import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.Pagination;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -50,12 +51,14 @@ public abstract class SearchResultsPage extends SharePage implements SearchResul
     private static final String SEARCH_BUTTON = "page_x002e_search_x002e_search_x0023_default-search-button-button";
     private static final String SEARCH_RESULT_COUNT = "search.results.count";
     private static final String SEARCH_RESULT_PAGINATOR_ID = "search.results.paginator.id";
+    private static final String SEARCH_RESULTS_DIV_ID = "search.results.div.id";
     private static final String CURRENT_POSITION_CSS = "span.yui-pg-current-page.yui-pg-page";
     private static final String PAGINATION_BUTTON_NEXT = "a.yui-pg-next";
     private static final String PAGINATION_BUTTON_PREVIOUS = "a.yui-pg-previous";
     private final String goToAdvancedSearch;
     private static final String SORT_BY_RELEVANCE = "button[id$='default-sort-menubutton-button']";
     private static final String SORT_LIST = "span[id$='-sort-menubutton'] + div>div.bd>ul>li>a";
+    protected static final By BACK_TO_SITE_LINK = By.cssSelector("#HEADER_SEARCH_BACK_TO_SITE_DASHBOARD");
 
     /**
      * Constructor.
@@ -570,5 +573,66 @@ public abstract class SearchResultsPage extends SharePage implements SearchResul
         {
         }
         throw new PageException("cannot find the sort type passed");
+    }
+
+    /**
+     * Method to verify all controls are displayed on Search page (Note: does not include pagination verification)
+     *
+     * @return true if page is correct
+     */
+    public boolean isPageCorrect()
+    {
+        boolean isCorrect;
+        isCorrect = drone.isElementDisplayed(By.id(SEARCH_FIELD)) && drone.isElementDisplayed(By.id(SEARCH_BUTTON))
+            && drone.findByKey(SEARCH_RESULTS_DIV_ID).isDisplayed() && isSortCorrect() && drone.isElementDisplayed(By.cssSelector(goToAdvancedSearch));
+        return isCorrect;
+    }
+
+    private boolean isSortCorrect()
+    {
+        try
+        {
+            List <WebElement> sortList = drone.findAll(By.cssSelector(SORT_LIST));
+            SortType sortTypesValues [] = SortType.values();
+            if (sortList.size() == sortTypesValues.length)
+            {
+                for(int i = 0; i < sortList.size(); i++)
+                {
+                    if(!sortList.get(i).getAttribute("text").equals(sortTypesValues[i].getSortName()))
+                        return false;
+                }
+                return true;
+            }
+            else
+            {
+                throw new ShareException("Sort by list is of incorrect size");
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+           throw new ShareException("Unable to find " + SORT_LIST);
+        }
+    }
+
+    /**
+     * Click next page button on the
+     * pagination bar.
+     *
+     * @return if visible and clickable
+     */
+    public HtmlPage clickNextPage()
+    {
+        return Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_NEXT);
+    }
+
+    /**
+     * Click prev page button on the
+     * pagination bar.
+     *
+     * @return if visible and clickable
+     */
+    public HtmlPage clickPrevPage()
+    {
+        return Pagination.selectPaginationButton(drone, PAGINATION_BUTTON_PREVIOUS);
     }
 }

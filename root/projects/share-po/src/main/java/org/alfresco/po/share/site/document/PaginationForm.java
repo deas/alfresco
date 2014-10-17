@@ -15,6 +15,7 @@
 package org.alfresco.po.share.site.document;
 
 import com.google.common.base.Predicate;
+
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
@@ -29,6 +30,7 @@ import java.util.List;
  *
  * @author Aliaksei Boole
  */
+@SuppressWarnings("unused")
 public class PaginationForm extends HtmlElement
 {
     private final By FORM_XPATH;
@@ -37,6 +39,8 @@ public class PaginationForm extends HtmlElement
     private final static By PAGES_SELECT_LINKS = By.xpath(".//span[@class='yui-pg-pages']/*");
     private final static By PAGE_INFO_LABEL = By.xpath(".//span[@class='yui-pg-current']");
     private final static By CURRENT_PAGE_SPAN = By.xpath(".//span[@class='yui-pg-pages']/span");
+    private final static By NEXT_PAGE_SPAN = By.xpath(".//span[@class='yui-pg-next']");
+    private final static By PREVIOUS_PAGE_SPAN = By.xpath(".//span[@class='yui-pg-previous']");
 
     /**
      * Constructor for creating FormObject mimic actions with Pagination on any page.

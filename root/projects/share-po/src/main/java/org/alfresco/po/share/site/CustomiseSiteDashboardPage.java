@@ -18,11 +18,14 @@ import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +60,7 @@ public class CustomiseSiteDashboardPage extends SharePage
     private static final By SELECT_THREE_COLUMN_LAYOUT_BTN = By.cssSelector("button[id*='dashboard-3-columns-button']");
     private static final By SELECT_FOUR_COLUMN_LAYOUT_BTN = By.cssSelector("button[id*='dashboard-4-columns-button']");
     private static final By TITLE_ON_PAGE = By.cssSelector(".sub-title");
+    private static final By USED_DASHLETS = By.cssSelector(".usedList>li>span");
 
     /**
      * Constructor.
@@ -145,14 +149,17 @@ public class CustomiseSiteDashboardPage extends SharePage
         return selectOk();
     }
 
-    private void removeAllDashletsWithOutConfirm()
+    /**
+     * Remove all Dashlets.
+     */
+    public void removeAllDashletsWithOutConfirm()
     {
         List<WebElement> elements = getDragDashletElem();
         if (elements.size() != 0)
         {
             for (WebElement source : elements)
             {
-                drone.dragAndDrop(source, drone.find(TRASHCAN));
+                drone.dragAndDrop(source, drone.findAndWait(TRASHCAN));
                 waitUntilAlert();
             }
         }
@@ -165,7 +172,7 @@ public class CustomiseSiteDashboardPage extends SharePage
     private List<WebElement> getDragDashletElem()
     {
         List<WebElement> allDashlets = new ArrayList<WebElement>();
-        for (int column = 0; column <= NUMBER_OF_COLUMNS; column++)
+        for (int column = 1; column <= NUMBER_OF_COLUMNS; column++)
         {
             allDashlets.addAll(drone.findAll(By.cssSelector(String.format(DRAGABLE_COLUMN_FORMAT, column))));
         }
@@ -204,11 +211,15 @@ public class CustomiseSiteDashboardPage extends SharePage
 
         for (WebElement source : dashlets)
         {
+            int posX = source.getSize().getWidth() / 2;
+            int posY = source.getSize().getHeight() / 2;
             target = drone.find(By.cssSelector(String.format(COLUMN_FORMAT, currentColumn)));
-            target.click();
-
-            drone.dragAndDrop(source, target);
-            waitUntilAlert();
+            WebDriver webDriver = ((WebDroneImpl) drone).getDriver();
+            Actions builder = new Actions(webDriver);
+            builder.clickAndHold(source).pause(2000);
+            builder.moveToElement(target, posX, posY).pause(1000).perform();
+            builder.release().pause(1000).build()
+                    .perform();
 
             if (dashletCounter % MAX_DASHLETS_IN_COLUMN == 0)
             {
@@ -216,7 +227,11 @@ public class CustomiseSiteDashboardPage extends SharePage
             }
             dashletCounter++;
         }
-
+        List<WebElement> usedDashlets = drone.findAll(USED_DASHLETS);
+        if (!(usedDashlets.size() == dashlets.size()))
+        {
+            throw new PageException("Not all the dashlets were added");
+        }
         return selectOk();
     }
 
@@ -287,12 +302,22 @@ public class CustomiseSiteDashboardPage extends SharePage
             {
                 try
                 {
-                    List<WebElement> existingDashletsInColumn = drone.findAndWaitForElements(By.cssSelector(String.format("ul[id$='column-ul-%d'] li",
-                            columnNumber)));
-
+                    List<WebElement> existingDashletsInColumn = Collections.emptyList();
+                    try
+                    {
+                        existingDashletsInColumn = drone.findAndWaitForElements(By.cssSelector(String.format("ul[id$='column-ul-%d'] li",
+                                columnNumber)));
+                    }
+                    catch (TimeoutException e)
+                    {
+                        if (logger.isTraceEnabled())
+                        {
+                            logger.info("Selected column is empty", e);
+                        }
+                    }
                     if (existingDashletsInColumn.size() < MAX_DASHLETS_IN_COLUMN)
                     {
-                        WebElement target = drone.findAndWait(By.cssSelector(String.format("ul[id$='column-ul-%d'] li", columnNumber)));
+                        WebElement target = drone.findAndWait(By.xpath(String.format("//ul[@class='usedList' and contains(@id,'-column-ul-%d')]", columnNumber)));
                         drone.executeJavaScript("window.scrollBy(0,250)", "");
                         drone.dragAndDrop(newDashlet, target);
                         return selectOk();
@@ -329,7 +354,7 @@ public class CustomiseSiteDashboardPage extends SharePage
     {
         try
         {
-            drone.find(SAVE_BUTTON).click();
+            drone.findAndWait(SAVE_BUTTON).click();
         }
         catch (NoSuchElementException te)
         {

@@ -102,7 +102,7 @@ public class LoginTest extends AbstractUtils
      * Valid Login
      */
     @Test
-    public void cloud_1159()
+    public void AONE_13124()
     {
         try
         {
@@ -137,7 +137,7 @@ public class LoginTest extends AbstractUtils
      * Invalid Login
      */
     @Test
-    public void cloud_1160()
+    public void AONE_13125()
     {
     	try
     	{
@@ -178,7 +178,7 @@ public class LoginTest extends AbstractUtils
      * Incorrect Password
      */
     @Test
-    public void cloud_1161()
+    public void AONE_13126()
     {
         try
         {
@@ -214,7 +214,7 @@ public class LoginTest extends AbstractUtils
      * Incorrect Username 
      */
     @Test
-    public void cloud_1162()
+    public void AONE_13127()
     {
         try
         {
@@ -250,7 +250,7 @@ public class LoginTest extends AbstractUtils
      * Guest Login Fails when user not registered
      */
     @Test
-    public void cloud_1272()
+    public void AONE_13129()
     {
         try
         {

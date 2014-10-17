@@ -16,6 +16,7 @@ package org.alfresco.po.share.dashlet;
 
 import java.util.List;
 
+import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
@@ -196,5 +197,20 @@ public class MyTasksDashlet extends AbstractDashlet implements Dashlet
         }
 
         throw new PageException("Unable to find assign workflow.");
+    }
+
+    /**
+    * Mimic click on 'Complete task' button
+    *
+    * @return
+    */
+    public MyTasksPage selectComplete()
+    {
+        if (dashlet == null)
+        {
+            dashlet = drone.findAndWait(By.cssSelector(DIV_DASHLET_CONTENT_PLACEHOLDER), 100L);
+        }
+        dashlet.findElement(COMPLETE_TASK_BUTTON).click();
+        return drone.getCurrentPage().render();
     }
 }

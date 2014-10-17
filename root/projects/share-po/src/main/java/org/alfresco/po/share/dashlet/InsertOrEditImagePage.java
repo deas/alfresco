@@ -31,7 +31,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * This page object is to set the image into site notice dashlet. This Page holds all the required element finding methods.
- * 
+ *
  * @author cbairaajoni
  */
 public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
@@ -39,26 +39,23 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
     private static Log logger = LogFactory.getLog(InsertOrEditImagePage.class);
 
     @RenderWebElement
-    private static By INSERT_OR_EDIT_LINK_PANEL = By.cssSelector("tbody tr");
+    private static By IMAGE_URL_CSS = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'Source')]/following-sibling::div/input[starts-with(@class, 'mce-textbox')]");
     @RenderWebElement
-    private static By IMAGE_URL_CSS = By.cssSelector("#src");
+    private static By IMAGE_DESC_CSS = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'description')]/following-sibling::input[starts-with(@class, 'mce-textbox')]");
     @RenderWebElement
-    private static By IMAGE_DESC_CSS = By.cssSelector("#alt");
+    private static By DIMENSIONS_HEIGHT_CSS2 = By.xpath("//input[starts-with(@class, 'mce-textbox') and @aria-label='Height']");
     @RenderWebElement
-    private static By ALIGNMENT_CSS = By.cssSelector("#align");
-    @RenderWebElement
-    private static By DIMENSIONS_HEIGHT_CSS2 = By.cssSelector("#height");
-    @RenderWebElement
-    private static By DIMENSIONS_WIDTH_CSS1 = By.cssSelector("#width");
+    private static By DIMENSIONS_WIDTH_CSS1 = By.xpath("//input[starts-with(@class, 'mce-textbox') and @aria-label='Width']");
+
 
     /**
      * Constructor.
-     * 
-     * @param mainWindow
+     *
+     * @param element
      */
-    public InsertOrEditImagePage(WebDrone drone, String mainWindow)
+    public InsertOrEditImagePage(WebDrone drone, WebElement element)
     {
-        super(drone, mainWindow);
+        super(drone, element);
     }
 
     /**
@@ -67,13 +64,13 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
     public enum ImageAlignment
     {
         NOT_SET("-- Not Set --"),
-        BASE_LINE("Baseline"), 
-        TOP("Top"), 
-        MIDDLE("Middle"), 
-        BOTTOM("Bottom"), 
-        TEXT_TOP("Text Top"), 
-        TEXT_BOTTOM("Text Bottom"), 
-        LEFT("Left"), 
+        BASE_LINE("Baseline"),
+        TOP("Top"),
+        MIDDLE("Middle"),
+        BOTTOM("Bottom"),
+        TEXT_TOP("Text Top"),
+        TEXT_BOTTOM("Text Bottom"),
+        LEFT("Left"),
         RIGHT("Right");
 
         private String itemName;
@@ -113,8 +110,8 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
 
     /**
      * This method sets the given text into Link Url.
-     * 
-     * @param text
+     *
+     * @param url
      */
     public void setImageUrl(String url)
     {
@@ -125,7 +122,9 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
 
         try
         {
-            drone.findAndWait(IMAGE_URL_CSS).sendKeys(url);
+            WebElement imageUrlField = drone.findAndWait(IMAGE_URL_CSS);
+            imageUrlField.clear();
+            imageUrlField.sendKeys(url);
         }
         catch (TimeoutException te)
         {
@@ -136,7 +135,7 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
 
     /**
      * This method sets the given description into image description field.
-     * 
+     *
      * @param desc
      */
     public void setDescription(String desc)
@@ -148,7 +147,9 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
 
         try
         {
-            drone.findAndWait(IMAGE_DESC_CSS).sendKeys(desc);
+            WebElement descriptionField = drone.findAndWait(IMAGE_DESC_CSS);
+            descriptionField.clear();
+            descriptionField.sendKeys(desc);
         }
         catch (TimeoutException te)
         {
@@ -157,32 +158,32 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
         }
     }
 
-    /**
-     * This method sets the given Target item from the Target dropdown values.
-     * 
-     * @param target
-     */
-    public void setAlignment(ImageAlignment target)
-    {
-        if (target == null)
-        {
-            throw new IllegalArgumentException("Alignment value is required");
-        }
-
-        try
-        {
-            selectOption(ALIGNMENT_CSS, target.getItemName());
-        }
-        catch (TimeoutException te)
-        {
-            logger.info("Unable to find the Alignment Item field.", te);
-            throw new PageOperationException("Unable to find Alignment Item field.");
-        }
-    }
+    //    /**
+    //     * This method sets the given Target item from the Target dropdown values.
+    //     *
+    //     * @param target
+    //     */
+    //    public void setAlignment(ImageAlignment target)
+    //    {
+    //        if (target == null)
+    //        {
+    //            throw new IllegalArgumentException("Alignment value is required");
+    //        }
+    //
+    //        try
+    //        {
+    //            selectOption(ALIGNMENT_CSS, target.getItemName());
+    //        }
+    //        catch (TimeoutException te)
+    //        {
+    //            logger.info("Unable to find the Alignment Item field.", te);
+    //            throw new PageOperationException("Unable to find Alignment Item field.");
+    //        }
+    //    }
 
     /**
      * This method sets the given description into image description field.
-     * 
+     *
      * @param width
      * @param height
      */
@@ -195,7 +196,7 @@ public class InsertOrEditImagePage extends BaseAdvancedTinyMceOptionsPage
 
         try
         {
-            WebElement widthElement =  drone.findAndWait(DIMENSIONS_WIDTH_CSS1);
+            WebElement widthElement = drone.findAndWait(DIMENSIONS_WIDTH_CSS1);
             widthElement.clear();
             widthElement.sendKeys(Long.valueOf(width).toString());
             WebElement heightElement = drone.findAndWait(DIMENSIONS_HEIGHT_CSS2);

@@ -10,22 +10,10 @@ import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.exception.ShareException;
-import org.alfresco.po.share.site.document.Categories;
-import org.alfresco.po.share.site.document.CategoryPage;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.CreatePlainTextContentPage;
-import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.site.document.SortField;
-import org.alfresco.po.share.site.document.TagPage;
+import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.util.PageUtils;
+import org.alfresco.po.share.workflow.CompanyHome;
+import org.alfresco.po.share.workflow.SelectContentPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
@@ -39,9 +27,12 @@ public class ShareUserRepositoryPage extends AbstractUtils
     private static Log logger = LogFactory.getLog(ShareUserRepositoryPage.class);
     private static final String DATA_DICTIONARY_FOLDER = "Data Dictionary";
     private static final String NODE_TEMPLATES_FOLDER = "Node Templates";
+    private static WebDrone drone;
+
 
     public ShareUserRepositoryPage()
     {
+
         if (logger.isTraceEnabled())
         {
             logger.debug(this.getClass().getSimpleName() + " instantiated");
@@ -51,7 +42,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Open Repository Page: Top Level Assumes User is logged in - Opens
      * repository in simple View
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @return RepositoryPage
@@ -72,7 +63,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Open Repository Page: Top Level Assumes User is logged in - Opens
      * repository in detailed View
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @return RepositoryPage
@@ -91,7 +82,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     /**
      * Open Repository Page: Default View
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @return RepositoryPage
@@ -107,7 +98,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     /**
      * Assumes Repository Page is open and navigates to the Path specified.
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @param folderPath
@@ -128,7 +119,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Assumes User is logged in and a specific Site's RepositoryPage is open,
      * Parent Folder is pre-selected.
-     * 
+     *
      * @param file
      *            File Object for the file in reference
      * @return RepositoryPage
@@ -144,7 +135,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Creates a new folder at the Path specified, Starting from the Document
      * Library Page. Assumes User is logged in and a specific Site is open.
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @param folderName
@@ -162,7 +153,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * Creates a new folder at the Path specified, Starting from the
      * RepositoryPage Page. Assumes User is logged in and a specific Site is
      * open.
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @param folderName
@@ -183,7 +174,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * Creates a new folder at the Path specified, Starting from the
      * RepositoryPage Page. Assumes User is logged in and a specific Site is
      * open.
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @param folderName
@@ -208,7 +199,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * This method does the copy or move the folder or document into another
      * folder. User should be on RepositoryPage Page.
-     * 
+     *
      * @param isCopy
      * @param testFolderName
      * @param copyFolderName
@@ -221,7 +212,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
         {
             throw new IllegalArgumentException("sitename/sourceFolder/destinationFolders should not be empty or null");
         }
-        
+
         CopyOrMoveContentPage copyOrMoveContentPage;
 
         FileDirectoryInfo contentRow = ShareUserSitePage.getFileDirectoryInfo(drone,sourceFolder);
@@ -240,7 +231,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     /**
      * Selects cancel button
-     * 
+     *
      * @param drone
      * @param sourceFolder
      * @param destinationFolders
@@ -259,7 +250,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     /**
      * Selects ok button
-     * 
+     *
      * @param drone
      * @param sourceFolder
      * @param destinationFolders
@@ -279,7 +270,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Creates a new folder at the Path specified, Starting from the Re. Assumes
      * User is logged in and a specific Site is open.
-     * 
+     *
      * @param driver
      *            WebDrone Instance
      * @param folderName
@@ -300,7 +291,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Navigates to the Path specified, Starting from the Repository Page.
      * Assumes User is logged in and a specific Site is open.
-     * 
+     *
      * @param fileName
      * @param parentFolderPath
      *            : such as Repository + file.seperator + parentFolderName1
@@ -327,7 +318,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * This method is used to create content with name, title and description.
      * User should be logged in
-     * 
+     *
      * @param drone
      * @param contentDetails
      * @param contentType
@@ -335,11 +326,11 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * @throws Exception
      */
     public static RepositoryPage createContentInFolder(WebDrone drone, ContentDetails contentDetails, ContentType contentType, String... folderPath)
-            throws Exception
+        throws Exception
     {
         // Open Folder in repository Library
         RepositoryPage repositoryPage = navigateFoldersInRepositoryPage(drone, folderPath);
-        DocumentDetailsPage detailsPage = null;
+        DocumentDetailsPage detailsPage;
 
         try
         {
@@ -358,7 +349,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * This method is used to create content with name, title and description.
      * User should be logged in
-     * 
+     *
      * @param drone
      * @param contentDetails
      * @param contentType
@@ -366,7 +357,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * @throws Exception
      */
     public static HtmlPage createContentInFolderWithValidation(WebDrone drone, ContentDetails contentDetails, ContentType contentType, String... folderPath)
-            throws Exception
+        throws Exception
     {
         // Open Folder in repository Library
         RepositoryPage repositoryPage = navigateFoldersInRepositoryPage(drone, folderPath);
@@ -396,7 +387,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * Method to navigate to site dashboard url, based on siteshorturl, rather
      * than sitename This is to be used to navigate only as a util, not to test
      * getting to the site dashboard
-     * 
+     *
      * @param drone
      * @param siteShortURL
      * @return {@link SiteDashBoardPage
@@ -404,10 +395,10 @@ public class ShareUserRepositoryPage extends AbstractUtils
      */
     public static RepositoryPage openSiteFromSitesFolderOfRepository(WebDrone drone, String siteName)
     {
-        String url = drone.getCurrentUrl();      
+        String url = drone.getCurrentUrl();
         //http://127.0.0.1:8081/share  /page/repository#filter=path|%2FUser%2520Homes%2F userEnterprise42-5405%40freetht1.test-1  |&page=1
         String target = url.substring(0, url.indexOf("/page/")) + "/page/repository#filter=path|%2FSites%2F" + SiteUtil.getSiteShortname(siteName)
-                + "|&page=1";
+            + "|&page=1";
 
         drone.navigateTo(target);
         drone.waitForPageLoad(maxWaitTime);
@@ -418,10 +409,10 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     public static RepositoryPage openUserFromUserHomesFolderOfRepository(WebDrone drone, String usrName)
     {
-        String url = drone.getCurrentUrl();      
+        String url = drone.getCurrentUrl();
         //http://127.0.0.1:8081/share  /page/repository#filter=path|%2FUser%2520Homes%2F userEnterprise42-5405%40freetht1.test-1  |&page=1
         String target = url.substring(0, url.indexOf("/page/")) + "/page/repository#filter=path|%2FUser%2520Homes%2F" + StringUtils.replace(usrName, "@", "%40")
-                + "|&page=1";
+            + "|&page=1";
 
         drone.navigateTo(target);
         drone.waitForPageLoad(maxWaitTime);
@@ -432,7 +423,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     /**
      * method to Navigate folder
-     * 
+     *
      * @param drone
      * @param List
      *            of Folders
@@ -486,16 +477,16 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Add given tags to file or folder in {@link TagPage}.
      * Assume that user currently in {@link RepositoryPage}.
-     * 
+     *
      * @param drone
      * @param contentName
      * @param tags - Tags to be added to content
      * @return {@link RepositoryPage}
      */
     public static RepositoryPage addTagsInRepo(WebDrone drone, String contentName, List<String> tags)
-    {        
+    {
         DetailsPage detailsPage = ShareUserSitePage.addTags(drone, contentName, tags).render();
-        RepositoryPage repoPage = detailsPage.navigateToParentFolder().render();        
+        RepositoryPage repoPage = detailsPage.navigateToParentFolder().render();
 
         return repoPage;
     }
@@ -503,7 +494,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Opens the content details page starting from the parent folder within DocumentLibrary
      * Assume that user currently in {@link RepositoryPage}.
-     * 
+     *
      * @param drone
      * @param contentName
      * @param isFile
@@ -521,7 +512,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
     /**
      * Edits the document using the in-line edit form.
-     * 
+     *
      * @param drone
      * @param fileName
      * @param mimeType
@@ -542,12 +533,12 @@ public class ShareUserRepositoryPage extends AbstractUtils
     {
         return ShareUserSitePage.getInLineEditContentDetails(drone, contentName);
     }
-    
-    public enum Operation 
+
+    public enum Operation
     {
         REMOVE, ADD_AND_CANCEL, SAVE;
     }
-    
+
     /**
      * Select operation to be performed on Tag.
      * @param drone
@@ -565,7 +556,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
         else
         {
             tagPage.enterTagValue(tagName).render();
-           
+
             if (Operation.ADD_AND_CANCEL.equals(operation))
             {
                 tagPage.clickCancelButton().render();
@@ -577,7 +568,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
             }
         }
     }
-    
+
     /**
      * Add categories from EditDocumentPropertiesPopUp.
      * @param drone
@@ -590,11 +581,11 @@ public class ShareUserRepositoryPage extends AbstractUtils
     {
         return addCategories(drone, folderName, category.getValue(), isOk);
     }
-    
-    
+
+
     /**
      * Add categories from EditDocumentPropertiesPopUp.
-     * 
+     *
      * @param drone
      * @param folderName
      * @param category
@@ -614,7 +605,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
             return categoryPage.clickCancel().render();
         }
     }
-    
+
     /**
      * Return EditDocumentPropertiesPopup from RepositoryPage or documentLibrary page.
      * @param drone
@@ -622,11 +613,11 @@ public class ShareUserRepositoryPage extends AbstractUtils
      * @return
      */
     public static EditDocumentPropertiesPage returnEditDocumentProperties(WebDrone drone, String folderName)
-    {            
-        return ShareUserSitePage.getFileDirectoryInfo(drone,folderName).selectEditProperties().render();       
+    {
+        return ShareUserSitePage.getFileDirectoryInfo(drone,folderName).selectEditProperties().render();
     }
-    
-    
+
+
     /**
      * Add aspect.
      * @param drone
@@ -636,13 +627,13 @@ public class ShareUserRepositoryPage extends AbstractUtils
     public static void addAspect(WebDrone drone, String folderName, DocumentAspect aspect)
     {
         RepositoryPage repositoryPage = (RepositoryPage)getSharePage(drone);
-        
+
         // Select more options in folder1 and click on Manage Aspects
         SelectAspectsPage selectAspectsPage = repositoryPage.getFileDirectoryInfo(folderName).selectManageAspects().render();
 
         // Get several aspects in left hand side
         List<DocumentAspect> aspects = new ArrayList<DocumentAspect>();
-        
+
         aspects.add(aspect);
 
         // Add several aspects to right hand side
@@ -654,7 +645,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
         // Click on Apply changes on select aspects page
         selectAspectsPage.clickApplyChanges().render();
     }
-    
+
     /**
      * Get properties.
      * @param drone
@@ -667,7 +658,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
         FolderDetailsPage folderDetailsPage = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectViewFolderDetails().render();
         return folderDetailsPage.getProperties();
     }
-    
+
     /**
      * Copy folder to destination. 
      * @param drone
@@ -677,13 +668,13 @@ public class ShareUserRepositoryPage extends AbstractUtils
     public static void copyToFolderInDestination(WebDrone drone, String folderName, String destinationFolderName)
     {
 
-      CopyOrMoveContentPage copyOrMoveContentPage = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectCopyTo().render();
-    
-      copyOrMoveContentPage = copyOrMoveContentPage.selectDestination(destinationFolderName).render();
-    
-      copyOrMoveContentPage.selectOkButton().render();
+        CopyOrMoveContentPage copyOrMoveContentPage = ShareUserSitePage.getFileDirectoryInfo(drone, folderName).selectCopyTo().render();
+
+        copyOrMoveContentPage = copyOrMoveContentPage.selectDestination(destinationFolderName).render();
+
+        copyOrMoveContentPage.selectOkButton().render();
     }
-    
+
     /**
      * Add tag from repository page.
      * @param drone
@@ -695,10 +686,10 @@ public class ShareUserRepositoryPage extends AbstractUtils
         RepositoryPage repoPage = ((RepositoryPage) ShareUserSitePage.addTag(drone, contentName, tagName)).render();
         return repoPage;
     }
-    
+
     /**
      * Sorts the document library by the given field.
-     * 
+     *
      * @param drone
      * @param field         The field to sort by.
      * @param sortAscending <code>true</code> if ascending. <code>false</code> if descending.
@@ -712,7 +703,7 @@ public class ShareUserRepositoryPage extends AbstractUtils
     /**
      * Open Repository Page: Top Level Assumes User is logged in
      * Opens repository in simple View
-     * 
+     *
      * @param driver WebDrone Instance
      * @return RepositoryPage
      */
@@ -769,11 +760,11 @@ public class ShareUserRepositoryPage extends AbstractUtils
 
         return ShareUserSitePage.getFileDirectoryInfo(drone, contentName).getNodeRef();
     }
-    
+
     /**
      * Assumes User is logged in
      * Selects the specified view for the open folder in repository
-     * 
+     *
      * @param driver WebDrone Instance
      * @param view ViewType
      * @return RepositoryPage
@@ -787,4 +778,42 @@ public class ShareUserRepositoryPage extends AbstractUtils
         return repositorypage;
     }
 
+    /**
+     * Helper method to create Transfer target
+     * @param drone
+     * @param folderName
+     * @param folderDesc
+     * @param companyHome
+     * @param userName
+     * @param password
+     * @param enabled
+     * @return FolderDetailsPage
+     * @throws Exception
+     */
+    public static FolderDetailsPage createTransferTarget(WebDrone drone, String folderName, String folderDesc, CompanyHome companyHome,
+        String userName, String password, boolean enabled) throws Exception
+    {
+        String addressWithPort = PageUtils.getAddress(replicationEndPointHost);
+        String [] splitted = addressWithPort.split(":");
+        String ipAddressOfTarget = splitted[0];
+        String portOfTarget = splitted[1];
+        String typeValue = drone.getValue("file.transfer.target");
+        RepositoryPage repositoryPage = createFolderInRepository(drone, folderName, folderDesc);
+        FolderDetailsPage folderDetailsPage = repositoryPage.getFileDirectoryInfo(folderName).selectViewFolderDetails();
+        folderDetailsPage.changeType(typeValue);
+        EditDocumentPropertiesPage editDocumentPropertiesPage = folderDetailsPage.selectEditProperties();
+        editDocumentPropertiesPage.setEndpointHost(ipAddressOfTarget);
+        editDocumentPropertiesPage.setEndpointPort(portOfTarget);
+        editDocumentPropertiesPage.setUserName(userName);
+        editDocumentPropertiesPage.setPassword(password);
+        SelectContentPage selectContentPage = editDocumentPropertiesPage.clickSelect();
+        selectContentPage.addItems(companyHome);
+        selectContentPage.selectOKButton();
+        if(enabled)
+        {
+            editDocumentPropertiesPage.selectTransferEnabled();
+        }
+        editDocumentPropertiesPage.clickSave();
+        return drone.getCurrentPage().render();
+    }
 }

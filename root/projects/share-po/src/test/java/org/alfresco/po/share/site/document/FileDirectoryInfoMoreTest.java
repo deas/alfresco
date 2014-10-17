@@ -91,7 +91,7 @@ public class FileDirectoryInfoMoreTest extends AbstractDocumentTest
         }
         drone.navigateTo(shareUrl);
         SiteUtil.createSite(drone, siteName, "description", "Public");
-        testSyncFailedFile = SiteUtil.prepareFile("SyncFailFile");
+        testSyncFailedFile = SiteUtil.prepareFile("1-SyncFailFile");
         googleTestFile = SiteUtil.prepareFile("googleTestFile");
     }
 

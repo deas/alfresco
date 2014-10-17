@@ -134,11 +134,22 @@ public final class FactoryShareDashlet
             {
                 return new TopSiteContributorDashlet(drone);
             }
+            if ("my-calendar".equalsIgnoreCase(name) || Dashlets.MY_CALENDAR.getDashletName().equalsIgnoreCase(name))
+            {
+                return new MyCalendarDashlet(drone);
+            }
+            if ("my-meeting-workspaces".equalsIgnoreCase(name) || Dashlets.MY_MEETING_WORKSPACES.getDashletName().equalsIgnoreCase(name))
+            {
+                return new MyMeetingWorkSpaceDashlet(drone);
+            }
             if ("adhoc-analyzer".equalsIgnoreCase(name))
             {
                 return new AdhocAnalyzerDashlet(drone);
             }
-
+            if ("my-profile".equalsIgnoreCase(name))
+            {
+                return new MyProfileDashlet(drone);
+            }
             throw new PageException(String.format("%s does not match any known dashlet name", name));
         }
         catch (NoSuchElementException ex)

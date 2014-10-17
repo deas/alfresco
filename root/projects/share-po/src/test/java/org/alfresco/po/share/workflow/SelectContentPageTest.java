@@ -150,6 +150,14 @@ public class SelectContentPageTest extends AbstractTest
     public void getAddedItems() throws Exception
     {
         SelectContentPage contentPage = newWorkflowPage.clickAddItems().render();
+        
+        Assert.assertTrue(contentPage.isOkButtonPresent());
+        Assert.assertTrue(contentPage.isCancelButtonPresent());
+        Assert.assertTrue(contentPage.isCompanyHomeButtonPresent());
+        List<String> elements = contentPage.getDirectoriesLeftPanel();
+        Assert.assertTrue(elements.contains("Data Dictionary") && elements.contains("Guest Home") && elements.contains("Imap Attachments")
+                && elements.contains("IMAP Home") && elements.contains("Shared") && elements.contains("Sites") && elements.contains("User Homes"));
+        
         Content content1 = new Content();
         content1.setName("Doc3");
         content1.setFolder(false);
@@ -203,6 +211,10 @@ public class SelectContentPageTest extends AbstractTest
         sites.add(site2);
         companyHome.setSites(sites);
         contentPage.addItems(companyHome);
+        
+        Assert.assertTrue(contentPage.isRemoveIconPresent(content1.getName()));
+        Assert.assertTrue(contentPage.isRemoveIconPresent(content2.getName()));
+        
         List<String> expectedItems = new ArrayList<String>();
         expectedItems.add(content1.getName());
         expectedItems.add(content2.getName());

@@ -15,14 +15,12 @@
 
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.openqa.selenium.By;
@@ -30,10 +28,13 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Edit in google docs page, holds all element of the HTML page relating to
  * share's edit document properties page.
- * 
+ *
  * @author Subashni Prasanna
  * @since 1.5
  */
@@ -43,6 +44,7 @@ public class EditInGoogleDocsPage extends SitePage
     private static final By BUTTON_DISCARD_CHANGES = By.cssSelector("button[id$='default-googledocs-discard-button']");
     private static final By BUTTON_BACK_TO_SHARE = By.cssSelector("button[id$='default-googledocs-back-button']");
     private static final By GOOGLEDOCS_FRAME = By.tagName("iframe");
+    @SuppressWarnings("unused")
     private static final By EDIT_GOOGLE_DOCS = By.cssSelector("span[class$='goog-inline-block kix-lineview-text-block']");
     private static final By GOOGLE_DOC_TITLE = By.cssSelector("div[id$='docs-title-inner']");
     private final String documentVersion;
@@ -65,9 +67,8 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Constructor used by SharePageFactory
-     * 
-     * @param drone {@link WebDrone}
-     * @param documentVersion String original document version
+     *
+     * @param drone           {@link WebDrone}
      */
     public EditInGoogleDocsPage(WebDrone drone)
     {
@@ -78,8 +79,8 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Constructor.
-     * 
-     * @param drone {@link WebDrone}
+     *
+     * @param drone           {@link WebDrone}
      * @param documentVersion String original document version
      */
     protected EditInGoogleDocsPage(WebDrone drone, final String documentVersion, Boolean isGoogleCreate)
@@ -93,42 +94,9 @@ public class EditInGoogleDocsPage extends SitePage
     @Override
     public EditInGoogleDocsPage render(RenderTime timer) throws PageRenderTimeException
     {
-        while (true)
-        {
-            timer.start();
-            synchronized (this)
-            {
-                try
-                {
-                    this.wait(200L);
-                }
-                catch (InterruptedException ite)
-                {
-                }
-            }
-            try
-            {
-                if (isSaveToAlfrescoVisible())
-                {
-                    if (isBackToSharevisible())
-                    {
-                        if (isDiscardChangesVisible())
-                        {
-                            if (isGoogleDocsIframeVisible())
-                            {
-                                // check for the iframe is loaded
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (NoSuchElementException nse)
-            {
-                // Keep waiting for it
-            }
-            timer.end();
-        }
+        basicRender(timer);
+//        elementRender(timer, getVisibleRenderElement(BUTTON_SAVE_TO_ALFRESCO), getVisibleRenderElement(BUTTON_DISCARD_CHANGES),
+//                getVisibleRenderElement(BUTTON_BACK_TO_SHARE), getVisibleRenderElement(GOOGLEDOCS_FRAME));
         return this;
     }
 
@@ -148,14 +116,14 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Verify if WebElement Save To Alfresco is visible.
-     * 
+     *
      * @return true if displayed
      */
     public boolean isSaveToAlfrescoVisible()
     {
         try
         {
-            return drone.find(BUTTON_SAVE_TO_ALFRESCO).isDisplayed();
+            return drone.findAndWait(BUTTON_SAVE_TO_ALFRESCO).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
@@ -165,14 +133,14 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Verify if WebElement Discard Changes is visible.
-     * 
+     *
      * @return true if displayed
      */
     public boolean isDiscardChangesVisible()
     {
         try
         {
-            return drone.find(BUTTON_DISCARD_CHANGES).isDisplayed();
+            return drone.findAndWait(BUTTON_DISCARD_CHANGES).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
@@ -180,15 +148,16 @@ public class EditInGoogleDocsPage extends SitePage
         }
     }
 
-/**
-	 * Verify if WebElement back to Share "<" visible.
-	 * @return true if displayed
-	 */
+    /**
+     * Verify if WebElement back to Share "<" visible.
+     *
+     * @return true if displayed
+     */
     public boolean isBackToSharevisible()
     {
         try
         {
-            return drone.find(BUTTON_BACK_TO_SHARE).isDisplayed();
+            return drone.findAndWait(BUTTON_BACK_TO_SHARE).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
@@ -196,15 +165,16 @@ public class EditInGoogleDocsPage extends SitePage
         }
     }
 
-/**
+    /**
      * Verify if WebElement back to Share "<" visible.
+     *
      * @return true if displayed
      */
     public boolean isGoogleDocsIframeVisible()
     {
         try
         {
-            String frameId = drone.find(GOOGLEDOCS_FRAME).getAttribute("id");
+            String frameId = drone.findAndWait(GOOGLEDOCS_FRAME).getAttribute("id");
             if (frameId != null)
             {
                 return true;
@@ -223,18 +193,18 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Select Discard Changes button.
-     * 
+     *
      * @return- GoogleDocsDiscardChanges
      */
     public GoogleDocsDiscardChanges selectDiscard()
     {
-        drone.find(BUTTON_DISCARD_CHANGES).click();
+        drone.findAndWait(BUTTON_DISCARD_CHANGES).click();
         return new GoogleDocsDiscardChanges(drone, isGoogleCreate);
     }
 
     /**
      * Selects the save to Alfresco button that triggers the form submit.
-     * 
+     *
      * @return - GoogleDocsUpdateFilePage
      */
     public HtmlPage selectSaveToAlfresco()
@@ -256,7 +226,7 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Selects the save to Alfresco button that triggers the form submit.
-     * 
+     *
      * @return - SharePage
      */
     public HtmlPage selectBackToShare()
@@ -274,7 +244,7 @@ public class EditInGoogleDocsPage extends SitePage
      */
     private void googledocsframe()
     {
-        String frameId = drone.find(GOOGLEDOCS_FRAME).getAttribute("id");
+        String frameId = drone.findAndWait(GOOGLEDOCS_FRAME).getAttribute("id");
         drone.switchToFrame(frameId);
     }
 
@@ -283,15 +253,24 @@ public class EditInGoogleDocsPage extends SitePage
      */
     public void edit(final String content)
     {
-        googledocsframe();
-        WebElement docHeader = drone.find(EDIT_GOOGLE_DOCS);
-        docHeader.sendKeys(content);
+
+        try
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                googledocsframe();
+            }
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        ((WebDroneImpl) drone).getDriver().findElements(By.xpath("//*")).get(0).sendKeys(content);
         drone.switchToDefaultContent();
     }
 
     /**
      * Rename the document inside Google Docs.
-     * 
+     *
      * @return- GoogleDocsRenamePage
      */
     public GoogleDocsRenamePage renameDocumentTitle()
@@ -310,7 +289,7 @@ public class EditInGoogleDocsPage extends SitePage
 
     /**
      * Title of the document inside Google Docs.
-     * 
+     *
      * @return- String
      */
     public String getDocumentTitle()

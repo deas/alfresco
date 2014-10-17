@@ -40,7 +40,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * This page does the selection of Destination, site and folderPath to Copy/Move the content.
- * 
+ *
  * @author cbairaajoni
  */
 public class CopyOrMoveContentPage extends ShareDialogue
@@ -48,31 +48,31 @@ public class CopyOrMoveContentPage extends ShareDialogue
     private static Log logger = LogFactory.getLog(CopyOrMoveContentPage.class);
 
     private final By folderPathElementId = By
-            .cssSelector("div[id$='default-copyMoveTo-treeview']>div.ygtvitem, div[id$='_default-ruleConfigAction-destinationDialog-treeview']>div.ygtvitem");
+        .cssSelector("div[id$='default-copyMoveTo-treeview']>div.ygtvitem, div[id$='_default-ruleConfigAction-destinationDialog-treeview']>div.ygtvitem");
     private final RenderElement footerElement = getVisibleRenderElement(By
-            .cssSelector("div[id$='default-copyMoveTo-wrapper'] div.bdft, div[id$='_default-ruleConfigAction-destinationDialog-wrapper'] div.bdft"));
+        .cssSelector("div[id$='default-copyMoveTo-wrapper'] div.bdft, div[id$='_default-ruleConfigAction-destinationDialog-wrapper'] div.bdft"));
     private final RenderElement headerElement = getVisibleRenderElement(By
-            .cssSelector("div[id$='default-copyMoveTo-title'], div[id$='_default-ruleConfigAction-destinationDialog-title']"));
-    private final By destinationListCss = By.cssSelector(".mode.flat-button>div>span>span>button");
+        .cssSelector("div[id$='default-copyMoveTo-title'], div[id$='_default-ruleConfigAction-destinationDialog-title']"));
+    private final By destinationListCss = By.cssSelector(".mode.flat-button>div>span[style*='block']>span>button");
     private final By siteListCss = By.cssSelector("div.site>div>div>a>h4");
     private final By defaultDocumentsFolderCss = By
-            .cssSelector("div.path>div[id$='default-copyMoveTo-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel,"
-                    + "div.path>div[id$='_default-ruleConfigAction-destinationDialog-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel");
+        .cssSelector("div.path>div[id$='default-copyMoveTo-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel,"
+            + "div.path>div[id$='_default-ruleConfigAction-destinationDialog-treeview']>div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable>tbody>tr>td>span.ygtvlabel");
     private final By folderItemsListCss = By.cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem>table.ygtvtable span.ygtvlabel");
     private final By selectedFolderItemsListCss = By
-            .cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem.selected>div.ygtvchildren>div.ygtvitem span.ygtvlabel");
+        .cssSelector("div.path div.ygtvitem>div.ygtvchildren>div.ygtvitem.selected>div.ygtvchildren>div.ygtvitem span.ygtvlabel");
     private final By copyMoveOkButtonCss = By
-            .cssSelector("button[id$='default-copyMoveTo-ok-button'], button[id$='_default-ruleConfigAction-destinationDialog-ok-button']");
+        .cssSelector("button[id$='default-copyMoveTo-ok-button'], button[id$='_default-ruleConfigAction-destinationDialog-ok-button']");
     private final By copyMoveCancelButtonCss = By
-            .cssSelector("button[id$='default-copyMoveTo-cancel-button'], button[id$='_default-ruleConfigAction-destinationDialog-cancel']");
+        .cssSelector("button[id$='default-copyMoveTo-cancel-button'], button[id$='_default-ruleConfigAction-destinationDialog-cancel']");
     private final By copyMoveDialogCloseButtonCss = By
-            .cssSelector("div[id$='default-copyMoveTo-dialog'] .container-close, div[id$='_default-ruleConfigAction-destinationDialog-dialog'] .container-close");
+        .cssSelector("div[id$='default-copyMoveTo-dialog'] .container-close, div[id$='_default-ruleConfigAction-destinationDialog-dialog'] .container-close");
     private final By copyMoveDialogTitleCss = By
-            .cssSelector("div[id$='default-copyMoveTo-title'], div[id$='_default-ruleConfigAction-destinationDialog-title']");
+        .cssSelector("div[id$='default-copyMoveTo-title'], div[id$='_default-ruleConfigAction-destinationDialog-title']");
 
     /**
      * Constructor.
-     * 
+     *
      * @param drone WebDriver to access page
      */
     public CopyOrMoveContentPage(WebDrone drone)
@@ -105,7 +105,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
 
     /**
      * This method returns the Copy/Move Dialog title.
-     * 
+     *
      * @return String
      */
 
@@ -129,7 +129,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
     /**
      * This method finds the list of destinations and return those as list of
      * string values.
-     * 
+     *
      * @return List<String>
      */
     public List<String> getDestinations()
@@ -155,7 +155,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
     /**
      * This method finds the list of sites and return those as list of
      * string values.
-     * 
+     *
      * @return List<String>
      */
     public List<String> getSites()
@@ -183,7 +183,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
     /**
      * This method finds the list of folders and return those as list of
      * string values.
-     * 
+     *
      * @return List<String>
      */
     public List<String> getFolders()
@@ -198,7 +198,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
             catch (TimeoutException e)
             {
             }
-            
+
             for (WebElement folder : drone.findAndWaitForElements(folderItemsListCss))
             {
                 folders.add(folder.getText());
@@ -215,8 +215,44 @@ public class CopyOrMoveContentPage extends ShareDialogue
     }
 
     /**
+     * This method verifies present or not Copy/Move button
+     *
+     * @return boolean
+     */
+    public boolean isOkButtonPresent()
+    {
+        try
+        {
+            return drone.find(copyMoveOkButtonCss).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("OK button is not present");
+        }
+        return false;
+    }
+
+    /**
+     * This method verifies present or not Cancel button
+     *
+     * @return boolean
+     */
+    public boolean isCancelButtonPresent()
+    {
+        try
+        {
+            return drone.find(copyMoveCancelButtonCss).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Cancel button is not present");
+        }
+        return false;
+    }
+
+    /**
      * This method finds the clicks on copy/move button.
-     * 
+     *
      * @return HtmlPage Document library page/ Repository Page
      */
     public HtmlPage selectOkButton()
@@ -273,7 +309,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
     /**
      * This method finds and selects the given destination name from the
      * displayed list of destinations.
-     * 
+     *
      * @param destination
      * @return CopyOrMoveContentPage
      */
@@ -297,7 +333,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
                             drone.waitForElement(siteListCss, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         }
                         else if ((destinationName.contains("Repository")) || (destinationName.contains("Shared Files"))
-                                || (destinationName.contains("My Files")))
+                            || (destinationName.contains("My Files")))
                         {
                             drone.waitForElement(folderPathElementId, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
                         }
@@ -321,7 +357,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
     /**
      * This method finds and selects the given site name from the
      * displayed list of sites.
-     * 
+     *
      * @param site
      * @return CopyOrMoveContentPage
      */
@@ -365,7 +401,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
     /**
      * This method finds and selects the given folder path from the displayed list
      * of folders.
-     * 
+     *
      * @param folderPath
      * @return CopyOrMoveContentPage
      */
@@ -412,7 +448,7 @@ public class CopyOrMoveContentPage extends ShareDialogue
                         try
                         {
                             if (!drone.findAndWait(By.xpath(String.format("//span[@class='ygtvlabel' and text()='%s']/../../../../..", folderName.getText())))
-                                    .getAttribute("class").contains("selected"))
+                                .getAttribute("class").contains("selected"))
                             {
                                 folderName.click();
                             }

@@ -1,0 +1,52 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="DataPrep fo 'search related tests' " verbose="1" preserve-order="true" parallel="tests" thread-count="5">
+    <groups>
+        <run>
+            <include name="DataPrep.*"/>
+            <exclude name="NonGrid"/>
+            <exclude name=".*Bug.*"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <test name="SearchBy tests">
+        <classes>
+            <class name="org.alfresco.share.peoplefinder.SearchByTests"/>
+        </classes>
+    </test>
+
+    <test name="Advance search tests">
+        <classes>
+            <class name="org.alfresco.share.search.AdvanceSearchTest"/>
+            <class name="org.alfresco.share.search.AdvanceSearchTest2"/>
+        </classes>
+    </test>
+
+    <test name="Basic search tests">
+        <classes>
+            <class name="org.alfresco.share.search.BasicSearchTest"/>
+        </classes>
+    </test>
+
+    <test name="Live search tests">
+        <classes>
+            <class name="org.alfresco.share.search.LiveSearchTest"/>
+        </classes>
+    </test>
+
+    <test name="Preview popup page tests">
+        <classes>
+            <class name="org.alfresco.share.search.PreviewPopUpPageTest"/>
+        </classes>
+    </test>
+
+    <test name="Sanity search tests">
+        <classes>
+            <class name="org.alfresco.share.sanity.SearchTest"/>
+        </classes>
+    </test>
+
+</suite>

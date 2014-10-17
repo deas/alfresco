@@ -18,6 +18,7 @@
  */
 package org.alfresco.po.share.search;
 
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.admin.ActionsSet;
 import org.alfresco.webdrone.HtmlPage;
 
@@ -86,22 +87,67 @@ public interface SearchResult
      
 	 HtmlPage clickDateLink();
 	 
-	 
 	 /**
       * Actions of search result item.
       * 
       * @return enum ActionSet
       */
 	 ActionsSet getActions();
-	 
-	 /**
-      * Select the Image link of the search result item.
-      * 
-      * @return PreViewPopUpPage if link found and selected
-      */
-	 
-	 PreViewPopUpPage clickImageLink();
 
-     
+    /**
+     * Method to click on content path in the details section
+     *
+     * @return SharePage
+     */
+    public SharePage clickContentPath();
+
+    /**
+     * Method to get thumbnail url
+     *
+     * @return String
+     */
+    public String getThumbnailUrl();
+
+    /**
+     * Method to get preview url
+     *
+     * @return String
+     */
+    public String getPreViewUrl();
+
+    /**
+     * Method to get thumbnail of element
+     *
+     * @return String
+     */
+    public String getThumbnail();
+
+    /**
+     * Method to click on View in Browser icon for the element
+     *
+     * @return String url
+     */
+    public String clickOnViewInBrowserIcon();
+
+    /**
+     * Method to click on Download icon for the element
+     */
+    public void clickOnDownloadIcon();
+
+    /**
+     * Select the site link of the search result item.
+     *
+     * @return true if link found and selected
+     */
+    HtmlPage clickSiteName();
+	 
+	/**
+     * Select the Image link of the search result item.
+     * 
+     * @return PreViewPopUpPage if link found and selected
+     */
+	PreViewPopUpPage clickImageLink();
+
+    PreViewPopUpImagePage clickImageLinkToPicture();
 
 }

@@ -31,7 +31,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Create content page object, Where user can create content.
- * 
+ *
  * @author Shan Nagarajan,Subashni Prasanna
  * @since 1.6.1
  */
@@ -80,11 +80,11 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Create the content with name, title and description.
-     * 
-     * @param name - The Name of the Document
-     * @param title - The Title of the Document
+     *
+     * @param name        - The Name of the Document
+     * @param title       - The Title of the Document
      * @param description - Description
-     * @param details - Document Content
+     * @param details     - Document Content
      * @return {@link DocumentDetailsPage}
      */
     public HtmlPage create(ContentDetails details)
@@ -95,7 +95,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
         }
 
         createContent(details);
-        WebElement createButton = drone.find(SUBMIT_BUTTON);
+        WebElement createButton = drone.findAndWait(SUBMIT_BUTTON);
         String id = createButton.getAttribute("id");
         createButton.click();
         drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
@@ -107,7 +107,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
      * Create the content with name, title and description. Checks the form fields for validation messages.
      * If there are any it does not save the form but returns it. If there are no validation messages it
      * saves the form and returns {@link CreatePlainTextContentPage}.
-     * 
+     *
      * @param details A ContentDetails object containing name, title description and content. The name field is mandatory.
      * @return If there are no validation messages {@link DocumentDetailsPage}, otherwise {@link CreatePlainTextContentPage}
      */
@@ -127,17 +127,16 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
         if (!validationPresent)
         {
-            WebElement createButton = drone.find(SUBMIT_BUTTON);
-            String id = createButton.getAttribute("id");
+            WebElement createButton = drone.findAndWait(SUBMIT_BUTTON);
             createButton.click();
-            drone.waitUntilElementDisappears(By.id(id), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitUntilElementDisappears(SUBMIT_BUTTON, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         }
         return FactorySharePage.resolvePage(drone);
     }
 
     /**
      * Cancel button interaction on the form
-     * 
+     *
      * @return {@link DocumentLibraryPage}
      */
     public DocumentLibraryPage cancel(ContentDetails details)
@@ -150,7 +149,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Click the Cancel button without completing the form
-     * 
+     *
      * @return
      */
     public HtmlPage cancel()
@@ -170,14 +169,14 @@ public class CreatePlainTextContentPage extends InlineEditPage
                 nameElement.clear();
                 nameElement.sendKeys(details.getName());
             }
-    
+
             if (details.getTitle() != null)
             {
                 WebElement titleElement = drone.find(TITLE);
                 titleElement.clear();
                 titleElement.sendKeys(details.getTitle());
             }
-    
+
             if (details.getDescription() != null)
             {
                 WebElement descriptionElement = drone.find(DESCRIPTION);
@@ -200,7 +199,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Returns the validation message, if any, for the given Field.
-     * 
+     *
      * @param field The reqired field
      * @return The validation message or an empty string if there is no message.
      */
@@ -244,7 +243,7 @@ public class CreatePlainTextContentPage extends InlineEditPage
 
     /**
      * Returns a map of validation messages for all the fields in the form.
-     * 
+     *
      * @param field The reqired field
      * @return The validation message or an empty string if there is no message.
      */

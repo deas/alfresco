@@ -32,10 +32,11 @@ public class ShareUtil
     private static final String ADMIN_SYSTEMSUMMARY_PAGE = "alfresco/service/enterprise/admin";
     private static final String BULK_IMPORT_PAGE = "alfresco/service/bulkfsimport";
     private static final String BULK_IMPORT_IN_PLACE_PAGE = "alfresco/service/bulkfsimport/inplace";
+    private static final String WEB_SCRIPTs_PAGE = "alfresco/service/index";
 
     /**
      * A simple Enum to request the required Alfresco version.
-     * 
+     *
      * @author Jamal Kaabi-Mofrad
      */
     public static enum RequiredAlfrescoVersion
@@ -54,7 +55,7 @@ public class ShareUtil
 
     /**
      * Logs user into share.
-     * 
+     *
      * @param drone {@link WebDrone}
      * @param url Share url
      * @param userInfo username and password
@@ -86,7 +87,7 @@ public class ShareUtil
     /**
      * A helper method to check the current running Alfresco version against the
      * required version.
-     * 
+     *
      * @param alfrescoVersion the currently running Alfresco version
      * @param requiredVersion the required version (CLOUD_ONLY |
      *            ENTERPRISE_ONLY)
@@ -123,7 +124,6 @@ public class ShareUtil
      */
     public static HtmlPage navigateToSystemSummary(final WebDrone drone, String url, final String... userInfo)
     {
-//        String url = drone.getCurrentUrl();
         String protocolVar = PageUtils.getProtocol(url);
         String consoleUrlVar = PageUtils.getAddress(url);
         String systemUrl = String.format("%s%s:%s@%s/" + ADMIN_SYSTEMSUMMARY_PAGE, protocolVar, userInfo[0], userInfo[1], consoleUrlVar);
@@ -140,7 +140,7 @@ public class ShareUtil
 
     /**
      * Methods for navigation bulk import page
-     * 
+     *
      * @param drone
      * @param inPlace
      * @param userInfo
@@ -176,4 +176,25 @@ public class ShareUtil
         }
         return drone.getCurrentPage().render();
     }
+
+    public static HtmlPage navigateToWebScriptsHome(final WebDrone drone, final String... userInfo)
+    {
+        String currentUrl = drone.getCurrentUrl();
+        String protocolVar = PageUtils.getProtocol(currentUrl);
+        String consoleUrlVar = PageUtils.getAddress(currentUrl);
+        currentUrl = String.format("%s%s:%s@%s/" + WEB_SCRIPTs_PAGE, protocolVar, userInfo[0], userInfo[1], consoleUrlVar);
+        try {
+            drone.navigateTo(currentUrl);
+
+        } catch (Exception e) {
+
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("Following exception was occurred" + e + ". Param currentUrl was " + currentUrl);
+            }
+        }
+        return drone.getCurrentPage().render();
+    }
+
+
 }

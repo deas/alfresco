@@ -13,10 +13,12 @@ import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.exception.PageOperationException;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.util.Calendar;
@@ -25,10 +27,11 @@ import java.util.List;
 /**
  * @author Sergey Kardash
  */
+@Listeners(FailedTestListener.class)
 public class CalendarClusterTest extends AbstractUtils
 {
 
-    private static Log logger = LogFactory.getLog(DocLibClusterTest.class);
+    private static Log logger = LogFactory.getLog(CalendarClusterTest.class);
     private static String node1Url;
     private static String node2Url;
     private String testUser;
@@ -72,7 +75,7 @@ public class CalendarClusterTest extends AbstractUtils
          */
         SystemSummaryPage sysSummaryPage = ShareUtil.navigateToSystemSummary(drone, shareUrl, ADMIN_USERNAME, ADMIN_PASSWORD).render();
 
-        RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering);
+        RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering).render();
 
         Assert.assertTrue(clusteringPage.isClusterEnabled(), "Cluster isn't enabled");
 
@@ -89,7 +92,7 @@ public class CalendarClusterTest extends AbstractUtils
     }
 
     /**
-     * Test - Enterprise40x_10115: Creating event
+     * Test - AONE_9211: Creating event
      * <ul>
      * <li>2 servers are working in cluster</li>
      * <li>Admin is logged in to the Share at server A</li>
@@ -100,7 +103,7 @@ public class CalendarClusterTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3155() throws Exception
+    public void AONE_15192() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String event = "event_" + getRandomString(5);
@@ -144,7 +147,7 @@ public class CalendarClusterTest extends AbstractUtils
     }
 
     /**
-     * Test - Enterprise40x_10116: Editing event
+     * Test - AONE_9212: Editing event
      * <ul>
      * <li>2 servers are working in cluster</li>
      * <li>Admin is logged in to the Share at server A</li>
@@ -156,7 +159,7 @@ public class CalendarClusterTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3156() throws Exception
+    public void AONE_15193() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String event = "event_" + getRandomString(5);
@@ -225,7 +228,7 @@ public class CalendarClusterTest extends AbstractUtils
     }
 
     /**
-     * Test - Enterprise40x_10117: Deleting event
+     * Test - AONE_9213: Deleting event
      * <ul>
      * <li>2 servers are working in cluster</li>
      * <li>Admin is logged in to the Share at server A</li>
@@ -237,7 +240,7 @@ public class CalendarClusterTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3157() throws Exception
+    public void AONE_15194() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String event = "event_" + getRandomString(5);
@@ -289,7 +292,7 @@ public class CalendarClusterTest extends AbstractUtils
     }
 
     /**
-     * Test - Enterprise40x_10118: Create all-day event
+     * Test - AONE_9214: Create all-day event
      * <ul>
      * <li>2 servers are working in cluster</li>
      * <li>Admin is logged in to the Share at server A</li>
@@ -300,7 +303,7 @@ public class CalendarClusterTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3158() throws Exception
+    public void AONE_15195() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String event = "event_" + getRandomString(5);
@@ -344,7 +347,7 @@ public class CalendarClusterTest extends AbstractUtils
     }
 
     /**
-     * Test - Enterprise40x_10119: Create several days duration event
+     * Test - AONE_9215: Create several days duration event
      * <ul>
      * <li>2 servers are working in cluster</li>
      * <li>Admin is logged in to the Share at server A</li>
@@ -355,7 +358,7 @@ public class CalendarClusterTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_3159() throws Exception
+    public void AONE_15196() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
         String event = "event_" + getRandomString(5);

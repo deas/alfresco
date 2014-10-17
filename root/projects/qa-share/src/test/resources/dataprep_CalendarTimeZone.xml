@@ -1,0 +1,32 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true" parallel="tests"
+	thread-count="1">
+
+	<groups>
+		<run>
+			<include name="DataPrep.*" />
+			<exclude name="Enterprise.*" />
+			<exclude name="NonGrid" />
+		</run>
+	</groups>
+
+	<listeners>
+		<listener
+			class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+	</listeners>
+
+
+	<test name="MyActivitiesDashletTests" verbose="1">
+		<classes>
+			<class
+				name="org.alfresco.share.mydashboard.myactivities.MyActivitiesDashletTests" />
+		</classes>
+	</test>
+	<test name="AccessSharedDocumentTest" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.site.document.AccessSharedDocumentTest" />
+		</classes>
+	</test>
+
+
+</suite>

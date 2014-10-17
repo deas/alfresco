@@ -15,9 +15,8 @@
 
 package org.alfresco.po.share.dashlet.mydiscussions;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.site.discussions.DiscussionsPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -27,9 +26,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 /**
  * Class that represents Delete Topic Dialog Popup
- * 
+ *
  * @author jcule
  */
 public class DeleteTopicDialogPage extends SharePage
@@ -71,13 +72,14 @@ public class DeleteTopicDialogPage extends SharePage
     /**
      * Clicks on topic delete button
      */
-    public TopicsListPage clickOnDeleteButton()
+    public DiscussionsPage clickOnDeleteButton()
     {
         try
         {
             WebElement deleteButton = drone.findAndWait(By.xpath(DELETE_BUTTON));
             deleteButton.click();
-            return new TopicsListPage(drone);
+            waitUntilAlert();
+            return drone.getCurrentPage().render();
         }
         catch (TimeoutException te)
         {

@@ -3,11 +3,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.List;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.exception.AlfrescoVersionException;
@@ -20,12 +15,12 @@ import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Abstract of an Gallery/FilmStrip view of FileDirectoryInfo.
@@ -37,6 +32,7 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     private static Log logger = LogFactory.getLog(FilmStripOrGalleryView.class);
     protected String TAG_INFO = "//div[@class='detail']/span[@class='insitu-edit']/../span[@class='item']";
     protected String TAG_ICON = "//h3/span/a[text()='%s']/../../../../../../../div/div[starts-with(@class,'alf-detail')]/div/div/div/span[@title='Tag']";
+    protected static final String MODIFIED_F = "//div/span[contains(text(),'Modified')]";
 
     public FilmStripOrGalleryView(String nodeRef, WebElement webElement, WebDrone drone)
     {
@@ -888,7 +884,12 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
     public boolean isShareLinkVisible()
     {
         clickInfoIcon(false);
-        return super.isShareLinkVisible();
+        boolean shareLinkVisible = super.isShareLinkVisible();//findFirstDisplayedElement
+        WebElement element = drone.find(By.xpath("//div[@class='alf-detail-thumbnail']/../../.."));
+        String id = element.getAttribute("id");
+        drone.mouseOverOnElement(drone.findAndWait(By.cssSelector("button[id$='default-fileSelect-button-button']")));
+        drone.waitUntilElementDisappears(By.id(id), 30);
+        return shareLinkVisible; 
     }
 
     /*
@@ -1061,4 +1062,38 @@ public abstract class FilmStripOrGalleryView extends FileDirectoryInfoImpl
         }
         super.enterTagString(tagName);
     }
+
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface.isGeoLocationIconDisplayed()
+     */
+    @Override
+    public boolean isGeoLocationIconDisplayed()
+    {
+        clickInfoIcon(false);
+        boolean geoLocation = super.isGeoLocationIconDisplayed();
+        WebElement element = drone.findFirstDisplayedElement(DETAIL_WINDOW);
+        String id = element.getAttribute("id");
+        focusOnDocLibFooter();
+        drone.waitUntilElementDisappears(By.id(id), 30);
+        return geoLocation;
+    }
+
+    /*
+    * (non-Javadoc)
+    * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface.isEXIFIconDisplayed()
+    */
+    @Override
+    public boolean isEXIFIconDisplayed()
+    {
+        clickInfoIcon(false);
+        boolean exifIcon = super.isEXIFIconDisplayed();
+        WebElement element = drone.findFirstDisplayedElement(DETAIL_WINDOW);
+        String id = element.getAttribute("id");
+        focusOnDocLibFooter();
+        drone.waitUntilElementDisappears(By.id(id), 30);
+        return exifIcon;
+    }
+
+
 }

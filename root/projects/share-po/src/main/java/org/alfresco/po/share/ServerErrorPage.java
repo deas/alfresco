@@ -30,8 +30,8 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
  */
 public class ServerErrorPage extends SharePage
 {
-    private static final By RETURN_LINK = By.xpath("html/body/div[1]/a[@href='/share']");
-    private static final By ERROR_MESSAGE = By.xpath("html/body/div[1]/p[text()='A server error has occured.']");
+    private static final By RETURN_LINK = By.xpath("//a[@href='/share']");
+    private static final By ERROR_MESSAGE = By.xpath("//p[text()='A server error has occurred.']");
 
     public ServerErrorPage(WebDrone drone)
     {

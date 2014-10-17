@@ -18,11 +18,6 @@
  */
 package org.alfresco.share.sanity;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.util.Date;
-
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -38,6 +33,11 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.Date;
+
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * Class includes: Tests from TestLink in Area: Sanity Tests
@@ -78,7 +78,7 @@ public class SiteSearchSanityTest extends AbstractUtils
     }
 
     /**
-     * Enterprise40x-6548:Search for Sites
+     * AONE-7633:Search for Sites
      * <ul>
      * <li>Create any PUBLIC site from Sites menu</li>
      * <li>Create any MODERATED site from Sites menu</li>
@@ -92,7 +92,7 @@ public class SiteSearchSanityTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Sanity")
-    public void enterprise_6548() throws Exception
+    public void AONE_7633() throws Exception
     {
 
         testName = getTestName();

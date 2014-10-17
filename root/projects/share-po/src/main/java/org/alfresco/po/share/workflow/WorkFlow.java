@@ -14,12 +14,12 @@ package org.alfresco.po.share.workflow;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 
 /**
  * A WorkFlow interface.
- * 
+ *
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
@@ -27,7 +27,7 @@ public interface WorkFlow extends HtmlPage
 {
     /**
      * Gets workflow subpage in the WorkFlow view.
-     * 
+     *
      * @param formDetails
      * @return HtmlPage page object
      * @throws Exception
@@ -36,28 +36,26 @@ public interface WorkFlow extends HtmlPage
 
     /**
      * Enters message in the message box.
-     * 
+     *
      * @param messageString
      */
     void enterMessageText(String messageString);
 
     /**
      * Clicks on Select button for selecting reviewers
-     * 
-     * @param messageString
      */
     AssignmentPage selectReviewer();
 
     /**
      * Enters due date in the date box.
-     * 
+     *
      * @param date
      */
     void enterDueDateText(String date);
 
     /**
      * Cancels creation of the workflow.
-     * 
+     *
      * @param formDetails
      * @return HtmlPage page object
      * @throws Exception

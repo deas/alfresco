@@ -87,7 +87,7 @@ public class CloudSignInPageTest extends AbstractTest
     {
         cloudSignInPage.selectFogotPassordLink();
         switchWindow();
-        assertTrue(drone.getTitle().contains("Login"), "Title not matched. Was found to be - " + drone.getTitle());
+        assertTrue(drone.getTitle().contains("Forgot Password"), "Title not matched. Was found to be - " + drone.getTitle());
         closeWindowAndSwitchBack();
     }
 
@@ -116,7 +116,7 @@ public class CloudSignInPageTest extends AbstractTest
     {
         Assert.assertEquals(cloudSignInPage.getPageTitle(), "Sign in to Alfresco in the cloud");
         Assert.assertTrue(cloudSignInPage.isForgotPasswordLinkDisplayed());
-        Assert.assertEquals(cloudSignInPage.getForgotPasswordURL(), "http://my.alfresco.com/share/page/forgot-password");
+        Assert.assertEquals(cloudSignInPage.getForgotPasswordURL(), "https://my.alfresco.com/share/page/forgot-password");
  }
 
     /**

@@ -19,35 +19,24 @@
 
 package org.alfresco.share.repository;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.enums.ViewType;
-import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.LibraryOption;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.site.document.TreeMenuNavigation;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.TreeMenuNavigation.DocumentsMenu;
 import org.alfresco.po.share.site.document.TreeMenuNavigation.TreeMenu;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserRepositoryPage;
-import org.alfresco.share.util.ShareUserSitePage;
+import org.alfresco.share.util.*;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * Repository Tests
@@ -74,13 +63,13 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5349() throws Exception
+    public void dataPrep_AONE_3487() throws Exception
     {
         // NA
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5349() throws Exception
+    public void AONE_3487() throws Exception
     {
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
@@ -131,7 +120,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5350() throws Exception
+    public void dataPrep_AONE_3488() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -144,7 +133,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5350() throws Exception
+    public void AONE_3488() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -182,7 +171,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5351() throws Exception
+    public void dataPrep_AONE_3489() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -195,7 +184,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5351() throws Exception
+    public void AONE_3489() throws Exception
     {
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
@@ -264,7 +253,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5352() throws Exception
+    public void dataPrep_AONE_3490() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -338,7 +327,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5352() throws Exception
+    public void AONE_3490() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -363,7 +352,7 @@ public class RepositoryBrowserTests extends AbstractUtils
    }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5353() throws Exception
+    public void dataPrep_AONE_3491() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -401,7 +390,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5353() throws Exception
+    public void AONE_3491() throws Exception
     {
         String testName = getTestName();
 
@@ -439,7 +428,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5360() throws Exception
+    public void dataPrep_AONE_3498() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -452,7 +441,7 @@ public class RepositoryBrowserTests extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5360() throws Exception
+    public void AONE_3498() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);

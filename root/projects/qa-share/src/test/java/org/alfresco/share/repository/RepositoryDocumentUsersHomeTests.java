@@ -17,37 +17,23 @@
  */
 package org.alfresco.share.repository;
 
-import static org.alfresco.po.share.site.document.Categories.LANGUAGES;
-import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
+import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.site.document.*;
+import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
+import org.alfresco.share.util.*;
+import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
+import org.apache.log4j.Logger;
+import org.testng.Assert;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.po.share.RepositoryPage;
-import org.alfresco.po.share.site.document.Categories;
-import org.alfresco.po.share.site.document.CategoryPage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.DocumentAspect;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
-import org.alfresco.po.share.site.document.TagPage;
-import org.alfresco.share.util.*;
-import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.testng.listener.FailedTestListener;
-import org.apache.log4j.Logger;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import static org.alfresco.po.share.site.document.Categories.LANGUAGES;
+import static org.alfresco.po.share.site.document.DocumentAspect.CLASSIFIABLE;
 
 /**
  * Test case to test User Homes from repository page. 
@@ -134,7 +120,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5461() throws Exception
+    public void AONE_3608() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -178,7 +164,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
 
     @SuppressWarnings("unchecked")
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5462() throws Exception
+    public void AONE_3609() throws Exception
     {
 
         // Upload file to test folder
@@ -210,6 +196,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         categories.add(LANGUAGES);
         EditDocumentPropertiesPage editDocumentProperties = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = editDocumentProperties.getCategory().render();
+        // TODO: change to non deprecated method
         categoryPage.add(categories).render();
         editDocumentProperties = categoryPage.clickOk().render();
         detailsPage = editDocumentProperties.selectSave().render();
@@ -233,7 +220,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5463() throws Exception
+    public void AONE_3610() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -264,6 +251,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         categories.add(LANGUAGES);
         EditDocumentPropertiesPage editDocumentProperties = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = editDocumentProperties.getCategory().render();
+        // TODO: change to non deprecated method
         categoryPage.add(categories).render();
         editDocumentProperties = categoryPage.clickOk().render();
         editDocumentProperties.clickOnCancel();
@@ -285,7 +273,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
 
     @SuppressWarnings("unchecked")
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5464() throws Exception
+    public void AONE_3611() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -314,6 +302,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         editDocumentProperties.setName(newFileName);
         editDocumentProperties.setDocumentTitle(newTitle);
         editDocumentProperties.setDescription(newDescription);
+        // TODO: change to non deprecated method
         editDocumentProperties.selectMimeType(mimeType);
         editDocumentProperties.setAuthor(newAuthor);
         TagPage tagPage = editDocumentProperties.getTag().render();
@@ -331,6 +320,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
         detailsPage = aspectsPage.clickApplyChanges().render();
         editDocumentProperties = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = editDocumentProperties.getCategory().render();
+        // TODO: change to non deprecated method
         categoryPage.add(categories).render();
         editDocumentProperties = categoryPage.clickOk().render();
         detailsPage = editDocumentProperties.selectSave().render();
@@ -364,7 +354,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
 
     @SuppressWarnings("unchecked")
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5465() throws Exception
+    public void AONE_3612() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -445,7 +435,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5466() throws Exception
+    public void AONE_3613() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -484,7 +474,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome", "SharePOBug" })
-    public void enterprise40x_5467() throws Exception
+    public void AONE_3614() throws Exception
     {
         // upload file to repository
         File sampleFile = SiteUtil.prepareFile();
@@ -538,7 +528,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome", "SharePOBug" })
-    public void enterprise40x_5468() throws Exception
+    public void AONE_3615() throws Exception
     {
 
         // upload file to repository
@@ -581,7 +571,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome" , "SharePOBug"})
-    public void enterprise40x_5469() throws Exception
+    public void AONE_3616() throws Exception
     {
 
         // upload file to repository
@@ -632,7 +622,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome", "SharePOBug"  })
-    public void enterprise40x_5470() throws Exception
+    public void AONE_3617() throws Exception
     {
 
         // upload file to repository
@@ -673,7 +663,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_5471() throws Exception
+    public void AONE_3618() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -705,7 +695,7 @@ public class RepositoryDocumentUsersHomeTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentUsersHome" })
-    public void enterprise40x_8471() throws Exception
+    public void AONE_3619() throws Exception
     {
         // upload .js file to Data Dictionary/Web Scripts Extensions
         File sampleFile = SiteUtil.prepareFile();

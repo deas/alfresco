@@ -14,24 +14,20 @@
  */
 package org.alfresco.po.share.search;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.admin.ActionsSet;
+import org.alfresco.po.share.exception.ShareException;
+import org.alfresco.po.share.site.SitePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.WebElement;
+
+import java.util.*;
 
 /**
  * Holds the information of a search result item.
@@ -47,6 +43,7 @@ public class SearchResultItem implements SearchResult
     private static final String ITEM_NAME_CSS_HOLDER = "div.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a";
     private static final String DOWNLOAD_LINK = "div>a>img[title='Download']";
     private static final String THUMBNAIL_LINK = "div.thumbnail-cell";    
+    private static final String THUMBNAIL_IMG = " span a img";
     private static final String VIEW_IN_BROWSER_LINK = "a>img[title='View In Browser']";
     private static final String FOLDER_CSS = "img[src$='folder.png']";
     private static final String FOLDER_PATH_CSS = "a";
@@ -55,9 +52,9 @@ public class SearchResultItem implements SearchResult
     private static final String SITE = "div.siteCell span.inner";
     private static final String IMAGE = "tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell img";
 
-   
     private WebElement webElement;
     private String title;
+    private String thumbnail;
 
     /**
      * Constructor
@@ -319,8 +316,92 @@ public class SearchResultItem implements SearchResult
         WebElement link = webElement.findElement(By.cssSelector(IMAGE));
         link.click();
         return new PreViewPopUpPage(drone);
-    }   
+    }
 
-    
+    @Override
+    public PreViewPopUpImagePage clickImageLinkToPicture()
+    {
+        WebElement link = webElement.findElement(By.cssSelector(IMAGE));
+        link.click();
+        return new PreViewPopUpImagePage(drone);
+    }
 
-   }
+    /**
+     * Method to click on content path in the details section
+     *
+     * @return SharePage
+     */
+    public SharePage clickContentPath()
+    {
+        List<WebElement> details = webElement.findElements(By.cssSelector(CONTENT_DETAILS_CSS + " a"));
+        for (WebElement detail : details)
+        {
+            if (detail.getAttribute("href").contains("path"))
+            {
+                detail.click();
+            }
+        }
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method to click Site name in the details section
+     *
+     * @return SitePage
+     */
+    public SitePage clickSiteName()
+    {
+        List<WebElement> details = webElement.findElements(By.cssSelector(CONTENT_DETAILS_CSS + " a"));
+        for (WebElement detail : details)
+        {
+            if (detail.getAttribute("href").contains("site"))
+            {
+                detail.click();
+                break;
+            }
+        }
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method to get thumbnail url
+     *
+     * @return String
+     */
+    public String getThumbnailUrl()
+    {
+        try
+        {
+            String urlDocLib = webElement.findElement(By.cssSelector(THUMBNAIL_LINK + THUMBNAIL_IMG)).getAttribute("src");
+            String urlImgPreview = urlDocLib.replace("doclib", "imgpreview");
+            return urlImgPreview;
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find the thumbnail");
+        }
+    }
+
+    /**
+     * Method to get preview url
+     *
+     * @return String
+     */
+    public String getPreViewUrl()
+    {
+        try
+        {
+            return drone.findAndWait(By.cssSelector(THUMBNAIL_LINK + THUMBNAIL_IMG)).getAttribute("src");
+        }
+        catch (TimeoutException ex)
+        {
+            throw new ShareException("Exceeded time to find the preView img", ex);
+        }
+    }
+
+    public String getThumbnail()
+    {
+        return thumbnail;
+    }
+	
+}

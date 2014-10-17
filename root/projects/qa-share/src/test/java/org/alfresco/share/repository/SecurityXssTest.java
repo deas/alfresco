@@ -59,14 +59,12 @@ import org.testng.annotations.Test;
 
 /**
  * Repository tests for XSS handling
- * 
+ *
  * @author Jamie Allison
- * 
  * @since 4.3
  */
 @Listeners(FailedTestListener.class)
-public class SecurityXssTest extends AbstractUtils
-{
+public class SecurityXssTest extends AbstractUtils {
     private static Log logger = LogFactory.getLog(SecurityXssTest.class);
 
     private static final String XSS_STRING_1 = "<IMG \"\"\"><SCRIPT>alert(\"test\")</SCRIPT>\">";
@@ -80,17 +78,15 @@ public class SecurityXssTest extends AbstractUtils
 
     @Override
     @BeforeClass(alwaysRun = true)
-    public void setup() throws Exception
-    {
+    public void setup() throws Exception {
         super.setup();
         testName = this.getClass().getSimpleName();
         testUser = testName + "@" + DOMAIN_FREE;
         logger.info("Starting Tests: " + testName);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5361() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3504() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -102,8 +98,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5361() throws Exception
-    {
+    public void AONE_3504() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
@@ -112,7 +107,7 @@ public class SecurityXssTest extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ContentDetails contentDetails =  new ContentDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(XSS_STRING_1);
         contentDetails.setTitle(XSS_STRING_2);
         contentDetails.setDescription(XSS_STRING_3);
@@ -142,9 +137,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(editDocPropsPage.getDocumentTitle(), contentDetails.getTitle());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5362() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3505() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -156,8 +150,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5362() throws Exception
-    {
+    public void AONE_3505() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
@@ -166,7 +159,7 @@ public class SecurityXssTest extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ContentDetails contentDetails =  new ContentDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(XSS_STRING_2);
         contentDetails.setTitle(XSS_STRING_3);
         contentDetails.setDescription(XSS_STRING_4);
@@ -195,9 +188,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(editDocPropsPage.getDocumentTitle(), contentDetails.getTitle());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5363() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3506() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -209,8 +201,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5363() throws Exception
-    {
+    public void AONE_3506() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
@@ -219,7 +210,7 @@ public class SecurityXssTest extends AbstractUtils
 
         RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ContentDetails contentDetails =  new ContentDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(XSS_STRING_3);
         contentDetails.setTitle(XSS_STRING_4);
         contentDetails.setDescription(XSS_STRING_5);
@@ -248,9 +239,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(editDocPropsPage.getDocumentTitle(), contentDetails.getTitle());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5364() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3507() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -261,8 +251,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5364() throws Exception
-    {
+    public void AONE_3507() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String subFolderName = getFolderName(testName) + System.currentTimeMillis();
@@ -288,9 +277,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(editDocPropsPage.getDocumentTitle(), title);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5365() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3508() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -301,8 +289,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5365() throws Exception
-    {
+    public void AONE_3508() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String subFolderName = getFolderName(testName) + System.currentTimeMillis();
@@ -332,9 +319,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(editProps.getDescription(), XSS_STRING_2);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5366() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3509() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -345,8 +331,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5366() throws Exception
-    {
+    public void AONE_3509() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
@@ -384,9 +369,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(editProps.getAuthor(), XSS_STRING_2);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5367() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3510() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -397,8 +381,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5367() throws Exception
-    {
+    public void AONE_3510() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String subFolderName = getFolderName(testName) + System.currentTimeMillis();
@@ -426,9 +409,8 @@ public class SecurityXssTest extends AbstractUtils
         assertTrue(comments.contains(XSS_STRING_5), "Comment missing: " + XSS_STRING_5);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5368() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3511() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -439,8 +421,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5368() throws Exception
-    {
+    public void AONE_3511() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFolderName(testName) + System.currentTimeMillis();
@@ -449,7 +430,7 @@ public class SecurityXssTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ContentDetails contentDetails =  new ContentDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(fileName);
         contentDetails.setTitle(fileName);
         contentDetails.setDescription(fileName);
@@ -473,9 +454,8 @@ public class SecurityXssTest extends AbstractUtils
         assertTrue(comments.contains(XSS_STRING_5), "Comment missing: " + XSS_STRING_5);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5369() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3512() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -486,8 +466,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5369() throws Exception
-    {
+    public void AONE_3512() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
@@ -496,7 +475,7 @@ public class SecurityXssTest extends AbstractUtils
 
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
 
-        ContentDetails contentDetails =  new ContentDetails();
+        ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(fileName);
         contentDetails.setTitle(fileName);
         contentDetails.setDescription(fileName);
@@ -510,7 +489,7 @@ public class SecurityXssTest extends AbstractUtils
         contentDetails.setContent(XSS_STRING_1);
 
         InlineEditPage inlineEditPage = ShareUserRepositoryPage.editTextDocumentInLine(drone, fileName, contentDetails).render();
-        EditTextDocumentPage editTextDocumentPage = (EditTextDocumentPage)inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
+        EditTextDocumentPage editTextDocumentPage = (EditTextDocumentPage) inlineEditPage.getInlineEditDocumentPage(MimeType.TEXT).render();
 
         Map<CreatePlainTextContentPage.Fields, String> messages = editTextDocumentPage.getMessages();
 
@@ -532,9 +511,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(details.getContent(), contentDetails.getContent());
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5370() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3513() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -545,11 +523,11 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5370() throws Exception
-    {
+    public void AONE_3513() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
+        String[] xss_strings = {XSS_STRING_1, XSS_STRING_2, XSS_STRING_3, XSS_STRING_4, XSS_STRING_5};
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
@@ -569,18 +547,21 @@ public class SecurityXssTest extends AbstractUtils
 
         AssignmentPage assignPage = workFlow.selectReviewer().render();
 
-        assignPage.searchForUser(XSS_STRING_1);
+        for (String xss_string : xss_strings)
+        {
+            assignPage.searchForUser(xss_string);
 
-        String content = assignPage.getContent();
+            String content = assignPage.getContent();
 
-        assertEquals(content, "No items found");
+            assertEquals(content, "No items found");
+        }
+
 
         assertTrue(assignPage.isUserFound(ADMIN_USERNAME));
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5371() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3514() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -591,8 +572,7 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5371() throws Exception
-    {
+    public void AONE_3514() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
@@ -625,9 +605,8 @@ public class SecurityXssTest extends AbstractUtils
         assertEquals(detailsPage.getCommentsOfLastCommit(), XSS_STRING_5);
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5372() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3515() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -638,11 +617,11 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5372() throws Exception
-    {
+    public void AONE_3515() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String subFolderName = getFolderName(testName) + System.currentTimeMillis();
+        String[] xss_strings = {XSS_STRING_1, XSS_STRING_2, XSS_STRING_3, XSS_STRING_4, XSS_STRING_5};
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
@@ -654,15 +633,17 @@ public class SecurityXssTest extends AbstractUtils
         DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, subFolderName);
         EditDocumentPropertiesPage editProps = detailsPage.selectEditProperties().render();
         TagPage tagPage = editProps.getTag().render();
+        for (String xss_string : xss_strings)
+        {
+            SharePopup shareErrorPopup = tagPage.enterTagValue(xss_string).render();
 
-        SharePopup shareErrorPopup = tagPage.enterTagValue(XSS_STRING_4).render();
-
-        assertEquals(shareErrorPopup.getShareMessage(), drone.getValue("message.could.not.create.new.item"));
+            assertEquals(shareErrorPopup.getShareMessage(), drone.getValue("message.could.not.create.new.item"));
+            shareErrorPopup.clickOK().render();
+        }
     }
 
-    @Test(groups = { "DataPrepRepoSecurity", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_5373() throws Exception
-    {
+    @Test(groups = {"DataPrepRepoSecurity", "EnterpriseOnly"})
+    public void dataPrep_AONE_3516() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
 
@@ -673,12 +654,12 @@ public class SecurityXssTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5373() throws Exception
-    {
+    public void AONE_3516() throws Exception {
         String testName = getTestName();
         String folderName = getFolderName(testName);
         String fileName = getFileName(testName) + System.currentTimeMillis();
         String content = "New File";
+        String[] xss_strings = {XSS_STRING_1, XSS_STRING_2, XSS_STRING_3, XSS_STRING_4, XSS_STRING_5};
 
         File file1 = newFile(fileName, content);
 
@@ -692,9 +673,13 @@ public class SecurityXssTest extends AbstractUtils
         DetailsPage detailsPage = ShareUserRepositoryPage.getContentDetailsPage(drone, fileName);
         EditDocumentPropertiesPage editProps = detailsPage.selectEditProperties().render();
         TagPage tagPage = editProps.getTag().render();
+        for (String xss_string : xss_strings) {
 
-        SharePopup shareErrorPopup = tagPage.enterTagValue(XSS_STRING_5).render();
+            SharePopup shareErrorPopup = tagPage.enterTagValue(XSS_STRING_5).render();
+            assertEquals(shareErrorPopup.getShareMessage(), drone.getValue("message.could.not.create.new.item"));
+            shareErrorPopup.clickOK().render();
 
-        assertEquals(shareErrorPopup.getShareMessage(), drone.getValue("message.could.not.create.new.item"));
+        }
+
     }
 }

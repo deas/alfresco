@@ -129,7 +129,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * Test updating an existing file with a new uploaded file. The test covers major and minor version changes.
      */
     //Grouped as bug Due to https://issues.alfresco.com/jira/browse/ACE-1628 ACE Bug
-    @Test(dependsOnMethods = "uploadFile", groups="ACEBug")
+    @Test(dependsOnMethods = "uploadFile", groups="ACEBug", enabled = false)
     public void minorVersionUpdateOfAnExistingFile() throws Exception
     {
         DocumentDetailsPage docDetailsPage = selectDocument(file).render();
@@ -153,7 +153,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     }
 
     //Grouped as bug Due to https://issues.alfresco.com/jira/browse/ACE-1628 ACE Bug
-    @Test(dependsOnMethods = "minorVersionUpdateOfAnExistingFile", groups="ACEBug")
+    @Test(dependsOnMethods = "minorVersionUpdateOfAnExistingFile", groups="ACEBug", enabled=false)
     public void majorVersionUpdateOfAnExistingFile() throws Exception
     {
         DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
@@ -278,7 +278,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * @throws IOException
      */
     //TODO Disbaled since windows OS selenium node is used with grid
-    @Test(dependsOnMethods = "downloadFile", enabled=false)
+    @Test(dependsOnMethods = "downloadFile", enabled= false)
     public void testIsPreviewDisplayed() throws Exception
     {
         if (logger.isTraceEnabled()) logger.trace("====testIsPreviewDisplayed====");
@@ -364,23 +364,37 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
     /**
      * Test for cover isCheckedOut() method
      */
-    @Test(dependsOnMethods = "testIsFileShared", enabled=false)
+    @Test(dependsOnMethods = "testIsFileShared")
     public void editOffline() throws IOException {
         DocumentDetailsPage docDetailsPage = drone.getCurrentPage().render();
         if (logger.isTraceEnabled()) logger.trace("====editOffline====");
         docDetailsPage.selectEditOffLine(null).render();
         Assert.assertTrue(docDetailsPage.isCheckedOut());
-        docDetailsPage.selectUploadNewVersion();
 
         UpdateFilePage updatePage = docDetailsPage.selectUploadNewVersion().render();
         if (logger.isTraceEnabled()) logger.trace("---selected new version to upload----");
         updatePage.selectMinorVersionChange();
         updatePage.setComment("Reloading the file with correct image");
         updatePage.uploadFile(uploadFile.getCanonicalPath());
+        updatePage.render();
         docDetailsPage = updatePage.submit().render();
         if (logger.isTraceEnabled()) logger.trace("---upload submited----");
 
         Assert.assertFalse(docDetailsPage.isCheckedOut());
         if (logger.isTraceEnabled()) logger.trace("---update with major version----");
+    }
+    
+    /**
+     * Test the function of get document body - the content of the document
+     * 
+     * @throws Exception
+     */
+    @Test(dependsOnMethods = "uploadFile")
+    public void getDocumentBody() throws Exception
+    {
+        DocumentDetailsPage docDetailsPage = selectDocument(file).render();
+        if (logger.isTraceEnabled()) logger.trace("====getDocumentBody====");
+        DocumentDetailsPage docsPage = drone.getCurrentPage().render();
+        Assert.assertEquals(docsPage.getDocumentBody(), "this is a sample test upload file");
     }
 }

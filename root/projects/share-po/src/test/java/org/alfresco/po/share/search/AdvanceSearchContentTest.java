@@ -19,13 +19,6 @@
 
 package org.alfresco.po.share.search;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.site.NewFolderPage;
@@ -43,6 +36,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Integration test to validate the advance Search Content Page.
@@ -91,6 +91,7 @@ public class AdvanceSearchContentTest extends AbstractTest
         editPage.setName("my.txt");
         docDetailsPage = editPage.selectSave().render();
         dashBoard = docDetailsPage.getNav().selectMyDashBoard().render();
+        Thread.sleep(20000);
     }
 
     @AfterClass(groups={"Enterprise-only"})
@@ -258,8 +259,8 @@ public class AdvanceSearchContentTest extends AbstractTest
     @Test(expectedExceptions = UnsupportedOperationException.class, groups="Enterprise-only")
     public void toDateNullCheckTest()
     {
-        AdvanceSearchContentPage searchpage = new AdvanceSearchContentPage(drone);
-        searchpage.inputToDate(null);
+        AdvanceSearchContentPage searchPage = new AdvanceSearchContentPage(drone);
+        searchPage.inputToDate(null);
     }
     
     /**
@@ -306,7 +307,7 @@ public class AdvanceSearchContentTest extends AbstractTest
      * Note: This test will be enabled only with chrome browser execution.
      * @throw Exception
      */
-    @Test(dependsOnMethods = "testIsFolder", groups = { "Enterprise-only", "chromeOnly" }, enabled=false)
+    @Test(dependsOnMethods = "testIsFolder", groups = { "Enterprise-only", "chromeOnly" })
     public void testClickOnDownloadAndViewInBrowserLink() throws Exception
     {
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
@@ -331,7 +332,7 @@ public class AdvanceSearchContentTest extends AbstractTest
      * Note: This test will be enabled only with chrome browser execution.
      * @throw Exception
      */
-    @Test(dependsOnMethods="testIsFolder", groups={"Enterprise-only"}, enabled=false)
+    @Test(dependsOnMethods="testIsFolder", groups={"Enterprise-only"})
     public void testGetFolderNamesFromPath() throws Exception
     {
         File newFile = SiteUtil.prepareFile("folderPath");
@@ -350,14 +351,15 @@ public class AdvanceSearchContentTest extends AbstractTest
         UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
         docPage = (DocumentLibraryPage) upLoadPage.uploadFile(newFile.getCanonicalPath());
         docPage.render();
-        
+
+        Thread.sleep(20000); //solr wait.
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         contentSearchPage.inputName(fileName);
         FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
         SearchResult searchResultItem = searchResults.getResults().get(0);
         
-        List<String> list = ((SearchResultItem) searchResultItem).getFolderNamesFromContentPath();
+        List<String> list = ((FacetedSearchResult) searchResultItem).getFolderNamesFromContentPath();
         Assert.assertTrue(list.size() > 0);
         Assert.assertTrue(list.size() == 2);
         Assert.assertTrue(list.get(0).equalsIgnoreCase("Attachments"));

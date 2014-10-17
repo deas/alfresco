@@ -2,6 +2,8 @@ package org.alfresco.share.util;
 
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.management.*;
 import javax.management.remote.JMXConnector;
@@ -17,8 +19,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JmxUtils extends AbstractUtils
 {
+    private static Log logger = LogFactory.getLog(JmxUtils.class);
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
-    private static final Pattern DOMAIN_PATTERN = Pattern.compile("\\w+(\\.\\w+)*(\\.\\w{2,})");
+    private static final Pattern DOMAIN_PATTERN = Pattern.compile("\\w+(\\.\\w+)*(\\.\\w{2,})|(localhost)");
 
     private static final String JMX_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://%s:%s/alfresco/jmxrmi";
     private static final String JMX_RMI_PORT = "50500";
@@ -32,9 +35,19 @@ public class JmxUtils extends AbstractUtils
      */
     public static Object getAlfrescoServerProperty(String objectName, String attributeName)
     {
+        return getAlfrescoServerProperty(shareUrl, objectName, attributeName);
+    }
+
+    /**
+     * @param objectName
+     * @param attributeName
+     * @return Object from jmx with expected date in accordance with params
+     */
+    public static Object getAlfrescoServerProperty(String hostURL, String objectName, String attributeName)
+    {
         try
         {
-            JMXConnector connector = makeJmxConnector();
+            JMXConnector connector = makeJmxConnector(hostURL);
             MBeanServerConnection mBSC = connector.getMBeanServerConnection();
             ObjectName objectJmx = new ObjectName(objectName);
             Object result = mBSC.getAttribute(objectJmx, attributeName);
@@ -138,10 +151,15 @@ public class JmxUtils extends AbstractUtils
 
     private static JMXConnector makeJmxConnector()
     {
+        return makeJmxConnector(shareUrl);
+    }
+
+    private static JMXConnector makeJmxConnector(String hostUrl)
+    {
         resolveProp();
         try
         {
-            String jmxUrlStr = String.format(JMX_URL_PATTERN, getAddress(shareUrl), jmxrmiPort);
+            String jmxUrlStr = String.format(JMX_URL_PATTERN, getAddress(hostUrl), jmxrmiPort);
             JMXServiceURL jmxUrl = new JMXServiceURL(jmxUrlStr);
             Map<String, String[]> env = new HashMap<>();
             env.put(JMXConnector.CREDENTIALS, new String[] { jmxrmiUser, jmxrmiPassword });
@@ -150,6 +168,7 @@ public class JmxUtils extends AbstractUtils
         }
         catch (Exception e)
         {
+            logger.error(e);
             throw new PageException("Can't establish connect with jmx.");
         }
     }
@@ -164,7 +183,7 @@ public class JmxUtils extends AbstractUtils
             jmxrmiPassword = JMX_RMI_PASSWORD;
     }
 
-    private static String getAddress(String url)
+    public static String getAddress(String url)
     {
         checkNotNull(url);
         Matcher m = IP_PATTERN.matcher(url);

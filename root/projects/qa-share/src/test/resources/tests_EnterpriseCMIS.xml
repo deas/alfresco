@@ -1,0 +1,83 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="DataPrepSuite" verbose="1" preserve-order="true"
+    parallel="tests" thread-count="1">
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <exclude name="NonGrid" />
+            <exclude name=".*Bug.*" />
+        </run>
+    </groups>
+
+    <listeners>
+        <listener
+            class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+    
+     <test name="CMIS Browser Document Aspects Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisBrowserDocumentAspectsTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Document Aspects Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisAtomDocumentAspectsTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Folder Aspects Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisBrowserFolderAspectsTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Folder Aspects Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisAtomFolderAspectsTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Action Values Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISAtomActionValuesTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Action Values Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserActionValuesTest"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Atom Append Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISAtomAppendTests"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Append Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserAppendTest"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Selector Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Selector more Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CMISBrowserSelectorParameter2"/>
+        </classes>
+    </test>
+
+    <test name="CMIS Browser Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.api.cmis.CmisBrowserTests"/>
+        </classes>
+    </test>
+
+</suite>

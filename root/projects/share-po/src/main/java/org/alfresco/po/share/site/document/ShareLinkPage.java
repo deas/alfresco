@@ -175,6 +175,22 @@ public class ShareLinkPage extends SharePage
 
         return false;
     }
+    
+    /**
+     * Click Email Link present on Share Link page.
+     */
+    public void clickEmailLink()
+    {
+        try
+        {
+            drone.find(emailLinkLocator).click();
+        }
+        catch (NoSuchElementException ex)
+        {
+            logger.error("Exceeded time to find the email link element", ex);
+            throw new PageException("Unable to find email link");
+        }
+    }
 
     /**
      * Verify that Facebook link is displayed.

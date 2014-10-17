@@ -95,10 +95,8 @@ public class ShareUserSharedFilesPage extends AbstractUtils
     {
         SharedFilesPage sharedFilesPage = openSharedFiles(driver);
 
-        // TODO: Amend DocumentLibraryPage.createContentFromTemplate to return HtmlPage and return that
         sharedFilesPage.createContentFromTemplate(templateName).render();
-        // TODO: Fix: as above: This could return StaleElementRef
-        return sharedFilesPage.render();
+        return sharedFilesPage;
     }
 
     /**
@@ -148,9 +146,8 @@ public class ShareUserSharedFilesPage extends AbstractUtils
     public static SharedFilesPage createFolderFromTemplate(WebDrone driver, String templateName)
     {
         SharedFilesPage sharedFilesPage = openSharedFiles(driver);
-        sharedFilesPage = ((SharedFilesPage) sharedFilesPage.createFolderFromTemplate(templateName).render());
+        sharedFilesPage.createFolderFromTemplate(templateName).render();
 
-        // TODO: Fix this: Do not use old reference
         return sharedFilesPage;
     }
 
@@ -175,10 +172,9 @@ public class ShareUserSharedFilesPage extends AbstractUtils
      * @param driver
      * @param fileName
      * @param comment
-     * @param path to parent folder
      *            
      */
-    public static void addCommentToFile(WebDrone driver, String fileName, String comment, String path) throws Exception
+    public static void addCommentToFile(WebDrone driver, String fileName, String comment) throws Exception
     {
         FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(driver, fileName);
         DocumentDetailsPage documentDetailsPage = fileInfo.clickCommentsLink().render();

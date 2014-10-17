@@ -1,17 +1,10 @@
 package org.alfresco.share.site.wikipage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.SitePageType;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditHtmlDocumentPage;
-import org.alfresco.po.share.site.document.InlineEditPage;
-import org.alfresco.po.share.site.document.MimeType;
-import org.alfresco.po.share.site.document.TinyMceEditor;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.site.wiki.WikiPage.FONT_ATTR;
@@ -27,6 +20,9 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** 
  * @author nshah
@@ -58,7 +54,7 @@ public class WikiPageTest extends AbstractUtils
     }
 
     @Test(groups={"DataPrepWikiPage"})
-    public void dataPrep_Enterprise40x_5329() throws Exception
+    public void dataPrep_AONE_3428() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -105,7 +101,7 @@ public class WikiPageTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "Enterprise42")
-    public void enterprise40x_5329() throws Exception
+    public void AONE_3428() throws Exception
     {  
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -158,7 +154,7 @@ public class WikiPageTest extends AbstractUtils
     }
 
     @Test(groups={"DataPrepWikiPage"})
-    public static void dataPrep_Enterprise40x_5330() throws Exception
+    public static void dataPrep_AONE_3425() throws Exception
     {
         /*
          * No data preparation for this test case it will be executed on user:
@@ -178,7 +174,7 @@ public class WikiPageTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "Enterprise-only")
-    public void enterprise40x_5330()
+    public void AONE_3425()
     {
         String siteName = "sample";
         String siteFullName = "Sample: Web Site Design Project";
@@ -232,7 +228,7 @@ public class WikiPageTest extends AbstractUtils
     }
 
     @Test(groups={"DataPrepWikiPage"})
-    public void dataPrep_Enterprise40x_8413() throws Exception
+    public void dataPrep_AONE_1753() throws Exception
     {
         String testName = getTestName();
         
@@ -255,7 +251,7 @@ public class WikiPageTest extends AbstractUtils
     }
 
     @Test(groups = "Enterprise-only")
-    public void enterprise40x_8413() throws Exception
+    public void AONE_1753() throws Exception
     {      
         String testName = getTestName();
        

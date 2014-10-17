@@ -1,16 +1,16 @@
 package org.alfresco.share;
 
-import java.util.Calendar;
-
+import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.po.share.DashBoardPage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.Calendar;
 
 public class MyDashBoardTest extends AbstractUtils
 {
@@ -58,7 +58,7 @@ public class MyDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void cloud_1506()
+    public void AONE_12091()
     {
         try
         {
@@ -112,7 +112,7 @@ public class MyDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void cloud_1507()
+    public void AONE_12092()
     {
         try
         {
@@ -169,7 +169,7 @@ public class MyDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void cloud_236()
+    public void AONE_12017()
     {
         try
         {
@@ -234,7 +234,7 @@ public class MyDashBoardTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void cloud_332()
+    public void AONE_12072()
     {
         try
         {

@@ -22,11 +22,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.RandomAccessFile;
+
 /**
  * Class to include: Tests for CMIS Action values for ATOM binding
- * 
+ *
  * @author Abhijeet Bharade
- * 
  */
 @Listeners(FailedTestListener.class)
 @Test(groups = { "AlfrescoOne", "MyAlfresco" })
@@ -55,34 +57,52 @@ public class CMISAtomAppendTests extends CMISAppendTest
 
 
     @Test
-    public void ALF_2539() throws Exception
+    public void AONE_14606() throws Exception
     {
         String thisTestName = getTestName();
         createDocTest(thisTestName);
     }
 
     @Test
-    public void ALF_2540() throws Exception
+    public void AONE_14607() throws Exception
     {
         appendTest(drone, getTestName(), false, fileName);
 
     }
 
     @Test
-    public void ALF_2541() throws Exception
+    public void AONE_14608() throws Exception
     {
         appendTest(drone, getTestName(), true, fileName);
     }
 
-    @Test
-    public void ALF_2542() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14609() throws Exception
     {
-        appendSeveralChunksTest(drone,getFileName(getTestName()));
+        appendSeveralChunksTest(drone, getFileName(getTestName()));
     }
 
-    @Test
-    public void ALF_2543() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14610() throws Exception
     {
-        appendLargeChunksTest(drone, FILE_5MB);
+        String file150mbName = "150MB_file"; // 150+150+150 = 450 MB;
+        try
+        {
+            try
+            {
+                RandomAccessFile f = new RandomAccessFile("fileName.txt", "rw");
+                f.setLength(150000000);
+            }
+            catch (Exception e)
+            {
+                logger.error("Test File don't created.");
+            }
+            appendLargeChunksTest(drone, file150mbName);
+        }
+        finally
+        {
+            File f = new File(DATA_FOLDER + file150mbName);
+            f.delete();
+        }
     }
 }

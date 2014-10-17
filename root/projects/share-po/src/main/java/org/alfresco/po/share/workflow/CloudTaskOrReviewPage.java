@@ -63,7 +63,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='form-cancel-button']");
     private static final By TYPE_DROP_DOWN_BUTTON = By.cssSelector("select[id$='hwf_cloudWorkflowType']");
     private static final By DESTINATION_BUTTON = By.cssSelector("button[id$='hwf_cloudDestination-select-button-button']");
-    private static final By ASSIGNMENT_BUTTON = By.cssSelector("button[id$='yui-gen24-button']");
+    private static final By ASSIGNMENT_BUTTON = By.cssSelector("div[id$=_hwf_assignment-cntrl-itemGroupActions] > span > span > button");
     private static final By REQUIRED_APPROVAL_PERCENTAGE = By.cssSelector("input[id$='_requiredApprovalPercentage']");
     private static final By DESTINATION_NETWORK = By.cssSelector("span[id$='_hwf_cloudDestination-tenant']");
 
@@ -80,7 +80,10 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     private static final By ADD_ITEMS_BUTTON = By.xpath("//div[contains(@id, '_packageItems-cntrl-itemGroupActions')]/span[1]/span/button");
     private static final By REMOVE_ALL_BUTTON = By.xpath("//div[contains(@id, '_packageItems-cntrl-itemGroupActions')]/span[2]/span/button");
     @SuppressWarnings("unused")
-	private static final By NO_ITEM_SELECTED_MESSAGE = By.cssSelector("div[id$='_packageItems-cntrl-currentValueDisplay']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div");
+    private static final By NO_ITEM_SELECTED_MESSAGE = By
+            .cssSelector("div[id$='_packageItems-cntrl-currentValueDisplay']>table>tbody.yui-dt-message>tr>td.yui-dt-empty>div");
+
+    private static final By ITEM_DATE = By.cssSelector("div.viewmode-label");
 
     private static final RenderElement MESSAGE_ELEMENT = getVisibleRenderElement(MESSAGE_TEXT);
     private static final RenderElement DESTINATION_NETWORK_ELEMENT = getVisibleRenderElement(DESTINATION_NETWORK);
@@ -194,6 +197,13 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
 
         selectAfterCompleteDropDown(formDetails.getContentStrategy());
         selectPriorityDropDown(formDetails.getTaskPriority());
+
+        WebElement startWorkFlow = drone.findAndWait(SUBMIT_BUTTON);
+        if (!startWorkFlow.isEnabled())
+        {
+            startWorkFlow.wait(4000);
+        }
+
         return submit(SUBMIT_BUTTON, ElementState.DELETE_FROM_DOM);
     }
 
@@ -277,7 +287,7 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
     }
 
     /**
-     * Returns the WebElement for message textarea.
+     * Returns the WebElement for message text area.
      * 
      * @return
      */
@@ -462,6 +472,29 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         {
             logger.error("File not added.");
             throw new PageException("File not found");
+        }
+    }
+
+    /**
+     * @param filename
+     */
+    private String getDetailsForFile(String filename, By action)
+    {
+
+        if (action == null)
+        {
+            throw new IllegalArgumentException("action selector should not be null.");
+        }
+        WebElement filerow = findFileRow(filename);
+        if (filerow != null)
+        {
+            return filerow.findElement(action).getText();
+        }
+        else
+        {
+            logger.error("File not added.");
+            throw new PageException("File not found");
+
         }
     }
 
@@ -875,5 +908,65 @@ public class CloudTaskOrReviewPage extends WorkFlowPage
         cancelButton.click();
         drone.waitUntilElementDeletedFromDom(By.id(cancelButtonId), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
         return FactorySharePage.resolvePage(drone);
+    }
+
+    /**
+     * Method to check if DropDown After Completion is present
+     * 
+     * @return boolean
+     */
+    public boolean isAfterCompletionDropdownPresent()
+    {
+        try
+        {
+            return (drone.findAndWait(AFTER_COMPLETION_DROPDOWN).isDisplayed());
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to check if Add Button is present
+     * 
+     * @return boolean
+     */
+    public boolean isAddButtonPresent()
+    {
+        try
+        {
+            return (drone.findAndWait(ADD_ITEMS_BUTTON).isDisplayed());
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Verify if if selected After Completion is correct
+     * 
+     * @return true if exists
+     */
+    public boolean isAfterCompletionSelected(KeepContentStrategy strategy)
+    {
+        if (strategy == null)
+        {
+            throw new IllegalArgumentException("Task Type can't be null.");
+        }
+        Select afterCompletionDropDown = new Select(drone.findAndWait(AFTER_COMPLETION_DROPDOWN));
+        return afterCompletionDropDown.getFirstSelectedOption().getText().equals(strategy.getStrategy());
+    }
+
+    /**
+     * Get item Date
+     * 
+     * @return true if exists
+     */
+    public String getItemDate(String fileName)
+    {
+        String description = getDetailsForFile(fileName, ITEM_DATE);
+        return description;
     }
 }

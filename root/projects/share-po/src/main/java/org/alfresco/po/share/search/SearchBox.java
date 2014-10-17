@@ -14,9 +14,6 @@
  */
 package org.alfresco.po.share.search;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlElement;
 import org.alfresco.webdrone.HtmlPage;
@@ -75,8 +72,7 @@ public class SearchBox extends HtmlElement
             {
                 logger.trace("Apply search on the keyword: " + term);
             }
-            // wait till the search box is displayed on the page to determine the page is loaded.
-            drone.waitUntilElementPresent(selector, SECONDS.convert(drone.getDefaultWaitTime(), MILLISECONDS));
+
         }
         catch (NoSuchElementException nse)
         {

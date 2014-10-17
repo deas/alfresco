@@ -19,12 +19,6 @@
 
 package org.alfresco.po.share.site.document;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.NewFolderPage;
@@ -39,6 +33,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * Integration test to verify document library left hand menu trees are
@@ -184,17 +185,23 @@ public class TreeMenuNavigationTest extends AbstractDocumentTest
     @Test(dependsOnMethods = "selectNode", groups = "Enterprise4.2", priority = 1)
     public void getNodeChildren() throws Exception
     {
-        TreeMenuNavigation treeMenuNav = documentLibPage.getLeftMenus();
+        try
+        {
+            TreeMenuNavigation treeMenuNav = documentLibPage.getLeftMenus();
 
-        List<String> children = treeMenuNav.getNodeChildren(
+            List<String> children = treeMenuNav.getNodeChildren(
                     TreeMenu.CATEGORIES, "Category Root", "Languages", "English");
 
-        assertTrue(children.size() == 5);
-        assertTrue(children.contains("American English"));
-        assertTrue(children.contains("Australian English"));
-        assertTrue(children.contains("British English"));
-        assertTrue(children.contains("Canadian English"));
-        assertTrue(children.contains("Indian English"));
+            assertTrue(children.size() == 5);
+            assertTrue(children.contains("American English"));
+            assertTrue(children.contains("Australian English"));
+            assertTrue(children.contains("British English"));
+            assertTrue(children.contains("Canadian English"));
+            assertTrue(children.contains("Indian English"));
+        } catch (Exception e){
+            fail("ACE-3037");    //If Ok, then move out this try-catch block.
+        }
+        fail("Please fix me! I am ok!");
     }
 
     @Test(dependsOnMethods = "selectNode", groups = "alfresco-one", priority = 2)

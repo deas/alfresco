@@ -18,19 +18,14 @@
  */
 package org.alfresco.po.share.workflow;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.task.EditTaskPage;
-import org.alfresco.po.share.task.TaskDetails;
-import org.alfresco.po.share.task.TaskStatus;
+import org.alfresco.po.share.task.*;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.testng.Assert;
@@ -39,9 +34,25 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.alfresco.po.share.task.AssignFilter.ME;
+import static org.alfresco.po.share.task.AssignFilter.UNASSIGNED;
+import static org.alfresco.po.share.workflow.DueFilters.*;
+import static org.alfresco.po.share.workflow.Priority.HIGH;
+import static org.alfresco.po.share.workflow.Priority.LOW;
+import static org.alfresco.po.share.workflow.Priority.MEDIUM;
+import static org.alfresco.po.share.workflow.StartedFilter.LAST_14_DAYS;
+import static org.alfresco.po.share.workflow.StartedFilter.LAST_28_DAYS;
+import static org.alfresco.po.share.workflow.StartedFilter.LAST_7_DAYS;
+import static org.alfresco.po.share.workflow.WorkFlowType.NEW_WORKFLOW;
+import static org.testng.Assert.*;
+
 /**
  * Integration test to verify MyWorkFlowsPage.
- * 
+ *
  * @author Ranjith Manyam
  * @since 1.7.1
  */
@@ -86,15 +97,15 @@ public class MyWorkFlowsPageTest extends AbstractTest
 
         List<String> workFlowList = Arrays.asList(workFlow1, workFlow3);
 
-        for(String workFlow: workFlowList)
+        for (String workFlow : workFlowList)
         {
             myWorkFlowsPage = sharePage.getNav().selectWorkFlowsIHaveStarted().render();
-            if(myWorkFlowsPage.isWorkFlowPresent(workFlow))
+            if (myWorkFlowsPage.isWorkFlowPresent(workFlow))
             {
                 myWorkFlowsPage.cancelWorkFlow(workFlow);
             }
             myWorkFlowsPage = myWorkFlowsPage.selectCompletedWorkFlows().render();
-            if(myWorkFlowsPage.isWorkFlowPresent(workFlow))
+            if (myWorkFlowsPage.isWorkFlowPresent(workFlow))
             {
                 myWorkFlowsPage.deleteWorkFlow(workFlow);
             }
@@ -123,45 +134,45 @@ public class MyWorkFlowsPageTest extends AbstractTest
     {
         myWorkFlowsPage = dashBoardPage.getNav().selectWorkFlowsIHaveStarted().render();
 
-        Assert.assertTrue(myWorkFlowsPage.isTitlePresent());
+        assertTrue(myWorkFlowsPage.isTitlePresent());
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectWorkFlowsIHaveStarted")
     public void selectActiveWorkFlows()
     {
         myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
-        Assert.assertEquals(myWorkFlowsPage.getSubTitle(), "Active Workflows");
+        assertEquals(myWorkFlowsPage.getSubTitle(), "Active Workflows");
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectActiveWorkFlows")
     public void selectCompletedWorkFlows()
     {
         myWorkFlowsPage = myWorkFlowsPage.selectCompletedWorkFlows().render();
-        Assert.assertEquals(myWorkFlowsPage.getSubTitle(), "Completed Workflows");
+        assertEquals(myWorkFlowsPage.getSubTitle(), "Completed Workflows");
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectCompletedWorkFlows")
-    public void selectStartWorkflowButton() throws InterruptedException 
+    public void selectStartWorkflowButton() throws InterruptedException
     {
         StartWorkFlowPage startWorkFlowPage = myWorkFlowsPage.selectStartWorkflowButton().render();
-        NewWorkflowPage workFlow = startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
+        NewWorkflowPage workFlow = startWorkFlowPage.getWorkflowPage(NEW_WORKFLOW).render();
         WorkFlowFormDetails formDetails = getFormDetails(workFlow1);
         myWorkFlowsPage = workFlow.startWorkflow(formDetails).render();
         myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
-        Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow1));
+        assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow1));
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectStartWorkflowButton")
     public void getWorkFlowDetails()
     {
         List<WorkFlowDetails> workFlowDetailsList = myWorkFlowsPage.getWorkFlowDetails(workFlow1);
-        Assert.assertEquals(workFlowDetailsList.size(), 1, "Verifying there is only one workflow that matches the workflow name");
-        Assert.assertEquals(workFlowDetailsList.get(0).getWorkFlowName(), workFlow1);
-        Assert.assertEquals(workFlowDetailsList.get(0).getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate));
-        Assert.assertEquals(workFlowDetailsList.get(0).getStartDate().toLocalDate(), new DateTime().toLocalDate());
-        Assert.assertNull(workFlowDetailsList.get(0).getEndDate());
-        Assert.assertEquals(workFlowDetailsList.get(0).getType(), WorkFlowType.NEW_WORKFLOW);
-        Assert.assertEquals(workFlowDetailsList.get(0).getDescription(), WorkFlowDescription.ASSIGN_NEW_TASK_TO_YOUR_SELF_OR_COLLEAGUE);
+        assertEquals(workFlowDetailsList.size(), 1, "Verifying there is only one workflow that matches the workflow name");
+        assertEquals(workFlowDetailsList.get(0).getWorkFlowName(), workFlow1);
+        assertEquals(workFlowDetailsList.get(0).getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate));
+        assertEquals(workFlowDetailsList.get(0).getStartDate().toLocalDate(), new DateTime().toLocalDate());
+        assertNull(workFlowDetailsList.get(0).getEndDate());
+        assertEquals(workFlowDetailsList.get(0).getType(), NEW_WORKFLOW);
+        assertEquals(workFlowDetailsList.get(0).getDescription(), WorkFlowDescription.ASSIGN_NEW_TASK_TO_YOUR_SELF_OR_COLLEAGUE);
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "getWorkFlowDetails", expectedExceptions = IllegalArgumentException.class)
@@ -180,32 +191,35 @@ public class MyWorkFlowsPageTest extends AbstractTest
     public void selectWorkFlowWithValidData()
     {
         workFlowDetailsPage = myWorkFlowsPage.selectWorkFlow(workFlow1).render();
-        Assert.assertTrue(workFlowDetailsPage.isTitlePresent());
-        Assert.assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is in Progress");
+        assertTrue(workFlowDetailsPage.isTitlePresent());
+        assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is in Progress");
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectWorkFlowWithValidData")
     public void getWorkFlowDetailsHeader()
     {
         String workFlowDetailsHeader = "Details: " + workFlow1 + " (Task)";
-        Assert.assertEquals(workFlowDetailsPage.getPageHeader(), workFlowDetailsHeader);
+        assertEquals(workFlowDetailsPage.getPageHeader(), workFlowDetailsHeader);
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "getWorkFlowDetailsHeader")
     public void verifyTaskDetails()
     {
         myTasksPage = workFlowDetailsPage.getNav().selectMyTasks().render();
-        Assert.assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
+        assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlow1);
 
-        Assert.assertEquals(taskDetails.getTaskName(), workFlow1);
-        Assert.assertEquals(taskDetails.getDue(), getDueDateOnMyTaskPage(dueDate));
-        Assert.assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
-        Assert.assertNull(taskDetails.getEndDate());
-        Assert.assertEquals(taskDetails.getStatus(), "Not Yet Started");
-        Assert.assertEquals(taskDetails.getType(), TaskDetailsType.TASK);
-        Assert.assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
-        Assert.assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
+        assertEquals(taskDetails.getTaskName(), workFlow1);
+        assertEquals(taskDetails.getDue(), getDueDateOnMyTaskPage(dueDate));
+        assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
+        assertNull(taskDetails.getEndDate());
+        assertEquals(taskDetails.getStatus(), "Not Yet Started");
+        assertEquals(taskDetails.getType(), TaskDetailsType.TASK);
+        assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
+        assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
+        assertTrue(taskDetails.isViewWorkFlowDisplayed());
+        assertTrue(taskDetails.isViewTaskDisplayed());
+        assertTrue(taskDetails.isEditTaskDisplayed());
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskDetails")
@@ -214,7 +228,7 @@ public class MyWorkFlowsPageTest extends AbstractTest
         myWorkFlowsPage = myWorkFlowsPage.getNav().selectWorkFlowsIHaveStarted().render();
         workFlowDetailsPage = myWorkFlowsPage.selectWorkFlow(workFlow1).render();
         editTaskPage = workFlowDetailsPage.getCurrentTasksList().get(0).getEditTaskLink().click().render();
-        Assert.assertTrue(editTaskPage.isBrowserTitle("Edit Task"));
+        assertTrue(editTaskPage.isBrowserTitle("Edit Task"));
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectEditTask")
@@ -223,15 +237,15 @@ public class MyWorkFlowsPageTest extends AbstractTest
         editTaskPage.selectStatusDropDown(TaskStatus.COMPLETED);
         editTaskPage.enterComment(workFlowComment);
         workFlowDetailsPage = editTaskPage.selectTaskDoneButton().render();
-        Assert.assertTrue(workFlowDetailsPage.isTitlePresent());
-        Assert.assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is in Progress");
+        assertTrue(workFlowDetailsPage.isTitlePresent());
+        assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is in Progress");
 
         editTaskPage = workFlowDetailsPage.getCurrentTasksList().get(0).getEditTaskLink().click().render();
         editTaskPage.selectStatusDropDown(TaskStatus.COMPLETED);
         editTaskPage.enterComment(workFlowComment);
         workFlowDetailsPage = editTaskPage.selectTaskDoneButton().render();
-        Assert.assertTrue(workFlowDetailsPage.isTitlePresent());
-        Assert.assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is Complete");
+        assertTrue(workFlowDetailsPage.isTitlePresent());
+        assertEquals(workFlowDetailsPage.getWorkFlowStatus(), "Workflow is Complete");
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "completeWorkFlow")
@@ -242,34 +256,67 @@ public class MyWorkFlowsPageTest extends AbstractTest
         Assert.assertFalse(myWorkFlowsPage.isWorkFlowPresent(workFlow1));
 
         myWorkFlowsPage.selectCompletedWorkFlows().render();
-        Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow1));
+        assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow1));
 
         List<WorkFlowDetails> workFlowDetailsList = myWorkFlowsPage.getWorkFlowDetails(workFlow1);
 
-        Assert.assertEquals(workFlowDetailsList.get(0).getWorkFlowName(), workFlow1);
-        Assert.assertEquals(workFlowDetailsList.get(0).getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate));
-        Assert.assertEquals(workFlowDetailsList.get(0).getStartDate().toLocalDate(), new DateTime().toLocalDate());
-        Assert.assertEquals(workFlowDetailsList.get(0).getEndDate().toLocalDate(), new DateTime().toLocalDate());
-        Assert.assertEquals(workFlowDetailsList.get(0).getType(), WorkFlowType.NEW_WORKFLOW);
-        Assert.assertEquals(workFlowDetailsList.get(0).getDescription(), WorkFlowDescription.ASSIGN_NEW_TASK_TO_YOUR_SELF_OR_COLLEAGUE);
+        assertEquals(workFlowDetailsList.get(0).getWorkFlowName(), workFlow1);
+        assertEquals(workFlowDetailsList.get(0).getDue(), DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(dueDate));
+        assertEquals(workFlowDetailsList.get(0).getStartDate().toLocalDate(), new DateTime().toLocalDate());
+        assertEquals(workFlowDetailsList.get(0).getEndDate().toLocalDate(), new DateTime().toLocalDate());
+        assertEquals(workFlowDetailsList.get(0).getType(), NEW_WORKFLOW);
+        assertEquals(workFlowDetailsList.get(0).getDescription(), WorkFlowDescription.ASSIGN_NEW_TASK_TO_YOUR_SELF_OR_COLLEAGUE);
+        assertFalse(workFlowDetailsList.get(0).isCancelWorkFlowDisplayed());
+        assertTrue(workFlowDetailsList.get(0).isViewHistoryDisplayed());
+        assertTrue(workFlowDetailsList.get(0).isDeleteWorkFlowDisplayed());
     }
+
     @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyCompletedWorkFlowDetails")
+    public void verifyGetWorkFlowCount()
+    {
+        myWorkFlowsPage = drone.getCurrentPage().render();
+        assertEquals(myWorkFlowsPage.getDisplayedWorkFlowCount(), 1);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyGetWorkFlowCount")
+    public void verifyWorkFlowFilterCount()
+    {
+        myWorkFlowsPage = drone.getCurrentPage().render();
+        WorkFlowFilters workFlowFilters = myWorkFlowsPage.getWorkFlowsFilter();
+        workFlowFilters.select(NEXT_7_DAYS);
+        workFlowFilters.select(TOMORROW);
+        workFlowFilters.select(TODAY);
+        workFlowFilters.select(OVERDUE);
+        workFlowFilters.select(NO_DATE);
+
+        workFlowFilters.select(LAST_14_DAYS);
+        workFlowFilters.select(LAST_28_DAYS);
+        workFlowFilters.select(LAST_7_DAYS);
+
+        workFlowFilters.select(LOW);
+        workFlowFilters.select(HIGH);
+        workFlowFilters.select(MEDIUM);
+
+        workFlowFilters.select(NEW_WORKFLOW);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyWorkFlowFilterCount")
     public void selectCancelWorkFlow() throws Exception
     {
         myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
         StartWorkFlowPage startWorkFlowPage = myWorkFlowsPage.selectStartWorkflowButton().render();
-        NewWorkflowPage workFlow = (NewWorkflowPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW);
+        NewWorkflowPage workFlow = (NewWorkflowPage) startWorkFlowPage.getWorkflowPage(NEW_WORKFLOW);
         workFlow.render();
 
         WorkFlowFormDetails formDetails = getFormDetails(workFlow2);
         myWorkFlowsPage = workFlow.startWorkflow(formDetails).render();
 
         myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
-        Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow2));
+        assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow2));
 
         workFlowDetailsPage = myWorkFlowsPage.selectWorkFlow(workFlow2).render();
-        
-        Assert.assertTrue(workFlowDetailsPage.isCancelTaskOrWorkFlowButtonDisplayed());
+
+        assertTrue(workFlowDetailsPage.isCancelTaskOrWorkFlowButtonDisplayed());
         myTasksPage = workFlowDetailsPage.selectCancelWorkFlow().render();
         myWorkFlowsPage = myTasksPage.getNav().selectWorkFlowsIHaveStarted().render();
         Assert.assertFalse(myWorkFlowsPage.isWorkFlowPresent(workFlow2));
@@ -288,39 +335,111 @@ public class MyWorkFlowsPageTest extends AbstractTest
     {
         dueDate = "";
         StartWorkFlowPage startWorkFlowPage = myWorkFlowsPage.selectStartWorkflowButton().render();
-        NewWorkflowPage workFlow = startWorkFlowPage.getWorkflowPage(WorkFlowType.NEW_WORKFLOW).render();
+        NewWorkflowPage workFlow = startWorkFlowPage.getWorkflowPage(NEW_WORKFLOW).render();
         WorkFlowFormDetails formDetails = getFormDetails(workFlow3);
         myWorkFlowsPage = workFlow.startWorkflow(formDetails).render();
         myWorkFlowsPage = myWorkFlowsPage.selectActiveWorkFlows().render();
-        Assert.assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow3));
+        assertTrue(myWorkFlowsPage.isWorkFlowPresent(workFlow3));
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectStartWorkflowButtonWithDueDateNone")
     public void verifyTaskDetailsWithDueDateNone()
     {
         myTasksPage = workFlowDetailsPage.getNav().selectMyTasks().render();
-        Assert.assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
+        assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
         TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlow3);
 
-        Assert.assertEquals(taskDetails.getTaskName(), workFlow3);
-        Assert.assertEquals(taskDetails.getDue(), "(None)");
-        Assert.assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
-        Assert.assertNull(taskDetails.getEndDate());
-        Assert.assertEquals(taskDetails.getStatus(), "Not Yet Started");
-        Assert.assertEquals(taskDetails.getType(), TaskDetailsType.TASK);
-        Assert.assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
-        Assert.assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
+        assertEquals(taskDetails.getTaskName(), workFlow3);
+        assertEquals(taskDetails.getDue(), "(None)");
+        assertEquals(taskDetails.getStartDate().toLocalDate(), new DateTime().toLocalDate());
+        assertNull(taskDetails.getEndDate());
+        assertEquals(taskDetails.getStatus(), "Not Yet Started");
+        assertEquals(taskDetails.getType(), TaskDetailsType.TASK);
+        assertEquals(taskDetails.getDescription(), "Task allocated by colleague");
+        assertEquals(taskDetails.getStartedBy(), uname + "@test.com");
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskDetailsWithDueDateNone")
     public void verifyTaskButtonsPresent()
     {
         myTasksPage = workFlowDetailsPage.getNav().selectMyTasks().render();
-        Assert.assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
+        assertEquals(myTasksPage.getSubTitle(), "Active Tasks");
         myTasksPage.renderTask(3000, workFlow3);
 
-        Assert.assertTrue(myTasksPage.isTaskEditButtonEnabled(workFlow3), "Task Edit button is not present.");
-        Assert.assertTrue(myTasksPage.isTaskViewButtonEnabled(workFlow3), "Task View button is not present.");
-        Assert.assertTrue(myTasksPage.isTaskWorkflowButtonEnabled(workFlow3), "Task Workflow View button is not present.");
+        assertTrue(myTasksPage.isTaskEditButtonEnabled(workFlow3), "Task Edit button is not present.");
+        assertTrue(myTasksPage.isTaskViewButtonEnabled(workFlow3), "Task View button is not present.");
+        assertTrue(myTasksPage.isTaskWorkflowButtonEnabled(workFlow3), "Task Workflow View button is not present.");
     }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskButtonsPresent")
+    public void verifyTaskCountMethod()
+    {
+        myTasksPage = drone.getCurrentPage().render();
+        assertEquals(myTasksPage.getTasksCount(), 1);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskCountMethod")
+    public void verifyTaskFilter()
+    {
+        myTasksPage = drone.getCurrentPage().render();
+        TaskFilters taskFilters = myTasksPage.getTaskFilters();
+
+        taskFilters.select(NEXT_7_DAYS);
+        taskFilters.select(TOMORROW);
+        taskFilters.select(TODAY);
+        taskFilters.select(OVERDUE);
+        taskFilters.select(NO_DATE);
+
+        taskFilters.select(LOW);
+        taskFilters.select(HIGH);
+        taskFilters.select(MEDIUM);
+
+        taskFilters.select(ME);
+        taskFilters.select(UNASSIGNED);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskFilter", expectedExceptions = PageOperationException.class)
+    public void verifyTaskFilterByWorkFlowTypeWithException()
+    {
+        myTasksPage = drone.getCurrentPage().render();
+        TaskFilters taskFilters = myTasksPage.getTaskFilters();
+
+        taskFilters.select(NEW_WORKFLOW);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskFilterByWorkFlowTypeWithException", expectedExceptions = PageOperationException.class)
+    public void verifyTaskFilterByStartedWithException()
+    {
+        myTasksPage = drone.getCurrentPage().render();
+        TaskFilters taskFilters = myTasksPage.getTaskFilters();
+
+        taskFilters.select(LAST_28_DAYS);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "verifyTaskFilterByStartedWithException")
+    public void checkFilterTitle()
+    {
+        myTasksPage = drone.getCurrentPage().render();
+        TaskFilters taskFilters = myTasksPage.getTaskFilters();
+
+        taskFilters.select(LOW);
+        assertTrue(myTasksPage.isFilterTitle("Low Priority Tasks"));
+        taskFilters.select(HIGH);
+        assertTrue(myTasksPage.isFilterTitle("High Priority Tasks"));
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "checkFilterTitle")
+    public void checkTaskCount()
+    {
+        TaskFilters taskFilters = myTasksPage.getTaskFilters();
+        taskFilters.select(MEDIUM);
+        assertEquals(myTasksPage.getTaskCount(workFlow3), 1);
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "checkTaskCount")
+    public void checkTaskCountForFake()
+    {
+        assertEquals(myTasksPage.getTaskCount("azazazazazazaaza"), 0);
+    }
+
 }

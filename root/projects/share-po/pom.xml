@@ -9,11 +9,15 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
         <webdrone.page.render.wait.time>6000</webdrone.page.render.wait.time>
         <testng.xml>src/test/resources/testng.xml</testng.xml>
         <test.exclude>nonEnterprise</test.exclude>
         <selenium.version>2.39.0</selenium.version>
+        <testng.suite.filename>src/test/resources/testng_share_po.xml</testng.suite.filename>
+        <webdrone.version>2.6</webdrone.version>
     </properties>
     <repositories>
         <repository>
@@ -55,7 +59,7 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>webdrone</artifactId>
-            <version>2.6</version>
+            <version>${webdrone.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>xercesImpl</artifactId>
@@ -97,7 +101,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <scope>test</scope>
+			<scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -107,12 +111,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>${dependency.spring.version}</version>
+            <version>3.2.10.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${dependency.spring.version}</version>
+            <version>3.2.10.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -146,45 +150,6 @@
                 </executions>
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <suiteXmlFiles>
-			<suiteXmlFile>src/test/resources/SearchSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/DashletSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/DocumentSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/DownloadSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/EnumSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/SiteContentSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/SitesSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/TasksSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/WorkflowSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/ShareSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/AdminConsoleSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/ContentRulesSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/BlogPageSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/DataListPageSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/DiscussionsPageSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/LinksPageSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/CalendarPageSuite.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/MyProfileSuite.xml</suiteXmlFile>
-
-                    </suiteXmlFiles>
-                    <argLine>-Xms512m -Xmx1024m</argLine>
-                    <excludedGroups>
-                        ${test.exclude}
-                    </excludedGroups>
-                    <groups>
-                        ${test.include}
-                    </groups>
-                    <workingDirectory>target</workingDirectory>
-                    <!--parallel>classes</parallel-->
-                    <!--<systemPropertyVariables>-->
-                        <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
-                    <!--</systemPropertyVariables>-->
-                   <redirectTestOutputToFile>false</redirectTestOutputToFile>
                 </configuration>
             </plugin>
 
@@ -277,6 +242,12 @@
 
         <profile>
             <id>enable-hybrid</id>
+            <activation>
+                <property>
+                    <name>enable.hybrid</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <!-- Enable hybrid in the installation -->
@@ -287,18 +258,22 @@
                                 <id>modify-properties</id>
                                 <phase>generate-test-resources</phase>
                                 <goals>
-                                  <goal>run</goal>
+                                    <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <property name="alf.prop" location="target/alf-installation/tomcat/shared/classes/alfresco-global.properties" />
-                                        <echo append="true" output="${alf.prop}" />
+                                        <property name="alf.prop" location="target/alf-installation/tomcat/shared/classes/alfresco-global.properties"/>
+                                        <echo append="true" output="${alf.prop}"/>
                                         <echo append="true" output="${alf.prop}">
-hybridworkflow.enabled=true
-sync.cloud.url=https://webdronehwa.alfresco.me/alfresco/a/{network}/
+                                            # Enabling hybrid in the installation - automatically added by the build
+                                            hybridworkflow.enabled=true
+                                            sync.cloud.url=${hybrid.url}
+                                            system.serverMode=PRODUCTION
                                         </echo>
-                                        <echo append="true" output="${alf.prop}" />
-                                        <copy failonerror="false" verbose="true" todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license" file="${user.home}/binaries/build-classpath/4.3/WEB-INF/alfresco/license/Enterprise43-All.lic" /> 
+                                        <echo append="true" output="${alf.prop}"/>
+                                        <copy failonerror="false" verbose="true"
+                                              todir="target/alf-installation/tomcat/shared/classes/alfresco/extension/license"
+                                              file="${user.home}/binaries/build-classpath/5.0/Enterprise-5.0.lic"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -369,6 +344,176 @@ sync.cloud.url=https://webdronehwa.alfresco.me/alfresco/a/{network}/
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>alfresco-one-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/SearchSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DashletSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DocumentSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DownloadSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/EnumSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/SiteContentSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/SitesSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/TasksSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/ShareSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/WorkflowSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/AdminConsoleSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/ContentRulesSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/BlogPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DataListPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DiscussionsPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/LinksPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/CalendarPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/MyProfileSuite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <excludedGroups>
+                                ${test.exclude}
+                            </excludedGroups>
+                            <groups>
+                                ${test.include}
+                            </groups>
+                            <workingDirectory>target</workingDirectory>
+                            <!--parallel>classes</parallel-->
+                            <!--<systemPropertyVariables>-->
+                            <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
+                            <!--</systemPropertyVariables>-->
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>alfresco-one-chrome-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/SearchSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DocumentSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DownloadSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/EnumSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/SiteContentSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/SitesSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/TasksSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/WorkflowSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/ShareSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/AdminConsoleSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/ContentRulesSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/BlogPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DataListPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/DiscussionsPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/LinksPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/CalendarPageSuite.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/MyProfileSuite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <excludedGroups>
+                                ${test.exclude}
+                            </excludedGroups>
+                            <groups>
+                                ${test.include}
+                            </groups>
+                            <workingDirectory>target</workingDirectory>
+                            <!--parallel>classes</parallel-->
+                            <!--<systemPropertyVariables>-->
+                            <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
+                            <!--</systemPropertyVariables>-->
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>intermittent-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/IntermittentTestsSuite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <excludedGroups>
+                                ${test.exclude}
+                            </excludedGroups>
+                            <groups>
+                                ${test.include}
+                            </groups>
+                            <workingDirectory>target</workingDirectory>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>in-dev-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/InDevSuite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <excludedGroups>
+                                ${test.exclude}
+                            </excludedGroups>
+                            <groups>
+                                ${test.include}
+                            </groups>
+                            <workingDirectory>target</workingDirectory>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>hybrid-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/testng_Hybrid.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <excludedGroups>
+                                ${test.exclude}
+                            </excludedGroups>
+                            <groups>
+                                ${test.include}
+                            </groups>
+                            <workingDirectory>target</workingDirectory>
+                            <!--parallel>classes</parallel-->
+                            <!--<systemPropertyVariables>-->
+                            <!--<webdrone.element.wait.time>${webdrone.element.wait.time}</webdrone.element.wait.time>-->
+                            <!--</systemPropertyVariables>-->
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

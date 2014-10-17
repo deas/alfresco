@@ -19,13 +19,8 @@
 
 package org.alfresco.share.user;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-
 import org.alfresco.po.share.AlfrescoVersion;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.dashlet.SiteActivitiesDashlet;
 import org.alfresco.po.share.dashlet.SiteActivitiesTypeFilter;
 import org.alfresco.po.share.dashlet.SiteActivitiesUserFilter;
@@ -37,28 +32,27 @@ import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.DetailsPage;
-import org.alfresco.po.share.user.Language;
-import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.NotificationPage;
 import org.alfresco.po.share.user.UserSiteItem;
 import org.alfresco.po.share.user.UserSitesPage;
 import org.alfresco.share.site.document.TableViewDocLibTest;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ActivityType;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserMembers;
-import org.alfresco.share.util.ShareUserProfile;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.WebDroneType;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.annotations.AfterClass;
+import org.jsoup.Jsoup;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.Locale;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Jamie Allison
@@ -94,7 +88,7 @@ public class SiteNotificationsTest extends AbstractUtils
         super.setup();
         testName = this.getClass().getSimpleName();
 
-        // Setup usernames and site name for tests ALF-15252 and ALF-15253.
+        // Setup usernames and site name for tests AONE-14163 and AONE-14164.
         gTestAdmin = getUserNameFreeDomain(testName);
         gTestUser1 = getUserNameFreeDomain(testName + "1");
         gTestUser2 = getUserNameFreeDomain(testName + "2");
@@ -103,35 +97,29 @@ public class SiteNotificationsTest extends AbstractUtils
         AlfrescoVersion version = drone.getProperties().getVersion();
         isCloud = version.isCloud();
 
+        //Config email
+        MailUtil.configOutBoundEmail();
+
         logger.info("Starting Tests: " + testName);
     }
 
-    @AfterClass(alwaysRun = true)
-    public void pauseForEmails()
-    {
-        // TODO: Shan: Add a wait in Webdrone to allow emails to be sent.
-    }
-
     @Test(groups = { "DataPrepSiteNotification", "EnterpriseOnly" })
-    public void dataPrep_ALF_10684() throws Exception
+    public void dataPrep_AONE_15092() throws Exception
     {
-        String testName = getTestName();
-        String testUser1 = getUserNameFreeDomain(testName + "1");
-        String testUser2 = getUserNameFreeDomain(testName + "2");
-        String[] testUserInfo1 = new String[] { testUser1 };
-        String[] testUserInfo2 = new String[] { testUser2 };
+        String testUser1 = MailUtil.BOT_MAIL_1;
+        String testUser2 = MailUtil.BOT_MAIL_2;
 
         // Create Users
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo2);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser1);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser2);
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_10684() throws Exception
+    public void AONE_15092() throws Exception
     {
         String testName = getTestName();
-        String testUser1 = getUserNameFreeDomain(testName + "1");
-        String testUser2 = getUserNameFreeDomain(testName + "2");
+        String testUser1 = MailUtil.BOT_MAIL_1;
+        String testUser2 = MailUtil.BOT_MAIL_2;
         String siteName1 = getSiteName(testName + "-1-") + System.currentTimeMillis();
         String siteName2 = getSiteName(testName + "-2-") + System.currentTimeMillis();
         String siteName3 = getSiteName(testName + "-3-") + System.currentTimeMillis();
@@ -231,32 +219,50 @@ public class SiteNotificationsTest extends AbstractUtils
         assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activity2, true), "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activity1, true), "Could not find activity: " + activity1);
 
-        // TODO: Set emails to be sent to specific account and enable for tests.
-        // TODO: TESTLINK : Emails have to be checked manually.
+        Thread.sleep(10000); //solr wait
+        JmxUtils.invokeAlfrescoServerProperty("Alfresco:Name=Schedule,Group=DEFAULT,Type=MonitoredCronTrigger,Trigger=feedNotifierTrigger", "executeNow");
 
+        String emailMsg = MailUtil.getMailAsString(testUser2, "Alfresco Share: Recent Activities");
+        if (emailMsg != null && !emailMsg.isEmpty())
+        {
+            emailMsg = Jsoup.parse(emailMsg).text();
+            assertTrue(emailMsg.contains(activity12), "Could not find activity in mail: " + activity12);
+            assertTrue(emailMsg.contains(activity11), "Could not find activity in mail: " + activity11);
+            assertTrue(emailMsg.contains(activity10), "Could not find activity in mail: " + activity10);
+            assertTrue(emailMsg.contains(activity9), "Could not find activity in mail: " + activity9);
+            assertTrue(emailMsg.contains(activity8), "Could not find activity in mail: " + activity8);
+            assertTrue(emailMsg.contains(activity7), "Could not find activity in mail: " + activity7);
+            assertTrue(emailMsg.contains(activity6), "Could not find activity in mail: " + activity6);
+            assertTrue(emailMsg.contains(activity5), "Could not find activity in mail: " + activity5);
+            assertTrue(emailMsg.contains(activity4), "Could not find activity in mail: " + activity4);
+            assertTrue(emailMsg.contains(activity3), "Could not find activity in mail: " + activity3);
+            assertTrue(emailMsg.contains(activity2), "Could not find activity in mail: " + activity2);
+            assertTrue(emailMsg.contains(activity1), "Could not find activity in mail: " + activity1);
+        }
+        else
+        {
+            fail("User[" + testUser2 + "] don't got a mail about Recent Activites.");
+        }
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepSiteNotification", "EnterpriseOnly" })
-    public void dataPrep_ALF_10686() throws Exception
+    public void dataPrep_AONE_15093() throws Exception
     {
-        String testName = getTestName();
-        String testUser1 = getUserNameFreeDomain(testName + "1");
-        String testUser2 = getUserNameFreeDomain(testName + "2");
-        String[] testUserInfo1 = new String[] { testUser1 };
-        String[] testUserInfo2 = new String[] { testUser2 };
+        String testUser1 = MailUtil.BOT_MAIL_1;
+        String testUser2 = MailUtil.BOT_MAIL_2;
 
         // Create Users
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo2);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser1);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser2);
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_10686() throws Exception
+    public void AONE_15093() throws Exception
     {
         String testName = getTestName();
-        String testUser1 = getUserNameFreeDomain(testName + "1");
-        String testUser2 = getUserNameFreeDomain(testName + "2");
+        String testUser1 = MailUtil.BOT_MAIL_1;
+        String testUser2 = MailUtil.BOT_MAIL_2;
         String siteName1 = getSiteName(testName + "-1-") + System.currentTimeMillis();
         String siteName2 = getSiteName(testName + "-2-") + System.currentTimeMillis();
         String siteName3 = getSiteName(testName + "-3-") + System.currentTimeMillis();
@@ -358,38 +364,35 @@ public class SiteNotificationsTest extends AbstractUtils
         assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activity2, true), "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_ACTIVITIES, activity1, true), "Could not find activity: " + activity1);
 
-        // TODO: Set emails to be sent to specific account and enable for tests.
-        // TODO: TESTLINK : Emails have to be checked manually.
+        Thread.sleep(10000); //solr wait
+        JmxUtils.invokeAlfrescoServerProperty("Alfresco:Name=Schedule,Group=DEFAULT,Type=MonitoredCronTrigger,Trigger=feedNotifierTrigger", "executeNow");
 
+        assertFalse(MailUtil.isMailPresent(testUser2, "Alfresco Share: Recent Activities"), "User get mail about Recent Activities.");
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_15249() throws Exception
+    public void dataPrep_AONE_14160() throws Exception
     {
         String testName = getTestName();
-        String testAdmin = getUserNameFreeDomain(testName);
+        String testAdmin = MailUtil.BASE_BOT_MAIL;
         String testUser1 = getUserNameFreeDomain(testName + "1");
         String testUser2 = getUserNameFreeDomain(testName + "2");
         String testUser3 = getUserNameFreeDomain(testName + "3");
-        String[] testAdminInfo = new String[] { testAdmin };
-        String[] testUserInfo1 = new String[] { testUser1 };
-        String[] testUserInfo2 = new String[] { testUser2 };
-        String[] testUserInfo3 = new String[] { testUser3 };
 
         // Create Users
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdminInfo);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdmin);
 
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo2);
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo3);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser1);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser2);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser3);
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_15249() throws Exception
+    public void AONE_14160() throws Exception
     {
         String testName = getTestName();
-        String testAdmin = getUserNameFreeDomain(testName);
+        String testAdmin = MailUtil.BASE_BOT_MAIL;
         String testUser1 = getUserNameFreeDomain(testName + "1");
         String testUser2 = getUserNameFreeDomain(testName + "2");
         String testUser3 = getUserNameFreeDomain(testName + "3");
@@ -437,42 +440,54 @@ public class SiteNotificationsTest extends AbstractUtils
         String activity5 = String.format(LEAVE_SITE_ACTIVITY_FORMAT, testUser3, DEFAULT_LASTNAME, siteName);
 
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity5, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity5);
+                "Could not find activity: " + activity5);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity4);
+                "Could not find activity: " + activity4);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity3);
+                "Could not find activity: " + activity3);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity2);
+                "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity1);
+                "Could not find activity: " + activity1);
 
-        // TODO: Set emails to be sent to specific account and enable for tests.
-        // TODO: TESTLINK : Emails have to be checked manually.
+        Thread.sleep(10000); //solr wait
+        JmxUtils.invokeAlfrescoServerProperty("Alfresco:Name=Schedule,Group=DEFAULT,Type=MonitoredCronTrigger,Trigger=feedNotifierTrigger", "executeNow");
 
+        String emailMsg = MailUtil.getMailAsString(testAdmin, "Alfresco Share: Recent Activities");
+        if (emailMsg != null && !emailMsg.isEmpty())
+        {
+            emailMsg = Jsoup.parse(emailMsg).text();
+            assertTrue(emailMsg.contains(activity5), "Could not find activity in mail: " + activity5);
+            assertTrue(emailMsg.contains(activity4), "Could not find activity in mail: " + activity4);
+            assertTrue(emailMsg.contains(activity3), "Could not find activity in mail: " + activity3);
+            assertTrue(emailMsg.contains(activity2), "Could not find activity in mail: " + activity2);
+            assertTrue(emailMsg.contains(activity1), "Could not find activity in mail: " + activity1);
+        }
+        else
+        {
+            fail("User[" + testAdmin + "] don't got a mail about Recent Activites.");
+        }
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_15250() throws Exception
+    public void dataPrep_AONE_14161() throws Exception
     {
         String testName = getTestName();
-        String testAdmin = getUserNameFreeDomain(testName);
+        String testAdmin = MailUtil.BASE_BOT_MAIL;
         String testUser1 = getUserNameFreeDomain(testName + "1");
-        String[] testAdminInfo = new String[] { testAdmin };
-        String[] testUserInfo1 = new String[] { testUser1 };
 
         // Create Users
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdminInfo);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdmin);
 
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser1);
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_15250() throws Exception
+    public void AONE_14161() throws Exception
     {
         String testName = getTestName();
-        String testAdmin = getUserNameFreeDomain(testName);
+        String testAdmin = MailUtil.BASE_BOT_MAIL;
         String testUser1 = getUserNameFreeDomain(testName + "1");
 
         String siteName = getSiteName(testName) + System.currentTimeMillis();
@@ -571,32 +586,51 @@ public class SiteNotificationsTest extends AbstractUtils
         String activity9 = String.format(SITE_UNCOMMENT_DOCUMENT_ACTIVITY_FORMAT, testUser1, DEFAULT_LASTNAME, fileName3);
 
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity9, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity9);
+                "Could not find activity: " + activity9);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity8, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity8);
+                "Could not find activity: " + activity8);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity7, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity7);
+                "Could not find activity: " + activity7);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity6, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity6);
+                "Could not find activity: " + activity6);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity5, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity5);
+                "Could not find activity: " + activity5);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity4);
+                "Could not find activity: " + activity4);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity3);
+                "Could not find activity: " + activity3);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity2);
+                "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity1);
+                "Could not find activity: " + activity1);
 
-        // TODO: Set emails to be sent to specific account and enable for tests.
-        // TODO: TESTLINK : Emails have to be checked manually.
+        Thread.sleep(10000); //solr wait
+        JmxUtils.invokeAlfrescoServerProperty("Alfresco:Name=Schedule,Group=DEFAULT,Type=MonitoredCronTrigger,Trigger=feedNotifierTrigger", "executeNow");
 
+        String emailMsg = MailUtil.getMailAsString(testAdmin, "Alfresco Share: Recent Activities");
+        if (emailMsg != null && !emailMsg.isEmpty())
+        {
+            emailMsg = Jsoup.parse(emailMsg).text();
+            assertTrue(emailMsg.contains(activity9), "Could not find activity in mail: " + activity9);
+            assertTrue(emailMsg.contains(activity8), "Could not find activity in mail: " + activity8);
+            assertTrue(emailMsg.contains(activity7), "Could not find activity in mail: " + activity7);
+            assertTrue(emailMsg.contains(activity6), "Could not find activity in mail: " + activity6);
+            assertTrue(emailMsg.contains(activity5), "Could not find activity in mail: " + activity5);
+            assertTrue(emailMsg.contains(activity4), "Could not find activity in mail: " + activity4);
+            assertTrue(emailMsg.contains(activity3), "Could not find activity in mail: " + activity3);
+            assertTrue(emailMsg.contains(activity2), "Could not find activity in mail: " + activity2);
+            assertTrue(emailMsg.contains(activity1), "Could not find activity in mail: " + activity1);
+        }
+        else
+        {
+            fail("User[" + testAdmin + "] don't got a mail about Recent Activites.");
+        }
         ShareUser.logout(drone);
     }
 
+    // todo ACE-2318
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne", "NonGrid" })
-    public void dataPrep_ALF_15251() throws Exception
+    public void dataPrep_AONE_14162() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -612,59 +646,88 @@ public class SiteNotificationsTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = {"AlfrescoOne", "NonGrid"})
-    public void ALF_15251() throws Exception
+    private enum FeedLocalizationTestData
     {
-        WebDrone thisDrone;
-        
+        FRENCH(Locale.FRENCH, "Activer les flux d'activités", "Désactiver les flux d'activités"),
+        GERMANY(Locale.GERMANY, "Aktivitäten-Feeds aktivieren", "Aktivitäten-Feeds deaktivieren"),
+        SPANISH(new Locale("es", "SP"), "Habilitar noticias de actividades", "Deshabilitar noticias de actividades"),
+        ITALIAN(Locale.ITALIAN, "Abilita feed attività", "Disabilita feed attività"),
+        JAPANESE(Locale.JAPANESE, "アクティビティフィードを有効にする", "アクティビティフィードを無効にする"),
+        DUTCH(new Locale("nl", "DU"), "Activiteiten-feeds inschakelen", "Activiteiten-feeds uitschakelen"),
+        RUSSIAN(new Locale("ru", "RUS"), "Включить каналы новостей", "Отключить каналы новостей"),
+        CHINES(new Locale("zh_cn", "cn"), "启用活动订阅源", "禁用活动订阅源");
+
+        public final Locale locale;
+        public final String textEnable;
+        public final String textDisable;
+
+        FeedLocalizationTestData(Locale locale, String textEnable, String textDisable)
+        {
+            this.locale = locale;
+            this.textEnable = textEnable;
+            this.textDisable = textDisable;
+        }
+    }
+
+    @Test(groups = { "AlfrescoOne", "NonGrid" })
+    public void AONE_14162() throws Exception
+    {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
 
         String siteName = getSiteName(testName);
-
-        setupCustomDrone(WebDroneType.FrenchDrone);
-        if(isCloud)
+        for (FeedLocalizationTestData lTD : FeedLocalizationTestData.values())
         {
-            thisDrone = drone;
-            
-            ShareUser.login(thisDrone, testAdmin, DEFAULT_PASSWORD);
-            LanguageSettingsPage languagePage = ShareUserProfile.navigateToLanguage(thisDrone);
-            languagePage.changeLanguage(Language.FRENCH);
-        }
-        else
-        {
-            thisDrone = customDrone;
-            
-            ShareUser.login(thisDrone, testAdmin, DEFAULT_PASSWORD);
-        }
-        
-        ShareUserProfile.navigateToUserSites(thisDrone);
-        UserSitesPage userSitesPage = ShareUserProfile.setSiteFeedStatus(thisDrone, siteName, true);
+            tearDown();
+            if (isCloud && lTD.equals(FeedLocalizationTestData.DUTCH))
+            {
+                break; // for Cloud for German, Italian, Spanish, Japanese languages
+            }
+            createCustomDroneAndLogin(lTD.locale, testAdmin);
 
-        UserSiteItem userSiteItem = userSitesPage.getSite(siteName);
+            ShareUserProfile.navigateToUserSites(customDrone);
+            UserSitesPage userSitesPage = ShareUserProfile.setSiteFeedStatus(customDrone, siteName, false);
+            UserSiteItem userSiteItem = userSitesPage.getSite(siteName);
+            assertEquals(userSiteItem.getActivityFeedButtonLabel(), lTD.textEnable);
 
-        assertEquals(userSiteItem.getActivityFeedButtonLabel(), customDrone.getValue("user.profile.sites.disable.activity.feeds"));
-        
-        ShareUser.logout(thisDrone);
+            userSitesPage = ShareUserProfile.setSiteFeedStatus(customDrone, siteName, true);
+            userSiteItem = userSitesPage.getSite(siteName);
+            assertEquals(userSiteItem.getActivityFeedButtonLabel(), lTD.textDisable);
+
+            ShareUser.logout(customDrone);
+        }
+    }
+
+    private SharePage createCustomDroneAndLogin(Locale locale, String userName)
+    {
+        WebDriver webDriver = new FirefoxDriver(createFirefoxProfile(locale));
+        super.setupCustomDrone(webDriver);
+        return ShareUser.login(customDrone, userName, DEFAULT_PASSWORD);
+    }
+
+    private FirefoxProfile createFirefoxProfile(Locale locale)
+    {
+        FirefoxProfile firefoxProfile = new FirefoxProfile();
+        firefoxProfile.setPreference("intl.accept_languages", locale.getLanguage());
+        return firefoxProfile;
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_15252() throws Exception
+    public void dataPrep_AONE_14163() throws Exception
     {
-        String[] testAdminInfo = new String[] { gTestAdmin };
-        String[] testUserInfo1 = new String[] { gTestUser1 };
-        String[] testUserInfo2 = new String[] { gTestUser2 };
+        gTestAdmin = MailUtil.BASE_BOT_MAIL;
 
         // Create Users
-        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdminInfo);
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo2);
+        CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, gTestAdmin);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, gTestUser1);
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, gTestUser2);
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_15252() throws Exception
+    public void AONE_14163() throws Exception
     {
         String testName = getTestName();
+        gTestAdmin = MailUtil.BASE_BOT_MAIL;
 
         String fileName1 = getFileName(testName) + "-1";
         File file1 = newFile(fileName1, "New file 1");
@@ -703,15 +766,22 @@ public class SiteNotificationsTest extends AbstractUtils
         String activity2 = String.format(JOIN_SITE_ACTIVITY_FORMAT, gTestUser1, DEFAULT_LASTNAME, gSiteName, UserRole.CONSUMER.getRoleName());
 
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, gSiteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity1);
+                "Activity should be disabled for site. Found: " + activity1);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, gSiteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity2);
+                "Activity should be disabled for site. Found: " + activity2);
+
+        Thread.sleep(10000); //solr wait
+        JmxUtils.invokeAlfrescoServerProperty("Alfresco:Name=Schedule,Group=DEFAULT,Type=MonitoredCronTrigger,Trigger=feedNotifierTrigger", "executeNow");
+
+        assertFalse(MailUtil.isMailPresent(gTestAdmin, "Alfresco Share: Recent Activities"), "User get mail about Recent Activities.");
+
     }
 
-    @Test(dependsOnMethods = "ALF_15252", groups = "AlfrescoOne")
-    public void ALF_15253() throws Exception
+    @Test(dependsOnMethods = "AONE_14163", groups = "AlfrescoOne")
+    public void AONE_14164() throws Exception
     {
         String testName = getTestName();
+        gTestAdmin = MailUtil.BASE_BOT_MAIL;
 
         String fileName2 = getFileName(testName) + "-2";
         File file2 = newFile(fileName2, "New file 2");
@@ -764,17 +834,34 @@ public class SiteNotificationsTest extends AbstractUtils
         String activity4 = String.format(JOIN_SITE_ACTIVITY_FORMAT, gTestUser2, DEFAULT_LASTNAME, gSiteName, UserRole.CONSUMER.getRoleName());
 
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, gSiteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity4);
+                "Could not find activity: " + activity4);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, gSiteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity3);
+                "Could not find activity: " + activity3);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, gSiteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity2);
+                "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, gSiteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity1);
+                "Could not find activity: " + activity1);
+
+        Thread.sleep(10000); //solr wait
+        JmxUtils.invokeAlfrescoServerProperty("Alfresco:Name=Schedule,Group=DEFAULT,Type=MonitoredCronTrigger,Trigger=feedNotifierTrigger", "executeNow");
+
+        String emailMsg = MailUtil.getMailAsString(gTestAdmin, "Alfresco Share: Recent Activities");
+        if (emailMsg != null && !emailMsg.isEmpty())
+        {
+            emailMsg = Jsoup.parse(emailMsg).text();
+            assertTrue(emailMsg.contains(activity4), "Could not find activity in mail: " + activity4);
+            assertTrue(emailMsg.contains(activity3), "Could not find activity in mail: " + activity3);
+            assertTrue(emailMsg.contains(activity2), "Could not find activity in mail: " + activity2);
+            assertTrue(emailMsg.contains(activity1), "Could not find activity in mail: " + activity1);
+        }
+        else
+        {
+            fail("User[" + gTestAdmin + "] don't got a mail about Recent Activites.");
+        }
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_15255() throws Exception
+    public void dataPrep_AONE_14166() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -785,7 +872,7 @@ public class SiteNotificationsTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_15255() throws Exception
+    public void AONE_14166() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -839,19 +926,19 @@ public class SiteNotificationsTest extends AbstractUtils
         }
 
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity4);
+                "Could not find activity: " + activity4);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity3);
+                "Could not find activity: " + activity3);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity2);
+                "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity1);
+                "Could not find activity: " + activity1);
 
         SiteActivitiesDashlet dashlet = siteDashboardPage.getDashlet(SITE_ACTIVITIES).render();
         siteDashboardPage = dashlet.selectUserFilter(SiteActivitiesUserFilter.IM_FOLLOWING).render();
 
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should not be displayed. Found: " + activity1);
+                "Activity should not be displayed. Found: " + activity1);
 
         dashlet = siteDashboardPage.getDashlet(SITE_ACTIVITIES).render();
         siteDashboardPage = dashlet.selectUserFilter(SiteActivitiesUserFilter.MY_ACTIVITIES).render();
@@ -859,9 +946,9 @@ public class SiteNotificationsTest extends AbstractUtils
         siteDashboardPage = dashlet.selectTypeFilter(SiteActivitiesTypeFilter.COMMENTS).render();
 
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should not be displayed. Found: " + activity1);
+                "Activity should not be displayed. Found: " + activity1);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity3);
+                "Could not find activity: " + activity3);
 
         dashlet = siteDashboardPage.getDashlet(SITE_ACTIVITIES).render();
         siteDashboardPage = dashlet.selectTypeFilter(SiteActivitiesTypeFilter.ALL_ITEMS).render();
@@ -897,19 +984,19 @@ public class SiteNotificationsTest extends AbstractUtils
         }
 
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity1);
+                "Activity should be disabled for site. Found: " + activity1);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity2);
+                "Activity should be disabled for site. Found: " + activity2);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity3);
+                "Activity should be disabled for site. Found: " + activity3);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity4);
+                "Activity should be disabled for site. Found: " + activity4);
 
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_15258() throws Exception
+    public void dataPrep_AONE_14169() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -920,7 +1007,7 @@ public class SiteNotificationsTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_15258() throws Exception
+    public void AONE_14169() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -984,19 +1071,19 @@ public class SiteNotificationsTest extends AbstractUtils
         }
 
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity1);
+                "Activity should be disabled for site. Found: " + activity1);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity2);
+                "Activity should be disabled for site. Found: " + activity2);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity3);
+                "Activity should be disabled for site. Found: " + activity3);
         assertFalse(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, siteName, ActivityType.DESCRIPTION),
-                    "Activity should be disabled for site. Found: " + activity4);
+                "Activity should be disabled for site. Found: " + activity4);
 
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_15259() throws Exception
+    public void dataPrep_AONE_14170() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -1007,7 +1094,7 @@ public class SiteNotificationsTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_15259() throws Exception
+    public void AONE_14170() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -1071,13 +1158,13 @@ public class SiteNotificationsTest extends AbstractUtils
         }
 
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity4, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity4);
+                "Could not find activity: " + activity4);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity3, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity3);
+                "Could not find activity: " + activity3);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity2, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity2);
+                "Could not find activity: " + activity2);
         assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_ACTIVITIES, activity1, true, siteName, ActivityType.DESCRIPTION),
-                    "Could not find activity: " + activity1);
+                "Could not find activity: " + activity1);
 
         ShareUser.logout(drone);
     }

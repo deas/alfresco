@@ -18,15 +18,8 @@
  */
 package org.alfresco.share.dashlet;
 
-import org.alfresco.po.share.dashlet.ConfigureSiteNoticeDialogBoxPage;
-import org.alfresco.po.share.dashlet.ConfigureSiteNoticeTinyMceEditor;
-import org.alfresco.po.share.dashlet.HtmlSourceEditorPage;
-import org.alfresco.po.share.dashlet.InsertOrEditAnchorPage;
-import org.alfresco.po.share.dashlet.InsertOrEditImagePage;
-import org.alfresco.po.share.dashlet.InsertOrEditImagePage.ImageAlignment;
-import org.alfresco.po.share.dashlet.InsertOrEditLinkPage;
+import org.alfresco.po.share.dashlet.*;
 import org.alfresco.po.share.dashlet.InsertOrEditLinkPage.InsertLinkPageTargetItems;
-import org.alfresco.po.share.dashlet.SiteNoticeDashlet;
 import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.TinyMceColourCode;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -36,6 +29,7 @@ import org.alfresco.share.util.ConfigureSiteNoticeActions;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,8 +61,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         logger.info("Start Tests in: " + testName);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8948() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13966() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -90,8 +84,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Verify Site Notice Dashlet is added successfully.</li>
      * </ul>
      */
-    @Test
-    public void ALF_8948() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13966() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -111,8 +105,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertNotNull(siteDashBoard.getDashlet(SITE_NOTICE).render());
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8949() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13967() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -135,8 +129,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Click ?,Configure and X icons and verify the expected windows and functionality</li>
      * </ul>
      */
-    @Test
-    public void ALF_8949() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13967() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -172,8 +166,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertNotNull(configureSiteNotice);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8950() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13968() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -198,8 +192,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Data is successfully saved and displayed in Site Novice dashlet</li>
      * </ul>
      */
-    @Test
-    public void ALF_8950() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13968() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -230,8 +224,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertEquals(siteNoticeDashlet.getContent(), text);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8951() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13969() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -256,8 +250,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Verfiy that No Changes are applied to text.</li>
      * </ul>
      */
-    @Test
-    public void ALF_8951() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13969() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -288,8 +282,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertNotEquals(siteNoticeDashlet.getContent(), text);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8952() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13970() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -315,8 +309,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>"Site Notice" is set as the title.</li>
      * </ul>
      */
-    @Test
-    public void ALF_8952() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13970() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -360,8 +354,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertEquals(siteNoticeDashlet.getTitle(), DEFAULT_SITE_NOTICE_TITLE, "MNT-10001:'Site Notice' dashlet and title with spaces.");
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8962() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13971() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -386,20 +380,16 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>The form is closed. No changes are applied;</li>
      * </ul>
      */
-    @Test
-    public void ALF_8962() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13971() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
         String siteName = getSiteName(testName + System.currentTimeMillis());
         String title = testName;
         String text = testName + siteName;
-        String fontStyle = "<font color=\"#0000FF\">";
-
-        if (alfrescoVersion.isCloud())
-        {
-            fontStyle = "<font style=\"color: rgb(0, 0, 255);\">";
-        }
+        //String fontStyle = "<font color=\"#0000FF\">";
+        String fontStyle = "style=\"color: rgb(0, 0, 255);\"";
 
         // Login
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -428,30 +418,42 @@ public class SiteNoticetDashletTest extends AbstractUtils
         // Test text as BOLD
         siteNoticeEditor.clickTextFormatter(FormatType.BOLD);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<b>" + text + "</b>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + text + "</strong>"));
 
         // Test text as ITALIC
         siteNoticeEditor.clickTextFormatter(FormatType.ITALIC);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<i><b>" + text + "</b></i>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em><strong>" + text + "</strong></em>"), "Actual: " + siteNoticeEditor.getContent() + ", Expected: " + ("<em><strong>" + text + "</strong></em>"));
 
         // Test text as UNDERLINED
         siteNoticeEditor.clickTextFormatter(FormatType.UNDERLINED);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<u><i><b>" + text + "</b></i></u>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\"><em><strong>" + text + "</strong></em></span>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
 
         // Test BULLET on text
         siteNoticeEditor.clickTextFormatter(FormatType.BULLET);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li><u><i><b>" + text + "</b></i></u></li>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li><span style=\"text-decoration: underline;\"><em><strong>" + text + "</strong></em></span></li>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
 
         // Test NUMBER on test
         siteNoticeEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol><li><u><i><b>" + text + "</b></i></u></li></ol>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol style=\"\"><li><span style=\"text-decoration: underline;\"><em><strong>" + text + "</strong></em></span></li></ol>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
         siteNoticeEditor.removeFormatting();
 
-        // TODO : Inserting images and links functionality will be added once it is implemented.
+        InsertOrEditLinkPage insertOrEditLinkPage = siteNoticeEditor.clickInsertOrEditLink();
+        insertOrEditLinkPage.setLinkUrl("http://electrictower.ru/");
+        insertOrEditLinkPage.setTitle("amazing blog");
+        insertOrEditLinkPage.clickOKButton();
+        Assert.assertEquals(text, siteNoticeEditor.getText());
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol><li><a href=\"http://electrictower.ru/\" data-mce-href=\"http://electrictower.ru/\">" + text + "</a><br></li></ol>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
+
+        InsertOrEditImagePage insertOrEditImagePage = siteNoticeEditor.selectInsertOrEditImage();
+        insertOrEditImagePage.setImageUrl("http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png");
+        insertOrEditImagePage.setDescription("Logo alfresco");
+        insertOrEditImagePage.clickOKButton();
+        Assert.assertEquals(text, siteNoticeEditor.getText());
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<img data-mce-selected=\"1\" src=\"http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png\""), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
 
         // Click on Close button present on SiteContent Configure dialog box.
         configureSiteNotice.clickOnCloseButton();
@@ -467,14 +469,14 @@ public class SiteNoticetDashletTest extends AbstractUtils
 
         // Verify the text doesn't get edited.
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertFalse(siteNoticeEditor.getContent().contains("<b>"));
-        Assert.assertFalse(siteNoticeEditor.getContent().contains("<i>"));
-        Assert.assertFalse(siteNoticeEditor.getContent().contains("<u>"));
+        Assert.assertFalse(siteNoticeEditor.getContent().contains("<strong>"));
+        Assert.assertFalse(siteNoticeEditor.getContent().contains("<em>"));
+        Assert.assertFalse(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\">"));
         Assert.assertFalse(siteNoticeEditor.getContent().contains(fontStyle));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8963() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13972() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -499,8 +501,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>The form is closed. All changes are applied;</li>
      * </ul>
      */
-    @Test
-    public void ALF_8963() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13972() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -535,29 +537,41 @@ public class SiteNoticetDashletTest extends AbstractUtils
         // Test text as BOLD
         siteNoticeEditor.clickTextFormatter(FormatType.BOLD);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<b>" + text + "</b>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + text + "</strong>"));
 
         // Test text as ITALIC
         siteNoticeEditor.clickTextFormatter(FormatType.ITALIC);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<i><b>" + text + "</b></i>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em><strong>" + text + "</strong></em>"));
 
         // Test text as UNDERLINED
         siteNoticeEditor.clickTextFormatter(FormatType.UNDERLINED);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<u><i><b>" + text + "</b></i></u>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\"><em><strong>" + text + "</strong></em></span>"), "Actual: " + siteNoticeEditor.getContent() + ", Expected: " + "<u><em><strong>" + text + "</strong></em></u>");
 
         // Test BULLET on text
         siteNoticeEditor.clickTextFormatter(FormatType.BULLET);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li><u><i><b>" + text + "</b></i></u></li>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li><span style=\"text-decoration: underline;\"><em><strong>" + text + "</strong></em></span></li>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
 
         // Test NUMBER on test
         siteNoticeEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol><li><u><i><b>" + text + "</b></i></u></li></ol>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol style=\"\"><li><span style=\"text-decoration: underline;\"><em><strong>" + text + "</strong></em></span></li></ol>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
 
-        // TODO : Inserting images and links functionality will be added once it is implemented.
+        InsertOrEditLinkPage insertOrEditLinkPage = siteNoticeEditor.clickInsertOrEditLink();
+        insertOrEditLinkPage.setLinkUrl("http://electrictower.ru/");
+        insertOrEditLinkPage.setTitle("amazing blog");
+        insertOrEditLinkPage.clickOKButton();
+        Assert.assertEquals(text, siteNoticeEditor.getText());
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol style=\"\"><li><span style=\"text-decoration: underline;\"><em><strong><a href=\"http://electrictower.ru/\" data-mce-href=\"http://electrictower.ru/\">" + text + "</a></strong></em></span><br></li></ol>"), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
+
+        InsertOrEditImagePage insertOrEditImagePage = siteNoticeEditor.selectInsertOrEditImage();
+        insertOrEditImagePage.setImageUrl("http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png");
+        insertOrEditImagePage.setDescription("Logo alfresco");
+        insertOrEditImagePage.clickOKButton();
+        Assert.assertEquals(text, siteNoticeEditor.getText());
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<img data-mce-selected=\"1\" src=\"http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png\""), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
 
         // Click on OK button present on SiteContent Configure dialog box.
         configureSiteNotice.clickOnOKButton().render();
@@ -573,14 +587,14 @@ public class SiteNoticetDashletTest extends AbstractUtils
 
         // Verify the text is edited.
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<b>"));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<i>"));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<u>"));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol><li>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\">"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol style=\"\"><li>"));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8964() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13973() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -604,8 +618,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>The form is closed. All changes are applied;</li>
      * </ul>
      */
-    @Test
-    public void ALF_8964() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13973() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -630,15 +644,14 @@ public class SiteNoticetDashletTest extends AbstractUtils
 
         // Get Site Notice Dashlet
         siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
-        ;
 
         // Verify the title and text on Site Notice Dashlet.
         Assert.assertEquals(siteNoticeDashlet.getTitle(), title);
         Assert.assertTrue(siteNoticeDashlet.getContent().contains(text));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8965() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13974() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -662,8 +675,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>The form is closed. All changes are applied;</li>
      * </ul>
      */
-    @Test
-    public void ALF_8965() throws Exception
+    @Test(groups = { "AlfrescoOne", "IntermittentBugs"})
+    public void AONE_13974() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -692,10 +705,16 @@ public class SiteNoticetDashletTest extends AbstractUtils
         // Verify the title and text on Site Notice Dashlet.
         Assert.assertEquals(siteNoticeDashlet.getTitle(), title);
         Assert.assertEquals(siteNoticeDashlet.getContent(), text);
+
+        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+        ConfigureSiteNoticeDialogBoxPage configureSiteNotice = siteNoticeDashlet.clickOnConfigureIcon().render();
+        ConfigureSiteNoticeTinyMceEditor siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
+        Assert.assertEquals(configureSiteNotice.getTitle(), title, "It's bug ALF-18940.");
+        Assert.assertEquals(siteNoticeEditor.getText(), text);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_8966() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13975() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -719,8 +738,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>The form is closed. All changes are applied;</li>
      * </ul>
      */
-    @Test
-    public void ALF_8966() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13975() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -750,8 +769,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertEquals(siteNoticeDashlet.getContent(), titleAndText);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10821() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13977() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -775,8 +794,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>The form is closed. All changes are applied;</li>
      * </ul>
      */
-    @Test
-    public void ALF_10821() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13977() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -811,8 +830,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
 
         // test BULLET on text
         siteNoticeEditor.clickTextFormatter(FormatType.BULLET);
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ul><li>" + testName + "</li>"));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li>" + siteName + "</li></ul>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li>" + testName + "</li>"), "Actual: " + siteNoticeEditor.getContent() + ", Expected: " + "<li>" + testName + "</li>");
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li>" + siteName + "</li></ul>"), "Verifying Actual: " + siteNoticeEditor.getContent() + ", Expected: " + "<li>" + siteName + "</li></ul>");
 
         // Click on OK button present on Site Notice configure dialog box.
         configureSiteNotice.clickOnOKButton().render();
@@ -824,14 +843,14 @@ public class SiteNoticetDashletTest extends AbstractUtils
         configureSiteNotice = siteNoticeDashlet.clickOnConfigureIcon().render();
         siteNoticeEditor.removeFormatting();
 
-        // Test NUMBER on test
+        // Test NUMBER on text
         siteNoticeEditor.clickTextFormatter(FormatType.NUMBER);
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<ol><li>" + testName + "</li>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<li>" + testName + "</li>"));
         Assert.assertTrue(siteNoticeEditor.getContent().contains("<li>" + siteName + "</li></ol>"));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10822() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13978() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -856,8 +875,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Click OK button.Changes are applied.</li>
      * </ul>
      */
-    @Test
-    public void ALF_10822() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13978() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -893,7 +912,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         siteNoticeEditor.clickTextFormatter(FormatType.BOLD);
 
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<b>" + text + "</b>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + text + "</strong>"), "Actual: " + siteNoticeEditor.getContent() + ", Expected: " + "<b>" + text + "</b>");
 
         // Verify UNDO changes
         siteNoticeEditor.clickUndo();
@@ -903,23 +922,23 @@ public class SiteNoticetDashletTest extends AbstractUtils
         siteNoticeEditor = siteNoticeDashlet.clickOnConfigureIcon().render().getContentTinyMceEditor();
 
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertFalse(siteNoticeEditor.getContent().contains("<b>" + text + "</b>"));
+        Assert.assertFalse(siteNoticeEditor.getContent().contains("<strong>" + text + "</strong>"));
 
         // Verify REDO changes
         siteNoticeEditor.clickRedo();
 
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<b>" + text + "</b>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + text + "</strong>"));
 
         configureSiteNotice.clickOnOKButton().render();
         siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
         siteNoticeEditor = siteNoticeDashlet.clickOnConfigureIcon().render().getContentTinyMceEditor();
 
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains("<b>" + text + "</b>"));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + text + "</strong>"));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10828() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13984() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -942,21 +961,17 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Click OK button.Changes are applied.</li>
      * </ul>
      */
-    @Test
-    public void ALF_10828() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13984() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
         String siteName = getSiteName(testName + System.currentTimeMillis());
         String title = testName;
         String text = siteName;
-        String fontStyle = "<font color=\"#0000FF\">";
-        String fontBackColorAttr = "<font style=\"background-color: rgb(0, 0, 255);\">";
-
-        if (alfrescoVersion.isCloud())
-        {
-            fontStyle = "<font style=\"color: rgb(0, 0, 255);\">";
-        }
+        // String fontStyle = "<font color=\"#0000FF\">";
+        String fontStyle = "style=\"color: rgb(0, 0, 255);\"";
+        String fontBackColorAttr = "style=\"background-color: rgb(255, 255, 0);\"";
 
         // Login
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -985,17 +1000,17 @@ public class SiteNoticetDashletTest extends AbstractUtils
         // Test text color as BLUE
         siteNoticeEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(text, siteNoticeEditor.getText());
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(fontStyle));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(fontStyle), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent() + ", fontStyle: " + fontStyle);
         siteNoticeEditor.removeFormatting();
 
         // Test text back color as yellow
-        siteNoticeEditor.clickBackgroundColorCode(TinyMceColourCode.BLUE);
-        Assert.assertEquals(text, siteNoticeEditor.getText());        
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(fontBackColorAttr));
+        siteNoticeEditor.clickBackgroundColorCode(TinyMceColourCode.YELLOW);
+        Assert.assertEquals(text, siteNoticeEditor.getText());
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(fontBackColorAttr), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent() + ", fontBackColorAttr: " + fontBackColorAttr);
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10823() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13979() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1024,8 +1039,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Verify that link is removed successfully</li>
      * </ul>
      */
-    @Test
-    public void ALF_10823() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13979() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1033,7 +1048,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         String title = testName;
         String text = testName;
         String linkTitle = "Test";
-        String linkContent = "<a target=\"_blank\" title=\"%s\" href=\"https://google.co.uk\" data-mce-href=\"https://google.co.uk\">%s</a>";
+        String linkContent = "<a href=\"https://google.co.uk\" target=\"_blank\" data-mce-href=\"https://google.co.uk\">%s</a>";
         // Login
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
@@ -1064,16 +1079,16 @@ public class SiteNoticetDashletTest extends AbstractUtils
         InsertOrEditLinkPage editLinkPage = siteNoticeEditor.clickInsertOrEditLink().render();
 
         // Set Title and Url,Target for link
-        editLinkPage.setTarget(InsertLinkPageTargetItems.OPEN_LINK_IN_NEW_WINDOW);
+        editLinkPage.setTarget(InsertLinkPageTargetItems.NEW_WINDOW);
         editLinkPage.setTitle(linkTitle);
         editLinkPage.setLinkUrl("https://google.co.uk");
 
         // click Save
-        configureSiteNotice = editLinkPage.clickInsertOrUpdateButton().render();
+        configureSiteNotice = editLinkPage.clickOKButton().render();
         siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
 
         // Verify the link created successfully
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(linkContent, linkTitle, text)));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(linkContent, text)), "Actual: " + siteNoticeEditor.getContent() + ", Expected: " + String.format(linkContent, text));
 
         // Update the link
         siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
@@ -1081,7 +1096,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         editLinkPage = siteNoticeEditor.clickInsertOrEditLink().render();
         linkTitle = linkTitle + "updated";
         editLinkPage.setTitle(linkTitle);
-        configureSiteNotice = editLinkPage.clickInsertOrUpdateButton().render();
+        configureSiteNotice = editLinkPage.clickOKButton().render();
         configureSiteNotice.clickOnOKButton().render();
 
         // Get Site Notice Dashlet
@@ -1091,7 +1106,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertNotNull(configureSiteNotice);
 
         // verify the link title is updated successfully.
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(linkContent, linkTitle, text)));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(linkContent, linkTitle, text)), "It's a bug! ACE-1883");
 
         // Click ok on Site Notice tinymce editor to close it
         configureSiteNotice.clickOnOKButton().render();
@@ -1100,7 +1115,14 @@ public class SiteNoticetDashletTest extends AbstractUtils
         String mainDrone = drone.getWindowHandle();
 
         // Select created link on SiteNoticeDashlet
-        siteNoticeDashlet.selectLink(text);
+        try
+        {
+            siteNoticeDashlet.selectLink(text);
+        }
+        catch (PageException e)
+        {
+            Assert.fail("It's a bug! ACE-1883");
+        }
 
         // Verify that link is working properly
         Assert.assertTrue(switchToWindowName(drone, drone.getValue("page.google.title")));
@@ -1120,8 +1142,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
         Assert.assertFalse(siteNoticeEditor.getContent().contains(String.format(linkContent, linkTitle, text)));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10824() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13980() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1144,8 +1166,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Verify that link is created successfully</li>
      * </ul>
      */
-    @Test
-    public void ALF_10824() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13980() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1186,13 +1208,21 @@ public class SiteNoticetDashletTest extends AbstractUtils
         insertOrEditAnchor.setName(anchorName);
 
         // Saving Anchor
-        configureSiteNotice = insertOrEditAnchor.clickInsertOrUpdateButton().render();
+        configureSiteNotice = insertOrEditAnchor.clickOKButton().render();
         siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(anchorContent, anchorName)));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(anchorContent, anchorName)), "It's a bug![ACE-1883] siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent() + ", String.format(anchorContent, anchorName): " + String.format(anchorContent, anchorName));
+
+        // Update Anchor
+        anchorName = anchorName + "Update";
+        insertOrEditAnchor = siteNoticeEditor.selectInsertOrEditAnchor().render();
+        insertOrEditAnchor.setName(anchorName);
+        configureSiteNotice = insertOrEditAnchor.clickOKButton().render();
+        siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(anchorContent, anchorName)), "It's a bug![ACE-1883] siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent() + ", String.format(anchorContent, anchorName): " + String.format(anchorContent, anchorName));
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10825() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13981() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1215,8 +1245,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Verify that link is created successfully</li>
      * </ul>
      */
-    @Test
-    public void ALF_10825() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13981() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1261,27 +1291,34 @@ public class SiteNoticetDashletTest extends AbstractUtils
         // Clicking on Insert/Edit Image
         InsertOrEditImagePage insertOrEditImage = siteNoticeEditor.selectInsertOrEditImage().render();
         Assert.assertNotNull(insertOrEditImage);
-        Assert.assertTrue(insertOrEditImage.getTitle().equalsIgnoreCase(drone.getValue("page.insert.edit.image.title")));
+        //Assert.assertTrue(insertOrEditImage.getTitle().equalsIgnoreCase(drone.getValue("page.insert.edit.image.title")));
 
         // Inserting image
         insertOrEditImage.setImageUrl(imageURL);
         insertOrEditImage.setDescription("Alfresco Business Image");
-        insertOrEditImage.setAlignment(ImageAlignment.BOTTOM);
+        //        insertOrEditImage.setAlignment(ImageAlignment.BOTTOM);
         insertOrEditImage.setDimensions(imageWidth, imageHeight);
-        configureSiteNotice = insertOrEditImage.clickInsertOrUpdateButton().render();
+        configureSiteNotice = insertOrEditImage.clickOKButton().render();
         siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
 
         // Verifying the image added successfully.
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_src_content,imageURL)));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_data_src_content,imageURL)));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_src_content, imageURL)));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_data_src_content, imageURL).split("=")[1]));
         Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_alt_content, imageDescription)));
         Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_height_content, imageHeight)));
         Assert.assertTrue(siteNoticeEditor.getContent().contains(String.format(image_width_content, imageWidth)));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(image_align_content));
+        // Assert.assertTrue(siteNoticeEditor.getContent().contains(image_align_content));
+
+        InsertOrEditImagePage insertOrEditImagePage = siteNoticeEditor.selectInsertOrEditImage();
+        insertOrEditImagePage.setImageUrl("http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png");
+        insertOrEditImagePage.setDescription("Logo alfresco");
+        insertOrEditImagePage.clickOKButton();
+        Assert.assertEquals(text, siteNoticeEditor.getText());
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<img data-mce-selected=\"1\" data-mce-src=\"http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png\" src=\"http://www.alfresco.com/sites/www/themes/alfrescodotcom/img/logo.png\""), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent());
     }
 
-    @Test(groups = { "DataPrepSiteNoticeDashlet" })
-    public void dataPrep_ALF_10826() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13982() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1306,8 +1343,8 @@ public class SiteNoticetDashletTest extends AbstractUtils
      * <li>Verify that HTML Source is updated successfully</li>
      * </ul>
      */
-    @Test
-    public void ALF_10826() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13982() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1315,7 +1352,7 @@ public class SiteNoticetDashletTest extends AbstractUtils
         String title = testName;
         String text = "";
         String htmlSource = "<p>hello</p>";
-        String newHtmlSource = "<p><b>hello</b></p>";
+        String newHtmlSource = "<p><strong>hello</strong></p>";
 
         // Login
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -1344,17 +1381,176 @@ public class SiteNoticetDashletTest extends AbstractUtils
         // Clicking on Insert/Edit Image
         HtmlSourceEditorPage htmlSourcePage = siteNoticeEditor.selectHtmlSourceEditor().render();
         htmlSourcePage.setHTMLSource(htmlSource);
-        configureSiteNotice = htmlSourcePage.clickInsertOrUpdateButton().render();
+        configureSiteNotice = htmlSourcePage.clickOKButton().render();
         siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
         Assert.assertTrue(siteNoticeEditor.getContent().contains(htmlSource));
 
         // Update the html source
         htmlSourcePage = siteNoticeEditor.selectHtmlSourceEditor().render();
         htmlSourcePage.setHTMLSource(newHtmlSource);
-        configureSiteNotice = htmlSourcePage.clickInsertOrUpdateButton().render();
+        configureSiteNotice = htmlSourcePage.clickOKButton().render();
         siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
         Assert.assertFalse(siteNoticeEditor.getContent().contains(htmlSource));
-        Assert.assertTrue(siteNoticeEditor.getContent().contains(newHtmlSource));
+        Assert.assertTrue(siteNoticeEditor.getContent().contains(newHtmlSource), "siteNoticeEditor.getContent(): " + siteNoticeEditor.getContent() + ", newHtmlSource: " + newHtmlSource);
     }
 
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13976() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, siteDomain);
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+    }
+
+
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13976() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, siteDomain);
+        String siteName = getSiteName(testName + System.currentTimeMillis());
+        String title = testName;
+        String text = testName + "<p>" + siteName + "</p>";
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Create Site
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        // Add SiteNotice Dashlet
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
+        SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+
+        // Click on configure Icon and gets Configure Site Notice Dialog box.
+        ConfigureSiteNoticeDialogBoxPage configureSiteNotice = siteNoticeDashlet.clickOnConfigureIcon().render();
+
+        // Get SiteContent Configure tinymce editor.
+        ConfigureSiteNoticeTinyMceEditor siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
+
+        // Set title and text on editor
+        configureSiteNotice.setTitle(title);
+        configureSiteNotice.setText(text);
+
+        // Click any test formatting button. Bold
+        siteNoticeEditor.clickTextFormatter(FormatType.BOLD);
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + testName + "</strong>"), "Changes aren't implemented");
+
+        // Click on OK button present on Site Notice configure dialog box.
+        configureSiteNotice.clickOnOKButton().render();
+
+        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+        siteNoticeDashlet.clickOnConfigureIcon().render();
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + testName + "</strong>"), "Changes aren't saved");
+
+        // Click any test formatting button. Italic
+        siteNoticeEditor.removeFormatting();
+        siteNoticeEditor.clickTextFormatter(FormatType.ITALIC);
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em>" + testName + "</em>"), "Changes aren't implemented");
+
+        // Click on OK button present on Site Notice configure dialog box.
+        configureSiteNotice.clickOnOKButton().render();
+
+        // Get Site Notice dashlet
+        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+        siteNoticeDashlet.clickOnConfigureIcon().render();
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em>" + testName + "</em>"), "Changes aren't saved");
+
+        // Click any test formatting button. Underline
+        siteNoticeEditor.removeFormatting();
+        siteNoticeEditor.clickTextFormatter(FormatType.UNDERLINED);
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\">" + testName + "</span>"), "Changes aren't implemented");
+
+        // Click on OK button present on Site Notice configure dialog box.
+        configureSiteNotice.clickOnOKButton().render();
+
+        // Get Site Notice dashlet
+        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+
+        // Click on configure Icon and gets Configure Site Notice Dialog box.
+        siteNoticeDashlet.clickOnConfigureIcon().render();
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\">" + testName + "</span>"), "Changes aren't saved");
+    }
+
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_13983() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, siteDomain);
+        String[] testUserInfo = new String[] { testUser };
+
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+    }
+
+
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13983() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameForDomain(testName, siteDomain);
+        String siteName = getSiteName(testName + System.currentTimeMillis());
+        String title = testName;
+        String text = testName + "<p>" + siteName + "</p>";
+
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+
+        // Create Site
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        // Add SiteNotice Dashlet
+        ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_NOTICE);
+        SiteNoticeDashlet siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+
+        // Click on configure Icon and gets Configure Site Notice Dialog box.
+        ConfigureSiteNoticeDialogBoxPage configureSiteNotice = siteNoticeDashlet.clickOnConfigureIcon().render();
+
+        // Get SiteContent Configure tinymce editor.
+        ConfigureSiteNoticeTinyMceEditor siteNoticeEditor = configureSiteNotice.getContentTinyMceEditor();
+
+        // Set title and text on editor
+        configureSiteNotice.setTitle(title);
+        configureSiteNotice.setText(text);
+
+        // Click any test formatting button. Bold
+        siteNoticeEditor.clickTextFormatter(FormatType.BOLD);
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + testName + "</strong>"), "Changes aren't implemented");
+
+        // Click on OK button present on Site Notice configure dialog box.
+        configureSiteNotice.clickOnOKButton().render();
+
+        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+        siteNoticeDashlet.clickOnConfigureIcon().render();
+        Assert.assertTrue(siteNoticeEditor.getContent().contains("<strong>" + testName + "</strong>"), "Changes aren't saved");
+
+        // Remove formating
+        siteNoticeEditor.removeFormatting();
+        //        siteNoticeEditor.clickTextFormatter(FormatType.ITALIC);
+        //        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em>" + testName + "</em>"), "");
+        //
+        //        // Click on OK button present on Site Notice configure dialog box.
+        //        configureSiteNotice.clickOnOKButton().render();
+        //
+        //        // Get Site Notice dashlet
+        //        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+        //        siteNoticeDashlet.clickOnConfigureIcon().render();
+        //        Assert.assertTrue(siteNoticeEditor.getContent().contains("<em>" + testName + "</em>"), "Changes aren't saved");
+        //
+        //        // Click any test formatting button. Underline
+        //        siteNoticeEditor.removeFormatting();
+        //        siteNoticeEditor.clickTextFormatter(FormatType.UNDERLINED);
+        //        Assert.assertTrue(siteNoticeEditor.getContent().contains("<span style=\"text-decoration: underline;\">" + testName + "</span>"), "");
+
+        // Click on OK button present on Site Notice configure dialog box.
+        configureSiteNotice.clickOnOKButton().render();
+
+        // Get Site Notice dashlet
+        siteNoticeDashlet = ShareUserDashboard.getSiteContentDashlet(drone, siteName);
+
+        // Click on configure Icon and gets Configure Site Notice Dialog box.
+        siteNoticeDashlet.clickOnConfigureIcon().render();
+        Assert.assertFalse(siteNoticeEditor.getContent().contains("<strong>" + testName + "</strong"), "Changes aren't saved");
+    }
 }

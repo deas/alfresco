@@ -85,9 +85,9 @@ public class InviteMembersPageTest extends AbstractTest
     @Test(groups = "Enterprise-only")
     public void testSearchUser() throws Exception
     {
-        List<String> searchUsers = null;
-        searchUsers = membersPage.searchUser(userNameTest);
-        RenderTime t = new RenderTime(4000);
+        List<String> searchUsers;
+        membersPage.searchUser(userNameTest);
+        RenderTime t = new RenderTime(30000);
         try
         {
             while (true)

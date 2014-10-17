@@ -6,11 +6,7 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 /**
  * Abstract of Topic form
@@ -31,6 +27,7 @@ public abstract class AbstractTopicForm extends SharePage
     protected static final By SAVE_BUTTON = (By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-submit-button"));
     protected static final By TAG_INPUT = By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-tag-input-field");
     protected static final By ADD_TAG_BUTTON = By.cssSelector("#template_x002e_createtopic_x002e_discussions-createtopic_x0023_default-add-tag-button");
+    protected static final String TOPIC_TAG = "//a[@class='taglibrary-action']/span[text()='%s']";
 
     protected AbstractTopicForm(WebDrone drone)
     {
@@ -168,8 +165,7 @@ public abstract class AbstractTopicForm extends SharePage
      *
      * @param title
      */
-
-    protected void setTitleField(final String title)
+    public void setTitleField(final String title)
     {
         setInput(drone.findAndWait(TITLE_FIELD), title);
     }
@@ -183,15 +179,8 @@ public abstract class AbstractTopicForm extends SharePage
     {
         try
         {
-                drone.executeJavaScript(String.format("tinyMCE.activeEditor.setContent('%s');", txtLines));
-                drone.switchToFrame(TOPIC_FORMAT_IFRAME);
-                WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
-                if (!element.getText().isEmpty())
-                {
-                    //element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-                    element.sendKeys(txtLines);
-                }
-            drone.switchToDefaultContent();
+            String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", txtLines);
+            drone.executeJavaScript(setCommentJs);
         }
         catch (TimeoutException toe)
         {
@@ -202,7 +191,7 @@ public abstract class AbstractTopicForm extends SharePage
     /**
      * Method for clicking Save button
      */
-    protected void clickSave()
+    public void clickSave()
     {
         WebElement saveButton = drone.findAndWait(SAVE_BUTTON);
         try
@@ -232,6 +221,29 @@ public abstract class AbstractTopicForm extends SharePage
         catch (NoSuchElementException e)
         {
             logger.debug("Unable to find tag input");
+        }
+    }
+
+    /**
+     * Method for removing tag
+     * method validate by DiscussionsPageTest.removeTags
+     *
+     * @param tag
+     */
+    protected void removeTag(String tag)
+    {
+        String tagXpath = String.format(TOPIC_TAG, tag);
+        WebElement element;
+        try
+        {
+            element = drone.findAndWait(By.xpath(tagXpath));
+            element.click();
+            drone.waitUntilElementDisappears(By.xpath(tagXpath), 3000);
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.debug("Unable to find tag");
+            throw new PageException("Unable to find tag " + tag + "");
         }
     }
 }

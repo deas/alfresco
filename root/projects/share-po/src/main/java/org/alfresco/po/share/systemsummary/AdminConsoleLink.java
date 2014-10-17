@@ -10,7 +10,12 @@ public enum AdminConsoleLink
 
     SystemSummary(By.cssSelector("a[href$='admin-systemsummary']")),
     ActivitiesFeed(By.cssSelector("a[href$='admin-activitiesfeed']")),
-    RepositoryServerClustering(By.cssSelector("a[href$='admin-clustering']"));
+    RepositoryServerClustering(By.cssSelector("a[href$='admin-clustering']")),
+    DirectoryManagement(By.cssSelector("a[href$='admin-directorymanagement']")),
+    TenantAdminConsole(By.cssSelector("a[href$='admin-tenantconsole']")),
+    FileServers(By.cssSelector("a[href$='admin-fileservers']")),
+    RepoConsole(By.cssSelector("a[href$='admin-repoconsole']")),
+    Transformations(By.cssSelector("a[href$='admin-transformations']"));
 
     public final By contentLocator;
 

@@ -14,16 +14,7 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
+import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -36,9 +27,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Select Aspects page object, this page comes from Document Detail Page's Manage Aspects.
@@ -59,6 +54,7 @@ public class SelectAspectsPage extends SharePage
     private static final By TITLE = By.cssSelector("div[id$='aspects-title']");
     private static final By ASPECTS_AVAILABLE = By.xpath("//div[contains(@id,'default-aspects-right')]//td/div[@class='yui-dt-liner']");
     private static final By ASPECTS_SELECTED = By.xpath("//div[contains(@id,'default-aspects-right')]//td/div[@class='yui-dt-liner']");
+    private static final By NOTIFICATION = By.cssSelector("div.bd>span.message");
 
     private static final String ASPECT_AVAILBLE_XPATH ="//div[contains(@id,'aspects-left')]//td/div[@class='yui-dt-liner']//h3[text()='%s']";
     /**
@@ -245,14 +241,25 @@ public class SelectAspectsPage extends SharePage
         try
         {
             drone.find(APPLY_CHANGE).click();
-            drone.waitForElement(By.cssSelector("div.bd>span.message"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
-            drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), "Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            drone.waitForElement(NOTIFICATION, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            if (!isNotificationTextCorrect())
+            {
+                throw new PageException("Incorrect notification is displayed");
+            }
+            drone.waitUntilNotVisible(NOTIFICATION,"Successfully updated aspects", SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             return drone.getCurrentPage();
         }
         catch (NoSuchElementException nse)
         {
             throw new PageException("Not able find the apply change button: ", nse);
         }
+
+    }
+
+    private boolean isNotificationTextCorrect()
+    {
+        WebElement messageText = drone.findAndWait(NOTIFICATION);
+        return messageText.getText().equals("Successfully updated aspects");
     }
 
     @Override

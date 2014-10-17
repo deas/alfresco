@@ -21,7 +21,7 @@ public class RepositoryServerClusteringPageTest extends AbstractTest
     public void isClusterEnabledTest()
     {
         SystemSummaryPage sysSummaryPage = (SystemSummaryPage) ShareUtil.navigateToSystemSummary(drone, shareUrl, username, password);
-        RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering);
+        RepositoryServerClusteringPage clusteringPage = sysSummaryPage.openConsolePage(AdminConsoleLink.RepositoryServerClustering).render();
         if (!clusteringPage.isClusterEnabled())
         {
             throw new SkipException("Cluster isn't enabled");

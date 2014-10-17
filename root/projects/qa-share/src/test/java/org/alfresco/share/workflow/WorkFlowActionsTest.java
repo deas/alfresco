@@ -8,14 +8,20 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetails;
+import org.alfresco.po.share.task.TaskDetailsPage;
+import org.alfresco.po.share.task.TaskStatus;
 import org.alfresco.po.share.workflow.CloudTaskOrReviewPage;
 import org.alfresco.po.share.workflow.KeepContentStrategy;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.Priority;
 import org.alfresco.po.share.workflow.TaskDetailsType;
+import org.alfresco.po.share.workflow.TaskHistoryPage;
 import org.alfresco.po.share.workflow.TaskType;
+import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
 import org.alfresco.po.share.workflow.WorkFlowFormDetails;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -35,6 +41,19 @@ import static org.testng.Assert.assertTrue;
 @Listeners(FailedTestListener.class)
 public class WorkFlowActionsTest extends AbstractWorkflow
 {    
+    
+    private String testDomain;
+    private String opUser;
+    private String cloudUser;
+    private String cloudSite;
+    private String opSite;
+    private String fileName;
+    private String folderName;
+    private String workflowName_15614;
+    private String workflowName_15671;
+    private String workflowName_15673;
+    
+    
     /**
      * Class includes: Tests from TestLink in Area: Hybrid Workflow/WorkFlow Actions
      */
@@ -68,22 +87,22 @@ public class WorkFlowActionsTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-9528:Simple Cloud Task - Cancel Workflow (OP)
+     * AONE-15671:Simple Cloud Task - Cancel Workflow (OP)
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
      * <li>3) Login as OP User and set up Cloud Sync with cloudUser</li>
      * </ul>
-     */
+     *//*
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_9528() throws Exception
+    public void dataPrep_AONE_15671() throws Exception
     {
         dataPrep(getTestName());
         //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
     }
 
-    /**
-     * ALF-9528:Simple Cloud Task - Cancel Workflow (OP)
+    *//**
+     * AONE-15671:Simple Cloud Task - Cancel Workflow (OP)
      * <ul>
      * <li>1) Login as User1 (Cloud) and Create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload 2 documents</li>
@@ -100,9 +119,9 @@ public class WorkFlowActionsTest extends AbstractWorkflow
      * <li>14) </li>
      * <li>15) </li>
      * </ul>
-     */
+     *//*
      @Test(groups = "Hybrid", enabled = true)
-    public void ALF_9528() throws Exception
+    public void AONE_15671() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -218,10 +237,10 @@ public class WorkFlowActionsTest extends AbstractWorkflow
             reportError(drone, testName + "-ENT", t);
             reportError(hybridDrone, testName + "-CL", t);
         }
-    }
+    }*/
 
     /**
-     * ALF-15167:Simple Cloud Task - Cancel Workflow (Cloud)
+     * AONE-15672:Simple Cloud Task - Cancel Workflow (Cloud)
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -236,7 +255,7 @@ public class WorkFlowActionsTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15167:Simple Cloud Task - Cancel Workflow (Cloud)
+     * AONE-15672:Simple Cloud Task - Cancel Workflow (Cloud)
      * <ul>
      * <li>1) Login as User1 (Cloud) and Create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload 2 documents</li>
@@ -255,7 +274,7 @@ public class WorkFlowActionsTest extends AbstractWorkflow
      * </ul>
      */
      @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15167() throws Exception
+    public void AONE_15672() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -371,7 +390,7 @@ public class WorkFlowActionsTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15168:Cloud Review Task - Cancel Workflow (OP)
+     * AONE-15673:Cloud Review Task - Cancel Workflow (OP)
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -385,8 +404,8 @@ public class WorkFlowActionsTest extends AbstractWorkflow
         //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
     }
 
-    /**
-     * ALF-15168:Cloud Review Task - Cancel Workflow (OP)
+   /* *//**
+     * AONE-15673:Cloud Review Task - Cancel Workflow (OP)
      * <ul>
      * <li>1) Login as User1 (Cloud) and Create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload 2 documents</li>
@@ -403,9 +422,9 @@ public class WorkFlowActionsTest extends AbstractWorkflow
      * <li>14) </li>
      * <li>15) </li>
      * </ul>
-     */
+     *//*
      @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15168() throws Exception
+    public void AONE_15673() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -523,8 +542,8 @@ public class WorkFlowActionsTest extends AbstractWorkflow
         }
     }
 
-    /**
-     * ALF-15169:Cloud Review Task - Cancel Workflow (Cloud)
+    *//**
+     * AONE-15674:Cloud Review Task - Cancel Workflow (Cloud)
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -538,8 +557,8 @@ public class WorkFlowActionsTest extends AbstractWorkflow
       //TODO: TestLink- Update the TestLink testcase to move the related precondition steps into test steps. 
     }
 
-    /**
-     * ALF-15169:Cloud Review Task - Cancel Workflow (Cloud)
+   /* *//**
+     * AONE-15674:Cloud Review Task - Cancel Workflow (Cloud)
      * <ul>
      * <li>1) Login as User1 (Cloud) and Create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload 2 documents</li>
@@ -556,9 +575,9 @@ public class WorkFlowActionsTest extends AbstractWorkflow
      * <li>14) </li>
      * <li>15) </li>
      * </ul>
-     */
+     *//*
      @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15169() throws Exception
+    public void AONE_15674() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -672,10 +691,10 @@ public class WorkFlowActionsTest extends AbstractWorkflow
             reportError(drone, testName + "-ENT", t);
             reportError(hybridDrone, testName + "-CL", t);
         }
-    }
+    }*/
 
     /**
-     * ALF-9570:Cancel Workflow if the document is locked in OP (OP)
+     * AONE-15678:Cancel Workflow if the document is locked in OP (OP)
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -690,10 +709,10 @@ public class WorkFlowActionsTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-9570:Cancel Workflow if the document is locked in OP (OP)
+     * AONE-15678:Cancel Workflow if the document is locked in OP (OP)
      */
      @Test(groups = "Hybrid", enabled = true)
-    public void ALF_9570() throws Exception
+    public void AONE_15678() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -815,7 +834,7 @@ public class WorkFlowActionsTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-9570:Cancel Workflow if the document is locked in OP (OP)
+     * AONE-15678:Cancel Workflow if the document is locked in OP (OP)
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -830,10 +849,10 @@ public class WorkFlowActionsTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-9570:Cancel Workflow if the document is locked in OP (OP)
+     * AONE-15678:Cancel Workflow if the document is locked in OP (OP)
      */
      @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15246() throws Exception
+    public void AONE_15679() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -994,4 +1013,384 @@ public class WorkFlowActionsTest extends AbstractWorkflow
             reportError(hybridDrone, testName + "-CL", t);
         }
     }
+     
+     @Test(groups = "DataPrepHybrid")
+     public void dataPrep_15671() throws Exception 
+     {
+       String cloudUser = getUserNameForDomain(testName + "cloudUser", testDomain);
+       String workFlowName = "Simple Cloud Task " + testName + "-15671CL1";
+       TaskDetailsPage taskDetailsPage;
+       EditTaskPage editTaskPage;
+
+       folderName = getFolderName(testName);
+       fileName = getFileName(testName) + "-15671" + ".txt";
+       String[] fileInfo = { fileName, DOCLIB };
+
+       ShareUser.login(drone, opUser, DEFAULT_PASSWORD);
+       ShareUser.openSiteDashboard(drone, opSite);
+
+       ShareUser.uploadFileInFolder(drone, fileInfo).render();
+       ShareUser.openSitesDocumentLibrary(drone, opSite).render();
+       CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName).render();
+       
+       WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
+       formDetails.setMessage(workFlowName);
+       formDetails.setTaskType(TaskType.SIMPLE_CLOUD_TASK);
+       formDetails.setTaskPriority(Priority.MEDIUM);
+       formDetails.setSiteName(cloudSite);
+       formDetails.setAssignee(cloudUser);
+       formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENTREMOVESYNC);
+       formDetails.setLockOnPremise(false);
+
+       // Create Workflow using File1
+       cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+       ShareUser.logout(drone);
+
+       ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+       MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone).render();
+
+       taskDetailsPage = myTasksPage.selectViewTasks(workFlowName).render();
+       editTaskPage = taskDetailsPage.selectEditButton().render();
+       editTaskPage.enterComment("test comment edited");
+       editTaskPage.selectStatusDropDown(TaskStatus.INPROGRESS);
+       taskDetailsPage = editTaskPage.selectTaskDoneButton().render();
+       ShareUser.logout(hybridDrone);
+      }
+     
+     @Test(groups = "Hybrid", enabled = true)
+      public void AONE_15671() throws Exception {
+
+       String cloudUser = getUserNameForDomain(testName + "cloudUser", testDomain);
+       String workFlowName = "Simple Cloud Task " + testName + "-15671CL1";
+       EditTaskPage editTaskPage;
+       TaskDetailsPage taskDetailsPage;
+       WorkFlowDetailsPage workflowDetailsPage;
+       MyWorkFlowsPage myWorkfFlowsPage;
+
+       try 
+       {
+           ShareUser.login(drone, opUser, DEFAULT_PASSWORD);
+           
+           // --- Step 1 ---
+           // --- Step action ---
+           // OP Perform Cancel Workflow action
+           // --- Expected results ---
+           // The workflow is canceled
+           
+
+           MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone).render();
+           myTasksPage.selectActiveTasks().render();
+           myTasksPage.selectViewWorkflow(workFlowName).render();
+           
+           WorkFlowDetailsPage workFlowDetailsPage2 = new WorkFlowDetailsPage(drone);
+           workFlowDetailsPage2.selectCancelWorkFlow().render();
+
+           // --- Step 2 ---
+           // --- Step action ---
+           // OP Verify the workflow and the task
+           // --- Expected results ---
+           // The workflow disappeared
+           
+           Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+           
+           // --- Step 3 ---
+           // --- Step action ---
+           // Cloud Verify the workflow and the task
+           // --- Expected results ---
+           // The task disappeared for the assignee Tasks list. The workflow disappeared from Cloud
+
+           ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+           ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone).render();
+           Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+           
+           // --- Step 4 ---
+           // --- Step action ---
+           // Cloud Verify the synced document
+           // --- Expected results ---
+           // Action, which was specified in After Completion drop-down, is performed
+           
+           ShareUser.openSiteDashboard(hybridDrone, cloudSite);
+           ShareUser.openDocumentLibrary(hybridDrone).render();
+           Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+       } 
+       
+       catch (Throwable t) 
+       {
+           reportError(drone, testName + "-ENT", t);
+       }
+
+   ShareUser.logout(drone);
+   }
+     
+     @Test(groups = "DataPrepHybrid")
+     public void dataPrep_15673() throws Exception 
+     {
+       String cloudUser = getUserNameForDomain(testName + "cloudUser", testDomain);
+       String workFlowName = "Simple Cloud Task " + testName + "-15673CL";
+       TaskDetailsPage taskDetailsPage;
+       EditTaskPage editTaskPage;
+
+       folderName = getFolderName(testName);
+       fileName = getFileName(testName) + "-15673" + ".txt";
+
+       String[] fileInfo = { fileName, DOCLIB };
+
+       ShareUser.login(drone, opUser, DEFAULT_PASSWORD);
+       ShareUser.openSiteDashboard(drone, opSite);
+       ShareUser.uploadFileInFolder(drone, fileInfo).render();
+       ShareUser.openSitesDocumentLibrary(drone, opSite).render();
+       CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName).render();
+
+       WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
+       formDetails.setMessage(workFlowName);
+       formDetails.setTaskType(TaskType.CLOUD_REVIEW_TASK);
+       formDetails.setApprovalPercentage(2);
+       formDetails.setTaskPriority(Priority.MEDIUM);
+       formDetails.setSiteName(cloudSite);
+       formDetails.setAssignee(cloudUser);
+       formDetails.setContentStrategy(KeepContentStrategy.DELETECONTENT);
+       formDetails.setLockOnPremise(false);
+
+       // Create Workflow using File1
+       cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+       ShareUser.logout(drone);
+
+       ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+       MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone).render();
+
+       taskDetailsPage = myTasksPage.selectViewTasks(workFlowName).render();
+       editTaskPage = taskDetailsPage.selectEditButton().render();
+       editTaskPage.enterComment("test comment edited");
+       editTaskPage.selectStatusDropDown(TaskStatus.INPROGRESS);
+       taskDetailsPage = editTaskPage.selectTaskDoneButton().render();
+       ShareUser.logout(hybridDrone);
+      }
+     
+     @Test(groups = "Hybrid", enabled = true)
+      public void AONE_15673() throws Exception {
+
+       String cloudUser = getUserNameForDomain(testName + "cloudUser", testDomain);
+       String workFlowName = "Simple Cloud Task " + testName + "-15673CL";
+       EditTaskPage editTaskPage;
+       TaskDetailsPage taskDetailsPage;
+       WorkFlowDetailsPage workflowDetailsPage;
+       MyWorkFlowsPage myWorkfFlowsPage;
+
+       try 
+       {
+               ShareUser.login(drone, opUser, DEFAULT_PASSWORD);
+               
+                // --- Step 1 ---
+                // --- Step action ---
+                // OP Perform Cancel Workflow action
+                // --- Expected results ---
+                // The workflow is canceled
+                
+     
+                MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone).render();
+                myTasksPage.selectActiveTasks().render();
+                myTasksPage.selectViewWorkflow(workFlowName).render();
+                
+                WorkFlowDetailsPage workFlowDetailsPage2 = new WorkFlowDetailsPage(drone);
+                workFlowDetailsPage2.selectCancelWorkFlow().render();
+
+                // --- Step 2 ---
+                // --- Step action ---
+                // OP Verify the workflow and the task
+                // --- Expected results ---
+                // The workflow disappeared
+                
+                Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+                
+                // --- Step 3 ---
+                // --- Step action ---
+                // Cloud Verify the workflow and the task
+                // --- Expected results ---
+                // The task disappeared for the assignee Tasks list. The workflow disappeared from Cloud
+
+                ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+                ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone).render();
+                Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+                
+                // --- Step 4 ---
+                // --- Step action ---
+                // Cloud Verify the synced document
+                // --- Expected results ---
+                // Action, which was specified in After Completion drop-down, is performed
+                
+                ShareUser.openSiteDashboard(hybridDrone, cloudSite);
+                ShareUser.openDocumentLibrary(hybridDrone).render();
+                Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+       } 
+       
+       catch (Throwable t) 
+       {
+           reportError(drone, testName + "-ENT", t);
+       }
+
+   ShareUser.logout(drone);
+   }
+     
+     @Test(groups = "DataPrepHybrid")
+     public void dataPrep_15674() throws Exception 
+     {
+       String cloudUser = getUserNameForDomain(testName + "cloudUser", testDomain);
+       String workFlowName = "Simple Cloud Task " + testName + "-15674CL";
+       TaskDetailsPage taskDetailsPage;
+       EditTaskPage editTaskPage;
+
+       folderName = getFolderName(testName);
+       fileName = getFileName(testName) + "-15674cccc" + ".txt";
+
+       String[] fileInfo = { fileName, DOCLIB };
+
+       ShareUser.login(drone, opUser, DEFAULT_PASSWORD);
+       ShareUser.openSiteDashboard(drone, opSite);
+       ShareUser.uploadFileInFolder(drone, fileInfo).render();
+       ShareUser.openSitesDocumentLibrary(drone, opSite).render();
+       CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName).render();
+
+       List<String> userNames = new ArrayList<String>();
+       userNames.add(cloudUser);
+       
+       WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
+       formDetails.setMessage(workFlowName);
+       formDetails.setTaskType(TaskType.CLOUD_REVIEW_TASK);
+       formDetails.setApprovalPercentage(20);
+       formDetails.setTaskPriority(Priority.MEDIUM);
+       formDetails.setSiteName(cloudSite);
+       formDetails.setReviewers(userNames);
+       formDetails.setContentStrategy(KeepContentStrategy.DELETECONTENT);
+       formDetails.setLockOnPremise(false);
+
+       // Create Workflow using File1
+       cloudTaskOrReviewPage.startWorkflow(formDetails).render();
+       ShareUser.logout(drone);
+
+       ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+       MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone).render();
+
+       taskDetailsPage = myTasksPage.selectViewTasks(workFlowName).render();
+       editTaskPage = taskDetailsPage.selectEditButton().render();
+       editTaskPage.enterComment("test comment edited");
+       editTaskPage.selectStatusDropDown(TaskStatus.INPROGRESS);
+       editTaskPage.selectSaveButton().render();
+       ShareUser.logout(hybridDrone);
+      }
+     
+     @Test(groups = "Hybrid", enabled = true)
+      public void AONE_15674() throws Exception
+     {
+
+       String cloudUser = getUserNameForDomain(testName + "cloudUser", testDomain);
+       String workFlowName = "Simple Cloud Task " + testName + "-15674CL";
+       fileName = getFileName(testName) + "-15674cccc" + ".txt";
+       EditTaskPage editTaskPage;
+       TaskDetailsPage taskDetailsPage;
+       WorkFlowDetailsPage workflowDetailsPage;
+       MyWorkFlowsPage myWorkfFlowsPage;
+
+       try 
+       {
+               ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
+               
+                // --- Step 1 ---
+                // --- Step action ---
+                // Cloud Perform Cancel Workflow action
+                // --- Expected results ---
+                // The workflow is canceled
+                
+                MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone).render();
+                myTasksPage.selectActiveTasks().render();
+                
+                myTasksPage.selectTaskHistory(workFlowName).render();
+//                myTasksPage.selectTaskHistory("dsa").render();
+//                WorkFlowDetailsPage workFlowDetailsPage2 = new WorkFlowDetailsPage(drone);
+                
+//                workFlowDetailsPage2.selectCancelWorkFlow().render();
+//                myTasksPage = ShareUserWorkFlow.cancelTaskFromMyTasksPage(hybridDrone, workFlowName);
+                TaskHistoryPage taskHistoryPage = new TaskHistoryPage(hybridDrone);
+                taskHistoryPage.selectCancelWorkFlow();
+
+                // --- Step 2 ---
+                // --- Step action ---
+                // Cloud Verify the workflow and the task
+                // --- Expected results ---
+                // The task disappeared for the assignee Tasks list. The workflow disappeared from Cloud
+                
+                Assert.assertFalse(myTasksPage.isTaskPresent(workFlowName));
+                
+                // --- Step 3 ---
+                // --- Step action ---
+                // OP Verify the workflow and the task
+                // --- Expected results ---
+                // The workflow is still active. A task with type "Worklflow cancelled on the cloud" is received
+
+                ShareUser.login(drone, opUser, DEFAULT_PASSWORD);
+                /*ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone).render();
+                
+                ShareUserWorkFlow.navigateToMyTasksPage(drone).render();
+                assertTrue(ShareUser.checkIfTaskIsPresent(drone, workFlowName));
+//                MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+//                myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+//                MyTasksPage myTasksPage = new MyTasksPage(drone);
+                TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
+
+                assertEquals(taskDetails.getType(), TaskDetailsType.WORKFLOW_CANCELLED_ON_THE_CLOUD);
+*/
+                myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+
+                assertTrue(ShareUser.checkIfTaskIsPresent(drone, workFlowName));
+
+                TaskDetails taskDetails = myTasksPage.getTaskDetails(workFlowName);
+
+                assertEquals(taskDetails.getType(), TaskDetailsType.WORKFLOW_CANCELLED_ON_THE_CLOUD);
+
+                // --- Step 4 ---
+                // --- Step action ---
+                // Cloud Verify the synced document
+                // --- Expected results ---
+                // The document is still synced
+                
+//                ShareUser.openSiteDashboard(hybridDrone, cloudUser);
+                ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone);
+//                assertTrue(myTasksPage.isTaskPresent(workFlowName));
+                
+                DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite).render();
+                documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite).render();
+                
+//                Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).clickOnViewCloudSyncInfo().render().getCloudSyncLocation().contains(folderName));
+//                assertTrue(documentLibraryPage.isFileVisible(workFlowName);
+//                documentLibraryPage.is
+//
+                DocumentLibraryPage documentLibraryPageOP = new DocumentLibraryPage(hybridDrone);
+
+                assertTrue(documentLibraryPageOP.isFileVisible(fileName), "Verifying " + fileName + " exists");
+                assertTrue(documentLibraryPageOP.getFileDirectoryInfo(fileName).isCloudSynced(), "Verifying the document is synced");
+                
+                // --- Step 5 ---
+                // --- Step action ---
+                // OP Verify the synced document
+                // --- Expected results ---
+                // The document is still synced
+                
+//                ShareUser.openSiteDashboard(drone, opUser);
+                ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName).render();
+//                DocumentLibraryPage documentLibraryPageOP = new DocumentLibraryPage(drone);
+                DocumentLibraryPage documentLibraryPage1 = ShareUser.openSitesDocumentLibrary(drone, opSite).render();
+                documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSite).render();
+              
+              assertTrue(documentLibraryPageOP.isFileVisible(fileName), "Verifying " + fileName + " exists");
+              assertTrue(documentLibraryPageOP.getFileDirectoryInfo(fileName).isCloudSynced(), "Verifying the document is synced");
+                
+       } 
+       
+       catch (Throwable t) 
+       {
+           reportError(drone, testName + "-ENT", t);
+       }
+
+   ShareUser.logout(drone);
+   }
+     
 }

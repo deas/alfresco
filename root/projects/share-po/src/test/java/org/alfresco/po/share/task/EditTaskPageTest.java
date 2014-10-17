@@ -18,14 +18,15 @@
  */
 package org.alfresco.po.share.task;
 
-import static org.testng.Assert.assertTrue;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.annotations.AfterClass;
@@ -33,9 +34,15 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.io.File;
+
+import static org.alfresco.po.share.task.EditTaskPage.Button.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 /**
  * Tests the page object - <code>EditTaskPage</code>
- * 
+ *
  * @author Abhijeet Bharade
  * @since 1.6.2
  */
@@ -45,24 +52,40 @@ public class EditTaskPageTest extends AbstractTaskTest
     private EditTaskPage pageUnderTest;
     private String otherUser = "";
     protected String modSiteName;
+    protected String itemSiteName;
     private SharePage returnedPage;
     private SiteFinderPage siteFinder;
     private String testUserName;
+    private String fileName;
 
 
     @BeforeClass(groups = "Enterprise4.2")
     public void setUp() throws Throwable
     {
-        otherUser = "otherUser"+ System.currentTimeMillis();
+        otherUser = "otherUser" + System.currentTimeMillis();
         siteName = "AdhocReassign" + System.currentTimeMillis();
         modSiteName = "modSiteName" + System.currentTimeMillis();
+        itemSiteName = "itemSiteName" + System.currentTimeMillis();
         taskName = siteName;
         testUserName = "reviewer" + System.currentTimeMillis();
         createEnterpriseUser(testUserName);
         createEnterpriseUser(otherUser);
+
+        // add site with item for selectItem test
+        loginAs(testUserName, "password");
+        File file = SiteUtil.prepareFile();
+        fileName = file.getName();
+        SiteUtil.createSite(drone, itemSiteName, "Moderated");
+        SitePage site = drone.getCurrentPage().render();
+        DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
+        UploadFilePage upLoadPage = docPage.getNavigation().selectFileUpload().render();
+        upLoadPage.uploadFile(file.getCanonicalPath()).render();
+        logout(drone);
+
         createTask(testUserName, "password");
         pageUnderTest = myTasksPage.navigateToEditTaskPage(taskName, testUserName).render();
     }
+
     @AfterClass(groups = "Enterprise4.2")
     public void deleteSite()
     {
@@ -70,6 +93,16 @@ public class EditTaskPageTest extends AbstractTaskTest
     }
 
     @Test(groups = "Enterprise4.2")
+    public void checkIsButtonDisplayed()
+    {
+        assertTrue(pageUnderTest.isButtonsDisplayed(SAVE_AND_CLOSE));
+        assertTrue(pageUnderTest.isButtonsDisplayed(CANCEL));
+        assertTrue(pageUnderTest.isButtonsDisplayed(REASSIGN));
+        assertTrue(pageUnderTest.isButtonsDisplayed(TASK_DONE));
+        assertTrue(pageUnderTest.isButtonsDisplayed(ADD));
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "checkIsButtonDisplayed")
     public void selectStatusDropDownTest()
     {
         assertTrue(TaskStatus.NOTYETSTARTED.equals(pageUnderTest.getSelectedStatusFromDropDown()),
@@ -79,6 +112,32 @@ public class EditTaskPageTest extends AbstractTaskTest
     }
 
     @Test(groups = "Enterprise4.2", dependsOnMethods = "selectStatusDropDownTest")
+    public void selectItem()
+    {
+        pageUnderTest.selectItem(fileName, itemSiteName);
+        pageUnderTest = drone.getCurrentPage().render();
+        assertTrue(pageUnderTest.getTaskItems().get(0).getItemName().equals(fileName), "The expected item isn't added");
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectItem")
+    public void selectReassign() throws Exception
+    {
+        myTasksPage = pageUnderTest.selectReassign(otherUser).render();
+        assertFalse(myTasksPage.isTaskPresent(taskName), "Task isn't reassigned on the user '" + otherUser + "'");
+        ShareUtil.logout(drone);
+        DashBoardPage dash = loginAs(otherUser, "password");
+        myTasksPage = dash.getNav().selectMyTasks().render();
+        assertTrue(myTasksPage.isTaskPresent(taskName), "Task isn't reassigned on the user '" + otherUser + "'");
+        pageUnderTest = myTasksPage.navigateToEditTaskPage(taskName).render();
+        myTasksPage = pageUnderTest.selectReassign(testUserName).render();
+        ShareUtil.logout(drone);
+        dash = loginAs(testUserName, "password");
+        myTasksPage = dash.getNav().selectMyTasks().render();
+        assertTrue(myTasksPage.isTaskPresent(taskName), "Task isn't reassigned on the user '" + testUserName + "'");
+        pageUnderTest = myTasksPage.navigateToEditTaskPage(taskName).render();
+    }
+
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectReassign")
     public void selectTaskDoneButtonTest()
     {
         pageUnderTest.enterComment("Task Completed");
@@ -103,7 +162,7 @@ public class EditTaskPageTest extends AbstractTaskTest
         // Rejecting the request to join
         dash = loginAs(testUserName, "password");
         myTasksPage = dash.getNav().selectMyTasks().render();
-        pageUnderTest = myTasksPage.navigateToEditTaskPage(modSiteName).render();
+        pageUnderTest = myTasksPage.navigateToEditTaskPage("Request to join "+modSiteName+" site").render();
         returnedPage = pageUnderTest.selectRejectButton().render();
         assertTrue(returnedPage instanceof MyTasksPage, "The return page should be an instance of MyTasksPage page");
         ShareUtil.logout(drone);
@@ -122,8 +181,21 @@ public class EditTaskPageTest extends AbstractTaskTest
         // Approving request to join.
         dash = loginAs(testUserName, "password");
         myTasksPage = dash.getNav().selectMyTasks();
-        pageUnderTest = myTasksPage.navigateToEditTaskPage(modSiteName).render();
+        pageUnderTest = myTasksPage.navigateToEditTaskPage("Request to join "+modSiteName+" site").render();
         returnedPage = pageUnderTest.selectApproveButton().render();
         assertTrue(returnedPage instanceof MyTasksPage, "The return page should be an instance of MyTasksPage page");
+    }
+    
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectReassign")
+    public void isCommentTextAreaDisplayedTest() throws Exception
+    {
+    	assertTrue(pageUnderTest.isCommentTextAreaDisplayed()); 
+    }
+    
+    @Test(groups = "Enterprise4.2", dependsOnMethods = "selectReassign")
+    public void readCommentFromCommentTextAreaTest() throws Exception
+    {
+    	pageUnderTest.enterComment("test");
+    	assertTrue(pageUnderTest.readCommentFromCommentTextArea().contains("test")); 
     }
 }

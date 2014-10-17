@@ -1,29 +1,27 @@
 package org.alfresco.share.sanity;
 
-import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SitePageType;
 import org.alfresco.po.share.site.calendar.CalendarPage;
-import org.alfresco.po.share.site.wiki.WikiPage;
-import org.alfresco.share.util.*;
+import org.alfresco.share.util.AbstractUtils;
+import org.alfresco.share.util.ActivityType;
+import org.alfresco.share.util.ShareUser;
+import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.WebDroneImpl;
-import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author Sergey Kardash
  */
+@Listeners(FailedTestListener.class)
 public class SiteCalendarSanityTest extends AbstractUtils
 {
 
@@ -55,7 +53,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
 
     // Day Tab
     @Test(groups = { "Sanity", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3080() throws Exception
+    public void AONE_15211() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
 
@@ -72,12 +70,8 @@ public class SiteCalendarSanityTest extends AbstractUtils
         // Any site is created
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC).render();
 
-        // Calendar > Day tab is opened
-//        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
-//        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
-//        pageTypes.add(SitePageType.CALENDER);
-//        customizeSizePage.addPages(pageTypes);
-        SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
+        SiteDashboardPage siteDashPage;
+        ShareUser.openSiteDashboard(drone, siteName);
 
         ShareUserDashboard.addPageToSite(drone, siteName, SitePageType.CALENDER);
 
@@ -85,7 +79,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
         savePageSource(getTestName() + "_add_calendar");
         saveOsScreenShot(getTestName() + "_add_calendar1");
         saveScreenShot(getTestName() + "_add_calendar2");
-        saveScreenShot(drone,getTestName() + "_add_calendar3");
+        saveScreenShot(drone, getTestName() + "_add_calendar3");
         CalendarPage calendarPage = siteDashPage.getSiteNav().selectCalendarPage();
 
         // Create any single day event, e.g. event1
@@ -227,7 +221,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
 
     // Week Tab
     @Test(groups = { "Sanity", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3081() throws Exception
+    public void AONE_15212() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
 
@@ -245,10 +239,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC).render();
 
         // Calendar > Week tab is opened
-        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
-        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
-        pageTypes.add(SitePageType.CALENDER);
-        customizeSizePage.addPages(pageTypes);
+        ShareUserDashboard.addPageToSite(drone, siteName, SitePageType.CALENDER);
 
         SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
 
@@ -395,7 +386,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
 
     // Month Tab
     @Test(groups = { "Sanity", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3082() throws Exception
+    public void AONE_15213() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
 
@@ -413,10 +404,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC).render();
 
         // Calendar > Month tab is opened
-        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
-        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
-        pageTypes.add(SitePageType.CALENDER);
-        customizeSizePage.addPages(pageTypes);
+        ShareUserDashboard.addPageToSite(drone, siteName, SitePageType.CALENDER);
 
         SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
 
@@ -547,7 +535,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
 
     // Agenda Tab
     @Test(groups = { "Sanity", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3083() throws Exception
+    public void AONE_15214() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
 
@@ -565,10 +553,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC).render();
 
         // Calendar > Agenda tab is opened
-        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
-        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
-        pageTypes.add(SitePageType.CALENDER);
-        customizeSizePage.addPages(pageTypes);
+        ShareUserDashboard.addPageToSite(drone, siteName, SitePageType.CALENDER);
         SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
 
         CalendarPage calendarPage = siteDashPage.getSiteNav().selectCalendarPage();
@@ -698,7 +683,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
 
     // Tags and Activities
     @Test(groups = { "Sanity", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_3084() throws Exception
+    public void AONE_15215() throws Exception
     {
         String siteName = getSiteName(getTestName() + System.currentTimeMillis());
 
@@ -717,10 +702,7 @@ public class SiteCalendarSanityTest extends AbstractUtils
         ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC).render();
 
         // Calendar > Month tab is opened
-        CustomizeSitePage customizeSizePage = ShareUser.customizeSite(drone, siteName);
-        List<SitePageType> pageTypes = new ArrayList<SitePageType>();
-        pageTypes.add(SitePageType.CALENDER);
-        customizeSizePage.addPages(pageTypes);
+        ShareUserDashboard.addPageToSite(drone, siteName, SitePageType.CALENDER);
         SiteDashboardPage siteDashPage = ShareUser.openSiteDashboard(drone, siteName);
 
         CalendarPage calendarPage = siteDashPage.getSiteNav().selectCalendarPage();

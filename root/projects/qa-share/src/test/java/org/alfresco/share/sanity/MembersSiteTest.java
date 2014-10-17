@@ -55,10 +55,10 @@ import static org.testng.Assert.*;
 public class MembersSiteTest extends AbstractUtils
 {
     private static Log logger = LogFactory.getLog(MembersSiteTest.class);
-    private static final String USER_NAME_IN_EMAIL = "//TBODY/TR/TD/DIV/P[4]/B[1]";
-    private static final String PASSWORD_IN_EMAIL = "//TBODY/TR/TD/DIV/P[4]/B[2]";
-    private static final String INVITATION_URL_IN_EMAIL = "//TBODY/TR/TD/DIV/P[3]/A";
-    private static final String REJECT_INV_URL_IN_EMAIL = "//TBODY/TR/TD/DIV/P[6]/A";
+    private static final String USER_NAME_IN_EMAIL = "//DIV/P[4]/B[1]";
+    private static final String PASSWORD_IN_EMAIL = "//DIV/P[4]/B[2]";
+    private static final String INVITATION_URL_IN_EMAIL = "//DIV/P[3]/A";
+    private static final String REJECT_INV_URL_IN_EMAIL = "//DIV/P[6]/A";
 
     private String userNameInEmail;
     private String passwordInEmail;
@@ -76,7 +76,7 @@ public class MembersSiteTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepSanity")
-    public void dataPrep_ALF_3085() throws Exception
+    public void dataPrep_AONE_15216() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -105,7 +105,7 @@ public class MembersSiteTest extends AbstractUtils
     }
 
     @Test(groups = "Sanity")
-    public void ALF_3085()
+    public void AONE_15216()
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -167,7 +167,7 @@ public class MembersSiteTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepSanity")
-    public void dataPrep_ALF_3111() throws Exception
+    public void dataPrep_AONE_15217() throws Exception
     {
         String testName = getTestName();
         String testUser1 = MailUtil.BOT_MAIL_1;
@@ -187,7 +187,7 @@ public class MembersSiteTest extends AbstractUtils
     }
 
     @Test(groups = "Sanity")
-    public void ALF_3111() throws Exception
+    public void AONE_15217() throws Exception
     {
         String testName = getTestName();
         String testUser1 = MailUtil.BOT_MAIL_1;
@@ -217,7 +217,7 @@ public class MembersSiteTest extends AbstractUtils
         assertFalse(inviteMembersPage.isAddButtonEnabledFor(testUser1), String.format("Add button enabled for invited user[%s].", testUser1));
 
         foundUsers = inviteMembersPage.searchUser(MailUtil.MAIL_BOT_BASE_NAME + "*");
-        assertEquals(foundUsers.size(), 3, "3 user not found!");
+        assertTrue(foundUsers.size() > 3, "3 user not found!");
         assertFalse(inviteMembersPage.isAddButtonEnabledFor(testUser1), String.format("Add button enabled for invited user[%s].", testUser1));
         assertFalse(inviteMembersPage.isAddButtonEnabledFor(testUser2), String.format("Add button disabled. Can't add user[%s] to site", testUser2));
         assertTrue(inviteMembersPage.isAddButtonEnabledFor(testUser3), String.format("Add button disabled. Can't add user[%s] to site", testUser3));
@@ -252,7 +252,7 @@ public class MembersSiteTest extends AbstractUtils
         inviteMembersPage = siteDashboardPage.getSiteNav().selectInvite();
         inviteMembersPage.invExternalUser(extFirstName, extLastName, externalEmail, COLLABORATOR);
         String email = MailUtil.getMailAsString(externalEmail, String.format("Alfresco Share: You have been invited to join the %s site", siteName));
-        parseMail(email);
+        parseExternalInvitationMail(email);
 
         SiteMembersPage siteMembersPage = inviteMembersPage.navigateToMembersSitePage();
         assertEquals(siteMembersPage.searchUser(userNameInEmail).size(), 0, "Can found don't inviting user.");
@@ -272,7 +272,7 @@ public class MembersSiteTest extends AbstractUtils
         inviteMembersPage.invExternalUser(extFirstName, extLastName, externalEmail, COLLABORATOR);
 
         email = MailUtil.getMailAsString(externalEmail, String.format("Alfresco Share: You have been invited to join the %s site", siteName));
-        parseMail(email);
+        parseExternalInvitationMail(email);
 
         rejectInvitation();
         drone.navigateTo(currentUrl);
@@ -283,7 +283,7 @@ public class MembersSiteTest extends AbstractUtils
         inviteMembersPage.invExternalUser(extFirstName, extLastName, externalEmail, COLLABORATOR);
         email = MailUtil.getMailAsString(externalEmail, String.format("Alfresco Share: You have been invited to join the %s site", siteName));
         assertNotNull(email, "Email for external user don't getting.");
-        parseMail(email);
+        parseExternalInvitationMail(email);
 
         drone.navigateTo(invitationUrlInEmail);
         siteMembersPage = siteDashboardPage.getSiteNav().selectMembers();
@@ -292,7 +292,7 @@ public class MembersSiteTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepSanity")
-    public void dataPrep_ALF_3126() throws Exception
+    public void dataPrep_AONE_15218() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -319,7 +319,7 @@ public class MembersSiteTest extends AbstractUtils
     }
 
     @Test(groups = "Sanity")
-    public void ALF_3126()
+    public void AONE_15218()
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -426,7 +426,7 @@ public class MembersSiteTest extends AbstractUtils
         assertTrue(declineElem.getText().contains("site has been rejected."), "Don't reject invitation");
     }
 
-    private void parseMail(String email) throws IOException, SAXException
+    private void parseExternalInvitationMail(String email) throws IOException, SAXException
     {
         DOMParser parser = new DOMParser();
         parser.parse(new InputSource(new StringReader(email)));

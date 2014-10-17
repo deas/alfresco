@@ -72,13 +72,13 @@
             <class name="org.alfresco.share.LoginTest" />
             <class name="org.alfresco.share.MyDashBoardTest">
                 <methods>
-                    <exclude name="cloud_1507" />
+                    <exclude name="AONE_12092" />
                 </methods>
             </class>
             <class name="org.alfresco.share.SiteDashBoardTest" /> 
             <class name="org.alfresco.share.HeaderBarTest">
 			 	<methods>
-                     <include name="ALF_3161" />
+                     <include name="AONE_15836" />
                 </methods>
 			</class>
         </classes>
@@ -90,7 +90,7 @@
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
 			<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>
-                     <include name="ALF_3162" />
+                     <include name="AONE_15837" />
                 </methods>
 			</class>
 	<!-- 		<class name="org.alfresco.share.reports.SiteContentBreakdownReportTest" />
@@ -111,7 +111,7 @@
         <classes>
              <class name="org.alfresco.share.site.document.DocumentDetailsTest">
             	<methods>
-                    <include name="ALF_3160" />
+                    <include name="AONE_15835" />
                 </methods>
              </class>
           <!--  <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/> -->
@@ -119,14 +119,14 @@
             <class name="org.alfresco.share.SiteDocumentLibraryTest">
             
                 <methods>
-                    <exclude name="enterprise40x_5606" />
+                    <exclude name="AONE_1813" />
                 </methods>
             </class>
             <class name="org.alfresco.share.site.document.GoogleDocsTest"/>
             <class name="org.alfresco.share.site.document.ManageAspectTest">
                 <methods>
-                    <exclude name="Enterprise40x_14344" />
-                    <exclude name="Enterprise40x_8586" />
+                    <exclude name="AONE_2095" />
+                    <exclude name="AONE_2085" />
                 </methods>
             </class>
             <class name="org.alfresco.share.user.trashcan.TrashCanTest"/>

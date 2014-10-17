@@ -14,25 +14,21 @@
  */
 package org.alfresco.po.share.site;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.webdrone.HtmlElement;
-import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.RenderElement;
-import org.alfresco.webdrone.RenderTime;
-import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Upload file page object, holds all element of the HTML page relating to
@@ -109,6 +105,7 @@ public class UploadFilePage extends ShareDialogue
         }
         catch (TimeoutException te)
         {
+            logger.error(te);
         }
     }
 

@@ -7,13 +7,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -25,6 +18,11 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * Unit test to verify document library page tag operations are operating correctly.
@@ -150,7 +148,6 @@ public class DocumentLibraryPageFilmstripTest extends AbstractTest
 
         FileDirectoryInfo fileInfo = documentLibPage.getFileDirectoryInfo(file1.getName());
         fileInfo.selectCheckbox();
-
         List<String> selectFiles = documentLibPage.getFilmstripActions().getSelectedFIlesForFilmstrip();
         assertTrue(selectFiles.contains(file1.getName()), selectFiles.toString());
         assertFalse(selectFiles.contains(file2.getName()), selectFiles.toString());

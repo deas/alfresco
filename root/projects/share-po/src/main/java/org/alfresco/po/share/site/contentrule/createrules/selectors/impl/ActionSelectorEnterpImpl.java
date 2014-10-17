@@ -181,4 +181,10 @@ public class ActionSelectorEnterpImpl extends AbstractActionSelector
         super.selectAction(PerformActions.INCREMENT_COUNTER.numberPosition);
     }
 
+    public void selectMoveToDestination(String destinationName, String... folders)
+    {
+        super.selectAction(PerformActions.MOVE.numberPosition);
+        super.selectDestinationName(destinationName, folders).selectOkButton();
+
+    }
 }

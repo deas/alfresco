@@ -14,9 +14,6 @@
  */
 package org.alfresco.po.share.workflow;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -26,10 +23,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Represent elements found on the HTML page relating to the Adhoc Workflow page
  * load.
- * 
+ *
  * @author Abhijeet Bharade
  * @since 1.6.2
  */
@@ -46,9 +46,11 @@ public class NewWorkflowPage extends WorkFlowPage
     @RenderWebElement
     private static final By PRIORITY_DROPDOWN = By.cssSelector("select[id$='_bpm_workflowPriority']");
 
+    private static final By REQUIRED_APPROVAL = By.cssSelector("input[id$='requiredApprovePercent']");
+
     /**
      * Constructor.
-     * 
+     *
      * @param drone WebDriver to access page
      */
     public NewWorkflowPage(WebDrone drone)
@@ -81,7 +83,7 @@ public class NewWorkflowPage extends WorkFlowPage
     /**
      * Method to fill in the details for form and submit. formDetails to get the
      * form details
-     * 
+     *
      * @return HtmlPage
      */
     @Override
@@ -94,7 +96,7 @@ public class NewWorkflowPage extends WorkFlowPage
     }
 
     /**
-     * Method clicks on the StartWorkFlow button 
+     * Method clicks on the StartWorkFlow button
      */
     public HtmlPage submitWorkflow()
     {
@@ -113,18 +115,18 @@ public class NewWorkflowPage extends WorkFlowPage
 
     /**
      * Returns the WebElement for Select reviewer button.
-     * 
+     *
      * @return
      */
     @Override
     protected WebElement getSelectReviewButton()
     {
-        return drone.find(By.cssSelector("div.form-fields div[id$='ssignee-cntrl'] button"));
+        return drone.findAndWait(By.xpath("//button[text()='Select']"));
     }
 
     /**
      * Returns the WebElement for Start workflow button.
-     * 
+     *
      * @return
      */
     @Override
@@ -141,7 +143,7 @@ public class NewWorkflowPage extends WorkFlowPage
 
     /**
      * Method to fill in the form details and cancel new workflow.
-     * 
+     *
      * @return HtmlPage
      */
     @Override
@@ -155,6 +157,7 @@ public class NewWorkflowPage extends WorkFlowPage
 
     /**
      * Method to fill up all static details on the current Workflow form page object
+     *
      * @param formDetails
      */
     public void fillUpWorkflowForm(WorkFlowFormDetails formDetails)
@@ -169,10 +172,20 @@ public class NewWorkflowPage extends WorkFlowPage
         {
             enterDueDateText(formDetails.getDueDate());
         }
+        if (formDetails.getTaskPriority() != null)
+        {
+            selectPriorityDropDown(formDetails.getTaskPriority());
+        }
+        if (formDetails.getApprovalPercentage() != 0)
+        {
+            WebElement approvalElem = drone.findAndWait(REQUIRED_APPROVAL);
+            approvalElem.clear();
+            approvalElem.sendKeys(String.valueOf(formDetails.getApprovalPercentage()));
+        }
     }
 
     /**
-     * Method clicks on the Cancel WorkFlow button 
+     * Method clicks on the Cancel WorkFlow button
      */
     public HtmlPage cancelWorkflow()
     {

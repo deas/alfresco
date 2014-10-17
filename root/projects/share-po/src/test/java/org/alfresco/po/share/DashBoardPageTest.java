@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 
 /**
  * Integration test to verify dashboard page elements are in place.
- * 
+ *
  * @author Michael Suzuki
  * @since 1.0
  */
@@ -36,29 +36,30 @@ public class DashBoardPageTest extends AbstractTest
 {
     /**
      * Test process of accessing dashboard page.
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     DashBoardPage dashBoard;
-    
-    @Test(groups="alfresco-one")
+
+    @Test(groups = "alfresco-one")
     public void loadDashBoard() throws Exception
     {
         dashBoard = loginAs(username, password);
-        
+
         Assert.assertTrue(dashBoard.isLogoPresent());
         // TODO remove this condition once bug Cloud-881 is fixed
         AlfrescoVersion version = drone.getProperties().getVersion();
-        if(!version.isCloud())
+        if (!version.isCloud())
         {
             Assert.assertTrue(dashBoard.titlePresent());
             Assert.assertEquals("Administrator Dashboard", dashBoard.getPageTitle());
         }
         String copyright = dashBoard.getCopyRight();
         Assert.assertTrue(copyright.contains("Alfresco Software"));
-    }	
-    
-    @Test(dependsOnMethods="loadDashBoard", groups="alfresco-one")
-    public void refreshPage() throws Exception				
+    }
+
+    @Test(dependsOnMethods = "loadDashBoard", groups = "alfresco-one")
+    public void refreshPage() throws Exception
     {
         //Were already logged in from the previous test.
         drone.refresh();
@@ -66,24 +67,45 @@ public class DashBoardPageTest extends AbstractTest
         Assert.assertNotNull(dashBoard);
     }
 
-    @Test(dependsOnMethods="refreshPage", enabled=false, groups="nonGrid")
+    @Test(dependsOnMethods = "refreshPage", groups = "alfresco-one")
+    public void checkTopLogoUrl()
+    {
+        DashBoardPage dashBoardPage = drone.getCurrentPage().render();
+        Assert.assertNotNull(dashBoardPage.getTopLogoUrl());
+    }
+
+    @Test(dependsOnMethods = "refreshPage", groups = "alfresco-one")
+    public void checkFooterLogoUrl()
+    {
+        DashBoardPage dashBoardPage = drone.getCurrentPage().render();
+        Assert.assertNotNull(dashBoardPage.getFooterLogoUrl());
+    }
+
+    @Test(dependsOnMethods = "checkFooterLogoUrl", groups = "alfresco-one")
+    public void checkOpenAboutPopUpLogo()
+    {
+        DashBoardPage dashBoardPage = drone.getCurrentPage().render();
+        AboutPopUp aboutPopUp = dashBoardPage.openAboutPopUp();
+        Assert.assertNotNull(aboutPopUp.getLogoUrl());
+    }
+
+    @Test(dependsOnMethods = "refreshPage", enabled = false, groups = "nonGrid")
     public void testKeysForHeaderBar() throws Exception
     {
-    	drone.refresh();
-    	dashBoard.inputFromKeyborad(Keys.TAB);
+        drone.refresh();
+        dashBoard.inputFromKeyborad(Keys.TAB);
         dashBoard.inputFromKeyborad(Keys.ARROW_RIGHT);
         dashBoard.inputFromKeyborad(Keys.ARROW_RIGHT);
         dashBoard.inputFromKeyborad(Keys.RETURN);
-        
+
         Assert.assertTrue(drone.getCurrentPage().render() instanceof SharedFilesPage);
     }
-    
-    @Test(dependsOnMethods="refreshPage", groups="nonGrid")
+
+    @Test(dependsOnMethods = "refreshPage", groups = "nonGrid")
     public void getFooterPageTest()
     {
         FootersPage footer = dashBoard.getFooter();
         Assert.assertTrue(footer instanceof FootersPage);
         Assert.assertEquals(alfrescoVersion.getVersion().toString() + ".0", footer.getAlfrescoVersion());
-
     }
 }

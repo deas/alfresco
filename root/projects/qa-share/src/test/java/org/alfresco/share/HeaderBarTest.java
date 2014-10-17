@@ -85,8 +85,8 @@ public class HeaderBarTest extends AbstractUtils
         logger.info("[Suite ] : Start Tests in: " + testName);
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9296() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14117() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -95,8 +95,8 @@ public class HeaderBarTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9296() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14117() throws Exception
     {
 
         String testName = getTestName();
@@ -134,8 +134,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9297() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14118() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -144,14 +144,15 @@ public class HeaderBarTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser });
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9297() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14118() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
-        String publicSiteName = getSiteName(testName + System.currentTimeMillis() + "private");
-        String privateSiteName = getSiteName(testName + System.currentTimeMillis() + "public");
-        String moderateSiteName = getSiteName(testName + System.currentTimeMillis() + "moderate");
+        String siteName = getSiteName(testName + System.currentTimeMillis());
+        String publicSiteName = getSiteName(siteName + "public");
+        String privateSiteName = getSiteName(siteName + "private");
+        String moderateSiteName = getSiteName(siteName + "moderated");
 
         // Login through created user.
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
@@ -169,6 +170,7 @@ public class HeaderBarTest extends AbstractUtils
 
         // Click on available site.
         Assert.assertTrue(SiteUtil.isSiteFound(drone, publicSiteName));
+        webDriverWait(drone, 10000);
         Assert.assertTrue(SiteUtil.isSiteFound(drone, privateSiteName));
         Assert.assertTrue(SiteUtil.isSiteFound(drone, moderateSiteName));
         
@@ -178,8 +180,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9298() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14119() throws Exception
     {
 
         String testName = getTestName();
@@ -198,8 +200,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard", "BambooBug" })
-    public void ALF_9298() throws Exception
+    @Test(groups = { "AlfrescoOne", "BambooBug" })
+    public void AONE_14119() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -283,8 +285,8 @@ public class HeaderBarTest extends AbstractUtils
     }
 
     // TODO: for cloud as well
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_14186() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14116() throws Exception
     {
         // Login through Admin user.
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
@@ -306,8 +308,8 @@ public class HeaderBarTest extends AbstractUtils
         }
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9291() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14106() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -318,8 +320,8 @@ public class HeaderBarTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9291() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14106() throws Exception
     {
 
         String testName = getTestName();
@@ -353,8 +355,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9292() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14107() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -366,8 +368,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9292() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14107() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -402,8 +404,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9293() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14108() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -415,8 +417,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9293() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14108() throws Exception
     {
 
         String testName = getTestName();
@@ -469,8 +471,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9294() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14109() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -482,8 +484,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9294() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14109() throws Exception
     {
 
         String testName = getTestName();
@@ -541,8 +543,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9304() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14110() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -553,8 +555,8 @@ public class HeaderBarTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9304() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14110() throws Exception
     {
 
         String testName = getTestName();
@@ -613,8 +615,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9305() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14111() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -626,8 +628,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9305() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14111() throws Exception
     {
 
         String testName = getTestName();
@@ -665,8 +667,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteDashboard" })
-    public void dataPrep_ALF_9306() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_14112() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + "-1");
@@ -677,8 +679,8 @@ public class HeaderBarTest extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, new String[] { testUser2 });
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9306() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14112() throws Exception
     {
 
         String testName = getTestName();
@@ -750,8 +752,8 @@ public class HeaderBarTest extends AbstractUtils
     }
 
     // TODO: No data prep is needed for this because user has to be new.
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9307() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14113() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName + System.currentTimeMillis() + "-1");
@@ -790,8 +792,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9308() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14114() throws Exception
     {
 
         String testName = getTestName();
@@ -851,8 +853,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "SiteDashboard" })
-    public void ALF_9309() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14115() throws Exception
     {
 
         String testName = getTestName();
@@ -887,8 +889,8 @@ public class HeaderBarTest extends AbstractUtils
 
     }
     
-    @Test(groups = { "DataPrepSiteDashboard", "AlfrescoOne" })
-    public void dataPrep_ALF_3161() throws Exception
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_AONE_15836() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
@@ -909,8 +911,8 @@ public class HeaderBarTest extends AbstractUtils
        
     }
     
-    @Test(groups = { "SiteDashboard", "AlfrescoOne" })
-    public void ALF_3161()
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_15836()
     {
         // test user (site creator) logs in
         String testName = getTestName();

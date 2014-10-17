@@ -18,14 +18,12 @@ package org.alfresco.share.api.cmis;
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
-import org.alfresco.rest.api.tests.client.RequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,143 +62,139 @@ public class CMISBrowserSelectorParameter extends CMISSelectorParameter
 
 
     @Test
-    public void ALF_159651() throws Exception
+    public void AONE_14495() throws Exception
     {
         String thisTestName = getTestName();
         selectorTypeChildren(thisTestName);
     }
 
-    @Test
-    public void ALF_159661() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14496() throws Exception
     {
         String thisTestName = getTestName();
         selectorTypeDefinition(thisTestName);
     }
 
-    @Test
-    public void ALF_159671() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14497() throws Exception
     {
         String thisTestName = getTestName();
         selectorTypeDescendants(thisTestName);
     }
 
     @Test
-    public void ALF_159681() throws Exception
+    public void AONE_14498() throws Exception
     {
         String thisTestName = getTestName();
         selectorRepoInfo();
     }
 
     @Test
-    public void ALF_158731() throws Exception
+    public void AONE_14499() throws Exception
     {
         String thisTestName = getTestName();
         selectorRepoURL(thisTestName);
     }
 
     @Test
-    public void ALF_158741() throws Exception
+    public void AONE_14500() throws Exception
     {
         String thisTestName = getTestName();
         rootFolderURL(thisTestName);
     }
 
     @Test
-    public void ALF_158751() throws Exception
+    public void AONE_14501() throws Exception
     {
         String thisTestName = getTestName();
         objectsUsingPath(thisTestName);
     }
 
     @Test
-    public void ALF_158761() throws Exception
+    public void AONE_14502() throws Exception
     {
         String thisTestName = getTestName();
         objectsUsingObjectId(thisTestName);
     }
 
     @Test
-    public void ALF_158771() throws Exception
+    public void AONE_14503() throws Exception
     {
         String thisTestName = getTestName();
         selectChildren(thisTestName);
     }
 
-    @Test(enabled = false)
-    public void ALF_158781() throws Exception
+    @Test
+    public void AONE_14504() throws Exception
     {
         String thisTestName = getTestName();
         compactJSONResponse(thisTestName);
     }
 
     @Test
-    public void ALF_158791() throws Exception
-    {
-        String thisTestName = getTestName();
-        /* Cannot be coded */
-    }
-
-    @Test
-    public void ALF_158811() throws Exception
+    public void AONE_14506() throws Exception
     {
         String thisTestName = getTestName();
         descendants(thisTestName);
     }
 
     @Test
-    public void ALF_158821() throws Exception
+    public void AONE_14507() throws Exception
     {
         String thisTestName = getTestName();
         checkedOut(thisTestName);
     }
 
     @Test
-    public void ALF_158831() throws Exception
+    public void AONE_14508() throws Exception
     {
         String thisTestName = getTestName();
         cmisSelectorParents(thisTestName);
     }
 
     @Test
-    public void ALF_158841() throws Exception
+    public void AONE_14509() throws Exception
     {
         String thisTestName = getTestName();
         cmisSelectorParents(thisTestName);
     }
 
     @Test
-    public void ALF_158851() throws Exception
+    public void AONE_14510() throws Exception
     {
         String thisTestName = getTestName();
         allowableActions(thisTestName);
     }
 
-    @Test(enabled = false)
-    public void ALF_158861() throws Exception
+    @Test
+    public void AONE_14511() throws Exception
     {
         String thisTestName = getTestName();
         Map<String, String> params = new HashMap<String, String>();
         params.put("cmisselector", "object");
-        HttpResponse httpResponse = getHttpResponse("/public/cmis/versions/1.1/browser/root/test", params);
+        String resourcePath = DOMAIN + "/public/cmis/versions/1.1/browser/root/Sites/" + siteName + "/documentLibrary/" + folderName;
+        HttpResponse httpResponse = getHttpResponse(resourcePath, params);
+        assertTrue(httpResponse.getStatusCode() == 200, httpResponse.getResponse());
+        httpResponse = getHttpResponse(resourcePath + "/" + fileName1, params);
         assertTrue(httpResponse.getStatusCode() == 200, httpResponse.getResponse());
     }
 
     @Test
-    public void ALF_158871() throws Exception
+    public void AONE_14512() throws Exception
     {
         String thisTestName = getTestName();
         objectProperties(thisTestName);
     }
 
     @Test
-    public void ALF_158881() throws Exception
+    public void AONE_14513() throws Exception
     {
         String thisTestName = getTestName();
         selectorContent(thisTestName);
     }
 
     @Test
-    public void ALF_158891() throws Exception
+    public void AONE_14514() throws Exception
     {
         String thisTestName = getTestName();
         renditionsSelector(thisTestName);

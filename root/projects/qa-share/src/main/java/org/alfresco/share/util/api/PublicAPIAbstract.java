@@ -19,27 +19,10 @@
 
 package org.alfresco.share.util.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.alfresco.po.share.util.PageUtils;
 import org.alfresco.rest.api.tests.TestFixture;
-import org.alfresco.rest.api.tests.client.AuthenticatedHttp;
-import org.alfresco.rest.api.tests.client.AuthenticationDetailsProvider;
-import org.alfresco.rest.api.tests.client.HttpClientProvider;
-import org.alfresco.rest.api.tests.client.PublicApiClient;
-import org.alfresco.rest.api.tests.client.PublicApiClient.Comments;
-import org.alfresco.rest.api.tests.client.PublicApiClient.ExpectedPaging;
-import org.alfresco.rest.api.tests.client.PublicApiClient.Favourites;
-import org.alfresco.rest.api.tests.client.PublicApiClient.Nodes;
-import org.alfresco.rest.api.tests.client.PublicApiClient.Paging;
-import org.alfresco.rest.api.tests.client.PublicApiClient.People;
-import org.alfresco.rest.api.tests.client.PublicApiClient.SiteMembershipRequests;
-import org.alfresco.rest.api.tests.client.PublicApiClient.Sites;
-import org.alfresco.rest.api.tests.client.PublicApiClient.Tags;
-import org.alfresco.rest.api.tests.client.PublicApiHttpClient;
-import org.alfresco.rest.api.tests.client.UserAuthenticationDetailsProviderImpl;
-import org.alfresco.rest.api.tests.client.UserData;
-import org.alfresco.rest.api.tests.client.UserDataService;
+import org.alfresco.rest.api.tests.client.*;
+import org.alfresco.rest.api.tests.client.PublicApiClient.*;
 import org.alfresco.rest.workflow.api.tests.WorkflowApiClient;
 import org.alfresco.rest.workflow.api.tests.WorkflowApiClient.DeploymentsClient;
 import org.alfresco.rest.workflow.api.tests.WorkflowApiClient.ProcessesClient;
@@ -49,6 +32,9 @@ import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeClass;
+
+import java.util.HashMap;
+import java.util.Map;
 
 //import org.alfresco.repo.sync.api.SyncApiClient;
 
@@ -60,7 +46,7 @@ import org.testng.annotations.BeforeClass;
  */
 public abstract class PublicAPIAbstract extends AbstractUtils
 {
-    private PublicApiHttpClient httpClient;
+    protected PublicApiHttpClient httpClient;
     static WorkflowApiHttpClient httpClientForWorkflow;
     protected static PublicApiClient publicApiClient;
     protected static WorkflowApiClient workflowApiClient;
@@ -74,11 +60,12 @@ public abstract class PublicAPIAbstract extends AbstractUtils
     protected static Favourites favouriteProxy;
     protected static Sites sitesProxy;
     protected static ProcessesClient processesClient;
-    protected static People peopleClient;;
+    protected static People peopleClient;
     protected static DeploymentsClient deploymentsClient;
     protected static Nodes nodesClient;
     protected static Tags tagsClient;
     protected static Comments commentsClient;
+    private static final String regexUrl = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})";
 
     @BeforeClass
     public void beforeClass() throws Exception
@@ -102,16 +89,24 @@ public abstract class PublicAPIAbstract extends AbstractUtils
         configureUrlParams(drone);
         if (isAlfrescoVersionCloud(drone))
         {
-            this.httpClient = new PublicApiHttpClient("https", location, port, "", "", authenticatedHttp);
-            httpClientForWorkflow = new WorkflowApiHttpClient("https", location, port, "", "", authenticatedHttp);
+            if (isLayer7Enabled())
+            {
+                this.httpClient = new Layer7PublicApiClient(drone, "https", location, port, "", "", authenticatedHttp);
+                httpClientForWorkflow = new Layer7WorkflowApiHttpClient(drone, "https", location, port, "", "", authenticatedHttp);
+                publicApiClient = new Layer7CmisClient(drone, httpClient, userDataService);
+            } else {
+                this.httpClient = new PublicApiHttpClient("https", location, port, "", "", authenticatedHttp);
+                httpClientForWorkflow = new WorkflowApiHttpClient("https", location, port, "", "", authenticatedHttp);
+                publicApiClient = new PublicApiClient(httpClient, userDataService);
+            }
+
         }
         else
         {
             this.httpClient = new PublicApiHttpClient(location, port, TestFixture.CONTEXT_PATH, TestFixture.PUBLIC_API_SERVLET_NAME, authenticatedHttp);
             httpClientForWorkflow = new WorkflowApiHttpClient(location, port, TestFixture.CONTEXT_PATH, TestFixture.PUBLIC_API_SERVLET_NAME, authenticatedHttp);
+            publicApiClient = new PublicApiClient(httpClient, userDataService);
         }
-
-        publicApiClient = new PublicApiClient(httpClient, userDataService);
         workflowApiClient = new WorkflowApiClient(httpClientForWorkflow, userDataService);
         // desktopSynApiClient = new SubscriptionApiClient(httpClient, userDataService);
 
@@ -170,6 +165,12 @@ public abstract class PublicAPIAbstract extends AbstractUtils
         {
             location = StringUtils.substringBetween(apiUrl, "//", "/");
             port = dronePropertiesMap.get(drone).getHttpSecurePort();
+        }
+        //in case Alfresco is running on balancer
+        else if(PageUtils.getAddress(shareUrl).matches(regexUrl))
+        {
+            location = StringUtils.substringBetween(apiUrl, "//", "/");
+            port = 80;
         }
         else
         {

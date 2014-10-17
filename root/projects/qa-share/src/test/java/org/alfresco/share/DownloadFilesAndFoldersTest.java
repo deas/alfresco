@@ -3,8 +3,6 @@
  */
 package org.alfresco.share;
 
-import java.util.List;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -21,6 +19,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 /**
  * @author cbairaajoni
@@ -48,8 +48,8 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     /**
-     * This test data setup is combination of Enterprise40x-5653/5655/5656
-     * DataPreparation method - Enterprise40x-5653
+     * This test data setup is combination of AONE-10596/5655/5656
+     * DataPreparation method - AONE-10596
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -60,7 +60,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepDownload", "EnterpriseOnly" })
-    public void dataPrep_AdvSearch_5653() throws Exception
+    public void dataPrep_AdvSearch_10596() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -97,8 +97,8 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     /**
-     * This test is combination of Enterprise40x-5653/5655/5656
-     * Test - Enterprise40x-5653: Empty folder. Download as ZIP
+     * This test is combination of AONE-10596/10597/10597
+     * Test - AONE-10596: Empty folder. Download as ZIP
      * <ul>
      * <li>Login</li>
      * <li>From My Site Document Library access the folder view details page</li>
@@ -108,7 +108,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "EnterpriseOnly", "Download" })
-    public void enterprise40x_5653()
+    public void AONE_10596()
     {
         /** Start Test */
         testName = getTestName();
@@ -171,7 +171,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - Enterprise40x-5654
+     * DataPreparation method - AONE-10597
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -184,7 +184,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepDownload", "EnterpriseOnly" })
-    public void dataPrep_AdvSearch_5654() throws Exception
+    public void dataPrep_AdvSearch_10597() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -233,7 +233,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     /**
-     * Test - Enterprise40x-5654: Non Empty folder. Download as ZIP
+     * Test - AONE-10597: Non Empty folder. Download as ZIP
      * <ul>
      * <li>Login</li>
      * <li>From My Site Document Library access the folder view details page</li>
@@ -243,7 +243,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "EnterpriseOnly", "Download" })
-    public void enterprise40x_5654()
+    public void AONE_10597()
     {
         /** Start Test */
         testName = getTestName();
@@ -290,7 +290,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDownload" })
-    public void dataPrep_Enterprise40x_3893() throws Exception
+    public void dataPrep_AONE_2008() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -344,7 +344,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "Download" })
-    public void enterprise40x_3893()
+    public void AONE_2008()
     {
         try
         {
@@ -407,7 +407,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDownload" })
-    public void dataPrep_testDownloadFolders_8649() throws Exception
+    public void dataPrep_testDownloadFolders_10595() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -446,7 +446,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
     }
 
     /**
-     * Note: First four steps of this test case in testlink are implemented as part of Enterprise40x-5653,Enterprise40x-5654.
+     * Note: First four steps of this test case in testlink are implemented as part of AONE-10596,AONE-10597.
      * <ul>
      * <li>Login</li>
      * <li>Create Site</li>
@@ -457,7 +457,7 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Download", "EnterpriseOnly", "NonGrid" })
-    public void enterprise40x_8649()
+    public void AONE_10595()
     {
         /** Start Test */
         String testName = getTestName();
@@ -470,7 +470,6 @@ public class DownloadFilesAndFoldersTest extends AbstractUtils
         ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
 
         ShareUser.openSiteDashboard(customDrone, siteName);
-
         // Open document library page.
         DocumentLibraryPage docLibPage = ShareUser.openDocumentLibrary(customDrone);
 

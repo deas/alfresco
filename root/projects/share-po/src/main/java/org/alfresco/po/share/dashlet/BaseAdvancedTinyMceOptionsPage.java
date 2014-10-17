@@ -18,16 +18,15 @@
  */
 package org.alfresco.po.share.dashlet;
 
-import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
-import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
 
 /**
  * @author cbairaajoni
@@ -37,59 +36,105 @@ public abstract class BaseAdvancedTinyMceOptionsPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(BaseAdvancedTinyMceOptionsPage.class);
 
+    private WebElement dialogElement;
     @RenderWebElement
-    protected static By CANCEL_BUTTON = By.cssSelector("#cancel");
-    
+    protected static By OK_BUTTON = By.xpath("//div[contains(@class, 'mce-widget mce-btn')]/button[contains(text(), 'Ok')]");
     @RenderWebElement
-    protected static By INSERT_BUTTON = By.cssSelector("#insert");
-    
-    private String mainWindow = "";
+    protected static By CANCEL_BUTTON = By.xpath("//div[contains(@class, 'mce-widget mce-btn')]/button[contains(text(), 'Cancel')]");
     
     /**
      * Constructor.
-     * @param mainWindow 
+     * @param drone
      */
-    public BaseAdvancedTinyMceOptionsPage(WebDrone drone, String mainWindow)
+    public BaseAdvancedTinyMceOptionsPage(WebDrone drone, WebElement element)
     {
         super(drone);
-        this.mainWindow = mainWindow;
+        this.dialogElement = element;
     }
 
-    /**
-     * This method is used to Finds Insert button and clicks on it.
-     * 
-     * @return {@link ConfigureSiteNoticeDialogBoxPage}
-     */
-    public HtmlPage clickInsertOrUpdateButton()
+//    /**
+//     * This method is used to Finds Insert button and clicks on it.
+//     *
+//     * @return {@link ConfigureSiteNoticeDialogBoxPage}
+//     */
+//    public HtmlPage clickInsertOrUpdateButton()
+//    {
+//        try
+//        {
+//            drone.findAndWait(INSERT_BUTTON).click();
+//            drone.switchToWindow(mainWindow);
+//            return FactorySharePage.resolvePage(drone);
+//        }
+//        catch (TimeoutException te)
+//        {
+//            logger.info("Unable to find the Insert button.", te);
+//            throw new PageOperationException("Unable to click the Insert Button.", te);
+//        }
+//    }
+
+//    /**
+//     * This method is used to Finds Insert button and clicks on it.
+//     *
+//     * @return {@link ConfigureSiteNoticeDialogBoxPage}
+//     */
+//    public HtmlPage clickInsertOrUpdateButton()
+//    {
+//        try
+//        {
+//            drone.findAndWait(INSERT_BUTTON).click();
+//            drone.switchToWindow(mainWindow);
+//            return FactorySharePage.resolvePage(drone);
+//        }
+//        catch (TimeoutException te)
+//        {
+//            logger.info("Unable to find the Insert button.", te);
+//            throw new PageOperationException("Unable to click the Insert Button.", te);
+//        }
+//    }
+//
+//    /**
+//     * This method is used to Finds Cancel button and clicks on it.
+//     */
+//    public HtmlPage clickOnCancelButton()
+//    {
+//        try
+//        {
+//            drone.findAndWait(CANCEL_BUTTON).click();
+//            drone.switchToWindow(mainWindow);
+//            return FactorySharePage.resolvePage(drone);
+//        }
+//        catch (TimeoutException te)
+//        {
+//            logger.info("Unable to find the CANCEL button.", te);
+//            throw new PageOperationException("Unable to click the CANCEL Button.", te);
+//        }
+//    }
+
+    public ConfigureSiteNoticeDialogBoxPage clickOKButton()
     {
         try
         {
-            drone.findAndWait(INSERT_BUTTON).click();
-            drone.switchToWindow(mainWindow);
-            return FactorySharePage.resolvePage(drone);
+            dialogElement.findElement(OK_BUTTON).click();
+            return new ConfigureSiteNoticeDialogBoxPage(drone);
         }
-        catch (TimeoutException te)
+        catch (NoSuchElementException nse)
         {
-            logger.info("Unable to find the Insert button.", te);
-            throw new PageOperationException("Unable to click the Insert Button.", te);
+            logger.info("Unable to find OK button", nse);
+            throw new PageOperationException("Unable to find OK button", nse);
         }
     }
 
-    /**
-     * This method is used to Finds Cancel button and clicks on it.
-     */
-    public HtmlPage clickOnCancelButton()
+    public ConfigureSiteNoticeDialogBoxPage clickCancelButton()
     {
         try
         {
-            drone.findAndWait(CANCEL_BUTTON).click();
-            drone.switchToWindow(mainWindow);
-            return FactorySharePage.resolvePage(drone);
+            dialogElement.findElement(CANCEL_BUTTON).click();
+            return new ConfigureSiteNoticeDialogBoxPage(drone);
         }
-        catch (TimeoutException te)
+        catch (NoSuchElementException nse)
         {
-            logger.info("Unable to find the CANCEL button.", te);
-            throw new PageOperationException("Unable to click the CANCEL Button.", te);
+            logger.info("Unable to find CANCEL button", nse);
+            throw new PageOperationException("Unable to find CANCEL button", nse);
         }
     }
 }

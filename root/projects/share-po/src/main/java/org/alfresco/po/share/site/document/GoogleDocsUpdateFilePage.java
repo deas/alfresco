@@ -17,6 +17,7 @@ package org.alfresco.po.share.site.document;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -27,6 +28,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import java.util.List;
 
 /**
  * When the user clicks on Save to Alfresco they will be provided with update version page.
@@ -39,6 +41,8 @@ import org.openqa.selenium.WebElement;
 @SuppressWarnings("unchecked")
 public class GoogleDocsUpdateFilePage extends UpdateFilePage
 {
+    private static final By BUTTON_TAG_NAME = By.tagName("button");
+
     /**
      * Constructor.
      */
@@ -154,5 +158,55 @@ public class GoogleDocsUpdateFilePage extends UpdateFilePage
         }
 
         return new DocumentDetailsPage(drone, getDocumentVersion());
+    }
+
+    /**
+     * Clicks on the submit button. Methods used for edition by concurrent user's
+     */
+    public HtmlPage submitWithConcurrentEditors()
+    {
+        WebElement submitButtonElement = drone.findAndWait(By.cssSelector(getSubmitButton()));
+        submitButtonElement.click();
+
+        String text = "Saving Google Doc";
+        drone.waitUntilVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+
+        HtmlPage page = drone.getCurrentPage();
+        clickOkButton();
+
+        drone.waitUntilNotVisible(By.cssSelector("div.bd>span.message"), text, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+
+        drone.getCurrentPage().render();
+
+        if (page instanceof DocumentLibraryPage)
+        {
+            return new DocumentLibraryPage(drone);
+        }
+
+        return new DocumentDetailsPage(drone, getDocumentVersion());
+    }
+
+    /**
+     * Click OK Button on the confirmation dialog.
+     * 
+     * @return - HtmlPage
+     */
+    public HtmlPage clickOkButton()
+    {
+        try
+        {
+            WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+            WebElement okButton = findButton("OK", elements);
+            okButton.click();
+            drone.waitUntilElementDeletedFromDom(By.cssSelector("span[class='message']"), SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("Google discard Page ok button not visible", te);
+        }
+        drone.waitForPageLoad(SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+        return FactorySharePage.resolvePage(drone);
     }
 }

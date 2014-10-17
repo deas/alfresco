@@ -40,15 +40,17 @@ import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.webdrone.HtmlPage;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+
 /**
  * Integration test to verify CloudTaskOrReviewPage page load.
  *
- * @author Siva Kaliyappan
+ * @author Siva Kaliyappan, Bogdan Bocancea
  * @since 1.6.2
  */
 @Test(groups = {"Hybrid"})
@@ -113,6 +115,13 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
         cloudTaskOrReviewPage.selectTask(TaskType.CLOUD_REVIEW_TASK);
         assertTrue(cloudTaskOrReviewPage.isTaskTypeSelected(TaskType.CLOUD_REVIEW_TASK));
         assertFalse(cloudTaskOrReviewPage.isTaskTypeSelected(TaskType.SIMPLE_CLOUD_TASK));
+        
+        Assert.assertTrue(cloudTaskOrReviewPage.isAfterCompletionDropdownPresent());
+        Assert.assertTrue(cloudTaskOrReviewPage.isAddButtonPresent());
+        cloudTaskOrReviewPage.selectAfterCompleteDropDown(KeepContentStrategy.KEEPCONTENT);
+        Assert.assertTrue(cloudTaskOrReviewPage.isAfterCompletionSelected(KeepContentStrategy.KEEPCONTENT));
+        Assert.assertTrue(cloudTaskOrReviewPage.isRemoveAllButtonPresent());
+        
         // assertFalse(isButtonSubmitted());
         WorkFlowFormDetails formDetails = createWorkflowForm();
         // Fill form Detail
@@ -145,6 +154,9 @@ public class CloudTaskOrReviewPageTest extends AbstractTest
         assertTrue(returnedPage instanceof DocumentDetailsPage, "A document details page should be returned.");
         startWorkFlowPage = ((DocumentDetailsPage) returnedPage).selectStartWorkFlowPage().render();
         cloudTaskOrReviewPage = ((CloudTaskOrReviewPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.CLOUD_TASK_OR_REVIEW)).render();
+        
+        String date = cloudTaskOrReviewPage.getItemDate(file.getName());
+        Assert.assertFalse(date.isEmpty());
     }
 
     /**

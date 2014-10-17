@@ -1,28 +1,18 @@
 package org.alfresco.share.util;
 
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.UserProfilePage;
-import org.alfresco.po.share.UserSearchPage;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditInGoogleDocsPage;
-import org.alfresco.po.share.site.document.GoogleDocsAuthorisation;
-import org.alfresco.po.share.site.document.GoogleDocsDiscardChanges;
-import org.alfresco.po.share.site.document.GoogleDocsRenamePage;
-import org.alfresco.po.share.site.document.GoogleDocsUpdateFilePage;
-import org.alfresco.po.share.site.document.GoogleSignUpPage;
+import org.alfresco.po.share.*;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.Assert;
 
 public class ShareUserGoogleDocs extends AbstractCloudSyncTest
 {
-    protected String googleURL = "https://accounts.google.com";
-    protected String googlePlusURL = "https://plus.google.com";
+    public static String googleURL = "https://accounts.google.com";
+    public static String googlePlusURL = "https://plus.google.com";
 
     private static Log logger = LogFactory.getLog(ShareUserGoogleDocs.class);
 
@@ -41,10 +31,26 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param drone
      * @return EditInGoogleDocsPage
      */
-    public EditInGoogleDocsPage signIntoEditGoogleDocFromDetailsPage(WebDrone drone)
+    public static EditInGoogleDocsPage signIntoEditGoogleDocFromDetailsPage(WebDrone drone)
     {
         DocumentDetailsPage detailsPage = ShareUser.getSharePage(drone).render();
+        detailsPage.render();
         GoogleDocsAuthorisation googleAuthorisationPage = detailsPage.editInGoogleDocs().render();
+        return signInGoogleDocs(googleAuthorisationPage);
+    }
+
+    /**
+     * This method provides the user to login into edit google docs page through
+     * google authorization.
+     *
+     * @param drone
+     * @return EditInGoogleDocsPage
+     */
+    public static EditInGoogleDocsPage signIntoResumeEditGoogleDocFromDetailsPage(WebDrone drone)
+    {
+        DocumentDetailsPage detailsPage = ShareUser.getSharePage(drone).render();
+        detailsPage.render();
+        GoogleDocsAuthorisation googleAuthorisationPage = detailsPage.resumeEditInGoogleDocs().render();
         return signInGoogleDocs(googleAuthorisationPage);
     }
 
@@ -54,7 +60,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param drone
      * @return EditInGoogleDocsPage
      */
-    protected EditInGoogleDocsPage openEditGoogleDocFromDetailsPage(WebDrone drone)
+    public static EditInGoogleDocsPage openEditGoogleDocFromDetailsPage(WebDrone drone)
     {
         DocumentDetailsPage detailsPage = ShareUser.getSharePage(drone).render();
         detailsPage.render();
@@ -73,7 +79,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @return DocumentLibraryPage
      * @throws Exception
      */
-    protected DocumentLibraryPage createAndSavegoogleDocBySignIn(WebDrone drone, String fileName, ContentType contentType) throws Exception
+    public static DocumentLibraryPage createAndSavegoogleDocBySignIn(WebDrone drone, String fileName, ContentType contentType) throws Exception
     {
         DocumentLibraryPage docLibPage = ShareUser.getSharePage(drone).render();
 
@@ -97,7 +103,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param googleDocsPage
      * @return EditInGoogleDocsPage
      */
-    protected EditInGoogleDocsPage renameGoogleDocName(String fileName, EditInGoogleDocsPage googleDocsPage)
+    public static EditInGoogleDocsPage renameGoogleDocName(String fileName, EditInGoogleDocsPage googleDocsPage)
     {
         GoogleDocsRenamePage renameDocs = googleDocsPage.renameDocumentTitle().render();
         return renameDocs.updateDocumentName(fileName).render();
@@ -112,7 +118,7 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      * @param isCreateDoc
      * @return SharPage
      */
-    protected SharePage saveGoogleDoc(WebDrone drone, boolean isCreateDoc)
+    public static SharePage saveGoogleDoc(WebDrone drone, boolean isCreateDoc)
     {
         EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
         googleDocsPage.setGoogleCreate(isCreateDoc);
@@ -123,16 +129,48 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
     }
 
     /**
+     * Saving the google doc with the minor version and if isCreate boolean
+     * value is true for saving the new google doc otherwise existing google
+     * doc. Methods used for edition by concurrent user's
+     * 
+     * @param drone
+     * @param isCreateDoc
+     * @return SharePage
+     */
+    public static SharePage saveGoogleDocOtherEditor(WebDrone drone, boolean isCreateDoc)
+    {
+        EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
+        googleDocsPage.setGoogleCreate(isCreateDoc);
+        GoogleDocsUpdateFilePage googleUpdatefile = googleDocsPage.selectSaveToAlfresco().render();
+        googleUpdatefile.render();
+        googleUpdatefile.selectMinorVersionChange();
+        return googleUpdatefile.submitWithConcurrentEditors().render();
+    }
+
+    /**
      * Discarding the changes made in google doc.
      * 
      * @param drone
      * @return SharePage
      */
-    protected HtmlPage discardGoogleDocsChanges(WebDrone drone)
+    public static HtmlPage discardGoogleDocsChanges(WebDrone drone)
     {
         EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
         GoogleDocsDiscardChanges googleDocsDiscardChanges = googleDocsPage.selectDiscard().render();
         return googleDocsDiscardChanges.clickOkButton().render();
+    }
+
+    /**
+     * Discarding the changes made in google doc. Methods used for edition by concurrent user's
+     * 
+     * @param drone
+     * @return HtmlPage
+     */
+    public static HtmlPage discardGoogleDocsChangesOtherEditor(WebDrone drone)
+    {
+        EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
+        GoogleDocsDiscardChanges googleDocsDiscardChanges = googleDocsPage.selectDiscard().render();
+        return googleDocsDiscardChanges.clickOkConcurrentEditorButton().render();
     }
 
     /**
@@ -157,25 +195,24 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
      */
     public static GoogleDocsUpdateFilePage saveGoogleDocWithVersionAndComment(WebDrone drone, String comments, boolean isMinorVersion)
     {
-        EditInGoogleDocsPage googleDocsPage = ShareUser.getSharePage(drone).render();
-        GoogleDocsUpdateFilePage googleUpdatefile = googleDocsPage.selectSaveToAlfresco().render();
-        googleUpdatefile.render();
+        EditInGoogleDocsPage googleDocsPage = drone.getCurrentPage().render();
+        GoogleDocsUpdateFilePage googleUpdateFile = googleDocsPage.selectSaveToAlfresco().render();
 
         if (isMinorVersion)
         {
-            googleUpdatefile.selectMinorVersionChange();
+            googleUpdateFile.selectMinorVersionChange();
         }
         else
         {
-            googleUpdatefile.selectMajorVersionChange();
+            googleUpdateFile.selectMajorVersionChange();
         }
 
         if (!StringUtils.isEmpty(comments))
         {
-            googleUpdatefile.setComment(comments);
+            googleUpdateFile.setComment(comments);
         }
 
-        return googleUpdatefile;
+        return googleUpdateFile;
     }
 
     /**
@@ -197,4 +234,19 @@ public class ShareUserGoogleDocs extends AbstractCloudSyncTest
         UserProfilePage userProfile = page.clickOnUser(testUser).render();
         return userProfile.deleteUser().render();
     }
+
+    /**
+     * Discarding the changes made in google doc.
+     *
+     * @param filename
+     * @return SharePage
+     */
+    public static GoogleSignUpPage openSignUpPage(WebDrone driver, String filename)
+    {
+        DocumentLibraryPage docLibPage = driver.getCurrentPage().render();
+        GoogleDocsAuthorisation googleAuth = docLibPage.getFileDirectoryInfo(filename).selectEditInGoogleDocs().render();
+        Assert.assertTrue(googleAuth.isAuthorisationDisplayed());
+        return googleAuth.submitAuth().render();
+    }
+
 }

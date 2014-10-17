@@ -52,7 +52,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14018() throws Exception
+    public void dataPrep_AONE_15107() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -65,7 +65,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Classifiable
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14018() throws Exception
+    public void AONE_15107() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -149,7 +149,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14019() throws Exception
+    public void dataPrep_AONE_15108() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -162,7 +162,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Effectivity
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14019() throws Exception
+    public void AONE_15108() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -246,7 +246,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14020() throws Exception
+    public void dataPrep_AONE_15109() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -259,7 +259,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Templatable
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14020() throws Exception
+    public void AONE_15109() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -335,7 +335,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14021() throws Exception
+    public void dataPrep_AONE_15110() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -348,7 +348,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Emailed
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14021() throws Exception
+    public void AONE_15110() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -431,7 +431,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14022() throws Exception
+    public void dataPrep_AONE_15111() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -444,7 +444,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Email Alias
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14022() throws Exception
+    public void AONE_15111() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -521,7 +521,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14023() throws Exception
+    public void dataPrep_AONE_15112() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -534,7 +534,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Summarizable
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14023() throws Exception
+    public void AONE_15112() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -617,7 +617,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14024() throws Exception
+    public void dataPrep_AONE_15113() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -630,7 +630,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Dublin Core
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14024() throws Exception
+    public void AONE_15113() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -713,7 +713,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14025() throws Exception
+    public void dataPrep_AONE_15114() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -726,7 +726,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Complianceable
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14025() throws Exception
+    public void AONE_15114() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -809,7 +809,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14026() throws Exception
+    public void dataPrep_AONE_15116() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -822,7 +822,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Versionable
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14026() throws Exception
+    public void AONE_15116() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -897,7 +897,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14028() throws Exception
+    public void dataPrep_AONE_15120() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -910,7 +910,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect -Inline Editable
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14028() throws Exception
+    public void AONE_15120() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -985,7 +985,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14029() throws Exception
+    public void dataPrep_AONE_15121() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -998,7 +998,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Taggeble
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14029() throws Exception
+    public void AONE_15121() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1073,7 +1073,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14030() throws Exception
+    public void dataPrep_AONE_15122() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1086,7 +1086,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-EXIF
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14030() throws Exception
+    public void AONE_15122() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1169,7 +1169,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14031() throws Exception
+    public void dataPrep_AONE_15123() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1182,7 +1182,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Remove Aspect-Geographic
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14031() throws Exception
+    public void AONE_15123() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1265,7 +1265,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_14034() throws Exception
+    public void dataPrep_AONE_15125() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1278,7 +1278,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Specialize Type
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14034() throws Exception
+    public void AONE_15125() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1337,7 +1337,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_15271() throws Exception
+    public void dataPrep_AONE_15124() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1350,7 +1350,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Create combined rule - copy action
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_15271() throws Exception
+    public void AONE_15124() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1454,7 +1454,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // If error Execute script
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_14017() throws Exception
+    public void AONE_15126() throws Exception
     {
 
         // upload .js file to Data Dictionary/Web Scripts Extensions
@@ -1539,7 +1539,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_8483() throws Exception
+    public void dataPrep_AONE_15115() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1552,7 +1552,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Deleting a folder with Rule set
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_8483() throws Exception
+    public void AONE_15115() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1662,7 +1662,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Running rule script to move documents
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_8497() throws Exception
+    public void AONE_15117() throws Exception
     {
         // upload .js file to Data Dictionary/Web Scripts Extensions
         String sourceFolder = "Source Folder_" + System.currentTimeMillis();
@@ -1760,7 +1760,7 @@ public class CreateRuleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepEnterpriseOnly" })
-    public void dataPrep_ALF_8499() throws Exception
+    public void dataPrep_AONE_15119() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -1773,7 +1773,7 @@ public class CreateRuleTest extends AbstractUtils
 
     // Two corresponding inverse rules
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_8499() throws Exception
+    public void AONE_15119() throws Exception
     {
         String testName = getTestName();
 

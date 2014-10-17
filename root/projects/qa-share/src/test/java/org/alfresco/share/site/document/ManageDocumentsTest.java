@@ -64,7 +64,7 @@ public class ManageDocumentsTest extends AbstractUtils
 
     // TODO: If all tests are EnterpriseOnly, move test class to Enterprise package
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_ALF_2898() throws Exception
+    public void dataPrep_AONE_14941() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -89,7 +89,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2898()
+    public void AONE_14941()
     {
         /** Start Test */
         testName = getTestName();
@@ -135,7 +135,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_ALF_2897() throws Exception
+    public void dataPrep_AONE_14942() throws Exception
     {
 
         String testName = getTestName();
@@ -161,7 +161,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2897()
+    public void AONE_14942()
     {
         /** Start Test */
         testName = getTestName();
@@ -206,7 +206,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_ALF_2896() throws Exception
+    public void dataPrep_AONE_14940() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -234,7 +234,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2896() throws Exception
+    public void AONE_14940() throws Exception
     {
         testName = getTestName();
 
@@ -328,7 +328,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_ALF_2899() throws Exception
+    public void dataPrep_AONE_14943() throws Exception
     {
 
         String testName = getTestName();
@@ -356,7 +356,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2899() throws Exception
+    public void AONE_14943() throws Exception
     {
         testName = getTestName();
 
@@ -394,7 +394,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_ALF_2900() throws Exception
+    public void dataPrep_AONE_14944() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -420,7 +420,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void ALF_2900() throws Exception
+    public void AONE_14944() throws Exception
     {
         testName = getTestName();
 
@@ -456,7 +456,7 @@ public class ManageDocumentsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_5607() throws Exception
+    public void dataPrep_AONE_1814() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -492,7 +492,7 @@ public class ManageDocumentsTest extends AbstractUtils
                     "340575362251174378", "justTag" };
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5607()
+    public void AONE_1814()
     {
         testName = getTestName();
 
@@ -521,5 +521,4 @@ public class ManageDocumentsTest extends AbstractUtils
 
     }
 
-    
-        }
+}

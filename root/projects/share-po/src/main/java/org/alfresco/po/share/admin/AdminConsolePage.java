@@ -1,6 +1,7 @@
 package org.alfresco.po.share.admin;
 
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.adminconsole.replicationjobs.ReplicationJobsPage;
 import org.alfresco.po.share.site.UploadFilePage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
@@ -32,6 +33,7 @@ public class AdminConsolePage extends SharePage implements HtmlPage
     private final static By APPLICATION_MENU = By.cssSelector(".selected");
     private static final By FILE_UPLOAD_BUTTON = By.cssSelector("#page_x002e_ctool_x002e_admin-console_x0023_default-upload-button-button");
     public static final By LOGO_PICTURE = By.xpath("//div[@class='logo']/img");
+    private final static By REPLICATION_JOBS_LINK = By.cssSelector(".tool a[href='replication-jobs']");
 
     public enum ThemeType
     {
@@ -182,5 +184,19 @@ public class AdminConsolePage extends SharePage implements HtmlPage
         }
 
         return new AdminConsolePage(drone).render();
+    }
+
+    /**
+     * Method to click 'Replication Jobs' link
+     *
+     * @return ReplicationJobsPage
+     */
+    public ReplicationJobsPage navigateToReplicationJobs()
+    {
+        WebElement replicationJobsPage = drone.find(REPLICATION_JOBS_LINK);
+        replicationJobsPage.click();
+        drone.waitForPageLoad(3);
+        logger.info("Navigating to Replication Jobs page");
+        return drone.getCurrentPage().render();
     }
 }

@@ -18,13 +18,6 @@
  */
 package org.alfresco.share.dashlet;
 
-import static org.alfresco.share.util.ShareUser.openSiteDashboard;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.util.List;
-
 import org.alfresco.po.share.dashlet.SiteContentDashlet;
 import org.alfresco.po.share.dashlet.SiteContentFilter;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -37,6 +30,11 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.alfresco.share.util.ShareUser.openSiteDashboard;
+import static org.testng.Assert.*;
 
 /**
  * @author Shan Nagarajan
@@ -74,8 +72,8 @@ public class RecentlyModifiedSiteContentDashlet extends AbstractUtils
         ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);        
     }
     
-    @Test
-    public void enterprise40x_7934()
+    @Test(groups={"IntermittentBugs"})
+    public void AONE_3416()
     {
         
         try

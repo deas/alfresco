@@ -4,6 +4,7 @@ import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.AbstractSiteDashletTest;
 import org.alfresco.po.share.site.CustomizeSitePage;
 import org.alfresco.po.share.site.SitePageType;
+import org.alfresco.po.share.site.calendar.CalendarPage.ActionEventVia;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
@@ -14,19 +15,21 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.testng.Assert.assertNotNull;
 
 /**
  * Holds tests for Calendar page web elements
- *
+ * 
  * @author Sergey Kardash
  */
 
 @Listeners(FailedTestListener.class)
-@Test(groups = { "Enterprise4.2" }, enabled=false)
-public class CalendarPageTest  extends AbstractSiteDashletTest
+@Test(groups = { "Enterprise-only" })
+public class CalendarPageTest extends AbstractSiteDashletTest
 {
     DashBoardPage dashBoard;
     CustomizeSitePage customizeSitePage;
@@ -58,13 +61,16 @@ public class CalendarPageTest  extends AbstractSiteDashletTest
     public void addCalendarPage()
     {
         customizeSitePage = siteDashBoard.getSiteNav().selectCustomizeSite();
-        List<SitePageType> addPageTypes = new ArrayList<SitePageType>();
+        List<SitePageType> addPageTypes = new ArrayList<>();
         addPageTypes.add(SitePageType.CALENDER);
         customizeSitePage.addPages(addPageTypes);
-        try {
+        try
+        {
             saveScreenShot("addCalendarPage_after_add_pages_screen");
             savePageSource("addCalendarPage_after_add_pages_page_source");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         calendarPage = siteDashBoard.getSiteNav().selectCalendarPage();
@@ -73,12 +79,15 @@ public class CalendarPageTest  extends AbstractSiteDashletTest
 
     /**
      * Method for event creation
-     *
+     * 
      * @return CalendarPage
      */
     @Test(dependsOnMethods = "addCalendarPage", timeOut = 60000)
     public void testCreateEvent()
     {
+        navigateToSiteDashboard();
+        calendarPage = siteDashBoard.getSiteNav().selectCalendarPage();
+
         // Create any single day event, e.g. event1
         calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.MONTH_TAB, event1, event1, event1, null, null, null, null, tag1, false);
     }
@@ -123,9 +132,13 @@ public class CalendarPageTest  extends AbstractSiteDashletTest
         calendarPage = calendarPage.chooseAgendaTab().render();
         assertNotNull(calendarPage, "Calendar page agenda tab isn't opened");
         Assert.assertTrue(calendarPage.isEventPresent(CalendarPage.EventType.AGENDA_TAB_SINGLE_EVENT, event1), "The " + event1
-                + " isn't correctly displayed on the agenda tab");
+                + " isn't correctly displayed on the agenda tab");   
+        
+        int nrEvents = calendarPage.getTheNumOfEvents(ActionEventVia.AGENDA_TAB);
+        Assert.assertTrue(nrEvents > 1);
+        
     }
-
+    
     @Test(dependsOnMethods = "testChooseAgendaTab", timeOut = 60000)
     public void testShowWorkingHours()
     {
@@ -180,6 +193,110 @@ public class CalendarPageTest  extends AbstractSiteDashletTest
                 + " isn't correctly displayed on the information form description field. Server B");
         calendarPage = informationEventForm.closeInformationForm();
         assertNotNull(calendarPage, "Calendar page month tab isn't opened");
+    }
+
+    /**
+     * test to verify the Start and End Date Time
+     * 
+     * @author Bogdan.Bocancea
+     */
+    @Test(groups = "Verifycalendar", timeOut = 60000)
+    public void testStartEndDateInfoFields()
+    {
+
+        navigateToSiteDashboard();
+
+        calendarPage = siteDashBoard.getSiteNav().selectCalendarPage();
+
+        String event_2 = "event2";
+        // Create any event
+        calendarPage = siteDashBoard.getSiteNav().selectCalendarPage();
+
+        Calendar calendar = Calendar.getInstance();
+
+        int todayDate = calendar.get(Calendar.DATE);
+        calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.DAY_TAB, event_2, event_2, event_2, String.valueOf(todayDate), null,
+                String.valueOf(todayDate), null, null, false);
+        Assert.assertTrue(calendarPage.isEventPresent(CalendarPage.EventType.DAY_TAB_SINGLE_EVENT, event_2), "The " + event_2
+                + " isn't correctly displayed on the day tab");
+
+        InformationEventForm eventInfo = calendarPage.clickOnEvent(CalendarPage.EventType.DAY_TAB_SINGLE_EVENT, event_2).render();
+        Assert.assertTrue(eventInfo.getWhatDetail().contains(event_2), "The " + event_2 + " isn't correctly displayed on the information form what field.");
+
+        String starDate = eventInfo.getStartDateTime();
+        String endDate = eventInfo.getEndDateTime();
+
+        Assert.assertTrue(starDate.contains(String.valueOf(todayDate)));
+        Assert.assertTrue(endDate.contains(String.valueOf(todayDate)));
+        
+        Assert.assertFalse(eventInfo.isRecurrencePresent());
+        
+        String recurrence = eventInfo.getRecurrenceDetail();
+        Assert.assertTrue(recurrence.isEmpty());
+    }
+
+    /**
+     * test to verify create event method with year and month
+     * 
+     * @author Bogdan.Bocancea
+     */
+    @Test(groups = "Verifycalendar", timeOut = 60000)
+    public void testCreateEventWithMonth()
+    {
+
+        ArrayList<String> monthValues = new ArrayList<String>(Arrays.asList("January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December"));
+
+        String event_month = "event_month";
+        navigateToSiteDashboard();
+
+        // navigate to Site Calendar Page
+        calendarPage = siteDashBoard.getSiteNav().selectCalendarPage();
+
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int nextMonth = currentMonth + 2;
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        String startMonth = monthValues.get(currentMonth);
+        String endMonth = monthValues.get(nextMonth);
+
+        int lastDate = calendar.getActualMaximum(Calendar.DATE);
+        int todayDate = calendar.get(Calendar.DATE);
+
+        // Create any event
+        int anotherDate;
+        if (lastDate == todayDate)
+        {
+            anotherDate = todayDate - 1;
+            calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.MONTH_TAB, event_month, event_month, event_month, String.valueOf(currentYear),
+                    String.valueOf(startMonth), String.valueOf(anotherDate), "7:00 AM", String.valueOf(currentYear), String.valueOf(endMonth),
+                    String.valueOf(todayDate), "9:00 AM", null, false);
+        }
+        else
+        {
+            anotherDate = todayDate + 3;
+            calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.MONTH_TAB, event_month, event_month, event_month, String.valueOf(currentYear),
+                    String.valueOf(startMonth), String.valueOf(todayDate), "7:00 AM", String.valueOf(currentYear), String.valueOf(endMonth),
+                    String.valueOf(anotherDate), "9:00 AM", null, false);
+        }
+
+        // verify event is present
+        Assert.assertTrue(calendarPage.isEventPresent(CalendarPage.EventType.MONTH_TAB_MULTIPLY_EVENT, event_month), "The " + event_month
+                + " isn't correctly displayed on the day tab");
+
+        // verify the information event form
+        InformationEventForm eventInfo = calendarPage.clickOnEvent(CalendarPage.EventType.MONTH_TAB_MULTIPLY_EVENT, event_month).render();
+        Assert.assertTrue(eventInfo.getWhatDetail().contains(event_month), "The " + event_month
+                + " isn't correctly displayed on the information form what field.");
+
+        String starDate = eventInfo.getStartDateTime();
+        String endDate = eventInfo.getEndDateTime();
+
+        // verify that start month and end month are correct
+        Assert.assertTrue(starDate.contains(String.valueOf(startMonth)));
+        Assert.assertTrue(endDate.contains(String.valueOf(endMonth)));
+
     }
 
 }

@@ -23,8 +23,11 @@ import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -39,7 +42,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class SiteDashboardPage extends SitePage implements Dashboard
 {
-
+    private static Log logger = LogFactory.getLog(SiteDashboardPage.class);
     private static final String PROJECT_WIKI_ID = "#HEADER_SITE_WIKI-PAGE_text";
     private static final String WELCOME_DASHLET = "div.dashlet.dynamic-welcome";
     private String clickableElements;
@@ -48,6 +51,8 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     private static final By HELP_ICON = By.cssSelector("div[class$='titleBarActionIcon help']");
     private static final By MORE_PAGES_BUTTON = By.cssSelector("#HEADER_SITE_MORE_PAGES");
     private static final By PAGES_LINKS = By.xpath("//div[@id='HEADER_NAVIGATION_MENU_BAR']//a");
+    private static final By DASHLET_TITLE = By.cssSelector(".title");
+
 
     /**
      * Constructor
@@ -363,5 +368,32 @@ public class SiteDashboardPage extends SitePage implements Dashboard
     public int getPagesLinkCount()
     {
         return drone.findAndWaitForElements(PAGES_LINKS).size();
+    }
+
+    /**
+     * This method gets all the present Dashlets' titles
+     *
+     * @return <List<String>> topic filter links
+     */
+    public List<String> getTitlesList()
+    {
+        List<String> list = new ArrayList<String>();
+        try
+        {
+            for (WebElement element : drone.findAll(DASHLET_TITLE))
+            {
+                String text = element.getText();
+                if (text != null)
+                {
+                    list.add(text);
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("Unable to find any dashlet", nse);
+        }
+
+        return list;
     }
 }

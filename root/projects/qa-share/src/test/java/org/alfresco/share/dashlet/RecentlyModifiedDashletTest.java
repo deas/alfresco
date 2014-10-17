@@ -19,23 +19,24 @@
 package org.alfresco.share.dashlet;
 
 import static org.alfresco.share.util.ShareUser.openSiteDashboard;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
+import java.io.File;
 import java.util.List;
 
 import org.alfresco.po.share.dashlet.SiteContentDashlet;
 import org.alfresco.po.share.dashlet.SiteContentFilter;
+import org.alfresco.po.share.dashlet.sitecontent.DetailedViewInformation;
 import org.alfresco.po.share.dashlet.sitecontent.SimpleViewInformation;
 import org.alfresco.po.share.enums.Dashlets;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserDashboard;
+import org.alfresco.po.share.enums.UserRole;
+import org.alfresco.po.share.site.SitePage;
+import org.alfresco.po.share.site.UpdateFilePage;
+import org.alfresco.po.share.site.document.*;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
@@ -87,7 +88,7 @@ public class RecentlyModifiedDashletTest extends AbstractUtils
     }
 
     @Test
-    public void Enterprise40x_7935()
+    public void AONE_3417()
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -146,5 +147,146 @@ public class RecentlyModifiedDashletTest extends AbstractUtils
         assertTrue(detailsPage.isDocumentDetailsPage());
 
     }
+
+    @Test(groups = { "EnterpriseOnly" })
+    public void AONE_3418() throws Exception
+    {
+        testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String testUser1 = getUserNameFreeDomain(testName + 1);
+        String siteName = getSiteName(testName)+ System.currentTimeMillis();
+        String testContent = getFileName(testName) + System.currentTimeMillis();
+        String description = "For testing purposes";
+        String fileName = getRandomString(5) + ".txt";
+        String comment = getRandomString(5);
+
+        // create two users
+        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+        String[] testUserInfo = new String[] { testUser };
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+        testUserInfo = new String[] { testUser1 };
+        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
+
+        ShareUser.logout(drone);
+        // any site is created  (e.g. by UserA)
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUser.createSite(drone, siteName, SITE_VISIBILITY_PUBLIC);
+
+        // any content is uploaded to Doc lib (e.g. TestDoc with 6 bytes site and "For testing purposes" description);
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        ContentDetails content = new ContentDetails();
+        content.setName(testContent);
+        content.setDescription(description);
+        DocumentLibraryPage documentLibraryPage = ShareUser.createContent(drone, content, ContentType.PLAINTEXT);
+        assertTrue(documentLibraryPage.isFileVisible(testContent));
+
+        // the doc is modified several times (e.g was edited offline 2 times and has 1.2 version number)
+
+        // navigate to the details page
+        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(testContent).render();
+
+        // select upload new version
+        for(int i = 0; i < 2; i++)
+        {
+            UpdateFilePage updatePage = documentDetailsPage.selectUploadNewVersionIcon().render();
+            updatePage.selectMinorVersionChange();
+            File newFileName = newFile(DATA_FOLDER + (fileName), fileName);
+            updatePage.uploadFile(newFileName.getCanonicalPath());
+            SitePage sitePage = updatePage.submit().render();
+            sitePage.render();
+            FileUtils.forceDelete(newFileName);
+
+        }
+
+        // invite another user to the site
+        ShareUserMembers.inviteUserToSiteWithRole(drone, testUser, testUser1, siteName, UserRole.MANAGER);
+
+        ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+
+        // the doc is liked by any user (not current user, e.g. UserB)
+        ShareUser.openSitesDocumentLibrary(drone, siteName);
+        assertTrue(documentLibraryPage.isFileVisible(testContent));
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(drone, testContent);
+        fileInfo.selectLike();
+
+        // Site Dashboard page is displayed
+        ShareUser.login(drone, testUser);
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        // browse to Site Content dashlet, choose I've recently modified filter and click Detailed view icon
+        SiteContentDashlet siteContentDashlet = ShareUserDashboard.getDashlet(drone, Dashlets.SITE_CONTENT).render();
+        siteContentDashlet.selectFilter(SiteContentFilter.I_HAVE_RECENTLY_MODIFIED);
+        siteContentDashlet.clickDetailView();
+
+        siteContentDashlet.renderDetailViewWithContent();
+
+        List<DetailedViewInformation> informations = siteContentDashlet.getDetailedViewInformation();
+        DetailedViewInformation detailedViewInformation = informations.get(0);
+
+        // [content / document's name link] [version number]
+        assertTrue(detailedViewInformation.getContentStatus().contains("Modified"));
+        assertNotNull(detailedViewInformation.getContentDetail());
+        assertEquals(detailedViewInformation.getContentDetail().getDescription(), testContent);
+        assertEquals(detailedViewInformation.getDescription(), description);
+        assertEquals(detailedViewInformation.getVersion(), 1.2);
+        assertNotNull(detailedViewInformation.getLike());
+        assertNotNull(detailedViewInformation.getFavorite());
+        assertNotNull(detailedViewInformation.getComment());
+        assertEquals(detailedViewInformation.getLikecount(), 1);
+        assertTrue(detailedViewInformation.getFileSize().contains("9 bytes"));
+
+        // go back and click Favorite link
+        detailedViewInformation.getFavorite().click().render();
+
+        // click [content / document's name link]
+        String href = detailedViewInformation.getContentDetail().getHref();
+        drone.navigateTo(href);
+        documentDetailsPage.render();
+        assertTrue(documentDetailsPage.isFavourite());
+
+        // go back and click Remove document from favorites icon
+        ShareUser.openSiteDashboard(drone, siteName);
+
+        informations = siteContentDashlet.getDetailedViewInformation();
+        detailedViewInformation = informations.get(0);
+        assertTrue(detailedViewInformation.isFavouriteEnabled());
+
+        detailedViewInformation.getFavorite().click().render();
+
+        informations = siteContentDashlet.getDetailedViewInformation();
+        detailedViewInformation = informations.get(0);
+        assertNotNull(detailedViewInformation.getFavorite());
+        assertFalse(detailedViewInformation.isFavouriteEnabled());
+
+        // click on thumbnail icon
+        documentDetailsPage = detailedViewInformation.getThumbnail().click().render();
+        assertTrue(documentDetailsPage.getTitle().contains("Document Details"));
+        assertFalse(documentDetailsPage.isFavourite());
+
+        // go back and click Like link
+        ShareUser.openSiteDashboard(drone, siteName);
+        informations = siteContentDashlet.getDetailedViewInformation();
+        detailedViewInformation = informations.get(0);
+        detailedViewInformation.getLike().click().render();
+
+        informations = siteContentDashlet.getDetailedViewInformation();
+        detailedViewInformation = informations.get(0);
+        assertEquals(detailedViewInformation.getLikecount(), 2);
+        assertTrue(detailedViewInformation.isLikeEnabled());
+
+        // click Unlike icon
+        detailedViewInformation.getLike().click().render(maxWaitTime);
+        informations = siteContentDashlet.getDetailedViewInformation();
+        detailedViewInformation = informations.get(0);
+        assertEquals(detailedViewInformation.getLikecount(), 1);
+
+        // click Comment link
+        documentDetailsPage = detailedViewInformation.clickComment().render();
+        assertTrue(documentDetailsPage.getTitle().contains("Document Details"));
+
+        ShareUser.logout(drone);
+
+    }
+
 
 }

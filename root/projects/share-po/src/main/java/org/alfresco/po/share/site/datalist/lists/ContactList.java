@@ -16,7 +16,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Page object to hold elements of Contact Data List
- *
+ * 
  * @author Marina.Nenadovets
  */
 public class ContactList extends AbstractDataList
@@ -32,8 +32,7 @@ public class ContactList extends AbstractDataList
     @Override
     public ContactList render(RenderTime timer)
     {
-        elementRender(timer,
-            getVisibleRenderElement(LIST_TABLE));
+        elementRender(timer, getVisibleRenderElement(LIST_TABLE));
         return this;
     }
 
@@ -53,7 +52,7 @@ public class ContactList extends AbstractDataList
 
     /**
      * Method for creating and Item
-     *
+     * 
      * @param data
      */
     public ContactList createItem(String data)
@@ -85,14 +84,14 @@ public class ContactList extends AbstractDataList
 
     /**
      * Method to verify whether edit item link is available
-     *
+     * 
      * @param itemName
      * @return boolean
      */
     public boolean isEditDisplayed(String itemName)
     {
         boolean isDisplayed;
-        WebElement theItem = locateItemActions(itemName);
+        WebElement theItem = locateAnItem(itemName);
         try
         {
             isDisplayed = theItem.findElement(EDIT_LINK).isEnabled();
@@ -102,5 +101,42 @@ public class ContactList extends AbstractDataList
             isDisplayed = false;
         }
         return isDisplayed;
+    }
+
+    /**
+     * Method to verify whether item is available
+     * 
+     * @param itemName
+     * @return boolean
+     */
+    public boolean isItemDisplayed(String itemName)
+    {
+        boolean isDisplayed;
+        try
+        {
+            WebElement theItem = locateAnItem(itemName);
+            isDisplayed = theItem.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
+        catch (TimeoutException nse)
+        {
+            return false;
+        }
+        return isDisplayed;
+    }
+
+    public ContactList checkCreateItemForm()
+    {
+        logger.info("Check create item Contact list form");
+        selectNewItem();
+        ContactListItem contactListItem = new ContactListItem(drone);
+        contactListItem.render();
+        contactListItem.isAllFormFieldsPresented();
+        contactListItem.clickCancel();
+        waitUntilAlert();
+        return new ContactList(drone).render();
     }
 }

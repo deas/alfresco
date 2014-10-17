@@ -19,12 +19,6 @@
 
 package org.alfresco.share.workflow;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.util.Arrays;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.dashlet.MyTasksDashlet;
@@ -45,6 +39,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
+import static org.testng.Assert.*;
+
 /**
  * @author Jamie Allison
  * @since 4.3
@@ -64,7 +62,7 @@ public class MyTasksTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_8954() throws Exception
+    public void dataPrep_AONE_14198() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -74,12 +72,11 @@ public class MyTasksTest extends AbstractUtils
 
         // Create Users
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdminInfo);
-
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_8954() throws Exception
+    public void AONE_14198() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -87,69 +84,64 @@ public class MyTasksTest extends AbstractUtils
 
         String taskName = testName + "-task-" + System.currentTimeMillis();
 
-        // User login
+        // Admin login
         ShareUser.login(drone, testAdmin, DEFAULT_PASSWORD);
 
-        // TODO: TestLink: The site and file are not used in the test. Can they
-        // be removed?
-
+        // Create a task and assign it for user
         NewWorkflowPage newWorkFlowPage = ShareUserWorkFlow.startNewWorkFlow(drone);
-
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
         formDetails.setSiteName(taskName);
         formDetails.setReviewers(Arrays.asList(testUser1));
         formDetails.setMessage(taskName);
-
         newWorkFlowPage.startWorkflow(formDetails).render();
-
+        MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone).render();
+        assertFalse(myTasksPage.isTaskPresent(taskName));
         ShareUser.logout(drone);
 
+        // Login as assignee user
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
         DashBoardPage dashBoardPage = ShareUser.openUserDashboard(drone);
-
         assertTrue(ShareUser.searchMyDashBoardWithRetry(drone, DASHLET_TASKS, taskName, true), "Could not find task: " + taskName);
 
+        // Complete the task
         MyTasksDashlet myTasksDashlet = dashBoardPage.getDashlet("tasks").render();
         myTasksDashlet = myTasksDashlet.renderTask(maxWaitTime, taskName);
         myTasksDashlet.clickOnTask(taskName);
-
         ShareUserWorkFlow.completeTask(drone, TaskStatus.COMPLETED, EditTaskAction.TASK_DONE);
 
-        MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
+        myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
         myTasksPage = myTasksPage.selectActiveTasks().render();
-
         assertFalse(myTasksPage.isTaskPresent(taskName), "Task " + taskName + " should not appear in active tasks list.");
 
+        // Verify Completed Tasks filter
         myTasksPage = myTasksPage.selectCompletedTasks();
-
         myTasksPage = myTasksPage.renderTask(maxWaitTime, taskName);
         assertTrue(myTasksPage.isTaskPresent(taskName), "Cannot find task: " + taskName);
-
         ShareUser.logout(drone);
 
+        // Admin login
         ShareUser.login(drone, testAdmin, DEFAULT_PASSWORD);
 
+        // Verify Active Tasks filter
         myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
         myTasksPage = myTasksPage.selectActiveTasks();
-
         myTasksPage = myTasksPage.renderTask(maxWaitTime, taskName);
         assertTrue(myTasksPage.isTaskPresent(taskName), "Cannot find task: " + taskName);
 
+        // Complete the task
         myTasksPage = ShareUserWorkFlow.completeTaskFromMyTasksPage(drone, taskName, TaskStatus.COMPLETED, EditTaskAction.TASK_DONE);
 
+        // Check that the task is disappeared from Active Tasks filter and displayed in Completed Tasks
         myTasksPage = myTasksPage.selectActiveTasks();
-
         assertFalse(myTasksPage.isTaskPresent(taskName), "Task " + taskName + " should not appear in active tasks list.");
-
         myTasksPage = myTasksPage.selectCompletedTasks();
         myTasksPage = myTasksPage.renderTask(maxWaitTime, taskName);
         assertTrue(myTasksPage.isTaskPresent(taskName), "Cannot find task: " + taskName);
-
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepSiteNotification", "AlfrescoOne" })
-    public void dataPrep_ALF_8955() throws Exception
+    public void dataPrep_AONE_14199() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -159,12 +151,11 @@ public class MyTasksTest extends AbstractUtils
 
         // Create Users
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testAdminInfo);
-
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo1);
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_8955() throws Exception
+    public void AONE_14199() throws Exception
     {
         String testName = getTestName();
         String testAdmin = getUserNameFreeDomain(testName);
@@ -172,28 +163,27 @@ public class MyTasksTest extends AbstractUtils
 
         String taskName = testName + "-task-" + System.currentTimeMillis();
 
-        // User login
+        // Admin login
         ShareUser.login(drone, testAdmin, DEFAULT_PASSWORD);
 
+        // Create a task and assign it for user
         NewWorkflowPage newWorkFlowPage = ShareUserWorkFlow.startNewWorkFlow(drone);
-
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
         formDetails.setSiteName(taskName);
         formDetails.setReviewers(Arrays.asList(testUser1));
         formDetails.setMessage(taskName);
-
         newWorkFlowPage.startWorkflow(formDetails).render();
-
         ShareUser.logout(drone);
 
+        // Login as assignee user
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
+        // Go to My Tasks page and verify task's information
         MyTasksPage myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
         myTasksPage = myTasksPage.selectActiveTasks().render();
         myTasksPage = myTasksPage.renderTask(maxWaitTime, taskName);
 
         TaskDetails taskDetails = myTasksPage.getTaskDetails(taskName);
-
         assertTrue(myTasksPage.isTaskEditButtonEnabled(taskName), "Edit Task button not displayed for task: " + taskName);
         assertTrue(myTasksPage.isTaskViewButtonEnabled(taskName), "View Task button not displayed for task: " + taskName);
         assertTrue(myTasksPage.isTaskWorkflowButtonEnabled(taskName), "View Workflow button not displayed for task: " + taskName);
@@ -206,16 +196,17 @@ public class MyTasksTest extends AbstractUtils
         assertNotNull(taskDetails.getDescription(), "Task Description is null for task: " + taskName);
         assertNotNull(taskDetails.getStartedBy(), "Task Started By is null for task: " + taskName);
 
+        // Complete the task
         ShareUserWorkFlow.completeTaskFromMyTasksPage(drone, taskName, TaskStatus.COMPLETED, EditTaskAction.TASK_DONE);
-
         ShareUser.logout(drone);
 
+        // log in as assigner
         ShareUser.login(drone, testAdmin, DEFAULT_PASSWORD);
 
+        // Check Active filter on My Tasks page
         myTasksPage = ShareUserWorkFlow.navigateToMyTasksPage(drone);
         myTasksPage = myTasksPage.selectActiveTasks().render();
         myTasksPage = myTasksPage.renderTask(maxWaitTime, taskName);
-
         assertTrue(myTasksPage.isTaskEditButtonEnabled(taskName), "Edit Task button not displayed for task: " + taskName);
         myTasksPage = myTasksPage.renderTask(maxWaitTime, taskName);
         assertTrue(myTasksPage.isTaskViewButtonEnabled(taskName), "View Task button not displayed for task: " + taskName);

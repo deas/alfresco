@@ -15,16 +15,18 @@
 
 package org.alfresco.share.api.cmis;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient;
+import org.alfresco.rest.api.tests.client.RequestContext;
 import org.alfresco.rest.api.tests.client.data.CMISNode;
 import org.alfresco.rest.api.tests.client.data.ContentData;
 import org.alfresco.rest.api.tests.client.data.FolderNode;
@@ -37,9 +39,7 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisStreamNotSupportedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
@@ -87,8 +87,8 @@ public class CmisBrowserTests extends CmisUtils
         ShareUser.openDocumentLibrary(drone);
     }
 
-    @Test
-    public void ALF_235601() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14227() throws Exception
     {
         // Create Folder
         Map<String, String> properties = new HashMap<String, String>();
@@ -169,7 +169,7 @@ public class CmisBrowserTests extends CmisUtils
     }
 
     @Test
-    public void ALF_219001() throws Exception
+    public void AONE_14224() throws Exception
     {
         String testName = getTestName();
         String thisFolderName = getFolderName(testName);
@@ -202,8 +202,8 @@ public class CmisBrowserTests extends CmisUtils
 
     }
 
-    @Test
-    public void ALF_219101() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14225() throws Exception
     {
         String testName = getTestName();
         String thisFolderName = getFolderName(testName);
@@ -240,14 +240,15 @@ public class CmisBrowserTests extends CmisUtils
     }
 
     @Test
-    public void ALF_235301() throws Exception
+    public void AONE_14226() throws Exception
     {
-        PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
-        RepositoryInfo repositoryInfo = cmisSession.getCMISSession().getRepositoryInfo();
+        publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
+        HttpResponse httpResponse = publicApiClient.get("-default-/public/cmis/versions/1.0/atom", null);
+        assertEquals(httpResponse.getStatusCode(), 200, httpResponse.getStatusCode());
     }
 
     @Test
-    public void ALF_235701() throws Exception {
+    public void AONE_14228() throws Exception {
         String testName = getTestName();
         String thisFileName = getFileName(testName);
 
@@ -262,7 +263,7 @@ public class CmisBrowserTests extends CmisUtils
 
 
     @Test
-    public void ALF_237201() throws Exception
+    public void AONE_14229() throws Exception
     {
         PublicApiClient.CmisSession cmisSession = getCmisSession(CMISBinding.ATOMPUB10, testUser2, DOMAIN);
 //        cmisSession.

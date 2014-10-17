@@ -1,8 +1,5 @@
 package org.alfresco.share.sanity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.share.util.AbstractUtils;
@@ -16,6 +13,9 @@ import org.junit.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the sanity tests for folder related functionality.
@@ -86,7 +86,7 @@ public class FolderSanityTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "Sanity")
-    public void enterprise40X_6541() throws Exception
+    public void AONE_7630() throws Exception
     {
         String testName = getTestName();
         

@@ -18,26 +18,11 @@
  */
 package org.alfresco.po.share;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-
 import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
 import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.SyncInfoPage;
 import org.alfresco.po.share.site.document.UserProfile;
@@ -60,16 +45,23 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * Abstract test holds all common methods and functionality to test against
  * Benchmark Grid tests.
- * 
+ *
  * @author Michael Suzuki
  */
 public abstract class AbstractTest
@@ -174,7 +166,7 @@ public abstract class AbstractTest
         drone = (WebDrone) ctx.getBean("webDrone");
         drone.maximize();
     }
-    
+
     @AfterClass(alwaysRun = true)
     public void closeWebDrone()
     {
@@ -204,7 +196,7 @@ public abstract class AbstractTest
 
     /**
      * Helper to log admin user into dashboard.
-     * 
+     *
      * @return DashBoardPage page object.
      * @throws Exception if error
      */
@@ -237,14 +229,14 @@ public abstract class AbstractTest
         }
         return ShareUtil.loginAs(drone, shareUrl, userInfo).render();
     }
-    
+
     public void saveOsScreenShot(String methodName) throws IOException, AWTException
     {
     	Robot robot = new Robot();
     	BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
         ImageIO.write(screenShot, "png", new File("target/webdrone-" + methodName+ "_OS" +".png"));
     }
-    
+
     public void saveScreenShot(String methodName) throws IOException
     {
         if(StringUtils.isEmpty(methodName))
@@ -255,16 +247,16 @@ public abstract class AbstractTest
         File tmp = new File("target/webdrone-" + methodName + ".png");
         FileUtils.copyFile(file, tmp);
         //Commented OS Screen Shot Since Tests are on Selenium Grid
-//        try 
+//        try
 //        {
 //            saveOsScreenShot(methodName);
-//        } 
-//        catch (AWTException e) 
+//        }
+//        catch (AWTException e)
 //        {
 //            logger.error("Not able to take the OS screen shot: " + e);
 //        }
     }
-    
+
     public void savePageSource(String methodName) throws IOException
     {
         String htmlSource = ((WebDroneImpl) drone).getDriver().getPageSource();
@@ -272,13 +264,13 @@ public abstract class AbstractTest
         FileUtils.writeStringToFile(file, htmlSource);
     }
 
-    @BeforeMethod(alwaysRun = true) 
+    @BeforeMethod(alwaysRun = true)
     protected void startSession(Method method) throws Exception
-    { 
-        testName = method.getName(); 
+    {
+        testName = method.getName();
         if(logger.isTraceEnabled())
         {
-            logger.trace(String.format("Test run:%s.%s", 
+            logger.trace(String.format("Test run:%s.%s",
                                         method.getDeclaringClass().getCanonicalName(),
                                         testName));
         }
@@ -294,17 +286,17 @@ public abstract class AbstractTest
         MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
         return dashlet.selectSite(siteName).click().render();
     }
-    
+
     /**
      * User Log out using logout URL Assumes User is logged in.
-     * 
+     *
      * @param drone WebDrone Instance
      */
     public static void logout(WebDrone drone)
     {
         if(drone != null){
             try
-            {           
+            {
                 if (drone.getCurrentUrl().contains(shareUrl.trim()))
                 {
                     ShareUtil.logout(drone);
@@ -320,11 +312,11 @@ public abstract class AbstractTest
             }
         }
     }
-    
+
     /**
      * Function to create user on Enterprise using UI
-     * 
-     * @param uname - This should always be unique. So the user of this method needs to verify it is unique. 
+     *
+     * @param uname - This should always be unique. So the user of this method needs to verify it is unique.
      *                eg. - "testUser" + System.currentTimeMillis();
      * @return
      * @throws Exception
@@ -549,6 +541,56 @@ public abstract class AbstractTest
 
         return false;
     }
+    /**
+     * This method is used to get sync status (with retry) for a content from
+     * document details page and returns true if the content synced otherwise
+     * false. Since cloud sync is not instantaneous, the method keeps retrying
+     * until maxWaitTime_CloudSync is reached This method could be invoked after
+     * syncToCloud is initiated from document library page.
+     *
+     * @param driver
+     * @return boolean
+     */
+    public static boolean checkIfContentIsSynced(WebDrone driver)
+    {
+        DocumentDetailsPage detailsPage = driver.getCurrentPage().render();
+
+        String status = "";
+        try
+        {
+            RenderTime t = new RenderTime(maxWaitTime_CloudSync);
+            while (true)
+            {
+                t.start();
+                try
+                {
+                    status = detailsPage.getSyncStatus();
+                    if (status.contains("Pending") || status.isEmpty())
+                    {
+                        driver.waitFor(1000);
+                        driver.refresh();
+                        detailsPage = driver.getCurrentPage().render();
+                    }
+                    else
+                    {
+                        return status.contains("Synced");
+                    }
+                }
+                finally
+                {
+                    t.end();
+                }
+            }
+        }
+        catch (PageException e)
+        {
+        }
+        catch (PageRenderTimeException exception)
+        {
+        }
+
+        return false;
+    }
 
     /**
      * Method to upload a file from given path. Method assumes that user is already in Document Library Page
@@ -562,5 +604,5 @@ public abstract class AbstractTest
         UploadFilePage uploadForm = documentLibraryPage.getNavigation().selectFileUpload().render();
         return uploadForm.uploadFile(filePath).render();
     }
-    
+
 }

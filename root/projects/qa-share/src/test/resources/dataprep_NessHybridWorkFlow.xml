@@ -1,0 +1,51 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true" parallel="classes"
+	thread-count="1">
+
+	<groups>
+		<run>
+			<include name="DataPrep.*" />
+			<exclude name="NonGrid" />
+		</run>
+	</groups>
+	
+	<test name="IncompleteWorkflowTests" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.workflow.IncompleteWorkflowTests" />
+		</classes>
+	</test>
+	
+	<test name="WorkflowOptionsTests" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.workflow.WorkflowOptionsTests" />
+		</classes>
+	</test>
+
+	<test name="CompleteSimpleCloudTaskTests" verbose="1">
+		<classes>
+			<class
+				name="org.alfresco.share.workflow.simpleCloudTask.CompleteSimpleCloudTaskTests" />
+		</classes>
+	</test>
+
+	<test name="CreateSimpleCloudTaskTests" verbose="1">
+		<classes>
+			<class
+				name="org.alfresco.share.workflow.simpleCloudTask.CreateSimpleCloudTaskTests" />
+		</classes>
+	</test>
+
+	<test name="EditSimpleCloudTaskTests" verbose="1">
+		<classes>
+			<class
+				name="org.alfresco.share.workflow.simpleCloudTask.EditSimpleCloudTaskTests" />
+		</classes>
+	</test>
+
+	<test name="HybridCreateWorkfloFormTests" verbose="1">
+		<classes>
+			<class name="org.alfresco.share.workflow.HybridCreateWorkfloFormTests" />
+		</classes>
+	</test>
+
+</suite>

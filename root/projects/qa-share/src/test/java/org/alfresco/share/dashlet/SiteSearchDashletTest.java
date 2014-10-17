@@ -69,8 +69,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         logger.info("Start Tests in: " + testName);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10608() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14774() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -87,7 +87,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly" })
-    public void ALF_10608() throws Exception
+    public void AONE_14774() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -117,8 +117,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertEquals(searchDashlet.getContent(), "No results found.");
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10609() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14775() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -138,7 +138,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10609() throws Exception
+    public void AONE_14775() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -166,8 +166,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertEquals(searchDashlet.getSearchText().length(), 1024);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10610() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14776() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -188,7 +188,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10610() throws Exception
+    public void AONE_14776() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -208,8 +208,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertTrue(detailsPage != null);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10615() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14781() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -236,7 +236,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10615() throws Exception
+    public void AONE_14781() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -255,8 +255,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertEquals(ShareUser.getShareLinkName(items.get(0).getItemName()), fileName);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10616() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14782() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -315,8 +315,8 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
 
-    @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10616() throws Exception
+    @Test(groups = {"EnterpriseOnly", "IntermittentBugs"})
+    public void AONE_14782() throws Exception
     {
         String testName = getTestName();
         
@@ -366,8 +366,8 @@ public class SiteSearchDashletTest extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10617() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14783() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -386,7 +386,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10617() throws Exception
+    public void AONE_14783() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -401,8 +401,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertEquals(items.get(0).getItemName().getDescription(), folderName);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10618() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14784() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -420,7 +420,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10618() throws Exception
+    public void AONE_14784() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -457,8 +457,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, newFileName));
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10619() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14785() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -477,7 +477,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10619() throws Exception
+    public void AONE_14785() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -499,8 +499,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         }
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10620() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14786() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -511,7 +511,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10620() throws Exception
+    public void AONE_14786() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -548,8 +548,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10621() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14787() throws Exception
     {
         String testName = getTestName();
         String firstName = testName;
@@ -570,7 +570,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
   //TODO : Bug with new product version 270.
     @Test(groups = {"alfrescoBug"})
-    public void ALF_10621() throws Exception
+    public void AONE_14787() throws Exception
     {
         String testName = getTestName();
         String firstName = testName;
@@ -579,9 +579,9 @@ public class SiteSearchDashletTest extends AbstractUtils
         String siteName = getSiteName(testName);
 
         List<String> searchTermsList = new ArrayList<String>();
-        searchTermsList.add("modifier: " + userName);
-        searchTermsList.add("modifier: " + firstName);
-        searchTermsList.add("modifier: " + LAST_NAME);
+        searchTermsList.add("modifier: \"" + userName + "\"");
+        searchTermsList.add("modifier: \"" + firstName + "\"");
+        searchTermsList.add("modifier: \"" + LAST_NAME + "\"");
 
         ShareUser.login(drone, userName, DEFAULT_PASSWORD);
 
@@ -598,8 +598,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10622() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14788() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -628,7 +628,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10622() throws Exception
+    public void AONE_14788() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -655,8 +655,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10623() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14789() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -689,8 +689,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10623() throws Exception
+    @Test(groups = {"EnterpriseOnly", "IntermittentBugs"})
+    public void AONE_14789() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -724,8 +724,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10624() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14790() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -754,7 +754,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10624() throws Exception
+    public void AONE_14790() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -782,8 +782,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10625() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14791() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -810,7 +810,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10625() throws Exception
+    public void AONE_14791() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -832,8 +832,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10626() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14792() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -851,9 +851,9 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
-  //TODO : Bug with new product version 270.
-    @Test(groups = {"alfrescoBug"})
-    public void ALF_10626() throws Exception
+
+    @Test(groups = {"EnterpriseOnly"})
+    public void AONE_14792() throws Exception
     {
         String testName = getTestName();
         String userName = testName + " " + LAST_NAME;
@@ -866,9 +866,9 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.openSiteDashboard(drone, siteName);
 
         List<String> searchTermList = new ArrayList<String>();
-        searchTermList.add("creator: " + userName);
-        searchTermList.add("creator: " + testName);
-        searchTermList.add("creator: " + LAST_NAME);
+        searchTermList.add("creator: \"" + userName +"\"");
+        searchTermList.add("creator: \"" + testName +"\"");
+        searchTermList.add("creator: \"" + LAST_NAME +"\"");
 
         List<SiteSearchItem> items;
 
@@ -882,8 +882,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10627() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14793() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -926,7 +926,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10627() throws Exception
+    public void AONE_14793() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -951,8 +951,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10628() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14794() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -963,7 +963,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10628() throws Exception
+    public void AONE_14794() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -983,11 +983,8 @@ public class SiteSearchDashletTest extends AbstractUtils
 
         // Wait till file has been indexed
         Assert.assertTrue(ShareUser.searchSiteDashBoardWithRetry(drone, SITE_CONTENT_DASHLET, fileName, true, siteName));
-        // TODO - Remove commented code
         List<String> searchTerms = Arrays.asList("created: today",
-        // "created: \"" + getDate("yyyy MM dd") + "\"",
                 "created: \"" + getDate("yyyy-MM-dd") + "\"",
-                // "created: \"" + getDate("yyyy MMM dd") + "\"",
                 "created: \"" + getDate("yyyy-MMM-dd") + "\"", "created: [" + getDate("yyyy-MM-dd") + " TO TODAY]", "created: [" + getDate("yyyy-MM-dd")
                         + " TO NOW]");
 
@@ -1002,8 +999,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         }
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10629() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14795() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1031,7 +1028,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10629() throws Exception
+    public void AONE_14795() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1050,8 +1047,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSavedSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10630() throws Exception
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
+    public void dataPrep_AONE_14796() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1070,7 +1067,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10630() throws Exception
+    public void AONE_14796() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1088,8 +1085,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10631() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14797() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1128,7 +1125,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10631() throws Exception
+    public void AONE_14797() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1162,8 +1159,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         }
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10632() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly"})
+    public void dataPrep_AONE_14798() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1198,7 +1195,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10632() throws Exception
+    public void AONE_14798() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1225,8 +1222,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSavedSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10633() throws Exception
+    @Test(groups = { "DataPrepSavedSearchDashlet" })
+    public void dataPrep_AONE_14799() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1245,7 +1242,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10633() throws Exception
+    public void AONE_14799() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1286,8 +1283,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10634() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14800() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1304,9 +1301,9 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUserDashboard.addDashlet(drone, siteName, Dashlets.SITE_SEARCH);
         ShareUser.logout(drone);
     }
-  //TODO : Bug with new product version 270.
-    @Test(groups = {"alfrescoBug"})
-    public void ALF_10634() throws Exception
+
+    @Test(groups = {"EnterpriseOnly"})
+    public void AONE_14800() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1316,15 +1313,15 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.openSiteDashboard(drone, siteName);
 
-        List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "KEYWORD(" + fileName + ")");
+        List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "KEYWORDS: \"" + fileName +"\"");
         Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10635() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14801() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1376,7 +1373,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10635() throws Exception
+    public void AONE_14801() throws Exception
     {
 
         String testName = getTestName();
@@ -1400,8 +1397,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10636() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14802() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1425,7 +1422,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10636() throws Exception
+    public void AONE_14802() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1443,8 +1440,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10637() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14803() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1463,7 +1460,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10637() throws Exception
+    public void AONE_14803() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1493,8 +1490,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10638() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14804() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1513,7 +1510,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10638() throws Exception
+    public void AONE_14804() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1539,8 +1536,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10639() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14805() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1558,9 +1555,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    //TODO : Bug with new product version 270.
-    @Test(groups = {"alfrescoBug"})
-    public void ALF_10639() throws Exception
+    @Test(groups = {"EnterpriseOnly"})
+    public void AONE_14805() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1570,15 +1566,15 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         ShareUser.openSiteDashboard(drone, siteName);
 
-        List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "cm_name = " + fileName);
+        List<SiteSearchItem> items = ShareUserDashboard.searchSiteSearchDashlet(drone, "cm_name:\" " + fileName + "\"");
         Assert.assertEquals(items.size(), 1);
         Assert.assertTrue(ShareUserDashboard.isContentDisplayedInSearchResults(items, fileName));
 
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10640() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14806() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1603,7 +1599,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10640() throws Exception
+    public void AONE_14806() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1625,8 +1621,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10641() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14807() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1645,7 +1641,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10641() throws Exception
+    public void AONE_14807() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1662,8 +1658,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10642() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14808() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1690,7 +1686,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10642() throws Exception
+    public void AONE_14808() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1709,8 +1705,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10643() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14809() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1737,7 +1733,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = { "EnterpriseOnly" })
-    public void ALF_10643() throws Exception
+    public void AONE_14809() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1758,8 +1754,8 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
    // TODO: Test case should be modified according to fix ACE-805 Issue is still opened. 
    //        When Issue will be fixed test will get changed and so do test script will.
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10644() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14810() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1794,7 +1790,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     // TODO: Test case should be modified according to fix ACE-805 Issue is still opened. 
     //        When Issue will be fixed test will get changed and so do test script will.
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10644() throws Exception
+    public void AONE_14810() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1815,8 +1811,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10645() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14811() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1843,7 +1839,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10645() throws Exception
+    public void AONE_14811() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1869,8 +1865,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10646() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14812() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1891,7 +1887,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10646() throws Exception
+    public void AONE_14812() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1908,8 +1904,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10647() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14813() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1936,7 +1932,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10647() throws Exception
+    public void AONE_14813() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1956,8 +1952,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10648() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14814() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1978,7 +1974,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10648() throws Exception
+    public void AONE_14814() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -1995,8 +1991,8 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepSiteSearchDashlet", "EnterpriseOnly" })
-    public void dataPrep_ALF_10649() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_AONE_14815() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);
@@ -2017,7 +2013,7 @@ public class SiteSearchDashletTest extends AbstractUtils
     }
 
     @Test(groups = {"EnterpriseOnly"})
-    public void ALF_10649() throws Exception
+    public void AONE_14815() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, siteDomain);

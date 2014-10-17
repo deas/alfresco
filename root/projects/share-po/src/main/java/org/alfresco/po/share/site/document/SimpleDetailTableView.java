@@ -420,6 +420,17 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
         selectMoreAction().click();
         return super.selectEditOffline();
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectEditOffline()
+     */
+    @Override
+    public DocumentLibraryPage selectEditOfflineAndCloseFileWindow()
+    {
+        selectMoreAction().click();
+        return super.selectEditOfflineAndCloseFileWindow();
+    }
 
     /*
      * (non-Javadoc)
@@ -563,6 +574,23 @@ public abstract class SimpleDetailTableView extends FileDirectoryInfoImpl
                 timer.end();
             }
         }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#selectLocateFile()
+     */
+    @Override
+    public void selectLocateFile()
+    {
+        if (isFolder())
+        {
+            throw new UnsupportedOperationException("Option View Details is only available to Content of type Document");
+        }
+
+        WebElement contentActions = selectAction();
+        getDrone().mouseOverOnElement(contentActions);
+        super.selectLocateFile();
     }
 
 }

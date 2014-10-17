@@ -61,6 +61,7 @@ import org.alfresco.po.share.user.CloudSyncPage;
 import org.alfresco.po.share.user.LanguageSettingsPage;
 import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.user.NotificationPage;
+import org.alfresco.po.share.user.UserContentPage;
 import org.alfresco.po.share.user.UserSitesPage;
 import org.alfresco.po.share.workflow.MyWorkFlowsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
@@ -155,6 +156,7 @@ public class FactorySharePageTest
     private final String wikiList = baseUrl + "%s/page/site/swsdp/wiki";
     private final String pendingInvites = baseUrl + "%s/page/site/swsdp/pending-invites";
     private final String facetedSearchPage = baseUrl+"%s/page/dp/ws/faceted-search";
+    private final String userContentPage =  baseUrl+"/page/user/admin/user-content";
 
     @Test(groups={"unit"})
     public void resolveUrls()
@@ -355,6 +357,10 @@ public class FactorySharePageTest
             //---------------faceted search ----------------
             page = resolvePage(facetedSearchPage, "faceted-search", drone);
             Assert.assertTrue(page instanceof FacetedSearchPage);
+
+            //---------------User Content Page ----------------
+            page = resolvePage(userContentPage, "user-content", drone);
+            Assert.assertTrue(page instanceof UserContentPage);
 
             long duration = System.currentTimeMillis() - start;
             logger.info("Total duration of test in milliseconds: " + duration);

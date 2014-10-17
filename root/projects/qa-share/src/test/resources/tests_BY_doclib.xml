@@ -1,0 +1,52 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Toolbar Tests for Sprint BY" preserve-order="true" parallel="tests" thread-count="2">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="NonGrid"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <!--test name="Toolbar tests Suite">
+        <classes>
+            <class name="org.alfresco.share.site.document.ToolbarTest"/>
+        </classes>
+    </test-->
+
+    <test name="Auth Chain admin console summary">
+        <classes>
+            <class name="org.alfresco.share.adminconsole.summary.SyncLdapTests"/>
+        </classes>
+    </test>
+
+    <test name="Alfresco Logo Test">
+        <classes>
+            <class name="org.alfresco.share.LogoTest"/>
+        </classes>
+    </test>
+
+    <!--test name="Alfresco Trashcan Test">
+        <classes>
+            <class name="org.alfresco.share.user.trashcan.TrashcanTest2"/>
+        </classes>
+    </test>
+
+    <test name="Alfresco SiteNotice Test">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteNoticetDashletTest">
+            <methods>
+                <include name="AONE_13976"/>
+                <include name="AONE_13983"/>
+            </methods>
+        </class>
+        </classes>
+    </test-->
+
+</suite>
+
+

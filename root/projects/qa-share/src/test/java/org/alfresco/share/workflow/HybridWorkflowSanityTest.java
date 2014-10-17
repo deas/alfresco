@@ -1,52 +1,14 @@
 package org.alfresco.share.workflow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.alfresco.share.util.AbstractWorkflow;
-import org.alfresco.share.util.EditTaskAction;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.ShareUserWorkFlow;
-import org.alfresco.share.util.SiteUtil;
-import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.site.document.SyncInfoPage;
-import org.alfresco.po.share.task.EditTaskPage;
-import org.alfresco.po.share.task.TaskDetails;
-import org.alfresco.po.share.task.TaskDetailsPage;
-import org.alfresco.po.share.task.TaskInfo;
-import org.alfresco.po.share.task.TaskItem;
-import org.alfresco.po.share.task.TaskStatus;
-import org.alfresco.po.share.workflow.AssignmentPage;
-import org.alfresco.po.share.workflow.CloudTaskOrReviewPage;
-import org.alfresco.po.share.workflow.CurrentTaskType;
-import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
-import org.alfresco.po.share.workflow.KeepContentStrategy;
-import org.alfresco.po.share.workflow.MyWorkFlowsPage;
-import org.alfresco.po.share.workflow.Priority;
-import org.alfresco.po.share.workflow.SendEMailNotifications;
-import org.alfresco.po.share.workflow.StartWorkFlowPage;
-import org.alfresco.po.share.workflow.TaskDetailsType;
-import org.alfresco.po.share.workflow.TaskHistoryPage;
-import org.alfresco.po.share.workflow.TaskType;
-import org.alfresco.po.share.workflow.WorkFlowDescription;
-import org.alfresco.po.share.workflow.WorkFlowDetails;
-import org.alfresco.po.share.workflow.WorkFlowDetailsCurrentTask;
-import org.alfresco.po.share.workflow.WorkFlowDetailsGeneralInfo;
-import org.alfresco.po.share.workflow.WorkFlowDetailsHistory;
-import org.alfresco.po.share.workflow.WorkFlowDetailsItem;
-import org.alfresco.po.share.workflow.WorkFlowDetailsMoreInfo;
-import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
-import org.alfresco.po.share.workflow.WorkFlowFormDetails;
-import org.alfresco.po.share.workflow.WorkFlowHistoryOutCome;
-import org.alfresco.po.share.workflow.WorkFlowHistoryType;
-import org.alfresco.po.share.workflow.WorkFlowStatus;
-import org.alfresco.po.share.workflow.WorkFlowTitle;
-import org.alfresco.po.share.workflow.WorkFlowType;
+import org.alfresco.po.share.task.*;
+import org.alfresco.po.share.workflow.*;
+import org.alfresco.share.util.*;
+import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -54,6 +16,9 @@ import org.joda.time.DateTime;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -81,14 +46,14 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15099:Enable Hybrid Workflow functionality
+     * AONE-15732:Enable Hybrid Workflow functionality
      * <ul>
      * <li>1) Login as Admin, Select MyTasks from Tasks</li>
      * <li>2) Select Start Workflow button and verify "Cloud Task or Review" workflow displayed in the drop down</li>
      * </ul>
      */
     @Test(groups="Hybrid", enabled = true)
-    public void ALF_15099() throws Exception
+    public void AONE_15732() throws Exception
     {
         try
         {
@@ -106,7 +71,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15100:Create Simple Cloud Task ALF-15101:Complete Simple Cloud Task
+     * AONE-15733:Create Simple Cloud Task AONE-15734:Complete Simple Cloud Task
      * <ul>
      * <li>1) Create User1 (OP)</li>
      * <li>3) Create a cloud user and upgrade the account</li>
@@ -137,7 +102,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15100:Create Simple Cloud Task ALF-15101:Complete Simple Cloud Task
+     * AONE-15733:Create Simple Cloud Task AONE-15734:Complete Simple Cloud Task
      * <ul>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Login as User1 (OP), Create a site and Upload a document</li>
@@ -164,7 +129,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid", enabled = true)
-    public void ALF_15100() throws Exception
+    public void AONE_15733() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -229,7 +194,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         // Verify Sync location is displayed correctly.
         SyncInfoPage syncInfoPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName).clickOnViewCloudSyncInfo().render();
         assertEquals(syncInfoPage.getCloudSyncLocation(), DOMAIN_HYBRID + ">" + cloudSiteName + ">" + DEFAULT_FOLDER_NAME);
-        syncInfoPage.close();
+        syncInfoPage.clickOnCloseButton();
 
         MyWorkFlowsPage myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
         // Verify workflow details
@@ -423,7 +388,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         assertEquals(statusOptions.size(), TaskStatus.values().length);
         assertTrue(statusOptions.containsAll(getTaskStatusList()));
 
-        assertFalse(editTaskPage.isReAssignButtonDisplayed(), "Verifying ReAssign button is not displayed (ALF-15238)");
+        assertFalse(editTaskPage.isReAssignButtonDisplayed(), "Verifying ReAssign button is not displayed (AONE-15676)");
 
         // Select Task Status as "In-Progress", enter a comment, select Save and verify the Task Status and comment are saved in Task Details Page
         taskDetailsPage = ShareUserWorkFlow.completeTask(hybridDrone, TaskStatus.INPROGRESS, cloudCommentInProgress, EditTaskAction.SAVE).render();
@@ -594,7 +559,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         assertEquals(statusOptions.size(), TaskStatus.values().length);
         assertTrue(statusOptions.containsAll(getTaskStatusList()));
 
-        assertFalse(editTaskPage.isReAssignButtonDisplayed(), "Verifying ReAssign button is not displayed (ALF-9880)");
+        assertFalse(editTaskPage.isReAssignButtonDisplayed(), "Verifying ReAssign button is not displayed (AONE-15675)");
 
         taskDetailsPage = ShareUserWorkFlow.completeTask(drone, TaskStatus.ONHOLD, EditTaskAction.CANCEL).render();
 
@@ -677,7 +642,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15103:Create Cloud Review Task ALF-15104:Approve Cloud Review Task
+     * AONE-15735:Create Cloud Review Task AONE-15736:Approve Cloud Review Task
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 3 Cloud Users (cloudUser, Reviewer1, Reviewer2)</li>
@@ -685,7 +650,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15103() throws Exception
+    public void dataPrep_AONE_15735() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-op", DOMAIN_HYBRID);
@@ -716,7 +681,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15103:Create Cloud Review Task ALF-15104:Approve Cloud Review Task
+     * AONE-15735:Create Cloud Review Task AONE-15736:Approve Cloud Review Task
      * <ul>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Invite Reviewer1 and Reviewer2 to the site as collaborators</li>
@@ -748,7 +713,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test (groups="Hybrid", enabled = true)
-    public void ALF_15103() throws Exception
+    public void AONE_15735() throws Exception
     {
         String testName = getTestName();
         String opUser = getUserNameForDomain(testName + "-op", DOMAIN_HYBRID);
@@ -985,7 +950,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15105: Reject Cloud Review Task
+     * AONE-15737: Reject Cloud Review Task
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -993,7 +958,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15105() throws Exception
+    public void dataPrep_AONE_15737() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1024,7 +989,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15105: Reject Cloud Review Task
+     * AONE-15737: Reject Cloud Review Task
      * <ul>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Invite Reviewer1 to the site as collaborator</li>
@@ -1052,7 +1017,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid", enabled = true)
-    public void ALF_15105() throws Exception
+    public void AONE_15737() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1261,7 +1226,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15106: Cancel Workflow
+     * AONE-15738: Cancel Workflow
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -1269,7 +1234,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15106() throws Exception
+    public void dataPrep_AONE_15738() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1295,7 +1260,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
         ShareUser.logout(drone);
     }
     /**
-     * ALF-15106: Cancel Workflow
+     * AONE-15738: Cancel Workflow
      * <ul>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Invite Reviewer1 to the site as collaborator</li>
@@ -1322,8 +1287,8 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * <li>23) Select Completed and verify the workflow is displayed and the details are correct</li>
      * </ul>
      */
-    @Test(groups="Hybrid", enabled = true)
-    public void ALF_15106() throws Exception
+    @Test(groups={"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15738() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1454,7 +1419,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15107: Required approval percentage
+     * AONE-15739: Required approval percentage
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 3 Cloud Users (cloudUser, Reviewer1, Reviewer2)</li>
@@ -1462,7 +1427,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15107() throws Exception
+    public void dataPrep_AONE_15739() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1493,7 +1458,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15107: Required approval percentage
+     * AONE-15739: Required approval percentage
      * <ul>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Invite Reviewer1 and Reviewer2 to the site as collaborators</li>
@@ -1516,7 +1481,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid", enabled = true)
-    public void ALF_15107() throws Exception
+    public void AONE_15739() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1674,7 +1639,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15108: After completion
+     * AONE-15740: After completion
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -1682,7 +1647,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15108() throws Exception
+    public void dataPrep_AONE_15740() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1705,7 +1670,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15108: After completion
+     * AONE-15740: After completion
      * <ul>
      * <li>1) Login as User1 (Cloud) and Create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload 3 documents</li>
@@ -1740,7 +1705,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid", enabled = true)
-    public void ALF_15108() throws Exception
+    public void AONE_15740() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1976,7 +1941,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15109:Lock on-premise content
+     * AONE-15741:Lock on-premise content
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -1984,7 +1949,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15109() throws Exception
+    public void dataPrep_AONE_15741() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2007,7 +1972,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15109:Lock on-premise content
+     * AONE-15741:Lock on-premise content
      * <ul>
      * <li>1) Login as User1 (Cloud) and Create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload 3 documents</li>
@@ -2026,7 +1991,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid", enabled = true)
-    public void ALF_15109() throws Exception
+    public void AONE_15741() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2136,7 +2101,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15110:Select Destination ALF-15111:Select Assignment
+     * AONE-15742:Select Destination AONE-15743:Select Assignment
      * <ul>
      * <li>1) Create OP Users (User1, testUser1, testUser2)</li>
      * <li>2) Create Cloud users (cloudUser1, cloudUser2, cloudUser3 & cloudUser4)</li>
@@ -2150,7 +2115,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_15110() throws Exception
+    public void dataPrep_AONE_15742() throws Exception
     {
         String testName = getTestName();
         String opSite = getSiteName(testName) + "-OP";
@@ -2233,7 +2198,7 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15110:Select Destination ALF-15111:Select Assignment
+     * AONE-15742:Select Destination AONE-15743:Select Assignment
      * <ul>
      * <li>1) Login to OP as User1, Navigate to WorkFlows I've started page and select Start Workflow</li>
      * <li>2) Select WorkFlow Type as "Cloud Task Or Review" and task type as "Simple Cloud Task"</li>
@@ -2252,8 +2217,8 @@ public class HybridWorkflowSanityTest extends AbstractWorkflow
      * <li>15) Login to Cloud as CloudUser1 and verify the task is present</li>
      * </ul>
      */
-    @Test(groups="Hybrid", enabled = true)
-    public void ALF_15110() throws Exception
+    @Test(groups={"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15742() throws Exception
     {
         String testName = getTestName();
         String opSite = getSiteName(testName) + "-OP";

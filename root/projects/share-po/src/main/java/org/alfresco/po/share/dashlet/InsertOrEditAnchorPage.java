@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 /**
  * This class holds the elements of Insert/Edit Anchor page and which is invoked from Site Notice Tiny MCE editor dialog.
@@ -38,18 +39,16 @@ public class InsertOrEditAnchorPage extends BaseAdvancedTinyMceOptionsPage
     private static Log logger = LogFactory.getLog(InsertOrEditAnchorPage.class);
 
     @RenderWebElement
-    private static By INSERT_OR_EDIT_LINK_PANEL = By.cssSelector("tbody");
-    @RenderWebElement
-    private static By NAME_CSS = By.cssSelector("#anchorName");
+    private static By NAME_CSS = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'Name')]/following-sibling::input[starts-with(@class, 'mce-textbox')]");
 
     /**
      * Constructor.
      * 
-     * @param mainWindow
+     * @param element
      */
-    public InsertOrEditAnchorPage(WebDrone drone, String mainWindow)
+    public InsertOrEditAnchorPage(WebDrone drone, WebElement element)
     {
-        super(drone, mainWindow);
+        super(drone, element);
     }
 
     @SuppressWarnings("unchecked")

@@ -14,11 +14,14 @@
  */
 package org.alfresco.po.share;
 
+import org.alfresco.po.alfresco.WebScriptsPage;
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
 import org.alfresco.po.share.adminconsole.CategoryManagerPage;
 import org.alfresco.po.share.adminconsole.NodeBrowserPage;
 import org.alfresco.po.share.adminconsole.TagManagerPage;
+import org.alfresco.po.share.adminconsole.replicationjobs.NewReplicationJobPage;
+import org.alfresco.po.share.adminconsole.replicationjobs.ReplicationJobsPage;
 import org.alfresco.po.share.bulkimport.BulkImportPage;
 import org.alfresco.po.share.bulkimport.InPlaceBulkImportPage;
 import org.alfresco.po.share.bulkimport.StatusBulkImportPage;
@@ -42,8 +45,8 @@ import org.alfresco.po.share.site.links.LinksDetailsPage;
 import org.alfresco.po.share.site.links.LinksPage;
 import org.alfresco.po.share.site.wiki.WikiPage;
 import org.alfresco.po.share.site.wiki.WikiPageList;
-import org.alfresco.po.share.systemsummary.RepositoryServerClusteringPage;
-import org.alfresco.po.share.systemsummary.SystemSummaryPage;
+import org.alfresco.po.share.systemsummary.*;
+import org.alfresco.po.share.systemsummary.directorymanagement.DirectoryManagementPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.user.*;
@@ -153,6 +156,11 @@ public class FactorySharePage implements PageFactory
         pages.put("myfiles", MyFilesPage.class);
         pages.put("admin-systemsummary", SystemSummaryPage.class);
         pages.put("admin-clustering", RepositoryServerClusteringPage.class);
+        pages.put("admin-directorymanagement", DirectoryManagementPage.class);
+        pages.put("admin-tenantconsole", TenantConsole.class);
+        pages.put("admin-repoconsole", ModelAndMessagesConsole.class);
+        pages.put("admin-fileservers", FileServersPage.class);
+        pages.put("admin-transformations", TransformationServicesPage.class);
         pages.put("calendar", CalendarPage.class);
         pages.put("blog-postlist", BlogPage.class);
         pages.put("blog-postview", PostViewPage.class);
@@ -170,9 +178,14 @@ public class FactorySharePage implements PageFactory
         pages.put("bulkfsimport", BulkImportPage.class);
         pages.put("status", StatusBulkImportPage.class);
         pages.put("inplace", InPlaceBulkImportPage.class);
+        pages.put("index", WebScriptsPage.class);
+        pages.put("user-content", UserContentPage.class);
+        pages.put("replication-jobs", ReplicationJobsPage.class);
+        pages.put("replication-job", NewReplicationJobPage.class);
         pages.put("Home", PentahoUserConsolePage.class);
         pages.put("analyze", AdhocAnalyzerPage.class);
         pages.put("analyze-site", AdhocAnalyzerPage.class);
+        pages.put("manage-users", AccountSettingsPage.class);
     }
 
     public HtmlPage getPage(WebDrone drone)
@@ -472,7 +485,7 @@ public class FactorySharePage implements PageFactory
                 {
                     sharePage = new ViewPropertiesPage(drone);
                 }
-                
+
                 // The below dialogeId will be changed once this ACE-1047 issue is fixed.
                 else if (dialogueID.contains("configDialog-configDialog_h"))
                 {

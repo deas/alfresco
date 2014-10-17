@@ -63,115 +63,115 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2509() throws Exception
+    public void dataPrep_AONE_14580() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2509() throws Exception
+    public void AONE_14580() throws Exception
     {
         folderName = getFolderName(getTestName());
         addClasifiableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2509")
-    public void ALF_2524() throws Exception
+    @Test(dependsOnMethods = "AONE_14580")
+    public void AONE_14593() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeClasifiableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2510() throws Exception
+    public void dataPrep_AONE_14581() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2510() throws Exception
+    public void AONE_14581() throws Exception
     {
         folderName = getFolderName(getTestName());
         addComplianceableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
 
     }
 
-    @Test(dependsOnMethods = "ALF_2510")
-    public void ALF_2525() throws Exception
+    @Test(dependsOnMethods = "AONE_14581")
+    public void AONE_14594() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeComplianceableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2511() throws Exception
+    public void dataPrep_AONE_14582() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2511() throws Exception
+    public void AONE_14582() throws Exception
     {
         folderName = getFolderName(getTestName());
         addDublinCoreAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2511")
-    public void ALF_2526() throws Exception
+    @Test(dependsOnMethods = "AONE_14582")
+    public void AONE_14595() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeDublinCoreAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2512() throws Exception
+    public void dataPrep_AONE_14583() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2512() throws Exception
+    public void AONE_14583() throws Exception
     {
         folderName = getFolderName(getTestName());
         addEffectivityAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2512")
-    public void ALF_2527() throws Exception
+    @Test(dependsOnMethods = "AONE_14583")
+    public void AONE_14596() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeEffectivityAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2513() throws Exception
+    public void dataPrep_AONE_14584() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2513() throws Exception
+    public void AONE_14584() throws Exception
     {
         folderName = getFolderName(getTestName());
         addSummarizableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2513")
-    public void ALF_2528() throws Exception
+    @Test(dependsOnMethods = "AONE_14584")
+    public void AONE_14597() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeSummarizableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2514() throws Exception
+    public void dataPrep_AONE_14585() throws Exception
     {
         testName = getTestName();
         dataPrepTemplatableAspect(drone, testUser, testName, siteName);
     }
 
     @Test
-    public void ALF_2514() throws Exception
+    public void AONE_14585() throws Exception
     {
         testName = getTestName();
         String templateFolderName = "Template-" + getFolderName(testName);
@@ -179,8 +179,8 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
         addTemplatableAspect(drone, testUser, folderName, siteName, templateFolderName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2514")
-    public void ALF_2529() throws Exception
+    @Test(dependsOnMethods = "AONE_14585")
+    public void AONE_14598() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -189,20 +189,20 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2515() throws Exception
+    public void dataPrep_AONE_14586() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2515() throws Exception
+    public void AONE_14586() throws Exception
     {
         folderName = getFolderName(getTestName());
         addEmailedAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2515")
-    public void ALF_2530() throws Exception
+    @Test(dependsOnMethods = "AONE_14586")
+    public void AONE_14599() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -210,7 +210,7 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2517() throws Exception
+    public void dataPrep_AONE_14587() throws Exception
     {
         testName = getTestName();
         folderName = getFolderName(testName);
@@ -230,8 +230,8 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
         ShareUser.logout(drone);
     }
 
-    @Test
-    public void ALF_2517() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14587() throws Exception
     {
         testName = getTestName();
         folderName = getFolderName(testName);
@@ -240,8 +240,8 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
         addTaggableAspect(drone, testUser, folderName, siteName, tag, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2517")
-    public void ALF_2532() throws Exception
+    @Test(dependsOnMethods = "AONE_14587", groups = {"IntermittentBugs"})
+    public void AONE_14600() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -250,20 +250,20 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2519() throws Exception
+    public void dataPrep_AONE_14588() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2519() throws Exception
+    public void AONE_14588() throws Exception
     {
         folderName = getFolderName(getTestName());
         addGeographicAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2519")
-    public void ALF_2534() throws Exception
+    @Test(dependsOnMethods = "AONE_14588")
+    public void AONE_14601() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -271,20 +271,20 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2520() throws Exception
+    public void dataPrep_AONE_14589() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2520() throws Exception
+    public void AONE_14589() throws Exception
     {
         folderName = getFolderName(getTestName());
         addEXIFAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2520")
-    public void ALF_2535() throws Exception
+    @Test(dependsOnMethods = "AONE_14589")
+    public void AONE_14602() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -292,20 +292,20 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2521() throws Exception
+    public void dataPrep_AONE_14590() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2521() throws Exception
+    public void AONE_14590() throws Exception
     {
         folderName = getFolderName(getTestName());
         addAudioAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2521")
-    public void ALF_2536() throws Exception
+    @Test(dependsOnMethods = "AONE_14590")
+    public void AONE_14603() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -313,20 +313,20 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2522() throws Exception
+    public void dataPrep_AONE_14591() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2522() throws Exception
+    public void AONE_14591() throws Exception
     {
         folderName = getFolderName(getTestName());
         addIndexControlAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2522")
-    public void ALF_2537() throws Exception
+    @Test(dependsOnMethods = "AONE_14591")
+    public void AONE_14604() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -334,20 +334,20 @@ public class CmisAtomFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisAtom" })
-    public void dataPrep_ALF_2523() throws Exception
+    public void dataPrep_AONE_14592() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_2523() throws Exception
+    public void AONE_14592() throws Exception
     {
         folderName = getFolderName(getTestName());
         addRestrictableAspect(drone, testUser, folderName, siteName, cmisVersionAtom11);
     }
 
-    @Test(dependsOnMethods = "ALF_2523")
-    public void ALF_2538() throws Exception
+    @Test(dependsOnMethods = "AONE_14592")
+    public void AONE_14605() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);

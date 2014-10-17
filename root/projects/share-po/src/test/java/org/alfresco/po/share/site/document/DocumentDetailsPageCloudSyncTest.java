@@ -17,7 +17,6 @@ import org.alfresco.po.share.user.MyProfilePage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
-import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -85,8 +84,8 @@ public class DocumentDetailsPageCloudSyncTest extends AbstractDocumentTest
     {
         documentDetailsPage = documentLibPage.selectFile(file1.getName()).render();
         Assert.assertFalse(documentDetailsPage.isRequestSyncIconDisplayed());
-        Assert.assertNull(documentDetailsPage.getSyncStatus());
-        Assert.assertNull(documentDetailsPage.getLocationInCloud());
+        Assert.assertEquals(documentDetailsPage.getSyncStatus(), "");
+        Assert.assertEquals(documentDetailsPage.getLocationInCloud(), "");
 
     }
 
@@ -95,23 +94,7 @@ public class DocumentDetailsPageCloudSyncTest extends AbstractDocumentTest
     {
         destinationAndAssigneePage = documentDetailsPage.selectSyncToCloud().render();
         documentDetailsPage = destinationAndAssigneePage.selectSubmitButtonToSync().render();
-        while(StringUtils.isEmpty(documentDetailsPage.getSyncStatus()))
-        {
-            drone.refresh();
-            documentDetailsPage.render();
-            if(!StringUtils.isEmpty(documentDetailsPage.getSyncStatus()))
-            {
-                if(!documentDetailsPage.getSyncStatus().contains("Synced"))
-                {
-                    while(documentDetailsPage.getSyncStatus().contains("Synced"))
-                    {
-                        drone.refresh();
-                        documentDetailsPage.render();
-                    }
-                }
-            }
-        }
-        Assert.assertEquals(documentDetailsPage.getSyncStatus(), "Synced just now, by you");
+        Assert.assertTrue(checkIfContentIsSynced(drone));
     }
 
     @Test (dependsOnMethods = "syncStatusAfterSync")

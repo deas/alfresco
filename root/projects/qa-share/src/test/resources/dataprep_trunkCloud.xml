@@ -29,7 +29,7 @@
 			<class name="org.alfresco.share.dashlet.RecentlyModifiedSiteContentDashlet"/>
 						<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
 				<methods>
-                     <include name="dataPrep_ALF_3162" />
+                     <include name="dataPrep_AONE_15837" />
                 </methods>
 			</class>
 			
@@ -48,7 +48,7 @@
 			<class name="org.alfresco.share.SiteDocumentLibraryTest"/>
 			<class name="org.alfresco.share.HeaderBarTest">
 			 	<methods>
-                     <include name="dataPrep_ALF_3161" />
+                     <include name="dataPrep_AONE_15836" />
                 </methods>
 			</class>
 			<class name="org.alfresco.share.site.document.PdfJsPreviewTest" />

@@ -14,8 +14,6 @@
  */
 package org.alfresco.po.share.site.document;
 
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.ShareDialogue;
 import org.alfresco.webdrone.HtmlPage;
@@ -29,6 +27,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 /**
  * Tag Page allows the user to manage tags relating to document in view.
@@ -149,11 +149,11 @@ public class TagPage extends AbstractEditProperties
     {
         try
         {
-            WebElement input = drone.find(ENTER_TAG_VALUE);
+            WebElement input = drone.findAndWait(ENTER_TAG_VALUE);
             input.clear();
             input.sendKeys(tagName);
 
-            WebElement createButton = drone.find(CREATE_TAG);
+            WebElement createButton = drone.findAndWait(CREATE_TAG);
             createButton.click();
             canResume();
 

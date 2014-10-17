@@ -1,6 +1,11 @@
 package org.alfresco.po.share.site.blog;
 
-import org.alfresco.po.share.SharePage;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -12,9 +17,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+import com.google.common.base.CharMatcher;
 
 /**
  * Page object to represent Post View page
@@ -22,11 +25,11 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
  * @author Marina.Nenadovets
  */
 
-public class PostViewPage extends SharePage
+public class PostViewPage extends BlogPage
 {
     private Log logger = LogFactory.getLog(this.getClass());
     private static final By ADD_COMMENT_BTN = By.cssSelector(".onAddCommentClick>span>button");
-    private static final By BACK_LINK = By.cssSelector("span.backLink>a");
+    private static final By BACK_LINK = By.cssSelector("span.backLink>a, span.forwardLink>a");
     private static final By NEW_POST_BTN = By.cssSelector(".new-blog>span");
     private static final By POST_TITLE = By.cssSelector(".nodeTitle>a");
     private static final By COMMENT_CONTENT = By.cssSelector(".comment-content>p");
@@ -34,6 +37,11 @@ public class PostViewPage extends SharePage
     private static final By DELETE_LINK = By.cssSelector(".onDeleteBlogPost>a");
     private static final By TAG = By.cssSelector("span.tag > a");
     private static final By TAG_NONE = By.xpath("//span[@class='nodeAttrValue' and text()='(None)']");
+    private static final By POST_TEXT = By.cssSelector(".nodeContent .content p");
+    private static final By POST_STATUS = By.cssSelector(".nodeStatus");
+    private static final By UPDATE_EXTERNALLY = By.cssSelector(".onUpdateExternal a");
+    private static final By REMOVE_EXTERNALLY = By.cssSelector(".onUnpublishExternal a");
+
 
     public PostViewPage(WebDrone drone)
     {
@@ -114,6 +122,11 @@ public class PostViewPage extends SharePage
         return isPresent;
     }
 
+    /**
+     * Method to retrieve the count of comments
+     *
+     * @return int
+     */
     public int getCommentCount ()
     {
         try
@@ -163,10 +176,6 @@ public class PostViewPage extends SharePage
             waitUntilAlert(7);
         }
         catch (TimeoutException te)
-        {
-            throw new ShareException("Unable to find " + BACK_LINK);
-        }
-        catch (NoSuchElementException nse)
         {
             throw new ShareException("Unable to find " + BACK_LINK);
         }
@@ -281,13 +290,114 @@ public class PostViewPage extends SharePage
      *
      * @return PostViewPage
      */
-    public PostViewPage editBlogPostAndSaveAsDraft (String newTitle, String newLines)
+    public PostViewPage editBlogPostAndUpdate(String newTitle, String newLines, List<String> tags)
     {
         EditPostForm editPostForm = clickEdit();
         editPostForm.setTitleField(newTitle);
         editPostForm.insertText(newLines);
+        if (!(tags == null))
+        {
+            editPostForm.addTag(tags);
+        }
         editPostForm.clickSaveAsDraft();
+        logger.info("Edited blog post" + newTitle + "and saved it as draft");
         return new PostViewPage(drone).render();
+    }
+
+    /**
+     * Method to edit a blog post and save it as draft
+     *
+     * @param newTitle
+     * @param newLines
+     *
+     * @return PostViewPage
+     */
+    public PostViewPage editBlogPostAndPublishInternally(String newTitle, String newLines, List<String> tags)
+    {
+        EditPostForm editPostForm = clickEdit();
+        editPostForm.setTitleField(newTitle);
+        editPostForm.insertText(newLines);
+        if (!(tags == null))
+        {
+            editPostForm.addTag(tags);
+        }
+        editPostForm.clickPublishInternally();
+        logger.info("Edited blog post" + newTitle + "and published it internally");
+        return new PostViewPage(drone).render();
+    }
+
+    /**
+     * Method to edit blog post and publish it externally
+     *
+     * @param newTitle
+     * @param newLines
+     * @param tags
+     *
+     * @return PostViewPage
+     */
+    public PostViewPage editBlogPostAndPublishExternally(String newTitle, String newLines, List<String> tags)
+    {
+        EditPostForm editPostForm = clickEdit();
+        editPostForm.setTitleField(newTitle);
+        editPostForm.insertText(newLines);
+        if (!(tags == null))
+        {
+            editPostForm.addTag(tags);
+        }
+        editPostForm.clickUpdateInternallyPublishExternally();
+        if(hasErrorMessage())
+        {
+            waitUntilAlert();
+        }
+        logger.info("Edited blog post" + newTitle + "and published it externally");
+        return new PostViewPage(drone).render();
+    }
+
+    /**
+     * Method to verify whether prompt is displayed
+     *
+     * @return true if displayed
+     */
+    public boolean isPromptDisplayed()
+    {
+        boolean isPrompt;
+        try
+        {
+            isPrompt = drone.find(PROMPT_PANEL_ID).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            isPrompt = false;
+        }
+        return isPrompt;
+    }
+
+    /**
+     * Method to click Ok button on prompt pop-up
+     */
+    public void clickOkOnPrompt()
+    {
+        WebElement okButton = drone.findAndWait(By.cssSelector(".default button"));
+        okButton.click();
+    }
+
+    /**
+     * Method to retrieve prompt text
+     *
+     * @return String value
+     */
+    public String getPromptText()
+    {
+        String promptText;
+        try
+        {
+            promptText = drone.find(POST_TEXT).getText();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to retrieve the prompt message");
+        }
+        return promptText;
     }
 
     /**
@@ -302,6 +412,7 @@ public class PostViewPage extends SharePage
             clickDelete();
             drone.findAndWait(CONFIRM_DELETE).click();
             waitUntilAlert();
+            logger.info("Deleted blog post");
             return new BlogPage(drone);
         }
         catch (TimeoutException te)
@@ -322,13 +433,14 @@ public class PostViewPage extends SharePage
         {
             getCommentDirectoryInfo(commentTitle).clickDelete();
             drone.findAndWait(CONFIRM_DELETE).click();
-            waitUntilAlert();
-            return new PostViewPage(drone).render();
+            waitUntilAlert(3);
         }
         catch (TimeoutException te)
         {
             throw new ShareException("Unable to delete the comment");
         }
+        logger.info("Deleted blog comment");
+        return drone.getCurrentPage().render();
     }
 
     /**
@@ -397,5 +509,236 @@ public class PostViewPage extends SharePage
         {
             throw new ShareException("Unable to retrieve the tag");
         }
+    }
+
+    private List<String> getTagsList()
+    {
+        List<String> tagList = new ArrayList<>();
+        try
+        {
+            List<WebElement> listOfTags = drone.findAndWaitForElements(TAG);
+            for(WebElement listOfTheTags : listOfTags)
+            {
+                tagList.add(listOfTheTags.getText());
+            }
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find the list of tags");
+        }
+        return tagList;
+    }
+
+    /**
+     * Method to verify whether the post is correct
+     *
+     * @param postTitle
+     * @param postText
+     * @param tags
+     * @return
+     */
+    public boolean isPostCorrect(String postTitle, String postText, List <String> tags)
+    {
+        boolean isCorrect;
+        if (tags == null)
+        {
+            boolean isTagNull = drone.isElementDisplayed(TAG_NONE);
+            isCorrect = verifyPostExists(postTitle) && getPostText().contentEquals(postText) && isTagNull;
+        }
+        else
+        {
+            isCorrect = verifyPostExists(postTitle) && getPostText().contentEquals(postText) && getTagsList().containsAll(tags);
+        }
+        return isCorrect;
+    }
+
+    private String getPostText()
+    {
+        try
+        {
+            String postText;
+            postText = drone.findAndWait(POST_TEXT).getText();
+            return postText;
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + POST_TEXT);
+        }
+    }
+
+    /**
+     * Method to click on the tag link
+     *
+     * @param tagName
+     * @return
+     */
+    public BlogPage clickOnTheTag(String tagName)
+    {
+        try
+        {
+            boolean isTagNone = drone.isElementDisplayed(TAG_NONE);
+            if(isTagNone)
+            {
+                throw new PageException("There is no tags!");
+            }
+            else
+            {
+                List<WebElement> availableTags = drone.findAll(TAG);
+                for(WebElement eachTag : availableTags)
+                {
+                    if(eachTag.getText().contentEquals(tagName))
+                    {
+                        eachTag.click();
+                        drone.waitForPageLoad(5);
+                        break;
+                    }
+                }
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageException("Not able to find the tags");
+        }
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Check is comment has Avatar, Edit and Remove buttons, Commentator name.
+     *
+     * @param comment
+     * @return
+     */
+    public boolean isCommentCorrect(String comment)
+    {
+        try
+        {
+            checkNotNull(comment);
+            return isCommentButtonsEnableAndDisplay(comment) && isCommentAvatarDisplay(comment) && isCommentatorNameDisplayAndEnable(comment);
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }
+        catch (PageException pe)
+        {
+            return false;
+        }
+    }
+
+    private boolean isCommentButtonsEnableAndDisplay(String comment)
+    {
+        CommentDirectoryInfo commentElement = getCommentDirectoryInfo(comment);
+        WebElement edit = commentElement.findElement(By.name(".onEditCommentClick"));
+        WebElement delete = commentElement.findElement(By.name(".onConfirmDeleteCommentClick"));
+        return edit.isEnabled() && delete.isEnabled() && edit.isDisplayed() && delete.isDisplayed();
+    }
+
+    private boolean isCommentAvatarDisplay(String comment)
+    {
+        CommentDirectoryInfo commentElement = getCommentDirectoryInfo(comment);
+        return commentElement.isAvatarDisplayed();
+    }
+
+    private boolean isCommentatorNameDisplayAndEnable(String comment)
+    {
+        CommentDirectoryInfo commentElement = getCommentDirectoryInfo(comment);
+        WebElement commentatorName = commentElement.findElement(By.xpath("//a[contains(@href,'profile')]"));
+        return commentatorName.isDisplayed() && commentatorName.isEnabled();
+    }
+
+    /**
+     * Method to retrieve Post Status (Draft, Updated, Out of sync)
+     *
+     * @return List<String>
+     */
+    public List<String> getPostStatus()
+    {
+        String status;
+        String charsToRemove = ")(";
+        List<String> postStatus = new ArrayList<>();
+        try
+        {
+            status = drone.find(POST_STATUS).getText();
+            String [] parts = status.split("\\) ");
+
+            for (String thePart : parts)
+            {
+                thePart = CharMatcher.anyOf(charsToRemove).removeFrom(thePart);
+                postStatus.add(thePart);
+            }
+            if(postStatus.isEmpty())
+            {
+                throw new ShareException("The post has not status");
+            }
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + POST_STATUS);
+        }
+        return postStatus;
+    }
+
+    /**
+     * Method to click Update Externally button
+     *
+     * @return PostViewPage
+     */
+    public PostViewPage clickUpdateExternally()
+    {
+        try
+        {
+            WebElement updateExternallyButton = drone.findAndWait(UPDATE_EXTERNALLY);
+            updateExternallyButton.click();
+            waitUntilAlert();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + UPDATE_EXTERNALLY);
+        }
+        logger.info("Updated post externally");
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method to click Remove Externally button
+     *
+     * @return PostViewPage
+     */
+    public PostViewPage clickRemoveExternally()
+    {
+        try
+        {
+            WebElement removeExternallyButton = drone.findAndWait(REMOVE_EXTERNALLY);
+            removeExternallyButton.click();
+            waitUntilAlert();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to find " + REMOVE_EXTERNALLY);
+        }
+        logger.info("Removed post from external blog");
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Verify if error message is displayed.
+     *
+     * @return true if div.bd is displayed
+     */
+    public boolean hasErrorMessage()
+    {
+        try
+        {
+            return drone.find(By.cssSelector("div.bd")).isDisplayed();
+        }
+        catch (NoSuchElementException e)
+        {
+            return false;
+        }
+    }
+
+    public String getErrorMessage()
+    {
+        return drone.find(By.xpath(".//*[@id='message']/div/span")).getText();
     }
 }

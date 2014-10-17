@@ -59,7 +59,7 @@ public enum Priority
         }
         for (Priority p : Priority.values())
         {
-            if (stringValue.equals(p.priority))
+            if (stringValue.contains(p.priority))
             {
                 return p;
             }

@@ -61,7 +61,7 @@ public class CloudConsoleTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepConsole" })
-    public void dataPrep_ALF_2230() throws Exception
+    public void dataPrep_AONE_13886() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -79,7 +79,7 @@ public class CloudConsoleTest extends AbstractUtils
      */
 
     @Test(groups = { "Cloud2" })
-    public void ALF_2230()
+    public void AONE_13886()
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -99,7 +99,7 @@ public class CloudConsoleTest extends AbstractUtils
      * Users should be invited successfully
      */
     @Test(groups = { "Cloud2" })
-    public void ALF_2246()
+    public void AONE_13887()
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + 1);
@@ -122,7 +122,7 @@ public class CloudConsoleTest extends AbstractUtils
      * all the users in the file should be uploaded successfully
      */
     @Test(groups = { "Cloud2" })
-    public void ALF_2247()
+    public void AONE_13888()
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + 1);

@@ -11,4 +11,29 @@
             <class name="org.alfresco.po.share.systemsummary.RepositoryServerClusteringPageTest"/>
         </classes>
     </test>
+    <test name="Active Directory Managment Page">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.DirectoryManagementPageTest"/>
+        </classes>
+    </test>
+    <test name="Tenant Console Page">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.TenantConsoleTest"/>
+        </classes>
+    </test>
+    <test name="File Servers Page">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.FileServersTest"/>
+        </classes>
+    </test>
+    <test name="Model and Messages Console Page">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.ModelAndMessageConsoleTest"/>
+        </classes>
+    </test>
+    <test name="Transformation Services Page">
+        <classes>
+            <class name="org.alfresco.po.share.systemsummary.TransformationServicesPageTest"/>
+        </classes>
+    </test>
 </suite>

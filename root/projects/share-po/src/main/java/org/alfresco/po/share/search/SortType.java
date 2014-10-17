@@ -16,11 +16,11 @@ public enum SortType
     DESCRIPTION("Description"), 
     AUTHOR("Author"), 
     MODIFIER("Modifier"), 
-    MODIFIED("Modified"), 
+    MODIFIED("Modified date"),
     CREATOR("Creator"), 
-    CREATED("Created"), 
+    CREATED("Created date"),
     SIZE("Size"), 
-    MIMETYPE("Mimetype"), 
+    MIMETYPE("Mime type"), 
     TYPE("Type");
 
     private String sortName;

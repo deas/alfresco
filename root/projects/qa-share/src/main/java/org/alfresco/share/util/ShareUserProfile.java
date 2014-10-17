@@ -21,9 +21,12 @@ import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class ShareUserProfile extends AbstractUtils
 {
+    protected static final By TRASHCAN_SEARCH_INPUT = By.cssSelector("input[id$='trashcan_x0023_default-search-text']");
     private static Log logger = LogFactory.getLog(ShareUserProfile.class);
 
     public ShareUserProfile()
@@ -313,5 +316,32 @@ public class ShareUserProfile extends AbstractUtils
             return myProfilePage.getProfileNav().selectLanguage().render();
         }
     }
+
+    /**
+     * Put search text into search input
+     *
+     * @param - String
+     * @return - TrashCanPage as response
+     */
+    public static WebElement searchInput(WebDrone drone)
+    {
+        return drone.find(TRASHCAN_SEARCH_INPUT);
+//        inputField.clear();
+//        inputField.sendKeys(searchText);
+//        drone.find(TRASHCAN_SEARCH_BUTTON).click();
+//        drone.waitUntilElementDisappears(PAGE_LOADING, 1);
+//        return drone.getCurrentPage();
+    }
+
+    /**
+     * Get string from search field
+     *
+     * @return
+     */
+    public static String getInputText(WebDrone drone)
+    {
+           return searchInput(drone).getText();
+    }
+
 
 }

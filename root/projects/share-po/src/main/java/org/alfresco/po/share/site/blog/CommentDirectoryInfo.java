@@ -17,6 +17,7 @@ public class CommentDirectoryInfo extends HtmlElement
 {
     private static final By EDIT_LINK = By.cssSelector("a[class$='edit-comment']");
     private static final By DELETE_LINK = By.cssSelector("a[class$='delete-comment']");
+    private static final String AVATAR_XPATH = "//div[@class='icon']/img";
 
     /**
      * Constructor
@@ -71,8 +72,8 @@ public class CommentDirectoryInfo extends HtmlElement
         }
         catch (NoSuchElementException nse)
         {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -89,7 +90,20 @@ public class CommentDirectoryInfo extends HtmlElement
         }
         catch (NoSuchElementException nse)
         {
+            return false;
         }
-        return false;
+    }
+
+    public boolean isAvatarDisplayed()
+    {
+        try
+        {
+            WebElement avatarImg = findElement(By.xpath(AVATAR_XPATH));
+            return avatarImg.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            return false;
+        }
     }
 }

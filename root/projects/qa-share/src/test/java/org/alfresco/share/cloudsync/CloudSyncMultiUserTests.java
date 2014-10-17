@@ -59,7 +59,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7076:Sync one file to same location by two users
+     * AONE-15368:Sync one file to same location by two users
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -100,7 +100,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7076:Sync one file to same location by two users
+     * AONE-15368:Sync one file to same location by two users
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
@@ -108,7 +108,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
      */
     // TODO - Is it better to split this test into two (one from Doc Lib and one from Doc Details??)
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7076() throws Exception
+    public void testAONE_15368() throws Exception
     {
     	testName = getTestName();
 
@@ -203,7 +203,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7077:Sync two files to the same folder at the same time
+     * AONE-15369:Sync two files to the same folder at the same time
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -245,7 +245,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7077:Sync two files to the same folder at the same time
+     * AONE-15369:Sync two files to the same folder at the same time
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
@@ -253,7 +253,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
      */
     // TODO - Is it better to split this test into two (one from Doc Lib and one from Doc Details??)
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7077() throws Exception
+    public void testAONE_15369() throws Exception
     {
         testName = getTestName();
 
@@ -355,7 +355,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
 
     /**
      * // TODO - PreCondition steps in test script are confusing
-     * ALF-7078:Sync to Cloud. Target folder is deleted
+     * AONE-15370:Sync to Cloud. Target folder is deleted
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -404,7 +404,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7078:Sync to Cloud. Target folder is deleted
+     * AONE-15370:Sync to Cloud. Target folder is deleted
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
@@ -412,7 +412,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
      */
     // TODO - Is it better to split this test into two (one from Doc Lib and one from Doc Details??)
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7078() throws Exception
+    public void testAONE_15370() throws Exception
     {
         testName = getTestName();
 
@@ -498,7 +498,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
 
     /**
      * // TODO - PreCondition steps in test script are confusing (No need of User2 in OP)
-     * ALF-7079:Sync to Cloud. Target folder is moved
+     * AONE-15371:Sync to Cloud. Target folder is moved
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -529,7 +529,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7079:Sync to Cloud. Target folder is moved
+     * AONE-15371:Sync to Cloud. Target folder is moved
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
@@ -537,7 +537,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
      */
     // TODO - Is it better to split this test into two (one from Doc Lib and one from Doc Details??)
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7079() throws Exception
+    public void testAONE_15371() throws Exception
     {
         testName = getTestName();
 
@@ -610,7 +610,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
 
 
     /**
-     * ALF-7080:Sync to Cloud. Target folder is edited
+     * AONE-15372:Sync to Cloud. Target folder is edited
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -641,7 +641,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7080:Sync to Cloud. Target folder is edited
+     * AONE-15372:Sync to Cloud. Target folder is edited
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
@@ -649,7 +649,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
      */
     // TODO - Is it better to split this test into two (one from Doc Lib and one from Doc Details??)
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7080() throws Exception
+    public void testAONE_15372() throws Exception
     {
         testName = getTestName();
 
@@ -728,7 +728,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7081:Sync to Cloud. Some files are locked
+     * AONE-15373:Sync to Cloud. Some files are locked
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -763,14 +763,14 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7081:Sync to Cloud. Some files are locked
+     * AONE-15373:Sync to Cloud. Some files are locked
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
      * </ul>
      */
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7081() throws Exception
+    public void testAONE_15373() throws Exception
     {
         testName = getTestName();
 
@@ -853,8 +853,8 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
             assertTrue(cloudDocLibPage.isFileVisible(fileName3));
             assertFalse(cloudDocLibPage.isFileVisible(fileName4));
 
-            // TODO - QA-365 : Request Clarification - Test Link : ALF-7081
-            // Step 3 of ALF-7081 test case says the documents locked by other user should not be synced but the locked documents synced (Indirectly synced) and can be seen on the cloud.
+            // TODO - QA-365 : Request Clarification - Test Link : AONE-15373
+            // Step 3 of AONE-15373 test case says the documents locked by other user should not be synced but the locked documents synced (Indirectly synced) and can be seen on the cloud.
 
         }
         catch (Throwable t)
@@ -865,7 +865,7 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7082:Sync to Cloud. Some files are deleted
+     * AONE-15374:Sync to Cloud. Some files are deleted
      * <ul>
      * <li>1) Create User1 and User2 (OP)</li>
      * <li>2) Create User1 in Cloud</li>
@@ -907,14 +907,14 @@ public class CloudSyncMultiUserTests extends AbstractCloudSyncTest
     }
 
     /**
-     * ALF-7082:Sync to Cloud. Some files are deleted
+     * AONE-15374:Sync to Cloud. Some files are deleted
      * <ul>
      *     <li>1) Login as User2, open the site document library</li>
      *     <li>2) Verify "Sync to Cloud" option is not displayed</li>
      * </ul>
      */
     @Test(groups = {"EnterpriseOnly", "CloudSync"})
-    public void testALF_7082() throws Exception
+    public void testAONE_15374() throws Exception
     {
         testName = getTestName();
 

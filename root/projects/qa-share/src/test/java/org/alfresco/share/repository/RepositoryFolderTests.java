@@ -41,6 +41,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.assertEquals;
+
 /**
  * Test folders from repository.
  * @author cganesh
@@ -117,7 +119,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5403() throws Exception
+    public void AONE_3550() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
@@ -133,16 +135,6 @@ public class RepositoryFolderTests extends AbstractUtils
         // verify created folder is present in the main repository
         Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
 
-        // test case Enterprise40x-5406: Add Comment to folder in folder details page
-
-        FolderDetailsPage folderdetailsPage = repositorypage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
-
-        // Adding comment in folder details page
-        folderdetailsPage = folderdetailsPage.addComment(description).render();
-
-        // Verify comment added successfully in folder details page
-        Assert.assertTrue(folderdetailsPage.isCommentLinkPresent(), "Verify comment link is present");
-
     }
 
     /**
@@ -153,7 +145,7 @@ public class RepositoryFolderTests extends AbstractUtils
      */
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5404()
+    public void AONE_3551()
     {
         String testName = getTestName();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
@@ -178,13 +170,45 @@ public class RepositoryFolderTests extends AbstractUtils
     }
 
     /**
+     * Test Add Comment
+     */
+    @Test(groups = { "Repository" })
+    public void AONE_3553() throws Exception
+    {
+        String testName = getTestName();
+        String folderName = getFolderName(testName) + System.currentTimeMillis();
+        String description = (testName) + System.currentTimeMillis();
+
+        ShareUser.login(drone, testUser);
+
+        // Navigate to repository page
+        ShareUserRepositoryPage.openRepository(drone);
+
+        RepositoryPage repositorypage = ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folderName, description, baseFolderPath);
+
+        // verify created folder is present in the main repository
+        Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
+
+        // test case AONE-3553: Add Comment to folder in folder details page
+
+        FolderDetailsPage folderdetailsPage = repositorypage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
+
+        // Adding comment in folder details page
+        folderdetailsPage = folderdetailsPage.addComment(description).render();
+
+        // Verify comment added successfully in folder details page
+        Assert.assertTrue(folderdetailsPage.isCommentLinkPresent(), "Verify comment link is present");
+
+    }
+
+    /**
      * Test:
      * <ul>
      * <li>Verify copy to action for multi-selected files- copy to repository</li>
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5338() throws Exception
+    public void AONE_3476() throws Exception
     {
         String testName = getTestName();
         String folder1 = getFolderName(testName + System.currentTimeMillis());
@@ -246,6 +270,7 @@ public class RepositoryFolderTests extends AbstractUtils
 
         // Select copy to from top menu selected items
         CopyOrMoveContentPage copyOrMoveContentPage = repoPage.getNavigation().selectCopyTo().render();
+
         copyOrMoveContentPage = copyOrMoveContentPage.selectPath("Repository", "Guest Home").render();
         copyOrMoveContentPage.selectOkButton().render();
 
@@ -253,7 +278,7 @@ public class RepositoryFolderTests extends AbstractUtils
         ShareUserRepositoryPage.openRepositorySimpleView(drone);
         
         repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, guestHomePath);
-        
+
         Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file1, "isContentVisible", "", true));
         Assert.assertTrue(ShareUserSitePage.getDocLibInfoWithRetry(drone, file2, "isContentVisible", "", true));
 
@@ -266,7 +291,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5339() throws Exception
+    public void AONE_3477() throws Exception
     {
         String testName = getTestName();
         String folder = getFolderName(testName + System.currentTimeMillis());
@@ -350,7 +375,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository", "SharePOBug" })
-    public void Enterprise40x_5340() throws Exception
+    public void AONE_3478() throws Exception
     {
         String testName = getTestName();
         String folder = getFolderName(testName + System.currentTimeMillis());
@@ -416,7 +441,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5341() throws Exception
+    public void AONE_3479() throws Exception
     {
         String testName = getTestName();
         String folder = getFolderName(testName + System.currentTimeMillis());
@@ -467,7 +492,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5342() throws Exception
+    public void AONE_3480() throws Exception
     {
         String testName = getTestName();
         String folder = getFolderName(testName + System.currentTimeMillis());
@@ -552,7 +577,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository", "SharePOBug" })
-    public void Enterprise40x_5343() throws Exception
+    public void AONE_3481() throws Exception
     {
         String testName = getTestName();
         String folder = getFolderName(testName + System.currentTimeMillis());
@@ -621,7 +646,7 @@ public class RepositoryFolderTests extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5344() throws Exception
+    public void AONE_3482() throws Exception
     {
         String testName = getTestName();
         String folder1 = getFolderName(testName + System.currentTimeMillis());

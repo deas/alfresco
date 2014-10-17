@@ -1,25 +1,14 @@
 /**
- * 
+ *
  */
 package org.alfresco.share;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.enums.TinyMceColourCode;
-import org.alfresco.po.share.enums.ViewType;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.TinyMceEditor;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.TinyMceEditor.FormatType;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.logging.Log;
@@ -29,11 +18,15 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
  * This test class includes Site Document Library Related Tests.
- * 
+ *
  * @author cbairaajoni
  */
+
+// TODO: specify groups for tests
 @Listeners(FailedTestListener.class)
 public class SiteDocumentLibraryTest extends AbstractUtils
 {
@@ -64,7 +57,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepSiteDocumentLibrary" })
-    public void dataPrep_Enterprise40x_5606() throws Exception
+    public void dataPrep_AONE_1813() throws Exception
     {
 
         String testName = getTestName();
@@ -102,157 +95,72 @@ public class SiteDocumentLibraryTest extends AbstractUtils
      * </ul>
      */
     @Test()
-    public void enterprise40x_5606()
+    public void AONE_1813()
     {
         DocumentLibraryPage documentLibPage = null;
+        /** Start Test */
+        testName = getTestName();
 
-        try
-        {
-            /** Start Test */
-            testName = getTestName();
-
-            /** Test Data Setup */
-            String siteName = getSiteName(testName);
-            String testUser = getUserNameFreeDomain(testName);
-            String fileName = getFileName(testName);
-
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
-
-            // Adding test tag to folders with same name on both folders.
-            FileDirectoryInfo fileDirInfo =  documentLibPage.getFileDirectoryInfo(fileName);
-            fileDirInfo.addTag("1234567890");
-            
-            documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
-            fileDirInfo = documentLibPage.getFileDirectoryInfo(fileName);
-            
-            fileDirInfo.addTag("`¬!£$%^&();{}[]'@#~,");
-            documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
-            
-            fileDirInfo =documentLibPage
-                    .getFileDirectoryInfo(fileName);
-            fileDirInfo.addTag("abcdefghijklmnopqrstuvwxyzsdsdfknoiwenirnskdnfernlkaniifsdreiwolektkmnsdmfnlksisdlkfnksdnfksnnnnnnnnnnnnnnnnnwsierfweknfknsdfxckvnksdifksdfike");
-
-            documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
-            FileDirectoryInfo content = documentLibPage.getFileDirectoryInfo(fileName);
-
-            // Tag
-            String contentName = content.getName();
-            List<String> contentTags = content.getTags();
-            Assert.assertEquals(contentTags.size(), 3);
-
-            // Verify remove link on tags are present and click on inline
-            // edit tags cancel button.
-            for (String tagName : contentTags)
-            {
-                content.clickOnAddTag();
-                Assert.assertTrue(content.removeTagButtonIsDisplayed(tagName));
-                content.clickOnTagCancelButton();
-                documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
-                content = documentLibPage.getFileDirectoryInfo(contentName);
-            }
-
-            // Click on tags remove link and click on inline edit tags save
-            // button
-            for (String tagName : contentTags)
-            {
-                content.clickOnAddTag();
-                content.clickOnTagRemoveButton(tagName);
-                documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
-                documentLibPage.getFileDirectoryInfo(contentName).clickOnTagSaveButton();
-                documentLibPage = (DocumentLibraryPage)ShareUser.getSharePage(drone);
-                content = documentLibPage.getFileDirectoryInfo(contentName);
-            }
-
-            Assert.assertFalse(content.hasTags(), "Tags not removed for the content");
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
-    }
-
-    @Test(groups = { "DataPrepSiteDocumentLibrary" })
-    public void dataPrep_Enterprise40x_8958() throws Exception
-    {
-        String testName = getTestName();
+        /** Test Data Setup */
+        String siteName = getSiteName(testName);
         String testUser = getUserNameFreeDomain(testName);
+        String fileName = getFileName(testName);
 
-        // User
-        String[] testUserInfo = new String[] { testUser };
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-    }
+        // Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render(maxWaitTime);
 
-    /**
-     * This test includes the Enterprisex-8958. Test:
-     * <ul>
-     * <li>Login</li>
-     * <li>Create Site</li>
-     * <li>Open Document library page</li>
-     * <li>select added any document</li>
-     * <li>Document Library page opens</li>
-     * <li>added tags</li>
-     * <li>Click on tag link under folder name or Clickon tag link under Tags tree menu list.
-     * <li>verify the files or folders are displayed which are tagged with the tagName</li>
-     * </ul>
-     * @throws Exception 
-     */
-    @Test()
-    public void enterprise40x_8958() throws Exception
-    {
-            /** Start Test */
-            testName = getTestName();
+        // Adding test tag to folders with same name on both folders.
+        FileDirectoryInfo fileDirInfo = documentLibPage.getFileDirectoryInfo(fileName);
+        fileDirInfo.addTag("1234567890");
 
-            /** Test Data Setup */
-            String testUser = getUserNameFreeDomain(testName);
+        documentLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+        fileDirInfo = documentLibPage.getFileDirectoryInfo(fileName);
 
-            siteName = getSiteName(testName) + System.currentTimeMillis();
+        fileDirInfo.addTag("`¬!£$%^&();{}[]'@#~,");
+        documentLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
 
-            String folderName = "The first folder";
-            String folderDescription = String.format("Description of %s", folderName);
-            String fileName = getFileName(testName);
+        fileDirInfo = documentLibPage.getFileDirectoryInfo(fileName);
+        fileDirInfo
+            .addTag(
+                "abcdefghijklmnopqrstuvwxyzsdsdfknoiwenirnskdnfernlkaniifsdreiwolektkmnsdmfnlksisdlkfnksdnfksnnnnnnnnnnnnnnnnnwsierfweknfknsdfxckvnksdifksdfike");
 
-            String testTagName = "testTag";
+        documentLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+        FileDirectoryInfo content = documentLibPage.getFileDirectoryInfo(fileName);
 
-            // Login
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        // Tag
+        String contentName = content.getName();
+        List<String> contentTags = content.getTags();
+        Assert.assertEquals(contentTags.size(), 3);
 
-            // Site
-            ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render(maxWaitTime);
+        // Verify remove link on tags are present and click on inline
+        // edit tags cancel button.
+        for (String tagName : contentTags)
+        {
+            content.clickOnAddTag();
+            Assert.assertTrue(content.removeTagButtonIsDisplayed(tagName));
+            content.clickOnTagCancelButton();
+            documentLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+            content = documentLibPage.getFileDirectoryInfo(contentName);
+        }
 
-            ShareUserSitePage.createFolder(drone, folderName, folderDescription).render();
+        // Click on tags remove link and click on inline edit tags save
+        // button
+        for (String tagName : contentTags)
+        {
+            content.clickOnAddTag();
+            content.clickOnTagRemoveButton(tagName);
+            documentLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+            documentLibPage.getFileDirectoryInfo(contentName).clickOnTagSaveButton();
+            documentLibPage = (DocumentLibraryPage) ShareUser.getSharePage(drone);
+            content = documentLibPage.getFileDirectoryInfo(contentName);
+        }
 
-            String[] fileInfo = { fileName };
-            ShareUser.uploadFileInFolder(drone, fileInfo).render(maxWaitTime);
-
-            ShareUser.openDocumentLibrary(drone);
-
-            // Select detailed view icon on DocLib Page.
-            ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
-
-            // Adding test tag to folders with same name on both folders.
-            DocumentLibraryPage documentLibPage = ShareUserSitePage.addTagsFromDocLib(drone, folderName, Arrays.asList(testTagName));
-            //documentLibPage.getFileDirectoryInfo(folderName).addTag(testTagName);
-
-            // Clicking the tagName link present under folder name
-            documentLibPage.getFileDirectoryInfo(folderName).clickOnTagNameLink(testTagName).render();
-
-            // Check that the folder is listed
-            Assert.assertTrue(ShareUserSitePage.searchDocumentLibraryWithRetry(drone, folderName, true));
-
-            // Clicking the tagName present under Tags menu tree on Document Library page.
-            documentLibPage = documentLibPage.clickOnTagNameUnderTagsTreeMenuOnDocumentLibrary(testTagName).render();
-
-            Assert.assertTrue(documentLibPage.isFileVisible(folderName),"Folder is not visible");
+        Assert.assertFalse(content.hasTags(), "Tags not removed for the content");
     }
 
     @Test(groups = { "DataPrepSiteDocumentLibrary" })
-    public void dataPrep_Enterprise40x_8506() throws Exception
+    public void dataPrep_AONE_2012() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -287,7 +195,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = "WindowsOnly")
-    public void enterprise40x_8506()
+    public void AONE_2012()
     {
         /** Start Test */
         testName = getTestName();
@@ -310,105 +218,7 @@ public class SiteDocumentLibraryTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepSiteDocumentLibrary" })
-    public void dataPrep_Enterprise40x_5673() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName);
-
-        // User
-        String[] testUserInfo = new String[] { testUser };
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-        // Login
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // Site
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC).render();
-
-        ShareUser.openSitesDocumentLibrary(drone, siteName).render();
-
-        ShareUserSitePage.createFolder(drone, folderName, folderName);
-    }
-
-    /**
-     * <ul>
-     * <li>Login</li>
-     * <li>Create Site</li>
-     * <li>Open Document library page</li>
-     * <li>select added any unsupported document</li>
-     * <li>Document details page opens</li>
-     * <li>Add Folder in document library
-     * <li>
-     * <li>View Folder Details page
-     * <li>
-     * <li>check Title appeared</li>
-     * <li>check correct path for folder</li>
-     * <li>check modify details present with user and date</li>
-     * <li>check comment link is present</li>
-     * <li>check Like link and counter is present</li>
-     * <li>check Favourite link and counter present</li>
-     * <li>check share pane is present</li>
-     * <li>check properties present</li>
-     * <li>check permissions present</li>
-     * <li>check tag pane present</li>
-     * <li>check download-as-zip on top right corner for Enterprise4.2</li>
-     * <li></li>
-     * </ul>
-     */
-    @Test
-    public void enterprise40x_5673() throws Exception
-    {
-        // dataPrep_Enterprise40x_5673(drone);
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName);
-        String comment = getComment(folderName);
-
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
-        FolderDetailsPage folderDetailsPage = docLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
-
-        Assert.assertEquals(folderName, folderDetailsPage.getContentTitle());
-        Assert.assertTrue(folderDetailsPage.isCorrectPath(folderName));
-        Assert.assertTrue(folderDetailsPage.isModifiedByDetailsPresent());
-        Assert.assertTrue(folderDetailsPage.isCommentLinkPresent());
-
-        folderDetailsPage = folderDetailsPage.selectLike().render();
-        Assert.assertNotNull(folderDetailsPage.getLikeCount());
-        Assert.assertTrue(folderDetailsPage.isLiked());
-        folderDetailsPage = folderDetailsPage.selectLike().render();
-
-        folderDetailsPage = folderDetailsPage.selectFavourite().render();
-        Assert.assertTrue(folderDetailsPage.isFavourite());
-        folderDetailsPage = folderDetailsPage.selectFavourite().render();
-
-        Assert.assertTrue(folderDetailsPage.isCommentAddedAndRemoved(comment));
-        Assert.assertTrue(folderDetailsPage.isSharePanePresent());
-
-        Map<String, Object> properties = folderDetailsPage.getProperties();
-        Assert.assertNotNull(properties);
-        Assert.assertEquals(properties.get("Name"), folderName);
-        Assert.assertEquals(properties.get("Title"), "(None)");
-        if (!isAlfrescoVersionCloud(drone))
-        {
-            Map<String, String> permissionProperties = folderDetailsPage.getPermissionsOfDetailsPage();
-            Assert.assertNotNull(permissionProperties);
-            Assert.assertEquals(permissionProperties.get("Managers"), "Manager");
-            Assert.assertEquals(permissionProperties.get("Collaborators"), "Collaborator");
-            Assert.assertEquals(permissionProperties.get("Contributors"), "Contributor");
-            Assert.assertEquals(permissionProperties.get("Consumers"), "Consumer");
-            Assert.assertEquals(permissionProperties.get("AllOtherUsers"), "Consumer");
-        }
-        if (AlfrescoVersion.Enterprise42.equals(drone.getProperties().getVersion()))
-            Assert.assertTrue(folderDetailsPage.isDownloadAsZipAtTopRight());
-
-    }
-
-    @Test(groups = { "DataPrepSiteDocumentLibrary" })
-    public void dataPrep_Enterprise40x_3987() throws Exception
+    public void dataPrep_AONE_2179() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -452,11 +262,11 @@ public class SiteDocumentLibraryTest extends AbstractUtils
      * <li>click on redo to change text with other colour</li>
      * <li></li>
      * </ul>
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void enterprise40x_3987() throws Exception
+    public void AONE_2179() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -479,19 +289,19 @@ public class SiteDocumentLibraryTest extends AbstractUtils
         // test text as BOLD
         tinyMceEditor.clickTextFormatter(FormatType.BOLD);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<strong>"+comment+"</strong>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<strong>" + comment + "</strong>"));
         tinyMceEditor.removeFormatting();
 
         // test text as ITALIC
         tinyMceEditor.clickTextFormatter(FormatType.ITALIC);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<em>"+comment+"</em>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<em>" + comment + "</em>"));
         tinyMceEditor.removeFormatting();
 
         // test text as UNDERLINED
         tinyMceEditor.clickTextFormatter(FormatType.UNDERLINED);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"text-decoration: underline;\">"+comment+"</span>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"text-decoration: underline;\">" + comment + "</span>"));
         tinyMceEditor.removeFormatting();
 
         // test BULLET on text
@@ -505,36 +315,51 @@ public class SiteDocumentLibraryTest extends AbstractUtils
         // test NUMBER on test
         tinyMceEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<ol style=\"\"><li>"+comment+"</li></ol>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<ol style=\"\"><li>" + comment + "</li></ol>"));
         tinyMceEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
 
         // test text color as BLUE
         tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">" + comment + "</span>"));
         tinyMceEditor.removeFormatting();
 
         // test UNDO button on text
         tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">" + comment + "</span>"));
         tinyMceEditor.clickUndo();
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
 
         // text REDO button on text
         tinyMceEditor.clickColorCode(TinyMceColourCode.BLUE);
         Assert.assertEquals(comment, tinyMceEditor.getText());
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">" + comment + "</span>"));
         tinyMceEditor.clickUndo();
         Assert.assertTrue(tinyMceEditor.getContent().contains("<p>" + comment + "</p>"));
         tinyMceEditor.clickRedo();
-        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">"+comment+"</span>"));
+        Assert.assertTrue(tinyMceEditor.getContent().contains("<span style=\"color: rgb(0, 0, 255);\">" + comment + "</span>"));
         tinyMceEditor.removeFormatting();
+        folderDetailsPage.clickAddButton();
+        Assert.assertTrue(folderDetailsPage.isCommentCorrect(comment));
+
+        // edit the comment
+        folderDetailsPage.editComment(comment, comment + testUser);
+        folderDetailsPage.saveEditComments();
+        Assert.assertTrue(folderDetailsPage.isCommentCorrect(comment + testUser));
+
+        // delete the comment
+        folderDetailsPage.checkConfirmDeleteForm(comment + testUser);
+        folderDetailsPage.deleteComment(comment + testUser);
+        folderDetailsPage = drone.getCurrentPage().render();
+        Assert.assertTrue(folderDetailsPage.getComments().isEmpty(), "Comment isn't deleted");
+        Assert.assertEquals(folderDetailsPage.getCommentCount(), 0, "Incorrect comment Count: " + folderDetailsPage.getCommentCount());
+
     }
 
     @Test(groups = { "DataPrepSiteDocumentLibrary" })
-    public void dataPrep_Enterprise40x_5675() throws Exception
+    public void dataPrep_AONE_15007() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -557,6 +382,8 @@ public class SiteDocumentLibraryTest extends AbstractUtils
         ShareUser.uploadFileInFolder(drone, fileInfo);
     }
 
+    // Duplicates test from DocumentDetailsActionsTest.java
+
     /**
      * <ul>
      * <li>Login</li>
@@ -571,41 +398,42 @@ public class SiteDocumentLibraryTest extends AbstractUtils
      * <li>verify the comment counter should be decreased in doclib and details page as well
      * <li>
      * </ul>
-     * 
+     *
      * @throws Exception
      */
-    @Test
-    public void enterprise40x_5675() throws Exception
-    {
 
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String fileName = getFileName(testName);
-        String comment = getComment(fileName);
+    /**
+     @Test public void AONE_15007() throws Exception
+     {
 
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+     String testName = getTestName();
+     String testUser = getUserNameFreeDomain(testName);
+     String siteName = getSiteName(testName);
+     String fileName = getFileName(testName);
+     String comment = getComment(fileName);
 
-        DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+     ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-        Assert.assertEquals(Integer.valueOf(0), docLibPage.getCommentCount());
+     DocumentLibraryPage docLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+     Assert.assertEquals(Integer.valueOf(0), docLibPage.getCommentCount());
 
-        DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
+     DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
 
-        detailsPage = detailsPage.addComment(comment).render();
+     detailsPage = detailsPage.addComment(comment).render();
 
-        docLibPage = ShareUser.openDocumentLibrary(drone);
+     docLibPage = ShareUser.openDocumentLibrary(drone);
 
-        Assert.assertEquals(Integer.valueOf(1), docLibPage.getCommentCount());
+     Assert.assertEquals(Integer.valueOf(1), docLibPage.getCommentCount());
 
-        detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
+     detailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
 
-        Assert.assertEquals(1, detailsPage.getCommentCount());
+     Assert.assertEquals(1, detailsPage.getCommentCount());
 
-        detailsPage.removeComment(comment);
+     detailsPage.removeComment(comment);
 
-        docLibPage = ShareUser.openDocumentLibrary(drone);
+     docLibPage = ShareUser.openDocumentLibrary(drone);
 
-        Assert.assertEquals(Integer.valueOf(0), docLibPage.getCommentCount());
-    }
+     Assert.assertEquals(Integer.valueOf(0), docLibPage.getCommentCount());
+     }
+     */
 }

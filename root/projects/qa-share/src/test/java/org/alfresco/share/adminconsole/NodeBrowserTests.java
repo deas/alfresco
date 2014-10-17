@@ -108,7 +108,7 @@ public class NodeBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "Share", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13876()
+    public void AONE_15160()
     {
         NodeBrowserPage nodeBrowserPage = NodeBrowserPageUtil.executeQuery(drone, STORE_ROOT, WORKSPACE_SPACE_STORE);
         assertTrue(nodeBrowserPage.isSearchResults(), "Query return Nothing");
@@ -124,7 +124,7 @@ public class NodeBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "Share", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13886()
+    public void AONE_15161()
     {
         NodeBrowserPage nodeBrowserPage = NodeBrowserPageUtil.executeQuery(drone, "aaa", LUCENE, WORKSPACE_SPACE_STORE);
         assertFalse(nodeBrowserPage.isSearchResults(), "Lucene alfresco query:'aaa' return results.");
@@ -133,49 +133,49 @@ public class NodeBrowserTests extends AbstractUtils
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13888()
+    public void AONE_15162()
     {
         executeLocalizationTest(LocalizationTestData.FRENCH);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13889()
+    public void AONE_15163()
     {
         executeLocalizationTest(LocalizationTestData.GERMANY);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13890()
+    public void AONE_15164()
     {
         executeLocalizationTest(LocalizationTestData.SPANISH);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13891()
+    public void AONE_15165()
     {
         executeLocalizationTest(LocalizationTestData.ITALIAN);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13892()
+    public void AONE_15166()
     {
         executeLocalizationTest(LocalizationTestData.JAPANESE);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13893()
+    public void AONE_15167()
     {
         executeLocalizationTest(LocalizationTestData.DUTCH);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13894()
+    public void AONE_15168()
     {
         executeLocalizationTest(LocalizationTestData.RUSSIAN);
     }
 
     @Test(groups = { "Localization", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_13895()
+    public void AONE_15169()
     {
         executeLocalizationTest(LocalizationTestData.CHINES);
     }

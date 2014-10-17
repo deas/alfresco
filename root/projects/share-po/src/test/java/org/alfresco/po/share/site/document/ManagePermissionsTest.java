@@ -233,7 +233,7 @@ public class ManagePermissionsTest extends AbstractTest
         UserProfile userProfile = new UserProfile();
         userProfile.setUsername(username);
      
-        pageUnderTest = pageUnderTest.selectAddUser().searchAndSelectUser(userProfile);
+        pageUnderTest = pageUnderTest.selectAddUser().searchAndSelectUser(userProfile).render();
         
         Assert.assertTrue(pageUnderTest.isDeleteActionPresent(userName, UserRole.SITEMANAGER));
         pageUnderTest = pageUnderTest.deleteUserWithPermission(userName, UserRole.SITEMANAGER);

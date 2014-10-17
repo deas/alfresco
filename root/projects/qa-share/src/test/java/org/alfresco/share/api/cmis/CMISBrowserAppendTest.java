@@ -22,6 +22,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.RandomAccessFile;
+
 /**
  * Class to include: Tests for CMIS Append for Browser binding
  * 
@@ -54,34 +57,52 @@ public class CMISBrowserAppendTest extends CMISAppendTest
     }
 
     @Test
-    public void ALF_159601() throws Exception
+    public void AONE_14489() throws Exception
     {
         String thisTestName = getTestName();
         createDocTest(thisTestName);
     }
 
     @Test
-    public void ALF_159611() throws Exception
+    public void AONE_14490() throws Exception
     {
         appendTest(drone, getTestName(), false, fileName);
 
     }
 
-    @Test
-    public void ALF_159621() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14491() throws Exception
     {
         appendTest(drone, getTestName(), true, fileName);
     }
 
-    @Test
-    public void ALF_159631() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14492() throws Exception
     {
         appendSeveralChunksTest(drone, getFileName(getTestName()));
     }
 
-    @Test
-    public void ALF_159741() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14493() throws Exception
     {
-        appendLargeChunksTest(drone, FILE_5MB);
+        String file150mbName = "150MB_file"; // 150+150+150 = 450 MB;
+        try
+        {
+            try
+            {
+                RandomAccessFile f = new RandomAccessFile(DATA_FOLDER + file150mbName, "rw");
+                f.setLength(150000000);
+            }
+            catch (Exception e)
+            {
+                logger.error("Test File don't created.");
+            }
+            appendLargeChunksTest(drone, file150mbName);
+        }
+        finally
+        {
+            File f = new File(DATA_FOLDER + file150mbName);
+            f.delete();
+        }
     }
 }

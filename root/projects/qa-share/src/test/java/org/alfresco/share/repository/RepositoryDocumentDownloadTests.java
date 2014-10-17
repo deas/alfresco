@@ -1,31 +1,22 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.share.repository;
 
-import java.util.List;
-
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.site.UpdateFilePage;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.ContentType;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentEditOfflinePage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -34,16 +25,14 @@ import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.util.List;
 
 /**
- * Test document download for repository. 
+ * Test document download for repository.
+ * 
  * @author jcule
- *
  */
 @Listeners(FailedTestListener.class)
 public class RepositoryDocumentDownloadTests extends AbstractUtils
@@ -54,16 +43,13 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
     private static final String USER_HOMES_FOLDER = "User Homes";
 
     @Override
-    @BeforeClass(groups = { "NonGrid" })
+    @BeforeClass(groups = { "NonGrid" }, alwaysRun = true)
     public void setup() throws Exception
     {
-        super.setupCustomDrone(WebDroneType.DownLoadDrone);
         // create a single user
+        super.setup();
         testName = this.getClass().getSimpleName();
         customTestUser = testName + "Custom" + "@" + DOMAIN_FREE;
-        String[] customTestUserInfo = new String[] { customTestUser };
-
-        CreateUserAPI.createActivateUserAsTenantAdmin(customDrone, ADMIN_USERNAME, customTestUserInfo);
     }
 
     /**
@@ -78,6 +64,10 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // login as created user
         try
         {
+            setupCustomDrone(WebDroneType.DownLoadDrone);
+            String[] customTestUserInfo = new String[] { customTestUser };
+            CreateUserAPI.createActivateUserAsTenantAdmin(customDrone, ADMIN_USERNAME, customTestUserInfo);
+
             ShareUser.login(customDrone, customTestUser, DEFAULT_PASSWORD);
             logger.info("Repository user logged in - custom drone.");
         }
@@ -93,13 +83,14 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * 
      * @throws Exception
      */
-    @AfterMethod(groups = { "NonGrid"  })
+    @AfterMethod(groups = { "NonGrid" })
     public void customQuit() throws Exception
     {
         // login as created user
         try
         {
             ShareUser.logout(customDrone);
+            customDrone.quit();
             logger.info("Repository user logged out - custom drone.");
         }
         catch (Throwable e)
@@ -118,16 +109,16 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "NonGrid"  })
-    public void enterprise40x_5443() throws Exception
+    @Test(groups = { "NonGrid" })
+    public void AONE_3590() throws Exception
     {
         // Create plain text file in users home test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
 
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+        ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
         String[] folderPath = { USER_HOMES_FOLDER, customTestUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
         if (!repositoryPage.isFileVisible(testName))
         {
             ShareUserRepositoryPage.createFolderInRepository(customDrone, testName, testName, testName);
@@ -139,7 +130,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         contentDetails.setTitle(testName + " title");
         contentDetails.setDescription(testName + " description");
         contentDetails.setContent(testName + " content");
-        repositoryPage = ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
         String[] contentFolderPath = { USER_HOMES_FOLDER, customTestUser, testName };
         repositoryPage = ShareUserRepositoryPage.createContentInFolder(customDrone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
@@ -151,7 +142,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Check the file is downloaded successfully
         repositoryPage.waitForFile(downloadDirectory + fileName);
 
-        List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory);
+        List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory);
         Assert.assertTrue(extractedChildFilesOrFolders.contains(fileName));
 
     }
@@ -166,16 +157,16 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = {  "NonGrid"  })
-    public void enterprise40x_5444() throws Exception
+    @Test(groups = { "NonGrid" })
+    public void AONE_3591() throws Exception
     {
         // Create plain text file in users home test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
 
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+        ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
         String[] folderPath = { USER_HOMES_FOLDER, customTestUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
         if (!repositoryPage.isFileVisible(testName))
         {
             ShareUserRepositoryPage.createFolderInRepository(customDrone, testName, testName, testName);
@@ -187,7 +178,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         contentDetails.setTitle(testName + " title");
         contentDetails.setDescription(testName + " description");
         contentDetails.setContent(testName + " content");
-        repositoryPage = ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
         String[] contentFolderPath = { USER_HOMES_FOLDER, customTestUser, testName };
         repositoryPage = ShareUserRepositoryPage.createContentInFolder(customDrone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
@@ -195,12 +186,12 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Select edit offline
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
         DocumentEditOfflinePage editOfflinePage = detailsPage.selectEditOffLine(null).render();
-        String editedFileName = fileName + " (Working Copy)";
+        String editedFileName = fileName + "%2520(Working%2520Copy)";
 
         // Check the file is downloaded successfully
         repositoryPage.waitForFile(downloadDirectory + editedFileName);
         Assert.assertTrue(editOfflinePage.isCheckedOut());
-        List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory);
+        List<String> extractedChildFilesOrFolders = ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory);
         Assert.assertTrue(extractedChildFilesOrFolders.contains(editedFileName));
 
     }
@@ -217,16 +208,17 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "NonGrid"  })
-    public void enterprise40x_5445() throws Exception
+    @Test(groups = { "NonGrid" })
+    public void AONE_3592() throws Exception
     {
         // Create plain text file in users home test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
 
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+        ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+
         String[] folderPath = { USER_HOMES_FOLDER, customTestUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
         if (!repositoryPage.isFileVisible(testName))
         {
             ShareUserRepositoryPage.createFolderInRepository(customDrone, testName, testName, testName);
@@ -238,7 +230,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         contentDetails.setTitle(testName + " title");
         contentDetails.setDescription(testName + " description");
         contentDetails.setContent(testName + " content");
-        repositoryPage = ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
         String[] contentFolderPath = { USER_HOMES_FOLDER, customTestUser, testName };
         repositoryPage = ShareUserRepositoryPage.createContentInFolder(customDrone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
@@ -246,12 +238,12 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Select edit offline
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
         DocumentEditOfflinePage editOfflinePage = detailsPage.selectEditOffLine(null).render();
-        String editedFileName = fileName + " (Working Copy)";
+        String editedFileName = fileName + "%2520(Working%2520Copy)";
 
         // Check the file is downloaded successfully
         repositoryPage.waitForFile(downloadDirectory + editedFileName);
         Assert.assertTrue(editOfflinePage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // upload new version with minor changes
         UpdateFilePage updatePage = editOfflinePage.selectUploadNewVersion().render();
@@ -263,7 +255,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Check the file is downloaded successfully
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
         Assert.assertFalse(detailsPage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // Check the version has increased
         Assert.assertEquals(detailsPage.getDocumentVersion(), "1.1");
@@ -282,16 +274,16 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = {  "NonGrid"  })
-    public void enterprise40x_5446() throws Exception
+    @Test(groups = { "NonGrid" })
+    public void AONE_3593() throws Exception
     {
         // Create plain text file in users home test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
 
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+        ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
         String[] folderPath = { USER_HOMES_FOLDER, customTestUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
         if (!repositoryPage.isFileVisible(testName))
         {
             ShareUserRepositoryPage.createFolderInRepository(customDrone, testName, testName, testName);
@@ -303,7 +295,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         contentDetails.setTitle(testName + " title");
         contentDetails.setDescription(testName + " description");
         contentDetails.setContent(testName + " content");
-        repositoryPage = ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
         String[] contentFolderPath = { USER_HOMES_FOLDER, customTestUser, testName };
         repositoryPage = ShareUserRepositoryPage.createContentInFolder(customDrone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
@@ -311,12 +303,12 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Select edit offline
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
         DocumentEditOfflinePage editOfflinePage = detailsPage.selectEditOffLine(null).render();
-        String editedFileName = fileName + " (Working Copy)";
+        String editedFileName = fileName + "%2520(Working%2520Copy)";
 
         // Check the file is downloaded successfully
         repositoryPage.waitForFile(downloadDirectory + editedFileName);
         Assert.assertTrue(editOfflinePage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // upload new version with major changes
         UpdateFilePage updatePage = editOfflinePage.selectUploadNewVersion().render();
@@ -328,7 +320,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Check the file is downloaded successfully
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
         Assert.assertFalse(detailsPage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // Check the version has increased
         Assert.assertEquals(detailsPage.getDocumentVersion(), "2.0");
@@ -347,16 +339,16 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "NonGrid"  })
-    public void enterprise40x_5447() throws Exception
+    @Test(groups = { "NonGrid" })
+    public void AONE_3594() throws Exception
     {
         // Create plain text file in users home test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
 
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+        ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
         String[] folderPath = { USER_HOMES_FOLDER, customTestUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
         if (!repositoryPage.isFileVisible(testName))
         {
             ShareUserRepositoryPage.createFolderInRepository(customDrone, testName, testName, testName);
@@ -368,7 +360,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         contentDetails.setTitle(testName + " title");
         contentDetails.setDescription(testName + " description");
         contentDetails.setContent(testName + " content");
-        repositoryPage = ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
         String[] contentFolderPath = { USER_HOMES_FOLDER, customTestUser, testName };
         repositoryPage = ShareUserRepositoryPage.createContentInFolder(customDrone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
@@ -376,12 +368,12 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Select edit offline
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
         DocumentEditOfflinePage editOfflinePage = detailsPage.selectEditOffLine(null).render();
-        String editedFileName = fileName + " (Working Copy)";
+        String editedFileName = fileName + "%2520(Working%2520Copy)";
 
         // Check the file is downloaded successfully and the document is edited offline
         repositoryPage.waitForFile(downloadDirectory + editedFileName);
         Assert.assertTrue(editOfflinePage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // Cancel editing offline
         detailsPage = editOfflinePage.selectCancelEditing().render();
@@ -389,7 +381,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Check the file is downloaded successfully
         Assert.assertTrue(detailsPage.isDocumentDetailsPage());
         Assert.assertFalse(detailsPage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // Check the version has increased
         Assert.assertEquals(detailsPage.getDocumentVersion(), "1.0");
@@ -408,17 +400,17 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "NonGrid"  })
-    public void enterprise40x_5448() throws Exception
+    @Test(groups = { "NonGrid" })
+    public void AONE_3595() throws Exception
     {
 
         // Create plain text file in users home test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
 
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
+        ShareUserRepositoryPage.openRepositorySimpleView(customDrone);
         String[] folderPath = { USER_HOMES_FOLDER, customTestUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(customDrone, folderPath);
         if (!repositoryPage.isFileVisible(testName))
         {
             ShareUserRepositoryPage.createFolderInRepository(customDrone, testName, testName, testName);
@@ -430,7 +422,7 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         contentDetails.setTitle(testName + " title");
         contentDetails.setDescription(testName + " description");
         contentDetails.setContent(testName + " content");
-        repositoryPage = ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
+        ShareUserRepositoryPage.openRepositoryDetailedView(customDrone);
         String[] contentFolderPath = { USER_HOMES_FOLDER, customTestUser, testName };
         repositoryPage = ShareUserRepositoryPage.createContentInFolder(customDrone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
@@ -438,12 +430,12 @@ public class RepositoryDocumentDownloadTests extends AbstractUtils
         // Select edit offline
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
         DocumentEditOfflinePage editOfflinePage = detailsPage.selectEditOffLine(null).render();
-        String editedFileName = fileName + " (Working Copy)";
+        String editedFileName = fileName + "%2520(Working%2520Copy)";
 
         // Check the file is downloaded successfully
         repositoryPage.waitForFile(downloadDirectory + editedFileName);
         Assert.assertTrue(editOfflinePage.isCheckedOut());
-        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(drone, downloadDirectory).contains(editedFileName));
+        Assert.assertTrue(ShareUser.getContentsOfDownloadedArchieve(customDrone, downloadDirectory).contains(editedFileName));
 
         // Check that file can be edited offline
         Assert.assertTrue(detailsPage.isEditOfflineDisplayed());

@@ -100,10 +100,19 @@ public class DetailsPageTest extends AbstractTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    @Test(groups = { "alfresco-one" })
-    public void addCommentsToFolder() throws Exception
+    @Test (groups = {"alfresco-one"})
+    public void isCommentSectionPresent() throws Exception
     {
         folderDetails = documentLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
+
+        Assert.assertTrue(folderDetails.isCommentSectionPresent(), "Failed to Comment section present on the folder's details page");
+
+    }
+
+    @Test(dependsOnMethods = "isCommentSectionPresent", groups = { "alfresco-one" })
+    public void addCommentsToFolder() throws Exception
+    {
+        //folderDetails = documentLibPage.getFileDirectoryInfo(folderName).selectViewFolderDetails().render();
 
         // Add text comment
         folderDetails.addComment(null);

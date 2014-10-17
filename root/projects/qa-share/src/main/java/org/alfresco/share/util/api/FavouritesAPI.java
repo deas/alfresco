@@ -71,7 +71,7 @@ public class FavouritesAPI extends PublicAPIAbstract
     
     public ListResponse<Favourite> getFavouritesList(String authUser, String forUser, String domain, Map<String, String> favMap) throws PublicApiException, ParseException
     {
-        HttpResponse response = getFavourites(authUser, authUser, domain, favMap);
+        HttpResponse response = getFavourites(authUser, forUser, domain, favMap);
         
         ListResponse<Favourite> favourites = Favourite.parseFavourites(response.getJsonResponse());
         logger.info("Favourites returned - " + favourites);
@@ -128,7 +128,7 @@ public class FavouritesAPI extends PublicAPIAbstract
      * @param domain
      * @param id
      *            - The guid in case of folder, file. Site id in case of site.
-     * @param siteId
+     * @param type
      * @return {@link Favourite}
      * @throws PublicApiException
      * @throws ParseException
@@ -166,8 +166,8 @@ public class FavouritesAPI extends PublicAPIAbstract
      * 
      * @param authUser
      * @param domain
-     * @param guid
-     * @param siteId
+     * @param forUser
+     * @param target
      * @return {@link Favourite}
      * @throws PublicApiException
      * @throws ParseException

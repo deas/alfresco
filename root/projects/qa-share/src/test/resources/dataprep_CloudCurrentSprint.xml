@@ -13,6 +13,40 @@
     <listeners>
         <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
+ 
+    <test name="Upload Items Test Cloud" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.cloud.documentlibrary.UploadItemsTests"/>
+        </classes>
+    </test>
+    
+    <test name="Locate File/Folder from Views" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.cloud.documentlibrary.ManageDocLibItemsTests"/>
+        </classes>
+    </test>
+    
+    <test name="Quick Share Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.cloud.documentlibrary.QuickShareTests"/>
+        </classes>
+    </test>
+    
+    <!-- 
+    
+    
+    <test name="Site Activities Dashlet Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.dashlet.SiteActivitiesDashletTest"/>
+        </classes>
+    </test>
+    
+    <test name="Open User Dashboard when session expired" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.user.UserDashboardSesionExpired"/>
+        </classes>
+    </test>
+
 
     <test name="CMIS Atom Document Aspect" verbose="1">
         <classes>
@@ -91,23 +125,25 @@
             <class name="org.alfresco.share.workflow.MyTasksTest"/>
         </classes>
     </test>
-    
+     -->
+     
+     
     <!--<test name="Granular Manage Permission" verbose="1">-->
         <!--<classes>-->
             <!--<class name="org.alfresco.share.site.document.ManagePermissionTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_ALF_10427" />-->
-                    <!--<include name="dataPrep_ALF_10428" />-->
-                    <!--<include name="dataPrep_ALF_10429" />-->
-                    <!--<include name="dataPrep_ALF_10790" />-->
-                    <!--<include name="dataPrep_ALF_10793" />-->
-                    <!--<include name="dataPrep_ALF_10795" />-->
-                    <!--<include name="dataPrep_ALF_10287" />-->
-                    <!--<include name="dataPrep_ALF_10288" />-->
-                    <!--<include name="dataPrep_ALF_10425" />-->
-                    <!--<include name="dataPrep_ALF_10426" />-->
-                    <!--<include name="dataPrep_ALF_10785" />-->
-                    <!--<include name="dataPrep_ALF_10786" />-->
+                    <!--<include name="dataPrep_AONE_14155" />-->
+                    <!--<include name="dataPrep_AONE_14156" />-->
+                    <!--<include name="dataPrep_AONE_14157" />-->
+                    <!--<include name="dataPrep_AONE_14158" />-->
+                    <!--<include name="dataPrep_AONE_14153" />-->
+                    <!--<include name="dataPrep_AONE_14154" />-->
+                    <!--<include name="dataPrep_AONE_15098" />-->
+                    <!--<include name="dataPrep_AONE_15099" />-->
+                    <!--<include name="dataPrep_AONE_15102" />-->
+                    <!--<include name="dataPrep_AONE_15104" />-->
+                    <!--<include name="dataPrep_AONE_15100" />-->
+                    <!--<include name="dataPrep_AONE_15105" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -117,7 +153,7 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.site.document.TableViewDocLibTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_Alf_14549" />-->
+                    <!--<include name="dataPrep_AONE_14096" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -132,7 +168,6 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.user.trashcan.TrashCanTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_TrashCan_ALF_10465" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -148,14 +183,14 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.site.document.GalleryViewTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_ALF_8717" />-->
-                    <!--<include name="dataPrep_ALF_8718" />-->
-                    <!--<include name="dataPrep_ALF_8749" />-->
-                    <!--<include name="dataPrep_ALF_8663" />-->
-                    <!--<include name="dataPrep_ALF_8667" />-->
-                    <!--<include name="dataPrep_ALF_8678" />-->
-                    <!--<include name="dataPrep_ALF_8679" />-->
-                    <!--<include name="dataPrep_ALF_8755" />-->
+                    <!--<include name="dataPrep_AONE_14017" />-->
+                    <!--<include name="dataPrep_AONE_14018" />-->
+                    <!--<include name="dataPrep_AONE_14013" />-->
+                    <!--<include name="dataPrep_AONE_14006" />-->
+                    <!--<include name="dataPrep_AONE_14027" />-->
+                    <!--<include name="dataPrep_AONE_15057" />-->
+                    <!--<include name="dataPrep_AONE_14026" />-->
+                    <!--<include name="dataPrep_AONE_14015" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -165,10 +200,10 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.dashlet.SiteNoticetDashletTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_ALF_10823" />-->
-                    <!--<include name="dataPrep_ALF_10824" />-->
-                    <!--<include name="dataPrep_ALF_10825" />-->
-                    <!--<include name="dataPrep_ALF_10826" />-->
+                    <!--<include name="dataPrep_AONE_13979" />-->
+                    <!--<include name="dataPrep_AONE_13980" />-->
+                    <!--<include name="dataPrep_AONE_13981" />-->
+                    <!--<include name="dataPrep_AONE_13982" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -178,7 +213,7 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.site.document.GoogleDocsTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_GoogleDocs_ALF_1930" />-->
+                    <!--<include name="dataPrep_GoogleDocs_AONE_14624" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->
@@ -194,16 +229,16 @@
         <!--<classes>-->
             <!--<class name="org.alfresco.share.HeaderBarTest">-->
                 <!--<methods>-->
-                    <!--<include name="dataPrep_Alf_9296" />-->
-                    <!--<include name="dataPrep_Alf_9297" />-->
-                    <!--<include name="dataPrep_Alf_9298" />-->
-                    <!--<include name="dataPrep_Alf_9291" />-->
-                    <!--<include name="dataPrep_Alf_9292" />-->
-                    <!--<include name="dataPrep_Alf_9293" />-->
-                    <!--<include name="dataPrep_Alf_9294" />-->
-                    <!--<include name="dataPrep_Alf_9304" />-->
-                    <!--<include name="dataPrep_Alf_9305" />-->
-                    <!--<include name="dataPrep_Alf_9306" />-->
+                    <!--<include name="dataPrep_AONE_14117" />-->
+                    <!--<include name="dataPrep_AONE_14118" />-->
+                    <!--<include name="dataPrep_AONE_14119" />-->
+                    <!--<include name="dataPrep_AONE_14106" />-->
+                    <!--<include name="dataPrep_AONE_14107" />-->
+                    <!--<include name="dataPrep_AONE_14108" />-->
+                    <!--<include name="dataPrep_AONE_14109" />-->
+                    <!--<include name="dataPrep_AONE_14110" />-->
+                    <!--<include name="dataPrep_AONE_14111" />-->
+                    <!--<include name="dataPrep_AONE_14112" />-->
                 <!--</methods>-->
             <!--</class>-->
         <!--</classes>-->

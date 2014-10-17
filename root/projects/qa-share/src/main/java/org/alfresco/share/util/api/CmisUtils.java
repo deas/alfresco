@@ -14,13 +14,6 @@
  */
 package org.alfresco.share.util.api;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.alfresco.opencmis.CMISDispatcherRegistry.Binding;
 import org.alfresco.po.share.site.document.DocumentAspect;
 import org.alfresco.repo.content.MimetypeMap;
@@ -33,14 +26,7 @@ import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.util.GUID;
 import org.alfresco.util.TempFileProvider;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.ItemIterable;
-import org.apache.chemistry.opencmis.client.api.ObjectId;
-import org.apache.chemistry.opencmis.client.api.Property;
-import org.apache.chemistry.opencmis.client.api.SecondaryType;
-import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
@@ -49,9 +35,17 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Cmis Utils
- * 
+ *
  * @author Meenal Bhave
  */
 public class CmisUtils extends PublicAPIAbstract
@@ -299,8 +293,16 @@ public class CmisUtils extends PublicAPIAbstract
         CmisSession cmisSession = getCmisSession(cmisBinding, authUser, domain);
 
         Map<String, Serializable> relProps = new HashMap<String, Serializable>();
-        relProps.put("cmis:sourceId", "workspace://SpacesStore/" + sourceObjectId);
-        relProps.put("cmis:targetId", "workspace://SpacesStore/" + targetObjectId);
+        if (cmisBinding.equals(CMISBinding.ATOMPUB11))
+        {
+            relProps.put("cmis:sourceId", sourceObjectId + ";1.0");
+            relProps.put("cmis:targetId", targetObjectId + ";1.0");
+        }
+        else
+        {
+            relProps.put("cmis:sourceId", "workspace://SpacesStore/" + sourceObjectId);
+            relProps.put("cmis:targetId", "workspace://SpacesStore/" + targetObjectId);
+        }
         relProps.put(PropertyIds.NAME, "testRelationship");
         relProps.put("cmis:objectTypeId", objectTypeValue);
         logger.info("Creating relationship for properties:" + relProps);
@@ -345,6 +347,20 @@ public class CmisUtils extends PublicAPIAbstract
         return doc1;
     }
 
+    public Document appendContentFromFile(CMISBinding cmisBinding, String authUser, String domain, String fileNodeRef, String fileName, boolean isLastChunk)
+    {
+        CmisSession cmisSession = getCmisSession(cmisBinding, authUser, domain);
+        ContentStreamImpl fileContent = new ContentStreamImpl();
+        ContentWriter writer = new FileContentWriter(TempFileProvider.createTempFile("Temp" + System.currentTimeMillis(), ".txt"));
+        writer.putContent(new File(DATA_FOLDER + fileName));
+        ContentReader reader = writer.getReader();
+        fileContent.setMimeType(MimetypeMap.MIMETYPE_TEXT_PLAIN);
+        fileContent.setStream(reader.getContentInputStream());
+        Document doc1 = (Document) cmisSession.getObject(fileNodeRef);
+        doc1 = doc1.appendContentStream(fileContent, isLastChunk);
+        return doc1;
+    }
+
     /**
      * @param docContent
      * @param mimeType
@@ -382,9 +398,11 @@ public class CmisUtils extends PublicAPIAbstract
         List<SecondaryType> secondaryTypesList = content.getSecondaryTypes();
         List<String> secondaryTypes = new ArrayList<String>();
 
-        for (SecondaryType secondaryType : secondaryTypesList)
-        {
-            secondaryTypes.add(secondaryType.getId());
+        if (secondaryTypesList!=null){
+            for (SecondaryType secondaryType : secondaryTypesList)
+            {
+                secondaryTypes.add(secondaryType.getId());
+            }
         }
         for (DocumentAspect aspect : documentAspects)
         {
@@ -531,8 +549,6 @@ public class CmisUtils extends PublicAPIAbstract
         Session session = cmisSession.getCMISSession();
         Folder rootFolder = session.getRootFolder();
 
-        System.out.println("Created By: " + rootFolder.getName());
-
         Folder documentLibrary = (Folder) cmisSession.getObjectByPath("/Sites/" + siteName + "/documentLibrary/" + parentForlderPath);
         ItemIterable<CmisObject> allContent = documentLibrary.getChildren();
         for (CmisObject content : allContent)
@@ -589,9 +605,9 @@ public class CmisUtils extends PublicAPIAbstract
     {
         List<Property<?>> properties = getProperties(cmisBinding, authUser, domain, nodeRef);
 
-        for(Property property: properties)
+        for (Property property : properties)
         {
-            if(property.getDisplayName().equals("Tags"))
+            if (property.getDisplayName().equals("Tags"))
             {
                 return property.getValueAsString();
             }

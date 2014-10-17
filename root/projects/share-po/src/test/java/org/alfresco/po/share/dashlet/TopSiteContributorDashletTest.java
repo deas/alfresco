@@ -15,29 +15,20 @@
 
 package org.alfresco.po.share.dashlet;
 
-import java.io.File;
-import java.util.List;
-import java.util.UUID;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.enums.Dashlets;
 import org.alfresco.po.share.enums.UserRole;
-import org.alfresco.po.share.site.CustomiseSiteDashboardPage;
-import org.alfresco.po.share.site.InviteMembersPage;
-import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.po.share.site.SiteFinderPage;
-import org.alfresco.po.share.site.SitePage;
-import org.alfresco.po.share.site.UploadFilePage;
+import org.alfresco.po.share.site.*;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.util.FailedTestListener;
 import org.alfresco.po.share.util.SiteUtil;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * TopSiteContributorDashlet test class for top site contributor report dashlet page object
@@ -112,6 +103,7 @@ public class TopSiteContributorDashletTest extends AbstractSiteDashletTest
     {
  
         createEnterpriseUser(random1);
+        Thread.sleep(16000);
         loginAs(username, password).render();
 
         navigateToSiteDashboard();

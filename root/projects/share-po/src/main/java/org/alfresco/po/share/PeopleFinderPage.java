@@ -14,12 +14,16 @@
  */
 package org.alfresco.po.share;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
@@ -235,5 +239,76 @@ public class PeopleFinderPage extends SharePage
         catch (TimeoutException nse)
         {
         }
+    }
+
+    /**
+     * Clear the input before completing the search form on the people
+     * finders page.
+     * 
+     * @param person String name
+     * @return
+     */
+    public HtmlPage clearAndSearchFor(final String person)
+    {
+        try
+        {
+
+            WebElement input = drone.findAndWait(SEACH_INPUT);
+            input.clear();
+            input.sendKeys(person);
+            WebElement button = drone.findAndWait(SEARCH_BUTTON);
+            button.click();
+            return FactorySharePage.resolvePage(drone).render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve control.", te);
+        }
+    }
+
+    public void selectFollowForUser(String userName)
+    {
+        if (StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("Name can't be empty or null");
+        }
+        List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector("tbody.yui-dt-data > tr"));
+
+        for (WebElement webElement : elements)
+        {
+            if ((webElement.findElement(By.tagName("a")).getText()).contains(userName))
+            {
+                webElement.findElement(By.tagName("button")).click();
+                try
+                {
+                    TimeUnit.SECONDS.sleep(1);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+
+    public String getTextForFollowButton(String userName)
+    {
+        String buttonText="";
+        if (StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("Name can't be empty or null");
+        }
+        List<WebElement> elements = drone.findAndWaitForElements(By.cssSelector("tbody.yui-dt-data > tr"));
+
+        for (WebElement webElement : elements)
+        {
+            if ((webElement.findElement(By.tagName("a")).getText()).contains(userName))
+            {
+                buttonText=webElement.findElement(By.tagName("button")).getText();
+                break;
+            }
+        }
+        return buttonText;
     }
 }

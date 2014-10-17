@@ -8,6 +8,7 @@ package org.alfresco.share.search;
  */
 
 import org.alfresco.po.share.search.FacetedSearchPage;
+import org.alfresco.po.share.search.PreViewPopUpImagePage;
 import org.alfresco.po.share.search.PreViewPopUpPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -48,7 +49,7 @@ public class PreviewPopUpPageTest extends AbstractUtils
     
     // Data prep
     @Test(groups={"DataPrepSearch"})
-    public void dataPrep_AONE_16061() throws Exception
+    public void dataPrep_ALF_3260() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -93,7 +94,7 @@ public class PreviewPopUpPageTest extends AbstractUtils
     
     // Data prep to create image files in a site
     @Test(groups={"DataPrepSearch"})
-    public void dataPrep_AONE_16060() throws Exception
+    public void dataPrep_ALF_3259() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -134,49 +135,52 @@ public class PreviewPopUpPageTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void AONE_16060()
+    public void ALF_3259()
     {
 
-    		/**Start Test*/
-    		String testName = getTestName();
+        /**Start Test*/
+        String testName = getTestName();
 
-    		/**Test Data Setup*/
-    		String testUser = getUserNameFreeDomain(testName);
-    		String siteName = getSiteName(testName);
-    		String[] fileName = new String[2];
+        /**Test Data Setup*/
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String[] fileName = new String[2];
 
-    		fileName[0] = getFileName(testName + "." + "jpg");
-            fileName[1] = getFileName(testName + "." + "png");
+        fileName[0] = getFileName(testName + "." + "jpg");
+        fileName[1] = getFileName(testName + "." + "png");
 
+        Integer fileTypes = fileName.length - 1;
 
-    		String searchTerm = testName;
+        /**Test Steps*/
+        //Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-    		Integer fileTypes = fileName.length-1;
+        //Search Specific Site
+        //Open Site DashBoard
+        ShareUser.openSiteDashboard(drone, siteName);
 
-    		/**Test Steps*/
-    		//Login
-    		ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        //Search
+        ShareUserSearchPage.basicSearch(drone, testName, false);
+        Boolean searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, testName, fileName[0], true);
 
-    		//Search Specific Site
-    		//Open Site DashBoard
+        if(!searchOk)
+        {
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUserSearchPage.basicSearch(drone, testName, false);
+        }
 
-    		ShareUser.openSiteDashboard(drone, siteName);
+        FacetedSearchPage facetedSearchPage = drone.getCurrentPage().render();
 
-    		//Search
-    		ShareUserSearchPage.basicSearch(drone, searchTerm, false); 		
-    		
-            FacetedSearchPage facetedSearchPage = drone.getCurrentPage().render();
-    		
-    		for (int index=0; index <= fileTypes; index++)
-    		{          
-    	        PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();	
-    			Assert.assertTrue(preViewPopUpPage.isTitlePresent(fileName[index]),"Title is displayed");
-    			Assert.assertTrue(preViewPopUpPage.isPreViewDisplayed(),"Preview image is displayed successfully");
-    			facetedSearchPage = preViewPopUpPage.selectClose().render();    			
-    			Assert.assertTrue(facetedSearchPage.isTitlePresent("Search"));    			
-    			
-    		}
-    		
+        for (int index=0; index <= fileTypes; index++)
+        {
+            PreViewPopUpImagePage preViewPopUpImagePage = facetedSearchPage.getResultByName(fileName[index]).clickImageLinkToPicture().render();;
+            Assert.assertTrue(preViewPopUpImagePage.isPreViewPopupPageVisible(),"Preview image is displayed successfully");
+            facetedSearchPage = preViewPopUpImagePage.selectClose().render();
+            Assert.assertTrue(facetedSearchPage.isTitlePresent("Search"));
+
+        }
+
     }
     
     /**
@@ -187,58 +191,65 @@ public class PreviewPopUpPageTest extends AbstractUtils
      * </ul>
      */
     @Test
-    public void AONE_16061()
+    public void ALF_3260()
     {
 
-    		/**Start Test*/
-    		String testName = getTestName();
+        /**Start Test*/
+        String testName = getTestName();
 
-    		/**Test Data Setup*/
-    		String testUser = getUserNameFreeDomain(testName);
-    		String siteName = getSiteName(testName);
-    		String[] fileName = new String[14];
+        /**Test Data Setup*/
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String[] fileName = new String[14];
 
-    		fileName[0] = getFileName(testName + "." + "xlsx");
-    		fileName[1] = getFileName(testName + "." + "xml");    		
-    		fileName[2] = getFileName(testName + "." + "xml");
-    		fileName[3] = getFileName(testName + "." + "html");    		
-    		fileName[4] = getFileName(testName + "." + "ods");
-    		fileName[5] = getFileName(testName + "." + "odt");
-    		fileName[6] = getFileName(testName + "." + "xls");
-    		fileName[7] = getFileName(testName + "." + "xsl");
-    		fileName[8] = getFileName(testName + "." + "doc");
-    		fileName[9] = getFileName(testName + "." + "docx");
-    		fileName[10] = getFileName(testName + "." + "pptx");
-    		fileName[11] = getFileName(testName + "." + "pot");
-    		fileName[12] = getFileName(testName + "." + "xsd");    		
-    		fileName[13] = getFileName(testName + "." + "rtf");
+        fileName[0] = getFileName(testName + "." + "xlsx");
+        fileName[1] = getFileName(testName + "." + "xml");
+        fileName[2] = getFileName(testName + "." + "xml");
+        fileName[3] = getFileName(testName + "." + "html");
+        fileName[4] = getFileName(testName + "." + "ods");
+        fileName[5] = getFileName(testName + "." + "odt");
+        fileName[6] = getFileName(testName + "." + "xls");
+        fileName[7] = getFileName(testName + "." + "xsl");
+        fileName[8] = getFileName(testName + "." + "doc");
+        fileName[9] = getFileName(testName + "." + "docx");
+        fileName[10] = getFileName(testName + "." + "pptx");
+        fileName[11] = getFileName(testName + "." + "pot");
+        fileName[12] = getFileName(testName + "." + "xsd");
+        fileName[13] = getFileName(testName + "." + "rtf");
 
-    		String searchTerm = testName;
+        Integer fileTypes = fileName.length-1;
 
-    		Integer fileTypes = fileName.length-1;
+        /**Test Steps*/
+        //Login
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
 
-    		/**Test Steps*/
-    		//Login
-    		ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-    		
-    		//Open Site DashBoard
-    		ShareUser.openSiteDashboard(drone, siteName);
+        //Open Site DashBoard
+        ShareUser.openSiteDashboard(drone, siteName);
 
-    		//Search
-    		ShareUserSearchPage.basicSearch(drone, searchTerm, false);
+        //Search
+        ShareUserSearchPage.basicSearch(drone, testName, false);
 
-    		FacetedSearchPage facetedSearchPage = drone.getCurrentPage().render();
-    		
-    		for (int index=1; index <= fileTypes; index++)
-    		{         
-    			   			
-    			PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();	
-    			Assert.assertTrue(preViewPopUpPage.isTitlePresent(fileName[index]),"Title is displaed");
-    			Assert.assertTrue(preViewPopUpPage.isPreViewTextDisplayed(),"Preview text is displayed successfully");
-    			facetedSearchPage = preViewPopUpPage.selectClose().render();
-    			Assert.assertTrue(facetedSearchPage.isTitlePresent("Search"));
-    			
-    		}
+        Boolean searchOk = ShareUserSearchPage.checkFacetedSearchResultsWithRetry(drone, BASIC_SEARCH, testName, fileName[0], true);
+
+        if(!searchOk)
+        {
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUserSearchPage.basicSearch(drone, testName, false);
+        }
+
+        FacetedSearchPage facetedSearchPage = drone.getCurrentPage().render();
+
+        for (int index=1; index <= fileTypes; index++)
+        {
+
+            PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName(fileName[index]).clickImageLink().render();
+            Assert.assertTrue(preViewPopUpPage.isTitlePresent(fileName[index]),"Title is displaed");
+            Assert.assertTrue(preViewPopUpPage.isPreViewTextDisplayed(),"Preview text is displayed successfully");
+            facetedSearchPage = preViewPopUpPage.selectClose().render();
+            Assert.assertTrue(facetedSearchPage.isTitlePresent("Search"));
+
+        }
     		
     }   
     

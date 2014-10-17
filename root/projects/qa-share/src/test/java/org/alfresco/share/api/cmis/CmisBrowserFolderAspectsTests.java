@@ -65,115 +65,115 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159291() throws Exception
+    public void dataPrep_AONE_14463() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159291() throws Exception
+    public void AONE_14463() throws Exception
     {
         folderName = getFolderName(getTestName());
         addClasifiableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159291")
-    public void ALF_159441() throws Exception
+    @Test(dependsOnMethods = "AONE_14463")
+    public void AONE_14476() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeClasifiableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159301() throws Exception
+    public void dataPrep_AONE_14464() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159301() throws Exception
+    public void AONE_14464() throws Exception
     {
         folderName = getFolderName(getTestName());
         addComplianceableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
 
     }
 
-    @Test(dependsOnMethods = "ALF_159301")
-    public void ALF_159451() throws Exception
+    @Test(dependsOnMethods = "AONE_14464")
+    public void AONE_14477() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeComplianceableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159311() throws Exception
+    public void dataPrep_AONE_14465() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159311() throws Exception
+    public void AONE_14465() throws Exception
     {
         folderName = getFolderName(getTestName());
         addDublinCoreAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159311")
-    public void ALF_159461() throws Exception
+    @Test(dependsOnMethods = "AONE_14465")
+    public void AONE_14478() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeDublinCoreAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159321() throws Exception
+    public void dataPrep_AONE_14466() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159321() throws Exception
+    public void AONE_14466() throws Exception
     {
         folderName = getFolderName(getTestName());
         addEffectivityAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159321")
-    public void ALF_159471() throws Exception
+    @Test(dependsOnMethods = "AONE_14466")
+    public void AONE_14479() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeEffectivityAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159331() throws Exception
+    public void dataPrep_AONE_14467() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159331() throws Exception
+    public void AONE_14467() throws Exception
     {
         folderName = getFolderName(getTestName());
         addSummarizableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159331")
-    public void ALF_159481() throws Exception
+    @Test(dependsOnMethods = "AONE_14467")
+    public void AONE_14480() throws Exception
     {
         folderName = getFolderName(getTestName(getDependsOnMethodName(this.getClass())));
         removeSummarizableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159341() throws Exception
+    public void dataPrep_AONE_14468() throws Exception
     {
         testName = getTestName();
         dataPrepTemplatableAspect(drone, testUser, testName, siteName);
     }
 
     @Test
-    public void ALF_159341() throws Exception
+    public void AONE_14468() throws Exception
     {
         testName = getTestName();
         String templateFolderName = "Template-" + getFolderName(testName);
@@ -181,8 +181,8 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
         addTemplatableAspect(drone, testUser, folderName, siteName, templateFolderName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159341")
-    public void ALF_159501() throws Exception
+    @Test(dependsOnMethods = "AONE_14468")
+    public void AONE_14481() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -191,20 +191,20 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159351() throws Exception
+    public void dataPrep_AONE_14469() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159351() throws Exception
+    public void AONE_14469() throws Exception
     {
         folderName = getFolderName(getTestName());
         addEmailedAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159351")
-    public void ALF_159511() throws Exception
+    @Test(dependsOnMethods = "AONE_14469")
+    public void AONE_14482() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -212,7 +212,7 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159371() throws Exception
+    public void dataPrep_AONE_14470() throws Exception
     {
         testName = getTestName();
         folderName = getFolderName(testName);
@@ -232,8 +232,8 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
         ShareUser.logout(drone);
     }
 
-    @Test
-    public void ALF_159371() throws Exception
+    @Test(groups = {"IntermittentBugs"})
+    public void AONE_14470() throws Exception
     {
         testName = getTestName();
         folderName = getFolderName(testName);
@@ -242,8 +242,8 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
         addTaggableAspect(drone, testUser, folderName, siteName, tag, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159371")
-    public void ALF_159531() throws Exception
+    @Test(dependsOnMethods = "AONE_14470", groups = {"IntermittentBugs"})
+    public void AONE_14483() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -252,20 +252,20 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159391() throws Exception
+    public void dataPrep_AONE_14471() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159391() throws Exception
+    public void AONE_14471() throws Exception
     {
         folderName = getFolderName(getTestName());
         addGeographicAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159391")
-    public void ALF_159551() throws Exception
+    @Test(dependsOnMethods = "AONE_14471")
+    public void AONE_14484() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -273,20 +273,20 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159401() throws Exception
+    public void dataPrep_AONE_14472() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159401() throws Exception
+    public void AONE_14472() throws Exception
     {
         folderName = getFolderName(getTestName());
         addEXIFAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159401")
-    public void ALF_159561() throws Exception
+    @Test(dependsOnMethods = "AONE_14472")
+    public void AONE_14485() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -294,20 +294,20 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159411() throws Exception
+    public void dataPrep_AONE_14473() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159411() throws Exception
+    public void AONE_14473() throws Exception
     {
         folderName = getFolderName(getTestName());
         addAudioAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159411")
-    public void ALF_159571() throws Exception
+    @Test(dependsOnMethods = "AONE_14473")
+    public void AONE_14486() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -315,20 +315,20 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159421() throws Exception
+    public void dataPrep_AONE_14474() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159421() throws Exception
+    public void AONE_14474() throws Exception
     {
         folderName = getFolderName(getTestName());
         addIndexControlAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159421")
-    public void ALF_159581() throws Exception
+    @Test(dependsOnMethods = "AONE_14474")
+    public void AONE_14487() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);
@@ -336,20 +336,20 @@ public class CmisBrowserFolderAspectsTests extends CmisFolderAspectUtils
     }
 
     @Test(groups = { "DataPrepCmisBrowser" })
-    public void dataPrep_ALF_159431() throws Exception
+    public void dataPrep_AONE_14475() throws Exception
     {
         dataPrep(drone, testUser, getTestName(), siteName);
     }
 
     @Test
-    public void ALF_159431() throws Exception
+    public void AONE_14475() throws Exception
     {
         folderName = getFolderName(getTestName());
         addRestrictableAspect(drone, testUser, folderName, siteName, cmisVersionBrowser);
     }
 
-    @Test(dependsOnMethods = "ALF_159431")
-    public void ALF_159591() throws Exception
+    @Test(dependsOnMethods = "AONE_14475")
+    public void AONE_14488() throws Exception
     {
         testName = getTestName(getDependsOnMethodName(this.getClass()));
         folderName = getFolderName(testName);

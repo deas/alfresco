@@ -47,10 +47,10 @@ public enum WorkFlowHistoryType
     }
 
     /**
-     * Returns {@link org.alfresco.webdrone.share.workflow.WorkFlowHistoryType} based on given value.
+     * Returns {@link WorkFlowHistoryType} based on given value.
      * 
      * @param value
-     * @return {@link org.alfresco.webdrone.share.workflow.WorkFlowHistoryType}
+     * @return {@link WorkFlowHistoryType}
      */
     public static WorkFlowHistoryType getWorkFlowHistoryType(String value)
     {

@@ -10,10 +10,8 @@ package org.alfresco.share.cloudsync;
 
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.site.DestinationAndAssigneeBean;
-import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
 import org.alfresco.po.share.workflow.DestinationAndAssigneePage;
 import org.alfresco.share.util.AbstractCloudSyncTest;
 import org.alfresco.share.util.ShareUser;
@@ -56,7 +54,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2104() throws Exception
+    public void dataPrep_AONE_15289() throws Exception
     {
 
         String testName = getTestName();
@@ -104,7 +102,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2104() throws Exception
+    public void AONE_15289() throws Exception
     {
         String testName = getTestName();
         String user2 = getUserNamePremiumDomain(testName + "-2");
@@ -141,7 +139,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2106() throws Exception
+    public void dataPrep_AONE_15290() throws Exception
     {
         String testName = getTestName() + "bing";
         ;
@@ -188,7 +186,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2106() throws Exception
+    public void AONE_15290() throws Exception
     {
         String testName = getTestName() + "bing";
         String user1 = getUserNamePremiumDomain(testName + "-1");
@@ -324,142 +322,142 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      * <li>5) Set Up cloud sync with a cloud user</li>
      * </ul>
      */
-    @Test(groups =
-    { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2107() throws Exception
-    {
-        String testName = getTestName();
-        String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
-        String[] userInfo1 = new String[]
-        { user1 };
-        String user2 = getUserNamePremiumDomain(testName.toLowerCase() + "-2");
-        String[] userInfo2 = new String[]
-        { user2 };
-
-        // Create User1 (On-premise)
-        CreateUserAPI.CreateActivateUser(drone, adminUserPrem, userInfo1);
-        CreateUserAPI.CreateActivateUser(drone, adminUserPrem, userInfo2);
-
-        // Create User1 (Cloud)
-        CreateUserAPI.CreateActivateUser(hybridDrone, adminUserPrem, userInfo1);
-
-        // Login to User2, set up the cloud sync
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        signInToAlfrescoInTheCloud(drone, user1, DEFAULT_PASSWORD);
-        ShareUser.logout(drone);
-    }
-
-    // TODO - Need latest cloud as the changes made in cloud doesn't reflect in
-    // ENT
-    /**
-     * <ul>
-     * <li>1) Login as User1 (Cloud), Create a site</li>
-     * <li>2) Login as User1 (OP), Create a site and Upload a doc</li>
-     * <li>3) Sync the document into the cloud</li>
-     * <li>4) Verify the document is synced</li>
-     * <li>5) Invite User2 to the site as Consumer</li>
-     * <li>6) Login as User2 (OP), Accept the invitation</li>
-     * <li>7) Open Site Document Library from search</li>
-     * <li>8) Verify Document uploaded by User1 is displayed in Site Document
-     * Library</li>
-     * <li>9) Verify the document is synced</li>
-     * <li>)</li>
-     * </ul>
-     */
-    @Test(groups =
-    { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2107() throws Exception
-    {
-        String testName = getTestName();
-        String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
-        String user2 = getUserNamePremiumDomain(testName.toLowerCase() + "-2");
-        String opSiteName = testName + System.currentTimeMillis() + "-OP";
-        String cloudSiteName = testName + System.currentTimeMillis() + "-OP";
-        String fileName = testName + ".txt";
-        String[] fileInfo =
-        { fileName, DOCLIB };
-
-        ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setName(fileName);
-        contentDetails.setContent(testName + testName);
-
-        try
-        {
-            // Login as User1 (Cloud)
-            ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
-            // Create Site
-            ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
-            ShareUser.logout(hybridDrone);
-
-            // Login as User1 (OP)
-            ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-            // Create Site
-            ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-            // Open Document library, Upload a file
-            ShareUser.uploadFileInFolder(drone, fileInfo).render();
-            // Sync the doc to cloud
-            DestinationAndAssigneeBean desAndAssBean = new DestinationAndAssigneeBean();
-            desAndAssBean.setNetwork(getUserDomain(user1));
-            desAndAssBean.setSiteName(cloudSiteName);
-            desAndAssBean.setSyncToPath(DEFAULT_FOLDER_NAME);
-
-            AbstractCloudSyncTest.syncContentToCloud(drone, fileName, desAndAssBean);
-            // Verify the document is synced
-            Assert.assertTrue(AbstractCloudSyncTest.checkIfContentIsSynced(drone, fileName), "Verify document is synced");
-
-            // Invite User2 to the site as Consumer and log-out the current
-            // user.
-            ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user2, opSiteName, UserRole.CONSUMER);
-            ShareUser.logout(drone);
-
-            // ************Cloud User logs in and change the document
-            // properties**************//
-            // Login as User1 (Cloud)
-            ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
-            // Open Site Document Library from search
-            DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, opSiteName);
-            // Verify Document uploaded by User1 is displayed in Site Document
-            // Library
-            Assert.assertEquals(documentLibraryPage.getFiles().get(0).getName(), fileName, "Verifying the file uploaded by User1 exists in Site");
-
-            DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(hybridDrone, fileName);
-            // Select Inline Edit and change the content and save
-            EditTextDocumentPage inlineEditPage = documentDetailsPage.selectInlineEdit().render();
-            documentDetailsPage = inlineEditPage.save(contentDetails).render();
-
-            Assert.assertEquals(documentDetailsPage.getDocumentVersion(), "1.1");
-            ShareUser.logout(hybridDrone);
-
-            // Login as User2 (OP User)
-            ShareUser.login(drone, user2, DEFAULT_PASSWORD);
-
-            // Open Site Document Library from search
-            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
-
-            // Verify Document uploaded by User1 is displayed in Site Document
-            // Library
-            Assert.assertEquals(documentLibraryPage.getFiles().get(0).getName(), fileName, "Verifying the file uploaded by User1 exists in Site");
-
-            // Verify the document is synced
-            Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced(), "Verify document is synced");
-
-            documentDetailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
-
-            Assert.assertTrue(AbstractCloudSyncTest.checkForNewVersion(drone, "1.1"));
-
-            Assert.assertTrue(documentDetailsPage.getSyncStatus().contains("Synced"));
-            Assert.assertTrue(documentDetailsPage.getSyncStatus().contains(user1));
-       //     Assert.assertEquals(documentDetailsPage.getLocationInCloud(), getUserDomain(user1) + ">" + cloudSiteName + ">Documents");
-
-            ShareUser.logout(drone);
-
-        }
-        catch (Throwable t)
-        {
-            reportError(drone, testName + "-ENT", t);
-            reportError(hybridDrone, testName + "-Cloud", t);
-        }
-    }
+//    @Test(groups =
+//    { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
+//    public void dataPrep_ALF_2107() throws Exception
+//    {
+//        String testName = getTestName();
+//        String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
+//        String[] userInfo1 = new String[]
+//        { user1 };
+//        String user2 = getUserNamePremiumDomain(testName.toLowerCase() + "-2");
+//        String[] userInfo2 = new String[]
+//        { user2 };
+//
+//        // Create User1 (On-premise)
+//        CreateUserAPI.CreateActivateUser(drone, adminUserPrem, userInfo1);
+//        CreateUserAPI.CreateActivateUser(drone, adminUserPrem, userInfo2);
+//
+//        // Create User1 (Cloud)
+//        CreateUserAPI.CreateActivateUser(hybridDrone, adminUserPrem, userInfo1);
+//
+//        // Login to User2, set up the cloud sync
+//        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+//        signInToAlfrescoInTheCloud(drone, user1, DEFAULT_PASSWORD);
+//        ShareUser.logout(drone);
+//    }
+//
+//    // TODO - Need latest cloud as the changes made in cloud doesn't reflect in
+//    // ENT
+//    /**
+//     * <ul>
+//     * <li>1) Login as User1 (Cloud), Create a site</li>
+//     * <li>2) Login as User1 (OP), Create a site and Upload a doc</li>
+//     * <li>3) Sync the document into the cloud</li>
+//     * <li>4) Verify the document is synced</li>
+//     * <li>5) Invite User2 to the site as Consumer</li>
+//     * <li>6) Login as User2 (OP), Accept the invitation</li>
+//     * <li>7) Open Site Document Library from search</li>
+//     * <li>8) Verify Document uploaded by User1 is displayed in Site Document
+//     * Library</li>
+//     * <li>9) Verify the document is synced</li>
+//     * <li>)</li>
+//     * </ul>
+//     */
+//    @Test(groups =
+//    { "EnterpriseOnly", "CloudSync" })
+//    public void ALF_2107() throws Exception
+//    {
+//        String testName = getTestName();
+//        String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
+//        String user2 = getUserNamePremiumDomain(testName.toLowerCase() + "-2");
+//        String opSiteName = testName + System.currentTimeMillis() + "-OP";
+//        String cloudSiteName = testName + System.currentTimeMillis() + "-OP";
+//        String fileName = testName + ".txt";
+//        String[] fileInfo =
+//        { fileName, DOCLIB };
+//
+//        ContentDetails contentDetails = new ContentDetails();
+//        contentDetails.setName(fileName);
+//        contentDetails.setContent(testName + testName);
+//
+//        try
+//        {
+//            // Login as User1 (Cloud)
+//            ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
+//            // Create Site
+//            ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
+//            ShareUser.logout(hybridDrone);
+//
+//            // Login as User1 (OP)
+//            ShareUser.login(drone, user1, DEFAULT_PASSWORD);
+//            // Create Site
+//            ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
+//            // Open Document library, Upload a file
+//            ShareUser.uploadFileInFolder(drone, fileInfo).render();
+//            // Sync the doc to cloud
+//            DestinationAndAssigneeBean desAndAssBean = new DestinationAndAssigneeBean();
+//            desAndAssBean.setNetwork(getUserDomain(user1));
+//            desAndAssBean.setSiteName(cloudSiteName);
+//            desAndAssBean.setSyncToPath(DEFAULT_FOLDER_NAME);
+//
+//            AbstractCloudSyncTest.syncContentToCloud(drone, fileName, desAndAssBean);
+//            // Verify the document is synced
+//            Assert.assertTrue(AbstractCloudSyncTest.checkIfContentIsSynced(drone, fileName), "Verify document is synced");
+//
+//            // Invite User2 to the site as Consumer and log-out the current
+//            // user.
+//            ShareUserMembers.inviteUserToSiteWithRole(drone, user1, user2, opSiteName, UserRole.CONSUMER);
+//            ShareUser.logout(drone);
+//
+//            // ************Cloud User logs in and change the document
+//            // properties**************//
+//            // Login as User1 (Cloud)
+//            ShareUser.login(hybridDrone, user1, DEFAULT_PASSWORD);
+//            // Open Site Document Library from search
+//            DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, opSiteName);
+//            // Verify Document uploaded by User1 is displayed in Site Document
+//            // Library
+//            Assert.assertEquals(documentLibraryPage.getFiles().get(0).getName(), fileName, "Verifying the file uploaded by User1 exists in Site");
+//
+//            DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(hybridDrone, fileName);
+//            // Select Inline Edit and change the content and save
+//            EditTextDocumentPage inlineEditPage = documentDetailsPage.selectInlineEdit().render();
+//            documentDetailsPage = inlineEditPage.save(contentDetails).render();
+//
+//            Assert.assertEquals(documentDetailsPage.getDocumentVersion(), "1.1");
+//            ShareUser.logout(hybridDrone);
+//
+//            // Login as User2 (OP User)
+//            ShareUser.login(drone, user2, DEFAULT_PASSWORD);
+//
+//            // Open Site Document Library from search
+//            documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
+//
+//            // Verify Document uploaded by User1 is displayed in Site Document
+//            // Library
+//            Assert.assertEquals(documentLibraryPage.getFiles().get(0).getName(), fileName, "Verifying the file uploaded by User1 exists in Site");
+//
+//            // Verify the document is synced
+//            Assert.assertTrue(documentLibraryPage.getFileDirectoryInfo(fileName).isCloudSynced(), "Verify document is synced");
+//
+//            documentDetailsPage = ShareUser.openDocumentDetailPage(drone, fileName);
+//
+//            Assert.assertTrue(AbstractCloudSyncTest.checkForNewVersion(drone, "1.1"));
+//
+//            Assert.assertTrue(documentDetailsPage.getSyncStatus().contains("Synced"));
+//            Assert.assertTrue(documentDetailsPage.getSyncStatus().contains(user1));
+//       //     Assert.assertEquals(documentDetailsPage.getLocationInCloud(), getUserDomain(user1) + ">" + cloudSiteName + ">Documents");
+//
+//            ShareUser.logout(drone);
+//
+//        }
+//        catch (Throwable t)
+//        {
+//            reportError(drone, testName + "-ENT", t);
+//            reportError(hybridDrone, testName + "-Cloud", t);
+//        }
+//    }
 
     /**
      * ALF:2108- Create a new folder in target selection window as admin
@@ -471,7 +469,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2108() throws Exception
+    public void dataPrep_AONE_15292() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
@@ -516,9 +514,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2108() throws Exception
+    public void AONE_15292() throws Exception
     {
-        // dataPrep_2108(drone, hybridDrone);
+        // dataPrep_AONE_15292(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
         String opSiteName = testName + System.currentTimeMillis() + "-OP";
@@ -625,7 +623,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2109() throws Exception
+    public void dataPrep_AONE_15293() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
@@ -662,9 +660,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2109() throws Exception
+    public void AONE_15293() throws Exception
     {
-        // dataPrep_2109(drone, hybridDrone);
+        // dataPrep_AONE_15293(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
         String opSiteName = testName + System.currentTimeMillis() + "-OP";
@@ -733,7 +731,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2110() throws Exception
+    public void dataPrep_AONE_15294() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
@@ -779,9 +777,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2110() throws Exception
+    public void AONE_15294() throws Exception
     {
-        // dataPrep_2110(drone, hybridDrone);
+        // dataPrep_AONE_15294(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
         String user2 = getUserNamePremiumDomain(testName.toLowerCase() + "-2");
@@ -857,7 +855,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2111() throws Exception
+    public void dataPrep_AONE_15295() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
@@ -892,9 +890,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2111() throws Exception
+    public void AONE_15295() throws Exception
     {
-        // dataPrep_2111(drone, hybridDrone);
+        // dataPrep_AONE_15295(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName.toLowerCase() + "-1");
         String user2 = getUserNamePremiumDomain(testName.toLowerCase() + "-2");
@@ -946,7 +944,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2113() throws Exception
+    public void dataPrep_AONE_15296() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-1", "network1.test");
@@ -988,7 +986,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2113() throws Exception
+    public void AONE_15296() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-1", "network1.test");
@@ -1051,7 +1049,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2114() throws Exception
+    public void dataPrep_AONE_15297() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
@@ -1100,9 +1098,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2114() throws Exception
+    public void AONE_15297() throws Exception
     {
-        // dataPrep_2114(drone, hybridDrone);
+        // dataPrep_AONE_15297(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
         String user2 = getUserNamePremiumDomain(testName + "-2");
@@ -1198,7 +1196,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2115() throws Exception
+    public void dataPrep_AONE_15298() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
@@ -1279,9 +1277,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2115() throws Exception
+    public void AONE_15298() throws Exception
     {
-        // dataPrep_2115(drone, hybridDrone);
+        // dataPrep_AONE_15298(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
         String user2 = getUserNamePremiumDomain(testName + "-2");
@@ -1457,7 +1455,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2116() throws Exception
+    public void dataPrep_AONE_15299() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
@@ -1507,9 +1505,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2116() throws Exception
+    public void AONE_15299() throws Exception
     {
-        // dataPrep_2116(drone, hybridDrone);
+        // dataPrep_AONE_15299(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
         String user2 = getUserNamePremiumDomain(testName + "-2");
@@ -1601,7 +1599,7 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync3", "DataPrepEnterpriseOnly", "DataPrepCloudSync" })
-    public void dataPrep_2117() throws Exception
+    public void dataPrep_AONE_15301() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
@@ -1652,9 +1650,9 @@ public class CloudSyncAccessTest3 extends AbstractCloudSyncTest
 
     @Test(groups =
     { "EnterpriseOnly", "CloudSync" })
-    public void testALF_2117() throws Exception
+    public void AONE_15301() throws Exception
     {
-        // dataPrep_2117(drone, hybridDrone);
+        // dataPrep_AONE_15301(drone, hybridDrone);
         String testName = getTestName();
         String user1 = getUserNamePremiumDomain(testName + "-1");
         String user2 = getUserNamePremiumDomain(testName + "-2");

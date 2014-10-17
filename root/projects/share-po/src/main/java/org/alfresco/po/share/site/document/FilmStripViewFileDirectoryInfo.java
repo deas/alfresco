@@ -45,6 +45,7 @@ public class FilmStripViewFileDirectoryInfo extends FilmStripOrGalleryView
         rowElementXPath = "../../../..";
         FILE_DESC_IDENTIFIER = "div.detail:first-of-type span.item";
         THUMBNAIL = THUMBNAIL_TYPE + "/../..";
+        DETAIL_WINDOW = By.xpath("//div[@class='alf-actions']/../../..");
         resolveStaleness();
         TAG_ICON = "//h3[@class='filename']/span/a[text()='%s']/../../../div/span[@class='insitu-edit']";
     }

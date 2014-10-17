@@ -21,4 +21,9 @@
             <class name="org.alfresco.po.share.user.UserSitesPageTest" />
       </classes>
     </test>
+    <test name="UserContentsPageTest">
+      <classes>
+            <class name="org.alfresco.po.share.user.UserContentsPageTest" />
+      </classes>
+    </test>
 </suite>

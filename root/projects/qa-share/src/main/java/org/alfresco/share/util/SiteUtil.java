@@ -1,24 +1,20 @@
 /*
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.share.util;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,11 +25,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.dashlet.MySitesDashlet;
 import org.alfresco.po.share.enums.SiteVisibility;
 import org.alfresco.po.share.site.CreateSitePage;
+import org.alfresco.po.share.site.DeleteSiteConfirmPage;
+import org.alfresco.po.share.site.DeleteSitePage;
 import org.alfresco.po.share.site.EditSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.SiteFinderPage;
@@ -44,8 +44,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.SkipException;
-
-import javax.imageio.ImageIO;
 
 /**
  * Utility class to manage site related operations
@@ -121,7 +119,7 @@ public class SiteUtil extends AbstractUtils
 
     /**
      * This method create in Temp directory jpg file for uploading.
-     *
+     * 
      * @param jpgName
      * @return File object for created Image.
      */
@@ -322,7 +320,7 @@ public class SiteUtil extends AbstractUtils
         }
         try
         {
-            SiteFinderPage siteFinder = getSiteFinder(drone);
+            SiteFinderPage siteFinder = getSiteFinder(drone).render();
             siteFinder = siteFinder.searchForSite(siteName).render();
             return siteFinder;
         }
@@ -500,6 +498,7 @@ public class SiteUtil extends AbstractUtils
 
     /**
      * Create many sites for the logged in user
+     * 
      * @param drone
      * @param prefix
      * @param siteVisibility
@@ -524,18 +523,20 @@ public class SiteUtil extends AbstractUtils
 
     /**
      * Util searches for the site using specified string and returns the listed sites
+     * 
      * @param drone
      * @param siteName
      * @return
      */
     public static List<String> getSiteList(WebDrone drone, String siteName)
     {
-        SiteFinderPage siteFinderPage = searchSite(drone, siteName);
-        return siteFinderPage.getSiteList();    
+        SiteFinderPage siteFinderPage = searchSite(drone, siteName).render();
+        return siteFinderPage.getSiteList();
     }
 
     /**
      * Util returns true if site name is found in the SiteFinder Results
+     * 
      * @param drone
      * @param siteName
      * @return false if site name is not found in the SiteFinder Results
@@ -551,19 +552,19 @@ public class SiteUtil extends AbstractUtils
             return false;
         }
     }
-    
+
     /***
      * Search site using share: Retry for solr's eventual consistency until the site is listed / not .
      * 
      * @param drone WebDrone instance
      * @param siteName String site name
-     * @param isSiteExpected Boolean <tt>true</tt> if siteName is expected to be found in the search results 
+     * @param isSiteExpected Boolean <tt>true</tt> if siteName is expected to be found in the search results
      * @return SiteFinderPage
      */
     public static SiteFinderPage searchSiteWithRetry(WebDrone drone, String siteName, Boolean isSiteExpected)
-    {        
+    {
         Boolean found = false;
-        
+
         // Attempt 1
         SiteFinderPage siteFinderPage = searchSite(drone, siteName);
 
@@ -579,12 +580,72 @@ public class SiteUtil extends AbstractUtils
             {
                 // Wait for solr indexing
                 logger.info("Wait for solr indexing: " + siteName);
+                drone.refresh();
+                drone.getCurrentPage().render();
                 webDriverWait(drone, refreshDuration);
                 siteFinderPage = searchSite(drone, siteName);
             }
         }
-        
+
         return siteFinderPage;
-            
+
     }
+
+    /***
+     * Deletes site with the option to manipulate the Delete/Cancel and Yes/No buttons from popups
+     * 
+     * @param siteName String site name
+     * @param deleteSitePage boolean deleteSitePage PopUp - true: click Delete / false: click Cancel
+     * @param deleteConfirmation boolean deleteConfirmation PopUp - true: click Yes / false: click No
+     * @return siteFinder
+     * @Author Bogdan.Bocancea
+     */
+    public static SiteFinderPage deleteSiteWithConfirm(WebDrone drone, String siteName, boolean deleteSitePage, boolean deleteConfirmation)
+    {
+        if ((siteName == null) || (siteName.isEmpty()))
+        {
+            throw new IllegalArgumentException("site name is required");
+        }
+
+        try
+        {
+            DeleteSitePage firstPopUp = new DeleteSitePage(drone);
+            DeleteSiteConfirmPage secondPopUp = new DeleteSiteConfirmPage(drone);
+
+            SiteFinderPage siteFinder = new SiteFinderPage(drone);
+
+            siteFinder.clickDelete(siteName).render();
+            drone.waitForPageLoad(30);
+            // first Confirmation
+            if (deleteSitePage == true)
+            {
+                firstPopUp.clickDelete().render();
+                // second confirmation
+                if (deleteConfirmation == true)
+                {
+                    secondPopUp.clickYes();
+                    if (logger.isTraceEnabled())
+                    {
+                        logger.trace("Confirm delete button has been found and selected");
+                    }
+                }
+                else
+                {
+                    secondPopUp.clickNo();
+                }
+
+            }
+            else
+            {
+                firstPopUp.clickCancel();
+            }
+        }
+        catch (PageException pe)
+        {
+            throw new PageException("Unable to find site to delete", pe);
+        }
+
+        return new SiteFinderPage(drone);
+    }
+
 }

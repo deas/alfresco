@@ -63,7 +63,7 @@ import static org.alfresco.po.share.dashlet.SiteContentFilter.*;
 import static org.alfresco.po.share.enums.UserRole.CONTRIBUTOR;
 import static org.alfresco.po.share.enums.UserRole.MANAGER;
 import static org.alfresco.po.share.site.SiteFinderPage.ButtonType.*;
-import static org.alfresco.po.share.site.datalist.NewListForm.TypeOptions.CONTACT_LIST;
+import static org.alfresco.po.share.enums.DataLists.*;
 import static org.alfresco.share.util.SiteUtil.prepareJpg;
 import static org.testng.Assert.*;
 
@@ -96,7 +96,7 @@ public class SiteTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepSanity")
-    public void dataPrep_ALF_3086() throws Exception
+    public void dataPrep_AONE_15197() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName);
@@ -106,7 +106,7 @@ public class SiteTest extends AbstractUtils
     }
 
     @Test(groups = "Sanity")
-    public void ALF_3086() throws Exception
+    public void AONE_15197() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName);
@@ -204,7 +204,7 @@ public class SiteTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepSanity")
-    public void dataPrep_ALF_3087() throws Exception
+    public void dataPrep_AONE_15198() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -217,7 +217,7 @@ public class SiteTest extends AbstractUtils
     }
 
     @Test(groups = "Sanity")
-    public void ALF_3087()
+    public void AONE_15198()
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -256,8 +256,8 @@ public class SiteTest extends AbstractUtils
         pageTypes.add(SitePageType.CALENDER);
         pageTypes.add(SitePageType.LINKS);
         customizeSitePage.addPages(pageTypes);
-        assertFalse(siteDashboardPage.isPagesMoreButtonDisplayed(), "More button displayed after pages added.");
-        assertEquals(siteDashboardPage.getPagesLinkCount(), 5, "Wrong pages links displayed after pages added.");
+        assertTrue(siteDashboardPage.isPagesMoreButtonDisplayed(), "More button displayed after pages added.");
+        assertEquals(siteDashboardPage.getPagesLinkCount(), 4, "Wrong pages links displayed after pages added.");
 
         HtmlPage htmlPage = siteDashboardPage.getSiteNav().leaveSite();
         assertTrue(htmlPage instanceof SiteDashboardPage, "User was able to leave the site");
@@ -269,7 +269,7 @@ public class SiteTest extends AbstractUtils
 
 
     @Test(groups = "DataPrepSanity")
-    public void dataPrep_ALF_3110() throws Exception
+    public void dataPrep_AONE_15219() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -319,7 +319,6 @@ public class SiteTest extends AbstractUtils
         wikiPage.createWikiPage(testName, asList(testName));
         // At least one link is created
         LinksPage linksPage = siteNav.selectLinksPage();
-        linksPage.clickNewLink();
         linksPage.createLink(testName, "http://electrictower.ru");
         // At least one Data list is created
         SharePage somePage = siteNav.selectDataListPage().render();
@@ -378,14 +377,14 @@ public class SiteTest extends AbstractUtils
         fileDirectoryInfo.selectFavourite();
         File user2File = prepareJpg(testName);
         String fileName = testUser2 + ".jpg";
-        documentLibraryPage = ShareUserSitePage.uploadFile(drone, user2File);
+        documentLibraryPage = ShareUserSitePage.uploadFile(drone, user2File).render();
         ShareUserSitePage.editContentNameInline(drone, user2File.getName(), fileName, true);
         fileDirectoryInfo = documentLibraryPage.getFileDirectoryInfo(fileName);
         fileDirectoryInfo.selectEditOffline();
     }
 
     @Test(groups = "Sanity")
-    public void ALF_3110()
+    public void AONE_15219()
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);

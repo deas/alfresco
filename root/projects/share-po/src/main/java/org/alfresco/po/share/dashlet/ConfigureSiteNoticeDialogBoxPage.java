@@ -29,13 +29,13 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Site Notice dashlet Dialogue box object, holds all element of the HTML relating to site Notice dashlet Dialogue box.
- * 
+ *
  * @author Chiran
  */
 public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
 {
     private final Log logger = LogFactory.getLog(ConfigureSiteNoticeDialogBoxPage.class);
-    
+
     @RenderWebElement
     private static final By CONFIGURE_SITE_NOTICE_DIALOG_BOX = By.cssSelector("div[id$='default-configDialog-configDialog']");
     @RenderWebElement
@@ -80,7 +80,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
 
     /**
      * Get Rich Text Editor to edit the contents of Comments etc.
-     * 
+     *
      * @return ConfigureSiteNoticeTinyMceEditor
      */
     public ConfigureSiteNoticeTinyMceEditor getContentTinyMceEditor()
@@ -90,7 +90,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
 
     /**
      * This method sets the given text into Site Content Configure text editor.
-     * 
+     *
      * @param text
      */
     public void setText(String text)
@@ -100,7 +100,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
 
     /**
      * This method is used to Finds OK button and clicks on it.
-     * 
+     *
      * @return {@link SiteDashboardPage}
      */
     public HtmlPage clickOnOKButton()
@@ -108,6 +108,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
         try
         {
             drone.findAndWait(OK_BUTTON).click();
+            waitUntilAlert(1);
             return new SiteDashboardPage(drone);
         }
         catch (TimeoutException te)
@@ -151,7 +152,7 @@ public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
 
     /**
      * This method sets the given title into Site Content Configure title box.
-     * 
+     *
      * @param title
      */
     public void setTitle(String title)
@@ -166,6 +167,21 @@ public class ConfigureSiteNoticeDialogBoxPage extends ShareDialogue
             WebElement titleBox = drone.findAndWait(TITLE_BOX);
             titleBox.clear();
             titleBox.sendKeys(title);
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find the Title box.", te);
+            throw new PageOperationException("Unable to find the Title box.");
+        }
+    }
+
+    @Override
+    public String getTitle()
+    {
+        try
+        {
+            WebElement titleBox = drone.findAndWait(TITLE_BOX);
+            return titleBox.getAttribute("value");
         }
         catch (TimeoutException te)
         {

@@ -97,7 +97,7 @@ public class TagsAPITests extends TagsAPI
     }
 
     @Test
-    public void ALF_151901() throws Exception
+    public void AONE_14282() throws Exception
     {
         ListResponse<Tag> tags = getTags(testUser, DOMAIN, null);
         assertNotNull(tags);
@@ -115,7 +115,7 @@ public class TagsAPITests extends TagsAPI
         try
         {
             getTags(testUserInvalid, DOMAIN, null);
-            Assert.fail(String.format("ALF_151901: , %s, Expected Result: %s", "get tags request with incorrect auth", "Error 401"));
+            Assert.fail(String.format("AONE_14282: , %s, Expected Result: %s", "get tags request with incorrect auth", "Error 401"));
         }
         catch (PublicApiException e)
         {
@@ -123,8 +123,8 @@ public class TagsAPITests extends TagsAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_151901")
-    public void ALF_197201() throws Exception
+    @Test(dependsOnMethods = "AONE_14282")
+    public void AONE_14284() throws Exception
     {
         // Get: Tag/tagId
         Tag tag = getTag(testUser, DOMAIN, tagId);
@@ -136,7 +136,7 @@ public class TagsAPITests extends TagsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             tagsClient.create("tags", tagId, null, null, null, "Could not create the tag");
-            Assert.fail(String.format("ALF_197201: , %s, Expected Result: %s", "POST tag not allowed for tag/tag id", "Error 405"));
+            Assert.fail(String.format("AONE_14284: , %s, Expected Result: %s", "POST tag not allowed for tag/tag id", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -148,7 +148,7 @@ public class TagsAPITests extends TagsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             tagsClient.create("tags", null, null, null, null, "Could not create the tag");
-            Assert.fail(String.format("ALF_197201: , %s, Expected Result: %s", "POST tag not allowed for tags", "Error 405"));
+            Assert.fail(String.format("AONE_14284: , %s, Expected Result: %s", "POST tag not allowed for tags", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -160,7 +160,7 @@ public class TagsAPITests extends TagsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             tagsClient.update("tags", tagId, null, null, null, "Could not update the tag");
-            Assert.fail(String.format("ALF_197201: , %s, Expected Result: %s", "PUT tag not allowed for tag and tag id", "Error 400"));
+            Assert.fail(String.format("AONE_14284: , %s, Expected Result: %s", "PUT tag not allowed for tag and tag id", "Error 400"));
         }
         catch (PublicApiException e)
         {
@@ -173,7 +173,7 @@ public class TagsAPITests extends TagsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             tagsClient.update("tags", null, null, null, null, "Could not update the tag");
-            Assert.fail(String.format("ALF_197201: , %s, Expected Result: %s", "PUT tag not allowed for tags", "Error 405"));
+            Assert.fail(String.format("AONE_14284: , %s, Expected Result: %s", "PUT tag not allowed for tags", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -185,7 +185,7 @@ public class TagsAPITests extends TagsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             tagsClient.remove("tags", null, null, null, "Could not delete the tag");
-            Assert.fail(String.format("ALF_197201: , %s, Expected Result: %s", "DELETE tag not allowed", "Error 405"));
+            Assert.fail(String.format("AONE_14284: , %s, Expected Result: %s", "DELETE tag not allowed", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -197,7 +197,7 @@ public class TagsAPITests extends TagsAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             tagsClient.remove("tags", tagId, null, null, "Could not delete the tag");
-            Assert.fail(String.format("ALF_197201: , %s, Expected Result: %s", "DELETE tag/tagId is not allowed", "Error 405"));
+            Assert.fail(String.format("AONE_14284: , %s, Expected Result: %s", "DELETE tag/tagId is not allowed", "Error 405"));
         }
         catch (PublicApiException e)
         {
@@ -206,8 +206,8 @@ public class TagsAPITests extends TagsAPI
 
     }
 
-    @Test(dependsOnMethods = "ALF_151901")
-    public void ALF_218301() throws Exception
+    @Test(dependsOnMethods = "AONE_14282")
+    public void AONE_14283() throws Exception
     {
         String newTag = "newtag" + System.currentTimeMillis();
         Tag tag = new Tag(tagId, newTag);
@@ -229,7 +229,7 @@ public class TagsAPITests extends TagsAPI
         try
         {
             updateTag(testUserInvalid, DOMAIN, tag);
-            Assert.fail(String.format("ALF_218301: , %s, Expected Result: %s", "update tags request with incorrect auth", "Error 401"));
+            Assert.fail(String.format("AONE_14283: , %s, Expected Result: %s", "update tags request with incorrect auth", "Error 401"));
         }
         catch (PublicApiException e)
         {
@@ -241,7 +241,7 @@ public class TagsAPITests extends TagsAPI
         {
             tag.setId("blah");
             updateTag(testUser, DOMAIN, tag);
-            Assert.fail(String.format("ALF_218301: , %s, Expected Result: %s", "get nodes tags request with incorrect tagid - " + tag, "Error 404"));
+            Assert.fail(String.format("AONE_14283: , %s, Expected Result: %s", "get nodes tags request with incorrect tagid - " + tag, "Error 404"));
         }
         catch (PublicApiException e)
         {
@@ -250,7 +250,7 @@ public class TagsAPITests extends TagsAPI
     }
 
     @Test
-    public void ALF_220601() throws Exception
+    public void AONE_14285() throws Exception
     {
         Map<String, String> param = new HashMap<String, String>();
 
@@ -356,7 +356,7 @@ public class TagsAPITests extends TagsAPI
     }
 
     @Test
-    public void ALF_221801() throws Exception
+    public void AONE_14286() throws Exception
     {
 
         // Check on Share UI: that the tag is updated

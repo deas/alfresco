@@ -148,10 +148,10 @@ public class CalendarPage extends SitePage
     public CalendarPage(WebDrone drone)
     {
         super(drone);
-        if (alfrescoVersion.isCloud())
+        /*if (alfrescoVersion.isCloud())
         {
             throw new PageOperationException("Calendar is not applicable to a specific alfresco version 'Cloud'");
-        }
+        }*/
     }
 
     @SuppressWarnings("unchecked")
@@ -281,7 +281,30 @@ public class CalendarPage extends SitePage
      * @param allDay
      * @return
      */
+
     public CalendarPage createEvent(ActionEventVia createEventVia, String whatField, String whereField, String description, String startDate, String startTime, String endDate, String endTime, String tags, boolean allDay)
+    {
+        return createEvent(createEventVia, whatField, whereField, description, null, null, startDate, startTime, null, null, endDate, endTime, tags, allDay);
+    }
+
+    /**
+     * @param createEventVia
+     * @param whatField
+     * @param whereField
+     * @param description
+     * @param starYear
+     * @param startMonth
+     * @param startDate
+     * @param startTime
+     * @param endYear
+     * @param endMonth
+     * @param endDate
+     * @param endTime
+     * @param tags
+     * @param allDay
+     * @return
+     */
+    public CalendarPage createEvent(ActionEventVia createEventVia, String whatField, String whereField, String description, String startYear, String startMonth, String startDate, String startTime, String endYear, String endMonth, String endDate, String endTime, String tags, boolean allDay)
     {
         logger.info("Create event with name " + whatField);
         try
@@ -339,6 +362,20 @@ public class CalendarPage extends SitePage
                 addEventForm.setDescriptionField(description);
             }
 
+            if (startYear != null && !startYear.isEmpty())
+            {
+                addEventForm.clickStartDatePicker();
+                calendarContainer.setYear(startYear);
+                calendarContainer.setDate("1");
+            }
+
+            if (startMonth != null && !startMonth.isEmpty())
+            {
+                addEventForm.clickStartDatePicker();
+                calendarContainer.setMonth(startMonth);
+                calendarContainer.setDate("1");
+
+            }
             if (startDate != null && !startDate.isEmpty())
             {
                 addEventForm.clickStartDatePicker();
@@ -350,10 +387,24 @@ public class CalendarPage extends SitePage
                 addEventForm.setStartTimeField(startTime);
             }
 
-            if (endDate != null && !endDate.isEmpty())
+            if (endMonth != null && !endMonth.isEmpty())
             {
                 addEventForm.clickEndDatePicker();
-                calendarContainer.setDate(endDate);
+                calendarContainer.setMonth(endMonth);
+                if (endDate != null && !endDate.isEmpty())
+                {
+
+                    calendarContainer.setDate(endDate);
+                }
+            }
+            else
+            {
+                if (endDate != null && !endDate.isEmpty())
+                {
+
+                    addEventForm.clickEndDatePicker();
+                    calendarContainer.setDate(endDate);
+                }
             }
 
             if (endTime != null && !endTime.isEmpty())
@@ -458,6 +509,8 @@ public class CalendarPage extends SitePage
                         calendarPage = (CalendarPage) calendarPage.chooseAgendaTab();
                         informationEventForm = calendarPage.clickOnEvent(eventType, eventName);
                         editEventForm = informationEventForm.clickOnEditEvent();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -588,6 +641,8 @@ public class CalendarPage extends SitePage
                         informationEventForm = calendarPage.clickOnEvent(eventType, eventName);
                         deleteEventForm = informationEventForm.clickOnDeleteEvent();
                         deleteEventForm.confirmDeleteEvent();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -837,9 +892,16 @@ public class CalendarPage extends SitePage
         try
         {
             logger.info("Check that link with name " + eventName + " presented at the current tab");
-            String linkEventXpath = String.format(eventType.getXpathLocator(), eventName);
-            WebElement element = drone.find(By.xpath(linkEventXpath));
-            return element.isDisplayed();
+            if (!eventName.isEmpty())
+            {
+                String linkEventXpath = String.format(eventType.getXpathLocator(), eventName);
+                WebElement element = drone.find(By.xpath(linkEventXpath));
+                return element.isDisplayed();
+            }
+            else
+            {
+                return false;
+            }
         }
         catch (NoSuchElementException te)
         {
@@ -1190,7 +1252,7 @@ public class CalendarPage extends SitePage
      * @param viaTab
      * @return int
      */
-    private int getTheNumOfEvents(ActionEventVia viaTab)
+    public int getTheNumOfEvents(ActionEventVia viaTab)
     {
         int size = 0;
         switch (viaTab)
@@ -1204,6 +1266,9 @@ public class CalendarPage extends SitePage
                 {
                     size = drone.findAll(By.cssSelector("tbody[class*='data']>tr")).size();
                 }
+                break;
+             default:
+                 size = 0;
         }
         return size;
     }

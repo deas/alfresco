@@ -35,7 +35,7 @@ public class DocumentDetailsPropertiesTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13858() throws Exception
+    public void dataPrep_AONE_2113() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -61,7 +61,7 @@ public class DocumentDetailsPropertiesTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13858()
+    public void AONE_2113()
     {
         /** Start Test */
         testName = getTestName();
@@ -93,7 +93,7 @@ public class DocumentDetailsPropertiesTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13859() throws Exception
+    public void dataPrep_AONE_2114() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -119,7 +119,7 @@ public class DocumentDetailsPropertiesTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13859()
+    public void AONE_2114()
     {
         /** Start Test */
         testName = getTestName();

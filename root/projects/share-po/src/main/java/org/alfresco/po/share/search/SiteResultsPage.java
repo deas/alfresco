@@ -16,6 +16,9 @@ package org.alfresco.po.share.search;
 
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.openqa.selenium.WebElement;
+
+import java.util.NoSuchElementException;
 
 /**
  * Site search results page object, holds all element of the html page relating to
@@ -69,5 +72,27 @@ public class SiteResultsPage extends SearchResultsPage
     {
         searchFor(term);
         return new SiteResultsPage(drone);
+    }
+
+    /**
+     * Method to verify if 'Back to..Site' link is displayed
+     *
+     * @param siteName
+     * @return true if displayed
+     */
+    public boolean isBackToSiteDisplayed(String siteName)
+    {
+        boolean isDisplayed = false;
+        try
+        {
+            WebElement backLink = drone.find(BACK_TO_SITE_LINK);
+            if(backLink.getText().contains(siteName))
+                isDisplayed = true;
+        }
+        catch (NoSuchElementException nse)
+        {
+            isDisplayed = false;
+        }
+        return isDisplayed;
     }
 }

@@ -17,41 +17,33 @@
  */
 package org.alfresco.share.repository;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.alfresco.po.share.site.document.*;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserRepositoryPage;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.ShareUserWorkFlow;
-import org.alfresco.share.util.api.CreateUserAPI;
-import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.site.document.ConfirmDeletePage;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
+import org.alfresco.po.share.site.document.DocumentLibraryNavigation;
+import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.FileDirectoryInfo;
 import org.alfresco.po.share.task.EditTaskPage;
 import org.alfresco.po.share.task.TaskDetailsPage;
-import org.alfresco.po.share.workflow.MyWorkFlowsPage;
-import org.alfresco.po.share.workflow.NewWorkflowPage;
-import org.alfresco.po.share.workflow.Priority;
-import org.alfresco.po.share.workflow.StartWorkFlowPage;
-import org.alfresco.po.share.workflow.WorkFlowDetailsCurrentTask;
-import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
-import org.alfresco.po.share.workflow.WorkFlowFormDetails;
-import org.alfresco.po.share.workflow.WorkFlowType;
+import org.alfresco.po.share.workflow.*;
+import org.alfresco.share.util.*;
+import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author jcule
@@ -104,7 +96,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
-    public void enterprise40x_5449() throws Exception
+    public void AONE_3596() throws Exception
     {
         String testName = getTestName();
 
@@ -175,7 +167,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
-    public void enterprise40x_5450() throws Exception
+    public void AONE_3597() throws Exception
     {
         // create a site
         String testName = getTestName();
@@ -228,7 +220,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug"  })
-    public void enterprise40x_5451() throws Exception
+    public void AONE_3598() throws Exception
     {
         // create site
         String testName = getTestName();
@@ -296,7 +288,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
-    public void enterprise40x_5452() throws Exception
+    public void AONE_3599() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -360,7 +352,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug" })
-    public void enterprise40x_5453() throws Exception
+    public void AONE_3600() throws Exception
     {
         // create site
         String testName = getTestName();
@@ -417,7 +409,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows", "SharePOBug"  })
-    public void enterprise40x_5454() throws Exception
+    public void AONE_3601() throws Exception
     {
 
         // create site
@@ -492,7 +484,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows" })
-    public void enterprise40x_5455() throws Exception
+    public void AONE_3602() throws Exception
     {
 
         // Upload file to test folder
@@ -534,7 +526,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows" })
-    public void enterprise40x_5456() throws Exception
+    public void AONE_3603() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
@@ -589,7 +581,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows" })
-    public void enterprise40x_5457() throws Exception
+    public void AONE_3604() throws Exception
     {
         // create site
         String testName = getTestName();
@@ -704,7 +696,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows" })
-    public void enterprise40x_5458() throws Exception
+    public void AONE_3605() throws Exception
     {
         // create site
         String testName = getTestName();
@@ -815,7 +807,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows" })
-    public void enterprise40x_5459() throws Exception
+    public void AONE_3606() throws Exception
     {
         // create site
         String testName = getTestName();
@@ -924,7 +916,7 @@ public class RepositoryDocumentWorkflowsTests extends AbstractUtils
      */
 
     @Test(groups = { "RepositoryDocumentWorkflows" })
-    public void enterprise40x_5460() throws Exception
+    public void AONE_3607() throws Exception
     {
         // create site
         String testName = getTestName();

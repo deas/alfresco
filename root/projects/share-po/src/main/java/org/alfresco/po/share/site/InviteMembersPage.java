@@ -190,6 +190,8 @@ public class InviteMembersPage extends SharePage
             searchTextBox.sendKeys(userName);
 
             drone.findAndWait(By.cssSelector(SEARCH_USER_ROLE_BUTTON)).click();
+            logger.info("Waiting for max: " + 7000/1000 + " seconds");
+            canResume(7000);
 
             List<WebElement> users = getListOfInvitees();
             if (users != null && !users.isEmpty())
@@ -368,8 +370,8 @@ public class InviteMembersPage extends SharePage
     public InviteMembersPage clickInviteButton()
     {
         drone.findAndWait(By.cssSelector(INVITE_BUTTON), maxPageLoadingTime).click();
-        canResume();
-        return new InviteMembersPage(drone);
+        waitUntilAlert();
+        return new InviteMembersPage(drone).render();
     }
 
     /**

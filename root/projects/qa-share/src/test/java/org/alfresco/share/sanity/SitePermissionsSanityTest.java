@@ -10,6 +10,7 @@ import org.alfresco.po.share.site.blog.PostViewPage;
 import org.alfresco.po.share.site.calendar.CalendarPage;
 import org.alfresco.po.share.site.calendar.InformationEventForm;
 import org.alfresco.po.share.site.datalist.DataListPage;
+import org.alfresco.po.share.site.datalist.NewListForm;
 import org.alfresco.po.share.site.datalist.items.ContactListItem;
 import org.alfresco.po.share.site.datalist.lists.ContactList;
 import org.alfresco.po.share.site.discussions.DiscussionsPage;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.alfresco.po.share.site.calendar.CalendarPage.ActionEventVia.*;
-import static org.alfresco.po.share.site.datalist.NewListForm.TypeOptions.CONTACT_LIST;
+import static org.alfresco.po.share.enums.DataLists.*;
 import static org.alfresco.po.share.site.document.DocumentAction.*;
 import static org.testng.Assert.*;
 
@@ -60,8 +61,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
         username = "user";
     }
 
-    @Test(groups = { "DataPrepSanity" })
-    public void dataPrep_ALF_3060() throws Exception
+    @Test(groups = "DataPrepSanity")
+    public void dataPrep_AONE_15204() throws Exception
     {
         String siteName = getSiteName(testName);
         String user1 = username + "1";
@@ -94,8 +95,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //User1 adds all available pages
         CustomizeSitePage customiseSitePage = new CustomizeSitePage(drone);
         ShareUser.customizeSite(drone, siteName).render();
-        List<SitePageType> availablePages = customiseSitePage.getAvailablePages();
-        customiseSitePage.addPages(availablePages);
+        customiseSitePage.addAllPages().render();
 
         ShareUser.openSiteDashboard(drone, siteName);
 
@@ -113,7 +113,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
      * Check Manager permissions in Site
      */
     @Test(groups = "Sanity")
-    public void ALF_3060() throws Exception
+    public void AONE_15204() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -370,7 +370,6 @@ public class SitePermissionsSanityTest extends AbstractUtils
         LinksPage linksPage = dashBoard.getSiteNav().selectLinksPage().render();
 
         //Create a link
-        linksPage.clickNewLink().render();
         linksPage.createLink(testName, url).render();
 
         //Browse to Data Lists
@@ -400,7 +399,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
      * Check Collaborator permissions in Site
      */
     @Test(groups = "Sanity")
-    public void ALF_3061() throws Exception
+    public void AONE_15205() throws Exception
     {
         /*test data set up*/
         testName = getClass().getSimpleName();
@@ -626,11 +625,20 @@ public class SitePermissionsSanityTest extends AbstractUtils
         LinksPage linksPage = dashBoard.getSiteNav().selectLinksPage().render();
 
         //Create a link
-        linksPage.clickNewLink().render();
         linksPage.createLink(testName, url).render();
 
         //Browse to Data Lists
-        DataListPage dataListPage = (DataListPage) dashBoard.getSiteNav().selectDataListPage();
+        DataListPage dataListPage;
+        try
+        {
+            dataListPage = dashBoard.getSiteNav().selectDataListPage().render();
+        }
+        catch (ClassCastException cce)
+        {
+            dataListPage = new DataListPage(drone);
+        }
+
+        //Create a list
         dataListPage.createDataList(CONTACT_LIST, testName, testName).render();
 
         //Item creation
@@ -658,7 +666,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
      * Check Contributor permissions in Site
      */
     @Test(groups = "Sanity")
-    public void ALF_3095() throws Exception
+    public void AONE_15206() throws Exception
     {
         /*test data set up*/
         testName = getClass().getSimpleName();
@@ -881,11 +889,20 @@ public class SitePermissionsSanityTest extends AbstractUtils
         LinksPage linksPage = dashBoard.getSiteNav().selectLinksPage().render();
 
         //Create a link
-        linksPage.clickNewLink().render();
         linksPage.createLink(testName, url);
 
         //Browse to Data Lists
-        DataListPage dataListPage = (DataListPage) dashBoard.getSiteNav().selectDataListPage();
+        DataListPage dataListPage;
+        try
+        {
+            dataListPage = dashBoard.getSiteNav().selectDataListPage().render();
+        }
+        catch (ClassCastException cce)
+        {
+            dataListPage = new DataListPage(drone);
+        }
+
+        //Create a list
         dataListPage.createDataList(CONTACT_LIST, testName, testName).render();
 
         //Item creation
@@ -914,7 +931,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
      * Check Consumer permissions in Site
      */
     @Test(groups = "Sanity")
-    public void ALF_3096() throws Exception
+    public void AONE_15207() throws Exception
     {
         /*test data set up*/
         testName = getClass().getSimpleName();
@@ -1119,8 +1136,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
     /**
      * Check Edit own content for Manager
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3060")
-    public void ALF_3097() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15204")
+    public void AONE_15208() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -1201,7 +1218,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //Navigate to Blog
         BlogPage blogPage = dashBoard.getSiteNav().selectBlogPage();
         PostViewPage postViewPage = blogPage.openBlogPost(testName);
-        postViewPage.editBlogPostAndSaveAsDraft(editedItem, editedItem);
+        postViewPage.editBlogPostAndUpdate(editedItem, editedItem, null);
+
         postViewPage.editBlogComment(testName, editedItem);
 
         //Navigate to Links
@@ -1238,8 +1256,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
     /**
      * Check Edit own content for Collaborator
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3061")
-    public void ALF_3098() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15205")
+    public void AONE_15209() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -1318,11 +1336,12 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //Navigate to Blog
         BlogPage blogPage = dashboard.getSiteNav().selectBlogPage();
         PostViewPage postViewPage = blogPage.openBlogPost(testName);
-        postViewPage.editBlogPostAndSaveAsDraft(editedItem, editedItem);
+        postViewPage.editBlogPostAndUpdate(editedItem, editedItem, null).render();
+
         postViewPage.editBlogComment(testName, editedItem);
 
         //Navigate to Links
-        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage();
+        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage().render();
         linksPage.editLink(testName, editedItem, editedItem, editedItem, true);
 
         //Navigate to Data Lists
@@ -1350,8 +1369,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
     /**
      * Check Edit own content for Contributor
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3095")
-    public void ALF_3099() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15206")
+    public void AONE_15210() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -1430,11 +1449,12 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //Navigate to Blog
         BlogPage blogPage = dashboard.getSiteNav().selectBlogPage();
         PostViewPage postViewPage = blogPage.openBlogPost(testName);
-        postViewPage.editBlogPostAndSaveAsDraft(editedItem, editedItem);
+        postViewPage.editBlogPostAndUpdate(editedItem, editedItem, null);
+
         postViewPage.editBlogComment(testName, editedItem);
 
         //Navigate to Links
-        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage();
+        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage().render();
         linksPage.editLink(testName, editedItem, editedItem, editedItem, true);
 
         //Navigate to Data Lists
@@ -1463,8 +1483,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
     /**
      * Check Edit others content for Manager
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3098")
-    public void ALF_3101() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15209")
+    public void AONE_15220() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -1628,7 +1648,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
 
         //Edit collaborator's blog post
         PostViewPage postViewPage = blogPage.openBlogPost(testName);
-        postViewPage.editBlogPostAndSaveAsDraft(editedItem, editedItem);
+        postViewPage.editBlogPostAndUpdate(editedItem, editedItem, null);
+
 
         //Add a comment to the post
         postViewPage.createBlogComment(createdItem);
@@ -1669,8 +1690,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
     /**
      * Check Edit others content for Collaborator
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3099")
-    public void ALF_3102() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15210")
+    public void AONE_15221() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -1824,7 +1845,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
 
         //Edit contributor's blog post
         PostViewPage postViewPage = blogPage.openBlogPost(testName);
-        postViewPage.editBlogPostAndSaveAsDraft(editedItem, editedItem);
+        postViewPage.editBlogPostAndUpdate(editedItem, editedItem, null);
+
 
         //Add a comment to the post
         postViewPage.createBlogComment(createdItem);
@@ -1864,8 +1886,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
     /**
      * Check Edit others content for Contributor
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3097")
-    public void ALF_3103() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15208")
+    public void AONE_15222() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -1959,9 +1981,10 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //Edit manager's event
         InformationEventForm informationEventForm = calendarPage.clickOnEvent(CalendarPage.EventType.MONTH_TAB_ALL_DAY_EVENT, testName);
         assertFalse(informationEventForm.isEditButtonPresent(), "Edit button is present");
+        informationEventForm.clickClose();
 
         //Navigate to Wiki
-        WikiPage wikiPage = dashboard.getSiteNav().selectWikiPage();
+        WikiPage wikiPage = dashboard.getSiteNav().selectWikiPage().render();
 
         //Verify it's not possible to edit manager's wiki
         WikiPageList wikiPageList = wikiPage.clickWikiPageListBtn();
@@ -2034,8 +2057,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3097")
-    public void ALF_3116() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15208")
+    public void AONE_15223() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -2186,8 +2209,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3097")
-    public void ALF_3117() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15208")
+    public void AONE_15224() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -2309,8 +2332,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3101")
-    public void ALF_3118() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15220")
+    public void AONE_15225() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -2375,6 +2398,7 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //Verify it's not possible to delete collaborator's event
         InformationEventForm informationEventForm = calendarPage.clickOnEvent(CalendarPage.EventType.MONTH_TAB_ALL_DAY_EVENT, testName);
         assertFalse(informationEventForm.isDeleteButtonPresent(), "Delete button is available");
+        informationEventForm.clickClose();
 
         //Navigate to Wiki
         WikiPage wikiPage = dashboard.getSiteNav().selectWikiPage().render();
@@ -2450,8 +2474,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3097")
-    public void ALF_3119() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15208")
+    public void AONE_15226() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -2592,8 +2616,8 @@ public class SitePermissionsSanityTest extends AbstractUtils
      *
      * @throws Exception
      */
-    @Test(groups = "Sanity", dependsOnMethods = "ALF_3101")
-    public void ALF_3120() throws Exception
+    @Test(groups = "Sanity", dependsOnMethods = {"AONE_15220", "AONE_15204"})
+    public void AONE_15227() throws Exception
     {
         /** Start Test */
         testName = getClass().getSimpleName();
@@ -2662,9 +2686,9 @@ public class SitePermissionsSanityTest extends AbstractUtils
         //Not possible to delete replies until MNT-11398 is implemented
 
         //Delete collaborator's topic
-        int expCount = discussionsPage.getTopicCount() - 1;
+        int expCount = discussionsPage.getTopicsCount() - 1;
         discussionsPage.deleteTopicWithConfirm(collItem).render();
-        assertEquals(discussionsPage.getTopicCount(), expCount);
+        assertEquals(discussionsPage.getTopicsCount(), expCount);
 
         //Navigate to Blog
         BlogPage blogPage = dashboard.getSiteNav().selectBlogPage().render();
@@ -2713,8 +2737,323 @@ public class SitePermissionsSanityTest extends AbstractUtils
         ShareUserMembers.inviteGroupToSiteWithRole(drone, user2, group1, siteName, UserRole.COLLABORATOR);
 
         //Navigate to trashcan and restore all the items
-        TrashCanPage trashCanPage = ShareUserProfile.navigateToTrashCan(drone);
+        TrashCanPage trashCanPage = ShareUserProfile.navigateToTrashCan(drone).render();
         trashCanPage.selectAction(SelectActions.ALL).render();
-        trashCanPage.selectedRecover();
+        trashCanPage.selectedRecover().clickRecoverOK().render();
+
+        if(trashCanPage.getTrashCanItems().size()>0)
+        {
+            trashCanPage.selectAction(SelectActions.ALL).render();
+            trashCanPage.selectedRecover().clickRecoverOK().render();
+        }
+    }
+
+    /**
+     * Delete own. Manager
+     *
+     * @throws Exception
+     */
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15227")
+    public void AONE_8263() throws Exception
+    {
+        /** Start Test */
+        testName = getClass().getSimpleName();
+        String siteName = getSiteName(testName);
+
+        /** Test Data Setup */
+        String user1 = username + 1;
+        String user2 = username + 2;
+        testName += "manageredited";
+        String fileName = getFileName("manageredited");
+        String folderName = getFolderName("manageredited");
+
+        ShareUser.login(drone, user2, DEFAULT_PASSWORD);
+
+        //User2 opens Site Dashboard
+        SiteDashboardPage dashboard = ShareUser.openSiteDashboard(drone, siteName).render();
+
+        //Navigate to Document Library
+        ShareUser.openDocumentLibrary(drone).render();
+
+        //Delete own comment to the document
+        DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(drone, fileName).render();
+        documentDetailsPage.deleteComment(testName);
+
+        //Delete own document
+        documentDetailsPage.delete().render();
+
+        //Delete own comment to the folder
+        FolderDetailsPage folderDetailsPage = ShareUser.openFolderDetailPage(drone, folderName);
+        folderDetailsPage.deleteComment(testName);
+
+        //Delete own Folder
+        ShareUser.openDocumentLibrary(drone).deleteItem(folderName).render();
+
+        //Navigate to Calendar
+        CalendarPage calendarPage = dashboard.getSiteNav().selectCalendarPage().render();
+
+        //Delete own event
+        calendarPage.deleteEvent(testName, CalendarPage.EventType.MONTH_TAB_SINGLE_EVENT, MONTH_TAB).render();
+
+        //Navigate to Wiki
+        WikiPage wikiPage = dashboard.getSiteNav().selectWikiPage().render();
+
+        //Delete own wiki page
+        WikiPageList wikiPageList = wikiPage.clickWikiPageListBtn();
+        wikiPageList.deleteWikiWithConfirm(testName).render();
+
+        //Navigate to Dicsussions
+        DiscussionsPage discussionsPage = dashboard.getSiteNav().selectDiscussionsPage().render();
+
+        //Delete own reply for the topic
+        //Not possible to delete replies until MNT-11398 is implemented
+
+        //Delete own topic
+        int expCount = discussionsPage.getTopicsCount() - 1;
+        discussionsPage.deleteTopicWithConfirm(testName).render();
+        assertEquals(discussionsPage.getTopicsCount(), expCount);
+
+        //Navigate to Blog
+        BlogPage blogPage = dashboard.getSiteNav().selectBlogPage().render();
+
+        //Delete own comment to the post
+        PostViewPage postViewPage = blogPage.openBlogPost(testName).deleteCommentWithConfirm(testName).render();
+
+        //Delete own blog post
+        postViewPage.deleteBlogPostWithConfirm().render();
+
+        //Navigate to Links
+        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage().render();
+
+        //Delete own link
+        linksPage.deleteLinkWithConfirm(testName).render();
+
+        //Navigate to Data Lists
+        DataListPage dataListPage = dashboard.getSiteNav().selectDataListPage().render();
+
+        //Delete own item of the list
+        dataListPage.selectDataList(testName);
+        ContactList contactList = new ContactList(drone).render();
+        contactList.deleteAnItemWithConfirm(testName);
+
+        //Delete own data list
+        dataListPage.deleteDataListWithConfirm(testName).render();
+
+        //Navigate to Members
+        SiteMembersPage siteMembersPage = dashboard.getSiteNav().selectMembersPage().render();
+
+        //Verify it is possible to delete yourself, as there is a second manager in the site (the creator)
+        assertTrue(siteMembersPage.isRemoveButtonPresent(user2), "It's possible to remove yourself");
+        siteMembersPage.removeUser(user2);
+
+        //Verify it's not possible to remove the second manager (relevant prompt pops up)
+        assertFalse(siteMembersPage.isUserCanBeRemoved(user1, siteName), "The user can be removed!");
+    }
+
+    /**
+     * Delete own. Collaborator
+     *
+     * @throws Exception
+     */
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15227")
+    public void AONE_8264() throws Exception
+    {
+        /** Start Test */
+        testName = getClass().getSimpleName();
+        String siteName = getSiteName(testName);
+
+        /** Test Data Setup */
+        String user3 = username + 3;
+        String itemName = "editedByManager";
+        String folderName = "folderEditedByManager";
+
+        ShareUser.login(drone, user3, DEFAULT_PASSWORD);
+
+        //User2 opens Site Dashboard
+        SiteDashboardPage dashboard = ShareUser.openSiteDashboard(drone, siteName).render();
+
+        //Navigate to Document Library
+        ShareUser.openDocumentLibrary(drone).render();
+
+        //Delete own comment to the document
+        DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(drone, itemName).render();
+        //MNT-5867 - Deleted comments do not go to trashcan(not a bug)
+        //After executing AONE_15227 the comments won't get recovered, so will create a comment and then check deleting it
+        documentDetailsPage.addComment(itemName).render();
+        documentDetailsPage.deleteComment(itemName).render();
+
+        //Delete own document
+        documentDetailsPage.delete().render();
+
+        //Delete own comment to the folder
+        FolderDetailsPage folderDetailsPage = ShareUser.openFolderDetailPage(drone, folderName);
+        //MNT-5867 - Deleted comments do not go to trashcan(not a bug)
+        //After executing AONE_15227 the comments won't get recovered, so will create a comment and then check deleting it
+        folderDetailsPage.addComment(itemName).render();
+        folderDetailsPage.deleteComment(itemName).render();
+
+        //Delete own Folder
+        ShareUser.openDocumentLibrary(drone).deleteItem(folderName).render();
+
+        //Navigate to Calendar
+        CalendarPage calendarPage = dashboard.getSiteNav().selectCalendarPage().render();
+
+        //Delete own event
+        calendarPage.deleteEvent(itemName, CalendarPage.EventType.MONTH_TAB_SINGLE_EVENT, MONTH_TAB).render();
+
+        //Navigate to Wiki
+        WikiPage wikiPage = dashboard.getSiteNav().selectWikiPage().render();
+
+        //Delete own wiki page
+        WikiPageList wikiPageList = wikiPage.clickWikiPageListBtn();
+        wikiPageList.deleteWikiWithConfirm(itemName).render();
+
+        //Navigate to Dicsussions
+        DiscussionsPage discussionsPage = dashboard.getSiteNav().selectDiscussionsPage().render();
+
+        //Delete own reply for the topic
+        //ALF-18747 - Replies aren't displayed after recovering Discussion from Trashcan
+        //Not possible to delete replies until MNT-11398 is implemented
+
+        //Delete own topic
+        int expCount = discussionsPage.getTopicsCount() - 1;
+        discussionsPage.deleteTopicWithConfirm(itemName).render();
+        assertEquals(discussionsPage.getTopicsCount(), expCount);
+
+        //Navigate to Blog
+        BlogPage blogPage = dashboard.getSiteNav().selectBlogPage().render();
+
+        //Delete own comment to the post
+        //MNT-5867 - Deleted comments do not go to trashcan(not a bug)
+        //After executing AONE_15227 the comments won't get recovered, so will create a comment and then check deleting it
+        PostViewPage postViewPage = blogPage.openBlogPost(itemName).render();
+        postViewPage.createBlogComment(itemName).render();
+        postViewPage.deleteCommentWithConfirm(itemName).render();
+        assertEquals(postViewPage.getCommentCount(), 0, "Comment wasn't deleted");
+
+        //Delete own blog post
+        postViewPage.deleteBlogPostWithConfirm().render();
+
+        //Navigate to Links
+        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage().render();
+
+        //Delete own link
+        linksPage.deleteLinkWithConfirm(itemName).render();
+
+        //Navigate to Data Lists
+        DataListPage dataListPage = dashboard.getSiteNav().selectDataListPage().render();
+
+        //Delete own item of the list
+        dataListPage.selectDataList(itemName);
+        ContactList contactList = new ContactList(drone).render();
+        contactList.deleteAnItemWithConfirm(itemName);
+
+        //Delete own data list
+        dataListPage.deleteDataListWithConfirm(itemName).render();
+        NewListForm newListForm = new NewListForm(drone);
+        newListForm.clickClose().render();
+
+        //Navigate to Members
+        SiteMembersPage siteMembersPage = dashboard.getSiteNav().selectMembersPage().render();
+
+        //Verify it is not possible to delete yourself
+        assertFalse(siteMembersPage.isRemoveButtonPresent(user3), "It's possible to remove yourself");
+    }
+
+    /**
+     * Delete own. Contributor
+     *
+     * @throws Exception
+     */
+    @Test(groups = "Sanity", dependsOnMethods = "AONE_15221")
+    public void AONE_8265() throws Exception
+    {
+        /** Start Test */
+        testName = getClass().getSimpleName();
+        String siteName = getSiteName(testName);
+
+        /** Test Data Setup */
+        String user4 = username + 4;
+        testName += "contributoredited";
+        String itemName = "editedByCollaborator";
+        String folderName = "folderEditedByCollaborator";
+
+        ShareUser.login(drone, user4, DEFAULT_PASSWORD);
+
+        //User4 opens Site Dashboard
+        SiteDashboardPage dashboard = ShareUser.openSiteDashboard(drone, siteName).render();
+
+        //Navigate to Document Library
+        ShareUser.openDocumentLibrary(drone).render();
+
+        //Delete own comment to the document
+        DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(drone, itemName).render();
+        documentDetailsPage.deleteComment(testName);
+
+        //Delete own document
+        documentDetailsPage.delete().render();
+
+        //Delete own comment to the folder
+        FolderDetailsPage folderDetailsPage = ShareUser.openFolderDetailPage(drone, folderName);
+        folderDetailsPage.deleteComment(itemName);
+
+        //Delete own Folder
+        ShareUser.openDocumentLibrary(drone).deleteItem(folderName).render();
+
+        //Navigate to Calendar
+        CalendarPage calendarPage = dashboard.getSiteNav().selectCalendarPage().render();
+
+        //Delete own event
+        calendarPage.deleteEvent(itemName, CalendarPage.EventType.MONTH_TAB_SINGLE_EVENT, MONTH_TAB).render();
+
+        //Navigate to Wiki
+        WikiPage wikiPage = dashboard.getSiteNav().selectWikiPage().render();
+
+        //Delete own wiki page
+        WikiPageList wikiPageList = wikiPage.clickWikiPageListBtn();
+        wikiPageList.deleteWikiWithConfirm(itemName).render();
+
+        //Navigate to Dicsussions
+        DiscussionsPage discussionsPage = dashboard.getSiteNav().selectDiscussionsPage().render();
+
+        //Delete own reply for the topic
+        //Not possible to delete replies until MNT-11398 is implemented
+
+        //Delete own topic
+        int expCount = discussionsPage.getTopicsCount() - 1;
+        discussionsPage.deleteTopicWithConfirm(testName).render(3000);
+        assertEquals(discussionsPage.getTopicsCount(), expCount);
+
+        //Navigate to Blog
+        BlogPage blogPage = dashboard.getSiteNav().selectBlogPage().render();
+
+        //Delete own comment to the post
+        PostViewPage postViewPage = blogPage.openBlogPost(itemName).deleteCommentWithConfirm(testName).render();
+
+        //Delete own blog post
+        postViewPage.deleteBlogPostWithConfirm().render();
+
+        //Navigate to Links
+        LinksPage linksPage = dashboard.getSiteNav().selectLinksPage().render();
+
+        //Delete own link
+        linksPage.deleteLinkWithConfirm(itemName).render();
+
+        //Navigate to Data Lists
+        DataListPage dataListPage = dashboard.getSiteNav().selectDataListPage().render();
+
+        //Delete own item of the list
+        dataListPage.selectDataList(itemName);
+        ContactList contactList = new ContactList(drone).render();
+        contactList.deleteAnItemWithConfirm(itemName);
+
+        //Delete own data list
+        dataListPage.deleteDataListWithConfirm(itemName).render();
+
+        //Navigate to Members
+        SiteMembersPage siteMembersPage = dashboard.getSiteNav().selectMembersPage().render();
+
+        //Verify it is not possible to delete yourself
+        assertFalse(siteMembersPage.isRemoveButtonPresent(user4), "It's possible to remove yourself");
     }
 }

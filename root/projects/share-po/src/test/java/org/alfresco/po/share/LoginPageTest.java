@@ -94,7 +94,7 @@ public class LoginPageTest extends AbstractTest
     public void loginWithFakeCredentials() throws Exception
     {
         drone.navigateTo(shareUrl);
-        LoginPage page = (LoginPage) ShareUtil.loginAs(drone, shareUrl,"fake-admin", "fake-password"); 
+        LoginPage page = (LoginPage) ShareUtil.loginAs(drone, shareUrl,"fake-admin", "fake-password").render(); 
         Assert.assertTrue(page.isBrowserTitle("login"));
         Assert.assertTrue(page.hasErrorMessage());
         Assert.assertTrue(page.getErrorMessage().length() > 1);

@@ -17,15 +17,15 @@ package org.alfresco.po.share.site.document;
 /**
  * This class contains the CSS details of actions in details page of Folder,
  * Document.
- * 
+ *
  * @author nshah
  */
 public enum DocumentAction
 {
 
-    COPY_TO("div[id$='onActionCopyTo']", DetailsPageType.COMMON), 
-    MOVE_TO("div[id$='onActionMoveTo']", DetailsPageType.COMMON), 
-    DELETE_CONTENT("div[id$='onActionDelete']", DetailsPageType.COMMON), 
+    COPY_TO("div[id$='onActionCopyTo']", DetailsPageType.COMMON),
+    MOVE_TO("div[id$='onActionMoveTo']", DetailsPageType.COMMON),
+    DELETE_CONTENT("div[id$='onActionDelete']", DetailsPageType.COMMON),
     MANAGE_ASPECTS("div[id$='onActionManageAspects']", DetailsPageType.COMMON), //
     MANAGE_PERMISSION_DOC(".document-manage-granular-permissions", DetailsPageType.DOCUMENT),
     MANAGE_PERMISSION_FOL(".document-manage-granular-permissions", DetailsPageType.FOLDER),
@@ -47,7 +47,9 @@ public enum DocumentAction
     public enum DetailsPageType
     {
         COMMON, DOCUMENT, FOLDER
-    };
+    }
+
+    ;
 
     private String linkValue;
     private DetailsPageType typeValue;
@@ -60,7 +62,7 @@ public enum DocumentAction
 
     /**
      * Get value of CSS from the page type.
-     * 
+     *
      * @param type
      * @return
      */
@@ -79,12 +81,17 @@ public enum DocumentAction
 
     /**
      * Check the CSS present in page type.
-     * 
+     *
      * @return
      */
     public DetailsPageType getType()
     {
         return typeValue;
+    }
+
+    public String getCssValue()
+    {
+        return linkValue;
     }
 
 }

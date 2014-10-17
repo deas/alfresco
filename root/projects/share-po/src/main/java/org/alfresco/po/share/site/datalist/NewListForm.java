@@ -1,6 +1,7 @@
 package org.alfresco.po.share.site.datalist;
 
 import org.alfresco.po.share.ShareDialogue;
+import org.alfresco.po.share.enums.DataLists;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -57,25 +58,6 @@ public class NewListForm extends ShareDialogue
     public NewListForm render(long time)
     {
         return render(new RenderTime(time));
-    }
-
-    public static enum TypeOptions
-    {
-        CONTACT_LIST(0),
-        EVENT_LIST(1),
-        ISSUE_LIST(2),
-        LOCATION_LIST(3),
-        MEETING_AGENDA(4),
-        TASK_LIST_ADV(5),
-        TASK_LIST_SPL(6),
-        TO_DO_LIST(7);
-
-        public final int numberPosition;
-
-        TypeOptions(int numberPosition)
-        {
-            this.numberPosition = numberPosition;
-        }
     }
 
     /**
@@ -157,7 +139,7 @@ public class NewListForm extends ShareDialogue
      * Mimic select type data-list
      * @param listType
      */
-    public void selectListType(TypeOptions listType)
+    public void selectListType(DataLists listType)
     {
         List<WebElement> typeOptions = drone.findAndWaitForElements(LISTS_TYPES_CONTAINER);
         typeOptions.get(listType.ordinal()).click();

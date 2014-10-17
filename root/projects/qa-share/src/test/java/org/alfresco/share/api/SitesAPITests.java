@@ -15,16 +15,6 @@
 
 package org.alfresco.share.api;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.alfresco.po.share.AlfrescoVersion;
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.dashlet.MySitesDashlet;
@@ -37,16 +27,10 @@ import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient.ListResponse;
 import org.alfresco.rest.api.tests.client.PublicApiException;
 import org.alfresco.rest.api.tests.client.RequestContext;
-import org.alfresco.rest.api.tests.client.data.FavouriteSite;
-import org.alfresco.rest.api.tests.client.data.MemberOfSite;
-import org.alfresco.rest.api.tests.client.data.Site;
-import org.alfresco.rest.api.tests.client.data.SiteContainer;
-import org.alfresco.rest.api.tests.client.data.SiteMember;
-import org.alfresco.rest.api.tests.client.data.SiteRole;
+import org.alfresco.rest.api.tests.client.data.*;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserDashboard;
 import org.alfresco.share.util.ShareUserMembers;
-import org.alfresco.share.util.ShareUserSitePage;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.share.util.api.SitesAPI;
 import org.alfresco.webdrone.exception.PageOperationException;
@@ -54,10 +38,19 @@ import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.testng.Assert.*;
 
 /**
  * Class to include: Tests for Sites (/site, /site/siteId) and Site Members (/members) apis implemented in alfresco-remote-api.
@@ -156,7 +149,7 @@ public class SitesAPITests extends SitesAPI
 
 
     @Test
-    public void ALF_147801() throws Exception
+    public void AONE_14271() throws Exception
     {
 
         HashMap<String, String> params = new HashMap<String, String>();
@@ -170,7 +163,7 @@ public class SitesAPITests extends SitesAPI
         {
             if (StringUtils.isEmpty(respSite.getSiteId()))
             {
-                fail("ALF_147801: Site name - " + respSite.getSiteId() + " should not be empty");
+                fail("AONE_14271: Site name - " + respSite.getSiteId() + " should not be empty");
                 break;
             }
         }
@@ -178,7 +171,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSites(testUserInvalid, DOMAIN, params);
-            Assert.fail(String.format("ALF_147801: , %s, Expected Result: %s", "Test should fail as invalid username - " + testUserInvalid, 401));
+            Assert.fail(String.format("AONE_14271: , %s, Expected Result: %s", "Test should fail as invalid username - " + testUserInvalid, 401));
         }
         catch (PublicApiException e)
         {
@@ -197,7 +190,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_147901() throws Exception
+    public void AONE_14272() throws Exception
     {
         Site response = getSiteById(testUser, DOMAIN, siteName);
         assertNotNull(response);
@@ -206,7 +199,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteById(testUserInvalid, DOMAIN, siteName);
-            Assert.fail(String.format("ALF_147901: , %s, Expected Result: %s", "Test should fail as invalid username - " + testUserInvalid, 401));
+            Assert.fail(String.format("AONE_14272: , %s, Expected Result: %s", "Test should fail as invalid username - " + testUserInvalid, 401));
         }
         catch (PublicApiException e)
         {
@@ -216,7 +209,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteById(testUser, DOMAIN, siteNameInvalid);
-            Assert.fail(String.format("ALF_147901: , %s, Expected Result: %s", "Test should fail as invalid site name - " + siteNameInvalid, 404));
+            Assert.fail(String.format("AONE_14272: , %s, Expected Result: %s", "Test should fail as invalid site name - " + siteNameInvalid, 404));
         }
         catch (PublicApiException e)
         {
@@ -233,7 +226,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_221001() throws Exception
+    public void AONE_14275() throws Exception
     {
 
         HashMap<String, String> params;
@@ -256,7 +249,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_219801() throws Exception
+    public void AONE_14274() throws Exception
     {
         ListResponse<Site> response;
 
@@ -266,7 +259,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "a");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 405));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 405));
         }
         catch (PublicApiException e)
         {
@@ -279,7 +272,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "a");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 400));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 400));
         }
         catch (PublicApiException e)
         {
@@ -292,7 +285,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "-1");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 400));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 400));
         }
         catch (PublicApiException e)
         {
@@ -304,7 +297,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "0");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 400));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 400));
         }
         catch (PublicApiException e)
         {
@@ -316,7 +309,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "-1");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 400));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 400));
         }
         catch (PublicApiException e)
         {
@@ -370,7 +363,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "apple");
             params.put(SKIP_COUNT, "pear");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 400));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 400));
         }
         catch (PublicApiException e)
         {
@@ -383,7 +376,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "-3");
             params.put(SKIP_COUNT, "-5");
             response = getSites(testUser, DOMAIN, params);
-            Assert.fail(String.format("ALF_219801: , %s, Expected Result: %s", "invalid params - " + params, 400));
+            Assert.fail(String.format("AONE_14274: , %s, Expected Result: %s", "invalid params - " + params, 400));
         }
         catch (PublicApiException e)
         {
@@ -393,7 +386,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_196301() throws Exception
+    public void AONE_14273() throws Exception
     {
 
         HashMap<String, String> params;
@@ -401,7 +394,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.create("sites", null, null, null, null, "Unable to POST to sites");
-            fail("ALF_196301: Invalid method - POST sites.");
+            fail("AONE_14273: Invalid method - POST sites.");
         }
         catch (PublicApiException e)
         {
@@ -412,7 +405,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.create("sites", siteName, null, null, null, "Unable to POST to sites/siteId");
-            fail("ALF_196301: Invalid method - POST sites/siteId.");
+            fail("AONE_14273: Invalid method - POST sites/siteId.");
         }
         catch (PublicApiException e)
         {
@@ -423,7 +416,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.update("sites", null, null, null, null, "Unable to PUT site");
-            fail("ALF_196301: Invalid method - PUT sites");
+            fail("AONE_14273: Invalid method - PUT sites");
         }
         catch (PublicApiException e)
         {
@@ -436,7 +429,7 @@ public class SitesAPITests extends SitesAPI
             params.put(MAX_ITEMS, "a");
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.update("sites", siteName, null, null, null, "Unable to PUT site for site id");
-            fail("ALF_196301: Invalid method - PUT sites/siteId.");
+            fail("AONE_14273: Invalid method - PUT sites/siteId.");
         }
         catch (PublicApiException e)
         {
@@ -446,7 +439,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148201() throws Exception
+    public void AONE_14263() throws Exception
     {
 
         HashMap<String, String> params;
@@ -459,7 +452,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getSiteMembers(testUserInvalid, DOMAIN, params, siteName);
-            fail("ALF_148201 - Auth details as wrong - " + testUserInvalid + "Expected error: " + 401);
+            fail("AONE_14263 - Auth details as wrong - " + testUserInvalid + "Expected error: " + 401);
         }
         catch (PublicApiException e)
         {
@@ -469,7 +462,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getSiteMembers(testUser, DOMAIN, params, siteNameInvalid);
-            fail("ALF_148201 - Site details as wrong - " + siteNameInvalid + "Expected error: " + 404);
+            fail("AONE_14263 - Site details as wrong - " + siteNameInvalid + "Expected error: " + 404);
         }
         catch (PublicApiException e)
         {
@@ -479,7 +472,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148301() throws Exception
+    public void AONE_14264() throws Exception
     {
 
         ShareUser.login(drone, testUser);
@@ -497,7 +490,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getSiteMemberForId(testUserInvalid, DOMAIN, siteName3, user3);
-            fail("ALF_148301 - This block of code shouldn't be reached. As auth details as wrong. Expected error -" + 401);
+            fail("AONE_14264 - This block of code shouldn't be reached. As auth details as wrong. Expected error -" + 401);
         }
         catch (PublicApiException e)
         {
@@ -507,7 +500,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getSiteMemberForId(testUser, DOMAIN, siteNameInvalid, user1);
-            fail("ALF_148301 - This block of code shouldn't be reached. As site id is wrong. Expected error -" + 404);
+            fail("AONE_14264 - This block of code shouldn't be reached. As site id is wrong. Expected error -" + 404);
         }
         catch (PublicApiException e)
         {
@@ -516,7 +509,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148401() throws Exception
+    public void AONE_14265() throws Exception
     {
         SiteMember response = createSiteMember(testUser, DOMAIN, siteName, new SiteMember(user2, SiteRole.SiteConsumer.toString()));
         response = getSiteMemberForId(user2, DOMAIN, siteName, user2);
@@ -536,7 +529,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             createSiteMember(testUser, DOMAIN, siteNameInvalid, new SiteMember(user2, SiteRole.SiteConsumer.toString()));
-            fail("ALF_148401 - This block of code shouldn't be reached. As siteid is wrong. Expected error - 404");
+            fail("AONE_14265 - This block of code shouldn't be reached. As siteid is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -547,7 +540,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             createSiteMember(testUser, DOMAIN, siteName, new SiteMember(testUserInvalid, SiteRole.SiteConsumer.toString()));
-            fail("ALF_148401 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
+            fail("AONE_14265 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -558,7 +551,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             createSiteMember(testUser, DOMAIN, siteName, new SiteMember(user2, user1));
-            fail("ALF_148401 - This block of code shouldn't be reached. As role is wrong. Expected error - 400");
+            fail("AONE_14265 - This block of code shouldn't be reached. As role is wrong. Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -567,7 +560,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148501() throws Exception
+    public void AONE_14266() throws Exception
     {
         SiteMember siteMember = new SiteMember(user1);
         siteMember.setRole(SiteRole.SiteConsumer.toString());
@@ -599,7 +592,7 @@ public class SitesAPITests extends SitesAPI
         {
             siteMember.setRole("wrong role");
             updateSiteMember(testUser, DOMAIN, siteName, siteMember);
-            fail("ALF_148501 - This block of code shouldn't be reached. As user role is wrong. Expected error - 400.");
+            fail("AONE_14266 - This block of code shouldn't be reached. As user role is wrong. Expected error - 400.");
         }
         catch (PublicApiException e)
         {
@@ -608,7 +601,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             updateSiteMember(testUser, DOMAIN, siteNameInvalid, new SiteMember(user3, SiteRole.SiteConsumer.toString()));
-            fail("ALF_148501 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404.");
+            fail("AONE_14266 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404.");
         }
         catch (PublicApiException e)
         {
@@ -619,7 +612,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             updateSiteMember(testUser, DOMAIN, siteName, new SiteMember(testUserInvalid, SiteRole.SiteCollaborator.toString()));
-            fail("ALF_148501 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404.");
+            fail("AONE_14266 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404.");
         }
         catch (PublicApiException e)
         {
@@ -630,7 +623,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             updateSiteMember(testUser, DOMAIN, siteName3, new SiteMember(user1, SiteRole.SiteCollaborator.toString()));
-            fail("ALF_148501 - This block of code shouldn't be reached. As person is non site member. Expected error - 400. For site - " + siteName3
+            fail("AONE_14266 - This block of code shouldn't be reached. As person is non site member. Expected error - 400. For site - " + siteName3
                     + " and user - " + user1 + " JIRA: https://issues.alfresco.com/jira/browse/MNT-10551");
         }
         catch (PublicApiException e)
@@ -640,7 +633,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148801() throws Exception
+    public void AONE_14258() throws Exception
     {
         MemberOfSite response = getPersonSite(testUser, DOMAIN, testUser, siteName);
         assertNotNull(response);
@@ -651,7 +644,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSite(testUser, DOMAIN, testUserInvalid, siteName);
-            fail("ALF_148801 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
+            fail("AONE_14258 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -662,7 +655,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSite(testUserInvalid, DOMAIN, testUser, siteName);
-            fail("ALF_148801 - This block of code shouldn't be reached. As person id is wrong. Expected error - 401");
+            fail("AONE_14258 - This block of code shouldn't be reached. As person id is wrong. Expected error - 401");
         }
         catch (PublicApiException e)
         {
@@ -673,7 +666,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSite(testUser, DOMAIN, testUser, siteNameInvalid);
-            fail("ALF_148801 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404");
+            fail("AONE_14258 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -682,7 +675,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148701() throws Exception
+    public void AONE_14257() throws Exception
     {
         ListResponse<MemberOfSite> response = getPersonSites(testUser, DOMAIN, null, testUser);
         assertNotNull(response);
@@ -692,7 +685,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSites(testUser, DOMAIN, null, testUserInvalid);
-            fail("ALF_148701 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
+            fail("AONE_14257 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -703,7 +696,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getPersonSites(testUserInvalid, DOMAIN, null, testUser);
-            fail("ALF_148701 - This block of code shouldn't be reached. As person id is wrong. Expected error - 401");
+            fail("AONE_14257 - This block of code shouldn't be reached. As person id is wrong. Expected error - 401");
         }
         catch (PublicApiException e)
         {
@@ -712,7 +705,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_218501() throws Exception
+    public void AONE_14267() throws Exception
     {
         SiteMember siteMember = new SiteMember(user3);
         siteMember.setRole(SiteRole.SiteConsumer.toString());
@@ -730,7 +723,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             member = dashlet.selectMember(user3);
-            fail("ALF_218501 - This block of code shouldn't be reached. As the member is removed. Expected exception - PageOperationException.");
+            fail("AONE_14267 - This block of code shouldn't be reached. As the member is removed. Expected exception - PageOperationException.");
         }
         catch (PageOperationException e1)
         {
@@ -741,7 +734,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             removeSiteMember(testUserInvalid, DOMAIN, siteName, siteMember);
-            fail("ALF_218501 - This block of code shouldn't be reached. As auth details as wrong. Expected error - 401");
+            fail("AONE_14267 - This block of code shouldn't be reached. As auth details as wrong. Expected error - 401");
         }
         catch (PublicApiException e)
         {
@@ -753,7 +746,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             removeSiteMember(testUser, DOMAIN, siteNameInvalid, siteMember);
-            fail("ALF_218501 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404");
+            fail("AONE_14267 - This block of code shouldn't be reached. As site id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -764,7 +757,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             removeSiteMember(testUser, DOMAIN, siteName, new SiteMember(testUserInvalid, SiteRole.SiteConsumer.toString()));
-            fail("ALF_218501 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
+            fail("AONE_14267 - This block of code shouldn't be reached. As person id is wrong. Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -775,7 +768,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             removeSiteMember(testUser, DOMAIN, siteName3, new SiteMember(user2));
-            fail("ALF_218501 - This block of code shouldn't be reached. As person id is wrong. Expected error - 400. For site - " + siteName3 + " and user - "
+            fail("AONE_14267 - This block of code shouldn't be reached. As person id is wrong. Expected error - 400. For site - " + siteName3 + " and user - "
                     + user2);
         }
         catch (PublicApiException e)
@@ -786,13 +779,13 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_196501() throws Exception
+    public void AONE_14268() throws Exception
     {
         try
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.create("sites", siteName, "members", user1, null, "Failed to create site member");
-            fail("ALF_196501 - This block of code shouldn't be reached.POST for /public/alfresco/vesrions/1/sites/<siteId>/members/<personId> not allowed. Expected error 405");
+            fail("AONE_14268 - This block of code shouldn't be reached.POST for /public/alfresco/vesrions/1/sites/<siteId>/members/<personId> not allowed. Expected error 405");
         }
         catch (PublicApiException e)
         {
@@ -803,7 +796,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.update("sites", siteName, "members", null, null, "Failed to update site member");
-            fail("ALF_196501 - This block of code shouldn't be reached. PUT for /public/alfresco/vesrions/1/sites/<siteId>/members/ not allowed. Expected error 405");
+            fail("AONE_14268 - This block of code shouldn't be reached. PUT for /public/alfresco/vesrions/1/sites/<siteId>/members/ not allowed. Expected error 405");
         }
         catch (PublicApiException e)
         {
@@ -812,7 +805,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_219401() throws Exception
+    public void AONE_14269() throws Exception
     {
 
         HashMap<String, String> params;
@@ -821,7 +814,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "a");
             getSiteMembers(testUser, DOMAIN, params, siteName);
-            fail("ALF_219401 - This block of code shouldn't be reached. maxItems=a not allowed. Expected error 400");
+            fail("AONE_14269 - This block of code shouldn't be reached. maxItems=a not allowed. Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -833,7 +826,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "a");
             getSiteMembers(testUser, DOMAIN, params, siteName);
-            fail("ALF_219401 - This block of code shouldn't be reached. skipCount  = a not allowed. Expected error 400.");
+            fail("AONE_14269 - This block of code shouldn't be reached. skipCount  = a not allowed. Expected error 400.");
         }
         catch (PublicApiException e)
         {
@@ -845,7 +838,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "-1");
             getSiteMembers(testUser, DOMAIN, params, siteName);
-            fail("ALF_219401 - This block of code shouldn't be reached. maxItems = -1 not allowed. Expected error 400");
+            fail("AONE_14269 - This block of code shouldn't be reached. maxItems = -1 not allowed. Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -857,7 +850,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "-3");
             getSiteMembers(testUser, DOMAIN, params, siteName);
-            fail("ALF_219401 - This block of code shouldn't be reached. skipCount = -3 not allowed. Erro - 400");
+            fail("AONE_14269 - This block of code shouldn't be reached. skipCount = -3 not allowed. Erro - 400");
         }
         catch (PublicApiException e)
         {
@@ -907,7 +900,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "apple");
             params.put(MAX_ITEMS, "pear");
             getSiteMembers(testUser, DOMAIN, params, siteName1);
-            fail("ALF_219401 - This block of code shouldn't be reached. Invalid params not allowed:" + params + ". Expected error - 400");
+            fail("AONE_14269 - This block of code shouldn't be reached. Invalid params not allowed:" + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -920,7 +913,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "-3");
             params.put(MAX_ITEMS, "-5");
             getSiteMembers(testUser, DOMAIN, params, siteName1);
-            fail("ALF_219401 - This block of code shouldn't be reached. Invalid params not allowed:" + params + ". Expected error - 400");
+            fail("AONE_14269 - This block of code shouldn't be reached. Invalid params not allowed:" + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -929,7 +922,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_221201() throws Exception
+    public void AONE_14270() throws Exception
     {
         try
         {
@@ -959,7 +952,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148101() throws Exception
+    public void AONE_14276() throws Exception
     {
         HashMap<String, String> params;
         params = new HashMap<String, String>();
@@ -985,7 +978,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteContainers(testUserInvalid, DOMAIN, params, siteName);
-            Assert.fail("ALF_148101. Test should fail as invalid username - " + testUserInvalid + ". Expected error - 401");
+            Assert.fail("AONE_14276. Test should fail as invalid username - " + testUserInvalid + ". Expected error - 401");
         }
         catch (PublicApiException e)
         {
@@ -995,7 +988,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteContainers(testUser, DOMAIN, params, siteNameInvalid);
-            Assert.fail("ALF_148101. Test should fail as invalid site - " + siteNameInvalid + ". Expected error - 404");
+            Assert.fail("AONE_14276. Test should fail as invalid site - " + siteNameInvalid + ". Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -1004,7 +997,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_148601() throws Exception
+    public void AONE_14277() throws Exception
     {
         HashMap<String, String> params;
         params = new HashMap<String, String>();
@@ -1020,7 +1013,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteContainerForId(testUser, DOMAIN, DOCLIB_CONTAINER, siteNameInvalid);
-            Assert.fail("ALF_148101. Test should fail as invalid site name - " + siteNameInvalid + ". Expected error - 404");
+            Assert.fail("AONE_14276. Test should fail as invalid site name - " + siteNameInvalid + ". Expected error - 404");
         }
         catch (PublicApiException e)
         {
@@ -1030,7 +1023,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteContainerForId(testUser, DOMAIN, "documentLibrary1", siteName);
-            Assert.fail("ALF_148101. Test should fail as invalid folder id - " + "documentLibrary1. Expected error 404");
+            Assert.fail("AONE_14276. Test should fail as invalid folder id - " + "documentLibrary1. Expected error 404");
         }
         catch (PublicApiException e)
         {
@@ -1040,7 +1033,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             response = getSiteContainerForId(testUserInvalid, DOMAIN, DOCLIB_CONTAINER, siteName);
-            Assert.fail("ALF_148101. Test should fail as invalid auth - " + testUserInvalid + ". Expected error 401");
+            Assert.fail("AONE_14276. Test should fail as invalid auth - " + testUserInvalid + ". Expected error 401");
         }
         catch (PublicApiException e)
         {
@@ -1049,7 +1042,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_218601() throws Exception
+    public void AONE_14278() throws Exception
     {
         HashMap<String, String> params;
         params = new HashMap<String, String>();
@@ -1062,7 +1055,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getSiteContainers(testUser, DOMAIN, params, siteNameInvalid);
-            Assert.fail("ALF_218601. Test should fail as invalid site id- " + siteNameInvalid + ". Expected error 404");
+            Assert.fail("AONE_14278. Test should fail as invalid site id- " + siteNameInvalid + ". Expected error 404");
         }
         catch (PublicApiException e)
         {
@@ -1071,13 +1064,13 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_196401() throws Exception
+    public void AONE_14279() throws Exception
     {
         try
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.create("sites", siteName, "containers", null, null, "Unable to POST to sites");
-            fail("ALF_196401: Invalid method - POST /sites/siteId/containers. Expected error 405.");
+            fail("AONE_14279: Invalid method - POST /sites/siteId/containers. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1088,7 +1081,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.create("sites", siteName, "containers", DOCLIB_CONTAINER, null, "Unable to POST to sites");
-            fail("ALF_196401: Invalid method - POST container/containerId. Expected error 405.");
+            fail("AONE_14279: Invalid method - POST container/containerId. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1099,7 +1092,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.update("sites", siteName, "containers", null, null, "Unable to PUT to sites");
-            fail("ALF_196401: Invalid method - PUT.");
+            fail("AONE_14279: Invalid method - PUT.");
         }
         catch (PublicApiException e)
         {
@@ -1110,7 +1103,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.update("sites", siteName, "containers", DOCLIB_CONTAINER, null, "Unable to PUT to sites");
-            fail("ALF_196401: Invalid method - PUT container/containerId");
+            fail("AONE_14279: Invalid method - PUT container/containerId");
         }
         catch (PublicApiException e)
         {
@@ -1121,7 +1114,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.remove("sites", siteName, "containers", null, "Unable to DELETE to sites");
-            fail("ALF_196401: Invalid method - DELETE.");
+            fail("AONE_14279: Invalid method - DELETE.");
         }
         catch (PublicApiException e)
         {
@@ -1132,7 +1125,7 @@ public class SitesAPITests extends SitesAPI
         {
             publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
             sitesProxy.remove("sites", siteName, "containers", DOCLIB_CONTAINER, "Unable to DELETE to sites container");
-            fail("ALF_196401: Invalid method - DELETE container/containerId. Expected error 405.");
+            fail("AONE_14279: Invalid method - DELETE container/containerId. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1141,7 +1134,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_219901() throws Exception
+    public void AONE_14280() throws Exception
     {
         ListResponse<SiteContainer> response;
 
@@ -1152,7 +1145,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "a");
             response = getSiteContainers(testUser, DOMAIN, params, testUser);
 
-            Assert.fail("ALF_219901: Invalid params - " + params + ". Expected error 400.");
+            Assert.fail("AONE_14280: Invalid params - " + params + ". Expected error 400.");
         }
         catch (PublicApiException e)
         {
@@ -1164,7 +1157,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "s");
             response = getSiteContainers(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_219901: Invalid params - " + params + ". Expected error - 400");
+            Assert.fail("AONE_14280: Invalid params - " + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -1176,7 +1169,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "-1");
             response = getSiteContainers(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_219901: Invalid params - " + params + ". Expected error - 400");
+            Assert.fail("AONE_14280: Invalid params - " + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -1188,7 +1181,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "-3");
             response = getSiteContainers(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_219901: Invalid params - " + params + ". Expected error - 400");
+            Assert.fail("AONE_14280: Invalid params - " + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -1231,7 +1224,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "apple");
             params.put(MAX_ITEMS, "google");
             response = getSiteContainers(testUser, DOMAIN, params, siteName);
-            Assert.fail("ALF_219901: Invalid params - " + params + ". Expected error - 400");
+            Assert.fail("AONE_14280: Invalid params - " + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -1244,7 +1237,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "-1");
             params.put(MAX_ITEMS, "-2");
             response = getSiteContainers(testUser, DOMAIN, params, siteName);
-            Assert.fail("ALF_219901: Invalid params - " + params + ". Expected error - 400");
+            Assert.fail("AONE_14280: Invalid params - " + params + ". Expected error - 400");
         }
         catch (PublicApiException e)
         {
@@ -1253,7 +1246,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_221101() throws Exception
+    public void AONE_14281() throws Exception
     {
 
         HashMap<String, String> params;
@@ -1281,12 +1274,12 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_196601() throws Exception
+    public void AONE_14260() throws Exception
     {
         try
         {
             sitesProxy.create("people", testUser, "sites", null, null, "Unable to POST to sites");
-            fail("ALF_196601: Invalid method - POST sites. Expected error 405.");
+            fail("AONE_14260: Invalid method - POST sites. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1296,7 +1289,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.create("people", testUser, "sites", siteName, null, "Unable to POST to sites");
-            fail("ALF_196601: Invalid method - POST sites/siteId. Expected error 405.");
+            fail("AONE_14260: Invalid method - POST sites/siteId. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1306,7 +1299,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.update("people", testUser, "sites", null, null, "Unable to PUT to sites");
-            fail("ALF_196601: Invalid method - PUT sites. Expected error 405.");
+            fail("AONE_14260: Invalid method - PUT sites. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1316,7 +1309,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.update("people", testUser, "sites", siteName, null, "Unable to PUT to sites");
-            fail("ALF_196601: Invalid method - PUT sites/siteId. Expected error 405.");
+            fail("AONE_14260: Invalid method - PUT sites/siteId. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1326,7 +1319,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.remove("people", testUser, "sites", null, "Unable to DELETE to sites");
-            fail("ALF_196601: Invalid method - DELETE sites. Expected error 405.");
+            fail("AONE_14260: Invalid method - DELETE sites. Expected error 405.");
         }
         catch (PublicApiException e)
         {
@@ -1336,7 +1329,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_220001() throws Exception
+    public void AONE_14261() throws Exception
     {
         ListResponse<MemberOfSite> response;
 
@@ -1346,7 +1339,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "a");
             response = getPersonSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220001: Invalid params - " + params + ". Expected error 400");
+            Assert.fail("AONE_14261: Invalid params - " + params + ". Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -1358,7 +1351,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "s");
             response = getPersonSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220001: Invalid params - " + params + ". Expected error 400");
+            Assert.fail("AONE_14261: Invalid params - " + params + ". Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -1370,7 +1363,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "-1");
             response = getPersonSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220001: Invalid params - " + params + ". Expected error 400");
+            Assert.fail("AONE_14261: Invalid params - " + params + ". Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -1382,7 +1375,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "-3");
             response = getPersonSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220001: Invalid params - " + params + ". Expected error 400");
+            Assert.fail("AONE_14261: Invalid params - " + params + ". Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -1425,7 +1418,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "apple");
             params.put(MAX_ITEMS, "google");
             response = getPersonSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220001: Invalid params - " + params + ". Expected error 400");
+            Assert.fail("AONE_14261: Invalid params - " + params + ". Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -1438,7 +1431,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "-1");
             params.put(MAX_ITEMS, "-2");
             response = getPersonSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220001: Invalid params - " + params + ". Expected error 400");
+            Assert.fail("AONE_14261: Invalid params - " + params + ". Expected error 400");
         }
         catch (PublicApiException e)
         {
@@ -1447,7 +1440,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_221301() throws Exception
+    public void AONE_14262() throws Exception
     {
 
         HashMap<String, String> params;
@@ -1472,7 +1465,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_149001() throws Exception
+    public void AONE_14247() throws Exception
     {
 
         ListResponse<FavouriteSite> response = getFavouriteSites(testUser, DOMAIN, null, testUser);
@@ -1493,7 +1486,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getFavouriteSites(testUser, DOMAIN, null, testUserInvalid);
-            fail("ALF_149001 - This block of code shouldn't be reached. As person id wrong. Expected error 401.");
+            fail("AONE_14247 - This block of code shouldn't be reached. As person id wrong. Expected error 401.");
         }
         catch (PublicApiException e)
         {
@@ -1503,7 +1496,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             getFavouriteSites(testUserInvalid, DOMAIN, null, testUser);
-            fail("ALF_149001 - This block of code shouldn't be reached. As auth details as wrong. Expected error 401.");
+            fail("AONE_14247 - This block of code shouldn't be reached. As auth details as wrong. Expected error 401.");
         }
         catch (PublicApiException e)
         {
@@ -1512,7 +1505,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_218901() throws Exception
+    public void AONE_14248() throws Exception
     {
         FavouriteSite site = new FavouriteSite(siteName);
         FavouriteSite response = createFavouriteSite(user1, DOMAIN, user1, site);
@@ -1530,7 +1523,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             createFavouriteSite(testUserInvalid, DOMAIN, testUser, site);
-            fail("ALF_218901 - This block of code shouldn't be reached. As auth details as wrong. Expected error 401.");
+            fail("AONE_14248 - This block of code shouldn't be reached. As auth details as wrong. Expected error 401.");
         }
         catch (PublicApiException e)
         {
@@ -1541,7 +1534,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             createFavouriteSite(testUser, DOMAIN, testUserInvalid, site);
-            fail("ALF_218901 - This block of code shouldn't be reached. As person id is wrong. Expected error 404.");
+            fail("AONE_14248 - This block of code shouldn't be reached. As person id is wrong. Expected error 404.");
         }
         catch (PublicApiException e)
         {
@@ -1555,7 +1548,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_196701() throws Exception
+    public void AONE_14249() throws Exception
     {
 
         FavouriteSite response = getFavouriteSite(testUser, DOMAIN, testUser, siteName);
@@ -1566,7 +1559,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.create("people", testUser, "favorite-sites", siteName, null, "Unable to POST");
-            fail("ALF_196701: Invalid method - POST favorite-sites/siteId");
+            fail("AONE_14249: Invalid method - POST favorite-sites/siteId");
         }
         catch (PublicApiException e)
         {
@@ -1576,7 +1569,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.create("people", testUser, "favorite-sites", null, null, "Unable to POST");
-            fail("ALF_196701: Invalid method - POST favorite-sites without site id in request body");
+            fail("AONE_14249: Invalid method - POST favorite-sites without site id in request body");
         }
         catch (PublicApiException e)
         {
@@ -1586,7 +1579,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.update("people", testUser, "favorite-sites", siteName, null, "Unable to PUT");
-            fail("ALF_196701: Invalid method - PUT favourite-sites/<siteId>");
+            fail("AONE_14249: Invalid method - PUT favourite-sites/<siteId>");
         }
         catch (PublicApiException e)
         {
@@ -1596,7 +1589,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.update("people", testUser, "favorite-sites", null, null, "Unable to PUT");
-            fail("ALF_196701: Invalid method - PUT favourite-sites");
+            fail("AONE_14249: Invalid method - PUT favourite-sites");
         }
         catch (PublicApiException e)
         {
@@ -1606,7 +1599,7 @@ public class SitesAPITests extends SitesAPI
         try
         {
             sitesProxy.remove("people", testUser, "favorite-sites", null, "Unable to DELETE fav site.");
-            fail("ALF_196701: Invalid method - DELETE favourite-sites");
+            fail("AONE_14249: Invalid method - DELETE favourite-sites");
         }
         catch (PublicApiException e)
         {
@@ -1619,7 +1612,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_220101() throws Exception
+    public void AONE_14250() throws Exception
     {
 
         HashMap<String, String> params;
@@ -1628,7 +1621,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "a");
             getFavouriteSites(testUser, DOMAIN, params, testUser);
-            fail("ALF_220101 - This block of code shouldn't be reached. maxItems=a not allowed. Expected error: 400.");
+            fail("AONE_14250 - This block of code shouldn't be reached. maxItems=a not allowed. Expected error: 400.");
         }
         catch (PublicApiException e)
         {
@@ -1640,7 +1633,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "s");
             getFavouriteSites(testUser, DOMAIN, params, testUser);
-            fail("ALF_220101 - This block of code shouldn't be reached. skipCount = s not allowed. Expected error: 400.");
+            fail("AONE_14250 - This block of code shouldn't be reached. skipCount = s not allowed. Expected error: 400.");
         }
         catch (PublicApiException e)
         {
@@ -1652,7 +1645,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(MAX_ITEMS, "-1");
             getFavouriteSites(testUser, DOMAIN, params, testUser);
-            fail("ALF_220101 - This block of code shouldn't be reached. maxItems=-1 not allowed. Expected error: 400.");
+            fail("AONE_14250 - This block of code shouldn't be reached. maxItems=-1 not allowed. Expected error: 400.");
         }
         catch (PublicApiException e)
         {
@@ -1664,7 +1657,7 @@ public class SitesAPITests extends SitesAPI
             params = new HashMap<String, String>();
             params.put(SKIP_COUNT, "-3");
             getFavouriteSites(testUser, DOMAIN, params, testUser);
-            fail("ALF_220101 - This block of code shouldn't be reached. skipCount=-3 not allowed. Expected error: 400.");
+            fail("AONE_14250 - This block of code shouldn't be reached. skipCount=-3 not allowed. Expected error: 400.");
         }
         catch (PublicApiException e)
         {
@@ -1706,7 +1699,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "apple");
             params.put(MAX_ITEMS, "google");
             response = getFavouriteSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220101: Invalid params: Alphanumeric - " + params + ". Expected error: 400.");
+            Assert.fail("AONE_14250: Invalid params: Alphanumeric - " + params + ". Expected error: 400.");
         }
         catch (PublicApiException e)
         {
@@ -1719,7 +1712,7 @@ public class SitesAPITests extends SitesAPI
             params.put(SKIP_COUNT, "-1");
             params.put(MAX_ITEMS, "-2");
             response = getFavouriteSites(testUser, DOMAIN, params, testUser);
-            Assert.fail("ALF_220101: Invalid params: Values < 0 - " + params + ". Expected error: 400.");
+            Assert.fail("AONE_14250: Invalid params: Values < 0 - " + params + ". Expected error: 400.");
         }
         catch (PublicApiException e)
         {
@@ -1728,7 +1721,7 @@ public class SitesAPITests extends SitesAPI
     }
 
     @Test
-    public void ALF_220401() throws Exception
+    public void AONE_14251() throws Exception
     {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put(MAX_ITEMS, "100");
@@ -1746,5 +1739,46 @@ public class SitesAPITests extends SitesAPI
         assertEquals(response.getPaging().getMaxItems(), new Integer(1));
         assertTrue(response.getPaging().getHasMoreItems());
     }
-    
+
+    @Test
+    public void AONE_14259() throws Exception
+    {
+
+        publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
+
+        try
+        {
+            Map<String, String> param = new HashMap<String, String>();
+            param.put("relations", "sites(id,role),networks(id,type)");
+
+
+            HttpResponse resp = sitesProxy.getAll("people", testUser, null, null, param, "Person id is wrong" );
+            assertNotNull(resp);
+            assertTrue(resp.getStatusCode() == 200, "Response code - " + resp.getStatusCode());
+
+            JSONObject entries =  resp.getJsonResponse();
+            JSONObject relations = (JSONObject) entries.get("relations");
+            JSONObject sites = (JSONObject) ((JSONObject)relations.get("sites")).get("list");
+            JSONObject networks = (JSONObject) ((JSONObject)relations.get("networks")).get("list");
+            JSONArray jArray1 = (JSONArray) sites.get("entries");
+            JSONArray jArray2 = (JSONArray) networks.get("entries");
+
+                for (int i = 0; i < jArray1.size(); i++)
+                {
+                    JSONObject entry = (JSONObject) ((JSONObject) jArray1.get(i)).get("entry");
+                    assertNotNull(entry.get("id"));
+                    assertNotNull(entry.get("role"));
+                }
+
+                for (int i = 0; i < jArray2.size(); i++)
+                {
+                JSONObject entry = (JSONObject) ((JSONObject) jArray2.get(i)).get("entry");
+                    assertEquals(entry.get("id"), DOMAIN, "");
+                }
+        }
+        catch (PublicApiException e)
+        {
+            fail("Http response code must be 200, but actual is " + e.getHttpResponse());
+        }
+    }
 }

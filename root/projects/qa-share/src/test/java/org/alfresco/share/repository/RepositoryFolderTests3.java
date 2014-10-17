@@ -17,8 +17,6 @@
  */
 package org.alfresco.share.repository;
 
-import java.util.Arrays;
-
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.enums.UserRole;
@@ -38,6 +36,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author cganesh
  *
@@ -51,7 +52,6 @@ public class RepositoryFolderTests3 extends AbstractUtils
     protected String testUserPass = DEFAULT_PASSWORD;
     protected String baseFolderName;
     protected String baseFolderPath;
-    protected String baseFolderTitle = "Base folder for FolderTests";
     protected String description = "Base folder for FolderTests";
 
     /**
@@ -107,21 +107,14 @@ public class RepositoryFolderTests3 extends AbstractUtils
      * <li>Verify tag scope is decreased after delete</li>
      * </ul>
      */
-    @Test(groups = { "Repository" })
-    public void Enterprise40x_5416()
+    @Test(groups = { "Repository" }, enabled = false)
+    public void AONE_3563()
     {
         String testName = getTestName();
         
         String randomTestName = getFolderName(testName) + System.currentTimeMillis();
 
-        String folderName1 = randomTestName + "1";
-        String description1 = folderName1;
-
-        String folderName2 = randomTestName + "2";
-        String description2 = folderName2;
-
-        String tagName = randomTestName;
-        int tagsCount = 0;
+        String folderName = randomTestName + "1";
 
         try
         {
@@ -133,37 +126,38 @@ public class RepositoryFolderTests3 extends AbstractUtils
             // Create new folder
             String[] folderPath = { baseFolderName };
             ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);            
-            ShareUserRepositoryPage.createFolderInRepository(drone, folderName1, description1, description1);
+            ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName, folderName);
 
-            // Create another new Folder
-            ShareUserRepositoryPage.createFolderInRepository(drone, folderName2, description2);
-
-            // verify created folders are present in the main repository
-            Assert.assertTrue(repositorypage.isFileVisible(folderName1), "verifying folder present in repository");
-            Assert.assertTrue(repositorypage.isFileVisible(folderName2), "verifying folder present in repository");
+            // verify created folder is present in the main repository
+            Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
 
             // Add tag to the folder in repository
-            repositorypage = ShareUserRepositoryPage.addTagsInRepo(drone, folderName1, Arrays.asList(tagName));
+            ShareUserRepositoryPage.addTagsInRepo(drone, folderName, Arrays.asList(randomTestName));
 
-            // Add tag to the folder in repository
-            repositorypage = ShareUserRepositoryPage.addTagsInRepo(drone, folderName2, Arrays.asList(tagName));
-
-            // TODO: Watch and fix: This could be inconsistent, as count may not have been updated straight away.
-            // tagsCount = repositorypage.getTagsCountUnderTagsTreeMenu(tagName);
+            ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+            ShareUserRepositoryPage.openRepositorySimpleView(drone).render();
+            repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath).render();
+            List<String> tags =  repositorypage.getAllTagNames();
+            Assert.assertTrue(tags.contains(randomTestName.toLowerCase()));
 
             // Select folder and and click on delete folder from More actions
-            ConfirmDeletePage conformDeletePage = repositorypage.getFileDirectoryInfo(folderName1).selectDelete().render();
+            ConfirmDeletePage conformDeletePage = repositorypage.getFileDirectoryInfo(folderName).selectDelete().render();
 
             // Select delete on confirm delete page
             repositorypage = conformDeletePage.selectAction(Action.Delete).render();
 
             // Verify deleted folder is not present in repository
-            Assert.assertFalse(repositorypage.isFileVisible(folderName1), "verifying folder not present in repository");
+            Assert.assertFalse(repositorypage.isFileVisible(folderName), "verifying folder not present in repository");
 
             // Verify tag scope is decreased in repository page after folder is deleted
-            // TODO: Watch and fix: This could be inconsistent, as count may not have been updated straight away.
-            tagsCount = repositorypage.getTagsCountUnderTagsTreeMenu(tagName);
-            Assert.assertTrue(tagsCount == 1, "Tag Count displayed: " + tagsCount);
+            ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
+            ShareUserRepositoryPage.openRepositorySimpleView(drone).render();
+            repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath).render();
+            tags.clear();
+            tags =  repositorypage.getAllTagNames();
+            Assert.assertFalse(tags.contains(randomTestName.toLowerCase()));
+
+            ShareUser.logout(drone);
         }
         catch (Exception e)
         {
@@ -181,7 +175,7 @@ public class RepositoryFolderTests3 extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5417()
+    public void AONE_3564()
     {
         String testName = getTestName();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
@@ -211,7 +205,7 @@ public class RepositoryFolderTests3 extends AbstractUtils
             // Verify deleted folder is present in repository
             Assert.assertTrue(repositorypage.isFileVisible(folderName), "verifying folder present in repository");
 
-            // TODO: TestLink test case 4th step expected result needs to changed as "The folder is not deleted and displayed in Repository."
+            ShareUser.logout(drone);
 
         }
         catch (Throwable e)
@@ -226,7 +220,7 @@ public class RepositoryFolderTests3 extends AbstractUtils
     }
 
     @Test(groups = "DataPrepRepository")
-    public void dataPrep_Enterprise40x_5418() throws Exception
+    public void dataPrep_AONE_3565() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameFreeDomain(testName);
@@ -235,6 +229,8 @@ public class RepositoryFolderTests3 extends AbstractUtils
         // Create User by adding to Alfresco_Administrators group
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUser1);
         CreateUserAPI.createActivateUserAsTenantAdmin(drone, ADMIN_USERNAME, testUser2);
+
+        ShareUser.logout(drone);
     }
 
     /**
@@ -248,14 +244,13 @@ public class RepositoryFolderTests3 extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5418()
+    public void AONE_3565()
     {
         String testName = getTestName();
 
         String folder1 = getFolderName(testName + System.currentTimeMillis());
         String description = testName + System.currentTimeMillis();
 
-        // TODO: Move such constants to language specific files
         String Title = "Manage Permissions";
         String GroupName = "EVERYONE";
 
@@ -279,13 +274,12 @@ public class RepositoryFolderTests3 extends AbstractUtils
             String[] folderPath = { baseFolderName };
             ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);            
             ShareUserRepositoryPage.createFolderInRepository(drone, folder1, description);
-            // ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description, baseFolderName);
-            // ShareUserRepositoryPage.createFolderInFolderInRepository(drone, folder1, description, baseFolderPath);
 
             // verify created folders are present in the main repository
             Assert.assertTrue(repositorypage.isFileVisible(folder1), "verifying folder present in repository");
 
-            // Select more options in folder1 and click on Manage permissions
+            // Select more options in folder1 and click on Manage permissions (this verify Add user / group button, Inherit permissions button, Save and Cancel
+            // buttons)
             ManagePermissionsPage managePermissionsPage = repositorypage.getFileDirectoryInfo(folder1).selectManagePermission().render();
 
             // Verify Manage Permissions page is displayed
@@ -293,6 +287,12 @@ public class RepositoryFolderTests3 extends AbstractUtils
 
             // Verify Inherit permissions options in Manage Permissions page
             Assert.assertTrue(managePermissionsPage.isInheritPermissionEnabled());
+
+            // Verify Inherit permissions options in Manage Permissions page
+            Assert.assertTrue(managePermissionsPage.isInheritPermissionEnabled());
+
+            // Verify Locally Set Permissions list
+            Assert.assertTrue(managePermissionsPage.isLocallyPermissionEnabled());
 
             // Add group, save and return to repository page
             ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, GroupName, false, UserRole.COLLABORATOR, false);
@@ -310,6 +310,8 @@ public class RepositoryFolderTests3 extends AbstractUtils
             repositorypage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, baseFolderName);
             ManagePermissionsPage managepermissionsPage = repositorypage.getFileDirectoryInfo(folder1).selectManagePermission().render();
             Assert.assertEquals(managepermissionsPage.getExistingPermission(GroupName), UserRole.COLLABORATOR, "Verify user role is changed");
+
+            ShareUser.logout(drone);
         }
         catch (Exception e)
         {

@@ -15,8 +15,6 @@
 
 package org.alfresco.po.share.dashlet.mydiscussions;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.site.document.TinyMceEditor;
@@ -29,6 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * CreateNewTopicPage page object, holds all element of the HTML page relating to Create New Topic Page
@@ -186,8 +186,9 @@ public class CreateNewTopicPage extends SharePage
     {
         try
         {
-            drone.find(By.cssSelector(SAVE_TOPIC_BUTTON)).click();
-            return new TopicDetailsPage(drone);
+            drone.findAndWait(By.cssSelector(SAVE_TOPIC_BUTTON)).click();
+            waitUntilAlert();
+            return new TopicDetailsPage(drone).render();
         }
         catch (NoSuchElementException nse)
         {

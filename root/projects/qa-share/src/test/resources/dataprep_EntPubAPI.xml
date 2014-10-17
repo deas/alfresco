@@ -1,0 +1,84 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="DataPrepSuite" verbose="1" preserve-order="true"
+    parallel="tests" thread-count="1">
+    <groups>
+        <run>
+            <include name="DataPrep.*" />
+            <exclude name="NonGrid" />
+            <exclude name=".*Bug.*" />
+        </run>
+    </groups>
+
+    <listeners>
+        <listener
+            class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
+    <test name="Comments API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.CommentsAPITests" />
+        </classes>
+    </test>
+
+    <test name="Deployments API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.DeploymentsAPITests" />
+        </classes>
+    </test>
+
+    <test name="Favourite API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.FavouriteAPITests" />
+        </classes>
+    </test>
+
+    <test name="Nodes API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.NodesAPITests" />
+        </classes>
+    </test>
+
+    <test name="People API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.PeopleAPITests" />
+        </classes>
+    </test>
+
+    <test name="Processes API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.ProcessesAPITests" />
+        </classes>
+    </test>
+
+    <test name="Site Membership API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.SiteMembershipAPITests" />
+        </classes>
+    </test>
+
+    <test name="Site Membership External Domain API Test">
+        <classes>
+            <class
+                name="org.alfresco.share.api.SiteMembershipExternalDomainAPITest" />
+        </classes>
+    </test>
+
+    <test name="Sites API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.SitesAPITests" />
+        </classes>
+    </test>
+
+    <test name="Tags API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.TagsAPITests" />
+        </classes>
+    </test>
+
+    <test name="Workflow API Tests">
+        <classes>
+            <class name="org.alfresco.share.api.WorkflowAPITests" />
+        </classes>
+    </test>
+
+</suite>

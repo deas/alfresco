@@ -392,7 +392,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
     public HtmlPage selectTopicsFilter(MyDiscussionsTopicsFilter filter)
     {
         clickTopicsButtton();
-        List<WebElement> filterElements = drone.findAll(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS));
+        List<WebElement> filterElements = drone.findAndWaitForElements(By.cssSelector(DASHLET_LIST_OF_FILTER_BUTTONS));
         if (filterElements != null)
         {
             for (WebElement webElement : filterElements)
@@ -403,6 +403,7 @@ public class MyDiscussionsDashlet extends AbstractDashlet implements Dashlet
                 }
             }
         }
+        waitUntilAlert(1);
         return FactorySharePage.resolvePage(drone);
     }
 

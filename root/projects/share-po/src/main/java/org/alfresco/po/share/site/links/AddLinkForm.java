@@ -1,10 +1,10 @@
 package org.alfresco.po.share.site.links;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.openqa.selenium.By;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Page object to represent Add Link Form
@@ -20,7 +20,7 @@ public class AddLinkForm extends AbstractLinkForm
      *
      * @param drone
      */
-    protected AddLinkForm(WebDrone drone)
+    public AddLinkForm(WebDrone drone)
     {
         super(drone);
     }
@@ -29,8 +29,8 @@ public class AddLinkForm extends AbstractLinkForm
     public AddLinkForm render(RenderTime timer)
     {
         elementRender(timer,
-            getVisibleRenderElement(SAVE_BTN),
-            getVisibleRenderElement(CANCEL_BTN));
+                getVisibleRenderElement(SAVE_BTN),
+                getVisibleRenderElement(CANCEL_BTN));
 
         return this;
     }
@@ -52,9 +52,9 @@ public class AddLinkForm extends AbstractLinkForm
      *
      * @return
      */
-    protected LinksPage clickSaveBtn()
+    public LinksDetailsPage clickSaveBtn()
     {
         drone.findAndWait(SAVE_BTN).click();
-        return new LinksPage(drone);
+        return new LinksDetailsPage(drone).waitUntilAlert().render();
     }
 }

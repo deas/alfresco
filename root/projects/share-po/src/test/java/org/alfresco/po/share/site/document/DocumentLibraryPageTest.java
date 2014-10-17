@@ -523,6 +523,7 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         assertTrue(documentLibPage.getNavigation().isOptionPresent(LibraryOption.AUDIO_VIEW));
         assertTrue(documentLibPage.getNavigation().isOptionPresent(LibraryOption.MEDIA_VIEW));
     }
+
     @Test(dependsOnMethods = "isCrumbTrailVisible", groups = "Enterprise4.2")
     public void isSelectedItemMenuVisible()
     {
@@ -590,6 +591,13 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
     }
 
     @Test(dependsOnMethods = "selectAll", groups = "Enterprise4.2")
+    public void testIsCheckBoxPresent() throws Exception
+    {
+        documentLibPage = drone.getCurrentPage().render();
+        assertTrue(documentLibPage.isCheckBoxPresent());
+    }
+
+    @Test(dependsOnMethods = "testIsCheckBoxPresent", groups = "Enterprise4.2")
     public void deleteFolderFromNavigation() throws Exception
     {
         documentLibPage.render();
@@ -759,4 +767,91 @@ public class DocumentLibraryPageTest extends AbstractDocumentTest
         documentLibPage.clickOnAllDocuments();
         assertEquals(documentLibPage.getFiles().size(), 4);
     }
+
+    @Test(dependsOnMethods = "testFilterLinks", groups = "Enterprise4.2", alwaysRun = true)
+    public void clickCrumbsElementDetailsLinkName() throws Exception
+    {
+        String folder = "newFolder";
+        SiteFinderPage siteFinder = ((SharePage) drone.getCurrentPage()).getNav().selectSearchForSites().render();
+        siteFinder = siteFinder.searchForSite(siteName).render();
+        SiteDashboardPage siteDash = siteFinder.selectSite(siteName).render();
+        documentLibPage = siteDash.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.getNavigation().selectShowBreadcrump().render();
+        documentLibPage = documentLibPage.selectFolder("copyFolder").render();
+        NewFolderPage newFolderPage = documentLibPage.getNavigation().selectCreateNewFolder();
+        documentLibPage = newFolderPage.createNewFolder(folder, folder).render();
+
+        FolderDetailsPage detailsPage = documentLibPage.getNavigation().clickCrumbsElementDetailsLinkName().render();
+        assertNotNull(detailsPage);
+    }
+
+    @Test(dependsOnMethods = "clickCrumbsElementDetailsLinkName", groups = "Enterprise4.2")
+    public void getCrumbsElementDetailsLinkName() throws Exception
+    {
+
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.selectFolder("copyFolder").render();
+        String linkName = documentLibPage.getNavigation().getCrumbsElementDetailsLinkName();
+
+        assertEquals(linkName, "copyFolder");
+    }
+
+    @Test(dependsOnMethods = "getCrumbsElementDetailsLinkName", groups = "Enterprise4.2")
+    public void clickCrumbsParentLinkName() throws Exception
+    {
+
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage = documentLibPage.selectFolder("copyFolder").render();
+        documentLibPage = documentLibPage.getNavigation().clickCrumbsParentLinkName().render();
+
+        assertNotNull(documentLibPage);
+    }
+
+    @Test(dependsOnMethods = "clickCrumbsParentLinkName", groups = "Enterprise4.2")
+    public void testIsCreateFromTemplatePresent () throws Exception
+    {
+
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage.getNavigation().selectCreateContentDropdown().render();
+        assertTrue(documentLibPage.getNavigation().isCreateFromTemplatePresent(true));
+        assertTrue(documentLibPage.getNavigation().isCreateFromTemplatePresent(false));
+
+    }
+
+    @Test(dependsOnMethods = "testIsCreateFromTemplatePresent", groups = "Enterprise4.2")
+    public void testIsCreateNewFolderPresent() throws Exception
+    {
+
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage.getNavigation().selectCreateContentDropdown().render();
+        assertTrue(documentLibPage.getNavigation().isCreateNewFolderPresent());
+
+    }
+
+    @Test(dependsOnMethods = "testIsCreateNewFolderPresent", groups = "Enterprise4.2")
+    public void testIsCreateContentPresent() throws Exception
+    {
+
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage.getNavigation().selectCreateContentDropdown().render();
+        assertTrue(documentLibPage.getNavigation().isCreateContentPresent(ContentType.PLAINTEXT));
+
+    }
+
+    @Test(dependsOnMethods = "testIsCreateContentPresent", groups = "Enterprise4.2")
+    public void testIsSelectedItemsOptionPresent() throws Exception
+    {
+
+        SitePage page = drone.getCurrentPage().render();
+        documentLibPage = page.getSiteNav().selectSiteDocumentLibrary().render();
+        documentLibPage.getFileDirectoryInfo("copyFolder").selectCheckbox();
+        assertTrue(documentLibPage.getNavigation().isSelectedItemsOptionPresent(SelectedItemsOptions.DELETE));
+
+    }
+
 }

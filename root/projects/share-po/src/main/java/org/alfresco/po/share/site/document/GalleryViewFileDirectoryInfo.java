@@ -42,6 +42,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         rowElementXPath = "../../../..";
         FILE_DESC_IDENTIFIER = "h3.filename+div.detail+div.detail>span";
         TAG_LINK_LOCATOR = By.cssSelector("div>div>span>span>a.tag-link");
+        DETAIL_WINDOW = By.xpath("//div[@class='alf-detail-thumbnail']/../../..");
         fileDirectoryInfo = webElement;
         resolveStaleness();
 
@@ -98,8 +99,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
 
     /*
      * (non-Javadoc)
-     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#
-     * getThumbnailSize()
+     * @see org.alfresco.po.share.site.document.FileDirectoryInfoInterface#getThumbnailURL()
      */
     @Override
     public String getThumbnailURL()
@@ -123,7 +123,7 @@ public class GalleryViewFileDirectoryInfo extends FilmStripOrGalleryView
         }
         catch (TimeoutException e)
         {
-            throw new PageOperationException("Error in finding the file size.");
+            throw new PageOperationException("Error in finding the file size.", e);
         }
     }
 }

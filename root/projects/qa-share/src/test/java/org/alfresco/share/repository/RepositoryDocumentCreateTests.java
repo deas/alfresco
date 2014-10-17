@@ -17,32 +17,23 @@
  */
 package org.alfresco.share.repository;
 
-import java.io.File;
-import java.util.List;
-
-import org.alfresco.po.share.site.document.*;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserRepositoryPage;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.webdrone.WebDroneImpl;
 import org.alfresco.po.share.RepositoryPage;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.UploadFilePage;
-import org.alfresco.webdrone.testng.listener.FailedTestListener;
-import org.alfresco.share.util.SiteUtil;
+import org.alfresco.po.share.site.document.*;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
+import org.alfresco.webdrone.WebDroneImpl;
+import org.alfresco.webdrone.testng.listener.FailedTestListener;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author jcule
- *
  */
 @Listeners(FailedTestListener.class)
 public class RepositoryDocumentCreateTests extends AbstractUtils
@@ -69,7 +60,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
 
     /**
      * User logs in before test is executed
-     * 
+     *
      * @throws Exception
      */
     @BeforeMethod(groups = { "RepositoryDocumentCreate" })
@@ -89,7 +80,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
 
     /**
      * User logs out before test is executed
-     * 
+     *
      * @throws Exception
      */
     @AfterMethod(groups = { "RepositoryDocumentCreate" })
@@ -111,53 +102,54 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * Create Any Content - Create plain text document
      * 1) Create plain text file in test folder
      * 2) Check name, description and content are correct
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = "RepositoryDocumentCreate")
-    public void enterprise40x_5432() throws Exception
+    public void AONE_3579() throws Exception
     {
 
         // create a plain text file in test folder
         String testName = getTestName();
         String fileName = testName + System.currentTimeMillis();
-
-        ShareUserRepositoryPage.openRepositorySimpleView(drone);
-        
-        String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
-        }
-
         String description = testName + " description";
         String content = testName + " content";
+        String title = testName + " title";
+        String[] folderPath = { USER_HOMES_FOLDER, testUser };
+        String[] contentFolderPath = { USER_HOMES_FOLDER, testUser, testName };
+
+        // navigate to repository page
+        ShareUserRepositoryPage.openRepository(drone);
+
+        // open user's home folder; create collapsed menu, New Folder and Upload buttons are presented at the top.
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentEnabled());
+        Assert.assertTrue(repositoryPage.getNavigation().isFileUploadEnabled());
+        repositoryPage.getNavigation().selectCreateContentDropdown();
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateNewFolderPresent());
+
+        // click Create Content menu; check that user can select Plain Text, HTML or XML type
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentPresent(ContentType.HTML));
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentPresent(ContentType.PLAINTEXT));
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentPresent(ContentType.XML));
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO);
 
         // create a plain text file in test folder
         ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(fileName);
-        contentDetails.setTitle(testName + " title");
-        contentDetails.setDescription(testName + " description");
-        contentDetails.setContent(testName + " content");
-        
-        ShareUserRepositoryPage.openRepositoryDetailedView(drone);
-
-        String[] contentFolderPath = { USER_HOMES_FOLDER, testUser, testName };
-        repositoryPage = ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);
-        
+        contentDetails.setTitle(title);
+        contentDetails.setDescription(description);
+        contentDetails.setContent(content);
+        repositoryPage = ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, folderPath);
         Assert.assertTrue(repositoryPage.isFileVisible(fileName));
 
-        // Check name, description and content are correct
+        // check name, title, description and content are correct
         Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getName(), fileName);
+        Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getTitle(), "(" + title + ")");
         Assert.assertEquals(ShareUserSitePage.getFileDirectoryInfo(drone, fileName).getDescription(), description);
-
-        // TODO: Consider implementing this as a Util: using View in Browser?
         DocumentDetailsPage detailsPage = repositoryPage.selectFile(fileName).render();
-        EditTextDocumentPage editTextDocumentPage = detailsPage.selectInlineEdit().render();
-        Assert.assertTrue(editTextDocumentPage.getDetails().getContent().contains(content));
+        Assert.assertEquals(detailsPage.getDocumentBody().contains(content), true);
 
     }
 
@@ -167,36 +159,46 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 2) Create test folder in users home directory
      * 3) Cancel creation of plain text file
      * 4) Check the file is not present in test folder
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5433() throws Exception
+    public void AONE_3580() throws Exception
     {
         String testName = getTestName();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
         String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
-        }
         String fileName = getTestName() + System.currentTimeMillis();
         String title = testName + " title";
         String description = testName + " description";
         String content = testName + " content";
+
+        // navigate to repository page
+        ShareUserRepositoryPage.openRepository(drone);
+
+        // open user's home folder; create collapsed menu, New Folder and Upload buttons are presented at the top
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentEnabled());
+        Assert.assertTrue(repositoryPage.getNavigation().isFileUploadEnabled());
+        repositoryPage.getNavigation().selectCreateContentDropdown();
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateNewFolderPresent());
+
+        // click Create Content menu; check that user can select Plain Text, HTML or XML type
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentPresent(ContentType.HTML));
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentPresent(ContentType.PLAINTEXT));
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentPresent(ContentType.XML));
+        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO);
+
+        // Cancel creation of plain text file
         ContentDetails contentDetails = new ContentDetails();
         contentDetails.setName(fileName);
         contentDetails.setTitle(title);
         contentDetails.setDescription(description);
         contentDetails.setContent(content);
-
-        // Cancel creation of plain text file
         CreatePlainTextContentPage contentPage = repositoryPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
         contentPage.cancel(contentDetails).render();
 
-        // Check the file is not present in test folder
+        // check the file is not present in test folder
         Assert.assertFalse(repositoryPage.isFileVisible(fileName));
     }
 
@@ -204,26 +206,30 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * Upload file
      * 1) Upload file to the test folder in repository
      * 2) Check the file is uploaded successfully
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5434() throws Exception
+    public void AONE_3581() throws Exception
     {
         // Upload file to test folder
         String testName = getTestName();
         File sampleFile = SiteUtil.prepareFile();
-        RepositoryPage repositoryPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
         String[] folderPath = { USER_HOMES_FOLDER, testUser };
-        repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
-        if (!repositoryPage.isFileVisible(testName))
-        {
-            ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
-        }
-        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
+
+        // navigate to repository page
+        ShareUserRepositoryPage.openRepository(drone);
+
+        // open user's home folder. There are Create collapsed menu, New Folder and Upload buttons at the top
+        RepositoryPage repositoryPage = ShareUserRepositoryPage.navigateFoldersInRepositoryPage(drone, folderPath);
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateContentEnabled());
+        Assert.assertTrue(repositoryPage.getNavigation().isFileUploadEnabled());
+        repositoryPage.getNavigation().selectCreateContentDropdown();
+        Assert.assertTrue(repositoryPage.getNavigation().isCreateNewFolderPresent());
+
+        // upload a file
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
-        Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
         // Check the file is uploaded successfully
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
@@ -234,12 +240,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * Cancel file upload
      * 1) Cancel file upload to the test folder in repository
      * 2) Check the file is not uploaded to the test folder in repository
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5435() throws Exception
+    public void AONE_3582() throws Exception
     {
         String testName = getTestName();
         File sampleFile = SiteUtil.prepareFile();
@@ -267,12 +273,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) Upload file to the test folder in repository
      * 2) Edit file properties
      * 3) Check file properties are correct
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5436() throws Exception
+    public void AONE_3583() throws Exception
     {
         // Upload file to the test folder in repository
         String testName = getTestName();
@@ -290,11 +296,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
 
         // edit file properties
-        String titleNew = testName + " enterprise40x_5436 title new";
-        String descriptionNew = testName + " enterprise40x_5436 description new";
-        String tagNew = testName + " enterprise40x_5436 tag new";
+        String titleNew = testName + " AONE_3583 title new";
+        String descriptionNew = testName + " AONE_3583 description new";
+        String tagNew = testName + " AONE_3583 tag new";
 
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectEditProperties()
+            .render();
 
         String fileName = getTestName() + System.currentTimeMillis();
 
@@ -318,12 +325,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) Upload file to the test folder in repository
      * 2) Cancel editing of file properties
      * 3) Check file properties didn't change
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5437() throws Exception
+    public void AONE_3584() throws Exception
     {
         // upload file to test folder
         String testName = getTestName();
@@ -339,11 +346,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // edit file properties
-        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectEditProperties().render();
+        EditDocumentPropertiesPage editDocumentPropertiesPopup = ShareUserSitePage.getFileDirectoryInfo(drone, sampleFile.getName()).selectEditProperties()
+            .render();
 
-        String titleNew = testName + " enterprise40x_5437 title new";
-        String descriptionNew = testName + " enterprise40x_5437 description new";
-        String tagNew = testName + " enterprise40x_5437 tag new";
+        String titleNew = testName + " AONE_3584 title new";
+        String descriptionNew = testName + " AONE_3584 description new";
+        String tagNew = testName + " AONE_3584 tag new";
         String fileName = getTestName() + System.currentTimeMillis();
 
         editDocumentPropertiesPopup.setName(fileName);
@@ -367,12 +375,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) Upload file to the test folder in repository
      * 2) Select to view document in browser
      * 3) Check the document is correctly displayed in browser
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5438() throws Exception
+    public void AONE_3585() throws Exception
     {
         // upload file to test folder
         String testName = getTestName();
@@ -402,12 +410,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) Upload file to the test folder in repository
      * 2) Upload new version of the file with minor changes
      * 3) Check that the version has increased
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5439() throws Exception
+    public void AONE_3586() throws Exception
     {
         // upload file to test folder
         String testName = getTestName();
@@ -419,7 +427,7 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
         {
             ShareUserRepositoryPage.createFolderInRepository(drone, testName, testName, testName);
         }
-        repositoryPage = (RepositoryPage)ShareUserSitePage.selectContent(drone, testName);
+        repositoryPage = (RepositoryPage) ShareUserSitePage.selectContent(drone, testName);
         repositoryPage = ShareUserRepositoryPage.uploadFileInRepository(drone, sampleFile);
         Assert.assertTrue(repositoryPage.isFileVisible(sampleFile.getName()));
         // Upload new version of document with minor changes
@@ -435,12 +443,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) Upload file to the test folder in repository
      * 2) Upload new version of the file with major changes
      * 3) Check that the version has increased
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5440() throws Exception
+    public void AONE_3587() throws Exception
     {
         // upload file to test folder
         String testName = getTestName();
@@ -468,12 +476,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) Upload file to the test folder in repository
      * 2) Cancel upload new version of the file with major changes
      * 3) Check that the version has not increased
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5441() throws Exception
+    public void AONE_3588() throws Exception
     {
         // upload file to the test folder in repository
         String testName = getTestName();
@@ -509,12 +517,12 @@ public class RepositoryDocumentCreateTests extends AbstractUtils
      * 1) upload file to the test folder in repository
      * 2) edit inline file properties
      * 3) check file properties are correct
-     * 
+     *
      * @throws Exception
      */
 
     @Test(groups = { "RepositoryDocumentCreate" })
-    public void enterprise40x_5442() throws Exception
+    public void AONE_3589() throws Exception
     {
         // upload file to the test folder in repository
         String testName = getTestName();

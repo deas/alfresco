@@ -157,6 +157,10 @@ public class SiteFinderPage extends SharePage
      */
     public SiteFinderPage searchForSite(final String title)
     {
+        if(title == null)
+        {
+            throw new IllegalArgumentException("Title can't be null.");
+        }
         WebElement input = drone.findAndWait(By.cssSelector("input[id$='site-finder_x0023_default-term']"));
         input.clear();
         input.sendKeys(title);
@@ -511,4 +515,23 @@ public class SiteFinderPage extends SharePage
             return false;
         }
     }
+    
+    /**
+     * Click the delete button for a site in Site finder page
+     * 
+     * @param siteName
+     * @return the first confirmation popup
+     * @author Bogdan
+     */
+    public HtmlPage clickDelete(String siteName)
+    {
+    	WebElement deleteButton = findButtonForSite(siteName, "Delete");
+    	deleteButton.click();
+        return new DeleteSitePage(drone);    
+    }
+    
 }
+    
+    
+    
+

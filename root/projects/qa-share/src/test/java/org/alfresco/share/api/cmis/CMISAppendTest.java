@@ -1,10 +1,12 @@
 /**
- * 
+ *
  */
 package org.alfresco.share.api.cmis;
 
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
+import org.alfresco.po.share.site.document.FileDirectoryInfo;
+import org.alfresco.po.share.site.document.VersionDetails;
 import org.alfresco.repo.content.MimetypeMap;
 import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
@@ -18,23 +20,20 @@ import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.testng.Assert;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 /**
  * @author abharade
- * 
  */
 public abstract class CMISAppendTest extends CmisUtils
 {
@@ -56,8 +55,8 @@ public abstract class CMISAppendTest extends CmisUtils
     protected CMISBinding binding;
 
     /**
-     * @throws Exception
      * @param testName
+     * @throws Exception
      */
     protected void createTestData(String testName) throws Exception
     {
@@ -84,7 +83,6 @@ public abstract class CMISAppendTest extends CmisUtils
     }
 
     /**
-     * 
      * @param nodeRef
      * @return
      */
@@ -113,10 +111,55 @@ public abstract class CMISAppendTest extends CmisUtils
         String stringVersion = documentDetailsPage.getDocumentVersion();
         double docVersion = 0;
         double versionBefore = 0;
-        try {
+        try
+        {
             docVersion = Double.parseDouble(stringVersion);
             versionBefore = Double.parseDouble(expectedVersion);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
+            fail("The version before - " + expectedVersion + "or the later version - " + stringVersion + " was not received properly.");
+        }
+        if (isLastChunk)
+        {
+            assertTrue(docVersion > versionBefore,
+                    stringVersion + " should be greater than " + versionBefore);
+        }
+        else
+        {
+            assertTrue(docVersion == versionBefore,
+                    stringVersion + " should be greater than " + versionBefore);
+        }
+        assertTrue(doc1.getContentStreamLength() > documentSize, doc1.getContentStreamLength() + " should be more than " + (documentSize));
+        return doc1;
+    }
+
+    protected Document appendTest(WebDrone drone, boolean isLastChunk, String thisFileName)
+    {
+        ShareUser.openDocumentLibrary(drone);
+        String thisFileNameRef = ShareUser.getGuid(drone, thisFileName);
+        DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(drone, thisFileName);
+
+        String expectedVersion = documentDetailsPage.getDocumentVersion();
+        Document doc1 = (Document) getObject(thisFileNameRef);
+        long documentSize = doc1.getContentStreamLength();
+        appendContentFromFile(binding, testUser, DOMAIN, thisFileNameRef, thisFileName, isLastChunk);
+
+        doc1 = (Document) getObject(thisFileNameRef);
+
+        ShareUser.openDocumentLibrary(drone);
+        documentDetailsPage = ShareUser.openDocumentDetailPage(drone, thisFileName);
+
+        String stringVersion = documentDetailsPage.getDocumentVersion();
+        double docVersion = 0;
+        double versionBefore = 0;
+        try
+        {
+            docVersion = Double.parseDouble(stringVersion);
+            versionBefore = Double.parseDouble(expectedVersion);
+        }
+        catch (NumberFormatException e)
+        {
             fail("The version before - " + expectedVersion + "or the later version - " + stringVersion + " was not received properly.");
         }
         if (isLastChunk)
@@ -137,42 +180,42 @@ public abstract class CMISAppendTest extends CmisUtils
     {
         ShareUser.uploadFileInFolder(drone, new String[] { testFileName, DOCLIB, "The First part." });
 
-
         String secondPart = "The second part.";
         appendTest(drone, secondPart, false, testFileName);
         String thirdPart = "The third part.";
         Document doc = appendTest(drone, thirdPart, true, testFileName);
 
-
         assertTrue(streamToString(doc.getContentStream()).contains(secondPart));
         assertTrue(streamToString(doc.getContentStream()).contains(thirdPart));
-        /*ShareUser.openDocumentLibrary(drone);
+        ShareUser.openDocumentLibrary(drone);
         FileDirectoryInfo thisRow = ShareUserSitePage.getFileDirectoryInfo(drone, testFileName);
-        String mainWindow = drone.getWindowHandle();
-        thisRow.selectViewInBrowser();
+        assertTrue(thisRow.getModifier().contains(testUser), thisRow.getModifier());
+        DocumentDetailsPage documentDetailsPage = ShareUser.openDocumentDetailPage(drone, testFileName);
 
-        String htmlSource = ((WebDroneImpl) drone).getDriver().getPageSource();
-        assertTrue(htmlSource.contains(secondPart), htmlSource + "should contain " + secondPart);
-        assertTrue(htmlSource.contains(thirdPart), htmlSource + "should contain " + thirdPart);
+        assertEquals(documentDetailsPage.getCommentsOfLastCommit().contains("Appended content stream"), documentDetailsPage.getCommentsOfLastCommit());
+        assertTrue(documentDetailsPage.getDocumentVersion().equals("1.1"));
 
-        drone.closeTab();
-        drone.switchToWindow(mainWindow);*/
     }
 
     protected void appendLargeChunksTest(WebDrone drone, String testFileName) throws Exception
     {
         ShareUser.uploadFileInFolder(drone, new String[] { testFileName, DOCLIB });
 
-        String content5MB = FileUtils.readFileToString(new File(DATA_FOLDER + testFileName));
-        appendTest(drone, content5MB, false, testFileName);
-        Document doc1 = (Document) appendTest(drone, content5MB, true, testFileName);
-
+        appendTest(drone, false, testFileName);
+        Document doc1 = (Document) appendTest(drone, true, testFileName);
         assertTrue(doc1.getContentStreamLength() > 9000, doc1.getContentStreamLength() + " should be more than 9000 bytes");
+
+        DocumentDetailsPage detailsPage = drone.getCurrentPage().render();
+        VersionDetails versionDetails = detailsPage.getCurrentVersionDetails();
+
+        Assert.assertEquals(versionDetails.getComment(), "Appended content stream");
+        Assert.assertEquals(versionDetails.getVersionNumber(), "1.1");
+        Assert.assertEquals(versionDetails.getFileName(), testFileName);
     }
 
     /**
      * Removes " bytes" and returns number.
-     * 
+     *
      * @param documentSize
      * @return
      */
@@ -183,7 +226,7 @@ public abstract class CMISAppendTest extends CmisUtils
 
     /**
      * Returns String content from Stream.
-     * 
+     *
      * @param stream
      * @return
      * @throws IOException

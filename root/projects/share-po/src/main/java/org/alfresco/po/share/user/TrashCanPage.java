@@ -15,12 +15,6 @@
 
 package org.alfresco.po.share.user;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.alfresco.po.share.NewPagination;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -35,9 +29,15 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 /**
  * As part of 42 new features the user can recover or completely delete from the respository using my profile trashcan
- * 
+ *
  * @author Subashni Prasanna
  * @since 1.7.0
  */
@@ -64,6 +64,7 @@ public class TrashCanPage extends SharePage
     protected static final String TRASHCAN_PAGINATION_LESS_BUTTON = "button[id$='paginator-less-button-button']";
     protected static final By TRASHCAN_EMPTY = By.cssSelector("td.yui-dt-empty");
     protected static final By PAGE_LOADING = By.cssSelector("td.yui-dt-loading");
+    private static final By HEADER_BAR = By.cssSelector(".header-bar");
     private boolean deleteInitiator = false;
 
     /*
@@ -85,8 +86,8 @@ public class TrashCanPage extends SharePage
         try
         {
             elementRender(timer, getVisibleRenderElement(TRASHCAN_SEARCH_INPUT), getVisibleRenderElement(TRASHCAN_SEARCH_BUTTON),
-                    getVisibleRenderElement(TRASHCAN_CLEAR_BUTTON), getVisibleRenderElement(TRASHCAN_SELECT_BUTTON),
-                    getVisibleRenderElement(TRASHCAN_EMPTY_BUTTON));
+                getVisibleRenderElement(TRASHCAN_CLEAR_BUTTON), getVisibleRenderElement(TRASHCAN_SELECT_BUTTON),
+                getVisibleRenderElement(TRASHCAN_EMPTY_BUTTON));
         }
         catch (NoSuchElementException e)
         {
@@ -119,7 +120,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Input serach text and perform search with in the items which are displayed in the trashcan page.
-     * 
+     *
      * @param - String
      * @return - TrashCanPage as response
      */
@@ -135,7 +136,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Method to clear the entered serach field.
-     * 
+     *
      * @return - TrashCanPage as response
      */
     public HtmlPage clearSearch()
@@ -146,7 +147,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Method to Get the list of trashCan item
-     * 
+     *
      * @return - list of WebElement
      */
     private List<WebElement> getTrashCanItemElements() throws NoSuchElementException
@@ -168,7 +169,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Method to find out whether we have items in trashcan page
-     * 
+     *
      * @return boolean
      */
 
@@ -210,7 +211,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * This method will get TrashCanItem for the File
-     * 
+     *
      * @return - TrashCanItem
      * @throws - PageOperationException
      */
@@ -266,7 +267,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Click on Selected Recover of trashcan
-     * 
+     *
      * @return - TrashCanRecoverConfrimationDialog
      */
     public TrashCanRecoverConfirmDialog selectedRecover()
@@ -285,7 +286,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Click on Selected Recover of trashcan
-     * 
+     *
      * @return - TrashCanDeleteConfirmationDialogPage
      */
     public TrashCanDeleteConfirmationPage selectedDelete()
@@ -305,7 +306,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Click on select in the trashcan Page
-     * 
+     *
      * @param - String Action Type
      * @return - TrashCanPage
      */
@@ -338,7 +339,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Checks if pagination next button is active.
-     * 
+     *
      * @return true if next page exists
      */
     public boolean hasNextPage()
@@ -348,7 +349,7 @@ public class TrashCanPage extends SharePage
 
     /**
      * Checks if pagination previous button is active.
-     * 
+     *
      * @return true if next page exists
      */
     public boolean hasPreviousPage()
@@ -386,5 +387,50 @@ public class TrashCanPage extends SharePage
         {
             return false;
         }
+    }
+
+    /**
+     * Return <code>true</code> if the Deleted Documents and Folders title is displayed on screen.
+     *
+     * @return boolean present
+     */
+    private boolean isHeaderTitlePresent()
+    {
+        boolean present = false;
+        try
+        {
+            present = drone.findAndWait(HEADER_BAR).getText().equals("Deleted Documents and Folders");
+            return present;
+        }
+        catch (NoSuchElementException e)
+        {
+        }
+        return present;
+    }
+
+    /**
+     * Method to verify all controls are displayed on TrashCanPage page
+     *
+     * @return true if page is correct
+     */
+    public boolean isPageCorrect()
+    {
+        boolean isCorrect = false;
+        try
+        {
+            isCorrect = drone.isElementDisplayed(TRASHCAN_SEARCH_INPUT) && drone.isElementDisplayed(TRASHCAN_SEARCH_BUTTON)
+                && drone.isElementDisplayed(TRASHCAN_CLEAR_BUTTON) && drone.isElementDisplayed(TRASHCAN_SELECT_BUTTON) && drone
+                .isElementDisplayed(TRASHCAN_EMPTY_BUTTON) && drone.isElementDisplayed(TRASHCAN_SELECTED_BUTTON) && drone
+                .isElementDisplayed(By.cssSelector(TRASHCAN_PAGINATION_MORE_BUTTON)) && drone
+                .isElementDisplayed(By.cssSelector(TRASHCAN_PAGINATION_LESS_BUTTON)) && isHeaderTitlePresent()
+                && checkNoItemsMessage();
+            return isCorrect;
+
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error(e.getMessage());
+        }
+        return isCorrect;
     }
 }

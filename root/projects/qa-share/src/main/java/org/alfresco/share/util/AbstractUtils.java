@@ -1,56 +1,23 @@
 /*
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
  * This file is part of Alfresco
- *
  * Alfresco is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Alfresco is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.alfresco.share.util;
 
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.lang.reflect.Method;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import javax.imageio.ImageIO;
-
-import org.alfresco.po.share.AlfrescoVersion;
-import org.alfresco.po.share.BrowserPreference;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.FactorySharePage;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.SharePopup;
-import org.alfresco.po.share.ShareProperties;
-import org.alfresco.po.share.ShareUtil;
+import org.alfresco.po.share.*;
 import org.alfresco.po.share.console.CloudConsolePage;
 import org.alfresco.share.search.SearchKeys;
+import org.alfresco.share.util.api.tokenKey.Layer7AuthorizationOnCloud;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -71,37 +38,49 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
 
 /**
  * Class includes: Abstract test holds all common methods, These will be used
  * from within the ShareUser utils or tests.
- * 
+ *
  * @author Meenal Bhave
  */
 public abstract class AbstractUtils
 {
-    
+
     public enum PerformOperation
     {
         OK, CANCEL;
     }
+
     // Test Run Options
     protected static final Boolean deleteSiteFlag = true; // Indicates if Site
-                                                          // is to be deleted at
-                                                          // the end of the test
-                                                          // -> using
-                                                          // ShareUser.deleteSiteAPI
+    // is to be deleted at
+    // the end of the test
+    // -> using
+    // ShareUser.deleteSiteAPI
 
     private static Log logger = LogFactory.getLog(AbstractUtils.class);
     protected static ApplicationContext ctx;
     protected static String shareUrl;
+
+    protected static String pathSharepoint;
+
     protected static String cloudUrlForHybrid;
     protected static String pentahoUserConsoleUrl;
     // Test Suite Admins
@@ -138,6 +117,7 @@ public abstract class AbstractUtils
     protected static final String SITE_VISIBILITY_MODERATED = "moderated";
     protected static final String DOCLIB = "DocumentLibrary";
     protected static final String REPO = "Repository";
+    protected static final String SITES = "Sites";
     protected static final String DOCLIB_CONTAINER = "documentLibrary";
     protected static final String MY_DASHBOARD = " Dashboard";
     protected final static String SERACH_ZERO_CONTENT = "ZERO_RESULTS";
@@ -176,6 +156,7 @@ public abstract class AbstractUtils
     protected static final String SITE_ACTIVITIES = "site-activities";
     protected static final String SITE_NOTICE = "site-notice";
     protected static final String MY_DISCUSSIONS = "my-discussions";
+    protected static final String MY_CALENDARE = "my-calendar";
     protected static final String TOP_SITE_CONTRIBUTOR_REPORT = "top-site-contributor-report";
     protected static final String SITE_CONTENT_BREAKDOWN_REPORT = "site-content-report";
     protected static final String IMAGE_PREVIEW = "image-preview";
@@ -194,16 +175,21 @@ public abstract class AbstractUtils
     protected static final String FEED_CONTENT_DELETED = " deleted";
     protected static final String FEED_CONTENT_EDITED = " edited";
     protected static final String FEED_CONTENT_UPDATED = " updated";
+    protected static final String FEED_CONTENT_RENAMED = " renamed";
     protected static final String FEED_CONTENT_LIKED = " liked";
     protected static final String FEED_COMMENTED_ON = " commented on";
     protected static final String FEED_UPDATED_COMMENT_ON = " updated comment on";
     protected static final String FEED_COMMENT_DELETED = " deleted a comment";
     protected static final String FEED_ROLE_CHANGED = " role changed";
     protected static final String FEED_COMMENTED_FROM = " from ";
+    protected static final String FEED_COMMENTED_TO = " to ";
     protected static final String FEED_LOCATION = " in ";
     protected static final String FEED_FOR_FOLDER = " folder ";
     protected static final String FEED_FOR_FILE = " document ";
     protected static final String FEED_FOR_CALENDAR_EVENT = " calendar event ";
+    protected static final String FEED_FOR_WIKI_PAGE = " wiki page ";
+    protected static final String FEED_FOR_DATA_LIST = " data list ";
+    protected static final String FEED_FOR_BLOG_POST = " blog post ";
     protected static final String DOCUMENT_LOCKED_BY_YOU_MESSAGE = "This document is locked by you.";
     protected static final String LAST_SYNC_FAILED_MESSAGE = "Last sync failed.";
 
@@ -214,6 +200,12 @@ public abstract class AbstractUtils
     protected static String mimeTypes;
     protected static String googleUserName;
     protected static String googlePassword;
+    protected static String serviceAccountEmail;
+    protected static String serviceAccountPKCS12FileName;
+    protected static String googleDriveUserName;
+    protected static String googleDrivePassword;
+    protected static String serviceDriveAccountEmail;
+    protected static String serviceDriveAccountPKCS12FileName;
     protected static boolean hybridEnabled;
     protected static String UNIQUE_TESTRUN_NAME;
     protected static String DOMAIN_FREE;
@@ -231,6 +223,23 @@ public abstract class AbstractUtils
     protected static String jmxrmiPort;
     protected static String jmxrmiUser;
     protected static String jmxrmiPassword;
+    protected static String blogUrl;
+    protected static String blogUsername;
+    protected static String blogPassword;
+    protected static String ftpPort;
+    protected static String sshHost;
+    protected static int serverShhPort;
+    protected static String serverUser;
+    protected static String serverPass;
+    protected static boolean isSecureSession;
+    protected static String pathToKeys;
+    protected static String replicationEndPointHost;
+    protected static String serviceAccountPKCS12FilePath;
+    protected static String serviceDriveAccountPKCS12FilePath;
+    protected static String layer7Disabled;
+    protected static String apiKey;
+    protected static String apiSecretKey;
+
     protected static AlfrescoVersion alfrescoVersion;
     protected static Map<WebDrone, ShareTestProperty> dronePropertiesMap = new HashMap<WebDrone, ShareTestProperty>();
     protected ShareTestProperty hybridShareTestProperties;
@@ -258,6 +267,7 @@ public abstract class AbstractUtils
         ctx = new ClassPathXmlApplicationContext(contextXMLList.toArray(new String[contextXMLList.size()]));
         testProperties = (ShareTestProperty) ctx.getBean("shareTestProperties");
         shareUrl = testProperties.getShareUrl();
+        pathSharepoint = testProperties.getPathSharepoint();
         cloudUrlForHybrid = testProperties.getCloudUrlForHybrid();
         pentahoUserConsoleUrl = testProperties.getPentahoUserConsoleUrl();
         username = testProperties.getUsername();
@@ -266,6 +276,12 @@ public abstract class AbstractUtils
         downloadDirectory = testProperties.getDownloadDirectory();
         googleUserName = testProperties.getGoogleUserName();
         googlePassword = testProperties.getGooglePassword();
+        serviceAccountEmail = testProperties.getServiceAccountEmail();
+        serviceAccountPKCS12FileName = testProperties.getServiceAccountPKCS12FileName();
+        googleDriveUserName = testProperties.getGoogleDriveUserName();
+        googleDrivePassword = testProperties.getGoogleDrivePassword();
+        serviceDriveAccountEmail = testProperties.getServiceDriveAccountEmail();
+        serviceDriveAccountPKCS12FileName = testProperties.getServiceDriveAccountPKCS12FileName();
         hybridEnabled = testProperties.isHybridEnabled();
         UNIQUE_TESTRUN_NAME = testProperties.getuniqueTestRunName();
         DOMAIN_FREE = testProperties.getdomainFree();
@@ -282,14 +298,30 @@ public abstract class AbstractUtils
         mimeTypes = testProperties.getMimeTypes();
         licenseShare = testProperties.getLicenseShare();
         nodePort = testProperties.getNodePort();
+        ftpPort = testProperties.getFtpPort();
         jmxrmiPort = testProperties.getJmxPort();
         jmxrmiUser = testProperties.getJmxUser();
         jmxrmiPassword = testProperties.getJmxPassword();
-        maxWaitTimeCloudSync =Long.parseLong(testProperties.getMaxWaitTimeCloudSync());
+        blogUrl = testProperties.getBlogUrl();
+        blogUsername = testProperties.getBlogUsername();
+        blogPassword = testProperties.getBlogPassword();
+        serverShhPort = testProperties.getSshPort();
+        serverUser = testProperties.getSshLogin();
+        serverPass = testProperties.getSshPassword();
+        isSecureSession = testProperties.isSecureSession();
+        replicationEndPointHost = testProperties.getreplicationEndPointHost();
+        maxWaitTimeCloudSync = Long.parseLong(testProperties.getMaxWaitTimeCloudSync());
         RESULTS_FOLDER = SRC_ROOT + "test-output" + SLASH + UNIQUE_TESTRUN_NAME + SLASH;
+        pathToKeys = AbstractUtils.DATA_FOLDER + "ssh_keys" + File.separator + "build.ppk";
+        serviceAccountPKCS12FilePath = AbstractUtils.DATA_FOLDER + "p12_keys" + File.separator + serviceAccountPKCS12FileName;
+        serviceDriveAccountPKCS12FilePath = AbstractUtils.DATA_FOLDER + "p12_keys" + File.separator + serviceDriveAccountPKCS12FileName;
+        layer7Disabled = testProperties.getLayer7Disabled();
+        apiKey = testProperties.getApiKey();
+        apiSecretKey = testProperties.getApiSecretKey();
 
         DEFAULT_FREENET_USER = DEFAULT_USER + "@" + DOMAIN_FREE;
         DEFAULT_PREMIUMNET_USER = DEFAULT_USER + "@" + DOMAIN_PREMIUM;
+
 
         logger.info("Target URL: " + shareUrl);
         logger.info("Alfresco Version: " + alfrescoVersion);
@@ -346,7 +378,14 @@ public abstract class AbstractUtils
             {
                 if (entry.getValue() != null)
                 {
-                    ShareUser.logout(entry.getValue());
+                    try
+                    {
+                        ShareUtil.logout(entry.getValue());
+                    }
+                    catch (Exception e)
+                    {
+                        logger.error("If it's tests associated with admin-console-summary-page. it's normal. If not - we have a problem.");
+                    }
                     entry.getValue().quit();
                     logger.info(entry.getKey() + " closed");
                     logger.info("[Suite ] : End of Tests in: " + this.getClass().getSimpleName());
@@ -361,12 +400,11 @@ public abstract class AbstractUtils
 
     /**
      * Helper to log a user into alfresco.
-     * 
+     *
      * @param drone
      * @param userInfo
      * @return DashBoardPage
-     * @throws Exception
-     *             if error
+     * @throws Exception if error
      */
     public static DashBoardPage loginAs(WebDrone drone, String... userInfo)
     {
@@ -380,12 +418,10 @@ public abstract class AbstractUtils
     /**
      * Helper to Take a ScreenShot. Saves a screenshot in target folder
      * <RESULTS_FOLDER>
-     * 
-     * @param methodName
-     *            String This is the Test Name / ID
+     *
+     * @param methodName String This is the Test Name / ID
      * @return void
-     * @throws Exception
-     *             if error
+     * @throws Exception if error
      */
     public static void saveScreenShot(WebDrone drone, String methodName) throws IOException
     {
@@ -413,12 +449,10 @@ public abstract class AbstractUtils
     /**
      * Helper to Take a ScreenShot. Saves a screenshot in target folder
      * <RESULTS_FOLDER>
-     * 
-     * @param methodName
-     *            String This is the Test Name / ID
+     *
+     * @param methodName String This is the Test Name / ID
      * @return void
-     * @throws Exception
-     *             if error
+     * @throws Exception if error
      */
     public void saveScreenShot(String methodName) throws IOException
     {
@@ -431,19 +465,19 @@ public abstract class AbstractUtils
                 FileUtils.copyFile(file, tmp);
             }
         }
-//        try
-//        {
-//            saveOsScreenShot(methodName);
-//        }
-//        catch (AWTException e)
-//        {
-//            logger.error("Not able to take the OS screen shot: " + e.getMessage());
-//        }
+        // try
+        // {
+        // saveOsScreenShot(methodName);
+        // }
+        // catch (AWTException e)
+        // {
+        // logger.error("Not able to take the OS screen shot: " + e.getMessage());
+        // }
     }
 
     /**
      * Take OS ScreenShot
-     * 
+     *
      * @param methodName - Method Name
      */
     public void saveOsScreenShot(String methodName) throws IOException, AWTException
@@ -464,7 +498,7 @@ public abstract class AbstractUtils
     /**
      * Helper returns the test / methodname. This needs to be called as the 1st
      * step of the test. Common Test code can later be introduced here.
-     * 
+     *
      * @return String testcaseName
      */
     public static String getTestName()
@@ -495,9 +529,8 @@ public abstract class AbstractUtils
      * Helper to perform the common cleanup actions after a test. This needs to
      * be called as the last step of the test. Common Test code to perform
      * cleanup can later be introduced here.
-     * 
-     * @param testName
-     *            String test case ID
+     *
+     * @param testName String test case ID
      * @return N/A
      */
     protected void testCleanup(WebDrone driver, String testName)
@@ -514,14 +547,11 @@ public abstract class AbstractUtils
 
     /**
      * Helper to report error details for a test.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param testName
-     *            String test case ID
-     * @param t
-     *            Throwable Error & Exception to include testng assert
-     *            failures being reported as Errors
+     *
+     * @param driver   WebDrone Instance
+     * @param testName String test case ID
+     * @param t        Throwable Error & Exception to include testng assert
+     *                 failures being reported as Errors
      */
     protected void reportError(WebDrone driver, String testName, Throwable t)
     {
@@ -543,7 +573,7 @@ public abstract class AbstractUtils
      * This method returns appropriate API URL for given webDrone associated
      * with the call. URL is picked from the map created initially when the
      * drones are created
-     * 
+     *
      * @param drone
      * @return
      */
@@ -582,9 +612,8 @@ public abstract class AbstractUtils
 
     /**
      * Helper to return the stack trace as a string for reporting purposes.
-     * 
-     * @param ex
-     *            exception / error
+     *
+     * @param ex exception / error
      * @return String: stack trace
      */
     protected static String getCustomStackTrace(Throwable ex)
@@ -606,11 +635,9 @@ public abstract class AbstractUtils
     /**
      * Helper to create a new file, empty or with specified contents if one does
      * not exist. Logs if File already exists
-     * 
-     * @param filename
-     *            String Complete path of the file to be created
-     * @param contents
-     *            String Contents for text file
+     *
+     * @param filename String Complete path of the file to be created
+     * @param contents String Contents for text file
      * @return File
      */
     public static File newFile(String filename, String contents)
@@ -648,11 +675,9 @@ public abstract class AbstractUtils
     /**
      * Helper to search for an Element on the Share Page, with configurable
      * retry search option.
-     * 
-     * @param cssClassName
-     *            : css Selector such as [class='filename']
-     * @param linkTextOfElementToFind
-     *            String
+     *
+     * @param cssClassName            : css Selector such as [class='filename']
+     * @param linkTextOfElementToFind String
      * @return true if element is found
      */
     protected static boolean findElement(WebDrone driver, String cssClassName, String linkTextOfElementToFind)
@@ -681,10 +706,9 @@ public abstract class AbstractUtils
     /**
      * Helper to consistently get the username in the free domain, in the
      * desired format.
-     * 
-     * @param testID
-     *            String Name of the test for uniquely identifying / mapping
-     *            test data with the test
+     *
+     * @param testID String Name of the test for uniquely identifying / mapping
+     *               test data with the test
      * @return String username
      */
     public static String getUserNameFreeDomain(String testID)
@@ -699,10 +723,9 @@ public abstract class AbstractUtils
     /**
      * Helper to consistently get the username in the premium domain, in the
      * desired format.
-     * 
-     * @param testID
-     *            String Name of the test for uniquely identifying / mapping
-     *            test data with the test
+     *
+     * @param testID String Name of the test for uniquely identifying / mapping
+     *               test data with the test
      * @return String username
      */
     protected static String getUserNamePremiumDomain(String testID)
@@ -717,10 +740,9 @@ public abstract class AbstractUtils
     /**
      * Helper to consistently get the userName in the specified domain, in the
      * desired format.
-     * 
-     * @param testID
-     *            String Name of the test for uniquely identifying / mapping
-     *            test data with the test
+     *
+     * @param testID String Name of the test for uniquely identifying / mapping
+     *               test data with the test
      * @return String userName
      */
     protected static String getUserNameForDomain(String testID, String domainName)
@@ -740,9 +762,8 @@ public abstract class AbstractUtils
     /**
      * Helper to consistently get the DomainName based on the specified domain,
      * in the desired format.
-     * 
-     * @param domainID
-     *            String to be prefixed to DOMAIN_FREE
+     *
+     * @param domainID String to be prefixed to DOMAIN_FREE
      * @return String Domain
      */
     protected static String getDomainName(String domainID)
@@ -756,10 +777,9 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the Site Name.
-     * 
-     * @param testID
-     *            String Name of the test for uniquely identifying / mapping
-     *            test data with the test
+     *
+     * @param testID String Name of the test for uniquely identifying / mapping
+     *               test data with the test
      * @return String sitename
      */
     public static String getSiteName(String testID)
@@ -773,10 +793,9 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the Site Short Name.
-     * 
-     * @param siteName
-     *            String Name of the test for uniquely identifying / mapping
-     *            test data with the test
+     *
+     * @param siteName String Name of the test for uniquely identifying / mapping
+     *                 test data with the test
      * @return String site short name
      */
     public static String getSiteShortname(String siteName)
@@ -794,10 +813,9 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the filename.
-     * 
-     * @param partFileName
-     *            String Part Name of the file for uniquely identifying /
-     *            mapping test data with the test
+     *
+     * @param partFileName String Part Name of the file for uniquely identifying /
+     *                     mapping test data with the test
      * @return String fileName
      */
     protected static String getFileName(String partFileName)
@@ -811,10 +829,9 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the folderName.
-     * 
-     * @param partFolderName
-     *            String Part Name of the folder for uniquely identifying /
-     *            mapping test data with the test
+     *
+     * @param partFolderName String Part Name of the folder for uniquely identifying /
+     *                       mapping test data with the test
      * @return String folderName
      */
     protected static String getFolderName(String partFolderName)
@@ -828,11 +845,9 @@ public abstract class AbstractUtils
 
     /**
      * Checks if driver is null, throws UnsupportedOperationException if so.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @throws UnsupportedOperationException
-     *             if driver is null
+     *
+     * @param driver WebDrone Instance
+     * @throws UnsupportedOperationException if driver is null
      */
     protected static void checkIfDriverNull(WebDrone driver)
     {
@@ -844,11 +859,9 @@ public abstract class AbstractUtils
 
     /**
      * Common method to wait for the next solr indexing cycle.
-     * 
-     * @param driver
-     *            WebDrone Instance
-     * @param waitMiliSec
-     *            Wait duration in milliseconds
+     *
+     * @param driver      WebDrone Instance
+     * @param waitMiliSec Wait duration in milliseconds
      */
     @SuppressWarnings("deprecation")
     protected static HtmlPage webDriverWait(WebDrone driver, long waitMiliSec)
@@ -870,9 +883,8 @@ public abstract class AbstractUtils
     /**
      * Common method to get the Authentication details based on the username
      * specified.
-     * 
-     * @param authUsername
-     *            String Username, User email
+     *
+     * @param authUsername String Username, User email
      * @return String array of auth details, consisting of username and password
      */
     public static String[] getAuthDetails(String authUsername)
@@ -899,7 +911,7 @@ public abstract class AbstractUtils
 
     /**
      * This method is used to get the userDomail from the username value.
-     * 
+     *
      * @param invitedUser
      * @return String
      */
@@ -911,10 +923,9 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the comment.
-     * 
-     * @param partFolderName
-     *            String Part Name of the folder for uniquely identifying /
-     *            mapping test data with the test
+     *
+     * @param partFolderName String Part Name of the folder for uniquely identifying /
+     *                       mapping test data with the test
      * @return String folderName
      */
     protected static String getComment(String partFolderName)
@@ -941,7 +952,7 @@ public abstract class AbstractUtils
 
     /**
      * Helper method to extract cookie value of Alfresco-CSRFToken
-     * 
+     *
      * @return String token value
      */
     private static String extractCSRFToken(WebDrone drone)
@@ -956,8 +967,8 @@ public abstract class AbstractUtils
 
     /**
      * Helper to check the actual Result Vs expected
-     * 
-     * @param actualResult HttpResponse
+     *
+     * @param actualResult   HttpResponse
      * @param expectedResult int
      * @return void
      */
@@ -976,7 +987,7 @@ public abstract class AbstractUtils
 
     /**
      * Retrieves the another drone object.
-     * 
+     *
      * @return WebDrone
      */
     public WebDrone getSecondDrone()
@@ -990,7 +1001,7 @@ public abstract class AbstractUtils
 
     /**
      * Return the {@link WebDrone} Configured starting of test.
-     * 
+     *
      * @return {@link WebDrone}
      */
     public WebDrone getDrone()
@@ -1000,11 +1011,9 @@ public abstract class AbstractUtils
 
     /**
      * Return the domain name to be used in public apis
-     * 
-     * @param driver
-     *            WebDrone instance
-     * @param domain
-     *            String
+     *
+     * @param driver WebDrone instance
+     * @param domain String
      * @return {@String domainName}
      */
     public static String getDomainForAPI(WebDrone driver, String domain)
@@ -1026,7 +1035,7 @@ public abstract class AbstractUtils
 
     /**
      * Method to return Full User name
-     * 
+     *
      * @param firstName
      * @return
      */
@@ -1037,7 +1046,7 @@ public abstract class AbstractUtils
 
     /**
      * Method to return Full User name with e-mail id
-     * 
+     *
      * @param firstName
      * @return
      */
@@ -1048,7 +1057,7 @@ public abstract class AbstractUtils
 
     /**
      * Method to get Local Date of Today's date
-     * 
+     *
      * @return
      */
     public LocalDate getToDaysLocalDate()
@@ -1058,7 +1067,7 @@ public abstract class AbstractUtils
 
     /**
      * Method to get LocalDate of given dateTime
-     * 
+     *
      * @param dateTime
      * @return {@link = LocalDate}
      */
@@ -1069,12 +1078,10 @@ public abstract class AbstractUtils
 
     /**
      * Checks if the current page is share page, throws PageException if not.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return SharePage
-     * @throws PageException
-     *             if the current page is not a share page
+     * @throws PageException if the current page is not a share page
      */
     public static SharePage getSharePage(WebDrone driver)
     {
@@ -1092,10 +1099,9 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the Group Name.
-     * 
-     * @param testID
-     *            String Name of the test for uniquely identifying / mapping
-     *            test data with the test
+     *
+     * @param testID String Name of the test for uniquely identifying / mapping
+     *               test data with the test
      * @return String groupName
      */
     public static String getGroupName(String testID)
@@ -1120,7 +1126,7 @@ public abstract class AbstractUtils
 
     /**
      * Method to get the custom Drone
-     * 
+     *
      * @param language
      * @return
      */
@@ -1142,12 +1148,10 @@ public abstract class AbstractUtils
 
     /**
      * Checks if the current page is share page, throws PageException if not.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return ShareErrorPopup
-     * @throws PageException
-     *             if the current page is not a share error popup page
+     * @throws PageException if the current page is not a share error popup page
      */
     public static SharePopup getShareErrorPopupPage(WebDrone driver)
     {
@@ -1191,7 +1195,7 @@ public abstract class AbstractUtils
 
     /**
      * Getter method to get Drone Map
-     * 
+     *
      * @return droneMap
      */
     public Map<String, WebDrone> getDroneMap()
@@ -1202,7 +1206,7 @@ public abstract class AbstractUtils
     /**
      * This util method gets the random number for the given length of return
      * string.
-     * 
+     *
      * @param length int
      * @return String
      */
@@ -1219,7 +1223,7 @@ public abstract class AbstractUtils
 
     /**
      * Compact proxy for the logger.trace method.
-     * 
+     *
      * @param string to log
      */
     public static void traceLog(String string)
@@ -1232,7 +1236,7 @@ public abstract class AbstractUtils
 
     /**
      * This util method returns a random string of letters for the given length.
-     * 
+     *
      * @param length int
      * @return String
      */
@@ -1250,9 +1254,9 @@ public abstract class AbstractUtils
     }
 
     /**
-     * This util method returns a random string of letters and spaces matching the 
+     * This util method returns a random string of letters and spaces matching the
      * lengths and proportion of English words for the given string length.
-     * 
+     *
      * @param length int
      * @return String
      */
@@ -1260,19 +1264,9 @@ public abstract class AbstractUtils
     {
         StringBuilder rv = new StringBuilder();
         Random rnd = new Random();
-        int[] wordLengths = { 1, 1, 1,
-                    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-                    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-                    5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-                    6, 6, 6, 6, 6, 6, 6, 6,
-                    7, 7, 7, 7, 7, 7, 7, 7,
-                    8, 8, 8, 8, 8, 8,
-                    9, 9, 9, 9,
-                    10, 10, 10,
-                    11, 11,
-                    12,
-                    13 };
+        int[] wordLengths = { 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4,
+                4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 9, 9,
+                9, 9, 10, 10, 10, 11, 11, 12, 13 };
 
         char from[] = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
@@ -1294,13 +1288,12 @@ public abstract class AbstractUtils
         }
         return rv.toString();
     }
-    
+
     /**
      * This util method resizes a given string to a given length.
      * If the string is shorter the end of the string will be cropped.
      * If the string is longer the extra length will be populated with random characters.
-     * 
-     * 
+     *
      * @param string The string to be resized.
      * @param length The length of the new string.
      * @return String The new string.
@@ -1314,11 +1307,11 @@ public abstract class AbstractUtils
 
         StringBuilder rv;
 
-        if(string.length() == length)
+        if (string.length() == length)
         {
             return string;
         }
-        else if(string.length() < length)
+        else if (string.length() < length)
         {
             rv = new StringBuilder(getNaturalString(length));
             rv.replace(0, string.length(), string);
@@ -1332,10 +1325,41 @@ public abstract class AbstractUtils
     }
 
     /**
+     * This util method returns a file.
+     *
+     * @param fileName String
+     * @param sizeMB   int
+     * @return File
+     */
+    public static File getFileWithSize(String fileName, int sizeMB)
+    {
+        byte[] buffer = getRandomString(1024 * 1024).getBytes();
+        int number_of_lines = sizeMB;
+
+        try
+        {
+            FileChannel rwChannel = new RandomAccessFile(fileName, "rw").getChannel();
+            ByteBuffer wrBuf = rwChannel.map(FileChannel.MapMode.READ_WRITE, 0, buffer.length * number_of_lines);
+            for (int i = 0; i < number_of_lines; i++)
+            {
+                wrBuf.put(buffer);
+            }
+            rwChannel.close();
+        }
+        catch (IOException ex)
+        {
+            logger.error("Unable to create file method getFileWithSize", ex);
+        }
+
+        File file1 = new File(fileName);
+        return file1;
+    }
+
+    /**
      * Checks if a browser window is open with a title matching the given string.
+     *
      * @param windowName
-     * @param driver driverObj
-     * 
+     * @param driver     driverObj
      * @return boolean
      */
     public boolean isWindowOpened(WebDrone driver, String windowName)
@@ -1353,7 +1377,7 @@ public abstract class AbstractUtils
         }
         return false;
     }
-    
+
     @SuppressWarnings("hiding")
     public static class CustomStringList<String> extends ArrayList<String>
     {
@@ -1385,17 +1409,16 @@ public abstract class AbstractUtils
 
     /**
      * Helper to consistently get the tagName.
-     * 
-     * @param partTagName
-     *            String Part Name of the tag for uniquely identifying /
-     *            mapping test data with the test
+     *
+     * @param partTagName String Part Name of the tag for uniquely identifying /
+     *                    mapping test data with the test
      * @return String tagName
      */
     protected static String getTagName(String partTagName)
     {
         String tagName = "";
 
-        //Tag names are displayed in lower case to convert to lower case to help matching in tests.
+        // Tag names are displayed in lower case to convert to lower case to help matching in tests.
         tagName = String.format("tag%s-%s", UNIQUE_TESTDATA_STRING, partTagName).toLowerCase();
 
         return tagName;
@@ -1403,6 +1426,7 @@ public abstract class AbstractUtils
 
     /**
      * Method to get the DependsOnMethod name
+     *
      * @param cls
      * @return
      * @throws Exception
@@ -1413,12 +1437,13 @@ public abstract class AbstractUtils
         Test test = cls.getMethod(Thread.currentThread().getStackTrace()[2].getMethodName()).getAnnotation(Test.class);
         return test.dependsOnMethods()[0];
     }
-    
+
     /**
      * Util to switch drone to window with the specified name
+     *
      * @param driver
      * @param windowName
-     * @return boolean <tt>true</tt> if specified window is found 
+     * @return boolean <tt>true</tt> if specified window is found
      */
     public boolean switchToWindowName(WebDrone driver, String windowName)
     {
@@ -1433,16 +1458,13 @@ public abstract class AbstractUtils
         }
         return false;
     }
-    
-    
+
     /**
      * Refreshes and returns the current page: throws PageException if not a share page.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return HtmlPage
-     * @throws PageException
-     *             if the current page is not a share page
+     * @throws PageException if the current page is not a share page
      */
     public static HtmlPage refreshSharePage(WebDrone driver)
     {
@@ -1450,16 +1472,13 @@ public abstract class AbstractUtils
         driver.refresh();
         return getCurrentPage(driver);
     }
-    
-    
+
     /**
      * Returns the current page: throws PageException if not a share page.
-     * 
-     * @param driver
-     *            WebDrone Instance
+     *
+     * @param driver WebDrone Instance
      * @return HtmlPage
-     * @throws PageException
-     *             if the current page is not a share page
+     * @throws PageException if the current page is not a share page
      */
     public static HtmlPage getCurrentPage(WebDrone driver)
     {
@@ -1528,7 +1547,7 @@ public abstract class AbstractUtils
 
     /**
      * Returns the text for file from Download Directory
-     * 
+     *
      * @param fileName
      * @return
      * @throws IOException
@@ -1565,5 +1584,44 @@ public abstract class AbstractUtils
             fop.close();
 
         }
+    }
+
+    /**
+     * Method to get the path for SharePoint
+     */
+    public static String getPathSharepoint(WebDrone drone)
+    {
+        String pathSharepoint = dronePropertiesMap.get(drone).getPathSharepoint();
+        return pathSharepoint;
+    }
+
+    /**
+     * Method to get token Key for the user
+     */
+    public static String getTokenKey(WebDrone drone, String userName, String password)
+    {
+        String tokenKey = "";
+
+        if (!Boolean.parseBoolean(dronePropertiesMap.get(drone).getLayer7Disabled()))
+        {
+            String currentUrl = drone.getCurrentUrl();
+            if (dronePropertiesMap.get(drone).getAlfrescoVersion().equals(AlfrescoVersion.MyAlfresco))
+            {
+                Layer7AuthorizationOnCloud jetty = new Layer7AuthorizationOnCloud(drone);
+                tokenKey = jetty.getUserTokenKey(userName, password);
+                drone.navigateTo(currentUrl);
+            }
+        }
+        else
+        {
+            System.out.println("Layer7 is not enabled, when Layer7Disabled = true");
+        }
+
+        return tokenKey;
+    }
+
+    public static boolean isLayer7Enabled()
+    {
+        return !Boolean.parseBoolean(layer7Disabled);
     }
 }

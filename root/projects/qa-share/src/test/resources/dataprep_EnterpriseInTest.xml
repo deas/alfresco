@@ -1,18 +1,18 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Classes" verbose="1" preserve-order="true">
-    <test name="dataprep" verbose="1" parallel="classes" thread-count="1">
-        <groups>
-            <run>
-                <include name="DataPrep.*" />
-                <exclude name="NonGrid" />
-                <exclude name=".*Bug.*" />
-            </run>
-        </groups>
-
+    <groups>
+        <run>
+            <include name="DataPrep.*" />
+            <exclude name="NonGrid" />
+            <exclude name=".*Bug.*" />
+        </run>
+    </groups>
     <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+        <listener
+            class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
     </listeners>
-            
+    <test name="dataprep" verbose="1" parallel="classes"
+        thread-count="1">
         <classes>
             <class name="org.alfresco.share.search.AdvanceSearchTest" />
             <class name="org.alfresco.share.user.trashcan.TrashCanTest" />

@@ -49,7 +49,7 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
     }
 
-    @BeforeMethod(groups = { "ShareRefreshCopyToSites" })
+    @BeforeMethod(groups = { "AlfrescoOne" })
     public void prepare() throws Exception
     {
         // login as created user
@@ -65,7 +65,7 @@ public class ShareRefreshCopyToSites extends AbstractUtils
 
     }
 
-    @AfterMethod(groups = { "ShareRefreshCopyToSites" })
+    @AfterMethod(groups = { "AlfrescoOne" })
     public void quit() throws Exception
     {
         // login as created user
@@ -89,8 +89,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10480() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14035() throws Exception
     {
         // create content
         String testName = getTestName();
@@ -136,8 +136,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10481() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14036() throws Exception
     {
 
         // create site
@@ -174,8 +174,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10482() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14037() throws Exception
     {
 
         // create site
@@ -212,8 +212,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10483() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14038() throws Exception
     {
 
         // create site
@@ -249,8 +249,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10484() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14039() throws Exception
     {
 
         // create site
@@ -287,8 +287,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10485() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14040() throws Exception
     {
         // create site
         String testName = getTestName();
@@ -323,8 +323,8 @@ public class ShareRefreshCopyToSites extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshCopyToSites" })
-    public void ALF_10486() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_14041() throws Exception
     {
         // create site
         String testName = getTestName();

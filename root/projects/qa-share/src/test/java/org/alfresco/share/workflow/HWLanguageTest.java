@@ -54,7 +54,7 @@ public class HWLanguageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-1064:L10N for Cloud Review Task
+     * AONE-15731:L10N for Cloud Review Task
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -86,10 +86,10 @@ public class HWLanguageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-1064:L10N for Cloud Review Task
+     * AONE-15731:L10N for Cloud Review Task
      */
     @Test
-    public void ALF_1063() throws Exception
+    public void AONE_15730() throws Exception
     {
 //        setupCustomDrone(getCustomDroneWithLanguage(Language.SPANISH));
         String testName = getTestName();
@@ -209,7 +209,7 @@ public class HWLanguageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-1064:L10N for Cloud Review Task
+     * AONE-15731:L10N for Cloud Review Task
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create 2 Cloud Users (cloudUser, Reviewer1)</li>
@@ -241,10 +241,10 @@ public class HWLanguageTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-1064:L10N for Cloud Review Task
+     * AONE-15731:L10N for Cloud Review Task
      */
     @Test
-    public void ALF_1064() throws Exception
+    public void AONE_15731() throws Exception
     {
 //        setupCustomDrone(getCustomDroneWithLanguage(Language.FRENCH));
         String testName = getTestName();

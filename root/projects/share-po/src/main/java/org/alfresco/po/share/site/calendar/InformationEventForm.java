@@ -2,6 +2,7 @@ package org.alfresco.po.share.site.calendar;
 
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
+import org.alfresco.webdrone.RenderWebElement;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,15 @@ public class InformationEventForm extends AbstractEventForm
     private final static By WHAT_DETAIL = By.xpath("//div[contains(text(),'What:')]/following-sibling::div");
     private final static By WHERE_DETAIL = By.xpath("//div[contains(text(),'Where:')]/following-sibling::div");
     private final static By DESCRIPTION_DETAIL = By.xpath("//div[contains(text(),'Description:')]/following-sibling::div");
+    @RenderWebElement
     private final static By OK_BUTTON = By.cssSelector("button[id$='_defaultContainer-cancel-button-button']");
+    @RenderWebElement
+    private final static By START_DATE_TIME = By.cssSelector("div[id$='_defaultContainer-startdate']");
+    @RenderWebElement
+    private final static By END_DATE_TIME = By.cssSelector("div[id$='_defaultContainer-enddate']");
+
+    private final static By RECURRENCE_LABEL = By.xpath("//div[contains(text(),'Recurrence:')]");
+    private final static By RECURRENCE_DETAIL = By.xpath("//div[contains(text(),'Recurrence:')]/following-sibling::div");
 
     public InformationEventForm(WebDrone drone)
     {
@@ -33,7 +42,10 @@ public class InformationEventForm extends AbstractEventForm
     @Override
     public InformationEventForm render(RenderTime timer)
     {
+
         basicRender(timer);
+
+        webElementRender(timer);
         return this;
     }
 
@@ -98,10 +110,10 @@ public class InformationEventForm extends AbstractEventForm
 
     /**
      * Method to verify whether Edit button is present
-     *
+     * 
      * @return boolean
      */
-    public boolean isEditButtonPresent ()
+    public boolean isEditButtonPresent()
     {
         boolean isPresent = false;
         try
@@ -117,10 +129,10 @@ public class InformationEventForm extends AbstractEventForm
 
     /**
      * Method to verify whether Delete button is present
-     *
+     * 
      * @return boolean
      */
-    public boolean isDeleteButtonPresent ()
+    public boolean isDeleteButtonPresent()
     {
         boolean isPresent = false;
         try
@@ -157,7 +169,7 @@ public class InformationEventForm extends AbstractEventForm
 
     /**
      * Method to retrieve what Detail added to Calendar Event
-     *
+     * 
      * @return String
      */
     public String getWhatDetail()
@@ -178,7 +190,7 @@ public class InformationEventForm extends AbstractEventForm
 
     /**
      * Method to retrieve where Detail added to Calendar Event
-     *
+     * 
      * @return String
      */
     public String getWhereDetail()
@@ -199,7 +211,7 @@ public class InformationEventForm extends AbstractEventForm
 
     /**
      * Method to retrieve description Detail added to Calendar Event
-     *
+     * 
      * @return String
      */
     public String getDescriptionDetail()
@@ -207,10 +219,10 @@ public class InformationEventForm extends AbstractEventForm
         try
         {
             String whatDetail = drone.findAndWait(DESCRIPTION_DETAIL).getText();
-            if (!whatDetail.isEmpty())
-                return whatDetail;
-            else
-                throw new IllegalArgumentException("Cannot find description Detail");
+            // if (!whatDetail.isEmpty())
+            return whatDetail;
+            // else
+            // throw new IllegalArgumentException("Cannot find description Detail");
         }
         catch (TimeoutException te)
         {
@@ -220,7 +232,7 @@ public class InformationEventForm extends AbstractEventForm
 
     /**
      * Method for close information event form
-     *
+     * 
      * @return
      */
     public CalendarPage closeInformationForm()
@@ -240,4 +252,131 @@ public class InformationEventForm extends AbstractEventForm
         }
         return drone.getCurrentPage().render();
     }
+
+    /**
+     * Method to retrieve Start Date Time of event
+     * 
+     * @return String
+     * @author Bogdan.Bocancea
+     */
+    public String getStartDateTime()
+    {
+        try
+        {
+            String whatDetail = drone.findAndWait(START_DATE_TIME).getText();
+            if (!whatDetail.isEmpty())
+                return whatDetail;
+            else
+                throw new IllegalArgumentException("Cannot find Start Date");
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the Start Date");
+        }
+    }
+
+    /**
+     * Method to retrieve End Date Time of event
+     * 
+     * @return String
+     * @author Bogdan.Bocancea
+     */
+    public String getEndDateTime()
+    {
+        try
+        {
+            String whatDetail = drone.findAndWait(END_DATE_TIME).getText();
+            if (!whatDetail.isEmpty())
+                return whatDetail;
+            else
+                throw new IllegalArgumentException("Cannot find End Date");
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Unable to retrieve the End Date");
+        }
+    }
+
+    /**
+     * Method to verify whether Delete button is enabled
+     * 
+     * @return boolean
+     */
+    public boolean isDeleteButtonEnabled()
+    {
+        boolean isPresent = false;
+        try
+        {
+            isPresent = drone.findAndWait(DELETE_BUTTON).isEnabled();
+        }
+        catch (TimeoutException te)
+        {
+            logger.debug("The operation has timed out");
+        }
+        return isPresent;
+    }
+
+    /**
+     * Method to verify whether Delete button is enabled
+     * 
+     * @return boolean
+     */
+    public boolean isOkButtonEnabled()
+    {
+        boolean isPresent = false;
+        try
+        {
+            isPresent = drone.findAndWait(OK_BUTTON).isEnabled();
+        }
+        catch (TimeoutException te)
+        {
+            logger.debug("The operation has timed out");
+        }
+        return isPresent;
+    }
+
+    /**
+     * Method to verify whether Recurrence is present
+     * 
+     * @return boolean
+     */
+    public boolean isRecurrencePresent()
+    {
+        boolean isPresent = false;
+        try
+        {
+            isPresent = drone.isElementDisplayed(RECURRENCE_LABEL);
+        }
+        catch (TimeoutException te)
+        {
+            logger.debug("The operation has timed out");
+        }
+        return isPresent;
+    }
+
+    /**
+     * Method to retrieve description Detail added to Calendar Event
+     * 
+     * @return String
+     */
+    public String getRecurrenceDetail()
+    {
+        if (isRecurrencePresent())
+        {
+            try
+            {
+                String recurrenceDetail = drone.findAndWait(RECURRENCE_DETAIL).getText();
+                return recurrenceDetail;
+            }
+            catch (TimeoutException te)
+            {
+                throw new ShareException("Unable to retrieve the description Detail");
+            }
+        }
+        else
+        {
+            return "";
+        }
+    }
+
 }

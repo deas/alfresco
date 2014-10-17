@@ -1,11 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Classes" verbose="1" preserve-order="true" parallel="classes" thread-count="7">
+
     <groups>
         <run>
             <include name="DataPrep.*" />
             <exclude name="NonGrid" />
         </run>
     </groups>
+
     <test name="dataprep-HybridWorkflowSanityTest" verbose="1">
         <classes>
             <class name="org.alfresco.share.workflow.HybridWorkflowSanityTest" />
@@ -41,4 +43,5 @@
             <class name="org.alfresco.share.workflow.WorkFlowActionsTest" />
         </classes>
     </test>
+
 </suite>

@@ -25,10 +25,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,7 +109,7 @@ public class SiteGroupsPage extends SharePage
 
     /**
      * Navigate to Add Groups Page.
-     * 
+     *
      * @return
      */
     public AddGroupsPage navigateToAddGroupsPage()
@@ -152,7 +149,7 @@ public class SiteGroupsPage extends SharePage
      *
      * @return boolean
      */
-    public boolean isAddGroupDisplayed ()
+    public boolean isAddGroupDisplayed()
     {
         try
         {
@@ -172,7 +169,7 @@ public class SiteGroupsPage extends SharePage
      */
     public List<String> searchGroup(String groupName)
     {
-        if(getAlfrescoVersion().isCloud())
+        if (getAlfrescoVersion().isCloud())
             throw new UnsupportedOperationException("The version is cloud");
         if (groupName == null)
         {
@@ -292,7 +289,7 @@ public class SiteGroupsPage extends SharePage
      * @param groupName
      * @return true if displayed
      */
-    public boolean isAssignRolePresent (String groupName)
+    public boolean isAssignRolePresent(String groupName)
     {
         String name = groupName.trim();
         try
@@ -302,6 +299,10 @@ public class SiteGroupsPage extends SharePage
         catch (TimeoutException te)
         {
             throw new ShareException("The operation has timed out");
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return isAssignRolePresent(groupName);
         }
     }
 

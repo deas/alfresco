@@ -19,17 +19,10 @@
 
 package org.alfresco.share.site.document;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.FolderDetailsPage;
 import org.alfresco.po.share.site.document.ShareLinkPage;
-import org.alfresco.po.share.site.document.ViewPublicLinkPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -40,6 +33,10 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.io.File;
+
+import static org.testng.Assert.*;
 
 /**
  * Repository Tests
@@ -65,7 +62,7 @@ public class DocumentShareTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepAlfrescoOne", "AlfrescoOne" })
-    public void dataPrep_ALF_5673() throws Exception
+    public void dataPrep_AONE_14062() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -97,8 +94,8 @@ public class DocumentShareTests extends AbstractUtils
 
     }
 
-    @Test(groups = "AlfrescoOne")
-    public void ALF_5673() throws Exception
+    @Test(groups = {"AlfrescoOne", "IntermittentBugs"})
+    public void AONE_14062() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -137,7 +134,7 @@ public class DocumentShareTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepAlfrescoOne", "AlfrescoOne" })
-    public void dataPrep_ALF_8654() throws Exception
+    public void dataPrep_AONE_14073() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -155,214 +152,7 @@ public class DocumentShareTests extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_8654() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName) + System.currentTimeMillis();
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + ".txt";
-        File file1 = newFile(fileName1, fileName1);
-
-        // User login.
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // create folders and files for the test
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-        ShareUserSitePage.selectView(drone, ViewType.DETAILED_VIEW);
-
-        ShareUserSitePage.createFolder(drone, folderName, folderName);
-        ShareUserSitePage.navigateToFolder(drone, folderName);
-        ShareUserSitePage.uploadFile(drone, file1);
-
-        ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
-
-        assertTrue(shareLinkPage.isEmailLinkPresent());
-        assertTrue(shareLinkPage.isFaceBookLinkPresent());
-        assertTrue(shareLinkPage.isTwitterLinkPresent());
-        assertTrue(shareLinkPage.isGooglePlusLinkPresent());
-
-        shareLinkPage.clickFaceBookLink();
-        String mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Facebook"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        shareLinkPage.clickTwitterLink();
-        mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Share a link on Twitter"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        shareLinkPage.clickGooglePlusLink();
-        mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Google+"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        ViewPublicLinkPage viewPublicLinkPage = shareLinkPage.clickViewButton().render();
-        assertEquals(viewPublicLinkPage.getContentTitle(), fileName1);
-    }
-
-    @Test(groups = { "DataPrepAlfrescoOne", "AlfrescoOne" })
-    public void dataPrep_ALF_8655() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String[] testUserInfo = new String[] { testUser };
-
-        // User
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-        // User login
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // Site creation
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-    }
-
-    @Test(groups = "AlfrescoOne")
-    public void ALF_8655() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName) + System.currentTimeMillis();
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + ".txt";
-        File file1 = newFile(fileName1, fileName1);
-
-        // User login.
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // create folders and files for the test
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-        ShareUserSitePage.createFolder(drone, folderName, folderName);
-        ShareUserSitePage.navigateToFolder(drone, folderName);
-        ShareUserSitePage.uploadFile(drone, file1);
-
-        ShareUserSitePage.selectView(drone, ViewType.GALLERY_VIEW);
-
-        ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
-
-        assertTrue(shareLinkPage.isEmailLinkPresent());
-        assertTrue(shareLinkPage.isFaceBookLinkPresent());
-        assertTrue(shareLinkPage.isTwitterLinkPresent());
-        assertTrue(shareLinkPage.isGooglePlusLinkPresent());
-
-        shareLinkPage.clickFaceBookLink();
-        String mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Facebook"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        shareLinkPage.clickTwitterLink();
-        mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Share a link on Twitter"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        shareLinkPage.clickGooglePlusLink();
-        mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Google+"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        ViewPublicLinkPage viewPublicLinkPage = shareLinkPage.clickViewButton().render();
-        assertEquals(viewPublicLinkPage.getContentTitle(), fileName1);
-    }
-
-    @Test(groups = { "DataPrepAlfrescoOne", "AlfrescoOne" })
-    public void dataPrep_ALF_8656() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String[] testUserInfo = new String[] { testUser };
-
-        // User
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-        // User login
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // Site creation
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-    }
-
-    @Test(groups = "AlfrescoOne")
-    public void ALF_8656() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String folderName = getFolderName(testName) + System.currentTimeMillis();
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + ".txt";
-        File file1 = newFile(fileName1, fileName1);
-
-        // User login.
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // create folders and files for the test
-        ShareUser.openSitesDocumentLibrary(drone, siteName);
-
-        ShareUserSitePage.createFolder(drone, folderName, folderName);
-        ShareUserSitePage.navigateToFolder(drone, folderName);
-        ShareUserSitePage.uploadFile(drone, file1);
-
-        DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName1);
-
-        ShareLinkPage shareLinkPage = detailsPage.clickShareLink().render();
-
-        assertTrue(shareLinkPage.isEmailLinkPresent());
-        assertTrue(shareLinkPage.isFaceBookLinkPresent());
-        assertTrue(shareLinkPage.isTwitterLinkPresent());
-        assertTrue(shareLinkPage.isGooglePlusLinkPresent());
-
-        shareLinkPage.clickFaceBookLink();
-        String mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Facebook"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        shareLinkPage.clickTwitterLink();
-        mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Share a link on Twitter"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        shareLinkPage.clickGooglePlusLink();
-        mainWindow = drone.getWindowHandle();
-        assertTrue(isWindowOpened(drone, "Google+"));
-        drone.closeWindow();
-        drone.switchToWindow(mainWindow);
-
-        ViewPublicLinkPage viewPublicLinkPage = shareLinkPage.clickViewButton().render();
-        assertEquals(viewPublicLinkPage.getContentTitle(), fileName1);
-    }
-
-    @Test(groups = { "DataPrepAlfrescoOne", "AlfrescoOne" })
-    public void dataPrep_ALF_8657() throws Exception
-    {
-        String testName = getTestName();
-        String testUser = getUserNameFreeDomain(testName);
-        String siteName = getSiteName(testName);
-        String[] testUserInfo = new String[] { testUser };
-
-        // User
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUserInfo);
-
-        // User login
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-
-        // Site creation
-        ShareUser.createSite(drone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
-    }
-
-    @Test(groups = "AlfrescoOne")
-    public void ALF_8657() throws Exception
+    public void AONE_14073() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);

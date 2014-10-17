@@ -34,7 +34,8 @@ public class TinyMceEditor extends HtmlElement
     private Log logger = LogFactory.getLog(TinyMceEditor.class);
 
     private static final String TINY_MCE_SELECT_ALL_COMMAND = "tinyMCE.activeEditor.selection.select(tinyMCE.activeEditor.getBody(),true);";
-    private static final String XPATH_COLOUR_FONT = "//font";
+    //private static final String XPATH_COLOUR_FONT = "//font";
+    private static final String XPATH_COLOUR_FONT2 = ".//*[@id='tinymce']/p/span";
     private static final String CSS_REMOVE_FORMAT = "i.mce-i-removeformat";
     private static final String CSS_COLOR_ATT = "rich.txt.editor.color.code";
     private static final String CSS_STR_BOLD = "i[class$='mce-i-bold']";
@@ -299,7 +300,7 @@ public class TinyMceEditor extends HtmlElement
         try
         {
             drone.switchToFrame(getFrameId());
-            WebElement element = drone.findAndWait(By.xpath(XPATH_COLOUR_FONT));
+            WebElement element = drone.findAndWait(By.xpath(XPATH_COLOUR_FONT2));
             if (!CSS_COLOR_ATT.equals(element.getAttribute("color")) || CSS_COLOR_ATT.equals(element.getAttribute("style")))
             {
                 drone.switchToDefaultContent();
@@ -309,7 +310,7 @@ public class TinyMceEditor extends HtmlElement
         }
         catch (NoSuchElementException noSuchElementExp)
         {
-            logger.error("Element :" + XPATH_COLOUR_FONT + " does not exist", noSuchElementExp);
+            logger.error("Element :" + XPATH_COLOUR_FONT2 + " does not exist", noSuchElementExp);
         }
         return "";
     }

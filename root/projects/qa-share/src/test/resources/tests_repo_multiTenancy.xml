@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Multi Tenancy suite" preserve-order="true">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="NonGrid"/>
+            <exclude name=".*Bug.*"/>
+            <exclude name="Enterprise42Only"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <test name="Multi Tenancy tests Suite">
+        <classes>
+            <class name="org.alfresco.share.repository.MultiTenancyTest"/>
+        </classes>
+    </test>
+
+</suite>

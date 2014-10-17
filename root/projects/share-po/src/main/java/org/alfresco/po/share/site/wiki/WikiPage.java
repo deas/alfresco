@@ -15,15 +15,19 @@
 package org.alfresco.po.share.site.wiki;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.SitePage;
 import org.alfresco.po.share.site.document.TinyMceEditor;
+import org.alfresco.po.share.util.PageUtils;
+import org.alfresco.po.thirdparty.firefox.RssFeedPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
@@ -33,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -51,7 +56,7 @@ public class WikiPage extends SitePage
     private static final String WIKI_FORMAT_IFRAME = "template_x002e_createform_x002e_wiki-create_x0023_default-content_ifr";
     private static final String WIKI_EDIT_IFRAME = "template_x002e_wikipage_x002e_wiki-page_x0023_default-content_ifr";
     private static final By CANCEL_BUTTON = By.cssSelector("a[id$='default-cancel-button-button']");
-    private static final By DEFAULT_CONTENT_TOOLBAR = By.cssSelector("div[class^='mce-toolbar']");
+    private static final By DEFAULT_CONTENT_TOOLBAR = By.cssSelector("div[class^='mce']"); //By.cssSelector("div[class^='mce-toolbar']");
     private static final By BUTTON_CREATE = By.cssSelector("button[id$='default-create-button-button']");
     private static final By CREATE_WIKI_TITLE = By.cssSelector("input[id$='createform_x002e_wiki-create_x0023_default-title']");
     private static final By FONT_STYLE_SELECT = By.cssSelector("a[id$='default-content_fontselect_open']");
@@ -67,31 +72,41 @@ public class WikiPage extends SitePage
     private static final By VERSION_PLACEHOLDER = By.cssSelector(".meta-section-label");
     private static final By REVERT_BTN = By.cssSelector(".revert>a");
     private static final By RENAME_SAVE_BTN = By.cssSelector("button[id$='rename-save-button-button']");
-    private static final By DETAILS_LINK = By.cssSelector("a[href$='details']");
+    private static final By DETAILS_LINK = By.cssSelector(".title-bar .align-right span:last-child, a[href$='details']");
+    private static final By VIEW_LINK = By.cssSelector("a[href$='view']");
     private static final By VERSION_HEADER = By.cssSelector("span[id$='default-version-header']");
     @SuppressWarnings("unused")
     private static final By CONFIRM_REVERT_BTN = By.cssSelector("button[id$='ok-button-button']");
-    private static final By WIKI_TEXT = By.cssSelector("div[id$='default-page']>p");
+    private static final By WIKI_TEXT = By.cssSelector("div[id$='default-page']");
     private static final By WIKI_TITLE = By.cssSelector("div[class*='pageTitle']");
-    private static final By WIKI_TAG_INPUT = By.cssSelector("#template_x002e_createform_x002e_wiki-create_x0023_default-tag-input-field");
-    private static final By ADD_TAG_BUTTON = By.cssSelector("#template_x002e_createform_x002e_wiki-create_x0023_default-add-tag-button-button");
-    private static final By TAG = By.cssSelector("div[class*='tag']");
+    private static final By WIKI_TAG_INPUT = By.cssSelector("input[id$='tag-input-field']");
+    private static final By ADD_TAG_BUTTON = By.cssSelector("button[id$='default-add-tag-button-button']");
+    private static final By TAG = By.cssSelector("div[class*='tag']>div");
+    private static final By TAG_NONE = By.cssSelector("div[class*='tag']");
+    private static final By SELECT_VERSION_BUTTON = By.cssSelector("button[id$='selectVersion-button-button']");
+    @SuppressWarnings("unused")
+    private static final By RSS_FEED_BUTTON = By.cssSelector("span[id$='default-rssFeed-button']");
+    private static final String LATEST_VERSION = " (Latest)";
+    protected static final By MAIN_PAGE = By.cssSelector(".forwardLink>a");
+    private static final String VERSION_HISTORY_CONTAINER = "//div[@class='yui-gb']//div[contains(@class, 'first')]";
+    private static final String TAGS_CONTAINER = "//div[contains(@class, 'tags')]/..";
+    private static final String LINKED_PAGES_CONTAINER = "//div[contains(@class, 'links')]/..";
 
     private TinyMceEditor tinyMCEEditor = new TinyMceEditor(drone);
 
     public enum ImageType
     {
-        JPG, PNG, BMP;
+        JPG, PNG, BMP
     }
 
     public enum Mode
     {
-        ADD, EDIT;
+        ADD, EDIT
     }
 
     public enum FONT_ATTR
     {
-        face, size;
+        face, size
     }
 
     public WikiPage(WebDrone drone)
@@ -210,13 +225,13 @@ public class WikiPage extends SitePage
         try
         {
             drone.executeJavaScript(String.format("tinyMCE.activeEditor.setContent('%s');", txtLines.get(0)));
-            drone.switchToFrame(WIKI_FORMAT_IFRAME);
-            WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
-            if (!element.getText().isEmpty())
-            {
-                element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-            }
-            drone.switchToDefaultContent();
+//            drone.switchToFrame(WIKI_FORMAT_IFRAME);
+//            WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
+//            if (!element.getText().isEmpty())
+//            {
+//                element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+//            }
+//            drone.switchToDefaultContent();
         }
         catch (TimeoutException toe)
         {
@@ -329,20 +344,23 @@ public class WikiPage extends SitePage
     {
         try
         {
-            drone.waitUntilElementClickable(BUTTON_SAVE, TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
+            drone.waitUntilElementClickable(BUTTON_SAVE, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             WebElement saveButton = drone.findAndWait(BUTTON_SAVE);
             if (saveButton.isEnabled())
             {
                 saveButton.click();
-                drone.waitUntilElementDeletedFromDom(DEFAULT_CONTENT_TOOLBAR, maxPageLoadingTime);
-                return new WikiPage(drone);
+                drone.waitUntilElementDeletedFromDom(DEFAULT_CONTENT_TOOLBAR, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
             }
-        }
+            else
+            {
+                throw new PageException(BUTTON_SAVE + " is not enabled");
+            }
+                return new WikiPage(drone).render();
+            }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding " + BUTTON_SAVE, toe);
+            throw new PageException("Not able find the Save Button");
         }
-        throw new PageException("Not able find the Save Button");
     }
 
     /**
@@ -516,14 +534,13 @@ public class WikiPage extends SitePage
         try
         {
             drone.findAndWait(EDIT_WIKI).click();
-            drone.waitUntilElementClickable(DEFAULT_CONTENT_TOOLBAR, maxPageLoadingTime);
-            return new WikiPage(drone);
+            drone.waitUntilElementClickable(DEFAULT_CONTENT_TOOLBAR, SECONDS.convert(maxPageLoadingTime, MILLISECONDS));
+            return new WikiPage(drone).render();
         }
         catch (TimeoutException toe)
         {
-            logger.error("Time out finding image", toe);
+            throw new PageException("Time out finding image", toe);
         }
-        throw new PageException();
     }
 
     /**
@@ -577,13 +594,15 @@ public class WikiPage extends SitePage
 
     public WikiPage createWikiPage(String wikiTitle, List<String> txtLines)
     {
+        logger.info("Creating wiki page " + wikiTitle);
         try
         {
             WikiPage wikiPage = new WikiPage(drone);
             wikiPage.clickOnNewPage();
             wikiPage.createWikiPageTitle(wikiTitle);
             wikiPage.insertText(txtLines);
-            return wikiPage.clickSaveButton();
+            wikiPage.clickSaveButton();
+            return drone.getCurrentPage().render();
         }
         catch (TimeoutException e)
         {
@@ -600,8 +619,9 @@ public class WikiPage extends SitePage
      * @param tagsList
      * @return WikiPage object
      */
-    public WikiPage createWikiPage(String wikiTitle, List <String> txtLines, List<String> tagsList)
+    public WikiPage createWikiPage(String wikiTitle, List<String> txtLines, List<String> tagsList)
     {
+        logger.info("Creating wiki page " + wikiTitle);
         try
         {
             WikiPage wikiPage = new WikiPage(drone);
@@ -619,35 +639,62 @@ public class WikiPage extends SitePage
     }
 
     /**
+     * Edit Wiki Page.
+     *
+     * @return
+     */
+    public WikiPage editWikiPage(String txtLines, List<String> tagsList)
+    {
+        logger.info("Editing wiki page");
+        try
+        {
+            editWikiPage();
+            editWikiText(txtLines);
+            addTag(tagsList);
+            clickSaveButton();
+        }
+        catch (TimeoutException toe)
+        {
+            throw new PageException("Time out finding image", toe);
+        }
+        return drone.getCurrentPage().render();
+    }
+
+    /**
      * Method to add tags to the new wiki page
      *
      * @param tagsList
      * @return WikiPage object
      */
-    private WikiPage addTag(List<String> tagsList)
+    public WikiPage addTag(List<String> tagsList)
     {
 
         checkNotNull(tagsList);
         WebElement inputTag = drone.findAndWait(WIKI_TAG_INPUT);
 
         String tagString = "";
-        for(String tag : tagsList)
-           tagString += tag;
+        for (String tag : tagsList)
+            tagString += tag;
 
         inputTag.sendKeys(tagString);
-        WebElement addButton = drone.find(ADD_TAG_BUTTON);
+        WebElement addButton = drone.findAndWait(ADD_TAG_BUTTON);
         addButton.click();
 
         return new WikiPage(drone);
     }
-    
+
     private boolean isDisplayed(By locator)
     {
         try
         {
-            return drone.findAndWait(locator, 2000).isEnabled();
+            return drone.findAndWait(locator, 2000).isEnabled()
+                && drone.find(locator).isDisplayed();
         }
-        catch (TimeoutException e)
+        catch (TimeoutException te)
+        {
+            return false;
+        }
+        catch (NoSuchElementException nse)
         {
             return false;
         }
@@ -670,18 +717,35 @@ public class WikiPage extends SitePage
      */
     public WikiPageList clickWikiPageListBtn()
     {
+        boolean isClicked = false;
         try
         {
             List<WebElement> elements = drone.findAll(By.cssSelector(".forwardLink>a"));
             for (WebElement webElement : elements)
             {
                 if (drone.getValue("wiki.page.list").equals(webElement.getText()))
+                //if(!webElement.getAttribute("href").contains("Main_Page"))
                 {
                     webElement.click();
+                    isClicked = true;
                     break;
                 }
             }
-            
+            if (!isClicked)
+            {
+                elements = drone.findAll(By.cssSelector(".backLink>a"));
+                for (WebElement webElement : elements)
+                {
+                    if (drone.getValue("wiki.page.list").equals(webElement.getText()))
+                    //if(!webElement.getAttribute("href").contains("Main_Page"))
+                    {
+                        webElement.click();
+                        isClicked = true;
+                        break;
+                    }
+                }
+            }
+
             //drone.findAndWait(BACK_LINK).click();
             waitUntilAlert();
         }
@@ -704,6 +768,7 @@ public class WikiPage extends SitePage
      */
     public WikiPage renameWikiPage(String newTitle)
     {
+        logger.info("Renaming wiki page to" + newTitle);
         try
         {
             drone.findAndWait(RENAME_BUTTON).click();
@@ -726,9 +791,11 @@ public class WikiPage extends SitePage
      */
     public void clickDetailsLink()
     {
+        logger.info("Viewing details for wiki page");
         try
         {
-            drone.findAndWait(DETAILS_LINK, 3000).click();
+            drone.findAndWait(DETAILS_LINK).click();
+            waitUntilAlert();
             logger.info("Opened wiki details page");
         }
         catch (TimeoutException te)
@@ -739,6 +806,7 @@ public class WikiPage extends SitePage
 
     /**
      * Method to revert to version provided
+     *
      * @param versionNum
      * @return WikiPage
      */
@@ -820,13 +888,6 @@ public class WikiPage extends SitePage
         {
             String setCommentJs = String.format("tinyMCE.activeEditor.setContent('%s');", txtLines);
             drone.executeJavaScript(setCommentJs);
-            drone.switchToFrame(WIKI_EDIT_IFRAME);
-            WebElement element = drone.findAndWait(By.cssSelector("#tinymce"));
-            if (!element.getText().isEmpty())
-            {
-                element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-            }
-            drone.switchToDefaultContent();
         }
         catch (TimeoutException toe)
         {
@@ -878,7 +939,7 @@ public class WikiPage extends SitePage
         return drone.findAndWait(RENAME_BUTTON).isEnabled();
     }
 
-    public boolean isRevertEnabled ()
+    public boolean isRevertEnabled()
     {
         return drone.isElementDisplayed(REVERT_BTN);
     }
@@ -892,16 +953,156 @@ public class WikiPage extends SitePage
     {
         try
         {
-            String tagName = drone.findAndWait(TAG).getText();
-            if (!tagName.isEmpty())
-                return tagName;
-
+            if (!drone.find(TAG).isDisplayed())
+                return null;
             else
-                throw new IllegalArgumentException("Cannot find tag");
+            {
+                String tagName = drone.findAndWait(TAG).getText();
+                if (!tagName.isEmpty())
+                    return tagName;
+
+                else
+                    throw new IllegalArgumentException("Cannot find tag");
+            }
+        }
+        catch (NoSuchElementException te)
+        {
+            if(!drone.find(TAG_NONE).isDisplayed())
+                return null;
+            else
+                return drone.findAndWait(TAG_NONE).getText();
+        }
+    }
+
+    /**
+     * Method to view the given version of wiki page
+     *
+     * @param versionNum
+     */
+    public void viewVersion(Double versionNum)
+    {
+        logger.info("Viewing Wiki Page version");
+        if (versionNum == null)
+        {
+            throw new PageException("Version number is required");
+        }
+        try
+        {
+            String versionNumber = Double.toString(versionNum);
+            WebElement selectVersionBtn = drone.findAndWait(SELECT_VERSION_BUTTON);
+            selectVersionBtn.click();
+
+            List<WebElement> allVerions = drone.findAll(By.cssSelector(".bd>ul>li"));
+
+            List<String> stringValues = new ArrayList<String>();
+            for (WebElement allVers : allVerions)
+            {
+                stringValues.add(allVers.getText());
+            }
+            if (stringValues.contains(versionNumber) || stringValues.contains(versionNumber + LATEST_VERSION))
+            {
+                for (WebElement allTheVersions : allVerions)
+                {
+                    if (allTheVersions.getText().contentEquals(versionNumber) || allTheVersions.getText().contentEquals(versionNumber + LATEST_VERSION))
+                    {
+                        allTheVersions.click();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                throw new PageException("The version provided isn't present");
+            }
         }
         catch (TimeoutException te)
         {
-            throw new ShareException("Unable to retrieve the tag");
+            throw new PageException("Unable to find the button");
         }
+    }
+
+    /**
+     * Method to view Rss Feed for wiki pages
+     *
+     * @param username
+     * @param password
+     * @return RssFeedPage
+     */
+    public RssFeedPage clickRssFeedBtn(String username, String password)
+    {
+        logger.info("Viewing RSS Feed for wiki page");
+        String currentWikiUrl = drone.getCurrentUrl();
+        String protocolVar = PageUtils.getProtocol(currentWikiUrl);
+        String shareUrlVar = PageUtils.getShareUrl(currentWikiUrl);
+        String siteName = PageUtils.getSiteName(currentWikiUrl);
+        String rssUrl = String.format("%s%s:%s@%s/feedservice/components/wiki/rss?site=%s", protocolVar, username, password, shareUrlVar, siteName);
+        drone.navigateTo(rssUrl);
+        return new RssFeedPage(drone).render();
+    }
+
+    /**
+     * Method to navigate to Main Page
+     *
+     * @return true if Main Page is open
+     */
+    public boolean openMainPage()
+    {
+        boolean isMainPage = false;
+        try
+        {
+            List<WebElement> mainPage = drone.findAll(MAIN_PAGE);
+            for (WebElement theMainPage : mainPage)
+            {
+                if (theMainPage.getAttribute("href").contains("Main_Page"))
+                {
+                    theMainPage.click();
+                    break;
+                }
+            }
+            waitUntilAlert();
+            String currentUrl = drone.getCurrentUrl();
+            if (currentUrl.contains("filter=main&title=Main_Page"))
+            {
+                logger.info("Opened Wiki Main Page");
+                isMainPage = true;
+            }
+        }
+        catch (TimeoutException te)
+        {
+            throw new PageException("Unable to find " + MAIN_PAGE);
+        }
+        return isMainPage;
+    }
+
+    /**
+     * Method to verify whether wiki details page has all necessary elements present
+     *
+     * @param wikiTitle
+     * @param wikiText
+     * @return boolean
+     */
+    public boolean isWikiDetailsCorrect(String wikiTitle, String wikiText)
+    {
+        wikiTitle = wikiTitle.replace("_", " ");
+        return isTitleBarActionsDisplayed() && isDownPanesDisplayed()
+            && isDetailsWrapperDisplayed() && getWikiTitle().contentEquals(wikiTitle)
+            && getWikiText().contentEquals(wikiText);
+    }
+
+    private boolean isTitleBarActionsDisplayed()
+    {
+        return isDisplayed(VIEW_LINK) && isDisplayed(EDIT_WIKI)
+            && isDisplayed(DETAILS_LINK);
+    }
+
+    private boolean isDownPanesDisplayed()
+    {
+        return isDisplayed(By.xpath(VERSION_HISTORY_CONTAINER)) && isDisplayed(By.xpath(TAGS_CONTAINER))
+            && isDisplayed(By.xpath(LINKED_PAGES_CONTAINER));
+    }
+
+    private boolean isDetailsWrapperDisplayed()
+    {
+        return isDisplayed(By.cssSelector(".details-wrapper"));
     }
 }

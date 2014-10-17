@@ -1,16 +1,8 @@
 package org.alfresco.share.workflow;
 
-import java.util.List;
-
 import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.site.document.*;
-import org.alfresco.po.share.workflow.CloudTaskOrReviewPage;
-import org.alfresco.po.share.workflow.KeepContentStrategy;
-import org.alfresco.po.share.workflow.MyWorkFlowsPage;
-import org.alfresco.po.share.workflow.Priority;
-import org.alfresco.po.share.workflow.TaskType;
-import org.alfresco.po.share.workflow.WorkFlowDetails;
-import org.alfresco.po.share.workflow.WorkFlowFormDetails;
+import org.alfresco.po.share.workflow.*;
 import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserSitePage;
@@ -23,6 +15,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 /**
  * @author Naved Shah
@@ -89,10 +83,10 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
         signInToAlfrescoInTheCloud(drone, cloudUser, DEFAULT_PASSWORD);
 
         ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-        
+
         ShareUserSitePage.createFolder(drone, folderName, folderName);
         ShareUser.uploadFileInFolder(drone, new String[] { fileName, DOCLIB });
-        
+
         WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
         formDetails.setMessage(workFlowName);
         formDetails.setDueDate(dueDate);
@@ -147,145 +141,6 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "DataPrepHybridWorkflow2")
-    public void dataPrep_15201() throws Exception
-    {
-        // TODO: Naveed- Workflow Tasktype should be Cloud Task or Review
-        // TODO: Naveed - Please use startCloudReviewTaskWorkFlow instead of
-        // startSimpleCloudTaskWorkFlow.
-
-        dataprep_Incomplete(drone, hybridDrone, prefixIncomplete);
-    }
-
-    /**
-     * ALF-15201 & ALF-15202:Create Simple Cloud Task and update when its
-     * incomplete.
-     * <ul>
-     * <li>1) Login to OP user and upload a file.</li>
-     * <li>2) Start work flow with the file created on 1. which will sync file
-     * with cloud.</li>
-     * <li>3) Go back to file uploaded and edit properties by modified title and
-     * modifed description.</li>
-     * <li>4) Login as CL-User, Open CL site and verfiy changes of updated
-     * files.</li>
-     * </ul>
-     */
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15201() throws Exception
-    {
-        String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
-
-        String cloudUser = getUserNameForDomain(prefixIncomplete + testName, testDomain);
-
-        String opSiteName = getSiteName(prefixIncomplete + testName) + "-OP";
-        String cloudSiteName = getSiteName(prefixIncomplete + testName) + "-CL";
-        String fileName = getFileName(testName) + ".txt";
-
-        String modifiedFileTitle = testName + "modifiedBy " + System.currentTimeMillis();
-        String descOfFile = fileName + " modified by " + System.currentTimeMillis();
-
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        EditDocumentPropertiesPage editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
-        editDocumentProperties.setDocumentTitle(modifiedFileTitle + user1);
-        editDocumentProperties.setDescription(descOfFile + user1);
-        editDocumentProperties.selectSave().render();
-
-        ShareUser.logout(drone);
-
-        // TODO : TestLink: Please update the 2nd step accordingly.
-
-        ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
-
-        editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(hybridDrone, cloudSiteName, fileName);
-
-        Assert.assertTrue((modifiedFileTitle + user1).equals(editDocumentProperties.getDocumentTitle()),
-                "Document Title modified by OP User is not present for Cloud.");
-        Assert.assertTrue((descOfFile + user1).equals(editDocumentProperties.getDescription()),
-                "Document Description modified by OP User is not present for Cloud.");
-
-        // TODO: TestLink need to be updated. so changed property can reflect.
-        editDocumentProperties.setDocumentTitle(modifiedFileTitle + cloudUser);
-        editDocumentProperties.setDescription(descOfFile + cloudUser);
-
-        ShareUser.logout(hybridDrone);
-
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-
-        editDocumentProperties = ShareUserSitePage.getEditPropertiesFromDocLibPage(drone, opSiteName, fileName);
-
-        Assert.assertTrue((modifiedFileTitle + cloudUser).equals(editDocumentProperties.getDocumentTitle()),
-                "Document Title modified by Cloud User is not present for OP.");
-        Assert.assertTrue((descOfFile + cloudUser).equals(editDocumentProperties.getDescription()),
-                "Document Description modified by CLoud User is not present for OP.");
-
-        ShareUser.logout(drone);
-
-    }
-
-    /**
-     * ALF-15203 & ALF-15204:Create Simple Cloud Task and update when its
-     * incomplete.
-     * <ul>
-     * <li>1) Login to OP user and upload a file.</li>
-     * <li>2) Start work flow with the file created on 1. which will sync file
-     * with cloud.</li>
-     * <li>3) Go back to file uploaded and edit properties by modified title and
-     * modifed description.</li>
-     * <li>4) Login as CL-User, Open CL site and verfiy changes of updated
-     * files.</li>
-     * </ul>
-     */
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15203() throws Exception
-    {
-
-        String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
-        String cloudUser = getUserNameForDomain(prefixIncomplete + testName, testDomain);
-
-        String opSiteName = getSiteName(prefixIncomplete + testName) + "-OP";
-        String cloudSiteName = getSiteName(prefixIncomplete + testName) + "-CL";
-        String fileName = getFileName(testName) + ".txt";
-
-        String modifiedContentByOnPrem = testName + " modifiedBy " + user1;
-        String modifiedContentByCloud = testName + " modifiedBy " + cloudUser;
-
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-        DocumentLibraryPage documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName).render();
-        DocumentDetailsPage documentDetailsPage = documentLibraryPage.selectFile(fileName);
-
-        ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setContent(modifiedContentByOnPrem);
-        contentDetails.setName(fileName);
-        // Select Inline Edit and change the content and save
-        EditTextDocumentPage inlineEditPage = documentDetailsPage.selectInlineEdit().render();
-        documentDetailsPage = inlineEditPage.save(contentDetails).render();
-
-        ShareUser.logout(drone);
-
-        ShareUser.login(hybridDrone, cloudUser, DEFAULT_PASSWORD);
-
-        documentLibraryPage = ShareUser.openSitesDocumentLibrary(hybridDrone, cloudSiteName);
-        documentDetailsPage = documentLibraryPage.selectFile(fileName);
-        inlineEditPage = documentDetailsPage.selectInlineEdit().render();
-        Assert.assertTrue(inlineEditPage.getDetails().getContent().contains(modifiedContentByOnPrem));
-
-        contentDetails.setContent(modifiedContentByCloud);
-        documentDetailsPage = inlineEditPage.save(contentDetails).render();
-        ShareUser.logout(hybridDrone);
-
-        // TODO : TestLink: Please update the 2nd step accordingly.
-
-        ShareUser.login(drone, user1, DEFAULT_PASSWORD);
-
-        documentLibraryPage = ShareUser.openSitesDocumentLibrary(drone, opSiteName);
-        documentDetailsPage = documentLibraryPage.selectFile(fileName);
-        inlineEditPage = documentDetailsPage.selectInlineEdit().render();
-        Assert.assertTrue(inlineEditPage.getDetails().getContent().contains(modifiedContentByCloud));
-
-        ShareUser.logout(drone);
-
-    }
-
-    @Test(groups = "DataPrepHybridWorkflow2")
     public void dataPrep_15207() throws Exception
     {
         // TODO: Naveed- Workflow Tasktype should be Cloud Task or Reivew
@@ -295,7 +150,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15207 & ALF-208:Create Simple Cloud Task and update when its
+     * AONE-15686 & ALF-208:Create Simple Cloud Task and update when its
      * incomplete.
      * <ul>
      * <li>1) Login to OP user and upload a file.</li>
@@ -306,7 +161,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid-Bug", enabled = true)
-    public void ALF_15207() throws Exception
+    public void AONE_15686() throws Exception
     {
         prefixIncomplete = getTestName() ;
         String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
@@ -337,7 +192,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15209 & ALF-210:Create Simple Cloud Task and update when its
+     * AONE-15688 & ALF-210:Create Simple Cloud Task and update when its
      * incomplete.
      * <ul>
      * <li>1) Login to OP user and upload a file.</li>
@@ -348,7 +203,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15209() throws Exception
+    public void AONE_15688() throws Exception
     {
         String user1 = getUserNameForDomain(prefixIncomplete + testName, testDomain);
 
@@ -415,7 +270,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15205 :Create Simple Cloud Task and update when its incomplete.
+     * AONE-15684 :Create Simple Cloud Task and update when its incomplete.
      * <ul>
      * <li>1) Login to OP user and upload a file.</li>
      * <li>2) Start work flow with the file created on 1. which will sync file
@@ -426,8 +281,8 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * changed.
      * </ul>
      */
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15205() throws Exception
+    @Test(groups = {"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15684() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -526,7 +381,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15206 :Create Simple Cloud Task and update when its incomplete.
+     * AONE-15685 :Create Simple Cloud Task and update when its incomplete.
      * <ul>
      * <li>1) Login to CL user and upload a file.</li>
      * <li>2) Start work flow with the file created on 1. which will sync file
@@ -538,7 +393,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15206() throws Exception
+    public void AONE_15685() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -606,11 +461,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15211 & ALF-212 : With complete workflow check for modified
+     * AONE-15690 & ALF-212 : With complete workflow check for modified
      * properties.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15211() throws Exception
+    public void AONE_15690() throws Exception
     {
 
         // dataPrep_15211(drone, hybridDrone);
@@ -661,13 +516,13 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15213 & ALF-214 : With complete workflow check for modified contents.
+     * AONE-15692 & ALF-214 : With complete workflow check for modified contents.
      * 
      * //TODO : TestLink tests needs to updated according to the combining
      * steps.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15213() throws Exception
+    public void AONE_15692() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixComplete + testName, testDomain);
@@ -761,11 +616,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15215 : With complete workflow check for moved content location in
+     * AONE-15694 : With complete workflow check for moved content location in
      * cloud site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15215() throws Exception
+    public void AONE_15694() throws Exception
     {
         // dataPrep_15215(drone, hybridDrone);
         String testName = getTestName() ;
@@ -871,11 +726,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15216 : With complete workflow check for moved content location in
+     * AONE-15695 : With complete workflow check for moved content location in
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15216() throws Exception
+    public void AONE_15695() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -974,11 +829,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15217 : With complete workflow check for delete content location in
+     * AONE-15696 : With complete workflow check for delete content location in
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15217() throws Exception
+    public void AONE_15696() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1073,11 +928,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15218 : With complete workflow check for delete content location in
+     * AONE-15697 : With complete workflow check for delete content location in
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15218() throws Exception
+    public void AONE_15697() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1181,11 +1036,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15219 : With complete workflow check for unsync content in Cloud
+     * AONE-15698 : With complete workflow check for unsync content in Cloud
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15219() throws Exception
+    public void AONE_15698() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1288,11 +1143,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15220 : With complete workflow check for unsync content in on prem
+     * AONE-15699 : With complete workflow check for unsync content in on prem
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15220() throws Exception
+    public void AONE_15699() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1358,7 +1213,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15221() throws Exception
+    public void AONE_15700() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveSync + testName, testDomain);
@@ -1409,9 +1264,8 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15223() throws Exception
+    public void AONE_15702() throws Exception
     {
-        dataprep_Complete(drone, hybridDrone, prefixCompleteWithRemoveSync);
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveSync + testName, testDomain);
 
         String cloudUser = getUserNameForDomain(prefixCompleteWithRemoveSync + testName, testDomain);
@@ -1499,7 +1353,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15225 :Create Simple Cloud Task and update when its incomplete.
+     * AONE-15704 :Create Simple Cloud Task and update when its incomplete.
      * <ul>
      * <li>1) Login to OP user and upload a file.</li>
      * <li>2) Start work flow with the file created on 1. which will sync file
@@ -1511,7 +1365,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15225() throws Exception
+    public void AONE_15704() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1615,7 +1469,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15226 :Create Simple Cloud Task and update when its incomplete.
+     * AONE-15705 :Create Simple Cloud Task and update when its incomplete.
      * <ul>
      * <li>1) Login to CL user and upload a file.</li>
      * <li>2) Start work flow with the file created on 1. which will sync file
@@ -1627,7 +1481,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15226() throws Exception
+    public void AONE_15705() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1730,11 +1584,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15227 : With complete workflow check for delete content location in
+     * AONE-15706 : With complete workflow check for delete content location in
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15227() throws Exception
+    public void AONE_15706() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1837,11 +1691,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15228 : With complete workflow check for delete content location in
+     * AONE-15707 : With complete workflow check for delete content location in
      * On-Prem site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15228() throws Exception
+    public void AONE_15707() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -1944,11 +1798,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15229 : With complete workflow check for unsync content in Cloud
+     * AONE-15708 : With complete workflow check for unsync content in Cloud
      * site.
      */
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15229() throws Exception
+    @Test(groups = {"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15708() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2052,11 +1906,11 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15230 : With complete workflow check for unsync content in on prem
+     * AONE-15709 : With complete workflow check for unsync content in on prem
      * site.
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15230() throws Exception
+    public void AONE_15709() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2125,7 +1979,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15231() throws Exception
+    public void AONE_15710() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
@@ -2155,7 +2009,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15232() throws Exception
+    public void AONE_15711() throws Exception
     {
 
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
@@ -2189,7 +2043,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15235() throws Exception
+    public void AONE_15714() throws Exception
     {
         String user1 = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
         String cloudUser = getUserNameForDomain(prefixCompleteWithRemoveFile + testName, testDomain);
@@ -2291,7 +2145,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15225 :Create Simple Cloud Task and update when its incomplete.
+     * AONE-15704 :Create Simple Cloud Task and update when its incomplete.
      * <ul>
      * <li>1) Login to OP user and upload a file.</li>
      * <li>2) Start work flow with the file created on 1. which will sync file
@@ -2303,7 +2157,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15233() throws Exception
+    public void AONE_15712() throws Exception
     {
         // dataprep_Incomplete(drone, hybridDrone, prefixIncomplete);
         String testName = getTestName() ;
@@ -2407,7 +2261,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15225 :Create Simple Cloud Task and update when its incomplete.
+     * AONE-15704 :Create Simple Cloud Task and update when its incomplete.
      * <ul>
      * <li>1) Login to OP user and upload a file.</li>
      * <li>2) Start work flow with the file created on 1. which will sync file
@@ -2419,7 +2273,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15234() throws Exception
+    public void AONE_15713() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2555,7 +2409,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_9612() throws Exception
+    public void AONE_15715() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2668,7 +2522,7 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
     }
 
     @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15236() throws Exception
+    public void AONE_15716() throws Exception
     {
         String testName = getTestName() ;
         String user1 = getUserNameForDomain(testName, testDomain);
@@ -2749,8 +2603,8 @@ public class HybridWorkflowTest2 extends AbstractWorkflow
 
     }
 
-    @Test(groups = "Hybrid", enabled = true)
-    public void ALF_15237() throws Exception
+    @Test(groups = {"Hybrid","IntermittentBugs"}, enabled = true)
+    public void AONE_15717() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, testDomain);

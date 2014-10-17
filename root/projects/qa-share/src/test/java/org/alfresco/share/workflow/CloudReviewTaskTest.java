@@ -74,7 +74,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15151:Create Cloud Review Task
+     * AONE-15617:Create Cloud Review Task
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create A Cloud User</li>
@@ -82,7 +82,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "DataPrepHybrid")
-    public void dataPrep_15151() throws Exception
+    public void dataPrep_AONE_15617() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-op", DOMAIN_HYBRID);
@@ -105,15 +105,15 @@ public class CloudReviewTaskTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-15151:Cloud Review Task - Create ALF-15152:Cloud Review Task -
-     * Workflow Details (OP) ALF-15153:Cloud Review Task - Workflow Details
-     * (Cloud) - NOT A VALID SCENARIO ALF-15154:Cloud Review Task - Task Details
-     * (Cloud) ALF-15166:Cloud Review Task - Sync ALF-15155:Cloud Review Task -
-     * Edit Task Details (Cloud) ALF-15156:Cloud Review Task - Edit Task Details
-     * - Items (Cloud) - CAN'T AUTOMATE ALF-9460:Approve action ALF-15161:Cloud
-     * Review Task - Task Done ALF-15162:Cloud Review Task - Task Done - Details
-     * ALF-15163:Cloud Review Task - Task Done - Edit Task Details (OP)
-     * ALF-15164:Cloud Review Task - Task Done - Complete (OP)
+     * AONE-15617:Cloud Review Task - Create AONE-15618:Cloud Review Task -
+     * Workflow Details (OP) AONE-15619:Cloud Review Task - Workflow Details
+     * (Cloud) - NOT A VALID SCENARIO AONE-15620:Cloud Review Task - Task Details
+     * (Cloud) AONE-15621:Cloud Review Task - Sync AONE-15622:Cloud Review Task -
+     * Edit Task Details (Cloud) AONE-15623:Cloud Review Task - Edit Task Details
+     * - Items (Cloud) - CAN'T AUTOMATE AONE-15624:Approve action AONE-15626:Cloud
+     * Review Task - Task Done AONE-15627:Cloud Review Task - Task Done - Details
+     * AONE-15628:Cloud Review Task - Task Done - Edit Task Details (OP)
+     * AONE-15629:Cloud Review Task - Task Done - Complete (OP)
      * <ul>
      * <li>1) Login as Cloud User (Cloud) and create a site</li>
      * <li>2) Login as User1 (OP), create a site and upload a document</li>
@@ -182,7 +182,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid")
-    public void ALF_15151() throws Exception
+    public void AONE_15617() throws Exception
     {
         String testName = getTestName();
         String uniqueString = String.valueOf(System.currentTimeMillis()).substring(7, 12);
@@ -749,7 +749,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-9724:Reject action
+     * AONE-15625:Reject action
      * <ul>
      * <li>1) Create a OP User (User1)</li>
      * <li>2) Create A Cloud User</li>
@@ -757,7 +757,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "DataPrepHybrid")
-    public void dataPrep_9724() throws Exception
+    public void dataPrep_AONE_15625() throws Exception
     {
         String testName = getTestName();
 
@@ -781,9 +781,9 @@ public class CloudReviewTaskTest extends AbstractWorkflow
     }
 
     /**
-     * ALF-9724:Reject action ALF-15161:Cloud Review Task - Task Done
-     * ALF-15162:Cloud Review Task - Task Done - Details ALF-15163:Cloud Review
-     * Task - Task Done - Edit Task Details (OP) ALF-15164:Cloud Review Task -
+     * AONE-15625:Reject action AONE-15626:Cloud Review Task - Task Done
+     * AONE-15627:Cloud Review Task - Task Done - Details AONE-15628:Cloud Review
+     * Task - Task Done - Edit Task Details (OP) AONE-15629:Cloud Review Task -
      * Task Done - Complete (OP)
      * <ul>
      * <li>1) Login as Cloud User (Cloud) and create a site</li>
@@ -840,7 +840,7 @@ public class CloudReviewTaskTest extends AbstractWorkflow
      * </ul>
      */
     @Test(groups = "Hybrid")
-    public void ALF_9724() throws Exception
+    public void AONE_15625() throws Exception
     {
         String testName = getTestName();
 

@@ -17,37 +17,16 @@
  */
 package org.alfresco.share.repository;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.RepositoryPage;
-import org.alfresco.po.share.SharePopup;
 import org.alfresco.po.share.enums.UserRole;
 import org.alfresco.po.share.search.FacetedSearchPage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.ContentDetails;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditTextDocumentPage;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.ButtonType;
 import org.alfresco.po.share.site.document.ManagePermissionsPage.UserSearchPage;
-import org.alfresco.po.share.site.document.SortField;
 import org.alfresco.share.search.SearchKeys;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserMembers;
-import org.alfresco.share.util.ShareUserRepositoryPage;
-import org.alfresco.share.util.ShareUserSearchPage;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDroneImpl;
@@ -57,6 +36,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author nshah
@@ -70,7 +55,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     private String testDomainFree = DOMAIN_FREE;
 
     private String adminUserFree = ADMIN_USERNAME;
-    private FacetedSearchPage facetedSearchPage;   
+    private FacetedSearchPage facetedSearchPage;
 
     @Override
     @BeforeClass(alwaysRun = true)
@@ -84,7 +69,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
     // 5380
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5380() throws Exception
+    public void dataPrepAONE_3523() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -94,7 +79,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5380() throws Exception
+    public void AONE_3523() throws Exception
     {
         String testName = getTestName();
 
@@ -184,7 +169,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5381() throws Exception
+    public void dataPrepAONE_3524() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "_1");
@@ -196,7 +181,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5381() throws Exception
+    public void AONE_3524() throws Exception
     {
         String testName = getTestName();
 
@@ -247,7 +232,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5382() throws Exception
+    public void dataPrepAONE_3525() throws Exception
     {
         String testName = getTestName();
 
@@ -260,7 +245,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5382() throws Exception
+    public void AONE_3525() throws Exception
     {
         String testName = getTestName();
 
@@ -317,7 +302,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5383() throws Exception
+    public void dataPrepAONE_3526() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "_1");
@@ -329,7 +314,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5383() throws Exception
+    public void AONE_3526() throws Exception
     {
         String testName = getTestName();
 
@@ -390,27 +375,24 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         DocumentDetailsPage documentDetailsPage = repoPage.selectFile(fileName).render();
 
         ContentDetails contentDetails = new ContentDetails();
-        contentDetails.setContent(editFileText);
+        contentDetails.setDescription(editFileText);
         contentDetails.setName(fileName);
 
         // Select Inline Edit and change the content and save
         EditTextDocumentPage editTextDocumentPage = documentDetailsPage.selectInlineEdit().render();
         documentDetailsPage = editTextDocumentPage.save(contentDetails).render();
 
-        // TODO: Can this be checked by asserting modifier property?
-        repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        repoPage = ShareUserRepositoryPage.openRepositoryDetailedView(drone);
 
         repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
 
-        repoPage.getFileDirectoryInfo(fileName).selectViewInBrowser();
-        String htmlSource = ((WebDroneImpl) drone).getDriver().getPageSource();
-        Assert.assertTrue(htmlSource.contains(editFileText));
+        Assert.assertTrue(repoPage.getFileDirectoryInfo(fileName).getDescription().equals(editFileText));
 
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5384() throws Exception
+    public void dataPrepAONE_3528() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "_1");
@@ -422,7 +404,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5384() throws Exception
+    public void AONE_3528() throws Exception
     {
         String testName = getTestName();
 
@@ -487,7 +469,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5385() throws Exception
+    public void dataPrepAONE_3527() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -499,7 +481,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5385() throws Exception
+    public void AONE_3527() throws Exception
     {
         String testName = getTestName();
 
@@ -575,7 +557,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5386() throws Exception
+    public void dataPrepAONE_3529() throws Exception
     {
         String testName = getTestName();
 
@@ -593,13 +575,13 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5386() throws Exception
+    public void AONE_3529() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
         String fileName = getFileName(testName) + System.currentTimeMillis();
 
-        String user = getUserNameFreeDomain(testName).substring(0, 4);
+        String user = getUserNameFreeDomain(testName).substring(0, 7);
         String user1 = getUserNameFreeDomain(testName + "-1");
         String user2 = getUserNameFreeDomain(testName + "-2");
 
@@ -647,7 +629,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5387() throws Exception
+    public void dataPrepAONE_3530() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -659,7 +641,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5387() throws Exception
+    public void AONE_3530() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName) + System.currentTimeMillis();
@@ -695,7 +677,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5388() throws Exception
+    public void dataPrepAONE_3531() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -707,7 +689,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5388() throws Exception
+    public void AONE_3531() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -757,7 +739,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5389() throws Exception
+    public void dataPrepAONE_3532() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -770,7 +752,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5389() throws Exception
+    public void AONE_3532() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -815,7 +797,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5390() throws Exception
+    public void dataPrepAONE_3533() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -825,7 +807,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5390() throws Exception
+    public void AONE_3533() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -866,7 +848,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5391() throws Exception
+    public void dataPrepAONE_3534() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -875,17 +857,17 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5391() throws Exception
+    public void AONE_3534() throws Exception
     {
         String testName = getTestName();
-        
+
         String user1 = getUserNameFreeDomain(testName);
 
         String folderName = getFolderName(testName) + System.currentTimeMillis();
-        
+
         String fileName = getFileName(testName) + System.currentTimeMillis() + ".txt";
         File file = newFile(fileName, "New file");
-        
+
         String editFileText = "just edit!!";
 
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
@@ -924,7 +906,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         // Select Inline Edit and change the content and save
         EditTextDocumentPage editTextDocumentPage = documentDetailsPage.selectInlineEdit().render();
-        documentDetailsPage = editTextDocumentPage.saveWithValidation(contentDetails).render();
+        documentDetailsPage = editTextDocumentPage.createWithValidation(contentDetails).render();
 
         repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
 
@@ -936,7 +918,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5392() throws Exception
+    public void dataPrepAONE_3535() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -948,7 +930,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5392() throws Exception
+    public void AONE_3535() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -967,16 +949,10 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ManagePermissionsPage.UserSearchPage userSearchPage = manPermPage.selectAddUser().render();
 
         Assert.assertTrue(userSearchPage.usersExistInSearchResults("use", user1, user2));
-        manPermPage.selectCancel();
-
-        ShareUser.returnManagePermissionPage(drone, folderName);
-
-        ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, user1, true, true);
-
-        manPermPage = ShareUser.returnManagePermissionPage(drone, folderName);
-        Assert.assertEquals(manPermPage.getExistingPermission(user1), UserRole.CONTRIBUTOR);
-
-        manPermPage.deleteUserOrGroupFromPermission(user1, UserRole.CONTRIBUTOR);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUsername(user1);
+        manPermPage = userSearchPage.searchAndSelectUser(userProfile).render();
+        Assert.assertTrue(manPermPage.isUserExistForPermission(user1));
         ShareUser.logout(drone);
 
         ShareUser.login(drone, user1, DEFAULT_PASSWORD);
@@ -990,7 +966,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5393() throws Exception
+    public void dataPrepAONE_3536() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -998,7 +974,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5393() throws Exception
+    public void AONE_3536() throws Exception
     {
         String testName = getTestName();
 
@@ -1052,7 +1028,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5394() throws Exception
+    public void dataPrepAONE_3537() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1060,7 +1036,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5394() throws Exception
+    public void AONE_3537() throws Exception
     {
         String testName = getTestName();
 
@@ -1127,7 +1103,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5395() throws Exception
+    public void dataPrepAONE_3538() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1135,7 +1111,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5395() throws Exception
+    public void AONE_3538() throws Exception
     {
         String testName = getTestName();
 
@@ -1190,19 +1166,12 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         Assert.assertFalse(repoPage.getFileDirectoryInfo(fileCreatedByAdmin).isDeletePresent());
 
-        // TODO: Testlink: Add steps to testlink?
-        repoPage = repoPage.deleteItem(folderName2).render();
-        Assert.assertFalse(repoPage.isFileVisible(folderName2));
-
-        repoPage = repoPage.deleteItem(fileName).render();
-        Assert.assertFalse(repoPage.isFileVisible(fileName));
-
         ShareUser.logout(drone);
 
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5396() throws Exception
+    public void dataPrepAONE_3539() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -1210,7 +1179,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5396() throws Exception
+    public void AONE_3539() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -1271,7 +1240,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5397() throws Exception
+    public void dataPrepAONE_3540() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -1279,7 +1248,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5397() throws Exception
+    public void AONE_3540() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -1336,7 +1305,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5398() throws Exception
+    public void dataPrepAONE_3541() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1347,7 +1316,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5398() throws Exception
+    public void AONE_3541() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1385,7 +1354,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5399() throws Exception
+    public void dataPrepAONE_3542() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1393,7 +1362,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5399() throws Exception
+    public void AONE_3542() throws Exception
     {
         String testName = getTestName();
 
@@ -1427,7 +1396,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5400() throws Exception
+    public void dataPrepAONE_3543() throws Exception
     {
         String testName = getTestName();
 
@@ -1437,7 +1406,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5400() throws Exception
+    public void AONE_3543() throws Exception
     {
         String testName = getTestName();
 
@@ -1464,7 +1433,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5401() throws Exception
+    public void dataPrepAONE_3544() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1474,7 +1443,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5401() throws Exception
+    public void AONE_3544() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1498,9 +1467,9 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
         ShareUserRepositoryPage.uploadFileInRepository(drone, file2);
 
-        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone);
+        RepositoryPage repoPage = ShareUserRepositoryPage.openRepositorySimpleView(drone).render();
 
-        ShareUser.returnManagePermissionPage(drone, folderName);
+        ShareUser.returnManagePermissionPage(drone, folderName).render();
         ShareUserMembers.addUserOrGroupIntoInheritedPermissions(drone, group1, false, UserRole.COORDINATOR, true);
 
         ShareUser.returnManagePermissionPage(drone, folderName);
@@ -1540,13 +1509,15 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         repoPage = ShareUserRepositoryPage.openRepository(drone);
         repoPage = repoPage.selectFolder(folderName).render();
 
-        repoPage = (RepositoryPage) repoPage.deleteItem(fileName2);
+        repoPage = (RepositoryPage) repoPage.deleteItem(fileName2).render();
+
+        Assert.assertFalse(repoPage.isFileVisible(fileName2));
 
         ShareUser.logout(drone);
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_8576() throws Exception
+    public void dataPrepAONE_3548() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, testDomainFree);
@@ -1554,7 +1525,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_8576() throws Exception
+    public void AONE_3548() throws Exception
     {
         String testName = getTestName();
 
@@ -1612,7 +1583,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_8403() throws Exception
+    public void dataPrepAONE_3546() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName);
@@ -1620,7 +1591,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_8403() throws Exception
+    public void AONE_3546() throws Exception
     {
         String testName = getTestName();
 
@@ -1669,43 +1640,30 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), folderName2);
         List<String> searchInfo = Arrays.asList(ADV_FOLDER_SEARCH, "searchAllSitesFromMyDashBoard");
 
-        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);        
+        ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
         facetedSearchPage = drone.getCurrentPage().render();
         Assert.assertTrue(facetedSearchPage.getResults().size()>0);
-        
+
         facetedSearchPage.getResultByName(folderName2).clickLink().render();
         HtmlPage page = FactorySharePage.resolvePage(drone);
         Assert.assertTrue(page instanceof RepositoryPage);
-        
-      
-        // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results
-        /*boolean found = false;
-        for (SearchResult item : results)
-        {
-            if (item.getTitle().equals(folderName2))
-            {
-                found = true;
-                item.clickLink();
-                HtmlPage page = FactorySharePage.resolvePage(drone);
-                Assert.assertTrue(page instanceof RepositoryPage);
-                break;
-            }
-        }
-        Assert.assertTrue(found);*/
+
+
+        Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_FOLDER_SEARCH, folderName2, folderName2, true));
 
         keyWordSearchText.put(SearchKeys.NAME.getSearchKeys(), fileName);
         searchInfo = Arrays.asList(ADV_CONTENT_SEARCH, "searchAllSitesFromMyDashBoard");
 
         ShareUserSearchPage.advanceSearch(drone, searchInfo, keyWordSearchText);
-        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName), "Not Found " + fileName);        
+        Assert.assertTrue(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, fileName), "Not Found " + fileName);
         facetedSearchPage = drone.getCurrentPage().render();
-        Assert.assertTrue(facetedSearchPage.getResults().size()>0);        
+        Assert.assertTrue(facetedSearchPage.getResults().size()>0);
         facetedSearchPage.getResultByName(fileName).clickLink().render();
         HtmlPage page1 = FactorySharePage.resolvePage(drone);
         Assert.assertTrue(page1 instanceof DocumentDetailsPage);
 
+        Assert.assertTrue(ShareUserSearchPage.checkSearchResultsWithRetry(drone, ADV_CONTENT_SEARCH, fileName, fileName, true));
 
-        // TODO: Use ShareUserSearchPage.checkSearchResultsWithRetry to avoid inconsistent results in all places
         /*found = false;
         for (SearchResult item : results)
         {
@@ -1724,7 +1682,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5379() throws Exception
+    public void dataPrepAONE_3522() throws Exception
     {
         String testName = getTestName();
 
@@ -1734,7 +1692,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5379() throws Exception
+    public void AONE_3522() throws Exception
     {
         String testName = getTestName();
 
@@ -1754,14 +1712,9 @@ public class RepositoryManagePermissionTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_5402() throws Exception
-    {
-        // N/A
-    }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_5402() throws Exception
+    public void AONE_3545() throws Exception
     {
         String testName = getTestName();
         String group = "EVERYONE";
@@ -1786,7 +1739,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository" })
-    public void dataPrepEnterprise40x_8501() throws Exception
+    public void dataPrepAONE_3547() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameFreeDomain(testName + "-1");
@@ -1815,7 +1768,7 @@ public class RepositoryManagePermissionTest extends AbstractUtils
     }
 
     @Test(groups = { "Repository" })
-    public void Enterprise40x_8501() throws Exception
+    public void AONE_3547() throws Exception
     {
         String testName = getTestName();
 
@@ -1831,8 +1784,12 @@ public class RepositoryManagePermissionTest extends AbstractUtils
 
         managePermissionsPage = managePermissionsPage.deleteUserWithPermission(user2, UserRole.COORDINATOR);
 
-        SharePopup popup = managePermissionsPage.selectSave().render();
+        managePermissionsPage.selectSave().render();
 
-        Assert.assertTrue(popup.getShareMessage().contains("Access Denied. You do not have the appropriate permissions to perform this operation."));
+        RepositoryPage repoPage = ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + drone.getValue("system.folder.user.homes")).render();
+        Assert.assertFalse(repoPage.isItemVisble(user1));
+
+        ShareUser.logout(drone);
+
     }
 }

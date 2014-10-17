@@ -15,11 +15,6 @@
 
 package org.alfresco.po.share.site.document;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.HtmlPage;
@@ -27,13 +22,18 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Google authorisation login prompt page object.
- * 
+ *
  * @author Subashni Prasanna
  * @author Michael Suzuki
  * @since 1.5
@@ -46,8 +46,8 @@ public class GoogleDocsAuthorisation extends SharePage
 
     /**
      * Constructor.
-     * 
-     * @param drone {@link WebDrone}
+     *
+     * @param drone           {@link WebDrone}
      * @param documentVersion String original document version.
      * @Param - flase - Edit in ofline flag.
      */
@@ -82,7 +82,7 @@ public class GoogleDocsAuthorisation extends SharePage
 
     /**
      * Verify if authorisation prompt is displayed.
-     * 
+     *
      * @return true if dialog is displayed.
      */
     public boolean isAuthorisationDisplayed()
@@ -103,7 +103,7 @@ public class GoogleDocsAuthorisation extends SharePage
 
     /**
      * Clicks on the submit button to transfer to google docs page.
-     * 
+     *
      * @return EditInGoogleDocsPage
      */
     public EditInGoogleDocsPage submitNoAuth()
@@ -124,43 +124,33 @@ public class GoogleDocsAuthorisation extends SharePage
 
     /**
      * Clicks on the submit button to transfer the control to Sign up page.
-     * 
+     *
      * @return GoogleSignUpPage
      */
     public GoogleSignUpPage submitAuth()
     {
-        Runnable clicker = new Runnable()
+        try
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
-                    List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
-                    WebElement okButton = findButton("OK", elements);
-                    okButton.click();
-                }
-                catch (TimeoutException te)
-                {
-                    throw new TimeoutException("authorisation prompt was not found", te);
-                }
-                catch (NoSuchElementException te)
-                {
-                    throw new PageOperationException("authorisation prompt was not found", te);
-                }
-            }
-        };
-        Thread clickerThread = new Thread(clicker);
-        clickerThread.setDaemon(true);
-        clickerThread.start();
+            WebElement prompt = drone.findAndWait(PROMPT_PANEL_ID);
+            List<WebElement> elements = prompt.findElements(BUTTON_TAG_NAME);
+            WebElement okButton = findButton("OK", elements);
+            drone.executeJavaScript("var arg = arguments[0]; setTimeout(function() {arg.click()}, 0);", okButton);
+        }
+        catch (TimeoutException te)
+        {
+            throw new TimeoutException("authorisation prompt was not found", te);
+        }
+        catch (NoSuchElementException te)
+        {
+            throw new PageOperationException("authorisation prompt was not found", te);
+        }
         GoogleSignUpPage googleSignUpPage = new GoogleSignUpPage(drone, documentVersion, isGoogleCreate);
         return googleSignUpPage;
     }
 
     /**
      * Clicks on the cancel button to transfer the control to document details.
-     * 
+     *
      * @return DocumentDetailsPage
      */
     public HtmlPage cancel()

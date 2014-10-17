@@ -1,20 +1,26 @@
 package org.alfresco.po.share.site.blog;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.List;
-
+import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.po.share.site.SitePage;
-import org.alfresco.po.share.site.links.LinksPage;
+import org.alfresco.po.share.util.PageUtils;
+import org.alfresco.po.thirdparty.firefox.RssFeedPage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
+import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Site Blog Page object
@@ -29,9 +35,15 @@ public class BlogPage extends SitePage
 
     private static final By NEW_POST_BTN = By.cssSelector(".new-blog>span");
     private static final By CONFIGURE_BLOG = By.cssSelector(".configure-blog>span");
-    private static final By POSTS_CONTAINER = By.cssSelector("td[class*='blogposts']");
+    private static final String POSTS_CONTAINER = "td[class*='blogposts']";
     private static final By EMPTY_POST_CONTAINER = By.cssSelector("td[class*='empty']");
     private static final By BACK_LINK = By.cssSelector("span.backLink>a");
+    private static final String POST_TITLE = "//span[@class='nodeTitle']/a[text()='%s']";
+    private static final By RSS_BUTTON = By.cssSelector(".rss-feed a");
+    private static final String TAG_NONE = "//a[contains(text(),'%s')]/ancestor::div[@class='node post']"
+        + "/following-sibling::div[@class='nodeFooter']/span[@class='nodeAttrLabel tagLabel']/following-sibling::span";
+    private static final String TAG_NAME = "//a[contains(text(),'%s')]/ancestor::div[@class='node post']"
+        + "/following-sibling::div[@class='nodeFooter']/span[@class='tag']/a[text()='%s']";
 
     /**
      * Constructor
@@ -163,6 +175,31 @@ public class BlogPage extends SitePage
         }
     }
 
+    /**
+     * Method to create new topic with text field and tag
+     *
+     * @param titleField
+     * @return PostViewPage
+     */
+    public PostViewPage createPostInternally(String titleField, String txtLines, List<String> tags)
+    {
+        try
+        {
+            BlogPage blogPage = new BlogPage(drone);
+            NewPostForm newPostForm = blogPage.clickNewPost();
+            waitUntilAlert();
+            newPostForm.setTitleField(titleField);
+            newPostForm.insertText(txtLines);
+            newPostForm.addTag(tags);
+            newPostForm.clickPublishInternally();
+            waitUntilAlert(5);
+            return new PostViewPage(drone).render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Post wasn't created");
+        }
+    }
 
     /**
      * Method to create new topic with text field and save as draft
@@ -192,6 +229,7 @@ public class BlogPage extends SitePage
         }
     }
        
+
     /**
      * Method to Configure External Blog (wordpress, typepad)
      *
@@ -229,7 +267,8 @@ public class BlogPage extends SitePage
         {
             return false;
         }
-        else return true;
+        else
+            return true;
     }
 
     /**
@@ -251,7 +290,7 @@ public class BlogPage extends SitePage
         {
             throw new ShareException("Unable to click the link");
         }
-        return new PostViewPage(drone);
+        return drone.getCurrentPage().render();
     }   
 
     /**
@@ -259,12 +298,12 @@ public class BlogPage extends SitePage
      *
      * @return number of posts
      */
-    public int getPostsCount ()
+    public int getPostsCount()
     {
         try
         {
-                List <WebElement> numOfPosts = drone.findAndWaitForElements(POSTS_CONTAINER);
-                return numOfPosts.size();
+            List<WebElement> numOfPosts = drone.findAndWaitForElements(By.cssSelector(POSTS_CONTAINER));
+            return numOfPosts.size();
         }
         catch (TimeoutException te)
         {
@@ -274,5 +313,201 @@ public class BlogPage extends SitePage
         {
             return 0;
         }
+    }
+
+    /**
+     * Return true if Post, and return false if Post is absent
+     * test BlogPageTest.isPostPresented
+     *
+     * @param postName
+     * @return
+     */
+    public boolean isPostPresented(String postName)
+    {
+        boolean isDisplayed;
+
+        checkNotNull(postName);
+
+        try
+        {
+            WebElement theItem = drone.find(By.xpath(String.format(POST_TITLE, postName)));
+            isDisplayed = theItem.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            isDisplayed = false;
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageException(String.format("Blog info with title %s was not found", postName), e);
+        }
+        return isDisplayed;
+    }
+
+    /**
+     * Method to create new topic with text field and save as draft
+     *
+     * @param titleField
+     * @return
+     */
+    public PostViewPage saveAsDraft(String titleField, String txtLines, List<String> tagName)
+    {
+        try
+        {
+            logger.info("Creating draft post " + titleField);
+            BlogPage blogPage = new BlogPage(drone);
+            NewPostForm newPostForm = blogPage.clickNewPost();
+
+            newPostForm.setTitleField(titleField);
+            newPostForm.insertText(txtLines);
+            if (tagName != null)
+            {
+                newPostForm.addTag(tagName);
+            }
+            return newPostForm.clickSaveAsDraft().render(3000);
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("the operation has timed out");
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find the button");
+        }
+    }
+
+    /**
+     * Method to view Rss Feed for post pages
+     *
+     * @param username
+     * @param password
+     * @return RssFeedPage
+     */
+    public RssFeedPage clickRssFeedBtn(String username, String password)
+    {
+        logger.info("Viewing RSS Feed for Blog page");
+        String currentWikiUrl = drone.getCurrentUrl();
+        String protocolVar = PageUtils.getProtocol(currentWikiUrl);
+        String shareUrlVar = PageUtils.getShareUrl(currentWikiUrl);
+        String siteName = PageUtils.getSiteName(currentWikiUrl);
+        String rssUrl = String.format("%s%s:%s@%s/feedservice/components/blog/rss?site=%s", protocolVar, username, password, shareUrlVar, siteName);
+        drone.navigateTo(rssUrl);
+        return new RssFeedPage(drone).render();
+    }
+
+    public boolean checkTags(String title, String tag)
+    {
+        boolean isDisplayed;
+        WebElement element;
+        String tagXpath;
+
+        if (title == null || title.isEmpty())
+        {
+            throw new IllegalArgumentException("Title is required");
+        }
+        if (tag == null)
+        {
+
+            tagXpath = String.format(TAG_NONE, title);
+            try
+            {
+                element = drone.findAndWait(By.xpath(tagXpath));
+                isDisplayed = element.getText().contains("None");
+            }
+            catch (NoSuchElementException ex)
+            {
+                if (logger.isDebugEnabled())
+                {
+                    logger.debug("Unable to locate post page or 'Tags: (None)'", ex);
+                }
+                throw new PageOperationException("Unable to locate post page or 'Tags: (None)'");
+            }
+
+        }
+        else
+        {
+
+            tagXpath = String.format(TAG_NAME, title, tag);
+            try
+            {
+                element = drone.findAndWait(By.xpath(tagXpath));
+                isDisplayed = element.isDisplayed();
+            }
+            catch (NoSuchElementException te)
+            {
+                if (logger.isDebugEnabled())
+                {
+                    logger.debug("Unable to locate expected tag or post page", te);
+                }
+                throw new PageOperationException("Unable to locate expected tag or post page");
+            }
+        }
+        return isDisplayed;
+    }
+
+    /**
+     * Method to edit post
+     * method validate by BlogPageTest.editPost
+     *
+     * @param oldTitle
+     * @param newTitle
+     * @param txtLines
+     * @param tagName
+     * @return
+     */
+    public PostViewPage editPost(String oldTitle, String newTitle, String txtLines, String tagName, boolean removeTag)
+    {
+        try
+        {
+            EditPostForm editPostForm = getPostDirectoryInfo(oldTitle).editPost();
+            editPostForm.setTitleField(newTitle);
+            editPostForm.insertText(txtLines);
+            if (!removeTag)
+            {
+                editPostForm.addTag(tagName);
+            }
+            else
+            {
+                editPostForm.removeTag(tagName);
+            }
+            editPostForm.clickSaveAsDraft();
+            waitUntilAlert();
+            logger.info("Edited post " + oldTitle);
+            return new PostViewPage(drone).render();
+        }
+        catch (TimeoutException te)
+        {
+            throw new ShareException("Timed out finding buttons");
+        }
+    }
+
+    public PostDirectoryInfo getPostDirectoryInfo(final String title)
+    {
+        if (title == null || title.isEmpty())
+        {
+            throw new IllegalArgumentException("Title is required");
+        }
+
+        WebElement row = null;
+
+        try
+        {
+            row = drone.findAndWait(By.xpath(String.format("//a[text()='%s']/../../../..", title)), WAIT_TIME_3000);
+            drone.mouseOverOnElement(row);
+        }
+        catch (NoSuchElementException e)
+        {
+            throw new PageException(String.format("Post directory info with title %s was not found", title), e);
+        }
+        catch (TimeoutException e)
+        {
+            throw new PageException(String.format("Post directory info with title %s was not found", title), e);
+        }
+        return new PostDirectoryInfoImpl(drone, row);
+    }
+
+    public BlogTreeMenuNavigation getLeftMenus()
+    {
+        return new BlogTreeMenuNavigation(drone);
     }
 }

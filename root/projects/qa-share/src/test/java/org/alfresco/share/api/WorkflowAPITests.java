@@ -19,15 +19,6 @@
 
 package org.alfresco.share.api;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.alfresco.po.share.task.TaskDetailsPage;
 import org.alfresco.po.share.workflow.NewWorkflowPage;
 import org.alfresco.po.share.workflow.TaskHistoryPage;
@@ -48,6 +39,12 @@ import org.json.simple.JSONObject;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 @Listeners(FailedTestListener.class)
 public class WorkflowAPITests extends WorkflowAPI
@@ -112,7 +109,7 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1084() throws Exception
+    public void AONE_14358() throws Exception
     {
         JSONObject taskJson = getTasks(testUser, DOMAIN, null);
         assertNotNull(taskJson);
@@ -123,13 +120,13 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1085() throws Exception
+    public void AONE_14359() throws Exception
     {
         try
         {
             getTasks(testUser, invalidDomain, null);
 
-            fail("ALF_1085: Invalid domain - " + invalidDomain);
+            fail("AONE_14359: Invalid domain - " + invalidDomain);
         }
         catch (PublicApiException e)
         {
@@ -137,8 +134,8 @@ public class WorkflowAPITests extends WorkflowAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_1096")
-    public void ALF_1086() throws Exception
+    @Test(dependsOnMethods = "AONE_14370")
+    public void AONE_14360() throws Exception
     {
         JSONObject taskJson = getTaskFromId(testUser, DOMAIN.toUpperCase(), taskId);
         assertNotNull(taskJson);
@@ -156,13 +153,13 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1087() throws Exception
+    public void AONE_14361() throws Exception
     {
         try
         {
             getTaskFromId(testUser, invalidDomain, taskId);
 
-            fail("ALF_1087: Invalid domain - " + invalidDomain);
+            fail("AONE_14361: Invalid domain - " + invalidDomain);
         }
         catch (PublicApiException e)
         {
@@ -171,13 +168,13 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1088() throws Exception
+    public void AONE_14362() throws Exception
     {
         try
         {
             getTaskFromIdFormModel(testUserInvalid, DOMAIN, taskId);
 
-            fail("ALF_1088: Invalid User - " + testUserInvalid);
+            fail("AONE_14362: Invalid User - " + testUserInvalid);
         }
         catch (PublicApiException e)
         {
@@ -191,7 +188,7 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1091() throws Exception
+    public void AONE_14365() throws Exception
     {
         JSONObject resp = getTaskVariables(testUser, DOMAIN, taskId, null);
         assertNotNull(resp);
@@ -202,20 +199,20 @@ public class WorkflowAPITests extends WorkflowAPI
             JSONObject entry = (JSONObject) ((JSONObject) varArray.get(i)).get("entry");
             if (entry.containsValue("bpm_workflowPriority"))
             {
-                assertEquals(entry.get("value").toString(), "2", "ALF_1091: priority should be 2");
+                assertEquals(entry.get("value").toString(), "2", "AONE_14365: priority should be 2");
                 break;
             }
         }
     }
 
     @Test()
-    public void ALF_1090() throws Exception
+    public void AONE_14364() throws Exception
     {
         try
         {
             getTaskVariables(testUser, DOMAIN + "aaa", taskId, null);
 
-            fail("ALF_1090: Invalid domain - " + DOMAIN + "aaa");
+            fail("AONE_14364: Invalid domain - " + DOMAIN + "aaa");
         }
         catch (PublicApiException e)
         {
@@ -229,7 +226,7 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1089() throws Exception
+    public void AONE_14363() throws Exception
     {
         JSONObject taskJson = getTaskFromIdFormModel(testUser, DOMAIN, taskId);
         assertNotNull(taskJson);
@@ -239,24 +236,24 @@ public class WorkflowAPITests extends WorkflowAPI
         {
             JSONObject entry = (JSONObject) ((JSONObject) jsonEntries.get(0)).get("entry");
 
-            assertTrue(entry.containsKey("dataType"), "ALF_1089: name should be a key in variable json");
+            assertTrue(entry.containsKey("dataType"), "AONE_14363: name should be a key in variable json");
             String value = (String) entry.get("dataType");
-            assertTrue(StringUtils.isNotEmpty(value), "ALF_1089: value of dataType should not be empty");
+            assertTrue(StringUtils.isNotEmpty(value), "AONE_14363: value of dataType should not be empty");
         }
         else
         {
-            fail("ALF_1089: more than one entry for task-form-model must be present.");
+            fail("AONE_14363: more than one entry for task-form-model must be present.");
         }
     }
 
     @Test()
-    public void ALF_1092() throws Exception
+    public void AONE_14366() throws Exception
     {
         try
         {
             getTaskItems(testUser, invalidDomain, taskId);
 
-            fail("ALF_1092: Invalid domain - " + invalidDomain);
+            fail("AONE_14366: Invalid domain - " + invalidDomain);
         }
         catch (PublicApiException e)
         {
@@ -264,8 +261,8 @@ public class WorkflowAPITests extends WorkflowAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_1095")
-    public void ALF_1093() throws Exception
+    @Test(dependsOnMethods = "AONE_14369")
+    public void AONE_14367() throws Exception
     {
         JSONObject itemJson = getTaskItem(testUser, DOMAIN, taskId, docGuid);
         assertNotNull(itemJson);
@@ -283,7 +280,7 @@ public class WorkflowAPITests extends WorkflowAPI
     // -- -- End of Get Methods -- -- //
 
     @Test()
-    public void ALF_1097() throws Exception
+    public void AONE_14371() throws Exception
     {
         try
         {
@@ -295,7 +292,7 @@ public class WorkflowAPITests extends WorkflowAPI
             taskJson.put("description", "This is the updated description");
             taskJson.put("id", taskId);
             updateTask(testUser, invalidDomain, taskId, taskJson, selectedFields);
-            fail("ALF_1097: Invalid domain - " + invalidDomain);
+            fail("AONE_14371: Invalid domain - " + invalidDomain);
         }
         catch (PublicApiException e)
         {
@@ -304,7 +301,7 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1096() throws Exception
+    public void AONE_14370() throws Exception
     {
         JSONObject taskJson = new JSONObject();
 
@@ -330,7 +327,7 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     @Test()
-    public void ALF_1098() throws Exception
+    public void AONE_14372() throws Exception
     {
         try
         {
@@ -339,7 +336,7 @@ public class WorkflowAPITests extends WorkflowAPI
             variableBody.put("value", 1234);
             variableBody.put("scope", "global");
             updateTaskVariable(testUser, invalidDomain, taskId, variableBody, "newVariable");
-            fail("ALF_1098: Invalid domain - " + invalidDomain);
+            fail("AONE_14372: Invalid domain - " + invalidDomain);
         }
         catch (PublicApiException e)
         {
@@ -348,8 +345,8 @@ public class WorkflowAPITests extends WorkflowAPI
     }
 
     // TODO Refer to JIRA for failures - https://issues.alfresco.com/jira/browse/MNT-10535
-    @Test(dependsOnMethods = "ALF_1096")
-    public void ALF_1099() throws Exception
+    @Test(dependsOnMethods = "AONE_14370")
+    public void AONE_14373() throws Exception
     {
         // Update Workflow Priority to 1: High
         String varName = "bpm_workflowPriority";
@@ -377,7 +374,7 @@ public class WorkflowAPITests extends WorkflowAPI
             }
         }
 
-        assertTrue(gotIt, "ALF_1099: variable not correctly updated: " + varName);
+        assertTrue(gotIt, "AONE_14373: variable not correctly updated: " + varName);
 
         // Confirm the details on Share UI
         ShareUser.login(drone, testUser);
@@ -391,14 +388,14 @@ public class WorkflowAPITests extends WorkflowAPI
         {
             WorkFlowDetailsPage detailsPage = ShareUserWorkFlow.navigateToWorkFlowDetailsPage(drone, siteName);
             String priority = detailsPage.getWorkFlowDetailsGeneralInfo().getPriority().getValue();
-            assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority().getValue(), "1", "ALF_1099: Priority not updated correctly: found - "
+            assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority().getValue(), "1", "AONE_14373: Priority not updated correctly: found - "
                     + priority);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Test()
-    public void ALF_1094() throws Exception
+    public void AONE_14368() throws Exception
     {
         JSONObject item = new JSONObject();
         item.put("id", docGuid);
@@ -406,7 +403,7 @@ public class WorkflowAPITests extends WorkflowAPI
         {
             createItemsForTask(testUser, invalidDomain, taskId, item);
 
-            fail("ALF_10964: Invalid domain - " + invalidDomain);
+            fail("AONE_14368: Invalid domain - " + invalidDomain);
         }
         catch (PublicApiException e)
         {
@@ -416,24 +413,24 @@ public class WorkflowAPITests extends WorkflowAPI
 
     @SuppressWarnings("unchecked")
     @Test()
-    public void ALF_1095() throws Exception
+    public void AONE_14369() throws Exception
     {
         JSONObject item = new JSONObject();
         item.put("id", docGuid);
         JSONObject taskJson = createItemsForTask(testUser, DOMAIN, taskId, item);
         assertNotNull(taskJson);
-        logger.info("Received JSON ALF_1095 - " + taskJson);
+        logger.info("Received JSON AONE_14369 - " + taskJson);
         assertEquals(((JSONObject) taskJson.get("entry")).get("id"), docGuid, "Received JSON - " + taskJson);
     }
 
     @Test()
-    public void ALF_1100() throws Exception
+    public void AONE_14374() throws Exception
     {
         try
         {
             deleteTaskItems(testUserInvalid, DOMAIN, taskId, docGuid);
 
-            fail("ALF_1100: Invalid User - " + testUserInvalid);
+            fail("AONE_14374: Invalid User - " + testUserInvalid);
         }
         catch (PublicApiException e)
         {
@@ -441,8 +438,8 @@ public class WorkflowAPITests extends WorkflowAPI
         }
     }
 
-    @Test(dependsOnMethods = "ALF_1093")
-    public void ALF_1101() throws Exception
+    @Test(dependsOnMethods = "AONE_14367")
+    public void AONE_14375() throws Exception
     {
         HttpResponse taskJson = deleteTaskItems(testUser, DOMAIN, taskId, docGuid);
         assertNotNull(taskJson);
@@ -451,7 +448,7 @@ public class WorkflowAPITests extends WorkflowAPI
         try
         {
             getTaskItem(testUser, DOMAIN, taskId, docGuid);
-            fail("ALF_1101: The item should be deleted.");
+            fail("AONE_14375: The item should be deleted.");
         }
         catch (PublicApiException e)
         {

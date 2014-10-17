@@ -70,7 +70,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_14032() throws Exception
+    public void dataPrep_AONE_14994() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -95,7 +95,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_14032()
+    public void AONE_14994()
     {
         /** Start Test */
         testName = getTestName();
@@ -125,7 +125,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13863() throws Exception
+    public void dataPrep_AONE_14993() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -145,7 +145,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13863()throws Exception
+    public void AONE_14993()throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -181,7 +181,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13861() throws Exception
+    public void dataPrep_AONE_14998() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -206,7 +206,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13861() throws Exception
+    public void AONE_14998() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -259,7 +259,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_13862() throws Exception
+    public void dataPrep_AONE_14999() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -284,7 +284,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_13862()throws Exception
+    public void AONE_14999()throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -332,7 +332,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_3910() throws Exception
+    public void dataPrep_AONE_15006() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -357,7 +357,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_3910()
+    public void AONE_15006()
     {
         /** Start Test */
         testName = getTestName();
@@ -401,7 +401,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
         }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_5675() throws Exception
+    public void dataPrep_AONE_15007() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -426,7 +426,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_5675()
+    public void AONE_15007()
     {
         /** Start Test */
         testName = getTestName();
@@ -464,7 +464,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
         }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_3960() throws Exception
+    public void dataPrep_AONE_14987() throws Exception
     {
 
         String testName = getTestName();
@@ -504,7 +504,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_3960() throws Exception
+    public void AONE_14987() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -543,7 +543,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
         }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_14013() throws Exception
+    public void dataPrep_AONE_15008() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -568,7 +568,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_14013() throws Exception
+    public void AONE_15008() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -617,7 +617,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary" })
-    public void dataPrep_Enterprise40x_14014() throws Exception
+    public void dataPrep_AONE_15009() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -642,7 +642,7 @@ public class DocumentDetailsActionsTest extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_14014() throws Exception
+    public void AONE_15009() throws Exception
     {
         /** Start Test */
         testName = getTestName();

@@ -11,7 +11,7 @@ public class RandomUtil
 
     public static String getRandomString(int length)
     {
-        char from[] = "abcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+        char from[] = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < length; i++)
         {

@@ -18,9 +18,6 @@
  */
 package org.alfresco.share.util.api;
 
-import java.text.ParseException;
-import java.util.Map;
-
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient.ListResponse;
 import org.alfresco.rest.api.tests.client.PublicApiException;
@@ -30,11 +27,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.text.ParseException;
+import java.util.Map;
+
 /**
  * REST api for handling {@link SiteMembershipRequest} requests.
- * 
+ *
  * @author Abhijeet Bharade
- * 
  */
 public class SiteMembershipAPI extends PublicAPIAbstract
 {
@@ -44,7 +43,7 @@ public class SiteMembershipAPI extends PublicAPIAbstract
     /**
      * GETs a list of {@link SiteMembershipRequest} object for a particular
      * user.
-     * 
+     *
      * @param authUser
      * @param domain
      * @param userRequestingSM
@@ -67,11 +66,10 @@ public class SiteMembershipAPI extends PublicAPIAbstract
     /**
      * GETs a {@link SiteMembershipRequest} object for a particular user and
      * site.
-     * 
+     *
      * @param authUser
      * @param domain
      * @param userRequestingSM
-     * @param params
      * @return
      * @throws ParseException
      * @throws PublicApiException
@@ -89,7 +87,7 @@ public class SiteMembershipAPI extends PublicAPIAbstract
 
     /**
      * POSTs a {@link SiteMembershipRequest} object to create a new SMR request.
-     * 
+     *
      * @param authUser
      * @param domain
      * @param userRequestingSM
@@ -117,7 +115,7 @@ public class SiteMembershipAPI extends PublicAPIAbstract
 
     /**
      * Sends a PUT request to update any existing SMR identified by an id.
-     * 
+     *
      * @param authUser
      * @param domain
      * @param userRequestingSM
@@ -143,7 +141,7 @@ public class SiteMembershipAPI extends PublicAPIAbstract
 
     /**
      * Sends a DELETE request to cancel any existing SMR identified by an id.
-     * 
+     *
      * @param authUser
      * @param domain
      * @param userRequestingSM

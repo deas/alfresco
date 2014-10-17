@@ -19,13 +19,7 @@
 package org.alfresco.po.share.search;
 
 
-import java.util.List;
-
-import org.alfresco.po.share.AbstractTest;
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.NewUserPage;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.UserSearchPage;
+import org.alfresco.po.share.*;
 import org.alfresco.po.share.site.datalist.DataListPage;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.DocumentLibraryPage;
@@ -36,6 +30,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 
 /**
@@ -79,7 +75,7 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     {
         SearchBox search = dashBoard.getSearch();
         FacetedSearchPage resultPage = search.search(SEARCH_TERM).render();
-        Assert.assertTrue(resultPage.hasResults());
+        Assert.assertTrue(resultPage.hasResults(),"QA-915");
         String name = resultPage.getResults().get(2).getName();
         Assert.assertNotNull(name);
         DocumentDetailsPage itemPage = resultPage.selectItem(2).render();
@@ -307,18 +303,16 @@ public class FacetedSearchResultsPageTest extends AbstractTest
         SearchBox search = dashBoard.getSearch();        
         FacetedSearchPage facetedSearchPage = search.search("jpg").render();
         Assert.assertNotNull(facetedSearchPage);        
-        PreViewPopUpPage preViewPopUpPage = facetedSearchPage.getResultByName("grass.jpg").clickImageLink().render();
-        Assert.assertTrue(preViewPopUpPage.isPreViewPopupPageVisible(),"Preview popup page");
-        Assert.assertTrue(preViewPopUpPage.isTitlePresent("grass.jpg"),"Title is present");
-        Assert.assertTrue(preViewPopUpPage.isPreViewDisplayed());
-        preViewPopUpPage.selectClose().render();
+        PreViewPopUpImagePage preViewPopUpImagePage = facetedSearchPage.getResultByName("grass.jpg").clickImageLinkToPicture().render();
+        Assert.assertTrue(preViewPopUpImagePage.isPreViewPopupPageVisible(),"Preview popup page");
+        preViewPopUpImagePage.selectClose().render();
         Assert.assertTrue(facetedSearchPage.isTitlePresent("Search"));
         SearchBox searchTerm = dashBoard.getSearch();    
         FacetedSearchPage facetedsearchPage = searchTerm.search(SEARCH_TERM).render();
         Assert.assertNotNull(facetedsearchPage);        
         PreViewPopUpPage previewPopUpPage = facetedsearchPage.getResults().get(0).clickImageLink().render();
         //Assert.assertTrue(preViewPopUpPage.isPreViewPopupPageVisible(),"Preview popup page");
-        Assert.assertTrue(preViewPopUpPage.isTitlePresent("Project Overview.ppt"),"Title is present");
+        Assert.assertTrue(previewPopUpPage.isTitlePresent("Project Overview.ppt"),"Title is present");
         Assert.assertTrue(previewPopUpPage.isPreViewTextDisplayed(), "Preview text displayed");
         facetedsearchPage = previewPopUpPage.selectClose().render();
         Assert.assertTrue(facetedsearchPage.isTitlePresent("Search"));

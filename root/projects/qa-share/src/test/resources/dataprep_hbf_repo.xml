@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Classes" verbose="1" preserve-order="true" parallel="tests" thread-count="7">
+
+    <groups>
+        <run>
+            <include name="DataPrep.*" />
+            <exclude name="NonGrid.*" />
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
+
+    <test name="RepositoryDocumentCreateTests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.repository.RepositoryDocumentCreateTests" />
+        </classes>
+    </test>
+
+</suite>

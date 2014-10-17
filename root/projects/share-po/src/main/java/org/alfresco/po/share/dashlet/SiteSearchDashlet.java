@@ -320,7 +320,7 @@ public class SiteSearchDashlet extends AbstractDashlet implements Dashlet
     {
         logger.info("Start search with retry on Site Search dashlet");
         int counter = 0;
-        int waitInMilliSeconds = 2000;
+        int waitInMilliSeconds = 10000;
         boolean found = false;
         while (counter < retrySearchCount)
         {

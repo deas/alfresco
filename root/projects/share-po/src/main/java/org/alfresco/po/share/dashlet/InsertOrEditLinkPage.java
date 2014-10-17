@@ -26,6 +26,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
@@ -39,18 +40,21 @@ public class InsertOrEditLinkPage extends BaseAdvancedTinyMceOptionsPage
     private static Log logger = LogFactory.getLog(InsertOrEditLinkPage.class);
     
     @RenderWebElement
-    private static By INSERT_OR_EDIT_LINK_PANEL = By.cssSelector("#general_panel td");
-    private static By TITLE_BOX_CSS = By.cssSelector("#linktitle");
-    private static By LINK_URL = By.cssSelector("#href");
-    private static By TARGET_LIST = By.cssSelector("#target_list");
-   
+    private static By LINK_URL = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'Url')]/following-sibling::div/input[starts-with(@class, 'mce-textbox')]");
+    @RenderWebElement
+    private static By TEXT_TO_DISPLAY = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'Text to display')]/following-sibling::input[starts-with(@class, 'mce-textbox')]");
+    @RenderWebElement
+    private static By TITLE = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'Title')]/following-sibling::input[starts-with(@class, 'mce-textbox')]");
+    @RenderWebElement
+    private static By TARGET_LIST = By.xpath("//div[starts-with(@class, 'mce-container-body')]/label[contains(text(), 'Target')]/following-sibling::div/button");
+
     /**
      * Constructor.
-     * @param mainWindow 
+     * @param element
      */
-    public InsertOrEditLinkPage(WebDrone drone, String mainWindow)
+    public InsertOrEditLinkPage(WebDrone drone, WebElement element)
     {
-        super(drone, mainWindow);
+        super(drone, element);
     }
 
     /**
@@ -58,9 +62,8 @@ public class InsertOrEditLinkPage extends BaseAdvancedTinyMceOptionsPage
      */
     public enum InsertLinkPageTargetItems
     {
-        NOT_SET ("-- Not Set --"),
-        OPEN_LINK_IN_THE_SAME_WINDOW ("Open Link in the Same Window"),
-        OPEN_LINK_IN_NEW_WINDOW ("Open Link in a New Window");
+        NONE ("None"),
+        NEW_WINDOW ("New window");
         
         private String itemName;
         
@@ -133,7 +136,7 @@ public class InsertOrEditLinkPage extends BaseAdvancedTinyMceOptionsPage
         
         try
         {
-            WebElement title = drone.findAndWait(TITLE_BOX_CSS);
+            WebElement title = drone.findAndWait(TITLE);
             title.clear();
             title.sendKeys(text);
         }
@@ -158,12 +161,36 @@ public class InsertOrEditLinkPage extends BaseAdvancedTinyMceOptionsPage
         
         try
         {
-            selectOption(TARGET_LIST, target.getItemName());
+            selectTarget(TARGET_LIST, target.getItemName());
         }
         catch(TimeoutException te)
         {
             logger.info("Unable to find the Target Item field.", te);
             throw new PageOperationException("Unable to find Target Item field.", te);
+        }
+    }
+
+    /**
+     * Util method to select given Target.
+     * @param by
+     * @param text
+     */
+    private void selectTarget(By by, String text)
+    {
+        try
+        {
+            drone.find(by).click();
+            drone.findAndWait(By.xpath("//div[contains(@class, 'mce-stack-layout')]/div/span[contains(text(), '" + text + "')]")).click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.info("Unable to find Target dropdown box");
+            throw new PageOperationException("Unable to find Target dropdown box", nse);
+        }
+        catch (TimeoutException te)
+        {
+            logger.info("Unable to find Target");
+            throw new PageOperationException("Unable to find Target", te);
         }
     }
 }

@@ -34,7 +34,7 @@ public class DocumentDetailsTest extends AbstractUtils
         }
 
         @Test(groups = "DataPrepDocumentLibrary")
-        public void dataPrep_Enterprise40x_8573() throws Exception
+        public void dataPrep_AONE_2004() throws Exception
         {
                 String testName = getTestName();
                 String siteName = getSiteName(testName);
@@ -55,7 +55,7 @@ public class DocumentDetailsTest extends AbstractUtils
          * @throws Exception
          */
         @Test(groups = "Enterprise4.2")
-        public void Enterprise40x_8573() throws Exception
+        public void AONE_2004() throws Exception
         {
                 testName = getTestName();
 
@@ -87,7 +87,7 @@ public class DocumentDetailsTest extends AbstractUtils
          * @throws Exception
          */
         @Test(groups = "DataPrepAlfrescoOne")
-        public void dataPrep_ALF_3160() throws Exception
+        public void dataPrep_AONE_15835() throws Exception
         {
             String testName = getTestName();
             String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
@@ -117,7 +117,7 @@ public class DocumentDetailsTest extends AbstractUtils
          * 4) Verfies Share pane is not present on the right handside of document details page for cloud  
          */
         @Test(groups = "AlfrescoOne")
-        public void ALF_3160()
+        public void AONE_15835()
         {
             // test user (site creator) logs in
             String testName = getTestName();

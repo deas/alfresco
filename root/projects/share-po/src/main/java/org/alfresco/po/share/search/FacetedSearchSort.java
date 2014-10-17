@@ -1,14 +1,17 @@
 package org.alfresco.po.share.search;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class FacetedSearchSort.
@@ -22,6 +25,7 @@ public class FacetedSearchSort
     private static final By MENU_BUTTON = By.cssSelector("div#FCTSRCH_SORT_MENU");
     private static final By MENU_BUTTON_TEXT = By.cssSelector("span#FCTSRCH_SORT_MENU_text");
     private static final By MENU_ITEMS = By.cssSelector("div#FCTSRCH_SORT_MENU_dropdown tr.dijitMenuItem");
+    private static final Log logger = LogFactory.getLog(FacetedSearchSort.class);
 
     private WebDrone drone;
     private WebElement resultsElement;
@@ -172,5 +176,31 @@ public class FacetedSearchSort
     {
         this.resultsElement.click();
         this.menuElements.clear();
+    }
+
+    /**
+     * Verify sort list
+     */
+    public boolean isSortCorrect()
+    {
+        openMenu();
+        SortType sortTypesValues[] = SortType.values();
+        if (sortTypesValues.length == menuElements.size())
+        {
+            for (int i = 0; i < menuElements.size(); i++)
+            {
+                if (!menuElements.get(i).getText().trim().equals(sortTypesValues[i].getSortName()))
+                {
+                    logger.info("Sort list is not correct: " + menuElements.get(i).getText().trim() + " != " + sortTypesValues[i].getSortName());
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            throw new ShareException("Sort by list is of incorrect size");
+        }
     }
 }

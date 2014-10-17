@@ -50,6 +50,7 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
     private static final By MENU_TITLE = By.cssSelector(".alfresco-header-Title");
     private static final By WORKFLOW_DETAILS_HEADER = By.cssSelector("div.workflow-details-header>h1");
     private static final By CANCEL_BUTTON = By.cssSelector("button[id$='_default-cancel-button']");
+    private static final By DELETE_BUTTON = By.cssSelector("button[id$='_default-delete-button']");
     private static final By ASSIGNEE = By.cssSelector("div[id$='_hwf_assignment-cntrl']>span[id$='_assignment-cntrl-currentValueDisplay']>div");
 
     private static final By GENERAL_INFO = By.cssSelector("div[id$='_default-general-form-section']");
@@ -428,6 +429,25 @@ public abstract class AbstractWorkFlowTaskDetailsPage extends SharePage
         return false;
     }
 
+
+    /**
+     * This is method is used to find out the delete workflow button is displayed or not.
+     * 
+     * @return boolean
+     */
+    public boolean isDeleteWorkFlowButtonDisplayed()
+    {
+        try
+        {
+            return drone.find(DELETE_BUTTON).isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+        }
+        return false;
+    }
+
+    
     protected RenderElement getMenuTitle()
     {
         return menuTitle;

@@ -14,17 +14,11 @@
  */
 package org.alfresco.po.share.task;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.alfresco.po.share.FactorySharePage;
+import org.alfresco.po.share.MyTasksPage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.workflow.ReassignPage;
+import org.alfresco.po.share.workflow.SelectContentPage;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
@@ -34,39 +28,62 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.alfresco.po.share.task.EditTaskPage.Button.*;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * This class represents the Edit task page which can be navigated from My Tasks
  * page > Edit Task.
- * 
+ *
  * @author Abhijeet Bharade
  * @since v1.6.2
  */
 public class EditTaskPage extends SharePage
 {
-
-    private static final String SAVE_BUTTON = "button[id$='default-form-submit-button']";
-    private static final String CANCEL_BUTTON = "button[id$='_default-form-cancel-button']";
-    private static final String REASSIGN_BUTTON = "button[id$='default-reassign-button']";
-    private static final String TASK_DONE_BUTTON = "button[id$='default_prop_transitions-Next-button']";
-    private static final String APPROVE_BUTTON = "button[id$='reviewOutcome-Approve-button'], button[id$='reviewOutcome-approve-button']";
-    private static final String REJECT_BUTTON = "button[id$='reviewOutcome-Reject-button'], button[id$='reviewOutcome-reject-button']";
     private static final String TASK_STATUS = "select[id$='default_prop_bpm_status']";
     private static final String COMMENT_TEXTAREA = "textarea[id$='_comment']";
 
     private static final By ITEM_ROW = By.cssSelector("div[id$='assoc_packageItems-cntrl'] table>tbody.yui-dt-data>tr");
     private static final boolean isViewMoreActionDisplayed = true;
 
-    private static final RenderElement TITLE_ELEMENT = getVisibleRenderElement(By.cssSelector(".alfresco-header-Title"));
+    private static final RenderElement TITLE_ELEMENT = getVisibleRenderElement(By.cssSelector("#HEADER_TITLE_BAR"));
     private static final RenderElement EDIT_TASK_HEADER_ELEMENT = getVisibleRenderElement(By.cssSelector("div.task-edit-header h1"));
-    // private static final RenderElement TASK_STATUS_ELEMENT = getVisibleRenderElement(By.cssSelector(TASK_STATUS));
-    // private static final RenderElement COMMENT_ELEMENT = getVisibleRenderElement(By.cssSelector(COMMENT_TEXTAREA));
-    private static final RenderElement SAVE_BUTTON_ELEMENT = getVisibleRenderElement(By.cssSelector(SAVE_BUTTON));
-    private static final RenderElement CANCEL_BUTTON_ELEMENT = getVisibleRenderElement(By.cssSelector(CANCEL_BUTTON));
+    private static final RenderElement SAVE_BUTTON_ELEMENT = getVisibleRenderElement(SAVE_AND_CLOSE.by);
+    private static final RenderElement CANCEL_BUTTON_ELEMENT = getVisibleRenderElement(CANCEL.by);
     
     private static final String ACCEPT_BUTTON = "button[id*='accept-button']";
+
+
+    public enum Button
+    {
+        REASSIGN("button[id$='default-reassign-button']"),
+        APPROVE("button[id$='reviewOutcome-Approve-button'], button[id$='reviewOutcome-approve-button']"),
+        REJECT("button[id$='reviewOutcome-Reject-button'], button[id$='reviewOutcome-reject-button']"),
+        SAVE_AND_CLOSE("button[id$='default-form-submit-button']"),
+        CANCEL("button[id$='_default-form-cancel-button']"),
+        TASK_DONE("button[id$='default_prop_transitions-Next-button']"),
+        ADD("div[id$='packageItems-cntrl-itemGroupActions'] > span > span > button"),
+        REMOVE_ALL("div[id$='packageItems-cntrl-itemGroupActions'] > span ~ span >span>button"),
+        CLAIM("button[id$='default-claim-button']"),
+        RELEASE_TO_POOL("button[id$='default-release-button']");
+        public final By by;
+
+        Button(String cssSelector)
+        {
+            this.by = By.cssSelector(cssSelector);
+        }
+    }
 
     /**
      * @param drone
@@ -78,7 +95,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.alfresco.webdrone.HtmlPage#render(org.alfresco.webdrone.RenderTime)
      */
     @SuppressWarnings("unchecked")
@@ -108,31 +125,31 @@ public class EditTaskPage extends SharePage
      */
     public HtmlPage selectStatusDropDown(TaskStatus status)
     {
-        Select statusSelect = new Select(drone.find(By.cssSelector(TASK_STATUS)));
+        Select statusSelect = new Select(drone.findAndWait(By.cssSelector(TASK_STATUS)));
         statusSelect.selectByValue(status.getTaskName());
         return this;
     }
 
     /**
      * Selects the Status drop down list.
-     * 
+     *
      * @return {@link TaskStatus} - status selected from dropdown.
      */
     public TaskStatus getSelectedStatusFromDropDown()
     {
-        Select comboBox = new Select(drone.find(By.cssSelector(TASK_STATUS)));
+        Select comboBox = new Select(drone.findAndWait(By.cssSelector(TASK_STATUS)));
         String selectedTask = comboBox.getFirstSelectedOption().getText();
         return TaskStatus.getTaskFromString(selectedTask);
     }
 
     /**
      * Selects the Task done button.
-     * 
-     * @return {@link MyTasksPage} - instance of my task page.
+     *
+     * @return {@link org.alfresco.po.share.MyTasksPage} - instance of my task page.
      */
     public HtmlPage selectTaskDoneButton()
     {
-        WebElement taskDoneButton = drone.find(By.cssSelector(TASK_DONE_BUTTON));
+        WebElement taskDoneButton = drone.findAndWait(TASK_DONE.by);
         String id = taskDoneButton.getAttribute("id");
         taskDoneButton.click();
         drone.waitUntilElementDeletedFromDom(By.id(id), TimeUnit.SECONDS.convert(maxPageLoadingTime, TimeUnit.MILLISECONDS));
@@ -141,14 +158,14 @@ public class EditTaskPage extends SharePage
 
     /**
      * Selects the Reject button.
-     * 
-     * @return {@link MyTasksPage} - instance of my task page.
+     *
+     * @return {@link org.alfresco.po.share.MyTasksPage} - instance of my task page.
      */
     public HtmlPage selectRejectButton()
     {
         try
         {
-            WebElement rejectButton = drone.find(By.cssSelector(REJECT_BUTTON));
+            WebElement rejectButton = drone.findAndWait(REJECT.by);
             String id = rejectButton.getAttribute("id");
             drone.mouseOverOnElement(rejectButton);
             rejectButton.click();
@@ -163,14 +180,14 @@ public class EditTaskPage extends SharePage
 
     /**
      * Selects the Status drop down list.
-     * 
-     * @return {@link MyTasksPage} - instance of my task page.
+     *
+     * @return {@link org.alfresco.po.share.MyTasksPage} - instance of my task page.
      */
     public HtmlPage selectApproveButton()
     {
         try
         {
-            WebElement approveButton = drone.find(By.cssSelector(APPROVE_BUTTON));
+            WebElement approveButton = drone.findAndWait(APPROVE.by);
             String id = approveButton.getAttribute("id");
             drone.mouseOverOnElement(approveButton);
             approveButton.click();
@@ -185,14 +202,14 @@ public class EditTaskPage extends SharePage
 
     /**
      * Selects the Save button
-     * 
-     * @return {@link MyTasksPage} - instance of my task page.
+     *
+     * @return {@link org.alfresco.po.share.MyTasksPage} - instance of my task page.
      */
     public HtmlPage selectSaveButton()
     {
         try
         {
-            WebElement saveButton = drone.find(By.cssSelector(SAVE_BUTTON));
+            WebElement saveButton = drone.find(SAVE_AND_CLOSE.by);
             String id = saveButton.getAttribute("id");
             drone.mouseOverOnElement(saveButton);
             saveButton.click();
@@ -207,7 +224,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Enter comment
-     * 
+     *
      * @param comment
      */
     public void enterComment(String comment)
@@ -241,7 +258,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get Info section of Edit Task page
-     * 
+     *
      * @return
      */
     public TaskInfo getTaskDetailsInfo()
@@ -277,7 +294,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get the list of Items in a Task
-     * 
+     *
      * @return {@link List< TaskItem >}
      */
     public List<TaskItem> getTaskItems()
@@ -304,7 +321,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get the List of TaskItem object for a given File Name
-     * 
+     *
      * @param fileName
      * @return {@link List< TaskItem >}
      */
@@ -335,7 +352,7 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to get Status Drop down options
-     * 
+     *
      * @return
      */
     public List<TaskStatus> getStatusOptions()
@@ -359,14 +376,14 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to select Cancel button on Edit Task Page
-     * 
-     * @return {@link MyTasksPage} or {@link TaskDetailsPage}
+     *
+     * @return {@link org.alfresco.po.share.MyTasksPage} or {@link TaskDetailsPage}
      */
     public HtmlPage selectCancelButton()
     {
         try
         {
-            WebElement cancelButton = drone.find(By.cssSelector(CANCEL_BUTTON));
+            WebElement cancelButton = drone.find(CANCEL.by);
             drone.mouseOverOnElement(cancelButton);
             String id = cancelButton.getAttribute("id");
             cancelButton.click();
@@ -381,14 +398,14 @@ public class EditTaskPage extends SharePage
 
     /**
      * Method to check if Reassign button is displayed or not
-     * 
+     *
      * @return True if displayed
      */
     public boolean isReAssignButtonDisplayed()
     {
         try
         {
-            return drone.find(By.cssSelector(REASSIGN_BUTTON)).isDisplayed();
+            return drone.find(REASSIGN.by).isDisplayed();
         }
         catch (NoSuchElementException nse)
         {
@@ -417,5 +434,135 @@ public class EditTaskPage extends SharePage
             throw new PageOperationException("Unable to find Approve button", nse);
         }
     }
+
+    /**
+     * Return is all buttons displayed on page.
+     *
+     * @return
+     */
+    public boolean isButtonsDisplayed(Button button)
+    {
+        try
+        {
+            return drone.findAndWait(button.by, 3000).isDisplayed();
+        }
+        catch (TimeoutException e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Method to select given file from the given site.
+     *
+     * @param fileName
+     * @param siteName
+     */
+    public void selectItem(String fileName, String siteName)
+    {
+        if (StringUtils.isEmpty(fileName))
+        {
+            throw new IllegalArgumentException("File Name cannot be Empty");
+        }
+        if (StringUtils.isEmpty(siteName))
+        {
+            throw new IllegalArgumentException("Site Name cannot be Empty");
+        }
+        SelectContentPage selectContentPage = clickAddItems().render();
+        selectContentPage.addItemFromSite(fileName, siteName);
+        selectContentPage.selectOKButton().render();
+    }
+
+    /**
+     * Mimics the click Add Items button.
+     *
+     * @return {@link SelectContentPage}
+     */
+    public SelectContentPage clickAddItems()
+    {
+        clickUnamedButton("Add");
+        return new SelectContentPage(drone);
+    }
+
+    private void clickUnamedButton(String name)
+    {
+        if (StringUtils.isEmpty(name))
+        {
+            throw new IllegalArgumentException("Name cannot be Empty or null");
+        }
+        List<WebElement> elements = drone.findAll(By.cssSelector("button[type='button']"));
+        for (WebElement webElement : elements)
+        {
+            if (name.equals(webElement.getText()))
+            {
+                webElement.click();
+                break;
+            }
+        }
+    }
+
+    /**
+     * Mimics the click Reassign Button button.
+     *
+     * @return {@link ReassignPage}
+     */
+    public ReassignPage clickReassign()
+    {
+        drone.find(REASSIGN.by).click();
+        return new ReassignPage(drone).render();
+    }
+
+    /**
+     * Method to reassign task for another user.
+     * test is EditTaskPageTest.selectReassign
+     *
+     * @param userName
+     */
+    public MyTasksPage selectReassign(String userName)
+    {
+        if (StringUtils.isEmpty(userName))
+        {
+            throw new IllegalArgumentException("User Name cannot be Empty");
+        }
+        ReassignPage reassignPage = clickReassign();
+        reassignPage.selectUser(userName).render();
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method mimic click interaction with Claim button.
+     *
+     * @return
+     */
+    public EditTaskPage selectClaim()
+    {
+        drone.findAndWait(CLAIM.by).click();
+        waitUntilAlert();
+        return this.render();
+    }
+    
+    
+
+    /**
+     * Method to check if COMMENT_TEXTAREA is present
+     * 
+     * @return boolean
+     */
+	public boolean isCommentTextAreaDisplayed() {
+		return drone.isElementDisplayed(By.cssSelector(COMMENT_TEXTAREA));
+
+	}
+	
+    /**
+     * Method to read comment from COMMENT_TEXTAREA 
+     * 
+     * @return String
+     */
+	public String readCommentFromCommentTextArea() {
+
+		WebElement commentBox = drone.find(By.cssSelector(COMMENT_TEXTAREA));
+		return commentBox.getAttribute("value");
+
+	}
 
 }

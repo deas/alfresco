@@ -1,0 +1,413 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Common tests for Sprint BY" preserve-order="true">
+<test name="Common tests" parallel="classes" thread-count="5">
+<classes>
+    <class name="org.alfresco.share.user.trashcan.TrashcanTest2">
+        <methods>
+            <include name="AONE_14180"/>
+            <include name="AONE_14181"/>
+            <include name="AONE_14182"/>
+            <include name="AONE_14173"/>
+            <include name="AONE_14174"/>
+            <include name="AONE_14176"/>
+            <include name="AONE_14177"/>
+            <include name="AONE_14178"/>
+            <include name="AONE_14171"/>
+            <include name="AONE_14172"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+    <class name="org.alfresco.share.user.trashcan.TrashcanTest3">
+        <methods>
+            <include name="AONE_14183"/>
+            <include name="AONE_14187"/>
+            <include name="AONE_14186"/>
+            <include name="AONE_14188"/>
+            <include name="AONE_14189"/>
+            <include name="AONE_14190"/>
+            <include name="AONE_14191"/>
+            <include name="AONE_14194"/>
+            <include name="AONE_14195"/>
+            <include name="AONE_14196"/>
+            <include name="AONE_14197"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+<class name="org.alfresco.share.dashlet.SavedSearchMyDashboardAdvancedTest">
+<methods>
+<include name="AONE_14664"/>
+<include name="AONE_14665"/>
+<include name="AONE_14666"/>
+<include name="AONE_14667"/>
+<include name="AONE_14668"/>
+<include name="AONE_14669"/>
+<include name="AONE_14670"/>
+<include name="AONE_14671"/>
+<include name="AONE_14672"/>
+<include name="AONE_14673"/>
+<include name="AONE_14674"/>
+<include name="AONE_14675"/>
+<include name="AONE_14676"/>
+<include name="AONE_14677"/>
+<include name="AONE_14678"/>
+<include name="AONE_14679"/>
+<include name="AONE_14680"/>
+<include name="AONE_14681"/>
+<include name="AONE_14682"/>
+<include name="AONE_14683"/>
+<include name="AONE_14684"/>
+<include name="AONE_14685"/>
+<include name="AONE_14686"/>
+<include name="AONE_14687"/>
+<include name="AONE_14689"/>
+<include name="AONE_14690"/>
+<include name="AONE_14692"/>
+<include name="AONE_14693"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SavedSearchMyDashboardBasicTest">
+<methods>
+<include name="AONE_14650"/>
+<include name="AONE_14651"/>
+<include name="AONE_14652"/>
+<include name="AONE_14653"/>
+<include name="AONE_14654"/>
+<include name="AONE_14659"/>
+<include name="AONE_14661"/>
+<include name="AONE_14662"/>
+<include name="AONE_14663"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest">
+<methods>
+<include name="AONE_14708"/>
+<include name="AONE_14709"/>
+<include name="AONE_14710"/>
+<include name="AONE_14711"/>
+<include name="AONE_14712"/>
+<include name="AONE_14713"/>
+<include name="AONE_14714"/>
+<include name="AONE_14715"/>
+<include name="AONE_14716"/>
+<include name="AONE_14717"/>
+<include name="AONE_14718"/>
+<include name="AONE_14719"/>
+<include name="AONE_14720"/>
+<include name="AONE_14721"/>
+<include name="AONE_14722"/>
+<include name="AONE_14723"/>
+<include name="AONE_14724"/>
+<include name="AONE_14725"/>
+<include name="AONE_14726"/>
+<include name="AONE_14727"/>
+<include name="AONE_14728"/>
+<include name="AONE_14729"/>
+<include name="AONE_14730"/>
+<include name="AONE_14731"/>
+<include name="AONE_14733"/>
+<include name="AONE_14734"/>
+<include name="AONE_14736"/>
+<include name="AONE_14737"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SavedSearchSiteDashboardBasicTest">
+<methods>
+<include name="AONE_14694"/>
+<include name="AONE_14695"/>
+<include name="AONE_14696"/>
+<include name="AONE_14697"/>
+<include name="AONE_14698"/>
+<include name="AONE_14703"/>
+<include name="AONE_14705"/>
+<include name="AONE_14706"/>
+<include name="AONE_14707"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SiteNoticetDashletTest">
+<methods>
+<include name="AONE_13966"/>
+<include name="AONE_13967"/>
+<include name="AONE_13968"/>
+<include name="AONE_13969"/>
+<include name="AONE_13970"/>
+<include name="AONE_13971"/>
+<include name="AONE_13972"/>
+<include name="AONE_13973"/>
+<include name="AONE_13974"/>
+<include name="AONE_13975"/>
+<include name="AONE_13976"/>
+<include name="AONE_13977"/>
+<include name="AONE_13978"/>
+<include name="AONE_13979"/>
+<include name="AONE_13980"/>
+<include name="AONE_13981"/>
+<include name="AONE_13982"/>
+<include name="AONE_13983"/>
+<include name="AONE_13984"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SiteSearchDashletTest">
+<methods>
+<include name="AONE_14774"/>
+<include name="AONE_14775"/>
+<include name="AONE_14776"/>
+<include name="AONE_14781"/>
+<include name="AONE_14782"/>
+<include name="AONE_14783"/>
+<include name="AONE_14784"/>
+<include name="AONE_14785"/>
+<include name="AONE_14786"/>
+<include name="AONE_14787"/>
+<include name="AONE_14788"/>
+<include name="AONE_14789"/>
+<include name="AONE_14790"/>
+<include name="AONE_14791"/>
+<include name="AONE_14792"/>
+<include name="AONE_14793"/>
+<include name="AONE_14794"/>
+<include name="AONE_14795"/>
+<include name="AONE_14796"/>
+<include name="AONE_14797"/>
+<include name="AONE_14798"/>
+<include name="AONE_14799"/>
+<include name="AONE_14800"/>
+<include name="AONE_14802"/>
+<include name="AONE_14803"/>
+<include name="AONE_14804"/>
+<include name="AONE_14805"/>
+<include name="AONE_14806"/>
+<include name="AONE_14807"/>
+<include name="AONE_14808"/>
+<include name="AONE_14809"/>
+<include name="AONE_14811"/>
+<include name="AONE_14812"/>
+<include name="AONE_14813"/>
+<include name="AONE_14814"/>
+<include name="AONE_14815"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.SiteDashboardMyDiscussionTests">
+<methods>
+<include name="AONE_14766"/>
+<include name="AONE_14755"/>
+<include name="AONE_14758"/>
+<include name="AONE_14760"/>
+<include name="AONE_14761"/>
+<include name="AONE_14763"/>
+<include name="AONE_14764"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.dashlet.WelcomeDashletCreateDelete">
+<methods>
+<include name="AONE_15837"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.search.AdvanceSearchTest">
+<methods>
+<include name="AONE_13919"/>
+<include name="AONE_13920"/>
+<include name="AONE_13921"/>
+<include name="AONE_13922"/>
+<include name="AONE_13923"/>
+<include name="AONE_13924"/>
+<include name="AONE_13925"/>
+<include name="AONE_13926"/>
+<include name="AONE_13927"/>
+<include name="AONE_13931"/>
+<include name="AONE_13933"/>
+<include name="AONE_13934"/>
+<include name="AONE_13935"/>
+<include name="AONE_13936"/>
+<include name="AONE_13937"/>
+<include name="AONE_13938"/>
+<include name="AONE_13939"/>
+<include name="AONE_13940"/>
+<include name="AONE_13941"/>
+<include name="AONE_13942"/>
+<include name="AONE_13943"/>
+<include name="AONE_13944"/>
+<include name="AONE_13945"/>
+<include name="AONE_13946"/>
+<include name="AONE_13947"/>
+<include name="AONE_13949"/>
+<include name="AONE_13950"/>
+</methods>
+</class>
+<class name="org.alfresco.share.search.AdvanceSearchTest2">
+<methods>
+<include name="AONE_13905"/>
+<include name="AONE_13906"/>
+<include name="AONE_13907"/>
+<include name="AONE_13908"/>
+<include name="AONE_13909"/>
+<include name="AONE_13910"/>
+<include name="AONE_13911"/>
+<include name="AONE_13912"/>
+<include name="AONE_13913"/>
+<include name="AONE_13914"/>
+<include name="AONE_13915"/>
+<include name="AONE_13916"/>
+<include name="AONE_13917"/>
+<include name="AONE_13918"/>
+<include name="AONE_13900"/>
+<include name="AONE_13901"/>
+<include name="AONE_13902"/>
+<include name="AONE_13903"/>
+<include name="AONE_13904"/>
+<include name="AONE_13932"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ManagePermissionTest">
+<methods>
+<include name="AONE_14128"/>
+<include name="AONE_14129"/>
+<include name="AONE_14130"/>
+<include name="AONE_14131"/>
+<include name="AONE_14132"/>
+<include name="AONE_14133"/>
+<include name="AONE_14134"/>
+<include name="AONE_14135"/>
+<include name="AONE_14136"/>
+<include name="AONE_14137"/>
+<include name="AONE_14138"/>
+<include name="AONE_14139"/>
+<include name="AONE_14140"/>
+<include name="AONE_14141"/>
+<include name="AONE_14142"/>
+<include name="AONE_14143"/>
+<include name="AONE_14144"/>
+<include name="AONE_14145"/>
+<include name="AONE_14146"/>
+<include name="AONE_14150"/>
+<include name="AONE_14151"/>
+<include name="AONE_14152"/>
+<include name="AONE_14153"/>
+<include name="AONE_14154"/>
+<include name="AONE_14155"/>
+<include name="AONE_14156"/>
+<include name="AONE_14157"/>
+<include name="AONE_14158"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ManagePermissionTest2">
+<methods>
+<include name="AONE_14147"/>
+<include name="AONE_14148"/>
+<include name="AONE_14149"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ShareRefreshCopyToSites">
+<methods>
+<include name="AONE_14035"/>
+<include name="AONE_14036"/>
+<include name="AONE_14037"/>
+<include name="AONE_14038"/>
+<include name="AONE_14039"/>
+<include name="AONE_14040"/>
+<include name="AONE_14041"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ShareRefreshInheritRules">
+<methods>
+<include name="AONE_13990"/>
+<include name="AONE_13991"/>
+<include name="AONE_13992"/>
+<include name="AONE_13993"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ShareRefreshMoveToSites">
+<methods>
+<include name="AONE_14028"/>
+<include name="AONE_14029"/>
+<include name="AONE_14030"/>
+<include name="AONE_14031"/>
+<include name="AONE_14032"/>
+<include name="AONE_14033"/>
+<include name="AONE_14034"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.site.document.ToolbarTest">
+<methods>
+<include name="AONE_13995"/>
+<exclude name="AONE_13996"/>
+<include name="AONE_13997"/>
+<include name="AONE_13998"/>
+<include name="AONE_13999"/>
+<include name="AONE_14000"/>
+<include name="AONE_14001"/>
+<include name="AONE_14002"/>
+<exclude name="AONE_14003"/>
+<include name="AONE_14004"/>
+<include name="AONE_14005"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.FooterPageTest">
+<methods>
+<include name="AONE_14104"/>
+<include name="AONE_14105"/>
+<exclude name=".*"/>
+</methods>
+</class>
+<class name="org.alfresco.share.HeaderBarTest">
+<methods>
+<include name="AONE_14117" />
+<include name="AONE_14118" />
+<include name="AONE_14106" />
+<include name="AONE_14107" />
+<include name="AONE_14108" />
+<include name="AONE_14109" />
+<include name="AONE_14110" />
+<include name="AONE_14111" />
+<include name="AONE_14112" />
+<include name="AONE_14113" />
+<include name="AONE_14114" />
+<include name="AONE_14115" />
+</methods>
+</class>
+    <class name="org.alfresco.share.repository.RepositoryFolderTests1">
+        <methods>
+            <include name="AONE_3566"/>
+            <include name="AONE_3559"/>
+            <include name="AONE_3572"/>
+            <include name="AONE_3573"/>
+            <include name="AONE_3578"/>
+            <include name="AONE_3474"/>
+            <include name="AONE_3483"/>
+            <include name="AONE_3552"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+    <class name="org.alfresco.share.repository.RepositoryFolderTests2">
+        <methods>
+            <include name="AONE_3574"/>
+            <include name="AONE_3575"/>
+            <include name="AONE_3576"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+    <class name="org.alfresco.share.repository.RepositoryFolderTests3">
+        <methods>
+            <include name="AONE_3563"/>
+            <include name="AONE_3565"/>
+            <exclude name=".*"/>
+        </methods>
+    </class>
+
+</classes>
+</test>
+</suite>

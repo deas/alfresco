@@ -16,7 +16,6 @@ import org.alfresco.webdrone.WebDrone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -46,7 +45,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
     /**
      * Util to mimic cloud Signup request. Not supported for Enterprise
-     * 
+     *
      * @param drone
      * @param invitingUserEmail
      * @param newUserEmailID
@@ -71,7 +70,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
         HttpClient client = null;
         HttpPost request = null;
-        HttpEntity response = null;
+        HttpResponse response = null;
 
         try
         {
@@ -79,7 +78,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
             request = generatePostRequest(reqURL, headers, body);
             response = executeRequest(client, request);
 
-            String result = JSONUtil.readStream(response).toJSONString();
+            String result = JSONUtil.readStream(response.getEntity()).toJSONString();
 
             String regKey = getParameterValue("registration", "key", result);
             String regId = getParameterValue("registration", "id", result);
@@ -87,14 +86,14 @@ public class CreateUserAPI extends AlfrescoHttpClient
         }
         finally
         {
-            releaseConnection(client, response);
+            releaseConnection(client, response.getEntity());
         }
     }
 
     /**
      * Util to mimic activating the signup request for the cloud user.
      * Not supported for Enterprise.
-     * 
+     *
      * @param drone
      * @param invitingUserEmail
      * @param fName
@@ -140,14 +139,14 @@ public class CreateUserAPI extends AlfrescoHttpClient
      * This requires admin console / admin access
      * Implementation for Enterprise requires admin user who can create and add
      * users to 'Alfresco_Administrators' group
-     * 
+     *
      * @param drone
      * @param invitingUserEmail
      * @param newUserDetails
      * @return
      * @throws Exception
      */
-    public synchronized static boolean createActivateUserAsTenantAdmin(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
+    public static boolean createActivateUserAsTenantAdmin(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
     {
         Boolean result = false;
         String tenantType = TenantTypes.Premium.getTenantType();
@@ -156,7 +155,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
         {
             result = CreateActivateUser(drone, invitingUserEmail, newUserDetails);
             upgradeCloudAccount(drone, invitingUserEmail, getUserDomain(newUserDetails[0]), tenantType);
-            result = promoteUserAsAdmin(drone, invitingUserEmail, newUserDetails[0], getUserDomain(newUserDetails[0]));
+            result = result && promoteUserAsAdmin(drone, invitingUserEmail, newUserDetails[0], getUserDomain(newUserDetails[0]));
         }
         else
         {
@@ -169,7 +168,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
     /**
      * Util to Create a new user for Cloud or Enterprise
-     * 
+     *
      * @param drone
      * @param invitingUserEmail
      * @param newUserDetails
@@ -179,7 +178,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
     public synchronized static boolean CreateActivateUser(WebDrone drone, String invitingUserEmail, String... newUserDetails) throws Exception
     {
 
-        boolean result = false;
+        boolean result;
         int paramCount = newUserDetails.length;
         int paramCountMandatory = 1;
 
@@ -225,26 +224,19 @@ public class CreateUserAPI extends AlfrescoHttpClient
         {
             result = ShareUser.createEnterpriseUser(drone, invitingUserEmail, email, firstName, lastName, userPassword);
         }
-
+        logger.info("User[" + email + "] created? " + result);
         return result;
-
     }
 
     /**
      * Utility to create a cloud user using signUp-Activate API
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param invitingUsername
-     *            String username of inviting user
-     * @param email
-     *            String email or username
-     * @param fname
-     *            String firstname
-     * @param lname
-     *            String lastname
-     * @param password
-     *            String password
+     *
+     * @param drone            WebDrone Instance
+     * @param invitingUsername String username of inviting user
+     * @param email            String email or username
+     * @param fname            String firstname
+     * @param lname            String lastname
+     * @param password         String password
      * @return true is user creation succeeds
      * @throws Exception
      */
@@ -260,16 +252,12 @@ public class CreateUserAPI extends AlfrescoHttpClient
     /**
      * Utility to upgrade the account type (for the given domain)
      * Method is not supported for enterprise
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param authUser
-     *            String authenticating user
-     * @param domain
-     *            String domain Name to be upgraded
-     * @param accountTypeID
-     *            String accountType ID e.g. 1000 if enterprise, 0 if free, 101
-     *            for partner
+     *
+     * @param drone         WebDrone Instance
+     * @param authUser      String authenticating user
+     * @param domain        String domain Name to be upgraded
+     * @param accountTypeID String accountType ID e.g. 1000 if enterprise, 0 if free, 101
+     *                      for partner
      * @return true if account upgrade succeeds
      * @throws Exception
      */
@@ -305,15 +293,11 @@ public class CreateUserAPI extends AlfrescoHttpClient
      * Utility to promote the user as network admin (for the given domain)
      * On Enterprise: its done by admin user via admin console
      * On cloud, its done using internal API
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param authUser
-     *            String authenticating user
-     * @param domain
-     *            String domain for which the user is being upgraded.
-     * @param userNametoBePromoted
-     *            String userName to be promoted as network admin
+     *
+     * @param drone                WebDrone Instance
+     * @param authUser             String authenticating user
+     * @param domain               String domain for which the user is being upgraded.
+     * @param userNametoBePromoted String userName to be promoted as network admin
      * @return true if succeeds
      * @throws Exception
      */
@@ -349,15 +333,11 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
     /**
      * Utility to promote the user as network admin (for the given domain) for Cloud
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param authUser
-     *            String authenticating user
-     * @param domain
-     *            String domain for which the user is being upgraded.
-     * @param userNametoBePromoted
-     *            String userName to be promoted as network admin
+     *
+     * @param drone                WebDrone Instance
+     * @param authUser             String authenticating user
+     * @param domain               String domain for which the user is being upgraded.
+     * @param userNametoBePromoted String userName to be promoted as network admin
      * @return HttpResponse
      * @throws Exception
      */
@@ -392,19 +372,13 @@ public class CreateUserAPI extends AlfrescoHttpClient
     /**
      * Utility to invite a cloud user to Site using invite-To-Site- And
      * Activate-Invitation via rest API request
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param invitingUsername
-     *            String username of inviting user
-     * @param email
-     *            String email or username
-     * @param siteShortname
-     *            String Name of the site to which the user is being invited
-     * @param role
-     *            String role to be assigned to the invited user
-     * @param message
-     *            String message to be sent with the invitation
+     *
+     * @param drone            WebDrone Instance
+     * @param invitingUsername String username of inviting user
+     * @param email            String email or username
+     * @param siteShortname    String Name of the site to which the user is being invited
+     * @param role             String role to be assigned to the invited user
+     * @param message          String message to be sent with the invitation
      * @return true is user invitation-acceptance succeeds
      * @throws Exception
      */
@@ -452,21 +426,15 @@ public class CreateUserAPI extends AlfrescoHttpClient
     /**
      * Utility to invite a cloud user to Site using invite-To-Site via rest API
      * request
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param invitingUsername
-     *            String username of inviting user
-     * @param email
-     *            String email or username
-     * @param siteShortname
-     *            String Name of the site to which the user is being invited
-     * @param role
-     *            String role to be assigned to the invited user
-     * @param message
-     *            String message to be sent with the invitation
+     *
+     * @param drone            WebDrone Instance
+     * @param invitingUsername String username of inviting user
+     * @param email            String email or username
+     * @param siteShortname    String Name of the site to which the user is being invited
+     * @param role             String role to be assigned to the invited user
+     * @param message          String message to be sent with the invitation
      * @return String[] array of regKey and activitii id is user
-     *         invitation-acceptance succeeds
+     * invitation-acceptance succeeds
      * @throws Exception
      */
     public static String[] inviteUserToSite(WebDrone drone, String invitingUsername, String email, String siteShortname, String role, String message)
@@ -487,7 +455,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
 
         HttpClient client = null;
         HttpPost request = null;
-        HttpEntity response = null;
+        HttpResponse response = null;
 
         JSONObject body = new JSONObject();
         body.put("inviterEmail", invitingUsername);
@@ -501,7 +469,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
             request = generatePostRequest(reqURL, headers, body);
             response = executeRequest(client, request);
 
-            String result = JSONUtil.readStream(response).toJSONString();
+            String result = JSONUtil.readStream(response.getEntity()).toJSONString();
 
             String regKey = getParameterValue("invitations", "key", result);
             String regId = getParameterValue("invitations", "id", result);
@@ -509,22 +477,18 @@ public class CreateUserAPI extends AlfrescoHttpClient
         }
         finally
         {
-            releaseConnection(client, response);
+            releaseConnection(client, response.getEntity());
         }
     }
 
     /**
      * Utility to Accept or Activate-Invitation via rest API request
-     * 
-     * @param drone
-     *            WebDrone Instance
-     * @param invitedUserEmail
-     *            String email of inviting user
-     * @param invitedToDomain
-     *            String Domain name the new user is being invited to
-     * @param regInfo
-     *            String[] regKey and activitii id generated via Invitation
-     *            request
+     *
+     * @param drone            WebDrone Instance
+     * @param invitedUserEmail String email of inviting user
+     * @param invitedToDomain  String Domain name the new user is being invited to
+     * @param regInfo          String[] regKey and activitii id generated via Invitation
+     *                         request
      * @return true if user invitation-acceptance succeeds
      * @throws Exception
      */
@@ -555,7 +519,7 @@ public class CreateUserAPI extends AlfrescoHttpClient
      * Implementation for cloud requires the tenant to be upgraded from free network
      * Hence This requires admin console / admin access
      * Implementation for Enterprise requires admin user who can create and add users to specified group
-     * 
+     *
      * @param drone
      * @param invitingUserEmail
      * @param newUserDetails

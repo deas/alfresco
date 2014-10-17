@@ -3,42 +3,60 @@
     <test name="dataprep" verbose="1" parallel="classes" thread-count="1">
         <groups>
             <run>
-                <include name="DataPrep.*" />
-                 <exclude name=".*Bug.*" />
+                <include name="DataPrep.*"/>
+                <exclude name=".*Bug.*"/>
             </run>
         </groups>
         <classes>
-            <class name="org.alfresco.share.DownloadFilesAndFoldersTest" />
+            <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/>
             <class name="org.alfresco.share.site.document.GoogleDocsTest"/>
-             <class name="org.alfresco.share.site.document.GalleryViewTest">
+            <class name="org.alfresco.share.site.document.GalleryViewTest">
                 <methods>
-                    <include name="dataprep_ALF_8751" />
-                    <include name="dataprep_ALF_8745" />
-                    <include name="dataprep_ALF_8664" />
-                    <include name="dataPrep_ALF_8734" />
-                    <include name="dataprep_ALF_14399" />
+                    <include name="dataprep_AONE_14014"/>
+                    <include name="dataprep_AONE_14010"/>
+                    <include name="dataprep_AONE_15058"/>
+                    <include name="dataPrep_AONE_14025"/>
+                    <include name="dataprep_AONE_15055"/>
                 </methods>
             </class>
             <class name="org.alfresco.share.site.document.FilmStripDocLibTest">
                 <methods>
-                    <include name="dataPrep_FilmStrip_ALF_14197" />
-                    <include name="dataPrep_FilmStrip_ALF_14200" />
-                    <include name="dataPrep_FilmStrip_ALF_14210" />
-                    <include name="dataPrep_FilmStrip_ALF_14214" />
+                    <include name="dataPrep_FilmStrip_AONE_14045"/>
+                    <include name="dataPrep_FilmStrip_AONE_14048"/>
+                    <include name="dataPrep_FilmStrip_AONE_14053"/>
+                    <include name="dataPrep_FilmStrip_AONE_14058"/>
                 </methods>
             </class>
             <class name="org.alfresco.share.sanity.SharedFilesTest">
                 <methods>
-                    <include name="dataPrep_ALF_3063" />
-                    <include name="dataPrep_ALF_3064" />
-                    <include name="dataPrep_ALF_3065" />
+                    <include name="dataPrep_AONE_15229"/>
+                    <include name="dataPrep_AONE_15230"/>
+                    <include name="dataPrep_AONE_15231"/>
                 </methods>
             </class>
             <class name="org.alfresco.share.user.SiteNotificationsTest">
                 <methods>
-                    <include name="dataPrep_ALF_15251" />
+                    <include name="dataPrep_AONE_14162"/>
+                </methods>
+            </class>
+            <class name="org.alfresco.share.sanity.SearchTest">
+                <methods>
+                    <include name="dataPrep_AONE_8278"/>
+                </methods>
+            </class>
+            <class name="org.alfresco.share.search.AdvanceSearchTest">
+                <methods>
+                    <include name="dataPrep_AONE_13948"/>
+                    <exclude name=".*"/>
                 </methods>
             </class>
         </classes>
     </test>
+
+    <test name="AvatarCaching">
+        <classes>
+            <class name="org.alfresco.share.AvatarCaching"/>
+        </classes>
+    </test>
+
 </suite>

@@ -16,11 +16,13 @@
 package org.alfresco.po.share.search;
 
 import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.HtmlPage;
 import org.alfresco.webdrone.RenderElement;
 import org.alfresco.webdrone.RenderTime;
@@ -34,7 +36,7 @@ import org.openqa.selenium.support.ui.Select;
 /**
  * Advance search Abstract contains all the common functions of the search
  * forms.
- * 
+ *
  * @author Subashni Prasanna
  * @since 1.6
  */
@@ -53,13 +55,15 @@ public class AdvanceSearchPage extends SharePage
     protected static final By FOLDER_SEARCH_MENU_ITEM = By.cssSelector("ul.first-of-type");
     protected static final By FOLDER_MENU_LIST = By.cssSelector("span[class$='yuimenuitemlabel']");
     protected static final By CONTENT_SEARCH_FORM_DROPDOWN = By.cssSelector("button[id$='selected-form-button-button']");
-
+    protected static final By LOOK_FOR_DRP_DWN = By.cssSelector(".bd ul");
+    protected static final By BACK_TO_RESULTS_LINK = By.cssSelector("#HEADER_SEARCH_BACK_TO_RESULTS");
+    protected static final By BACK_TO_SITE_LINK = By.cssSelector("#HEADER_SEARCH_BACK_TO_SITE_DASHBOARD");
     private final RenderElement contentSearchFormDropdownElement = getVisibleRenderElement(CONTENT_SEARCH_FORM_DROPDOWN);
     private final RenderElement searchButtonElement = getVisibleRenderElement(SEARCH_BUTTON);
 
     /**
      * Constructor
-     * 
+     *
      * @param drone
      */
     public AdvanceSearchPage(WebDrone drone)
@@ -69,7 +73,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Check whether Search button is displayed correctly.
-     * 
+     *
      * @return true if page is displayed correctly
      */
     protected boolean isSearchButtonDisplayed()
@@ -86,7 +90,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Check whether Date Modifier are not displayed.
-     * 
+     *
      * @return true if search button
      */
     protected boolean isDateModifierFromDisplayed()
@@ -103,7 +107,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Content keyword is Displayed and enter search text in the keyword.
-     * 
+     *
      * @param String keyWordSearchText
      */
     public void inputKeyword(final String keyWordSearchText)
@@ -119,7 +123,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the keyword field.
-     * 
+     *
      * @return String
      */
     public String getKeyword()
@@ -129,7 +133,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the Name field.
-     * 
+     *
      * @param String NameSearchText
      */
     public void inputName(final String nameSearchText)
@@ -145,7 +149,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the Name field.
-     * 
+     *
      * @return String
      */
     public String getName()
@@ -155,7 +159,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the title field.
-     * 
+     *
      * @param String titleSearchText
      */
     public void inputTitle(final String titleSearchText)
@@ -171,7 +175,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value enetered in the title field.
-     * 
+     *
      * @return String
      */
     public String getTitle()
@@ -181,7 +185,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the description field.
-     * 
+     *
      * @param String descriptionSearchText
      */
     public void inputDescription(final String descriptionSearchText)
@@ -197,7 +201,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the description field.
-     * 
+     *
      * @return String
      */
     public String getDescription()
@@ -207,7 +211,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the text value in the modifier field.
-     * 
+     *
      * @param String modifierSearchText
      */
     public void inputModifier(final String modifierSearchText)
@@ -223,7 +227,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the modifier field.
-     * 
+     *
      * @return String .
      */
     public String getModifier()
@@ -233,7 +237,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the date in the from date field.
-     * 
+     *
      * @param String fromDateText
      */
     public void inputFromDate(final String fromDateText)
@@ -249,7 +253,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the from date field.
-     * 
+     *
      * @return String
      */
     public String getFromDate()
@@ -259,7 +263,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Enter the date in the To date field.
-     * 
+     *
      * @param String ToDateText
      */
     public void inputToDate(final String toDateText)
@@ -275,7 +279,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Get the value entered in the To date Field.
-     * 
+     *
      * @return String
      */
     public String getToDate()
@@ -285,7 +289,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Select the Mime type.
-     * 
+     *
      * @param String mimeType
      */
     public void selectMimeType(final String mimeType)
@@ -301,7 +305,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Click on Search button.
-     * 
+     *
      * @return {@link SharePage}
      */
     public HtmlPage clickSearch()
@@ -312,7 +316,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * This function will help to find element in the content and folder serach form.
-     * 
+     *
      * @return - WebElement
      */
     protected WebElement findElementDisplayed(By elementId)
@@ -330,7 +334,7 @@ public class AdvanceSearchPage extends SharePage
 
     /**
      * Select Folder search in the drop down.
-     * 
+     *
      * @return {@link HtmlPage}
      */
     public HtmlPage searchLink(final String searchType)
@@ -362,9 +366,34 @@ public class AdvanceSearchPage extends SharePage
         }
     }
 
+    private boolean isLookForDropDownCorrect()
+    {
+        boolean isContent = false;
+        boolean isFolder = false;
+        try
+        {
+            findElementDisplayed(LOOK_FOR_DRP_DWN);
+        }
+        catch (NoSuchElementException nse)
+        {
+            drone.find(CONTENT_SEARCH_FORM_DROPDOWN).click();
+        }
+        WebElement searchMenudropdown = drone.findAndWait(FOLDER_SEARCH_MENU);
+        WebElement menuWebElement = searchMenudropdown.findElement(FOLDER_SEARCH_MENU_ITEM);
+        List<WebElement> menuList = menuWebElement.findElements(FOLDER_MENU_LIST);
+        for (WebElement searchelement : menuList)
+        {
+            if (searchelement.getText().equalsIgnoreCase(drone.getValue("advanced.search.content")))
+                isContent = true;
+            else if (searchelement.getText().equalsIgnoreCase(drone.getValue("advanced.search.folders")))
+                isFolder = true;
+        }
+        return isContent && isFolder;
+    }
+
     /**
      * Check whether Modified From Date is valid or not.
-     * 
+     *
      * @return true if date is valid otherwise false.
      */
     public boolean isValidFromDate()
@@ -377,6 +406,68 @@ public class AdvanceSearchPage extends SharePage
         {
             return false;
         }
+    }
+
+    private boolean isPageCorrect()
+    {
+        return findElementDisplayed(CONTENT_SEARCH_FORM_DROPDOWN).isDisplayed() && isLookForDropDownCorrect()
+            && isSearchButtonDisplayed() && findElementDisplayed(KEYWORD_SEARCH).isDisplayed() && findElementDisplayed(NAME_SEARCH).isDisplayed()
+            && findElementDisplayed(TITLE_SEARCH).isDisplayed() && findElementDisplayed(DESCRIPTION_SEARCH).isDisplayed();
+    }
+
+    /**
+     * Method to verify whether all elements are present on the page
+     *
+     * @return true if page is correct
+     */
+    public boolean isAdvSearchPageCorrectlyDisplayed()
+    {
+        boolean isCorrect;
+        SharePage page = drone.getCurrentPage().render();
+        if (page instanceof AdvanceSearchFolderPage)
+            isCorrect = isPageCorrect();
+        else
+            isCorrect = isPageCorrect() && findElementDisplayed(CONTENT_MIME_TYPE).isDisplayed() && findElementDisplayed(MODIFIER_FROM_SEARCH).isDisplayed()
+                && findElementDisplayed(MODIFIER_TO_SEARCH).isDisplayed() && findElementDisplayed(MODIFIER_SEARCH).isDisplayed();
+        return isCorrect;
+    }
+
+    /**
+     * Method to navigate back to results
+     *
+     * @return SiteResultsPage
+     */
+    public SiteResultsPage clickBackToResults()
+    {
+        try
+        {
+            WebElement backLink = drone.find(BACK_TO_RESULTS_LINK);
+            backLink.click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + BACK_TO_RESULTS_LINK);
+        }
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Method to navigate back to site
+     *
+     * @return SharePage
+     */
+    public SharePage clickBackToSite()
+    {
+        try
+        {
+            WebElement backLink = drone.find(BACK_TO_SITE_LINK);
+            backLink.click();
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new ShareException("Unable to find " + BACK_TO_SITE_LINK);
+        }
+        return drone.getCurrentPage().render();
     }
 
     @SuppressWarnings("unchecked")

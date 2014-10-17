@@ -24,11 +24,14 @@ public class AbstractUtilsTest extends AbstractUtils
     @Test
     public void testGetAPIURLCloud()
     {
-        ShareTestProperty testProperties = new ShareTestProperty("https://my.alfresco.me/share", 
-                "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
-                AlfrescoVersion.Cloud.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory, 
-                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
-                0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
+        ShareTestProperty testProperties = new ShareTestProperty("https://my.alfresco.me/share",
+                "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD,
+                AlfrescoVersion.Cloud.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory,
+                googleUserName, googlePassword, serviceAccountEmail, serviceAccountPKCS12FileName,
+                googleDriveUserName, googleDrivePassword, serviceDriveAccountEmail, serviceDriveAccountPKCS12FileName,
+                false, "", "", "", "", "", "", "", "", "", "", "",
+                0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString(),"","","","",0,"","",false, "", "",
+                layer7Disabled, apiKey, apiSecretKey);
 
         // Will create a new instance of the bean since it has the prototype scope
         WebDrone newDrone = (WebDrone) ctx.getBean("webDrone");
@@ -56,8 +59,11 @@ public class AbstractUtilsTest extends AbstractUtils
         ShareTestProperty testProperties = new ShareTestProperty("http://localhost:8080/share", 
                 "", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
                 AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory, 
-                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
-                0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
+                googleUserName, googlePassword, serviceAccountEmail, serviceAccountPKCS12FileName,
+                googleDriveUserName, googleDrivePassword, serviceDriveAccountEmail, serviceDriveAccountPKCS12FileName,
+                false, "", "", "", "", "", "", "", "", "", "", "",
+                0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString(),"","","","",0,"","",false, "", "",
+                layer7Disabled, apiKey, apiSecretKey);
 
         // Will create a new instance of the bean since it has the prototype scope
         WebDrone newDrone = (WebDrone) ctx.getBean("webDrone");
@@ -76,8 +82,11 @@ public class AbstractUtilsTest extends AbstractUtils
         ShareTestProperty testProperties = new ShareTestProperty("http://localhost:8081/share", 
                 "http://localhost:8080/", "", SUPERADMIN_USERNAME, DEFAULT_PASSWORD, 
                 AlfrescoVersion.Enterprise.toString(), cloudUrlForHybrid, pentahoUserConsoleUrl, downloadDirectory, 
-                googleUserName, googlePassword, false, "", "", "", "", "", "", "", "", "", "", "", 
-                0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString());
+                googleUserName, googlePassword, serviceAccountEmail, serviceAccountPKCS12FileName,
+                googleDriveUserName, googleDrivePassword, serviceDriveAccountEmail, serviceDriveAccountPKCS12FileName,
+                false, "", "", "", "", "", "", "", "", "", "", "",
+                0, "", mimeTypes,"","","","", licenseShare, maxWaitTimeCloudSync.toString(),"","","","",0,"","",false, "", "",
+                layer7Disabled, apiKey, apiSecretKey);
 
         // Will create a new instance of the bean since it has the prototype scope
         WebDrone newDrone = (WebDrone) ctx.getBean("webDrone");

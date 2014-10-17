@@ -31,7 +31,11 @@ public enum WorkFlowDescription
     HYBRID_ADHOC_TASK_PROCESS("Hybrid Adhoc Task Process"),
     HYBRID_REVIEW_AND_APPROVE_PROCESS("Hybrid Review And Approve Process"),
     ASSIGN_NEW_TASK_TO_SOMEONE_ON_THE_CLOUD("Assign a new task to someone on the Cloud"),
-    REQUEST_DOCUMENT_APPROVAL("Request document approval from someone on the Cloud");
+    POOLED_REVIEW_AND_APPROVAL_OF_CONTENT_USING_ACTIVITI_WORKFLOW_ENGINE("Pooled review and approval of content using Activiti workflow engine"),
+    REQUEST_DOCUMENT_APPROVAL("Request document approval from someone on the Cloud"),
+    REVIEW_AND_APPROVAL_OF_CONTENT_USING_ACTIVITI_WORKFLOW_ENGINE("Review and approval of content using Activiti workflow engine"),
+    REQUEST_DOCUMENT_APPROVAL_FROM_ONE_OR_MORE_COLLEAGUES("Request document approval from one or more colleagues"),
+    GROUP_REVIEW_AND_APPROVAL_OF_CONTENT_USING_ACTIVITI_WORKFLOW_ENGINE("Group review and approval of content using Activiti workflow engine");
 
     private String description;
 
@@ -46,10 +50,10 @@ public enum WorkFlowDescription
     }
 
     /**
-     * Returns {@link org.alfresco.webdrone.share.workflow.WorkFlowDescription} based on given value.
+     * Returns {@link WorkFlowDescription} based on given value.
      * 
      * @param value
-     * @return {@link org.alfresco.webdrone.share.workflow.WorkFlowDescription}
+     * @return {@link WorkFlowDescription}
      */
     public static WorkFlowDescription getWorkFlowDescription(String value)
     {

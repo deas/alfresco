@@ -53,8 +53,9 @@
 
     <bean id="shareTestProperties" class="org.alfresco.share.util.ShareTestProperty">
         <constructor-arg name="shareUrl" value="${share.target}" />
+        <constructor-arg name="pathSharepoint" value="${share.sharepoint.path}" /> 
         <constructor-arg name="apiUrl" value="${api.target}" />
-        <constructor-arg name="gridUrl" value="null" />
+        <constructor-arg name="gridUrl" value="${webdrone.grid.url}" />
         <constructor-arg name="username" value="${test.username}" />
         <constructor-arg name="password" value="${test.password}" />
         <constructor-arg name="alfrescoVersion" value="${share.version}" />
@@ -64,6 +65,12 @@
             value="${webdrone.download.directory}" />
         <constructor-arg name="googleUserName" value="${googleUserName}" />
         <constructor-arg name="googlePassword" value="${googlePassword}" />
+        <constructor-arg name="serviceAccountEmail" value="${serviceAccountEmail}" />
+        <constructor-arg name="serviceAccountPKCS12FileName" value="${serviceAccountPKCS12FileName}" />
+        <constructor-arg name="googleDriveUserName" value="${googleDriveUserName}" />
+        <constructor-arg name="googleDrivePassword" value="${googleDrivePassword}" />
+        <constructor-arg name="serviceDriveAccountEmail" value="${serviceDriveAccountEmail}" />
+        <constructor-arg name="serviceDriveAccountPKCS12FileName" value="${serviceDriveAccountPKCS12FileName}" />
         <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
         <constructor-arg name="uniqueTestRunName" value="${uniqueTestRunName}" />
         <constructor-arg name="domainFree" value="${domainFree}" />
@@ -90,6 +97,18 @@
         <constructor-arg name="licenseShare" value="${share.license}" />
         <constructor-arg name="maxWaitTimeCloudSync"
             value="${maxWaitTimeCloudSync}" />
+        <constructor-arg name="blogUrl" value="${blogUrl}" />
+        <constructor-arg name="blogUsername" value="${blogUsername}" />
+        <constructor-arg name="blogPassword" value="${blogPassword}" />
+        <constructor-arg name="ftpPort" value="${ftpPort}" />
+        <constructor-arg name="serverShhPort" value="${serverShhPort}" />
+        <constructor-arg name="serverUser" value="${serverUser}" />
+        <constructor-arg name="serverPass" value="${serverPass}" />
+        <constructor-arg name="isSecureSession" value="${isSecureSession}" />
+        <constructor-arg name="replicationEndPointHost" value="${replicationEndPointHost}" />
+        <constructor-arg name="layer7Disabled" value="${layer7Disabled}" />
+        <constructor-arg name="apiKey" value="${apiKey}" />
+        <constructor-arg name="apiSecretKey" value="${apiSecretKey}" />
     </bean>
 
     <!-- -->
@@ -108,6 +127,12 @@
             value="${webdrone.download.directory}" />
         <constructor-arg name="googleUserName" value="${googleUserName}" />
         <constructor-arg name="googlePassword" value="${googlePassword}" />
+        <constructor-arg name="serviceAccountEmail" value="${serviceAccountEmail}" />
+        <constructor-arg name="serviceAccountPKCS12FileName" value="${serviceAccountPKCS12FileName}" />
+        <constructor-arg name="googleDriveUserName" value="${googleDriveUserName}" />
+        <constructor-arg name="googleDrivePassword" value="${googleDrivePassword}" />
+        <constructor-arg name="serviceDriveAccountEmail" value="${serviceDriveAccountEmail}" />
+        <constructor-arg name="serviceDriveAccountPKCS12FileName" value="${serviceDriveAccountPKCS12FileName}" />
         <constructor-arg name="hybridEnabled" value="${hrbrid.enabled}" />
         <constructor-arg name="uniqueTestRunName" value="${uniqueTestRunName}" />
         <constructor-arg name="domainFree" value="${domainFree}" />
@@ -134,6 +159,19 @@
         <constructor-arg name="licenseShare" value="${share.license}" />
         <constructor-arg name="maxWaitTimeCloudSync"
             value="${maxWaitTimeCloudSync}" />
+        <constructor-arg name="blogUrl" value="${blogUrl}" />
+        <constructor-arg name="blogUsername" value="${blogUsername}" />
+        <constructor-arg name="blogPassword" value="${blogPassword}" />
+        <constructor-arg name="ftpPort" value="${ftpPort}" />
+        <constructor-arg name="serverShhPort" value="${serverShhPort}" />
+        <constructor-arg name="serverUser" value="${serverUser}" />
+        <constructor-arg name="serverPass" value="${serverPass}" />
+        <constructor-arg name="isSecureSession" value="${isSecureSession}" />
+        <constructor-arg name="pathSharepoint" value="${share.sharepoint.path}" />
+        <constructor-arg name="replicationEndPointHost" value="${replicationEndPointHost}" />
+        <constructor-arg name="layer7Disabled" value="${layer7Disabled}" />
+        <constructor-arg name="apiKey" value="${apiKey}" />
+        <constructor-arg name="apiSecretKey" value="${apiSecretKey}" />
     </bean>
 
     <util:constant id="englishLocale" static-field="java.util.Locale.ENGLISH" />

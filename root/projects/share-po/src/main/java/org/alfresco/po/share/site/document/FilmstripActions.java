@@ -271,7 +271,7 @@ public class FilmstripActions extends SharePage
         }
     }
 
-    private HtmlPage sendKeysFilmStripViewElement(String elementName, CharSequence... keysToSend)
+    private HtmlPage sendKeysFilmStripViewElement(String elementName, Keys... keysToSend)
     {
         String exceptionMessage = "";
         if (isFilmStripViewDisplayed())
@@ -281,7 +281,7 @@ public class FilmstripActions extends SharePage
                 WebElement element = drone.find(By.cssSelector("div.alf-gallery-item-thumbnail"));
                 if (element.isDisplayed())
                 {
-                    element.sendKeys(keysToSend);
+                    drone.sendkeys(keysToSend);
                     return FactorySharePage.resolvePage(drone);
                 }
                 else

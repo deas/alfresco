@@ -27,6 +27,8 @@ public class CompanyHome
 
     private Set<Site> sites;
 
+    private Set<Content> contents;
+
     public Set<Site> getSites()
     {
         return sites;
@@ -37,4 +39,14 @@ public class CompanyHome
         this.sites = sites;
     }
 
+    public Set<Content> getContents()
+    {
+        return contents;
+
+    }
+
+    public void setContents (Set<Content> contents)
+    {
+        this.contents = contents;
+    }
 }

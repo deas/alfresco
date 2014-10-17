@@ -14,15 +14,15 @@
  */
 package org.alfresco.po.share.workflow;
 
-import java.util.NoSuchElementException;
-
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
+
+import java.util.NoSuchElementException;
 
 /**
  * Alfresco Share factory, creates the appropriate page object that corresponds
  * to the browser view.
- * 
+ *
  * @author Siva Kaliyappan
  * @since 1.6.2
  */
@@ -38,9 +38,8 @@ public final class FactoryShareWorkFlow
 
     /**
      * Gets the sub WorkFlow HTML element from the StartWorkFlow page.
-     * 
-     * @param drone
-     *            {@link org.alfresco.webdrone.WebDrone}
+     *
+     * @param drone     {@link org.alfresco.webdrone.WebDrone}
      * @param fromClass
      * @return workFlowType
      */
@@ -63,8 +62,14 @@ public final class FactoryShareWorkFlow
                     return (T) new NewWorkflowPage(drone);
                 case REVIEW_AND_APPROVE:
                     return (T) new NewWorkflowPage(drone);
+                case SEND_DOCS_FOR_REVIEW:
+                    return (T) new NewWorkflowPage(drone);
+                case POOLED_REVIEW_AND_APPROVE:
+                    return (T) new NewWorkflowPage(drone);
                 case CLOUD_TASK_OR_REVIEW:
                     return (T) new CloudTaskOrReviewPage(drone);
+                case GROUP_REVIEW_AND_APPROVE:
+                    return (T) new NewWorkflowPage(drone);
                 default:
                     throw new PageException(String.format("%s does not match any known workflow name", workFlowType.name()));
             }

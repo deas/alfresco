@@ -3,14 +3,9 @@
  */
 package org.alfresco.share.api.cmis;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.alfresco.rest.api.tests.client.HttpResponse;
 import org.alfresco.rest.api.tests.client.PublicApiClient;
+import org.alfresco.rest.api.tests.client.PublicApiException;
 import org.alfresco.rest.api.tests.client.RequestContext;
 import org.alfresco.rest.api.tests.client.data.CMISNode;
 import org.alfresco.rest.api.tests.client.data.ContentData;
@@ -19,25 +14,23 @@ import org.alfresco.share.enums.CMISBinding;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.api.CmisUtils;
 import org.alfresco.share.util.api.CreateUserAPI;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.ItemIterable;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
-import org.apache.chemistry.opencmis.client.api.OperationContext;
-import org.apache.chemistry.opencmis.client.api.Policy;
-import org.apache.chemistry.opencmis.client.api.Property;
-import org.apache.chemistry.opencmis.client.api.Relationship;
-import org.apache.chemistry.opencmis.client.api.Rendition;
-import org.apache.chemistry.opencmis.client.api.Tree;
+import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.data.Acl;
 import org.apache.chemistry.opencmis.commons.data.AllowableActions;
+import org.apache.chemistry.opencmis.commons.data.RepositoryCapabilities;
 import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
 import org.testng.Assert;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -64,6 +57,7 @@ public abstract class CMISSelectorParameter extends CmisUtils
     protected final String docTypeId = "cmis:document";
     protected final String secondaryTypeId = "cmis:secondary";
     protected final String relationshipTypeId = "cmis:relationship";
+    protected final String policyTypeId = "cmis:policy";
 
     protected String FILE_5MB = "FILE1_5MB-FILE";
 
@@ -100,7 +94,7 @@ public abstract class CMISSelectorParameter extends CmisUtils
     protected void selectorTypeChildren(String thisTestName)
     {
         PublicApiClient.CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
-        ItemIterable<ObjectType> typeChildren = cmisSession.getTypeChildren(folderTypeId,true);
+        ItemIterable<ObjectType> typeChildren = cmisSession.getTypeChildren(folderTypeId, true);
         assertNotNull(typeChildren);
         assertTrue(typeChildren.iterator().hasNext(), "Got children:" + typeChildren);
     }
@@ -117,6 +111,12 @@ public abstract class CMISSelectorParameter extends CmisUtils
 
         typeDefinition = cmisSession.getTypeDefinition(secondaryTypeId);
         assertTrue(typeDefinition.getDisplayName().equals("Secondary Type"), "Got display name:" + typeDefinition.getDisplayName());
+
+        typeDefinition = cmisSession.getTypeDefinition(policyTypeId);
+        assertTrue(typeDefinition.getDisplayName().equals("Policy"), "Got display name:" + typeDefinition.getDisplayName());
+
+        typeDefinition = cmisSession.getTypeDefinition(relationshipTypeId);
+        assertTrue(typeDefinition.getDisplayName().equals("Relationship"), "Got display name:" + typeDefinition.getDisplayName());
     }
 
     protected void selectorTypeDescendants(String thisTestName)
@@ -124,7 +124,7 @@ public abstract class CMISSelectorParameter extends CmisUtils
         PublicApiClient.CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
 
         List<Tree<ObjectType>> typeDescendants = cmisSession.getTypeDescendants(docTypeId, 1, true);
-        assertTrue(typeDescendants.get(0).getItem().getDisplayName().equals("Calendar Event"),typeDescendants.get(0).getItem().getDisplayName());
+        assertTrue(typeDescendants.get(0).getItem().getDisplayName().equals("Calendar Event"), typeDescendants.get(0).getItem().getDisplayName());
 
         typeDescendants = cmisSession.getTypeDescendants(folderTypeId, 1, true);
         assertTrue(typeDescendants.size() > 0);
@@ -138,6 +138,9 @@ public abstract class CMISSelectorParameter extends CmisUtils
         assertTrue(typeDescendants.get(0).getItem().getDisplayName().equals("R:pub:source"));
         assertTrue(typeDescendants.size() > 0);
 
+        typeDescendants = cmisSession.getTypeDescendants(policyTypeId, 1, true);
+        assertNotNull(typeDescendants);
+
     }
 
     protected void selectorRepoInfo()
@@ -145,15 +148,77 @@ public abstract class CMISSelectorParameter extends CmisUtils
         PublicApiClient.CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
         RepositoryInfo repositoryInfo = cmisSession.getCMISSession().getRepositoryInfo();
         assertTrue(repositoryInfo.getId().equals(DOMAIN));
+        assertTrue(repositoryInfo.getProductName().equals("Alfresco Enterprise"));
+        assertTrue(repositoryInfo.getVendorName().equals("Alfresco"));
+        assertTrue(repositoryInfo.getDescription().equals(""));
+        assertNotNull(repositoryInfo.getProductVersion());
+        assertTrue(repositoryInfo.getVendorName().equals("Alfresco"));
+        assertNotNull(repositoryInfo.getRootFolderId());
+
+        RepositoryCapabilities capabilities = repositoryInfo.getCapabilities();
+
+        Assert.assertEquals(capabilities.getContentStreamUpdatesCapability().value(), "anytime", "Verifying capabilityContentStreamUpdatability");
+        Assert.assertEquals(capabilities.getChangesCapability().value(), "none", "Verifying capabilityChanges");
+        Assert.assertEquals(capabilities.getRenditionsCapability().value(), "read", "Verifying capabilityRenditions");
+        Assert.assertTrue(capabilities.isGetDescendantsSupported(), "Verifying capabilityGetDescendants");
+        Assert.assertTrue(capabilities.isGetFolderTreeSupported(), "Verifying capabilityGetFolderTree");
+        Assert.assertTrue(capabilities.isMultifilingSupported(), "Verifying capabilityMultifiling");
+        Assert.assertFalse(capabilities.isUnfilingSupported(), "Verifying capabilityUnfiling");
+        Assert.assertFalse(capabilities.isVersionSpecificFilingSupported(), "Verifying capabilityVersionSpecificFiling");
+        Assert.assertFalse(capabilities.isPwcSearchableSupported(), "Verifying capabilityPWCSearchable");
+        Assert.assertTrue(capabilities.isPwcUpdatableSupported(), "Verifying capabilityPWCUpdatable");
+        Assert.assertFalse(capabilities.isAllVersionsSearchableSupported(), "Verifying capabilityAllVersionsSearchable");
+        Assert.assertEquals(capabilities.getQueryCapability().value(), "bothcombined", "Verifying capabilityQuery");
+        Assert.assertEquals(capabilities.getJoinCapability().value(), "none", "Verifying capabilityJoin");
+        Assert.assertEquals(capabilities.getAclCapability().value(), "manage", "Verifying capabilityACL");
+
     }
 
-    protected void selectorRepoURL(String thisTestName)
+    protected void selectorRepoURL(String thisTestName) throws Exception
     {
-        PublicApiClient.CmisSession cmisSession = getCmisSession(binding, testUser, DOMAIN);
-        cmisSession.getCMISSession().getRepositoryInfo();
-        /*
-         * Found no way to implement repositoryURL test
-         */
+        HttpResponse httpResponse = getHttpResponse(DOMAIN + "/public/cmis/versions/1.1/browser", null);
+        assertEquals(httpResponse.getStatusCode(), 200, httpResponse.getStatusCode());
+        JSONObject jsonResponse = httpResponse.getJsonResponse();
+
+        assertNotNull(jsonResponse.containsKey(DOMAIN));
+        JSONObject domainJson = (JSONObject) jsonResponse.get(DOMAIN);
+
+        assertNotNull(domainJson.containsKey("vendorName"));
+        assertTrue(((String) domainJson.get("vendorName")).contains("Alfresco"));
+
+        assertNotNull(domainJson.containsKey("repositoryId"));
+        assertTrue(((String) domainJson.get("repositoryId")).contains(DOMAIN));
+
+        assertNotNull(domainJson.containsKey("productName"));
+        assertTrue(((String) domainJson.get("productName")).contains("Alfresco Enterprise"));
+
+        JSONObject jsonObject = (JSONObject) httpResponse.getJsonResponse().get("-default-");
+        System.out.println(jsonObject);
+
+        Assert.assertEquals(jsonObject.get("repositoryId"), "-default-", "Verifying repositoryId");
+        Assert.assertEquals(jsonObject.get("repositoryDescription"), "", "Verifying repositoryDescription");
+        Assert.assertEquals(jsonObject.get("vendorName"), "Alfresco", "Verifying vendorName");
+        Assert.assertEquals(jsonObject.get("productName"), "Alfresco Enterprise", "Verifying productName");
+        Assert.assertNotNull(jsonObject.get("productVersion"), "Verifying productVersion");
+        Assert.assertNotNull(jsonObject.get("rootFolderId"), "Verifying rootFolderId");
+
+        JSONObject capabilities = (JSONObject) jsonObject.get("capabilities");
+
+        Assert.assertEquals(capabilities.get("capabilityContentStreamUpdatability"), "anytime", "Verifying capabilityContentStreamUpdatability");
+        Assert.assertEquals(capabilities.get("capabilityChanges"), "none", "Verifying capabilityChanges");
+        Assert.assertEquals(capabilities.get("capabilityRenditions"), "read", "Verifying capabilityRenditions");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityGetDescendants"), "Verifying capabilityGetDescendants");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityGetFolderTree"), "Verifying capabilityGetFolderTree");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityMultifiling"), "Verifying capabilityMultifiling");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityUnfiling"), "Verifying capabilityUnfiling");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityVersionSpecificFiling"), "Verifying capabilityVersionSpecificFiling");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityPWCSearchable"), "Verifying capabilityPWCSearchable");
+        Assert.assertTrue((Boolean) capabilities.get("capabilityPWCUpdatable"), "Verifying capabilityPWCUpdatable");
+        Assert.assertFalse((Boolean) capabilities.get("capabilityAllVersionsSearchable"), "Verifying capabilityAllVersionsSearchable");
+        Assert.assertNull(capabilities.get("capabilityOrderBy"), "Verifying capabilityOrderBy");
+        Assert.assertEquals(capabilities.get("capabilityQuery"), "bothcombined", "Verifying capabilityQuery");
+        Assert.assertEquals(capabilities.get("capabilityJoin"), "none", "Verifying capabilityJoin");
+        Assert.assertEquals(capabilities.get("capabilityACL"), "manage", "Verifying capabilityACL");
     }
 
     protected void rootFolderURL(String thisTestName)
@@ -194,16 +259,16 @@ public abstract class CMISSelectorParameter extends CmisUtils
         assertTrue(children.getDocumentNodes().get(fileName1Ref).getGuid().contains(fileName1Ref), "" + children.getGuid() + " should contain " + fileName1Ref);
     }
 
-    protected void compactJSONResponse(String thisTestName) throws IOException
+    protected void compactJSONResponse(String thisTestName) throws IOException, PublicApiException
     {
-        String reqURL = getAPIURL(drone) + DOMAIN + "/public/cmis/versions/1.1/browser/root";
+        String reqURL = DOMAIN + "/public/cmis/versions/1.1/browser/root";
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("cmisselector", "typeChildren");
+        params.put("cmisselector", "object");
         params.put("succinct", "true");
 
         HttpResponse httpResponse = getHttpResponse(reqURL, params);
-        assertTrue(httpResponse.getStatusCode() == 200, httpResponse.getResponse().toString());
+        assertEquals(httpResponse.getStatusCode(), 200, httpResponse.getJsonResponse().toJSONString());
     }
 
     protected void descendants(String thisTestName)
@@ -254,7 +319,7 @@ public abstract class CMISSelectorParameter extends CmisUtils
         AllowableActions allowableActions = cmisSession.getAllowableActions(folderRef);
         assertFalse(allowableActions.getAllowableActions().isEmpty());
 
-        allowableActions = cmisSession.getAllowableActions(fileNameRef);
+        allowableActions = cmisSession.getAllowableActions(fileName1Ref);
         assertFalse(allowableActions.getAllowableActions().isEmpty());
     }
 
@@ -268,7 +333,6 @@ public abstract class CMISSelectorParameter extends CmisUtils
         properties = doc.getProperties();
         assertNotNull(properties);
     }
-
 
     protected void renditionsSelector(String thisTestName) throws Exception
     {
@@ -288,25 +352,19 @@ public abstract class CMISSelectorParameter extends CmisUtils
         assertFalse(byteToString(content.getBytes()).isEmpty(), "Go bytes:" + byteToString(content.getBytes()));
     }
 
-    protected HttpResponse getHttpResponse(String resourceUrl, Map<String, String> params) throws IOException
+    protected HttpResponse getHttpResponse(String resourceUrl, Map<String, String> params) throws IOException, PublicApiException
     {
-        String url = getAPIURL(drone) + DOMAIN + resourceUrl;
-        System.out.println("URL: " + url);
-
-        System.out.println("getAuthDetails(testUser)[0]: " + getAuthDetails(testUser)[0]);
-        System.out.println("getAuthDetails(testUser)[1]: " + getAuthDetails(testUser)[1]);
         publicApiClient.setRequestContext(new RequestContext(DOMAIN, getAuthDetails(testUser)[0], getAuthDetails(testUser)[1]));
-
-        return publicApiClient.get(url, params);
+        return publicApiClient.get(resourceUrl, params);
     }
 
     public String byteToString(byte[] bytes)
     {
         String byteString = "";
 
-        for(int i = 0; i < bytes.length; i++)
+        for (int i = 0; i < bytes.length; i++)
         {
-            byteString += (char)bytes[i];
+            byteString += (char) bytes[i];
         }
 
         return byteString;
@@ -319,7 +377,8 @@ public abstract class CMISSelectorParameter extends CmisUtils
 
         PublicApiClient.CmisSession cmisSession = getCmisSession(binding, userName, DOMAIN);
 
-        OperationContext operationContext = new OperationContextImpl(null, false, false, false, IncludeRelationships.BOTH, Collections.singleton("cmis:none"), true, null, true, 100);
+        OperationContext operationContext = new OperationContextImpl(null, false, false, false, IncludeRelationships.BOTH, Collections.singleton("cmis:none"),
+                true, null, true, 100);
 
         List<Relationship> relationships = cmisSession.getCMISSession().getObject(objectID1, operationContext).getRelationships();
 
@@ -333,7 +392,8 @@ public abstract class CMISSelectorParameter extends CmisUtils
         String objectID = getObjectID(binding, userName, DOMAIN, siteName, folderName, fileName);
         PublicApiClient.CmisSession cmisSession = getCmisSession(binding, userName, DOMAIN);
 
-        OperationContext operationContext = new OperationContextImpl(null, false, false, true, IncludeRelationships.BOTH, Collections.singleton("cmis:none"), true, null, true, 100);
+        OperationContext operationContext = new OperationContextImpl(null, false, false, true, IncludeRelationships.BOTH, Collections.singleton("cmis:none"),
+                true, null, true, 100);
 
         CmisObject cmisObject = cmisSession.getCMISSession().getObject(objectID, operationContext);
         List<Policy> policies = cmisObject.getPolicies();
@@ -347,7 +407,8 @@ public abstract class CMISSelectorParameter extends CmisUtils
         String objectID = getObjectID(binding, userName, DOMAIN, siteName, folderName, fileName);
         PublicApiClient.CmisSession cmisSession = getCmisSession(binding, userName, DOMAIN);
 
-        OperationContext operationContext = new OperationContextImpl(null, true, false, false, IncludeRelationships.BOTH, Collections.singleton("cmis:none"), true, null, true, 100);
+        OperationContext operationContext = new OperationContextImpl(null, true, false, false, IncludeRelationships.BOTH, Collections.singleton("cmis:none"),
+                true, null, true, 100);
 
         Acl acl = cmisSession.getCMISSession().getObject(objectID, operationContext).getAcl();
 
@@ -367,7 +428,8 @@ public abstract class CMISSelectorParameter extends CmisUtils
 
         Assert.assertEquals(children.getTotalNumItems(), 2, "Verifying number of children");
 
-        OperationContext operationContext = new OperationContextImpl(null, true, false, true, IncludeRelationships.BOTH, Collections.singleton("cmis:none"), true, null, true, 100);
+        OperationContext operationContext = new OperationContextImpl(null, true, false, true, IncludeRelationships.BOTH, Collections.singleton("cmis:none"),
+                true, null, true, 100);
 
         CmisObject cmisObject = cmisSession.getCMISSession().getObject(fileObjectID, operationContext);
 

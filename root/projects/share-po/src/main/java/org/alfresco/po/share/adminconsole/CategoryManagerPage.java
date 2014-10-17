@@ -30,7 +30,7 @@ import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Class associated with page in admin console 'Category Manager'
- * 
+ *
  * @author Aliaksei Boole
  */
 public class CategoryManagerPage extends AdminConsolePage
@@ -51,7 +51,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Instantiates a new admin console page(Category Manager).
-     * 
+     *
      * @param drone WebDriver browser client
      */
     public CategoryManagerPage(WebDrone drone)
@@ -99,23 +99,30 @@ public class CategoryManagerPage extends AdminConsolePage
 
     private WebElement getCategory(String categoryName)
     {
-        List<WebElement> categories = getListCategories();
-        for (WebElement category : categories)
+        try
         {
-            if (categoryName.equals(category.getText()))
+            List<WebElement> categories = getListCategories();
+            for (WebElement category : categories)
             {
-                return category;
-            }
+                if (categoryName.equals(category.getText()))
+                {
+                    return category;
+                }
 
+            }
+        }
+        catch (StaleElementReferenceException e)
+        {
+            return getCategory(categoryName);
         }
         throw new PageOperationException(String.format("Category [%s] didn't found on page.", categoryName));
     }
 
     /**
      * Rename category name
-     * 
+     *
      * @param categoryName - old name for select
-     * @param newName - new category name
+     * @param newName      - new category name
      */
     public void editCategory(String categoryName, String newName)
     {
@@ -131,9 +138,9 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Add new category.
-     * 
+     *
      * @param parentCategory - parent category
-     * @param categoryName - adding category
+     * @param categoryName   - adding category
      */
     public void addNewCategory(String parentCategory, String categoryName)
     {
@@ -146,7 +153,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Just open add category form for check it.
-     * 
+     *
      * @param categoryName - parent category
      * @return object associated with Category add form.
      */
@@ -161,7 +168,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Open subCategory List.
-     * 
+     *
      * @param categoryName - parent category for opening
      */
     public void openSubCategoryList(String categoryName)
@@ -173,7 +180,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Delete chosen category
-     * 
+     *
      * @param categoryName - Category that delete.
      */
     public void deleteCategory(String categoryName)
@@ -188,7 +195,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Check that category present on Page.
-     * 
+     *
      * @param categoryName
      * @return true - if present
      */
@@ -207,7 +214,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Return count categories on page
-     * 
+     *
      * @return count
      */
     public int getCategoriesCount()
@@ -268,7 +275,7 @@ public class CategoryManagerPage extends AdminConsolePage
 
     /**
      * Verify category root tree expanded or not
-     * 
+     *
      * @return boolean
      */
     public boolean isCategoryRootTreeExpanded()

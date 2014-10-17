@@ -1,0 +1,128 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Sanity Tests for Sprint BY" preserve-order="true" parallel="tests" thread-count="2">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="Download"/>
+            <exclude name="NonGrid"/>
+            <exclude name=".*Bug.*"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <!--<test name="Site Wiki sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteWikiTest"/>
+        </classes>
+    </test>
+
+    <test name="Sanity Site Calendar Tests">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteCalendarSanityTest"/>
+        </classes>
+    </test>
+
+    <test name="Site sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Members sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.MembersSiteTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Permissions sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SitePermissionsSanityTest"/>
+        </classes>
+    </test>
+
+    <test name="Admin Tools sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.AdminTools"/>
+        </classes>
+    </test>
+
+    <test name="Shared Files sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SharedFilesTest">
+                <methods>
+                    <include name="AONE_15228"/>
+                    <include name="AONE_15232"/>
+                    <include name="AONE_15233"/>
+                    <include name="AONE_15234"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Document Library sanity test Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.DocLibTest">
+                <methods>
+                    <include name="AONE_15199"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Site Links sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteLinksTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Discussions sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteDiscussionsTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Data Lists sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteDataListsTest"/>
+        </classes>
+    </test-->
+
+    <test name="Task sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SanityTasksTest"/>
+        </classes>
+    </test>
+
+	<!--test name="Blog sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteBlogTest"/>
+        </classes>
+    </test>
+
+    <test name="My Files sanity test Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.MyFilesTest">
+                <methods>
+                    <include name="AONE_8267"/>
+                </methods>
+            </class>
+        </classes>
+    </test>-->
+	
+	<!--<test name="Search sanity tests Suite">-->
+        <!--<classes>-->
+            <!--<class name="org.alfresco.share.sanity.SearchTest"/>-->
+        <!--</classes>-->
+    <!--</test>-->
+
+    <test name="MultiTenancy sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.repository.bulkimport.SanityMTTest"/>
+        </classes>
+    </test>
+
+</suite>

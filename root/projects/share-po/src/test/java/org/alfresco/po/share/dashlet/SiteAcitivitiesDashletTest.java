@@ -30,6 +30,7 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.alfresco.po.share.dashlet.SiteActivitiesUserFilter.MY_ACTIVITIES;
@@ -45,7 +46,6 @@ import static org.alfresco.po.share.dashlet.SiteActivitiesHistoryFilter.TODAY;
 import static org.alfresco.po.share.dashlet.SiteActivitiesHistoryFilter.SEVEN_DAYS;
 import static org.alfresco.po.share.dashlet.SiteActivitiesHistoryFilter.FOURTEEN_DAYS;
 import static org.alfresco.po.share.dashlet.SiteActivitiesHistoryFilter.TWENTY_EIGHT_DAYS;
-
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 
@@ -182,7 +182,7 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         Assert.assertEquals(true, page.isDocumentDetailsPage());
     }
 
-    @Test(dependsOnMethods = "selectActivity", expectedExceptions = PageException.class, enabled = false)
+    @Test(dependsOnMethods = "selectActivity", expectedExceptions = PageException.class)
     public void selectFake() throws Exception
     {
         navigateToSiteDashboard();
@@ -190,14 +190,14 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         dashlet.selectActivityDocument("bla");
     }
 
-    @Test(dependsOnMethods = "selectFake", enabled = false)
+    @Test(dependsOnMethods = "selectFake", priority = 1)
     public void verifyIsBtnRss()
     {
         SiteActivitiesDashlet dashlet = siteDashBoard.getDashlet(SITE_ACTIVITY).render();
         assertTrue(dashlet.isRssBtnDisplayed());
     }
 
-    @Test(dependsOnMethods = "verifyIsBtnRss", enabled = false)
+    @Test(dependsOnMethods = "verifyIsBtnRss", groups = "ChromeIssue")
     public void verifyRss()
     {
         String currentUrl = drone.getCurrentUrl();
@@ -206,21 +206,27 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         assertTrue(rssFeedPage.isSubscribePanelDisplay());
         drone.navigateTo(currentUrl);
     }
-    
-    @Test(dependsOnMethods = "verifyRss", enabled = false)
+
+    @Test(dependsOnMethods = "selectFake", priority = 2)
     public void getAllUserFilters()
     {
         navigateToSiteDashboard();
         SiteActivitiesDashlet dashlet = siteDashBoard.getDashlet(SITE_ACTIVITY).render();
         dashlet.clickUserButton();
         List<SiteActivitiesUserFilter> allUserFilters = dashlet.getUserFilters();
-        assertTrue(allUserFilters.contains(MY_ACTIVITIES));
-        assertTrue(allUserFilters.contains(OTHERS_ACTIVITIES));
-        assertTrue(allUserFilters.contains(EVERYONES_ACTIVITIES));
-        assertTrue(allUserFilters.contains(IM_FOLLOWING));
+        List<SiteActivitiesUserFilter> expectedFilters = new ArrayList<SiteActivitiesUserFilter>();
+        expectedFilters.add(MY_ACTIVITIES);
+        expectedFilters.add(OTHERS_ACTIVITIES);
+        expectedFilters.add(EVERYONES_ACTIVITIES);
+        expectedFilters.add(IM_FOLLOWING);
+        for (SiteActivitiesUserFilter siteActivitiesUserFilter : expectedFilters)
+        {
+            assertTrue(allUserFilters.contains(siteActivitiesUserFilter), "Filter Contains only: " + allUserFilters.toString() + " , But "
+                    + siteActivitiesUserFilter.toString() + " also expected in the list");
+        }
     }
-    
-    @Test(dependsOnMethods = "getAllUserFilters", enabled = false)
+
+    @Test(dependsOnMethods = "getAllUserFilters")
     public void getAllTypeFilters()
     {
         navigateToSiteDashboard();
@@ -233,8 +239,8 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         assertTrue(allTypeFilters.contains(CONTENT));
         assertTrue(allTypeFilters.contains(MEMBERSHIPS));
     }
-    
-    @Test(dependsOnMethods = "getAllTypeFilters", enabled = false)
+
+    @Test(dependsOnMethods = "getAllTypeFilters")
     public void getAllHistoryFilters()
     {
         navigateToSiteDashboard();
@@ -246,8 +252,8 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         assertTrue(allHistoryFilters.contains(FOURTEEN_DAYS));
         assertTrue(allHistoryFilters.contains(TWENTY_EIGHT_DAYS));
     }
-    
-    @Test(dependsOnMethods = "getAllHistoryFilters", enabled = false)
+
+    @Test(dependsOnMethods = "getAllHistoryFilters")
     public void selectUserFilter()
     {
         navigateToSiteDashboard();
@@ -259,8 +265,8 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         dashlet = siteDashBoard.getDashlet(SITE_ACTIVITY).render();
         assertEquals(dashlet.getCurrentUserFilter(), MY_ACTIVITIES);
     }
-    
-    @Test(dependsOnMethods = "selectUserFilter", enabled = false)
+
+    @Test(dependsOnMethods = "selectUserFilter")
     public void selectTypeFilter()
     {
         navigateToSiteDashboard();
@@ -272,8 +278,8 @@ public class SiteAcitivitiesDashletTest extends AbstractSiteDashletTest
         dashlet = siteDashBoard.getDashlet(SITE_ACTIVITY).render();
         assertEquals(dashlet.getCurrentTypeFilter(), ALL_ITEMS);
     }
-    
-    @Test(dependsOnMethods = "selectTypeFilter", enabled = false)
+
+    @Test(dependsOnMethods = "selectTypeFilter")
     public void selectHistoryFilter()
     {
         navigateToSiteDashboard();

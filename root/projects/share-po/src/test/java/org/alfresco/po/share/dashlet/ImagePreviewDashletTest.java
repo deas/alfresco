@@ -125,8 +125,12 @@ public class ImagePreviewDashletTest extends AbstractSiteDashletTest
     }
 
     @Test(dependsOnMethods = "clickCancelConfigure")
-    public void verifyImageCount()
+    public void verifyImageCount() throws Exception
     {
+        Thread.sleep(20000);
+        drone.refresh();
+        siteDashBoard = drone.getCurrentPage().render();
+        imagePreviewDashlet = siteDashBoard.getDashlet(IMAGE_PREVIEW).render();
         assertEquals(imagePreviewDashlet.getImagesCount(), 1);
     }
 

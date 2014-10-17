@@ -1,94 +1,155 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Classes" verbose="6" preserve-order="true">
+<suite name="Classes" verbose="1" preserve-order="true" parallel="classes" thread-count="1">
     <groups>
         <run>
-            <exclude name="DataPrep.*" />
-            <include name="NonGrid" />
-            <exclude name=".*Bug.*" />
+            <exclude name="DataPrep.*"/>
+            <include name="NonGrid"/>
+            <exclude name=".*Bug.*"/>
         </run>
     </groups>
 
     <listeners>
-        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
     </listeners>
 
-    <test name="RepositoryDownloadTests" verbose="1" parallel="classes" thread-count="1">
+    <test name="RepositoryDownloadTests">
         <classes>
-            <class name="org.alfresco.share.repository.RepositoryDocumentDownloadTests" />
+            <class name="org.alfresco.share.repository.RepositoryDocumentDownloadTests"/>
         </classes>
     </test>
-    <test name="DownloadTests" verbose="1" parallel="classes" thread-count="1">
+
+    <test name="DownloadTests">
         <classes>
-            <class name="org.alfresco.share.DownloadFilesAndFoldersTest" />
+            <class name="org.alfresco.share.DownloadFilesAndFoldersTest"/>
         </classes>
     </test>
-    <test name="GoogleDocsTests" verbose="6" parallel="classes" thread-count="1">
+
+    <test name="GoogleDocsTests">
         <classes>
-            <class name="org.alfresco.share.site.document.GoogleDocsTest" />
+            <class name="org.alfresco.share.site.document.GoogleDocsTest"/>
         </classes>
     </test>
-    <test name="GalleryViewTests" verbose="1" parallel="classes" thread-count="1">
+
+    <test name="GalleryViewTests">
         <classes>
-            <class name="org.alfresco.share.site.document.GalleryViewTest" >
-            <methods>
-                    <include name="ALF_8751" />
-                    <include name="ALF_8745" />
-                    <include name="ALF_8664" />
-                    <include name="ALF_8734" />
-                    <include name="ALF_14399" />
+            <class name="org.alfresco.share.site.document.GalleryViewTest">
+                <methods>
+                    <include name="AONE_14014"/>
+                    <include name="AONE_14010"/>
+                    <include name="AONE_15058"/>
+                    <include name="AONE_14025"/>
+                    <include name="AONE_15055"/>
                 </methods>
             </class>
         </classes>
     </test>
-    <test name="FilmStripTests" verbose="1" parallel="classes" thread-count="1">
+
+    <test name="FilmStripTests">
         <classes>
-            <class name="org.alfresco.share.site.document.FilmStripDocLibTest" >
-              <methods>
-                    <include name="ALF_14197" />
-                    <include name="ALF_14200" />
-                    <include name="ALF_14210" />
-                    <include name="ALF_14214" />
+            <class name="org.alfresco.share.site.document.FilmStripDocLibTest">
+                <methods>
+                    <include name="AONE_14045"/>
+                    <include name="AONE_14048"/>
+                    <include name="AONE_14053"/>
+                    <include name="AONE_14058"/>
                 </methods>
             </class>
         </classes>
     </test>
-    <test name="Sanity Shared Files Tests" verbose="1" parallel="classes" thread-count="1">
+
+    <test name="Sanity Shared Files Tests">
         <classes>
             <class name="org.alfresco.share.sanity.SharedFilesTest">
                 <methods>
-                    <include name="ALF_3063" />
-                    <include name="ALF_3064" />
-                    <include name="ALF_3065" />
+                    <include name="AONE_15229"/>
+                    <include name="AONE_15230"/>
+                    <include name="AONE_15231"/>
                 </methods>
             </class>
         </classes>
     </test>
 
-    <test name="Sanity Bulk Import Tests" verbose="1" parallel="classes" thread-count="1">
+    <test name="Sanity Bulk Import Tests">
         <classes>
-            <class name="org.alfresco.share.sanity.repository.bulkimport.BulkImportTest" />
+            <class name="org.alfresco.share.sanity.repository.bulkimport.BulkImportTest"/>
         </classes>
     </test>
-   <test name="Sanity Document Library Tests" verbose="1">
+
+    <test name="Sanity Document Library Tests">
         <classes>
             <class name="org.alfresco.share.sanity.DocLibTest">
                 <methods>
-                    <include name="ALF_3057" />
-                    <include name="ALF_3058" />
-                    <include name="ALF_3059" />
-                    <include name="ALF_3100" />
+                    <include name="AONE_15201"/>
+                    <include name="AONE_15202"/>
+                    <include name="AONE_15203"/>
+                    <include name="AONE_15200"/>
                 </methods>
             </class>
         </classes>
     </test>
 
-    <test name="Site Notification Tests" verbose="1">
+    <test name="Site Notification Tests">
         <classes>
             <class name="org.alfresco.share.user.SiteNotificationsTest">
                 <methods>
-                    <include name="ALF_15251" />
+                    <include name="AONE_14162"/>
                 </methods>
             </class>
         </classes>
     </test>
+
+    <test name="GoogleDocsTestv2 Positive tests">
+        <classes>
+            <class name="org.alfresco.share.site.document.GoogleDocsTest2"/>
+        </classes>
+    </test>
+
+    <test name="MyFilesTest">
+        <classes>
+            <class name="org.alfresco.share.sanity.MyFilesTest">
+                <methods>
+                    <include name="AONE_8269"/>
+                    <include name="AONE_8270"/>
+                    <include name="AONE_8268"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="ToolbarTest">
+        <classes>
+            <class name="org.alfresco.share.site.document.ToolbarTest">
+                <methods>
+                    <include name="AONE_13996"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="SearchTest">
+        <classes>
+            <class name="org.alfresco.share.sanity.SearchTest">
+                <methods>
+                    <include name="AONE_8278"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="AdvancedSearchTest">
+        <classes>
+            <class name="org.alfresco.share.search.AdvanceSearchTest">
+                <methods>
+                    <include name="AONE_13948"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="AvatarCaching">
+        <classes>
+            <class name="org.alfresco.share.AvatarCaching"/>
+        </classes>
+    </test>
+
 </suite>

@@ -1,16 +1,17 @@
 package org.alfresco.po.share.site.discussions;
 
-import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
-
 import org.alfresco.po.share.exception.ShareException;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.alfresco.webdrone.RenderElement.getVisibleRenderElement;
 
 /**
  * Topic View page object
@@ -28,6 +29,11 @@ public class TopicViewPage extends DiscussionsPage
     private static final By TAG = By.cssSelector(".tag-link");
     private static final By TAG_NONE = By.xpath("//span[@class='nodeAttrValue' and text()='(None)']");
 
+    private static final By TOPIC_TITLE = By.xpath("//div[@class='nodeTitle']/a");
+    private static final By TOPIC_TEXT = By.xpath("//div[contains(@class,'topicview')]//p");
+    private static final By TOPIC_TAGS = By.xpath("//span[@class='tag']/a");
+    private static final By TOPIC_REPLIES = By.xpath("//div/div[@class='reply']//p");
+
     /**
      * Constructor
      *
@@ -43,7 +49,7 @@ public class TopicViewPage extends DiscussionsPage
     public TopicViewPage render(RenderTime timer)
     {
         elementRender(timer,
-            getVisibleRenderElement(BACK_LINK));
+                getVisibleRenderElement(BACK_LINK));
         return this;
     }
 
@@ -118,7 +124,7 @@ public class TopicViewPage extends DiscussionsPage
             addReplyForm.clickSubmit().render();
             waitUntilAlert();
             logger.info("Created a reply " + "'" + replyText + "'");
-            return new TopicViewPage(drone);
+            return new TopicViewPage(drone).render();
         }
         catch (TimeoutException te)
         {
@@ -143,7 +149,13 @@ public class TopicViewPage extends DiscussionsPage
         }
     }
 
-    private ReplyDirectoryInfo getReplyDirectoryInfo(final String title)
+    /**
+     * Return information about replay with text.
+     *
+     * @param title
+     * @return
+     */
+    public ReplyDirectoryInfo getReplyDirectoryInfo(final String title)
     {
         if (title == null || title.isEmpty())
         {
@@ -170,17 +182,17 @@ public class TopicViewPage extends DiscussionsPage
      * @param replyText
      * @return Topic View Page
      */
-    public TopicViewPage editReply (String title, String replyText)
+    public TopicViewPage editReply(String title, String replyText)
     {
         getReplyDirectoryInfo(title).clickEdit();
         AddReplyForm addReplyForm = new AddReplyForm(drone);
         addReplyForm.insertText(replyText);
         addReplyForm.clickSubmit().render();
         logger.info("Reply was edited");
-        return new TopicViewPage(drone);
+        return new TopicViewPage(drone).render();
     }
 
-    public TopicViewPage deleteReply (String title)
+    public TopicViewPage deleteReply(String title)
     {
         getReplyDirectoryInfo(title).clickDelete();
         logger.info("Reply was deleted");
@@ -192,11 +204,11 @@ public class TopicViewPage extends DiscussionsPage
      *
      * @return number of replies
      */
-    public int getReplyCount ()
+    public int getReplyCount()
     {
         try
         {
-            if(!drone.isElementDisplayed(REPLY_CONTAINER))
+            if (!drone.isElementDisplayed(REPLY_CONTAINER))
             {
                 return 0;
             }
@@ -208,13 +220,13 @@ public class TopicViewPage extends DiscussionsPage
         }
     }
 
-    public boolean isEditReplyDisplayed (String reply)
+    public boolean isEditReplyDisplayed(String reply)
     {
         boolean isDisplayed = getReplyDirectoryInfo(reply).isEditDisplayed();
         return isDisplayed;
     }
 
-    public boolean isDeleteReplyDisplayed (String reply)
+    public boolean isDeleteReplyDisplayed(String reply)
     {
         boolean isDisplayed = getReplyDirectoryInfo(reply).isDeleteDisplayed();
         return isDisplayed;
@@ -222,7 +234,7 @@ public class TopicViewPage extends DiscussionsPage
 
     /**
      * Method to retrieve tag added to Discussion Topic
-     * 
+     *
      * @return String
      */
     public String getTagName()
@@ -245,6 +257,78 @@ public class TopicViewPage extends DiscussionsPage
         {
             throw new ShareException("Unable to retrieve the tag");
         }
+    }
+
+    /**
+     * Method return topic title text
+     *
+     * @return String
+     */
+    public String getTopicTitle()
+    {
+        return drone.findAndWait(TOPIC_TITLE).getText();
+    }
+
+    /**
+     * Method return topic body text
+     *
+     * @return String
+     */
+    public String getTopicText()
+    {
+        return drone.findAndWait(TOPIC_TEXT).getText();
+    }
+
+    /**
+     * click on topic tag
+     *
+     * @param tagName
+     * @return discussionsPage
+     */
+    public DiscussionsPage clickOnTag(String tagName)
+    {
+        getElementWithText(TOPIC_TAGS, tagName).click();
+        return drone.getCurrentPage().render();
+    }
+
+    /**
+     * Return true if this topic has reply with text
+     *
+     * @param replyText
+     * @return
+     */
+    public boolean isReplyDisplay(String replyText)
+    {
+        try
+        {
+            return getElementWithText(TOPIC_REPLIES, replyText).isDisplayed();
+        }
+        catch (PageException e)
+        {
+            return false;
+        }
+    }
+
+    private WebElement getElementWithText(By selector, String text)
+    {
+        checkNotNull(text);
+        checkNotNull(selector);
+        try
+        {
+            List<WebElement> elements = drone.findAndWaitForElements(selector);
+            for (WebElement element : elements)
+            {
+                if (element.getText().contains(text))
+                {
+                    return element;
+                }
+            }
+        }
+        catch (StaleElementReferenceException e)
+        {
+            getElementWithText(selector, text);
+        }
+        throw new PageException(String.format("Element with selector[%s] and text[%s] not found on page.", selector, text));
     }
 
 }

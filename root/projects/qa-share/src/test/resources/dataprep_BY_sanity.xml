@@ -1,0 +1,87 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Sprint BY Data Prep Sanity Suite" preserve-order="true" parallel="tests" thread-count="2">
+    <groups>
+        <run>
+            <include name="DataPrep.*"/>
+            <exclude name="Enterprise4.2"/>
+            <exclude name="Sanity"/>
+            <exclude name="NonGrid"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+	<!--<test name="Site Wiki sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteWikiTest"/>
+        </classes>
+    </test>
+	
+    <test name="Site sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Members sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.MembersSiteTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Permissions sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SitePermissionsSanityTest"/>
+        </classes>
+    </test>
+
+    <test name="Shared Files sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SharedFilesTest">
+                <methods>
+                    <include name="dataPrep_AONE_15228"/>
+                    <include name="dataPrep_AONE_15232"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Site Links sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteLinksTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Discussions sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteDiscussionsTest"/>
+        </classes>
+    </test>
+
+    <test name="Site Data Lists sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteDataListsTest"/>
+        </classes>
+    </test-->
+
+    <test name="Task sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SanityTasksTest"/>
+        </classes>
+    </test>
+	
+	<!--test name="Blog sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SiteBlogTest"/>
+        </classes>
+    </test>-->
+	
+	<!--test name="Search sanity tests Suite">
+        <classes>
+            <class name="org.alfresco.share.sanity.SearchTest"/>
+        </classes>
+    </test-->
+
+</suite>

@@ -66,7 +66,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1828() throws Exception
+    public void dataPrep_AONE_15254() throws Exception
     {
         String testName = getTestName();
         onPremUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -92,7 +92,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1828() throws Exception
+    public void AONE_15254() throws Exception
     {
         try
         {
@@ -139,7 +139,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1831() throws Exception
+    public void dataPrep_AONE_15256() throws Exception
     {
         String testName = getTestName();
         onPremUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -184,7 +184,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
 
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1831() throws Exception
+    public void AONE_15256() throws Exception
     {
 
         String testName = getTestName();
@@ -213,7 +213,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1829() throws Exception
+    public void dataPrep_AONE_15255() throws Exception
     {
         String testName = getTestName();
         onPremUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -248,7 +248,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
     @SuppressWarnings("unused")
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1829() throws Exception
+    public void AONE_15255() throws Exception
     {
 
         String testName = getTestName();
@@ -276,7 +276,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
     }
 
     /**
-     * Enterprise40x-7008:Sync a file as admin 1. Create an on-premise user 2.
+     * AONE-11350:Sync a file as admin 1. Create an on-premise user 2.
      * Login with above user, create a site and upload a document 3. Login into
      * cloud and create a site
      * 
@@ -284,7 +284,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7008() throws Exception
+    public void dataPrep_AONE_15272() throws Exception
     {
         String testName = getTestName();
         String userName = getUserNameForDomain(testName, hybridDomainPremium);
@@ -306,7 +306,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
     }
 
     /**
-     * Enterprise40x-7008:Sync a file as admin 1. Login to Alfresco Share
+     * AONE-11350:Sync a file as admin 1. Login to Alfresco Share
      * (On-Premise) as admin 2. Set up Cloud Sync 3. Share user's (created in
      * pre-reqs) document into Cloud user's site 4. Login to cloud and verify
      * the synced file appeared 5. UnSync the document from Cloud
@@ -315,7 +315,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7008() throws Exception
+    public void AONE_15272() throws Exception
     {
         try
         {
@@ -386,7 +386,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1839() throws Exception
+    public void dataPrep_AONE_15260() throws Exception
     {
         String testName = getTestName();
         // Create User1 and User2 (On-premise)
@@ -448,7 +448,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1839()
+    public void AONE_15260()
     {
 
         try
@@ -493,7 +493,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      * @throws Exception
      */
     @Test(groups = { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1852() throws Exception
+    public void dataPrep_AONE_15263() throws Exception
     {
         testName = getTestName();
         // Create User1 and User2 (On-premise)
@@ -533,7 +533,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1852()
+    public void AONE_15263()
     {
         try
         {
@@ -625,7 +625,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1841() throws Exception
+    public void dataPrep_AONE_15261() throws Exception
     {
         testName = getTestName();
         String user1OP = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -677,7 +677,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1841()
+    public void AONE_15261()
     {
         try
         {
@@ -719,7 +719,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1846() throws Exception
+    public void dataPrep_AONE_15262() throws Exception
     {
         testName = getTestName();
         String user1OP = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -769,7 +769,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1846()
+    public void AONE_15262()
     {
         try
         {
@@ -816,7 +816,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1832() throws Exception
+    public void dataPrep_AONE_15257() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -840,7 +840,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1832()
+    public void AONE_15257()
     {
         try
         {
@@ -920,7 +920,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1835() throws Exception
+    public void dataPrep_AONE_15258() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -964,7 +964,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1835() throws Exception
+    public void AONE_15258() throws Exception
     {
         try
         {
@@ -998,7 +998,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1837() throws Exception
+    public void dataPrep_AONE_15259() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -1022,7 +1022,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1837()
+    public void AONE_15259()
     {
         try
         {
@@ -1101,7 +1101,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1862() throws Exception
+    public void dataPrep_AONE_15265() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -1154,7 +1154,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1862() throws Exception
+    public void AONE_15265() throws Exception
     {
         try
         {
@@ -1224,7 +1224,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_1867() throws Exception
+    public void dataPrep_AONE_15266() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -1270,7 +1270,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_1867() throws Exception
+    public void AONE_15266() throws Exception
     {
         try
         {
@@ -1365,7 +1365,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_2046() throws Exception
+    public void dataPrep_AONE_15285() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain("1-" + testName, hybridDomainPremium);
@@ -1413,7 +1413,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_2046() throws Exception
+    public void AONE_15285() throws Exception
     {
         try
         {
@@ -1454,7 +1454,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7125() throws Exception
+    public void dataPrep_AONE_15417() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain("1-" + testName, hybridDomainPremium);
@@ -1498,7 +1498,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7125() throws Exception
+    public void AONE_15417() throws Exception
     {
         try
         {
@@ -1541,7 +1541,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7129() throws Exception
+    public void dataPrep_AONE_15421() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain("1-" + testName, hybridDomainPremium);
@@ -1576,7 +1576,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7129() throws Exception
+    public void AONE_15421() throws Exception
     {
         try
         {
@@ -1643,7 +1643,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7128() throws Exception
+    public void dataPrep_AONE_15420() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain("1-" + testName, hybridDomainPremium);
@@ -1688,7 +1688,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7128() throws Exception
+    public void AONE_15420() throws Exception
     {
         try
         {
@@ -1715,7 +1715,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
 
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7136() throws Exception
+    public void dataPrep_AONE_15427() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1752,7 +1752,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
 
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7136() throws Exception
+    public void AONE_15427() throws Exception
     {
         try
         {
@@ -1830,7 +1830,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7137() throws Exception
+    public void dataPrep_AONE_15428() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1869,7 +1869,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7137() throws Exception
+    public void AONE_15428() throws Exception
     {
         try
         {
@@ -1910,7 +1910,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7138() throws Exception
+    public void dataPrep_AONE_15429() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1947,7 +1947,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7138() throws Exception
+    public void AONE_15429() throws Exception
     {
         try
         {
@@ -2004,7 +2004,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void dataPrep_ALF_7178() throws Exception
+    public void dataPrep_AONE_15467() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -2050,7 +2050,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      * @throws Exception
      */
     @Test(groups = {"CloudSync"})
-    public void ALF_7178() throws Exception
+    public void AONE_15467() throws Exception
     {
         try
         {
@@ -2103,7 +2103,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      * @throws Exception
      */
     @Test(groups = { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7149() throws Exception
+    public void dataPrep_AONE_15438() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -2142,7 +2142,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7149() throws Exception
+    public void AONE_15438() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -2229,7 +2229,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7151() throws Exception
+    public void dataPrep_AONE_15440() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -2270,7 +2270,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7151() throws Exception
+    public void AONE_15440() throws Exception
     {
 
         String testName = getTestName();
@@ -2358,13 +2358,13 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
     }
 
     /**
-     * 7135 - Enterprise40x-7135:Cloud icon for a synced folder 1) Create
+     * 7135 - AONE-11505:Cloud icon for a synced folder 1) Create
      * On-Prem user 2) Create a Cloud User 3) Login to On-Premise and set up
      * Cloud Sync
      */
     @Test(groups =
     { "DataPrepCloudSync1", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7135() throws Exception
+    public void dataPrep_AONE_15426() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -2388,7 +2388,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
     }
 
     /**
-     * 7135 - Enterprise40x-7135:Cloud icon for a synced folder 1) Login to
+     * 7135 - AONE-11505:Cloud icon for a synced folder 1) Login to
      * Cloud, create a site 2) Login to OP, create a site, Create a folder and
      * upload a file within that folder 3) Select the folder created, select
      * "Sync to Cloud" from more options 6) Select the Site and click Sync 7)
@@ -2398,7 +2398,7 @@ public class CloudSyncAccessTest extends AbstractCloudSyncTest
      */
     @Test(groups =
     {"CloudSync"})
-    public void ALF_7135() throws Exception
+    public void AONE_15426() throws Exception
     {
         try
         {

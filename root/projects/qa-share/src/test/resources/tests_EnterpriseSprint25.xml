@@ -1,146 +1,152 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Test for Sprint 25" verbose="1" preserve-order="true" parallel="tests" thread-count="5">
-	<groups>
-		<run>
-			<exclude name="DataPrep.*" />
-			<exclude name="Download" />
-		</run>
-	</groups>
- 
-	<listeners>
-		<listener
-			class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
-	</listeners>
+<suite name="Test for Sprint 25" verbose="1" preserve-order="true"
+    parallel="tests" thread-count="5">
+    <groups>
+        <run>
+            <exclude name="DataPrep.*" />
+            <exclude name="Download" />
+        </run>
+    </groups>
 
-	<test name="Saved Search Site Dashlet Advanced Tests" verbose="1">
-		<classes>
-			<class
-				name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest">
-				<methods>
-					<include name="alf_10370" />
-					<include name="alf_10371" />
-					<include name="alf_10372" />
-					<include name="alf_10373" />
-					<include name="alf_10374" />
-					<include name="alf_10375" />
-					<include name="alf_10376" />
-					<include name="alf_10377" />
-					<include name="alf_10378" />
-					<include name="alf_10379" />
-					<include name="alf_10380" />
-					<include name="alf_10381" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <listeners>
+        <listener
+            class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter" />
+    </listeners>
 
-	<test name="Saved Search My Dashboard Dashlet Basic Tests"
-		verbose="1">
-		<classes>
-			<class name="org.alfresco.share.dashlet.SavedSearchMyDashboardBasicTest" />
-		</classes>
-	</test>
+    <test name="Saved Search Site Dashlet Advanced Tests" verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.dashlet.SavedSearchSiteDashboardAdvancedTest">
+                <methods>
+                    <include name="AONE_14726" />
+                    <include name="AONE_14727" />
+                    <include name="AONE_14728" />
+                    <include name="AONE_14729" />
+                    <include name="AONE_14730" />
+                    <include name="AONE_14731" />
+                    <include name="AONE_14732" />
+                    <include name="AONE_14733" />
+                    <include name="AONE_14734" />
+                    <include name="AONE_14735" />
+                    <include name="AONE_14736" />
+                    <include name="AONE_14737" />
+                </methods>
+            </class>
+        </classes>
+    </test>
 
-	<test name="Saved Search My Dashboard Dashlet Advanced Tests"
-		verbose="1">
-		<classes>
-			<class
-				name="org.alfresco.share.dashlet.SavedSearchMyDashboardAdvancedTest" />
-		</classes>
-	</test>
+    <test name="Saved Search My Dashboard Dashlet Basic Tests"
+        verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.dashlet.SavedSearchMyDashboardBasicTest" />
+        </classes>
+    </test>
 
-	<test name="Granular Manage Permission" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.site.document.ManagePermissionTest">
-				<methods>
-					<include name="alf_10427" />
-					<include name="alf_10428" />
-					<include name="alf_10429" />
-					<include name="alf_10790" />
-					<include name="alf_10793" />
-					<include name="alf_10795" />
-					<include name="alf_10287" />
-					<include name="alf_10288" />
-					<include name="alf_10425" />
-					<include name="alf_10426" />
-					<include name="alf_10785" />
-					<include name="alf_10786" />
-					<include name="alf_10789" />
-					<include name="alf_10787" />
-					<include name="alf_10788" />
-					<include name="alf_10791" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <test name="Saved Search My Dashboard Dashlet Advanced Tests"
+        verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.dashlet.SavedSearchMyDashboardAdvancedTest" />
+        </classes>
+    </test>
 
-	<test name="Node Browser Tests" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.adminconsole.NodeBrowserTests" />
-		</classes>
-	</test>
+    <test name="Granular Manage Permission" verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.site.document.ManagePermissionTest">
+                <methods>
+                    <include name="AONE_14155" />
+                    <include name="AONE_14156" />
+                    <include name="AONE_14157" />
+                    <include name="AONE_14158" />
+                    <include name="AONE_14153" />
+                    <include name="AONE_14154" />
+                    <include name="AONE_15098" />
+                    <include name="AONE_15099" />
+                    <include name="AONE_15102" />
+                    <include name="AONE_15104" />
+                    <include name="AONE_15100" />
+                    <include name="AONE_15105" />
+                    <include name="AONE_15103" />
+                    <include name="AONE_15106" />
+                    <include name="AONE_15101" />
+                    <include name="AONE_14152" />
+                </methods>
+            </class>
+        </classes>
+    </test>
 
-   <test name="Table View Tests" verbose="1">
-      <classes>
-         <class name="org.alfresco.share.site.document.TableViewDocLibTest">
-            <methods>
-               <include name="Alf_14392" />
-               <include name="Alf_14544" />
-               <include name="Alf_14548" />
-               <include name="Alf_14549" />
-            </methods>
-         </class>
-      </classes>
-   </test>
+    <test name="Node Browser Tests" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.adminconsole.NodeBrowserTests" />
+        </classes>
+    </test>
 
-   <test name="Manage Documents Test" verbose="1">
-       <classes>
-           <class name="org.alfresco.share.site.document.ManageDocumentsTest" >
-               <methods>
-                   <include name="Enterprise40x_8364" />
-                   <include name="Enterprise40x_10772" />
-                   <include name="Enterprise40x_8565" />
-                   <include name="Enterprise40x_13811" />
-                   <include name="Enterprise40x_13813" />
-               </methods>
-           </class>
-       </classes>
-   </test>
+    <test name="Table View Tests" verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.site.document.TableViewDocLibTest">
+                <methods>
+                    <include name="AONE_14092" />
+                    <include name="AONE_14093" />
+                    <include name="AONE_14095" />
+                    <include name="AONE_14096" />
+                </methods>
+            </class>
+        </classes>
+    </test>
 
-	<test name="Repository Folder" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.repository.RepositoryFolderTests1">
-				<methods>
-					<include name="Enterprise40x_5405" />
-					<include name="Enterprise40x_5412" />
-					<include name="Enterprise40x_5422" />
-					<include name="Enterprise40x_5423" />
-					<include name="Enterprise40x_5425" />
-					<include name="Enterprise40x_5426" />
-					<include name="Enterprise40x_5431" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <test name="Manage Documents Test" verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.site.document.ManageDocumentsTest">
+                <methods>
+                    <include name="AONE_1764" />
+                    <include name="AONE_1723" />
+                    <include name="AONE_1752" />
+                    <include name="AONE_1788" />
+                    <include name="AONE_1789" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Repository Folder" verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.repository.RepositoryFolderTests1">
+                <methods>
+                    <include name="AONE_3552" />
+                    <include name="AONE_3559" />
+                    <include name="AONE_3569" />
+                    <include name="AONE_3570" />
+                    <include name="AONE_3572" />
+                    <include name="AONE_3573" />
+                    <include name="AONE_3578" />
+                </methods>
+            </class>
+        </classes>
+    </test>
 
     <test name="Security XSS Tests" verbose="1">
         <classes>
-            <class name="org.alfresco.share.repository.SecurityXssTest" >
-               <methods>
-                    <include name="Enterprise40x_5361" />
-                    <include name="Enterprise40x_5362" />
-                    <include name="Enterprise40x_5363" />
-                    <include name="Enterprise40x_5364" />
-                    <include name="Enterprise40x_5365" />
-                    <include name="Enterprise40x_5366" />
-                    <include name="Enterprise40x_5367" />
-                    <include name="Enterprise40x_5368" />
-                    <include name="Enterprise40x_5369" />
-                    <include name="Enterprise40x_5370" />
-                    <include name="Enterprise40x_5371" />
-                    <include name="Enterprise40x_5372" />
-                    <include name="Enterprise40x_5373" />
-               </methods>
+            <class name="org.alfresco.share.repository.SecurityXssTest">
+                <methods>
+                    <include name="AONE_3504" />
+                    <include name="AONE_3505" />
+                    <include name="AONE_3506" />
+                    <include name="AONE_3507" />
+                    <include name="AONE_3508" />
+                    <include name="AONE_3509" />
+                    <include name="AONE_3510" />
+                    <include name="AONE_3511" />
+                    <include name="AONE_3512" />
+                    <include name="AONE_3513" />
+                    <include name="AONE_3514" />
+                    <include name="AONE_3515" />
+                    <include name="AONE_3516" />
+                </methods>
             </class>
         </classes>
     </test>
@@ -151,77 +157,78 @@
             <class name="org.alfresco.share.site.document.ManageFoldersTest" />
         </classes>
     </test>
-    
-	<test name="GalleryView Test" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.site.document.GalleryViewTest">
-				<methods>
-				<include name="alf_8751"/>
-				<include name="alf_8748"/>
-				<include name="alf_8747"/>
-				<include name="alf_8712"/>
-				<include name="alf_8745"/>
-				<include name="alf_8742"/>
-				<include name="alf_8741"/>
-				<include name="alf_8719"/>
-				<include name="alf_8723"/>
-				<include name="alf_8729"/>
-				<include name="alf_8722"/>
-				<include name="alf_8743"/>
-				<include name="alf_8721"/>
-				<include name="alf_8664"/>
-				<include name="alf_8728"/>
-				</methods>
-			</class>
-		</classes>
-	</test>
 
-	<test name="FilmStrip Test" verbose="1">
-		<classes>
-			<class name="org.alfresco.share.site.document.FilmStripDocLibTest">
-				<methods >
-					<exclude name="ALF_141*" />
-					<exclude name="ALF_14205" />
-					<exclude name="ALF_14206" />
-					<include name="ALF_14200" />
-					<include name="ALF_14210" />
-					<include name="ALF_14201" />
-					<include name="ALF_14203" />
-					<include name="ALF_14204" />
-					<include name="ALF_14207" />
-					<include name="ALF_14208" />
-					<include name="ALF_14214" />
-					<include name="ALF_14228" />
-					<include name="ALF_14233" />
-					<include name="ALF_14234" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <test name="GalleryView Test" verbose="1">
+        <classes>
+            <class name="org.alfresco.share.site.document.GalleryViewTest">
+                <methods>
+                    <include name="AONE_14014" />
+                    <include name="AONE_14012" />
+                    <include name="AONE_14011" />
+                    <include name="AONE_14016" />
+                    <include name="AONE_14010" />
+                    <include name="AONE_14008" />
+                    <include name="AONE_14007" />
+                    <include name="AONE_14019" />
+                    <include name="AONE_14022" />
+                    <include name="AONE_14024" />
+                    <include name="AONE_14021" />
+                    <include name="AONE_14009" />
+                    <include name="AONE_14020" />
+                    <include name="AONE_15058" />
+                    <include name="AONE_14023" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="FilmStrip Test" verbose="1">
+        <classes>
+            <class
+                name="org.alfresco.share.site.document.FilmStripDocLibTest">
+                <methods>
+                    <exclude name="ALF_141*" />
+                    <exclude name="AONE_14054" />
+                    <exclude name="AONE_14055" />
+                    <include name="AONE_14048" />
+                    <include name="AONE_14053" />
+                    <include name="AONE_14049" />
+                    <include name="AONE_14051" />
+                    <include name="AONE_14052" />
+                    <include name="AONE_14056" />
+                    <include name="AONE_14057" />
+                    <include name="AONE_14058" />
+                    <include name="AONE_14059" />
+                    <include name="AONE_14060" />
+                    <include name="AONE_14061" />
+                </methods>
+            </class>
+        </classes>
+    </test>
 
     <test name="Create Rule Test" verbose="1">
         <classes>
             <class name="org.alfresco.share.content.rules.CreateRuleTest">
                 <methods>
-                    <include name="ALF_14018" />
-                    <include name="ALF_14019" />
-                    <include name="ALF_14020" />
-                    <include name="ALF_14021" />
-                    <include name="ALF_14022" />
-                    <include name="ALF_14023" />
-                    <include name="ALF_14024" />
-                    <include name="ALF_14025" />
-                    <include name="ALF_14026" />
-                    <include name="ALF_14028" />
-                    <include name="ALF_14029" />
-                    <include name="ALF_14030" />
-                    <include name="ALF_14031" />
-                    <include name="ALF_14034" />
-                    <include name="ALF_15271" />
-                    <include name="ALF_14017" />
-                    <include name="ALF_8483" />
-                    <include name="ALF_8497" />
-                    <include name="ALF_8499" />
+                    <include name="AONE_15107" />
+                    <include name="AONE_15108" />
+                    <include name="AONE_15109" />
+                    <include name="AONE_15110" />
+                    <include name="AONE_15111" />
+                    <include name="AONE_15112" />
+                    <include name="AONE_15113" />
+                    <include name="AONE_15114" />
+                    <include name="AONE_15116" />
+                    <include name="AONE_15120" />
+                    <include name="AONE_15121" />
+                    <include name="AONE_15122" />
+                    <include name="AONE_15123" />
+                    <include name="AONE_15125" />
+                    <include name="AONE_15124" />
+                    <include name="AONE_15126" />
+                    <include name="AONE_15115" />
+                    <include name="AONE_15117" />
+                    <include name="AONE_15119" />
                 </methods>
             </class>
         </classes>
@@ -229,29 +236,30 @@
 
     <test name="Comments tests for 'Folder Details Page'" verbose="1">
         <classes>
-            <class name="org.alfresco.share.site.document.FolderDetailsCommentsTest"/>
+            <class
+                name="org.alfresco.share.site.document.FolderDetailsCommentsTest" />
         </classes>
     </test>
 
- <test name="Folder Actions Test" verbose="1">
+    <test name="Folder Actions Test" verbose="1">
         <classes>
-            <class name="org.alfresco.share.site.document.FolderActionsTest" >
+            <class name="org.alfresco.share.site.document.FolderActionsTest">
                 <methods>
-                    <include name="ALF_2921" />
-                    <include name="ALF_2922" />
-                    <include name="ALF_2923" />
-                    <include name="ALF_2924" />
-                    <include name="ALF_2925" />
-                    <include name="ALF_2926" />
-                    <include name="ALF_2927" />
-                    <include name="ALF_2928" />
-                    <include name="ALF_2929" />
-                    <include name="ALF_2930" />
-                    <include name="ALF_2931" />
-                    <include name="ALF_2932" />
-                    <include name="ALF_2933" />
-                    <include name="ALF_2935" />
-            </methods>
+                    <include name="AONE_14900" />
+                    <include name="AONE_14903" />
+                    <include name="AONE_14904" />
+                    <include name="AONE_14906" />
+                    <include name="AONE_14908" />
+                    <include name="AONE_14909" />
+                    <include name="AONE_14910" />
+                    <include name="AONE_14914" />
+                    <include name="AONE_14901" />
+                    <include name="AONE_14902" />
+                    <include name="AONE_14905" />
+                    <include name="AONE_14907" />
+                    <include name="AONE_14911" />
+                    <include name="AONE_14915" />
+                </methods>
             </class>
         </classes>
     </test>

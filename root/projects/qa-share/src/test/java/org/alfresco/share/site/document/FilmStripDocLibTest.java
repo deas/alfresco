@@ -18,27 +18,12 @@
  */
 package org.alfresco.share.site.document;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import java.util.List;
-
 import org.alfresco.po.share.FactorySharePage;
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.UpdateFilePage;
 import org.alfresco.po.share.site.contentrule.FolderRulesPage;
-import org.alfresco.po.share.site.document.ConfirmDeletePage;
+import org.alfresco.po.share.site.document.*;
 import org.alfresco.po.share.site.document.ConfirmDeletePage.Action;
-import org.alfresco.po.share.site.document.CopyOrMoveContentPage;
-import org.alfresco.po.share.site.document.DocumentDetailsPage;
-import org.alfresco.po.share.site.document.DocumentLibraryPage;
-import org.alfresco.po.share.site.document.EditDocumentPropertiesPage;
-import org.alfresco.po.share.site.document.FileDirectoryInfo;
-import org.alfresco.po.share.site.document.FolderDetailsPage;
-import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.site.document.SelectAspectsPage;
 import org.alfresco.po.share.workflow.StartWorkFlowPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
@@ -52,6 +37,10 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * Test the FilmStrip view of Document Library. Share Refresh > FilmStrip View
@@ -78,7 +67,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14193
+     * DataPreparation method - AONE-14042
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -88,7 +77,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14193() throws Exception
+    public void dataPrep_FilmStrip_AONE_14042() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -115,7 +104,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne")
-    public void ALF_14193() throws Exception
+    public void AONE_14042() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -134,7 +123,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14195
+     * DataPreparation method - AONE-14043
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -145,7 +134,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14195() throws Exception
+    public void dataPrep_FilmStrip_AONE_14043() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -170,7 +159,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14195() throws Exception
+    public void AONE_14043() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -212,7 +201,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14196
+     * DataPreparation method - AONE-14044
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -222,7 +211,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14196() throws Exception
+    public void dataPrep_FilmStrip_AONE_14044() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -261,7 +250,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14196() throws Exception
+    public void AONE_14044() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -323,7 +312,7 @@ public class FilmStripDocLibTest extends AbstractUtils
 
 
     /**
-     * DataPreparation method - ALF-14199
+     * DataPreparation method - AONE-14047
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -333,7 +322,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14199() throws Exception
+    public void dataPrep_FilmStrip_AONE_14047() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -362,7 +351,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14199() throws Exception
+    public void AONE_14047() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -405,7 +394,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
     
     /**
-     * DataPreparation method - ALF-14205
+     * DataPreparation method - AONE-14054
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -415,7 +404,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14205() throws Exception
+    public void dataPrep_FilmStrip_AONE_14054() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -438,7 +427,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14205() throws Exception
+    public void AONE_14054() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -513,7 +502,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14206
+     * DataPreparation method - AONE-14055
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -523,7 +512,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14206() throws Exception
+    public void dataPrep_FilmStrip_AONE_14055() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -546,7 +535,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14206() throws Exception
+    public void AONE_14055() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -610,7 +599,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14200
+     * DataPreparation method - AONE-14048
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -620,7 +609,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14200() throws Exception
+    public void dataPrep_FilmStrip_AONE_14048() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -647,7 +636,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = { "AlfrescoOne", "NonGrid" })
-    public void ALF_14200() throws Exception
+    public void AONE_14048() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -735,7 +724,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14201
+     * DataPreparation method - AONE-14049
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -745,7 +734,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14201() throws Exception
+    public void dataPrep_FilmStrip_AONE_14049() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -775,7 +764,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "AlfrescoOne", enabled = true)
-    public void ALF_14201() throws Exception
+    public void AONE_14049() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -809,7 +798,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14201
+     * DataPreparation method - AONE-14049
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -819,7 +808,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14203() throws Exception
+    public void dataPrep_FilmStrip_AONE_14051() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -844,7 +833,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14203() throws Exception
+    public void AONE_14051() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -891,7 +880,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14201
+     * DataPreparation method - AONE-14049
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -901,7 +890,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14204() throws Exception
+    public void dataPrep_FilmStrip_AONE_14052() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -926,7 +915,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14204() throws Exception
+    public void AONE_14052() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -974,7 +963,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14201
+     * DataPreparation method - AONE-14049
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -984,7 +973,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14207() throws Exception
+    public void dataPrep_FilmStrip_AONE_14056() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -1006,7 +995,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14207() throws Exception
+    public void AONE_14056() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1054,7 +1043,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
     
     /**
-     * DataPreparation method - ALF-14201
+     * DataPreparation method - AONE-14049
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1064,7 +1053,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14208() throws Exception
+    public void dataPrep_FilmStrip_AONE_14057() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -1086,7 +1075,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14208() throws Exception
+    public void AONE_14057() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1141,7 +1130,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14210
+     * DataPreparation method - AONE-14053
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1151,7 +1140,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14210() throws Exception
+    public void dataPrep_FilmStrip_AONE_14053() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -1176,7 +1165,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = { "AlfrescoOne", "NonGrid" })
-    public void ALF_14210() throws Exception
+    public void AONE_14053() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1286,7 +1275,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14210
+     * DataPreparation method - AONE-14053
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1296,7 +1285,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14214() throws Exception
+    public void dataPrep_FilmStrip_AONE_14058() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -1323,7 +1312,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = { "AlfrescoOne", "NonGrid" })
-    public void ALF_14214() throws Exception
+    public void AONE_14058() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1339,6 +1328,7 @@ public class FilmStripDocLibTest extends AbstractUtils
         // Expand the "Options" menu and click the "Filmstrip View" button;
         docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
 
+        Thread.sleep(1000);
         FileDirectoryInfo folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
         // Return to the folder's Info panel and click the "View Details" action;
@@ -1356,8 +1346,8 @@ public class FilmStripDocLibTest extends AbstractUtils
         folderInfo = docLibPage.getFileDirectoryInfo(folderName);
 
         // Return to the document's Info panel and click the "Copy to..." action;
-        folderInfo = docLibPage.getFileDirectoryInfo(folderName);
-        CopyOrMoveContentPage copyToForm = folderInfo.selectCopyTo().render();
+        CopyOrMoveContentPage copyToForm = docLibPage.getFileDirectoryInfo(folderName).selectCopyTo().render();
+        //CopyOrMoveContentPage copyToForm = folderInfo.selectCopyTo().render();
         // "Copy %itemname% to..." form is opened;
         assertEquals(copyToForm.getDialogTitle(), "Copy " + folderName + " to...");
         docLibPage = copyToForm.selectCancelButton().render();
@@ -1415,7 +1405,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14228
+     * DataPreparation method - AONE-14059
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1425,7 +1415,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14228() throws Exception
+    public void dataPrep_FilmStrip_AONE_14059() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -1451,7 +1441,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     @Test(groups = "AlfrescoOne")
-    public void ALF_14228() throws Exception
+    public void AONE_14059() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1509,7 +1499,7 @@ public class FilmStripDocLibTest extends AbstractUtils
     }
 
     /**
-     * DataPreparation method - ALF-14228
+     * DataPreparation method - AONE-14059
      * <ul>
      * <li>Login</li>
      * <li>Create User</li>
@@ -1519,7 +1509,7 @@ public class FilmStripDocLibTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "DataPrepAlfrescoOne" })
-    public void dataPrep_FilmStrip_ALF_14233() throws Exception
+    public void dataPrep_FilmStrip_AONE_14060() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -1540,8 +1530,9 @@ public class FilmStripDocLibTest extends AbstractUtils
 
     }
 
+    //TODO: User ShareUSerSitePage.selectView()
     @Test(groups = "AlfrescoOne")
-    public void ALF_14233() throws Exception
+    public void AONE_14060() throws Exception
     {
         /** Start Test */
         String testName = getTestName();
@@ -1583,4 +1574,85 @@ public class FilmStripDocLibTest extends AbstractUtils
         docLibPage = docLibPage.getNavigation().selectMediaView().render();
         assertEquals(docLibPage.getViewType(), ViewType.MEDIA_VIEW);
     }
+
+
+    @Test(groups = { "DataPrepAlfrescoOne" })
+    public void dataPrep_FilmStrip_AONE_14045() throws Exception
+    {
+        String testName = getTestName();
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+        String fileName1 = getFileName(testName);
+        String[] testUserInfo = new String[] { testUser };
+        // User
+        CreateUserAPI.CreateActivateUser(customDrone, ADMIN_USERNAME, testUserInfo);
+
+        // User login
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        // Site creation
+        ShareUser.createSite(customDrone, siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+
+        // Upload FIles
+        ShareUser.uploadFileInFolder(customDrone, new String[] { fileName1 });
+        ShareUser.logout(customDrone);
+
+    }
+
+    @Test(groups = "AlfrescoOne")
+    public void AONE_14045() throws Exception
+    {
+        /** Start Test */
+        String testName = getTestName();
+        String fileName1 = getFileName(testName);
+        String testUser = getUserNameFreeDomain(testName);
+        String siteName = getSiteName(testName);
+
+        // User login.
+        ShareUser.login(customDrone, testUser, DEFAULT_PASSWORD);
+
+        ShareUser.openSitesDocumentLibrary(customDrone, siteName);
+
+        // Navigate to filmstrip view
+        DocumentLibraryPage docLibPage = ShareUserSitePage.selectView(customDrone, ViewType.FILMSTRIP_VIEW);
+
+        // The view is changed to Filmstrip mode;
+        assertTrue(docLibPage.getFilmstripActions().isFilmStripViewDisplayed());
+
+        // The first item is displayed in the foreground
+        assertEquals(docLibPage.getFilmstripActions().getDisplyedFilmstripItem(), fileName1);
+
+        // No Metadata displayed
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1).isInfoPopUpDisplayed());
+
+        FileDirectoryInfo fileInfo = ShareUserSitePage.getFileDirectoryInfo(customDrone, fileName1);
+
+        fileInfo.clickInfoIcon();
+        assertTrue(fileInfo.isInfoPopUpDisplayed(), "Info panel isn't shown");
+
+        assertTrue(fileInfo.isVersionVisible(), "An item version isn't present");
+
+        assertTrue(fileInfo.isDownloadPresent(), "Download link isn't present");
+        assertTrue(fileInfo.isViewInBrowserVisible(), "View in Browser link  isn't present");
+        assertTrue(fileInfo.isEditPropertiesLinkPresent(), "Edit Properties link isn't present");
+        assertTrue(fileInfo.isMoreMenuButtonPresent(), "More menu link isn't present");
+
+        List<String> description = fileInfo.getDescriptionList();
+        String desc = description.toString();
+
+        assertTrue(desc.contains("ago"), "Created/modified date isn't present");
+        assertTrue(desc.contains("bytes"), "Size information isnt't present");
+        assertEquals(fileInfo.getDescriptionFromInfo(),"No Description", "Description information isn't present");
+
+        assertTrue(description.contains("No Tags"), "Tags info isn't present");
+        assertTrue(description.contains("Favorite"), "Favorite icon isn't present");
+        assertTrue(description.contains("Like0"), "Like icon isn't present");
+
+        assertTrue(desc.contains(testUser), "Modifier name isn't present");
+
+        assertTrue(fileInfo.isCommentLinkPresent(), "Comment link isn't present");
+        assertTrue(fileInfo.isShareLinkVisible(), "Share link isn't present");
+
+    }
+
 }

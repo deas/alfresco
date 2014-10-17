@@ -141,6 +141,8 @@ public class MySiteDashletTest extends AbstractTest
         dashBoard = page.getNav().selectMyDashBoard();
         MySitesDashlet dashlet = dashBoard.getDashlet("my-sites").render();
         Assert.assertTrue(dashlet.isSiteFavourite(siteName));
+        dashlet.selectFavorite(siteName);
+        Assert.assertFalse(dashlet.isSiteFavourite(siteName));
         Assert.assertFalse(dashlet.isSiteFavourite(sampleSiteFullName));
     }
     

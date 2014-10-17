@@ -40,7 +40,7 @@ public class BulkImportTest extends AbstractUtils
     }
 
     /**
-     * Test - ALF-3127: Streaming import
+     * Test - AONE-15240: Streaming import
      * <ul>
      * <li>Login</li>
      * <li>navigate to bulkfsimport</li>
@@ -51,7 +51,7 @@ public class BulkImportTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3127() throws Exception
+    public void AONE_15240() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -115,7 +115,7 @@ public class BulkImportTest extends AbstractUtils
     }
 
     /**
-     * Test - ALF-3128: In-Place import
+     * Test - AONE-15241: In-Place import
      * <ul>
      * <li>Login</li>
      * <li>navigate to bulkfsimport/inplace</li>
@@ -126,7 +126,7 @@ public class BulkImportTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3128() throws Exception
+    public void AONE_15241() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -171,7 +171,7 @@ public class BulkImportTest extends AbstractUtils
     }
 
     /**
-     * Test - ALF-3129: Import. Replace existing files
+     * Test - AONE-15242: Import. Replace existing files
      * <ul>
      * <li>At least one Bulk Import initiated and completed successfully</li>
      * <li>Change any file on filesystem from import that was run in pre-condition</li>
@@ -182,7 +182,7 @@ public class BulkImportTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "EnterpriseOnly" }, timeOut = 300000)
-    public void ALF_3129() throws Exception
+    public void AONE_15242() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -301,7 +301,7 @@ public class BulkImportTest extends AbstractUtils
     }
 
     /**
-     * Test - ALF-3130: Import. Disable rules
+     * Test - AONE-15243: Import. Disable rules
      * <ul>
      * <li>Login</li>
      * <li>Any rule created for any folder</li>
@@ -312,7 +312,7 @@ public class BulkImportTest extends AbstractUtils
      * </ul>
      */
     @Test(groups = { "NonGrid", "EnterpriseOnly" }, timeOut = 400000)
-    public void ALF_3130() throws Exception
+    public void AONE_15243() throws Exception
     {
         /** Start Test */
         testName = getTestName();

@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Google Docs Tests for Sprint BY" thread-count="1">
+
+    <groups>
+        <run>
+            <exclude name="DataPrep.*"/>
+            <exclude name="Download"/>
+            <exclude name="CloudOnly" />
+            <exclude name=".*Bug.*"/>
+        </run>
+    </groups>
+
+    <listeners>
+        <listener class-name="org.alfresco.webdrone.testng.listener.ScreenshotHTMLReporter"/>
+    </listeners>
+
+    <test name="GoogleDocs Test v2 Positive tests suite">
+        <classes>
+            <class name="org.alfresco.share.site.document.GoogleDocsTest2"/>
+        </classes>
+    </test>
+
+</suite>

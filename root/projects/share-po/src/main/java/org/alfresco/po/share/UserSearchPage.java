@@ -20,12 +20,15 @@ import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +40,7 @@ import java.util.List;
  */
 public class UserSearchPage extends SharePage
 {
+    private static final Log logger = LogFactory.getLog(UserSearchPage.class);
     private static final String USER_SEARCH_BOX = "input[id$='admin-console_x0023_default-search-text']";
     private static final String USER_SEARCH_BUTTON = "button[id$='admin-console_x0023_default-search-button-button']";
     private static final String NEW_USER_BUTTON = "button[id$='admin-console_x0023_default-newuser-button-button']";
@@ -44,6 +48,11 @@ public class UserSearchPage extends SharePage
     private static final String USER_SEARCH_RESULTS_ROW = "tbody.yui-dt-data > tr";
     private static final String USER_SEARCH_RESULTS_STATUS = "div[id$='default-search-bar']";
     private static final By ERROR_MESSAGE = By.cssSelector("div.yui-dialog>div>div.bd>span.message");
+    private static final By CSV_UPLOAD_FILE = By.cssSelector("input[id*='default-filedata-file']");
+    private static final By CSV_CONFIRM_UPLOAD_BUTTON = By.xpath("//button[text()='Upload File']");
+    private static final By CSV_UPLOADED_USERNAMES = By.cssSelector("td[class*='username']>div");
+    private static final By CSV_NO_RECORDS_FOUND = By.xpath("//td[contains(@class, 'empty')]/div[text()='No records found.']");
+    private static final By CSV_GO_BACK_BUTTON = By.cssSelector("button[id*='csv-goback-button-button']");
 
     /**
      * Constructor.
@@ -254,6 +263,107 @@ public class UserSearchPage extends SharePage
     }
 
     /**
+     * Clicks on Upload User CSV File Button.
+     * 
+     * @return UserSearchPage
+     */
+    public UserSearchPage openUploadUserCSVFile()
+    {
+        try
+        {
+            WebElement button = drone.find(By.cssSelector(UPLOAD_USER_CSV_BUTTON));
+            button.click();
+
+        }
+        catch (NoSuchElementException te)
+        {
+        }
+        return new UserSearchPage(drone).render();
+    }
+
+    /**
+     * Open Upload User CSV Form. Select csv file and upload it
+     * 
+     * @param filePath -
+     *            path to the csv file
+     */
+    public HtmlPage uploadCVSFile(String filePath)
+    {
+        openUploadUserCSVFile();
+        WebElement upload = drone.findAndWait(CSV_UPLOAD_FILE);
+        upload.sendKeys(filePath);//"file:///" +
+
+        WebElement uploadButton = drone.findAndWait(CSV_CONFIRM_UPLOAD_BUTTON);
+        uploadButton.click();
+
+        return drone.getCurrentPage().render();
+
+    }
+
+    /**
+     * Get uploaded CVS user names.
+     * CSV file was uploaded already and Upload Results page was opened
+     * 
+     * @return List<String> </>
+     */
+    public List<String> getUploadedCVSUsernames()
+    {
+        List<String> usernames = new ArrayList<>();
+        if (isCSVResults())
+        {
+            List<WebElement> csvUsers = drone.findAndWaitForElements(CSV_UPLOADED_USERNAMES);
+            for (WebElement csvUser : csvUsers)
+            {
+                usernames.add(csvUser.getText());
+            }
+        }
+        return usernames;
+    }
+
+    /**
+     * Verify that Upload Results page contains any results
+     * 
+     * @return boolean if any results are displayed
+     */
+    private boolean isCSVResults()
+    {
+        try
+        {
+            drone.findAndWait(CSV_GO_BACK_BUTTON);
+            if (drone.isElementDisplayed(CSV_NO_RECORDS_FOUND))
+                return false;
+            else if (drone.isElementDisplayed(CSV_UPLOADED_USERNAMES))
+                return true;
+
+        }
+        catch (TimeoutException ex)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * Click to the Go Back button
+     * 
+     * @return UserSearchPage
+     */
+    public UserSearchPage clickGoBack()
+    {
+        try
+        {
+            WebElement goBack = drone.find(CSV_GO_BACK_BUTTON);
+            goBack.click();
+
+        }
+        catch (NoSuchElementException e)
+        {
+            logger.error("Go Back button is not present on the page");
+        }
+        return new UserSearchPage(drone).render();
+    }
+
+    /**
      * Check if javascript message about successful user creation is displayed.
      * 
      * @return true if message displayed
@@ -323,14 +433,14 @@ public class UserSearchPage extends SharePage
         throw new PageException("Unable to find the userName to open the userProfie Page for : " + userName);
     }
 
-
     /**
      * Checks if user present in a search page
-     *
+     * 
      * @param userName
      * @return
      */
-    public boolean isUserPresent (String userName){
+    public boolean isUserPresent(String userName)
+    {
 
         try
         {

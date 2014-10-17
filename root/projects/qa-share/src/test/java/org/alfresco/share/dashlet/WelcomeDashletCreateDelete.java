@@ -18,9 +18,6 @@
  */
 package org.alfresco.share.dashlet;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.ShareLink;
 import org.alfresco.po.share.dashlet.SiteWelcomeDashlet;
@@ -37,6 +34,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Welcome Widget Remove test case (7950). 
@@ -101,8 +101,8 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
 
     }
 
-    @Test(groups = { "DataPrepDashlets" })
-    public void dataPrep_Dashlets_7950() throws Exception
+    @Test(groups = { "DataPrepEnterpriseOnly" })
+    public void dataPrep_Dashlets_3288() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -120,7 +120,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "EnterpriseOnly" })
-    public void enterprise40x_7950() throws Exception
+    public void AONE_3288() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameFreeDomain(testName);
@@ -165,7 +165,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
     
     
     @Test(groups = "DataPrepAlfrescoOne")
-    public void dataPrep_ALF_3162() throws Exception
+    public void dataPrep_AONE_15837() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, DOMAIN_FREE);
@@ -188,7 +188,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
     
     
     @Test(groups = "AlfrescoOne")
-    public void ALF_3162()
+    public void AONE_15837()
     {
         // test user (site creator) logs in
         String testName = getTestName();

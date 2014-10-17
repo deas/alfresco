@@ -54,12 +54,12 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7123 - Enterprise40x-7123:Sync File(s) to the Cloud. More than one
+     * 7123 - AONE-11493:Sync File(s) to the Cloud. More than one
      * network 1) Create On-Prem user 2) Create a Cloud User 3) Login to
      * On-Premise and set up Cloud Sync
      */
     @Test(groups = { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7123() throws Exception
+    public void dataPrep_AONE_15415() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -87,7 +87,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7123 - Enterprise40x-7123:Sync File(s) to the Cloud. More than one
+     * 7123 - AONE-11493:Sync File(s) to the Cloud. More than one
      * network 1) Login to Cloud as User1, create a site 2) User1 Invites User2
      * to join the site 3) Login to OP, setup CloudSync with Cloud User2 4)
      * Create a site and upload a file 5) Select the file, select
@@ -97,7 +97,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      * displayed for the file
      */
     @Test(groups = { "CloudSync" })
-    public void ALF_7123() throws Exception
+    public void AONE_15415() throws Exception
     {
 
         try
@@ -154,14 +154,14 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7126 - Enterprise40x-7126:Sync File(s) to the Cloud from Details page.
+     * 7126 - AONE-11496:Sync File(s) to the Cloud from Details page.
      * More than one network 1) Create On-Prem user 2) Create two Cloud Users 3)
      * Login to Cloud as User1, create a site 4) User1 Invites User2 to join the
      * site 5) Login to OP, setup CloudSync with Cloud User2 6) Create a site
      * and upload a file
      */
     @Test(groups = { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7126() throws Exception
+    public void dataPrep_AONE_15418() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName + "1", hybridDomainPremium);
@@ -211,7 +211,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7126 - Enterprise40x-7126:Sync File(s) to the Cloud from Details page.
+     * 7126 - AONE-11496:Sync File(s) to the Cloud from Details page.
      * More than one network 1) Login to OP as User1 2) Open Site Document
      * Library of the site created in pre-reqs, Select the file, select
      * "Sync to Cloud" from DocumentDetailsPage 3) Verify both networks are
@@ -219,7 +219,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      * Site is displayed (Create by Cloud User1 in pre-reqs)
      */
     @Test(groups = { "CloudSync" })
-    public void ALF_7126() throws Exception
+    public void AONE_15418() throws Exception
     {
 
         try
@@ -260,14 +260,14 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7132 - Enterprise40x-7132:Sync File(s) to Cloud. Forgot password option
-     * 8270 - Enterprise40x-8270:Sync File(s) to the Cloud and set new password
+     * 7132 - AONE-11502:Sync File(s) to Cloud. Forgot password option
+     * 8270 - AONE-11503:Sync File(s) to the Cloud and set new password
      * - TODO - Include 8270 steps after Reset Password method implementation.
      * 1) Create On-Prem user 2) Login to On-Premise Create Site and Upload a
      * document
      */
     @Test(groups = { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7132() throws Exception
+    public void dataPrep_AONE_15424() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -297,15 +297,15 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7123 - Enterprise40x-7123:Sync File(s) to the Cloud. More than one
-     * network 8270 - Enterprise40x-8270:Sync File(s) to the Cloud and set new
+     * 7123 - AONE-11493:Sync File(s) to the Cloud. More than one
+     * network 8270 - AONE-11503:Sync File(s) to the Cloud and set new
      * password - TODO - Include 8270 steps after Reset Password method
      * implementation. 1) Login to OP as User1, open Site Document Library page
      * from search. 2) Select "Sync to Cloud" from more options 3) Verify
      * "Forgot Password" link is displayed 4) Verify "Forgot Password" link URL
      */
     @Test(groups = { "CloudSync" })
-    public void ALF_7132() throws Exception
+    public void AONE_15424() throws Exception
     {
 
         try
@@ -337,13 +337,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * Data preperation for Enterprise40x-7176.
+     * Data preperation for AONE-11524.
      *
      * @throws Exception
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7176() throws Exception
+    public void dataPrep_AONE_15465() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -380,7 +380,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7176() throws Exception
+    public void AONE_15465() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -471,13 +471,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * Data preperation for Enterprise40x-7177.
+     * Data preperation for AONE-11525.
      *
      * @throws Exception
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7177() throws Exception
+    public void dataPrep_AONE_15466() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -514,7 +514,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7177() throws Exception
+    public void AONE_15466() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName, hybridDomainPremium);
@@ -602,13 +602,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * Data preperation for Enterprise40x-7157 & 7158.
+     * Data preperation for AONE-11526 & 7158.
      *
      * @throws Exception
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7157() throws Exception
+    public void dataPrep_AONE_15446() throws Exception
     {
         String testName = getTestName();
         String testUser1 = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -646,7 +646,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7157() throws Exception
+    public void AONE_15446() throws Exception
     {
 
         String testName = getTestName();
@@ -710,13 +710,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * Data preperation for Enterprise40x-7159 & 7160.
+     * Data preperation for AONE-11528 & 7160.
      *
      * @throws Exception
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7159() throws Exception
+    public void dataPrep_AONE_15448() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -761,7 +761,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7159() throws Exception
+    public void AONE_15448() throws Exception
     {
 
         String testName = getTestName();
@@ -831,13 +831,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * Data preperation for Enterprise40x-7159 & 7160.
+     * Data preperation for AONE-11528 & 7160.
      *
      * @throws Exception
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7165() throws Exception
+    public void dataPrep_AONE_15454() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -871,7 +871,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7165() throws Exception
+    public void AONE_15454() throws Exception
     {
 
         String testName = getTestName();
@@ -919,13 +919,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7166 - Enterprise40x-7166:Sync a file to 'on-premise' version after
+     * 7166 - AONE-11533:Sync a file to 'on-premise' version after
      * change the property 1) Create On-Prem user 2) Create a Cloud User 3)
      * Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7166() throws Exception
+    public void dataPrep_AONE_15455() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -946,7 +946,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7166 - Enterprise40x-7166:Sync a file to 'on-premise' version after
+     * 7166 - AONE-11533:Sync a file to 'on-premise' version after
      * change the property 1) Login as User (Cloud), create a site 2) Login as
      * OP user, create a site, upload a document 3) Select "Sync to Cloud" from
      * more options 4) Select Cloud Site, Lock on-premise copy check box and
@@ -960,7 +960,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7166() throws Exception
+    public void AONE_15455() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1041,13 +1041,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7167 - Enterprise40x-7167:Sync a file to 'on-premise' version after
+     * 7167 - AONE-11534:Sync a file to 'on-premise' version after
      * change the content 1) Create On-Prem user 2) Create a Cloud User 3) Login
      * to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7167() throws Exception
+    public void dataPrep_AONE_15456() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1068,7 +1068,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7167 - Enterprise40x-7167:Sync a file to 'on-premise' version after
+     * 7167 - AONE-11534:Sync a file to 'on-premise' version after
      * change the content 1) Login as User (Cloud), create a site 2) Login as OP
      * user, create a site, upload a document 3) Select "Sync to Cloud" from
      * more options 4) Select Cloud Site, Lock on-premise copy check box and
@@ -1081,7 +1081,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7167() throws Exception
+    public void AONE_15456() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1159,12 +1159,12 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7168 - Enterprise40x-7168:Editing of the locked file 1) Create On-Prem
+     * 7168 - AONE-11535:Editing of the locked file 1) Create On-Prem
      * user 2) Create a Cloud User 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7168() throws Exception
+    public void dataPrep_AONE_15457() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1185,7 +1185,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7168 - Enterprise40x-7168:Editing of the locked file 1) Login as User
+     * 7168 - AONE-11535:Editing of the locked file 1) Login as User
      * (Cloud), create a site 2) Login as OP user, create a site, upload a
      * document 3) Select "Sync to Cloud" from more options 4) Select Cloud
      * Site, Lock on-premise copy check box and select Sync button 5) Verify the
@@ -1194,7 +1194,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7168() throws Exception
+    public void AONE_15457() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1251,13 +1251,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7169 - Enterprise40x-7169:Removing the lock by unsyncing the file 1)
+     * 7169 - AONE-11536:Removing the lock by unsyncing the file 1)
      * Create On-Prem user 2) Create a Cloud User 3) Login to On-Premise and set
      * up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7169() throws Exception
+    public void dataPrep_AONE_15458() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1278,7 +1278,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7169 - Enterprise40x-7169:Removing the lock by unsyncing the file 1)
+     * 7169 - AONE-11536:Removing the lock by unsyncing the file 1)
      * Login as User (Cloud), create a site 2) Login as OP user, create a site,
      * upload a document 3) Select "Sync to Cloud" from more options 4) Select
      * Cloud Site, Lock on-premise copy check box and select Sync button 5)
@@ -1290,7 +1290,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7169() throws Exception
+    public void AONE_15458() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1356,16 +1356,16 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7171 - Enterprise40x-7171:Creating a new folder in a cloud target
-     * selection window 7172 - Enterprise40x-7172:Creating a new folder in a
+     * 7171 - AONE-11538:Creating a new folder in a cloud target
+     * selection window 7172 - AONE-11539:Creating a new folder in a
      * cloud target selection window under documents folder 7174 -
-     * Enterprise40x-7174:Creating a new folder in cloud and sync a file to it
+     * AONE-11541:Creating a new folder in cloud and sync a file to it
      * 1) Create On-Prem user 2) Create a Cloud User 3) Login to On-Premise and
      * set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7171() throws Exception
+    public void dataPrep_AONE_15460() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1386,10 +1386,10 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7171 - Enterprise40x-7171:Creating a new folder in a cloud target
-     * selection window 7172 - Enterprise40x-7172:Creating a new folder in a
+     * 7171 - AONE-11538:Creating a new folder in a cloud target
+     * selection window 7172 - AONE-11539:Creating a new folder in a
      * cloud target selection window under documents folder 7174 -
-     * Enterprise40x-7174:Creating a new folder in cloud and sync a file to it
+     * AONE-11541:Creating a new folder in cloud and sync a file to it
      * 1) Login as User (Cloud), create a site 2) Login as OP user, create a
      * site, upload a document 3) Select "Sync to Cloud" from more options 4)
      * Select Cloud Site 5) Create a new folder by selecting "New Folder" icon
@@ -1399,7 +1399,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7171() throws Exception
+    public void AONE_15460() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1460,13 +1460,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7170 - Enterprise40x-7170:Checking the history of the synced file 1)
+     * 7170 - AONE-11537:Checking the history of the synced file 1)
      * Create On-Prem user 2) Create a Cloud User 3) Login to On-Premise and set
      * up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7170() throws Exception
+    public void dataPrep_AONE_15459() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1487,7 +1487,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7170 - Enterprise40x-7170:Checking the history of the synced file 1)
+     * 7170 - AONE-11537:Checking the history of the synced file 1)
      * Login as User (Cloud), create a site 2) Login as OP user, create a site,
      * upload a document 3) Select "Sync to Cloud" from more options select the
      * site in cloud and sync 4) Verify the file is synced from document library
@@ -1496,7 +1496,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7170() throws Exception
+    public void AONE_15459() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1551,13 +1551,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7173 - Enterprise40x-7173:Creating a new folder in a cloud target
+     * 7173 - AONE-11540:Creating a new folder in a cloud target
      * selection window under one of the subfolders 1) Create On-Prem user 2)
      * Create a Cloud User 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7173() throws Exception
+    public void dataPrep_AONE_15462() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1578,7 +1578,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7173 - Enterprise40x-7173:Creating a new folder in a cloud target
+     * 7173 - AONE-11540:Creating a new folder in a cloud target
      * selection window under one of the subfolders 1) Login as User (Cloud),
      * create a site 2) Login as OP user, create a site, upload a document 3)
      * Select "Sync to Cloud" from more options 4) Select Cloud Site 5) Create a
@@ -1589,7 +1589,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7173() throws Exception
+    public void AONE_15462() throws Exception
     {
 
         testName = getTestName();
@@ -1653,13 +1653,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7175 - Enterprise40x-7171:Creating a new folder in a cloud target
+     * 7175 - AONE-11538:Creating a new folder in a cloud target
      * selection window 1) Create On-Prem user 2) Create a Cloud User 3) Login
      * to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7175() throws Exception
+    public void dataPrep_AONE_15464() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1680,7 +1680,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7175 - Enterprise40x-7171:Creating a new folder in a cloud target
+     * 7175 - AONE-11538:Creating a new folder in a cloud target
      * selection window 1) Login as User (Cloud), create a site 2) Login as OP
      * user, create a site, create a folder and upload a document within the
      * folder 3) Select the folder and select "Sync to Cloud" from more options
@@ -1692,7 +1692,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7175() throws Exception
+    public void AONE_15464() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1762,14 +1762,14 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7175 - Enterprise40x-7152:Request sync. Changes to file 1) Create On-Prem
+     * 7175 - AONE-11543:Request sync. Changes to file 1) Create On-Prem
      * user 2) Create a Cloud User 3) Login to Cloud, Crate a site 4) Login to
      * On-Premise and set up Cloud Sync 5) Create a site, upload a file and sync
      * the file
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7152() throws Exception
+    public void dataPrep_AONE_15441() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1812,7 +1812,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7152 - Enterprise40x-7152:Request sync. Changes to file 1) Login as OP
+     * 7152 - AONE-11543:Request sync. Changes to file 1) Login as OP
      * user, open site document library from search 2) Select Edit Properties of
      * the file, change description and save 3) Verify the description has been
      * changed 4) Select "Request Sync" link from more options 5) Login to
@@ -1821,7 +1821,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7152() throws Exception
+    public void AONE_15441() throws Exception
     {
 
         testName = getTestName();
@@ -1868,14 +1868,14 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7153 - Enterprise40x-7153:Request sync. changes to folder properties 1)
+     * 7153 - AONE-11544:Request sync. changes to folder properties 1)
      * Create On-Prem user 2) Create a Cloud User 3) Login to Cloud, Crate a
      * site 4) Login to On-Premise and set up Cloud Sync 5) Create a site,
      * create a folder and sync the folder
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7153() throws Exception
+    public void dataPrep_AONE_15442() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -1917,7 +1917,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7153 - Enterprise40x-7153:Request sync. changes to folder properties 1)
+     * 7153 - AONE-11544:Request sync. changes to folder properties 1)
      * Login as OP user, open site document library from search 2) Select Edit
      * Properties of the folder, change description and save 3) Verify the
      * description has been changed 4) Select "Request Sync" link from more
@@ -1926,7 +1926,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7153() throws Exception
+    public void AONE_15442() throws Exception
     {
 
         testName = getTestName();
@@ -1973,13 +1973,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7154 - Enterprise40x-7154:Request sync. Changes to some files in synced
+     * 7154 - AONE-11545:Request sync. Changes to some files in synced
      * folder 1) Create On-Prem user 2) Create a Cloud User 3) Login to Cloud,
      * set up Cloud Sync with the cloud user
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7154() throws Exception
+    public void dataPrep_AONE_15443() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -2000,7 +2000,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7154 - Enterprise40x-7154:Request sync. Changes to some files in synced
+     * 7154 - AONE-11545:Request sync. Changes to some files in synced
      * folder 1) Login to Cloud, create a site, logout 2) Login as OP user,
      * create a site, create a folder, upload 2 files 3) Select "Sync to cloud"
      * option from more options of the folder 4) Select Cloud Site and submit
@@ -2019,7 +2019,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7154() throws Exception
+    public void AONE_15443() throws Exception
     {
 
         testName = getTestName();
@@ -2155,13 +2155,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7155 - Enterprise40x-7155:Request sync. Change some multiple files 1)
+     * 7155 - AONE-11546:Request sync. Change some multiple files 1)
      * Create On-Prem user 2) Create a Cloud User 3) Login to Cloud and set up
      * Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7155() throws Exception
+    public void dataPrep_AONE_15444() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -2181,7 +2181,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7155 - Enterprise40x-7155:Request sync. Change some multiple files 1)
+     * 7155 - AONE-11546:Request sync. Change some multiple files 1)
      * Login as OP user, Create site and upload two documents 2) Select both
      * files (Select All) and select Sync to cloud from "Selected Items"
      * dropdown 3) Verify both file have been synced (by checking Sync icon) 4)
@@ -2193,7 +2193,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
      */
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7155() throws Exception
+    public void AONE_15444() throws Exception
     {
         testName = getTestName();
         String user1 = getUserNameForDomain(testName, hybridDomainPremium);
@@ -2295,13 +2295,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7144 - Enterprise40x-7144:Unsync file using Unsync button from sync info
+     * 7144 - AONE-11548:Unsync file using Unsync button from sync info
      * pop up. 1) Create On-Prem user 2) Create a Cloud User 3) Create site on
      * cloud user. 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7144() throws Exception
+    public void dataPrep_AONE_15434() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2329,7 +2329,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7144() throws Exception
+    public void AONE_15434() throws Exception
     {
 
         String testName = getTestName();
@@ -2369,13 +2369,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7145 - Enterprise40x-7145:Unsync folder using Unsync button from sync
+     * 7145 - AONE-11549:Unsync folder using Unsync button from sync
      * info pop up. 1) Create On-Prem user 2) Create a Cloud User 3) Create site
      * on cloud user. 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7145() throws Exception
+    public void dataPrep_AONE_15435() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2403,7 +2403,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7145() throws Exception
+    public void AONE_15435() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2438,13 +2438,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7163 - Enterprise40x-7163:Unsync a child file/folder of parent synced
+     * 7163 - AONE-11550:Unsync a child file/folder of parent synced
      * folder. 1) Create On-Prem user 2) Create a Cloud User 3) Create site on
      * cloud user. 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7163() throws Exception
+    public void dataPrep_AONE_15452() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2471,7 +2471,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7163() throws Exception
+    public void AONE_15452() throws Exception
     {
 
         String testName = getTestName();
@@ -2518,13 +2518,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7164 - Enterprise40x-7164:Unsync a child file/folder of parent synced
+     * 7164 - AONE-11551:Unsync a child file/folder of parent synced
      * folder. 1) Create On-Prem user 2) Create a Cloud User 3) Create site on
      * cloud user. 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7164() throws Exception
+    public void dataPrep_AONE_15453() throws Exception
     {
         String testName = getTestName();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2557,7 +2557,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7164() throws Exception
+    public void AONE_15453() throws Exception
     {
 
         String testName = getTestName();
@@ -2608,13 +2608,13 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7182 - Enterprise40x-7182:Unsync file by User-2(as Collabrator) to site.
+     * 7182 - AONE-11552:Unsync file by User-2(as Collabrator) to site.
      * 1) Create On-Prem user 2) Create a Cloud User 3) Create site on cloud
      * user. 3) Login to On-Premise and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7182() throws Exception
+    public void dataPrep_AONE_15471() throws Exception
     {
         String testName = getTestName().toLowerCase();
         String testUser1 = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2655,7 +2655,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
 
     @Test(groups =
             { "CloudSync" })
-    public void ALF_7182() throws Exception
+    public void AONE_15471() throws Exception
     {
 
         String testName = getTestName().toLowerCase();
@@ -2696,14 +2696,14 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     /**
-     * 7184 - Enterprise40x-7184:Unsync file using Unsync button from sync info
+     * 7184 - AONE-11555:Unsync file using Unsync button from sync info
      * pop up without deleting the file from cloud. 1) Create On-Prem user 2)
      * Create a Cloud User 3) Create site on cloud user. 3) Login to On-Premise
      * and set up Cloud Sync
      */
     @Test(groups =
             { "DataPrepCloudSync4", "DataPrepCloudSync" })
-    public void dataPrep_ALF_7184() throws Exception
+    public void dataPrep_AONE_15473() throws Exception
     {
         String testName = getTestName().toLowerCase();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);
@@ -2730,7 +2730,7 @@ public class CloudSyncAccessTest4 extends AbstractCloudSyncTest
     }
 
     @Test(groups = { "CloudSync" })
-    public void ALF_7184() throws Exception
+    public void AONE_15473() throws Exception
     {
         String testName = getTestName().toLowerCase();
         String testUser = getUserNameForDomain(testName + "-1", hybridDomainPremium);

@@ -62,7 +62,7 @@ public class ShareRefreshInheritRules extends AbstractUtils
 
     }
 
-    @BeforeMethod(groups = { "ShareRefreshInheritRules" })
+    @BeforeMethod(groups = { "AlfrescoOne" })
     public void prepare() throws Exception
     {
         // login as created user
@@ -78,7 +78,7 @@ public class ShareRefreshInheritRules extends AbstractUtils
 
     }
 
-    @AfterMethod(groups = { "ShareRefreshInheritRules" })
+    @AfterMethod(groups = { "AlfrescoOne" })
     public void quit() throws Exception
     {
         // logout as created user
@@ -100,8 +100,8 @@ public class ShareRefreshInheritRules extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshInheritRules" })
-    public void ALF_10201() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13990() throws Exception
     {
     	// create site
         String testName = getTestName();
@@ -121,7 +121,7 @@ public class ShareRefreshInheritRules extends AbstractUtils
         ShareUserSitePage.createFolder(drone, subFolderName, "subfolder").render();
 
         // create the rule for parent folder applicable to subfolders
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
 
         FolderRulesPage folderRulesPage = docPage.getFileDirectoryInfo(parentFolderName).selectManageRules().render();
         Assert.assertTrue(folderRulesPage.isPageCorrect(parentFolderName));
@@ -180,8 +180,8 @@ public class ShareRefreshInheritRules extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshInheritRules" })
-    public void ALF_10202() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13991() throws Exception
     {
     	// create site
         String testName = getTestName();
@@ -201,7 +201,7 @@ public class ShareRefreshInheritRules extends AbstractUtils
         ShareUserSitePage.createFolder(drone, subFolderName, "subfolder").render();
 
         // create the rule for parent folder not applicable to subfolders
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone).render();
         FolderRulesPage folderRulesPage = docPage.getFileDirectoryInfo(parentFolderName).selectManageRules().render();
         Assert.assertTrue(folderRulesPage.isPageCorrect(parentFolderName));
 
@@ -250,13 +250,13 @@ public class ShareRefreshInheritRules extends AbstractUtils
         ShareUserSitePage.uploadFile(drone, sampleFile);
 
         // verify the rule is not applied to subfolder - file is not copied to copySite1
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
 
         // docPage = siteDashboardPage.getSiteNav().selectSiteDocumentLibrary().render();
         Assert.assertFalse(docPage.isFileVisible(sampleFile.getName()));
 
         // click on "Don't Inherit Rules"
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         docPage.selectFolder(parentFolderName).render();
 
         subFolderRulesPage = docPage.getFileDirectoryInfo(subFolderName).selectManageRules().render();
@@ -269,14 +269,14 @@ public class ShareRefreshInheritRules extends AbstractUtils
         Assert.assertEquals(subFolderRulesPage.getInheritRulesText(), "Inherit Rules");
 
         // upload file again
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         docPage.selectFolder(parentFolderName).render();
         docPage.selectFolder(subFolderName).render();
         File anotherFile = SiteUtil.prepareFile();
         ShareUserSitePage.uploadFile(drone, anotherFile);
 
         // verify the rule is not applied to subfolder - file is not copied to copySite1
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         Assert.assertFalse(docPage.isFileVisible(anotherFile.getName()));
     }
 
@@ -286,8 +286,8 @@ public class ShareRefreshInheritRules extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshInheritRules" })
-    public void ALF_10203() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13992() throws Exception
     {
     	// create site
         String testName = getTestName();
@@ -307,7 +307,7 @@ public class ShareRefreshInheritRules extends AbstractUtils
         ShareUserSitePage.createFolder(drone, subFolderName, "subfolder").render();
 
         // create the rule for parent folder not applicable to subfolders
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         FolderRulesPage folderRulesPage = docPage.getFileDirectoryInfo(parentFolderName).selectManageRules().render();
         Assert.assertTrue(folderRulesPage.isPageCorrect(parentFolderName));
 
@@ -358,7 +358,7 @@ public class ShareRefreshInheritRules extends AbstractUtils
         ShareUserSitePage.uploadFile(drone, sampleFile);
 
         // verify the rule is not applied to subfolder
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         Assert.assertFalse(docPage.isFileVisible(sampleFile.getName()));
 
         // click on "Don't Inherit Rules"
@@ -374,14 +374,14 @@ public class ShareRefreshInheritRules extends AbstractUtils
         Assert.assertEquals(subFolderRulesPage.getInheritRulesText(), "Inherit Rules");
 
         // upload file again
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         docPage.selectFolder(parentFolderName).render();
         docPage.selectFolder(subFolderName).render();
         File anotherFile = SiteUtil.prepareFile();
         ShareUserSitePage.uploadFile(drone, anotherFile);
 
         // verify the rule is applied to subfolder
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         Assert.assertTrue(docPage.isFileVisible(anotherFile.getName()));
     }
 
@@ -391,8 +391,8 @@ public class ShareRefreshInheritRules extends AbstractUtils
      * @throws Exception
      */
 
-    @Test(groups = { "ShareRefreshInheritRules" })
-    public void ALF_10204() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13993() throws Exception
     {
     	// create site
         String testName = getTestName();
@@ -478,18 +478,18 @@ public class ShareRefreshInheritRules extends AbstractUtils
         Assert.assertEquals(subFolderRulesPage.getInheritRulesText(), "Don't Inherit Rules");
 
         // upload any document to subfolder
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         docPage.selectFolder(parentFolderName).render();
         docPage.selectFolder(subFolderName).render();
         File sampleFile = SiteUtil.prepareFile();
         ShareUserSitePage.uploadFile(drone, sampleFile);
 
         // verify the rule is not applied to subfolder
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         Assert.assertFalse(docPage.isFileVisible(sampleFile.getName()));
 
         // click on "Don't Inherit Rules"
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         docPage.selectFolder(parentFolderName).render();
 
         subFolderRulesPage = docPage.getFileDirectoryInfo(subFolderName).selectManageRules().render();
@@ -499,17 +499,18 @@ public class ShareRefreshInheritRules extends AbstractUtils
 
         // toggle
         subFolderRulesPage = subFolderRulesPage.toggleInheritRules().render();
+        webDriverWait(drone, 3000);
         Assert.assertEquals(subFolderRulesPage.getInheritRulesText(), "Inherit Rules");
 
         // upload file again
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         docPage.selectFolder(parentFolderName).render();
         docPage.selectFolder(subFolderName).render();
         File anotherFile = SiteUtil.prepareFile();
         ShareUserSitePage.uploadFile(drone, anotherFile);
 
         // verify the rule is applied to subfolder
-        docPage = ShareUser.openSitesDocumentLibrary(drone, siteName);
+        docPage = ShareUser.openDocumentLibrary(drone);
         Assert.assertTrue(docPage.isFileVisible(anotherFile.getName()));
 
     }
@@ -519,8 +520,8 @@ public class ShareRefreshInheritRules extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "ShareRefreshInheritRules" })
-    public void ALF_2546() throws Exception
+    @Test(groups = { "AlfrescoOne" })
+    public void AONE_13994() throws Exception
     {
     	// create site
         String testName = getTestName();

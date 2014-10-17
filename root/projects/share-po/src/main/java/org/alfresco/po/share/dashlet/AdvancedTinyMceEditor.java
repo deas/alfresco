@@ -26,6 +26,7 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 
 /**
@@ -42,6 +43,7 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
     private static final By ANCHOR_CSS = By.cssSelector("i.mce-i-anchor");
     private static final By IMAGE_LINK_CSS = By.cssSelector("i.mce-i-image");
     private static final By HTML_CODE_CSS = By.cssSelector("i.mce-i-code");
+    @SuppressWarnings("unused")
     private String mainWindow = null;
     
     public AdvancedTinyMceEditor(WebDrone drone)
@@ -60,8 +62,7 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
         try
         {
             drone.findAndWait(LINK_CSS).click();
-            switchDroneToNewWindowOfListOfWindows(drone.getValue("page.insert.edit.link.title"));
-            return new InsertOrEditLinkPage(drone, mainWindow);
+            return new InsertOrEditLinkPage(drone, drone.findFirstDisplayedElement(By.cssSelector("div.mce-reset")));
         }
         catch (TimeoutException te)
         {
@@ -95,12 +96,15 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
         try
         {
             drone.findAndWait(ANCHOR_CSS).click();
-            switchDroneToNewWindowOfListOfWindows(drone.getValue("page.insert.edit.anchor.title"));
-            return new InsertOrEditAnchorPage(drone, mainWindow);
+            return new InsertOrEditAnchorPage(drone, drone.findFirstDisplayedElement(By.cssSelector("div.mce-reset")));
         }
         catch (TimeoutException te)
         {
             throw new PageOperationException("Exceeded time to find the the Insert/Edit Anchor Link css on SiteNoticeTinyMce:", te);
+        }
+        catch (NoSuchElementException nse)
+        {
+            throw new PageOperationException("Unable to find Anchor dialog", nse);
         }
     }
     
@@ -114,8 +118,7 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
         try
         {
             drone.findAndWait(IMAGE_LINK_CSS).click();
-            switchDroneToNewWindowOfListOfWindows(drone.getValue("page.insert.edit.image.title"));
-            return new InsertOrEditImagePage(drone, mainWindow);
+            return new InsertOrEditImagePage(drone, drone.findFirstDisplayedElement(By.cssSelector("div.mce-reset")));
         }
         catch (TimeoutException te)
         {
@@ -133,8 +136,8 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
         try
         {
             drone.findAndWait(HTML_CODE_CSS).click();
-            switchDroneToNewWindowOfListOfWindows(drone.getValue("page.html.source.editor.title"));
-            return new HtmlSourceEditorPage(drone, mainWindow);
+//            switchDroneToNewWindowOfListOfWindows(drone.getValue("page.html.source.editor.title"));
+            return new HtmlSourceEditorPage(drone, drone.findFirstDisplayedElement(By.cssSelector("div.mce-reset")));
         }
         catch (TimeoutException te)
         {
@@ -142,6 +145,7 @@ public class AdvancedTinyMceEditor extends TinyMceEditor
         }
     }
     
+    @SuppressWarnings("unused")
     private void switchDroneToNewWindowOfListOfWindows(String windowName)
     {
         Set<String> windowHandles = drone.getWindowHandles();

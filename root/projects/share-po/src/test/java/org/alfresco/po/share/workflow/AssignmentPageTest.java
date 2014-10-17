@@ -103,6 +103,7 @@ public class AssignmentPageTest extends AbstractTest
     {
         SiteUtil.deleteSite(drone, siteName);
         disconnectCloudSync(drone);
+        drone.refresh();
         SharePage sharePage = drone.getCurrentPage().render();
         myWorkFlowsPage = sharePage.getNav().selectWorkFlowsIHaveStarted().render();
         myWorkFlowsPage.render();
@@ -264,4 +265,11 @@ public class AssignmentPageTest extends AbstractTest
         Assert.assertEquals(historyList.get(0).getComment(), "");
     }
     // Workflow1 is created and currently the user is on WorkFlowDetailsPage
+    
+    @Test(groups = "Hybrid", dependsOnMethods = "getWorkFlowHistoryList")
+    public void isDeleteWorkFlowButtonDisplayed()
+    {
+    	Assert.assertTrue(workFlowDetailsPage.isDeleteWorkFlowButtonDisplayed());
+    }
+    
 }

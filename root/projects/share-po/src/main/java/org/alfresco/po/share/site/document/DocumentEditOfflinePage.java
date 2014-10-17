@@ -148,7 +148,7 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
      * 
      * @return
      */
-    public HtmlPage selectViewOriginalDocument()
+    public DocumentDetailsPage selectViewOriginalDocument()
     {
         try
         {
@@ -159,7 +159,7 @@ public class DocumentEditOfflinePage extends DocumentDetailsPage
         {
             throw new PageOperationException("Unable to select View Original Document ", e);
         }
-        return FactorySharePage.resolvePage(drone);
+        return new DocumentDetailsPage(drone);
     }
 
     /**

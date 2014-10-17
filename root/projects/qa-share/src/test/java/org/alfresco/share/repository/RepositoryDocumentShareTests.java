@@ -19,16 +19,9 @@
 
 package org.alfresco.share.repository;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-import java.io.File;
-
 import org.alfresco.po.share.enums.ViewType;
 import org.alfresco.po.share.site.document.DocumentDetailsPage;
 import org.alfresco.po.share.site.document.ShareLinkPage;
-import org.alfresco.po.share.site.document.ViewPublicLinkPage;
 import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.ShareUser;
 import org.alfresco.share.util.ShareUserRepositoryPage;
@@ -40,9 +33,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import java.io.File;
+
+import static org.testng.Assert.assertFalse;
+
 /**
  * Repository Document Share Tests
- * 
+ *
  * @author Jamie Allison
  * @since 4.3
  */
@@ -64,7 +61,7 @@ public class RepositoryDocumentShareTests extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_8659() throws Exception
+    public void dataPrep_AONE_3503() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -77,138 +74,7 @@ public class RepositoryDocumentShareTests extends AbstractUtils
     }
 
     @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8659() throws Exception
-    {
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-        String subFolderName = folderName + System.currentTimeMillis();
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + ".txt";
-        File file1 = newFile(fileName1, fileName1);
-
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUserRepositoryPage.openRepository(drone);
-        
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName).render();
-        ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
-        
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);        
-        ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
-
-        ShareUserRepositoryPage.selectView(drone, ViewType.DETAILED_VIEW);
-        ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
-
-        assertTrue(shareLinkPage.isEmailLinkPresent());
-        assertTrue(shareLinkPage.isFaceBookLinkPresent());
-        assertTrue(shareLinkPage.isTwitterLinkPresent());
-        assertTrue(shareLinkPage.isGooglePlusLinkPresent());
-
-        ViewPublicLinkPage viewPublicLinkPage = shareLinkPage.clickViewButton().render();
-        assertEquals(viewPublicLinkPage.getContentTitle(), fileName1);
-    }
-
-    @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_8660() throws Exception
-    {
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUserRepositoryPage.openRepositorySimpleView(drone);
-
-        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
-    }
-
-    @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8660() throws Exception
-    {
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-        String subFolderName = folderName + System.currentTimeMillis();
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + ".txt";
-        File file1 = newFile(fileName1, fileName1);
-
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUserRepositoryPage.openRepositoryGalleryView(drone);
-
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
-        ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
-        ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
-
-        ShareUserRepositoryPage.selectView(drone, ViewType.GALLERY_VIEW);
-        ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
-
-        assertTrue(shareLinkPage.isEmailLinkPresent());
-        assertTrue(shareLinkPage.isFaceBookLinkPresent());
-        assertTrue(shareLinkPage.isTwitterLinkPresent());
-        assertTrue(shareLinkPage.isGooglePlusLinkPresent());
-
-        ViewPublicLinkPage viewPublicLinkPage = shareLinkPage.clickViewButton().render();
-        assertEquals(viewPublicLinkPage.getContentTitle(), fileName1);
-    }
-
-    @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_8661() throws Exception
-    {
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUserRepositoryPage.openRepositorySimpleView(drone);
-
-        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
-    }
-
-    @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8661() throws Exception
-    {
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-        String subFolderName = folderName + System.currentTimeMillis();
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + ".txt";
-        File file1 = newFile(fileName1, fileName1);
-
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUserRepositoryPage.openRepositorySimpleView(drone);
-
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
-        ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
-        ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
-        ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
-
-        DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName1);
-
-        ShareLinkPage shareLinkPage = detailsPage.clickShareLink().render();
-
-        assertTrue(shareLinkPage.isEmailLinkPresent());
-        assertTrue(shareLinkPage.isFaceBookLinkPresent());
-        assertTrue(shareLinkPage.isTwitterLinkPresent());
-        assertTrue(shareLinkPage.isGooglePlusLinkPresent());
-
-        ViewPublicLinkPage viewPublicLinkPage = shareLinkPage.clickViewButton().render();
-        assertEquals(viewPublicLinkPage.getContentTitle(), fileName1);
-    }
-
-    @Test(groups = { "DataPrepRepository", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_8662() throws Exception
-    {
-        String testName = getTestName();
-        String folderName = getFolderName(testName);
-
-        ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        ShareUserRepositoryPage.openRepositorySimpleView(drone);
-
-        ShareUserRepositoryPage.createFolderInRepository(drone, folderName, folderName);
-    }
-
-    @Test(groups = "EnterpriseOnly")
-    public void Enterprise40x_8662() throws Exception
+    public void AONE_3503() throws Exception
     {
         String testName = getTestName();
         String folderName = getFolderName(testName);
@@ -223,16 +89,16 @@ public class RepositoryDocumentShareTests extends AbstractUtils
         ShareUser.login(drone, ADMIN_USERNAME, ADMIN_PASSWORD);
 
         ShareUserRepositoryPage.openRepositoryDetailedView(drone);
-        
+
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName);
         ShareUserRepositoryPage.createFolderInRepository(drone, subFolderName, subFolderName);
-        
+
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
-        
+
         ShareUserRepositoryPage.uploadFileInRepository(drone, file1);
         ShareUserRepositoryPage.uploadFileInRepository(drone, file2);
         ShareUserRepositoryPage.uploadFileInRepository(drone, file3);
-        
+
         ShareUserRepositoryPage.selectView(drone, ViewType.DETAILED_VIEW);
 
         ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
@@ -241,19 +107,19 @@ public class RepositoryDocumentShareTests extends AbstractUtils
 
         ShareLinkPage shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).clickShareLink().render();
         shareLinkPage.clickOnUnShareButton().render();
-        assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).isFileShared());
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName1).isFileShared(), "File[" + fileName1 + "] shared after UnShare Button clicked.");
 
         ShareUserRepositoryPage.openRepositoryGalleryView(drone);
         ShareUserRepositoryPage.navigateToFolderInRepository(drone, REPO + SLASH + folderName + SLASH + subFolderName);
 
         shareLinkPage = ShareUserSitePage.getFileDirectoryInfo(drone, fileName2).clickShareLink().render();
         shareLinkPage.clickOnUnShareButton().render();
-        assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName2).isFileShared());
+        assertFalse(ShareUserSitePage.getFileDirectoryInfo(drone, fileName2).isFileShared(), "File[" + fileName2 + "] shared after UnShare Button clicked.");
 
         DocumentDetailsPage detailsPage = ShareUser.openDocumentDetailPage(drone, fileName3);
 
         shareLinkPage = detailsPage.clickShareLink().render();
         detailsPage = shareLinkPage.clickOnUnShareButton().render();
-        assertFalse(detailsPage.isFileShared());
+        assertFalse(detailsPage.isFileShared(), "File[" + fileName3 + "] shared after UnShare Button clicked.");
     }
 }

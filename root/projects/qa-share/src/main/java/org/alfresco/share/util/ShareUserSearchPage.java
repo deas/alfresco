@@ -1,24 +1,16 @@
 package org.alfresco.share.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import org.alfresco.po.share.SharePage;
+import org.alfresco.po.share.search.*;
 import org.alfresco.share.search.SearchKeys;
 import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
-import org.alfresco.po.share.SharePage;
-import org.alfresco.po.share.search.AdvanceSearchCRMPage;
-import org.alfresco.po.share.search.AdvanceSearchContentPage;
-import org.alfresco.po.share.search.AdvanceSearchFolderPage;
-import org.alfresco.po.share.search.AdvanceSearchPage;
-import org.alfresco.po.share.search.FacetedSearchPage;
-import org.alfresco.po.share.search.FacetedSearchResult;
-import org.alfresco.po.share.search.SearchResult;
-import org.alfresco.po.share.search.SearchResultsPage;
-import org.alfresco.po.share.search.SortType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class ShareUserSearchPage extends AbstractUtils
 {
@@ -37,7 +29,7 @@ public class ShareUserSearchPage extends AbstractUtils
      * 
      * @param drone WebDriver Instance
      * @param searchTerm String
-     * @param searchAllSites Boolean <tt>false</tt> indicates search is restricted to opened site,: When <tt>true</tt>, opens dashboard before search, so as to
+     * @param isSiteDashBoard Boolean <tt>false</tt> indicates search is restricted to opened site,: When <tt>true</tt>, opens dashboard before search, so as to
      * search all sites      
      * @return searchResults
      */
@@ -52,11 +44,12 @@ public class ShareUserSearchPage extends AbstractUtils
         }
 
         // faceted search replace
-        SharePage facetedSearchResult = sharePage.getSearch().search(searchTerm).render();
-        FacetedSearchPage facetedsearchResult = facetedSearchResult.render(refreshDuration);
+        SearchBox searchBox = sharePage.getSearch();
+        FacetedSearchPage facetedSearchPage =  searchBox.search(searchTerm).render();
+        facetedSearchPage.render(refreshDuration);
 
         // Get Results
-        return facetedsearchResult.getResults();
+        return facetedSearchPage.getResults();
 
     }
 
@@ -288,12 +281,12 @@ public class ShareUserSearchPage extends AbstractUtils
      * @param searchType String Type of search to be performed during retry
      * @param searchTerm String Term used in the search box
      * @param entryToBeFound String entry to look for in the search results
-     * @param entryVisible Boolean <tt>true</tt> if we are expecting the entryToBeFound to be visible in FacetedsearchResults
+     * @param isEntryVisible Boolean <tt>true</tt> if we are expecting the entryToBeFound to be visible in FacetedsearchResults
      * @return <tt>true</tt> if element is found when expected, <tt>false</tt> if found when not expected
      */
     public static Boolean checkFacetedSearchResultsWithRetry(WebDrone driver, String searchType, String searchTerm, String entryToBeFound, Boolean isEntryVisible)
     {
-        Boolean found = false;
+        Boolean found;
         Boolean resultAsExpected = false;
 
         // Code to repeat search until the element is found or Timeout is hit
@@ -337,10 +330,9 @@ public class ShareUserSearchPage extends AbstractUtils
      * @throws Exception
      * @throws PageException
      */
-    public static List<SearchResult> advanceSearch(WebDrone driver, List<String> info, Map<String, String> keyWordSearchText) throws PageException,
-            Exception
+    public static List<SearchResult> advanceSearch(WebDrone driver, List<String> info, Map<String, String> keyWordSearchText) throws Exception
     {
-        FacetedSearchPage searchResults = null;
+        FacetedSearchPage searchResults;
         // loadAdvanceSearch method will return content search page or folder
         // TODO: subs: Why is this render necessary again?
         AdvanceSearchPage advanceSearchPage = navigateToAdvanceSearch(driver, info).render();
@@ -378,6 +370,7 @@ public class ShareUserSearchPage extends AbstractUtils
             advanceSearchPage.inputModifier(keyWordSearchText.get(SearchKeys.MODIFIER.getSearchKeys()));
         }
         searchResults = advanceSearchPage.clickSearch().render(refreshDuration);
+        driver.waitForPageLoad(5);
         List<SearchResult> searchOutput = searchResults.getResults();
 
         return searchOutput;
@@ -450,7 +443,7 @@ public class ShareUserSearchPage extends AbstractUtils
         {
             // Open User DashBoard
             // TODO: Subs: Is this render necessary since the page is already rendered.
-            sharePage = ShareUser.openUserDashboard(driver);
+            ShareUser.openUserDashboard(driver);
         }
         sharePage = ShareUser.getSharePage(driver);
         AdvanceSearchContentPage contentSearchPage = sharePage.getNav().selectAdvanceSearch().render();
@@ -460,8 +453,7 @@ public class ShareUserSearchPage extends AbstractUtils
         }
         else
         {
-            AdvanceSearchFolderPage folderSearchPage = contentSearchPage.searchLink(SearchKeys.FOLDERS.getSearchKeys()).render();
-            return (folderSearchPage);
+            return (contentSearchPage.searchLink(SearchKeys.FOLDERS.getSearchKeys()).<AdvanceSearchFolderPage>render());
         }
 
     }

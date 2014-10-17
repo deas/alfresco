@@ -1,22 +1,15 @@
 package org.alfresco.share.search;
 
-import static org.alfresco.po.share.site.document.ContentType.PLAINTEXT;
-
 import org.alfresco.po.share.DashBoardPage;
 import org.alfresco.po.share.RepositoryPage;
+import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.ShareUtil;
 import org.alfresco.po.share.search.FacetedSearchPage;
+import org.alfresco.po.share.search.SearchBox;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.ManagePermissionsPage;
-import org.alfresco.po.share.workflow.StartWorkFlowPage;
-import org.alfresco.share.util.AbstractUtils;
-import org.alfresco.share.util.OpCloudTestContext;
-import org.alfresco.share.util.ShareUser;
-import org.alfresco.share.util.ShareUserRepositoryPage;
-import org.alfresco.share.util.ShareUserSearchPage;
-import org.alfresco.share.util.ShareUserSitePage;
-import org.alfresco.share.util.SiteUtil;
+import org.alfresco.share.util.*;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,8 +35,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     /** Constants */
     
     private static final String fileStem = "-fs-test1.txt";
-    
-    private OpCloudTestContext testContext;
+
     private DashBoardPage dashBoardPage;
     private FacetedSearchPage facetedSearchPage;    
     
@@ -64,7 +56,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         trace("Starting setup");
 
         super.setup();
-        this.testContext = new OpCloudTestContext(this);
+        OpCloudTestContext testContext = new OpCloudTestContext(this);
 
         // Compose user and site names
         String testName = "FacetedSearch" + testContext.getRunId();
@@ -88,14 +80,14 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
 
         // Create site
-        ShareUser.createSite(drone, this.siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
+       ShareUser.createSite(drone, this.siteName, AbstractUtils.SITE_VISIBILITY_PUBLIC);
 
         // Upload 5 Files
         for (int i=0; i < 5; i++)
         {
             String fileInfo =  (char)(i+97) + fileStem;
             ContentDetails contentDetails = new ContentDetails(fileInfo, fileInfo, fileInfo, fileInfo);
-            ShareUser.createContent(drone, contentDetails, PLAINTEXT);
+            ShareUser.createContent(drone, contentDetails, ContentType.PLAINTEXT);
         }
 
         // Navigate to the faceted search page
@@ -115,8 +107,8 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     Verify only 'Down load' link and 'View in Browser' links are displayed for a file under action for different user 
     */
     
-    @Test(groups = "alfresco-one")
-    public void AONE_16054() throws Exception
+    @Test(groups = { "alfresco-one", "NonGrid" })
+    public void ALF_3251() throws Exception
     {
         trace("Starting searchAndClickDownloadActionTest");        
         
@@ -124,8 +116,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String actionName2 = "View In Browser";
         String actionName3 = "Edit Offline";
         String actionName4 = "Delete Document";
-        String actionName5 = "Manage Permissions";        
-
+        String actionName5 = "Manage Permissions";
         
         String name = ("b-fs-test1.txt");
         String name1 = ("c-fs-test1.txt");
@@ -135,6 +126,19 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         // Login as user1
         userLogin1();
+
+        drone.deleteCookies();
+        drone.refresh();
+        drone.getCurrentPage().render();
+        userLogin1();
+
+        //Navigate to faceted search page
+        SharePage sharePage = drone.getCurrentPage().render();
+        SearchBox searchBox = sharePage.getSearch();
+        facetedSearchPage =  searchBox.search(name).render();
+
+        // Do a search for filename
+        doretrySearch(name);
 
         // Do a search 
         doretrySearch(name);
@@ -146,7 +150,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String url = drone.getCurrentUrl();
         
         //Check Actions are displayed on Facet results page for folder
-        Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));        
+        Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));
         
         // Click the first action        
         facetedSearchPage.getResultByName(name).getActions().clickActionByName(actionName1);
@@ -155,9 +159,11 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         String newUrl = drone.getCurrentUrl();
 
         // We should be on the faceted search page
-        Assert.assertEquals(url, newUrl, "After clicking on action, the url should not have changed");       
+        Assert.assertEquals(url, newUrl, "After clicking on action, the url should not have changed");
                 
         // Navigate back to the faceted search page
+        drone.navigateTo(url);
+        drone.getCurrentPage().render();
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 
         // Logout
@@ -188,7 +194,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void AONE_16055() throws Exception
+    public void ALF_3252() throws Exception
     {
         trace("Starting searchAndClickViewInBrowserActionTest");      
                 
@@ -200,7 +206,17 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         // Login as user2
         userLogin2();
 
-        // Do a search 
+        drone.deleteCookies();
+        drone.refresh();
+        drone.getCurrentPage().render();
+        userLogin2();
+
+        //Navigate to faceted search page
+        SharePage sharePage = drone.getCurrentPage().render();
+        SearchBox searchBox = sharePage.getSearch();
+        facetedSearchPage =  searchBox.search("test1.txt").render();
+
+        // Do a search for filename
         doretrySearch("test1.txt");
 
         // Check the results
@@ -220,7 +236,9 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         // We should be on view in browser page
         Assert.assertNotSame(url, newUrl, "After clicking on action the url should have changed");           
-                
+
+        drone.navigateTo(url);
+
         // Logout
         ShareUtil.logout(drone);       
        
@@ -234,7 +252,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void AONE_16056() throws Exception
+    public void ALF_3253() throws Exception
     {
         trace("Starting searchAndClickEditOfflineActionTest");      
                 
@@ -284,7 +302,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void AONE_16057() throws Exception
+    public void ALF_3254() throws Exception
     {
         trace("Starting searchAndClickDeleteDocumentActionTest");      
                 
@@ -308,7 +326,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName4));        
         
         // Click the first action        
-        facetedSearchPage.getResultByName(name).getActions().clickActionByNameAndDialogByButtonName(actionName4,"No");
+        facetedSearchPage.getResultByName(name).getActions().clickActionByNameAndDialogByButtonName(actionName4,"Cancel");
         
         //Verify name1 is present in search page
         //Assert.assertNotNull(facetedSearchPage.getResultByName(name));
@@ -321,7 +339,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         doretrySearch(name);
 
         // Click the first action        
-        facetedSearchPage.getResultByName(name).getActions().clickActionByNameAndDialogByButtonName(actionName4,"Yes");
+        facetedSearchPage.getResultByName(name).getActions().clickActionByNameAndDialogByButtonName(actionName4,"OK");
         
         //Verify name is not present in search page
         Assert.assertFalse(ShareUserSearchPage.isSearchItemInFacetSearchPage(drone, name));
@@ -349,7 +367,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void AONE_16058() throws Exception
+    public void ALF_3255() throws Exception
     {
         trace("Starting searchAndClickManagePermissionsActionTest");      
                 
@@ -372,7 +390,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         // Click the first action        
         facetedSearchPage.getResultByName(name1).getActions().clickActionByName(actionName5);
         
-        //We should be on Manage Permissions page
+        //We should be on the faceted search page
         ManagePermissionsPage managePermissionsPage = (ManagePermissionsPage) drone.getCurrentPage();
         Assert.assertTrue(managePermissionsPage.getTitle().contains("Manage Permissions"));
         
@@ -390,11 +408,11 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     */
     
     @Test(groups = "alfresco-one")
-    public void AONE_16059() throws Exception
+    public void ALF_3256() throws Exception
     {
         trace("Starting searchAndVerifyFolderActionsTest");     
             
-        String folderName = "Folder1";              
+        String folderName = "Folder1" + getRandomString(5);
         String actionName1 = "View Details";
         String actionName2 = "Manage Rules";
         String actionName3 = "Delete Folder";
@@ -405,13 +423,21 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         ShareUser.openSiteDocumentLibraryFromSearch(drone, siteName);        
         ShareUserSitePage.createFolder(drone, folderName, null);
-        
-        //Navigate back to the faceted search page
-        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-        
-        //Do retry search        
-        doretrySearch(folderName);       
-                 
+
+        drone.deleteCookies();
+        drone.refresh();
+        drone.getCurrentPage().render();
+        userLogin1();
+
+        //Navigate to faceted search page
+        SharePage sharePage = drone.getCurrentPage().render();
+        SearchBox searchBox = sharePage.getSearch();
+        facetedSearchPage =  searchBox.search(folderName).render();
+
+        // Do a search for filename
+        doretrySearch(folderName);
+
+
         //Check Actions are displayed on Facet results page for folder
         Assert.assertTrue(facetedSearchPage.getResultByName(folderName).getActions().hasActionByName(actionName1));        
         Assert.assertTrue(facetedSearchPage.getResultByName(folderName).getActions().hasActionByName(actionName2));
@@ -432,7 +458,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     // This test fails since Jira id ACE-1656 has been raised 
     
     @Test(groups = "Enterprise-only")
-    public void AONE_16048() throws Exception
+    public void ALF_3257() throws Exception
     {
         trace("Starting searchForContentInUserHomeFolderTest");        
         
@@ -476,13 +502,20 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         //Create content in folder path in User Home
         ShareUserRepositoryPage.createContentInFolder(drone, contentDetails, ContentType.PLAINTEXT, contentFolderPath);  
-               
+
+        drone.deleteCookies();
+        drone.refresh();
+        drone.getCurrentPage().render();
+        userLogin1();
+
         //Navigate to faceted search page
-        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+        SharePage sharePage = drone.getCurrentPage().render();
+        SearchBox searchBox = sharePage.getSearch();
+        facetedSearchPage =  searchBox.search(fileName).render();
         
         // Do a search for filename
-        doretrySearch(fileName);              
-               
+        doretrySearch(fileName);
+
         //Check Actions are displayed on Facet results page for filename
         Assert.assertTrue(facetedSearchPage.getResultByName(fileName).getActions().hasActionByName(actionName1));        
         Assert.assertTrue(facetedSearchPage.getResultByName(fileName).getActions().hasActionByName(actionName2));    
@@ -511,7 +544,7 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     //This test is the verify only the same tenant user can view the file created by respective tenant
     
     @Test(groups = "CloudOnly")
-    public void AONE_16066() throws Exception
+    public void ALF_3258() throws Exception
     {
         trace("Starting searchAndVerifyMultiTenantTest");        
         
@@ -559,127 +592,6 @@ public class FacetedSearchPageTest1 extends AbstractUtils
         
         trace("searchAndVerifyMultiTenantTest complete");
     }
-    
-    /*searchAndClickInlineEditTest
-    This test is to verify 'InlineEdit' action is displayed under actions for uploaded file for same user
-    Click on 'InlineEdit' link under actions by same user
-    Verify url is changed after clicking on InlineEdit link in search results page
-    Verify InlineEdit link is not displayed for a file under action for different user 
-    */
-    
-    @Test(groups = "alfresco-one")
-    public void AONE_16147() throws Exception
-    {
-        trace("Starting searchAndClickInlineEditTest");        
-        
-        String actionName1 = "Inline Edit";            
-
-        String name = "b-fs-test1.txt";
-        String name1 = "c-fs-test1.txt";        
-        
-        // Login as user1
-        userLogin1();
-
-        // Do a search 
-        doretrySearch(name);
-
-        // Check the results
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
-        
-        // Get the current url
-        String url = drone.getCurrentUrl();
-        
-        //Check Actions are displayed on Facet results page for folder
-        Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));        
-        
-        // Click the first action        
-        facetedSearchPage.getResultByName(name).getActions().clickActionByName(actionName1);
-
-        // Get the url again
-        String newUrl = drone.getCurrentUrl();
-
-        // We should not be on the faceted search page
-        Assert.assertNotEquals(url, newUrl, "After clicking on action, the url should not have changed");       
-                
-        // Navigate back to the faceted search page
-        facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
-
-        // Logout
-        ShareUtil.logout(drone);
-        
-        //login as user2
-        userLogin2();
-        
-        //Do a search 
-        doretrySearch(name1);     
-        
-        // Check the results
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");
-        
-        Assert.assertFalse(facetedSearchPage.getResultByName(name1).getActions().hasActionByName(actionName1));    
-        
-
-        trace("searchAndClickInlineEditTest complete" );
-    }
-    
-    /*searchAndClickStart WorkflowTest
-    This test is to verify 'Start Workflow' action is displayed under actions for uploaded file for same user
-    Click on 'Start Workflow' link under actions by same user
-    Verify url is changed after clicking on Start Workflow link in search results page
-    Verify Start Workflow link is displayed for a file under action for different user 
-    */
-    
-    @Test(groups = "alfresco-one")
-    public void AONE_16148() throws Exception
-    {
-        trace("Starting searchAndClickStart WorkflowTest");        
-        
-        String actionName1 = "Start Workflow";            
-
-        String name = "b-fs-test1.txt";
-        String name1 = "c-fs-test1.txt";        
-        
-        // Login as user1
-        userLogin1();
-
-        // Do a search 
-        doretrySearch(name);
-
-        // Check the results
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");        
-                   
-        //Check Actions are displayed on Facet results page for folder
-        Assert.assertTrue(facetedSearchPage.getResultByName(name).getActions().hasActionByName(actionName1));        
-        
-        // Click the first action        
-        facetedSearchPage.getResultByName(name).getActions().clickActionByName(actionName1);
-
-        //We should be on start Work flow page
-        StartWorkFlowPage startWorkFlowPage = (StartWorkFlowPage) drone.getCurrentPage();
-        Assert.assertTrue(startWorkFlowPage.getTitle().contains("Start Workflow"));
-        
-        //Open user dash board
-        ShareUser.openUserDashboard(drone);                  
-        
-        // Logout
-        ShareUtil.logout(drone);   
-                
-        //login as user2
-        userLogin2();
-        
-        //Do a search
-        doretrySearch(name1);     
-        
-        // Check the results
-        Assert.assertTrue(facetedSearchPage.getResults().size() > 0, "After searching for text there should be some search results");
-        
-        Assert.assertTrue(facetedSearchPage.getResultByName(name1).getActions().hasActionByName(actionName1));    
-        
-
-        trace("searchAndClickStart WorkflowTest complete" );
-    }
-    
-    
    
     /* (non-Javadoc)
      * @see org.alfresco.share.util.AbstractUtils#tearDown()
@@ -725,13 +637,22 @@ public class FacetedSearchPageTest1 extends AbstractUtils
 	{
 		facetedSearchPage.getSearchForm().search(searchTerm);
 		facetedSearchPage.render();
-		if (!(facetedSearchPage.getResults().size() > 0)) 
+		if (!(facetedSearchPage.getResults().size() > 0))
 		{
 			webDriverWait(drone, refreshDuration);
 			facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
 			facetedSearchPage.getSearchForm().search(searchTerm);
 			facetedSearchPage.render();
 		}
+        if (!(facetedSearchPage.getResults().size() > 0))
+        {
+            drone.refresh();
+            drone.getCurrentPage().render();
+            facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
+            facetedSearchPage.getSearchForm().search(searchTerm);
+            facetedSearchPage.render();
+
+        }
 	}       
     
     /**
@@ -754,7 +675,15 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     {
         // Login as test user        
         ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
-
+        SharePage sharePage = drone.getCurrentPage().render();
+        if (!sharePage.isLoggedIn())
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser1, DEFAULT_PASSWORD);
+        }
+        
         // Navigate to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
     }
@@ -766,7 +695,15 @@ public class FacetedSearchPageTest1 extends AbstractUtils
     {
         // Login as test user        
         ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
-
+        SharePage sharePage = drone.getCurrentPage().render();
+        if (!sharePage.isLoggedIn())
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser2, DEFAULT_PASSWORD);
+        }
+        
         // Navigate to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
     }
@@ -776,9 +713,16 @@ public class FacetedSearchPageTest1 extends AbstractUtils
      */
     private void userLogin3()
     {
-        // Login as test user        
+        // Login as test user
         ShareUser.login(drone, testUser3, DEFAULT_PASSWORD);
-
+        SharePage sharePage = drone.getCurrentPage().render();
+        if (!sharePage.isLoggedIn())
+        {
+            drone.deleteCookies();
+            drone.refresh();
+            drone.getCurrentPage().render();
+            ShareUser.login(drone, testUser3, DEFAULT_PASSWORD);
+        }
         // Navigate to the faceted search page
         facetedSearchPage = dashBoardPage.getNav().getFacetedSearchPage().render();
     }

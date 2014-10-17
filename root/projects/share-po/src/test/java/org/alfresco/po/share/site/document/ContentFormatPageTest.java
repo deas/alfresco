@@ -19,6 +19,7 @@
 package org.alfresco.po.share.site.document;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.AlfrescoVersion;
@@ -155,8 +156,8 @@ public class ContentFormatPageTest extends AbstractTest
         if (logger.isTraceEnabled())
             logger.trace("====testNumberInsertionInRichTextFormatter====");
         textEditor.clickTextFormatter(FormatType.NUMBER);
-        Assert.assertEquals(commentText, textEditor.getText());       
-        Assert.assertTrue(textEditor.getContent().contains("<ol style=\"\"><li>"+commentText+"</li></ol>"));
+        Assert.assertEquals(commentText, textEditor.getText());
+        Assert.assertTrue(Pattern.matches(("<ol[ a-zA-Z=\"]*><li>"+commentText+"</li></ol>"), textEditor.getContent()));
         textEditor.clickTextFormatter(FormatType.NUMBER);
         Assert.assertTrue(textEditor.getContent().contains("<p>"+commentText+"</p>"));
      }

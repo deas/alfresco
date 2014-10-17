@@ -131,6 +131,8 @@ public class FolderDetailsPageTest extends AbstractTest
         Assert.assertTrue(folderDetailsPage.isSharePanePresent());
         Assert.assertEquals(true, folderDetailsPage.isTagPanelPresent());
         Assert.assertTrue(folderDetailsPage.isModifiedByDetailsPresent());
+        Assert.assertTrue(folderDetailsPage.isFolderActionsPresent());
+
     }
 
     /**
@@ -149,9 +151,15 @@ public class FolderDetailsPageTest extends AbstractTest
         Assert.assertEquals(false, !folderDetailsPage.isTagPanelPresent());
     }
 
+    @Test (dependsOnMethods = "testFolderDetailsPanelsNotCorrect", groups = { "alfresco-one" })
+    public void verifyPropertiesSection()
+    {
+        Assert.assertTrue(folderDetailsPage.isPropertiesLabelsPresent(), "Labels of Properties section display incorrectly");
+    }
+
     // include negative scenario..
 
-    @Test(dependsOnMethods = "testFolderDetailsPanels", groups = { "alfresco-one" })
+    @Test(dependsOnMethods = "verifyPropertiesSection", groups = { "alfresco-one" })
     public void testLikeMethodsForFolder() throws Exception
     {
         if (logger.isTraceEnabled())

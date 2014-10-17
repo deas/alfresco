@@ -43,7 +43,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_8485() throws Exception
+    public void dataPrep_AONE_14954() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -65,7 +65,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      */
     // TODO: Use appropriate groups: Enterprise42, refer to qa site wiki on ts, is the test valid for Ent 43, Cloud?
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_8485() throws Exception
+    public void AONE_14954() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -89,7 +89,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
 
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_8731() throws Exception
+    public void dataPrep_AONE_14960() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -110,7 +110,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_8731() throws Exception
+    public void AONE_14960() throws Exception
     {
         //Array with folderNames.
         final String[] folderNames = { "my%folderha", "my%folder", "my%folder%25156722", "my%folder%156722again", "xyz%123" };
@@ -155,7 +155,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_8561() throws Exception
+    public void dataPrep_AONE_14955() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -176,7 +176,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_8561() throws Exception
+    public void AONE_14955() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -207,7 +207,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
 
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_4048() throws Exception
+    public void dataPrep_AONE_14956() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -228,7 +228,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_4048() throws Exception
+    public void AONE_14956() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -262,7 +262,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_9125() throws Exception
+    public void dataPrep_AONE_14957() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -289,7 +289,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_9125() throws Exception
+    public void AONE_14957() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -349,7 +349,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_13857() throws Exception
+    public void dataPrep_AONE_14976() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -377,7 +377,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_13857() throws Exception
+    public void AONE_14976() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -412,7 +412,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
     }
 
     @Test(groups = "DataPrepDocumentLibrary")
-    public void dataPrep_Enterprise40x_8495() throws Exception
+    public void dataPrep_AONE_14961() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -451,7 +451,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = "Enterprise4.2")
-    public void Enterprise40x_8495() throws Exception
+    public void AONE_14961() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -472,7 +472,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
     }
 
     @Test(groups = { "DataPrepDocumentLibrary", "EnterpriseOnly" })
-    public void dataPrep_Enterprise40x_8658() throws Exception
+    public void dataPrep_AONE_14958() throws Exception
     {
         String testName = getTestName();
         String siteName = getSiteName(testName);
@@ -522,7 +522,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "Enterprise4.2", "EnterpriseOnly" })
-    public void Enterprise40x_8658() throws Exception
+    public void AONE_14958() throws Exception
     {
         /** Start Test */
         testName = getTestName();
@@ -564,6 +564,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
         documentDetailsPage = ShareUser.openDocumentDetailPage(drone, fileName + 1);
         editDocumentProperties = documentDetailsPage.selectEditProperties().render();
         categoryPage = editDocumentProperties.getCategory().render();
+        // todo: change methods to non deprecated
         categoryPage.openSubCategories(CATEGORY_TEST_1);
         categoryPage.add(subCategory).render();
         categoryPage.clickOk();
@@ -622,7 +623,7 @@ public class ManageDocLibItemsTest extends AbstractUtils
      * @throws Exception
      */
     @Test(groups = { "Enterprise4.2", "EnterpriseOnly" })
-    public void Enterprise40x_8578() throws Exception
+    public void AONE_14959() throws Exception
     {
         /** Start Test */
         testName = getTestName();

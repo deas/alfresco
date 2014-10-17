@@ -527,7 +527,7 @@ public class CloudReviewTaskTest extends AbstractTest
         cloudTaskOrReviewPage = (CloudTaskOrReviewPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.CLOUD_TASK_OR_REVIEW);
         cloudTaskOrReviewPage.selectTask(TaskType.CLOUD_REVIEW_TASK);
 
-        cloudTaskOrReviewPage.selectStartWorkflow();
+        cloudTaskOrReviewPage = (CloudTaskOrReviewPage) cloudTaskOrReviewPage.selectStartWorkflow();
         cloudTaskOrReviewPage.render();
 
         Assert.assertTrue(cloudTaskOrReviewPage.isErrorBalloonPresent());

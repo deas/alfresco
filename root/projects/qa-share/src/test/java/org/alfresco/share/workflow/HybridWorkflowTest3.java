@@ -31,7 +31,6 @@ import org.alfresco.po.share.workflow.WorkFlowDetailsPage;
 import org.alfresco.po.share.workflow.WorkFlowFormDetails;
 import org.alfresco.po.share.workflow.WorkFlowType;
 import org.alfresco.share.util.AbstractCloudSyncTest;
-import org.alfresco.share.util.AbstractUtils;
 import org.alfresco.share.util.AbstractWorkflow;
 import org.alfresco.share.util.EditTaskAction;
 import org.alfresco.share.util.ShareUser;
@@ -41,7 +40,6 @@ import org.alfresco.share.util.ShareUserWorkFlow;
 import org.alfresco.share.util.SiteUtil;
 import org.alfresco.share.util.api.CreateUserAPI;
 import org.alfresco.webdrone.HtmlPage;
-import org.alfresco.webdrone.WebDrone;
 import org.alfresco.webdrone.exception.PageException;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.alfresco.webdrone.testng.listener.FailedTestListener;
@@ -52,8 +50,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Chiran
@@ -117,7 +113,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9455() throws Exception
+    public void dataPrep_AONE_15586() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -146,7 +142,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
 
     /**
      * <ul>
-     * <li>ALF-9455 / ALF-15127</li>
+     * <li>AONE-15586 / AONE-15587</li>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Login as User1 (OP), Create a site and Upload a document</li>
      * <li>3) Navigate to WorkFlows I've Started page and select StartWorkflow
@@ -156,7 +152,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid")
-    public void ALF_9455() throws Exception
+    public void AONE_15586() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -186,7 +182,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15127() throws Exception
+    public void dataPrep_AONE_15587() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -217,7 +213,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
 
     /**
      * <ul>
-     * <li>ALF-15127</li>
+     * <li>AONE-15587</li>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Login as User1 (OP), Create a site and Upload a document</li>
      * <li>3) Navigate to WorkFlows I've Started page and select StartWorkflow
@@ -227,7 +223,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid")
-    public void ALF_15127() throws Exception
+    public void AONE_15587() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -256,7 +252,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9457() throws Exception
+    public void dataPrep_AONE_15588() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -287,7 +283,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
 
     /**
      * <ul>
-     * <li>ALF-9457</li>
+     * <li>AONE-15588</li>
      * <li>1) Login as Cloud User, Create a site and Logout</li>
      * <li>2) Login as User1 (OP), Create a site and Upload a document</li>
      * <li>3) Navigate to WorkFlows I've Started page and select StartWorkflow
@@ -297,7 +293,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="Hybrid")
-    public void ALF_9457() throws Exception
+    public void AONE_15588() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -324,7 +320,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15129() throws Exception
+    public void dataPrep_AONE_15589() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -354,7 +350,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void ALF_15129() throws Exception
+    public void AONE_15589() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -384,7 +380,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15265() throws Exception
+    public void dataPrep_AONE_15590() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -406,7 +402,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void ALF_15265() throws Exception
+    public void AONE_15590() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -432,7 +428,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15266() throws Exception
+    public void dataPrep_AONE_15591() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -454,7 +450,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void ALF_15266() throws Exception
+    public void AONE_15591() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -480,7 +476,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15267() throws Exception
+    public void dataPrep_AONE_15592() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -502,7 +498,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void ALF_15267() throws Exception
+    public void AONE_15592() throws Exception
     {
         String testName = getTestName();
         String user1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -527,94 +523,9 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         // Verify "Simple Cloud Task" is selected
         Assert.assertTrue(cloudTaskOrReviewPage.isSimpleCloudTaskElementsPresent());
     }
-    
-    @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15192() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String[] userInfo1 = new String[] { opUser1 };
-
-        String cloudUser1 = getUserNameForDomain(testName + "1", DOMAIN_HYBRID);
-        String[] cloudUserInfo1 = new String[] { cloudUser1 };
-
-        String cloudUser2 = getUserNameForDomain(testName + "2", invitedDomain1);
-        String[] cloudUserInfo2 = new String[] { cloudUser2 };
-
-        String cloudSiteName1 = getSiteName(testName + "1");
-        String opSiteName = getSiteName(testName + "OP");
-        String fileName = getFileName(testName) + ".doc";
-        String[] fileInfo = { fileName, DOCLIB };
-
-        // Create User1 (On-premise)
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, userInfo1);
-
-        // Create User1 (Cloud)
-        CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
-
-        // Create User2 (Cloud)
-        CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo2);
-
-        // Login as User1 (Cloud)
-        ShareUser.login(hybridDrone, cloudUser1, DEFAULT_PASSWORD);
- 
-        // Create Site
-        ShareUser.createSite(hybridDrone, cloudSiteName1, SITE_VISIBILITY_PUBLIC);
-        
-        ShareUserMembers.inviteUserToSiteWithRole(hybridDrone, cloudUser1, cloudUser2, cloudSiteName1, UserRole.COLLABORATOR);
-        ShareUser.logout(hybridDrone);
-
-        // Login as User1 (OP)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        signInToAlfrescoInTheCloud(drone, cloudUser2, DEFAULT_PASSWORD);
-        // Create Site
-        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-
-        // Open Document library, Upload a file
-        ShareUser.openDocumentLibrary(drone);
-
-        // TODO: Naved: remove render for all utils which return a specific rendered page object 
-        ShareUser.uploadFileInFolder(drone, fileInfo).render();
-
-        ShareUser.logout(drone);
-    }
-
-    @Test(groups="Hybrid")
-    public void ALF_15192() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String opSiteName = getSiteName(testName + "OP");
-        String fileName = getFileName(testName) + ".doc";
-
-        // Login as User1 (OP)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        // Open Document library, Upload a file
-        DocumentLibraryPage docLibPage = SiteUtil.openSiteDocumentLibraryURL(drone, AbstractUtils.getSiteShortname(opSiteName));
-
-        // Sselect StartWorkflow
-        StartWorkFlowPage startWorkFlowPage = docLibPage.getFileDirectoryInfo(fileName).selectStartWorkFlow().render();
-
-        Assert.assertTrue(startWorkFlowPage.getTitle().contains(START_WORKFLOW));
-
-        Assert.assertTrue(startWorkFlowPage.isWorkflowTypePresent(WorkFlowType.CLOUD_TASK_OR_REVIEW));
-
-        // Select "Cloud Task or Review" from select a workflow dropdown
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ((CloudTaskOrReviewPage) startWorkFlowPage.getWorkflowPage(WorkFlowType.CLOUD_TASK_OR_REVIEW)).render();
-
-        // Verify "Simple Cloud Task" is selected
-        Assert.assertTrue(cloudTaskOrReviewPage.isSimpleCloudTaskElementsPresent());
-
-        DestinationAndAssigneePage destinationPage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
-
-        Assert.assertTrue(destinationPage.isNetworkDisplayed(DOMAIN_HYBRID));
-        Assert.assertTrue(destinationPage.isNetworkDisplayed(invitedDomain1));
-    }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15193() throws Exception
+    public void dataPrep_AONE_15653() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -674,7 +585,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void ALF_15193() throws Exception
+    public void AONE_15653() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -766,328 +677,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         }
     }
 
-    @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15194() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName + "user1", invitedDomain1);
-        String cloudUser2 = getUserNameForDomain(testName + "user2", invitedDomain1);
-        String cloudUser3 = getUserNameForDomain(testName + "user3", invitedDomain1);
-        String cloudUser4 = getUserNameForDomain(testName + "user4", invitedDomain1);
-        cloudCollaboratorSite = getSiteName(testName + "Collaborator");
-        cloudContributorSite = getSiteName(testName + "Contributor");
-        cloudConsumerSite = getSiteName(testName + "Consumer");
-
-        String folder1 = getFolderName(testName + "Collaborator");
-        String folder2 = getFolderName(testName + "Contributor");
-        String folder3 = getFolderName(testName + "Consumer");
-
-        String[] userInfo1 = new String[] { opUser1 };
-        String[] cloudUserInfo1 = new String[] { cloudUser1 };
-        String[] cloudUserInfo2 = new String[] { cloudUser2 };
-        String[] cloudUserInfo3 = new String[] { cloudUser3 };
-        String[] cloudUserInfo4 = new String[] { cloudUser4 };
-
-        try
-        {
-            // Create User1 (On-premise)
-            CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, userInfo1);
-
-            // Create User1 (Cloud)
-            CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
-
-            // Create User2 (Cloud)
-            CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo2);
-
-            // Create User3 (Cloud)
-            CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo3);
-
-            // Create User4 (Cloud)
-            CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo4);
-
-            // Login as User2 (Cloud)
-            ShareUser.login(hybridDrone, cloudUser2, DEFAULT_PASSWORD);
-
-            // Create Site
-            ShareUser.createSite(hybridDrone, cloudCollaboratorSite, SITE_VISIBILITY_PUBLIC);
-
-            // Inviting user1 as colloborator to the site.
-            ShareUserMembers.inviteUserToSiteWithRole(hybridDrone, cloudUser2, cloudUser1, cloudCollaboratorSite, UserRole.COLLABORATOR);
-
-            // Creating 3 folders with Collobarator,Contrinbutor and Consumer
-            // roles for each folder.
-            createThreeFoldersWithContentRoles(hybridDrone, cloudUser1, folder1, folder2, folder3);
-
-            ShareUser.logout(hybridDrone);
-
-            // Login as User3 (Cloud)
-            ShareUser.login(hybridDrone, cloudUser3, DEFAULT_PASSWORD);
-
-            // Create Site
-            ShareUser.createSite(hybridDrone, cloudContributorSite, SITE_VISIBILITY_PUBLIC);
-
-            // Inviting user1 as contributor to the site.
-            ShareUserMembers.inviteUserToSiteWithRole(hybridDrone, cloudUser3, cloudUser1, cloudContributorSite, UserRole.CONTRIBUTOR);
-
-            // Creating 3 folders with Collobarator,Contrinbutor and Consumer
-            // roles for each folder.
-            createThreeFoldersWithContentRoles(hybridDrone, cloudUser1, folder1, folder2, folder3);
-
-            ShareUser.logout(hybridDrone);
-
-            // Login as User4 (Cloud)
-            ShareUser.login(hybridDrone, cloudUser4, DEFAULT_PASSWORD);
-
-            // Create Site
-            ShareUser.createSite(hybridDrone, cloudConsumerSite, SITE_VISIBILITY_PUBLIC);
-
-            // Inviting user1 as consumer to the site.
-            ShareUserMembers.inviteUserToSiteWithRole(hybridDrone, cloudUser4, cloudUser1, cloudConsumerSite, UserRole.CONSUMER);
-
-            // Creating 3 folders with Collobarator,Contrinbutor and Consumer
-            // roles for each folder.
-            createThreeFoldersWithContentRoles(hybridDrone, cloudUser1, folder1, folder2, folder3);
-
-            ShareUser.logout(hybridDrone);
-        }
-        catch (Throwable e)
-        {
-            reportError(drone, testName, e);
-        }
-        finally
-        {
-            testCleanup(drone, testName);
-        }
-    }
-
     /**
-     * Note: This test case includes the ALF_15194/15195/15196
-     */
-    @Test(groups="Hybrid")
-    public void ALF_15194() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName + "user1", invitedDomain1);
-        cloudCollaboratorSite = getSiteName(testName + "Collaborator");
-        cloudContributorSite = getSiteName(testName + "Contributor");
-        cloudConsumerSite = getSiteName(testName + "Consumer");
-        String opSiteName1 = getSiteName(testName + System.currentTimeMillis() + "op1");
-        String opSiteName2 = getSiteName(testName + System.currentTimeMillis() + "op2");
-        String opSiteName3 = getSiteName(testName + System.currentTimeMillis() + "op3");
-        String folder1 = getFolderName(testName + "Collaborator");
-        String folder2 = getFolderName(testName + "Contributor");
-        String folder3 = getFolderName(testName + "Consumer");
-
-        String fileName1 = getFileName(testName) + System.currentTimeMillis() + "1.doc";
-        String fileName2 = getFileName(testName) + System.currentTimeMillis() + "2.doc";
-        String fileName3 = getFileName(testName) + System.currentTimeMillis() + "3.doc";
-        String fileName4 = getFileName(testName) + System.currentTimeMillis() + "4.doc";
-        String fileName5 = getFileName(testName) + System.currentTimeMillis() + "5.doc";
-        String fileName6 = getFileName(testName) + System.currentTimeMillis() + "6.doc";
-        String fileName7 = getFileName(testName) + System.currentTimeMillis() + "7.doc";
-        String fileName8 = getFileName(testName) + System.currentTimeMillis() + "8.doc";
-        String fileName9 = getFileName(testName) + System.currentTimeMillis() + "9.doc";
-        String[] fileInfo1 = { fileName1, DOCLIB };
-        String[] fileInfo2 = { fileName2, DOCLIB };
-        String[] fileInfo3 = { fileName3, DOCLIB };
-        String[] fileInfo4 = { fileName4, DOCLIB };
-        String[] fileInfo5 = { fileName5, DOCLIB };
-        String[] fileInfo6 = { fileName6, DOCLIB };
-        String[] fileInfo7 = { fileName7, DOCLIB };
-        String[] fileInfo8 = { fileName8, DOCLIB };
-        String[] fileInfo9 = { fileName9, DOCLIB };
-
-        // Login as User1 (OP)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        // Set up the cloud sync
-        signInToAlfrescoInTheCloud(drone, cloudUser1, DEFAULT_PASSWORD);
-
-        ShareUser.createSite(drone, opSiteName1, SITE_VISIBILITY_PUBLIC);
-
-        // Open Document library, Upload a file
-        DocumentLibraryPage docLibPage = ShareUser.openDocumentLibrary(drone);
-
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo1).render();
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo2).render();
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo3).render();
-
-        // Select StartWorkflow for cloud user1 on collaborator site for folder1
-        docLibPage = startWorFlowOnContentWithRole(cloudUser1, folder1, fileName1, cloudCollaboratorSite, docLibPage);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName1).isPartOfWorkflow());
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder1
-        docLibPage = startWorFlowOnContentWithRole(cloudUser1, folder1, fileName2, cloudContributorSite, docLibPage);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName2).isPartOfWorkflow());
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder1
-        docLibPage = startWorFlowOnContentWithRole(cloudUser1, folder1, fileName3, cloudConsumerSite, docLibPage);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName3).isPartOfWorkflow());
-
-        // Creating 2nd site to have sync with contributor site.
-        ShareUser.createSite(drone, opSiteName2, SITE_VISIBILITY_PUBLIC);
-
-        // Open Document library, Upload a file
-        docLibPage = ShareUser.openDocumentLibrary(drone);
-
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo4).render();
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo5).render();
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo6).render();
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder2
-        docLibPage = startWorFlowOnContentWithRole(cloudUser1, folder2, fileName4, cloudCollaboratorSite, docLibPage);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName4).isPartOfWorkflow());
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder2
-        docLibPage = startWorFlowOnContentWithRole(cloudUser1, folder2, fileName5, cloudContributorSite, docLibPage);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName5).isPartOfWorkflow());
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder2
-        docLibPage = startWorFlowOnContentWithRole(cloudUser1, folder2, fileName6, cloudConsumerSite, docLibPage);
-
-        Assert.assertTrue(docLibPage.getFileDirectoryInfo(fileName6).isPartOfWorkflow());
-
-        // Creating 3rd site to have sync with consumer site.
-        ShareUser.createSite(drone, opSiteName3, SITE_VISIBILITY_PUBLIC);
-
-        // Open Document library, Upload a file
-        docLibPage = ShareUser.openDocumentLibrary(drone);
-
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo7).render();
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo8).render();
-        docLibPage = ShareUser.uploadFileInFolder(drone, fileInfo9).render();
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder3
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName7);
-
-        DestinationAndAssigneePage destinationPage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
-
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudCollaboratorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudContributorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudConsumerSite));
-
-        // Selection clouduser1 site and sync successfull.
-        destinationPage.selectNetwork(invitedDomain1);
-        destinationPage.selectSite(cloudCollaboratorSite);
-        try
-        {
-            destinationPage.selectFolder(folder3);
-        }
-        catch (PageOperationException e)
-        {
-            Assert.assertEquals(e.getMessage(), "Sync Folder is disabled");
-        }
-
-        docLibPage = SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(opSiteName3));
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder3
-        cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName8);
-
-        destinationPage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
-
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudCollaboratorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudContributorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudConsumerSite));
-
-        // Selection clouduser1 site and sync successfull.
-        destinationPage.selectNetwork(invitedDomain1);
-        destinationPage.selectSite(cloudContributorSite);
-        try
-        {
-            destinationPage.selectFolder(folder3);
-        }
-        catch (PageOperationException e)
-        {
-            Assert.assertEquals(e.getMessage(), "Sync Folder is disabled");
-        }
-
-        docLibPage = SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(opSiteName3));
-
-        // Select StartWorkflow for cloud user1 on contributor site for folder3
-        cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName9);
-
-        destinationPage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
-
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudCollaboratorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudContributorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudConsumerSite));
-
-        // Selection clouduser1 site and sync successfull.
-        destinationPage.selectNetwork(invitedDomain1);
-        destinationPage.selectSite(cloudConsumerSite);
-        destinationPage.selectFolder(folder3);
-        try
-        {
-            destinationPage.selectFolder(folder3);
-        }
-        catch (PageOperationException e)
-        {
-            Assert.assertEquals(e.getMessage(), "Sync Folder is disabled");
-        }
-    }
-
-    /**
-     * @param cloudUser
-     * @param folder
-     * @param fileName
-     * @param docLibPage
-     * @return DocumentLibraryPage
-     */
-    private DocumentLibraryPage startWorFlowOnContentWithRole(String cloudUser, String folder, String fileName, String syncSite, DocumentLibraryPage docLibPage)
-    {
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
-
-        DestinationAndAssigneePage destinationPage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
-
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudCollaboratorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudContributorSite));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudConsumerSite));
-
-        // Selection clouduser1 site and sync successfull.
-        selectDestinationAndSync(destinationPage, invitedDomain1, syncSite, folder);
-
-        AssignmentPage assigneePage = cloudTaskOrReviewPage.selectAssignmentPage().render();
-        assigneePage.selectAssignee(cloudUser);
-
-        cloudTaskOrReviewPage.selectStartWorkflow().render();
-        docLibPage = docLibPage.render();
-
-        return docLibPage;
-    }
-
-    /**
-     * @param hybridDrone
-     * @param cloudUser1
-     * @param folder1
-     * @param folder2
-     * @param folder3
-     */
-    private void createThreeFoldersWithContentRoles(WebDrone hybridDrone, String cloudUser1, String folder1, String folder2, String folder3)
-    {
-        DocumentLibraryPage docLibPage;
-        // Creating 3 folders with Collobarator,Contrinbutor and Consumer roles for each folder.
-        ShareUserSitePage.createFolder(hybridDrone, folder1, "").render();
-        docLibPage = (DocumentLibraryPage) ShareUserMembers.managePermissionsOnContent(hybridDrone, cloudUser1, folder1, UserRole.COLLABORATOR, false);
-        docLibPage.render();
-
-        ShareUserSitePage.createFolder(hybridDrone, folder2, "").render();
-        docLibPage = (DocumentLibraryPage) ShareUserMembers.managePermissionsOnContent(hybridDrone, cloudUser1, folder2, UserRole.CONTRIBUTOR, false);
-        docLibPage.render();
-
-        ShareUserSitePage.createFolder(hybridDrone, folder3, "").render();
-        docLibPage = (DocumentLibraryPage) ShareUserMembers.managePermissionsOnContent(hybridDrone, cloudUser1, folder3, UserRole.CONSUMER, false);
-        docLibPage.render();
-    }
-
-    /**
-     * ALF-15197:Select Assignee/Reviewers - search for Share users
+     * AONE-15657:Select Assignee/Reviewers - search for Share users
      * <ul>
      * <li>1) Create OP user</li>
      * <li>2) Create Cloud user</li>
@@ -1096,7 +687,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15197() throws Exception
+    public void dataPrep_AONE_15657() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1133,7 +724,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15197:Select Assignee/Reviewers - search for Share users
+     * AONE-15657:Select Assignee/Reviewers - search for Share users
      * <ul>
      * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -1149,7 +740,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15197() throws Exception
+    public void AONE_15657() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1181,7 +772,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15198:Select Assignee/Reviewers - search for users from different networks
+     * AONE-15658:Select Assignee/Reviewers - search for users from different networks
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud 2 users with same network and 1 user from diff network (invited1,invited2)</li>
@@ -1191,7 +782,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15198() throws Exception
+    public void dataPrep_AONE_15658() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1240,7 +831,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15198: Select Assignee/Reviewers - search for users from different
+     * AONE-15658: Select Assignee/Reviewers - search for users from different
      * networks
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
@@ -1257,8 +848,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      *
      * @throws Exception
      */
-    @Test(groups="Hybrid")
-    public void ALF_15198() throws Exception
+    @Test(groups={"Hybrid","IntermittentBugs"})
+    public void AONE_15658() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1295,7 +886,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15199:Select Assignee - select more than one user
+     * AONE-15659:Select Assignee - select more than one user
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud 2 users with same network(invited1)</li>
@@ -1303,7 +894,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15199() throws Exception
+    public void dataPrep_AONE_15659() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1343,7 +934,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     *  ALF-15199:Select Assignee - select more than one user
+     *  AONE-15659:Select Assignee - select more than one user
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -1361,7 +952,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups = "Hybrid")
-    public void ALF_15199() throws Exception
+    public void AONE_15659() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1441,7 +1032,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15199:Select Assignee - select more than one user
+     * AONE-15659:Select Assignee - select more than one user
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud 5 users with same network(invited1)</li>
@@ -1449,7 +1040,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15200() throws Exception
+    public void dataPrep_AONE_15660() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1498,7 +1089,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     *  ALF-15200:Select Reviewers - select more than one user
+     *  AONE-15660:Select Reviewers - select more than one user
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -1517,7 +1108,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups = "Hybrid")
-    public void ALF_15200() throws Exception
+    public void AONE_15660() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1620,7 +1211,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15190:Simple Cloud Task - Select Destination - User is not authorized
+     * AONE-15651:Simple Cloud Task - Select Destination - User is not authorized
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud user with network(invited1)</li>
@@ -1628,7 +1219,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15190() throws Exception
+    public void dataPrep_AONE_15651() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1660,82 +1251,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="Hybrid")
-    public void ALF_15190() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName + "user1", invitedDomain1);
-        String opSiteName = getSiteName(testName);
-        String cloudSiteName = getSiteName(testName + "cloud");
-        String fileName = getFileName(testName) + System.currentTimeMillis() + ".doc";
-        String[] fileInfo = { fileName, DOCLIB };
-
-        // Login as User1 (OP)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        //Verifying the cloud account is disconnected or not.
-        AbstractCloudSyncTest.disconnectCloudSync(drone);
-
-        // Create Site
-        SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(opSiteName));
-
-        ShareUser.uploadFileInFolder(drone, fileInfo).render();
-
-        // Select StartWorkflow
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, fileName);
-
-        cloudTaskOrReviewPage.selectTask(TaskType.SIMPLE_CLOUD_TASK);
-
-        CloudSignInPage cloudSignPage = cloudTaskOrReviewPage.selectDestinationAndAssigneePage().render();
-
-        DestinationAndAssigneePage destinationPage = cloudSignPage.loginAs(cloudUser1, DEFAULT_PASSWORD).render();
-
-        Assert.assertTrue(destinationPage.isNetworkDisplayed(invitedDomain1));
-        Assert.assertTrue(destinationPage.isSiteDisplayed(cloudSiteName));
-    }
-
-    /**
-     * ALF-15191:Simple Cloud Task - Select Destination - User is not authorized
-     * <ul>
-     * <li>Create OP user</li>
-     * <li>Create Cloud user with network(invited1)</li>
-     * <li>Login to OnPremise, Create a site</li>
-     * </ul>
-     */
-    @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15191() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName + "user1", invitedDomain1);
-        String[] userInfo1 = new String[] { opUser1 };
-        String[] cloudUserInfo1 = new String[] { cloudUser1 };
-        String cloudSiteName = getSiteName(testName + "cloud");
-        String opSiteName = getSiteName(testName);
-
-        // Create User1 (On-premise)
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, userInfo1);
-
-        // Create Users (Cloud)
-        CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
-
-        // Login as User1 (cloud)
-        ShareUser.login(hybridDrone, cloudUser1, DEFAULT_PASSWORD);
-
-        ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
-
-        ShareUser.logout(hybridDrone);
-
-        // Login as User1 (OpUser)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-
-        ShareUser.logout(drone);
-    }
-
-    @Test(groups="Hybrid")
-    public void ALF_15191() throws Exception
+    public void AONE_15651() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1769,7 +1285,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
         Assert.assertTrue(destinationPage.isSiteDisplayed(cloudSiteName));
     }
 
-    /** ALF-15178:Due - value is empty
+    /** AONE-15638:Due - value is empty
      * <ul>
      *     <li>1) Create OP user</li>
      *     <li>2) Create Cloud user</li>
@@ -1778,7 +1294,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15178() throws Exception
+    public void dataPrep_AONE_15638() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1817,7 +1333,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15178:Due - value is empty
+     * AONE-15638:Due - value is empty
      * <ul>
      * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -1837,7 +1353,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15178() throws Exception
+    public void AONE_15638() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1889,7 +1405,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15179() throws Exception
+    public void dataPrep_AONE_15639() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -1929,7 +1445,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15179:Due - to the same day
+     * AONE-15639:Due - to the same day
      * <ul>
      * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -1947,7 +1463,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15179() throws Exception
+    public void AONE_15639() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2013,7 +1529,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
     
     /**
-     * ALF-15180:Due - to the day backward
+     * AONE-15640:Due - to the day backward
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud user</li>
@@ -2022,7 +1538,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15180() throws Exception
+    public void dataPrep_AONE_15640() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2061,7 +1577,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15180:Due - to the day backward
+     * AONE-15640:Due - to the day backward
      * <ul>
      * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -2079,7 +1595,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15180() throws Exception
+    public void AONE_15640() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2146,7 +1662,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15181:Due - to the day ahead.
+     * AONE-15641:Due - to the day ahead.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud user</li>
@@ -2155,7 +1671,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15181() throws Exception
+    public void dataPrep_AONE_15641() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2195,7 +1711,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15181:Due - to the day ahead
+     * AONE-15641:Due - to the day ahead
      * <ul>
      * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -2213,7 +1729,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15181() throws Exception
+    public void AONE_15641() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2280,7 +1796,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15185:Due - Negative case.
+     * AONE-15642:Due - Negative case.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create Cloud user</li>
@@ -2289,7 +1805,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15185() throws Exception
+    public void dataPrep_AONE_15642() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2305,7 +1821,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
   
     /**
-     * ALF-15185:Due - Negative case.
+     * AONE-15642:Due - Negative case.
      * <ul>
      * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -2318,7 +1834,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15185() throws Exception
+    public void AONE_15642() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2353,189 +1869,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15182 includes ALF-15182\ALF-15183\ALF-15184   
-     * ALF-15182:Priority - High\Medium\Low.
-     * <ul>
-     * <li>Create OP user</li>
-     * <li>Create Cloud user</li>
-     * <li>Login to OP, set up Cloud Sync with Cloud user</li>
-     * <li>Login to Cloud, Create a site, create a document within the site</li>
-     * </ul>
-     */
-    @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15182() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName + "user1", invitedDomain1);
-        String cloudSiteName = getSiteName(testName + "cloud");
-        String[] userInfo1 = new String[] { opUser1 };
-        String[] cloudUserInfo1 = new String[] { cloudUser1 };
-        
-        // Create User1 (On-premise)
-        CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, userInfo1);
-
-        // Create User1 (Cloud)
-        CreateUserAPI.CreateActivateUser(hybridDrone, ADMIN_USERNAME, cloudUserInfo1);
-
-        // Login as User1 (Cloud)
-        ShareUser.login(hybridDrone, cloudUser1, DEFAULT_PASSWORD);
-
-        // Create Site
-        ShareUser.createSite(hybridDrone, cloudSiteName, SITE_VISIBILITY_PUBLIC);
-
-        ShareUser.logout(hybridDrone);
-
-        // Login as User1 (OP)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        // Set up the cloud sync
-        signInToAlfrescoInTheCloud(drone, cloudUser1, DEFAULT_PASSWORD);
-
-        ShareUser.logout(drone);
-    }
-
-    /**
-     * ALF-15182 includes ALF-15182\ALF-15183\ALF-15184
-     * ALF-15182:Priority - High\Medium\Low.
-     * <ul>
-     * <li>1) Login to OP, Create Site and document, Start Cloud Review Task
-     * Workflow</li>
-     * <li>2) Any workflow type is chosen</li>
-     * <li>3) All fields are filled with correct data and Priority is High</li>
-     * <li>4) Start work flow</li>
-     * <li>5) Verify the work flow details and make sure the priority is high.</li>
-     * <li>6) Start the another workflow, Any workflow type is chosen</li>
-     * <li>7) All fields are filled with correct data and Priority is Medium</li>
-     * <li>8) Start work flow</li>
-     * <li>9) Verify the work flow details and make sure the priority is Medium.</li>
-     * <li>10) Start the another workflow, Any workflow type is chosen</li>
-     * <li>11) All fields are filled with correct data and Priority is Medium</li>
-     * <li>12) Start work flow</li>
-     * <li>13) Verify the work flow details and make sure the priority is Medium.</li>
-     * </ul>
-     *
-     * @throws Exception
-     */
-    @Test(groups="Hybrid")
-    public void ALF_15182() throws Exception
-    {
-        String testName = getTestName();
-        String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
-        String cloudUser1 = getUserNameForDomain(testName + "user1", invitedDomain1);
-        String cloudSiteName = getSiteName(testName + "cloud");
-        String opSiteName = getSiteName(testName) + System.currentTimeMillis();
-        String opFileName1 = getFileName(testName) + System.currentTimeMillis() + "high";
-        String opFileName2 = getFileName(testName) + System.currentTimeMillis() + "medium";
-        String opFileName3 = getFileName(testName) + System.currentTimeMillis() + "low";
-        String[] opFileInfo1 = new String[] { opFileName1 };
-        String[] opFileInfo2 = new String[] { opFileName2 };
-        String[] opFileInfo3 = new String[] { opFileName3 };
-        String workFlowName1 = testName + System.currentTimeMillis() + "1";
-        String workFlowName2 = testName + System.currentTimeMillis() + "2";
-        String workFlowName3 = testName + System.currentTimeMillis() + "3";
-
-        // Login as User1 (OP)
-        ShareUser.login(drone, opUser1, DEFAULT_PASSWORD);
-
-        ShareUser.createSite(drone, opSiteName, SITE_VISIBILITY_PUBLIC);
-
-        // Open Document library, Upload a file
-        SiteUtil.openSiteDocumentLibraryURL(drone, getSiteShortname(opSiteName));
-
-        ShareUser.uploadFileInFolder(drone, opFileInfo1).render();
-        ShareUser.uploadFileInFolder(drone, opFileInfo2).render();
-        ShareUser.uploadFileInFolder(drone, opFileInfo3).render();
-
-        // Start Simple Cloud Task workflow with High Priority
-        CloudTaskOrReviewPage cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName1);
-
-        WorkFlowFormDetails formDetails = new WorkFlowFormDetails();
-
-        formDetails.setMessage(workFlowName1);
-        formDetails.setSiteName(cloudSiteName);
-        formDetails.setTaskType(TaskType.SIMPLE_CLOUD_TASK);
-        formDetails.setAssignee(cloudUser1);
-        formDetails.setTaskPriority(Priority.HIGH);
-        formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        // Fill the form details and start workflow
-        DocumentLibraryPage documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
-        // Verify the document is part of the workflow
-        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName1).isPartOfWorkflow(), "Verifying the document is part of a workflow");
-        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName1).isCloudSynced(), "Verifying the document is synced");
-        assertTrue(checkIfContentIsSynced(drone, opFileName1), "Verifying the Sync Status is \"Synced\"");
-
-        // Start Simple Cloud Task workflow with Medium Priority
-        cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName2);
-
-        formDetails = new WorkFlowFormDetails();
-
-        formDetails.setMessage(workFlowName2);
-        formDetails.setSiteName(cloudSiteName);
-        formDetails.setTaskType(TaskType.SIMPLE_CLOUD_TASK);
-        formDetails.setAssignee(cloudUser1);
-        formDetails.setTaskPriority(Priority.MEDIUM);
-        formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
-        // Verify the document is part of the workflow
-        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName2).isPartOfWorkflow(), "Verifying the document is part of a workflow");
-        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName2).isCloudSynced(), "Verifying the document is synced");
-        assertTrue(checkIfContentIsSynced(drone, opFileName2), "Verifying the Sync Status is \"Synced\"");
-
-        formDetails = new WorkFlowFormDetails();
-
-        formDetails.setMessage(workFlowName3);
-        formDetails.setSiteName(cloudSiteName);
-        formDetails.setTaskType(TaskType.SIMPLE_CLOUD_TASK);
-        formDetails.setAssignee(cloudUser1);
-        formDetails.setTaskPriority(Priority.LOW);
-        formDetails.setContentStrategy(KeepContentStrategy.KEEPCONTENT);
-
-        cloudTaskOrReviewPage = ShareUserWorkFlow.startWorkFlowFromDocumentLibraryPage(drone, opFileName3);
-
-        documentLibraryPage = cloudTaskOrReviewPage.startWorkflow(formDetails).render();
-        // Verify the document is part of the workflow
-        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName3).isPartOfWorkflow(), "Verifying the document is part of a workflow");
-        assertTrue(documentLibraryPage.getFileDirectoryInfo(opFileName3).isCloudSynced(), "Verifying the document is synced");
-        assertTrue(checkIfContentIsSynced(drone, opFileName3), "Verifying the Sync Status is \"Synced\"");
-
-        MyWorkFlowsPage myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
-
-        WorkFlowDetailsPage detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName1).render();
-        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.HIGH);
-
-        myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
-        detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName2).render();
-        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.MEDIUM);
-
-        myWorkFlowsPage = ShareUserWorkFlow.navigateToMyWorkFlowsPage(drone);
-        detailsPage = myWorkFlowsPage.selectWorkFlow(workFlowName3).render();
-        Assert.assertEquals(detailsPage.getWorkFlowDetailsGeneralInfo().getPriority(),Priority.LOW);
-
-        ShareUser.logout(drone);
-
-        //Cloud user login
-        ShareUser.login(hybridDrone, cloudUser1, DEFAULT_PASSWORD);
-
-        MyTasksPage myTasks = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone);
-        Assert.assertTrue(ShareUser.checkIfTaskIsPresent(hybridDrone, workFlowName1));
-        Assert.assertEquals(myTasks.selectViewTasks(workFlowName1).render().getTaskDetailsInfo().getPriority(), Priority.HIGH);
-
-        myTasks = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone);
-        Assert.assertTrue(ShareUser.checkIfTaskIsPresent(hybridDrone, workFlowName2));
-        Assert.assertEquals(myTasks.selectViewTasks(workFlowName2).render().getTaskDetailsInfo().getPriority(), Priority.MEDIUM);
-
-        myTasks = ShareUserWorkFlow.navigateToMyTasksPage(hybridDrone);
-        Assert.assertTrue(ShareUser.checkIfTaskIsPresent(hybridDrone, workFlowName3));
-        Assert.assertEquals(myTasks.selectViewTasks(workFlowName3).render().getTaskDetailsInfo().getPriority(), Priority.LOW);
-
-        ShareUser.logout(hybridDrone);
-    }
-
-    /**
-     * ALF-9559 50 - Approved by the first user
+     * AONE-15661 50 - Approved by the first user
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 2 Cloud users</li>
@@ -2544,7 +1878,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9559() throws Exception
+    public void dataPrep_AONE_15661() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2594,7 +1928,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9559:50 - Approved by the first user.
+     * AONE-15661:50 - Approved by the first user.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -2618,7 +1952,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9559() throws Exception
+    public void AONE_15661() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2701,7 +2035,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9594:50 - Rejected by the first user
+     * AONE-15662:50 - Rejected by the first user
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 2 Cloud users</li>
@@ -2710,7 +2044,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9594() throws Exception
+    public void dataPrep_AONE_15662() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2751,7 +2085,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9594:50 - Rejected by the first user.
+     * AONE-15662:50 - Rejected by the first user.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -2776,7 +2110,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9594() throws Exception
+    public void AONE_15662() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2858,7 +2192,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15170:100 - Rejected by the first user
+     * AONE-15663:100 - Rejected by the first user
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 2 Cloud users</li>
@@ -2867,7 +2201,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15170() throws Exception
+    public void dataPrep_AONE_15663() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -2908,7 +2242,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15170:100 - Rejected by the first user.
+     * AONE-15663:100 - Rejected by the first user.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -2931,8 +2265,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      *
      * @throws Exception
      */
-    @Test(groups="Hybrid")
-    public void ALF_15170() throws Exception
+    @Test(groups={"Hybrid","IntermittentBugs"})
+    public void AONE_15663() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3018,7 +2352,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15171:Task Details - Required Approval Percentage after competion (less than 50).
+     * AONE-15664:Task Details - Required Approval Percentage after competion (less than 50).
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 2 Cloud users</li>
@@ -3027,7 +2361,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15171() throws Exception
+    public void dataPrep_AONE_15664() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3068,7 +2402,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15171:Task Details - Required Approval Percentage after competion (less than 50).
+     * AONE-15664:Task Details - Required Approval Percentage after competion (less than 50).
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3092,7 +2426,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15171() throws Exception
+    public void AONE_15664() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3178,7 +2512,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15172 50 - Approved by the first user
+     * AONE-15665 50 - Approved by the first user
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 2 Cloud users</li>
@@ -3187,7 +2521,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15172() throws Exception
+    public void dataPrep_AONE_15665() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3229,7 +2563,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15171:Task Details - Required Approval Percentage after competion (less than 50).
+     * AONE-15664:Task Details - Required Approval Percentage after competion (less than 50).
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3253,8 +2587,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      *
      * @throws Exception
      */
-    @Test(groups="Hybrid")
-    public void ALF_15172() throws Exception
+    @Test(groups={"Hybrid","IntermittentBugs"})
+    public void AONE_15665() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3348,7 +2682,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9576:Reviewer/Assignee has no write permissions to the folder.
+     * AONE-15718:Reviewer/Assignee has no write permissions to the folder.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 2 Cloud users</li>
@@ -3357,7 +2691,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9576() throws Exception
+    public void dataPrep_AONE_15718() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3398,7 +2732,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9576:Reviewer/Assignee has no write permissions to the folder.
+     * AONE-15718:Reviewer/Assignee has no write permissions to the folder.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3413,7 +2747,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9576() throws Exception
+    public void AONE_15718() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3474,7 +2808,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9627:Cloud Free Network - Start Workflow.
+     * AONE-15719:Cloud Free Network - Start Workflow.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 1 Cloud freenet user</li>
@@ -3482,7 +2816,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9627() throws Exception
+    public void dataPrep_AONE_15719() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3515,7 +2849,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9627:Cloud Free Network - Start Workflow.
+     * AONE-15719:Cloud Free Network - Start Workflow.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3530,7 +2864,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9627() throws Exception
+    public void AONE_15719() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3565,7 +2899,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9628:Cloud Trial Standard Network - Start Workflow.
+     * AONE-15720:Cloud Trial Standard Network - Start Workflow.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 1 Cloud trialnet user</li>
@@ -3573,7 +2907,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9628() throws Exception
+    public void dataPrep_AONE_15720() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3608,7 +2942,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9628:Cloud Trial Standard Network - Start Workflow.
+     * AONE-15720:Cloud Trial Standard Network - Start Workflow.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3622,7 +2956,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9628() throws Exception
+    public void AONE_15720() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3673,7 +3007,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
 
 
     /**
-     * ALF-9630:Partner Cloud account - Start Workflow.
+     * AONE-15721:Partner Cloud account - Start Workflow.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 1 Cloud partner network user</li>
@@ -3681,7 +3015,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9630() throws Exception
+    public void dataPrep_AONE_15721() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3717,7 +3051,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9630:Partner Cloud account - Start Workflow.
+     * AONE-15721:Partner Cloud account - Start Workflow.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3731,7 +3065,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9630() throws Exception
+    public void AONE_15721() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3781,7 +3115,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15243:Check workflow availability for non-initiator.
+     * AONE-15724:Check workflow availability for non-initiator.
      * <ul>
      * <li>Create OP user</li>
      * <li>Create 3 Cloud users</li>
@@ -3789,7 +3123,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_15243() throws Exception
+    public void dataPrep_AONE_15724() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3835,8 +3169,8 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-15243 - Combination of ALF-15243/ALF-15244/ALF-15245
-     * ALF-15243:Check workflow availability for non-initiator.
+     * AONE-15724 - Combination of AONE-15724/AONE-15725/AONE-15726
+     * AONE-15724:Check workflow availability for non-initiator.
      * <ul>
      * <li>Login to OP, Create Site and document, Start Cloud Review Task
      * Workflow</li>
@@ -3854,7 +3188,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_15243() throws Exception
+    public void AONE_15724() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3959,13 +3293,13 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9631:Upgrade Cloud account - Incomplete Workflow.
+     * AONE-15723:Upgrade Cloud account - Incomplete Workflow.
      * <ul>
      * <li>Create OP user</li>
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9631() throws Exception
+    public void dataPrep_AONE_15723() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -3976,7 +3310,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9631:Upgrade Cloud account - Incomplete Workflow.
+     * AONE-15723:Upgrade Cloud account - Incomplete Workflow.
      * <ul>
      * <li>Create 1 Cloud trialnet user</li>
      * <li>Login to Cloud, Create a site, create a document within the site</li>
@@ -3992,7 +3326,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
     @Test(groups="Hybrid")
-    public void ALF_9631() throws Exception
+    public void AONE_15723() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -4086,13 +3420,13 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
     }
 
     /**
-     * ALF-9629:Downgrade Cloud account - Incomplete Workflow.
+     * AONE-15722:Downgrade Cloud account - Incomplete Workflow.
      * <ul>
      * <li>Create OP user</li>
      * </ul>
      */
     @Test(groups="DataPrepHybrid")
-    public void dataPrep_ALF_9629() throws Exception
+    public void dataPrep_AONE_15722() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
@@ -4121,7 +3455,7 @@ public class HybridWorkflowTest3 extends AbstractWorkflow
      * @throws Exception
      */
 /*    @Test(groups="Hybrid")
-    public void ALF_9629() throws Exception
+    public void AONE_15722() throws Exception
     {
         String testName = getTestName();
         String opUser1 = getUserNameForDomain(testName, DOMAIN_HYBRID);
