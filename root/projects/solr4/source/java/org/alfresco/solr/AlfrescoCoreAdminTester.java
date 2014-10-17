@@ -398,7 +398,7 @@ public class AlfrescoCoreAdminTester
             mlText.addValue(Locale.GERMAN, "banane");
             mlText.addValue(new Locale("el"), "μπανάνα");
             mlText.addValue(Locale.ITALIAN, "banana");
-            mlText.addValue(new Locale("ja"), "�?ナナ");
+            mlText.addValue(new Locale("ja"), "バナナ");
             mlText.addValue(new Locale("ko"), "바나나");
             mlText.addValue(new Locale("pt"), "banana");
             mlText.addValue(new Locale("ru"), "банан");
@@ -7632,7 +7632,7 @@ public class AlfrescoCoreAdminTester
                         "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":banana", 1,
                         Locale.ITALIAN, null, null);
             testQuery(dataModel, report, solrIndexSearcher,
-                        "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":�?ナナ", 1, new Locale(
+                        "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":バナナ", 1, new Locale(
                                     "ja"), null, null);
             testQuery(dataModel, report, solrIndexSearcher,
                         "@" + SearchLanguageConversion.escapeLuceneQuery(mlQName.toString()) + ":바나나", 1, new Locale(
