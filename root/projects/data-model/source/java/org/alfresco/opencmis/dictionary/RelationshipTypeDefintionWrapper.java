@@ -66,8 +66,8 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
             typeDef.setIsCreatable(true);
         }
         
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(null);
+        typeDef.setDescription(null);
 
         typeDef.setIsQueryable(false);
         typeDef.setIsFulltextIndexed(false);
@@ -99,8 +99,8 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         typeDef.setQueryName(cmisMapping.buildPrefixEncodedString(alfrescoName));
         typeDef.setParentTypeId(BaseTypeId.CMIS_RELATIONSHIP.value());
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(null);
+        typeDef.setDescription(null);
 
         typeDef.setIsCreatable(true);
         typeDef.setIsQueryable(false);
@@ -211,6 +211,22 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
             {
                 ((AbstractTypeDefinitionWrapper) child).resolveInheritance(cmisMapping, registry, dictionaryService);
             }
+        }
+    }
+    
+    @Override
+    public void updateDefinition(DictionaryService dictionaryService)
+    {
+        AssociationDefinition assocDef = dictionaryService.getAssociation(alfrescoName);
+
+        if (assocDef != null)
+        {
+            setTypeDefDisplayName(assocDef.getTitle(dictionaryService));
+            setTypeDefDescription(assocDef.getDescription(dictionaryService));
+        }
+        else
+        {
+            super.updateDefinition(dictionaryService);
         }
     }
 }

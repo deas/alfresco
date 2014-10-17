@@ -26,6 +26,7 @@ import java.util.List;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
@@ -78,8 +79,8 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(null);
+        typeDef.setDescription(null);
 
         typeDef.setIsCreatable(false);
         typeDef.setIsQueryable(true);
@@ -217,6 +218,22 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
                 ((AbstractTypeDefinitionWrapper) child).resolveInheritance(cmisMapping, registry,
                         dictionaryService);
             }
+        }
+    }
+
+    @Override
+    public void updateDefinition(DictionaryService dictionaryService)
+    {
+        AspectDefinition aspectDef = dictionaryService.getAspect(alfrescoName);
+
+        if (aspectDef != null)
+        {
+            setTypeDefDisplayName(aspectDef.getTitle(dictionaryService));
+            setTypeDefDescription(aspectDef.getDescription(dictionaryService));
+        }
+        else
+        {
+            super.updateDefinition(dictionaryService);
         }
     }
 }

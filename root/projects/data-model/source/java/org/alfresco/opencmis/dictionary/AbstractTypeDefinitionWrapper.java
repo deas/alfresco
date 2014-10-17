@@ -28,6 +28,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.mapping.CMISMapping;
@@ -81,7 +83,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 //    protected List<TypeDefinitionWrapper> children;
 
     private String tenantId;
-
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    
     @Override
     public String getTenantId()
     {
@@ -100,12 +103,21 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 
     public TypeDefinition getTypeDefinition(boolean includePropertyDefinitions)
     {
-        if (includePropertyDefinitions)
+        lock.readLock().lock();
+        try
         {
-            return typeDefInclProperties;
-        } else
+            if (includePropertyDefinitions)
+            {
+                return typeDefInclProperties;
+            }
+            else
+            {
+                return typeDef;
+            }
+        }
+        finally
         {
-            return typeDef;
+            lock.readLock().unlock();
         }
     }
 
@@ -187,6 +199,50 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         return propertiesByQName.get(name);
     }
 
+    @Override
+    public void updateDefinition(DictionaryService dictionaryService)
+    {
+        String name = null;
+        String description = null;
+        ClassDefinition definition = dictionaryService.getClass(alfrescoName);
+
+        if (definition != null)
+        {
+            name = definition.getTitle(dictionaryService);
+            description = definition.getDescription(dictionaryService);
+        }
+        setTypeDefDisplayName(name);
+        setTypeDefDescription(description);
+    }
+
+    public void setTypeDefDisplayName(String name)
+    {
+        lock.writeLock().lock();
+        try
+        {
+            typeDef.setDisplayName(name != null ? name : typeDef.getId());
+            typeDefInclProperties.setDisplayName(name != null ? name : typeDef.getId());
+        }
+        finally
+        {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public void setTypeDefDescription(String desc)
+    {
+        lock.writeLock().lock();
+        try
+        {
+            typeDef.setDescription(desc != null ? desc : typeDef.getId());
+            typeDefInclProperties.setDescription(desc != null ? desc : typeDef.getId());
+        }
+        finally
+        {
+            lock.writeLock().unlock();
+        }
+    }
+    
     // create
 
     public abstract List<TypeDefinitionWrapper> connectParentAndSubTypes(CMISMapping cmisMapping, CMISDictionaryRegistry registry,
