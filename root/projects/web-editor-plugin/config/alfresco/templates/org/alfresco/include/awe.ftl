@@ -138,7 +138,7 @@ ${head}
 <#macro templateHtmlEditorAssets>
 <!-- HTML Editor Assets -->
    <#-- NOTE: Do not attempt to load -min.js version of tiny_mce/tiny_mce.js -->
-   <script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce/tiny_mce.js"></script>
+   <script type="text/javascript" src="${url.context}/res/modules/editors/tinymce/tinymce.js"></script>
    <@script type="text/javascript" src="${url.context}/res/modules/editors/tiny_mce.js"></@script>
    <@script type="text/javascript" src="${url.context}/res/modules/editors/yui_editor.js"></@script>
 </#macro>
