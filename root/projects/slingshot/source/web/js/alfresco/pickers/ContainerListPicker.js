@@ -73,6 +73,15 @@ define(["dojo/_base/declare",
          },
 
          /**
+          * Don't show documents
+          *
+          * @instance
+          * @type {boolean}
+          * @default false
+          */
+         showDocuments: false,
+
+         /**
           * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to create the picker
           * view for selecting documents.
           *

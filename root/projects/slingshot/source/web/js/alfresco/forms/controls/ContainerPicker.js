@@ -62,13 +62,15 @@ define(["alfresco/forms/controls/Picker",
                            publishOnRender: "true",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/ContainerListPicker",
-                                 config: {
-                                    nodeRef: "alfresco://user/home",
-                                    path: "/"
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/ContainerListPicker",
+                                    config: {
+                                       nodeRef: "alfresco://user/home",
+                                       path: "/"
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      },
@@ -79,15 +81,17 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/ContainerListPicker",
-                                 config: {
-                                    nodeRef: "alfresco://company/shared",
-                                    filter: {
-                                       path: "/"
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/ContainerListPicker",
+                                    config: {
+                                       nodeRef: "alfresco://company/shared",
+                                       filter: {
+                                          path: "/"
+                                       }
                                     }
                                  }
-                              }
+                              ]
                            }
                         }
                      },
@@ -98,13 +102,15 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/ContainerListPicker",
-                                 config: {
-                                    nodeRef: "alfresco://company/home",
-                                    path: "/"
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/ContainerListPicker",
+                                    config: {
+                                       nodeRef: "alfresco://company/home",
+                                       path: "/"
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      },
@@ -115,14 +121,26 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/SingleItemPicker",
-                                 config: {
-                                    subPicker: "alfresco/pickers/ContainerListPicker",
-                                    currentPickerDepth: 1,
-                                    requestItemsTopic: "ALF_GET_RECENT_SITES"
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/SingleItemPicker",
+                                    config: {
+                                       currentPickerDepth: 1,
+                                       widgetsForSubPicker: [
+                                          {
+                                             name: "alfresco/pickers/ContainerListPicker",
+                                             config: {
+                                                siteMode: true,
+                                                libraryRoot: "{siteNodeRef}",
+                                                nodeRef: "{siteNodeRef}",
+                                                path: "/"
+                                             }
+                                          }
+                                       ],
+                                       requestItemsTopic: "ALF_GET_RECENT_SITES"
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      },
@@ -133,14 +151,26 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/SingleItemPicker",
-                                 config: {
-                                    subPicker: "alfresco/pickers/ContainerListPicker",
-                                    currentPickerDepth: 1,
-                                    requestItemsTopic: "ALF_GET_FAVOURITE_SITES"
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/SingleItemPicker",
+                                    config: {
+                                       currentPickerDepth: 1,
+                                       widgetsForSubPicker: [
+                                          {
+                                             name: "alfresco/pickers/ContainerListPicker",
+                                             config: {
+                                                siteMode: true,
+                                                libraryRoot: "{siteNodeRef}",
+                                                nodeRef: "{siteNodeRef}",
+                                                path: "/"
+                                             }
+                                          }
+                                       ],
+                                       requestItemsTopic: "ALF_GET_FAVOURITE_SITES"
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      }

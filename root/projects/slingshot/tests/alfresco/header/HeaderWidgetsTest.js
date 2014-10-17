@@ -68,7 +68,7 @@ define(["intern!object",
          .findByCssSelector("#PRESET_STATUS > div.lastUpdate > span")
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "over 14 years ago", "Test #1d - Preset status time not displayed as expected");
+               assert(resultText == "over 15 years ago", "Test #1d - Preset status time not displayed as expected");
             })
             .end()
 
@@ -152,7 +152,7 @@ define(["intern!object",
          .findByCssSelector("#NO_STATUS > div.lastUpdate > span")
             .getVisibleText()
             .then(function(resultText) {
-               assert(resultText == "over 14 years ago", "Test #3b - Status time not updated");
+               assert(resultText == "over 15 years ago", "Test #3b - Status time not updated");
             })
             .end()
 

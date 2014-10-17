@@ -156,7 +156,6 @@ define(["dojo/_base/declare",
          });
       },
       
-      
       /**
        * @instance
        * @param {object} payload The details of the documents that have been loaded
@@ -165,52 +164,73 @@ define(["dojo/_base/declare",
          this.alfLog("log", "New Documents Loaded", payload);
          if (payload != null)
          {
-            if (payload.totalDocuments != null && payload.startIndex != null)
+            if (this.__paginationControlsAvailable === true)
             {
-               if (payload.totalDocuments === 0)
-               {
-                  // Hide pagination controls when there are no results...
-                  domClass.add(this.domNode, "hidden");
-               }
-               else
-               {
-                  // Make sure the pagination controls aren't hidden...
-                  domClass.remove(this.domNode, "hidden");
-                  
-                  this.totalDocuments = payload.totalDocuments;
-                  this.totalPages = Math.ceil(payload.totalDocuments/this.documentsPerPage);
-                  this.currentPage = ((payload.startIndex - (payload.startIndex % this.documentsPerPage))/this.documentsPerPage) + 1;
+               this.processLoadedDocuments(payload);
+            }
+            else
+            {
+               this.__deferredLoadedDocumentData = payload;
+            }
+         }
+      },
 
-                  // Update the page back action to disable if on the first page...
-                  if (this.pageBack)
-                  {
-                     this.pageBack.set("disabled", (this.currentPage == 1));
-                  }
-                  
-                  // Update the page forward action to disable if on the last page...
-                  if (this.pageForward)
-                  {
-                     this.pageForward.set("disabled", (this.currentPage == this.totalPages));
-                  }
-                  
-                  // Update the page marker to show the current page...
-                  if (this.pageMarker)
-                  {
-                     this.pageMarker.set("label", this.currentPage.toString());
-                     domClass.remove(this.pageMarker.domNode, "dijitDisabled dijitMenuItemDisabled");
-                  }
-                  
-                  // Delete the previous page selector group contents...
-                  if (this.pageSelectorGroup != null)
-                  {
-                     var _this = this;
-                     array.forEach(this.pageSelectorGroup.getChildren(), function(widget, index) {
-                        _this.pageSelectorGroup.removeChild(widget);
-                        widget.destroy();
-                     });
-                  }
-                  
-                  // Create the page labels, which for English will be along the lines of 1-25
+      /**
+       * This function processes the loaded document data to set the appropriate data in the paginator
+       * widgets.
+       *
+       * @instance
+       * @param {object} payload The data to use to update the widgets
+       */
+      processLoadedDocuments: function alfresco_documentlibrary_AlfDocumentListPaginator__processLoadedDocuments(payload) {
+         if (payload.totalDocuments != null && payload.startIndex != null)
+         {
+            if (payload.totalDocuments === 0)
+            {
+               // Hide pagination controls when there are no results...
+               domClass.add(this.domNode, "hidden");
+            }
+            else
+            {
+               // Make sure the pagination controls aren't hidden...
+               domClass.remove(this.domNode, "hidden");
+               
+               this.totalDocuments = payload.totalDocuments;
+               this.totalPages = Math.ceil(payload.totalDocuments/this.documentsPerPage);
+               this.currentPage = ((payload.startIndex - (payload.startIndex % this.documentsPerPage))/this.documentsPerPage) + 1;
+
+               // Update the page back action to disable if on the first page...
+               if (this.pageBack)
+               {
+                  this.pageBack.set("disabled", (this.currentPage == 1));
+               }
+               
+               // Update the page forward action to disable if on the last page...
+               if (this.pageForward)
+               {
+                  this.pageForward.set("disabled", (this.currentPage == this.totalPages));
+               }
+               
+               // Update the page marker to show the current page...
+               if (this.pageMarker)
+               {
+                  this.pageMarker.set("label", this.currentPage.toString());
+                  domClass.remove(this.pageMarker.domNode, "dijitDisabled dijitMenuItemDisabled");
+               }
+               
+               // Delete the previous page selector group contents...
+               if (this.pageSelectorGroup != null)
+               {
+                  var _this = this;
+                  array.forEach(this.pageSelectorGroup.getChildren(), function(widget, index) {
+                     _this.pageSelectorGroup.removeChild(widget);
+                     widget.destroy();
+                  });
+               }
+               
+               // Create the page labels, which for English will be along the lines of 1-25
+               if (this.compactMode === false)
+               {
                   var pageLabels = [];
                   var pageStart = 1;
                   for (var i=0; i<this.totalPages; i++)
@@ -240,7 +260,19 @@ define(["dojo/_base/declare",
                            value: (i+1)
                         }
                      });
-                     this.pageSelectorGroup.addChild(menuItem);
+
+                     if (this.pageSelectorGroup != null)
+                     {
+                        this.pageSelectorGroup.addChild(menuItem);
+                     }
+                     else
+                     {
+                        if (this.__initialPageSelectorItems == null)
+                        {
+                           this.__initialPageSelectorItems = [];
+                        }
+                        this.__initialPageSelectorItems.push(menuItem);
+                     }
                      
                      pageLabels.push();
                      pageStart = pageEnd + 1; // Add the 1 back on because the next page starts at 26
@@ -279,6 +311,16 @@ define(["dojo/_base/declare",
       hidePageSizeOnWidth: 1024,
 
       /**
+       * Indicates whether the paginator should be displayed in "compact" mode where only
+       * the back and forward buttons are displayed.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      compactMode: false,
+
+      /**
        * @instance
        */
       postCreate: function alfresco_documentlibrary_AlfDocumentListPaginator__postCreate() {
@@ -288,19 +330,6 @@ define(["dojo/_base/declare",
              label100 = this.message("alf-documentlist-paginator.perPage.label", {0: 100});
          
          this.widgets = [
-            {
-               name: "alfresco/menus/AlfMenuBarSelect",
-               config: {
-                  id: this.id + "_PAGE_SELECTOR",
-                  label: this.message("alf-documentlist-paginator.pageSelect.label"),
-                  selectionTopic: this.pageSelectionTopic,
-                  widgets: [
-                     {
-                        name: "alfresco/menus/AlfMenuGroup"
-                     }
-                  ]
-               }
-            },
             {
                name: "alfresco/menus/AlfMenuBarItem",
                config: {
@@ -324,8 +353,26 @@ define(["dojo/_base/declare",
                   label: this.message("alf-documentlist-paginator.next.label"),
                   publishTopic: this.pageForwardTopic
                }
-            },
-            {
+            }
+         ];
+
+         if (this.compactMode === false)
+         {
+            this.widgets.splice(0, 0, {
+               name: "alfresco/menus/AlfMenuBarSelect",
+               config: {
+                  id: this.id + "_PAGE_SELECTOR",
+                  label: this.message("alf-documentlist-paginator.pageSelect.label"),
+                  selectionTopic: this.pageSelectionTopic,
+                  widgets: [
+                     {
+                        name: "alfresco/menus/AlfMenuGroup"
+                     }
+                  ]
+               }
+            });
+
+            this.widgets.splice(4,0, {
                name: "alfresco/menus/AlfMenuBarSelect",
                config: {
                   id: this.id + "_RESULTS_PER_PAGE_SELECTOR",
@@ -398,8 +445,8 @@ define(["dojo/_base/declare",
                      }
                   ]
                }
-            }
-         ];
+            });
+         }
          this.inherited(arguments);
       },
       
@@ -408,15 +455,28 @@ define(["dojo/_base/declare",
        */
       allWidgetsProcessed: function alfresco_documentlibrary_AlfDocumentListPaginator__allWidgetsProcessed() {
          this.inherited(arguments);
+
+         this.__paginationControlsAvailable = true;
          
          // This next line will work providing that the widgets attribute has been created as defined in the
          // postCreate function...
-         var popupChildren = this._menuBar.getChildren()[0].popup.getChildren();
-         this.pageSelectorGroup = popupChildren[popupChildren.length-1];
+         if (this.compactMode === false)
+         {
+            var popupChildren = this._menuBar.getChildren()[0].popup.getChildren();
+            this.pageSelectorGroup = popupChildren[popupChildren.length-1];
+         }
          
          this.pageBack = registry.byId(this.id + "_PAGE_BACK");
          this.pageForward = registry.byId(this.id + "_PAGE_FORWARD");
          this.pageMarker = registry.byId(this.id + "_PAGE_MARKER");
+
+         // Check to see if any document data was provided before widget instantiation completed and
+         // if so process it with the now available widgets...
+         if (this.__deferredLoadedDocumentData != null)
+         {
+            this.processLoadedDocuments(this.__deferredLoadedDocumentData);
+         }
+         delete this.__deferredLoadedDocumentData;
       }
    });
 });

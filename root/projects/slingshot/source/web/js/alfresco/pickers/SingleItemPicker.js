@@ -28,15 +28,17 @@
 define(["dojo/_base/declare",
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
-        "dojo/text!./templates/SingleItemPicker.html",
         "alfresco/core/Core",
         "alfresco/core/CoreWidgetProcessing",
+        "alfresco/core/ObjectProcessingMixin",
+        "dojo/text!./templates/SingleItemPicker.html",
         "dojo/_base/lang",
         "dojo/_base/array",
         "alfresco/core/NodeUtils"],
-        function(declare, _WidgetBase, _TemplatedMixin, template, AlfCore, CoreWidgetProcessing, lang, array, NodeUtils) {
+        function(declare, _WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, 
+                 ObjectProcessingMixin, template, lang, array, NodeUtils) {
 
-   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing], {
+   return declare([_WidgetBase, _TemplatedMixin, AlfCore, CoreWidgetProcessing, ObjectProcessingMixin], {
 
       /**
        * An array of the CSS files to use with this widget.
@@ -53,15 +55,6 @@ define(["dojo/_base/declare",
        * @type {String}
        */
       templateString: template,
-
-      /**
-       * Which picker shall we call to display the results of this picking?
-       *
-       * @instance
-       * @type {String}
-       * @default "alfresco/pickers/DocumentListPicker"
-       */
-      subPicker: "alfresco/pickers/DocumentListPicker",
 
       /**
        *
@@ -135,6 +128,19 @@ define(["dojo/_base/declare",
        */
       addItemWidgetConfig: function alfresco_pickers_SingleItemPicker__addItemWidgetConfig(widgets, item, index) {
          var siteNodeRef = NodeUtils.processNodeRef(item.node.substring(item.node.indexOf("workspace"))).nodeRef;
+
+
+         // Generate the widget model for the sub-picker...
+         // We're going to clone the defined "widgetsForSubPicker" configuration to prevent
+         // pollution of values and then hi-jack the current item object to create an object
+         // with the current siteNodeRef being handled (making sure to restore it later)...
+         var widgetsForSubPicker = lang.clone(this.widgetsForSubPicker);
+         this.currentItem = {
+            siteNodeRef: siteNodeRef
+         };
+         this.processObject(["processCurrentItemTokens"], widgetsForSubPicker);
+
+
          var config = {
             name: "alfresco/menus/AlfMenuBarItem",
             config: {
@@ -144,20 +150,29 @@ define(["dojo/_base/declare",
                publishTopic: "ALF_ADD_PICKER",
                publishPayload: {
                   currentPickerDepth: this.currentPickerDepth,
-                  picker: {
-                     name: this.subPicker,
-                     config: {
-                        siteMode: true,
-                        libraryRoot: siteNodeRef,
-                        nodeRef: siteNodeRef,
-                        path: "/"
-                     }
-                  }
+                  picker: widgetsForSubPicker
                }
             }
          };
          widgets.push(config);
       },
+
+      /**
+       *
+       *
+       * @instance
+       */
+      widgetsForSubPicker: [
+         {
+            name: "alfresco/pickers/DocumentListPicker",
+            config: {
+               siteMode: true,
+               libraryRoot: "{siteNodeRef}",
+               nodeRef: "{siteNodeRef}",
+               path: "/"
+            }
+         }
+      ],
 
       /**
        * Handles failures to obtain the items to display.

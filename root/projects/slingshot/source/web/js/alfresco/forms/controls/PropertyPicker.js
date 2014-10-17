@@ -168,17 +168,19 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/PropertyPicker",
-                                 config: {
-                                    itemsProperty: null,
-                                    loadDataPublishTopic: "ALF_CRUD_GET_ALL",
-                                    loadDataPublishPayload: {
-                                       url: "api/properties"
-                                    },
-                                    publishPickedItemsToParent: false
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/PropertyPicker",
+                                    config: {
+                                       itemsProperty: null,
+                                       loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                       loadDataPublishPayload: {
+                                          url: "api/properties"
+                                       },
+                                       publishPickedItemsToParent: false
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      },
@@ -189,64 +191,68 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/PropertyPicker",
-                                 config: {
-                                    generatePubSubScope: true,
-                                    itemsProperty: null,
-                                    loadDataPublishTopic: "ALF_CRUD_GET_ALL",
-                                    loadDataPublishPayload: {
-                                       url: "api/classes?cf=aspect"
-                                    },
-                                    widgets: [
-                                       {
-                                          name: "alfresco/documentlibrary/views/AlfDocumentListView",
-                                          config: {
-                                             widgets: [
-                                                {
-                                                   name: "alfresco/documentlibrary/views/layouts/Row",
-                                                   config: {
-                                                      widgets: [
-                                                         {
-                                                            name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                            config: {
-                                                               widgets: [
-                                                                  {
-                                                                     name: "alfresco/renderers/PropertyLink",
-                                                                     config: {
-                                                                        propertyToRender: "title",
-                                                                        useCurrentItemAsPayload: false,
-                                                                        publishTopic: "ALF_ADD_PICKER",
-                                                                        publishPayload: {
-                                                                           currentPickerDepth: 1,
-                                                                           picker: {
-                                                                              name: "alfresco/pickers/PropertyPicker",
-                                                                              config: {
-                                                                                 generatePubSubScope: true,
-                                                                                 itemsProperty: null,
-                                                                                 loadDataPublishTopic: "ALF_CRUD_GET_ALL",
-                                                                                 loadDataPublishPayload: {
-                                                                                    url: "api/classes/{name}/properties"
-                                                                                 },
-                                                                                 publishPickedItemsToParent: true
-                                                                              }
-                                                                           }
-                                                                        },
-                                                                        publishToParent: true
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/PropertyPicker",
+                                    config: {
+                                       generatePubSubScope: true,
+                                       itemsProperty: null,
+                                       loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                       loadDataPublishPayload: {
+                                          url: "api/classes?cf=aspect"
+                                       },
+                                       widgets: [
+                                          {
+                                             name: "alfresco/documentlibrary/views/AlfDocumentListView",
+                                             config: {
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/documentlibrary/views/layouts/Row",
+                                                      config: {
+                                                         widgets: [
+                                                            {
+                                                               name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                               config: {
+                                                                  widgets: [
+                                                                     {
+                                                                        name: "alfresco/renderers/PropertyLink",
+                                                                        config: {
+                                                                           propertyToRender: "title",
+                                                                           useCurrentItemAsPayload: false,
+                                                                           publishTopic: "ALF_ADD_PICKER",
+                                                                           publishPayload: {
+                                                                              currentPickerDepth: 1,
+                                                                              picker: [
+                                                                                 {
+                                                                                    name: "alfresco/pickers/PropertyPicker",
+                                                                                    config: {
+                                                                                       generatePubSubScope: true,
+                                                                                       itemsProperty: null,
+                                                                                       loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                                                                       loadDataPublishPayload: {
+                                                                                          url: "api/classes/{name}/properties"
+                                                                                       },
+                                                                                       publishPickedItemsToParent: true
+                                                                                    }
+                                                                                 }
+                                                                              ]
+                                                                           },
+                                                                           publishToParent: true
+                                                                        }
                                                                      }
-                                                                  }
-                                                               ]
+                                                                  ]
+                                                               }
                                                             }
-                                                         }
-                                                      ]
+                                                         ]
+                                                      }
                                                    }
-                                                }
-                                             ]
+                                                ]
+                                             }
                                           }
-                                       }
-                                    ]
+                                       ]
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      },
@@ -257,64 +263,68 @@ define(["alfresco/forms/controls/Picker",
                            publishTopic: "ALF_ADD_PICKER",
                            publishPayload: {
                               currentPickerDepth: 0,
-                              picker: {
-                                 name: "alfresco/pickers/PropertyPicker",
-                                 config: {
-                                    generatePubSubScope: true,
-                                    itemsProperty: null,
-                                    loadDataPublishTopic: "ALF_CRUD_GET_ALL",
-                                    loadDataPublishPayload: {
-                                       url: "api/classes?cf=type"
-                                    },
-                                    widgets: [
-                                       {
-                                          name: "alfresco/documentlibrary/views/AlfDocumentListView",
-                                          config: {
-                                             widgets: [
-                                                {
-                                                   name: "alfresco/documentlibrary/views/layouts/Row",
-                                                   config: {
-                                                      widgets: [
-                                                         {
-                                                            name: "alfresco/documentlibrary/views/layouts/Cell",
-                                                            config: {
-                                                               widgets: [
-                                                                  {
-                                                                     name: "alfresco/renderers/PropertyLink",
-                                                                     config: {
-                                                                        propertyToRender: "title",
-                                                                        useCurrentItemAsPayload: false,
-                                                                        publishTopic: "ALF_ADD_PICKER",
-                                                                        publishPayload: {
-                                                                           currentPickerDepth: 1,
-                                                                           picker: {
-                                                                              name: "alfresco/pickers/PropertyPicker",
-                                                                              config: {
-                                                                                 generatePubSubScope: true,
-                                                                                 itemsProperty: null,
-                                                                                 loadDataPublishTopic: "ALF_CRUD_GET_ALL",
-                                                                                 loadDataPublishPayload: {
-                                                                                    url: "api/classes/{name}/properties"
-                                                                                 },
-                                                                                 publishPickedItemsToParent: true
-                                                                              }
-                                                                           }
-                                                                        },
-                                                                        publishToParent: true
+                              picker: [
+                                 {
+                                    name: "alfresco/pickers/PropertyPicker",
+                                    config: {
+                                       generatePubSubScope: true,
+                                       itemsProperty: null,
+                                       loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                       loadDataPublishPayload: {
+                                          url: "api/classes?cf=type"
+                                       },
+                                       widgets: [
+                                          {
+                                             name: "alfresco/documentlibrary/views/AlfDocumentListView",
+                                             config: {
+                                                widgets: [
+                                                   {
+                                                      name: "alfresco/documentlibrary/views/layouts/Row",
+                                                      config: {
+                                                         widgets: [
+                                                            {
+                                                               name: "alfresco/documentlibrary/views/layouts/Cell",
+                                                               config: {
+                                                                  widgets: [
+                                                                     {
+                                                                        name: "alfresco/renderers/PropertyLink",
+                                                                        config: {
+                                                                           propertyToRender: "title",
+                                                                           useCurrentItemAsPayload: false,
+                                                                           publishTopic: "ALF_ADD_PICKER",
+                                                                           publishPayload: {
+                                                                              currentPickerDepth: 1,
+                                                                              picker: [
+                                                                                 {
+                                                                                    name: "alfresco/pickers/PropertyPicker",
+                                                                                    config: {
+                                                                                       generatePubSubScope: true,
+                                                                                       itemsProperty: null,
+                                                                                       loadDataPublishTopic: "ALF_CRUD_GET_ALL",
+                                                                                       loadDataPublishPayload: {
+                                                                                          url: "api/classes/{name}/properties"
+                                                                                       },
+                                                                                       publishPickedItemsToParent: true
+                                                                                    }
+                                                                                 }
+                                                                              ]
+                                                                           },
+                                                                           publishToParent: true
+                                                                        }
                                                                      }
-                                                                  }
-                                                               ]
+                                                                  ]
+                                                               }
                                                             }
-                                                         }
-                                                      ]
+                                                         ]
+                                                      }
                                                    }
-                                                }
-                                             ]
+                                                ]
+                                             }
                                           }
-                                       }
-                                    ]
+                                       ]
+                                    }
                                  }
-                              }
+                              ]
                            }
                         }
                      }

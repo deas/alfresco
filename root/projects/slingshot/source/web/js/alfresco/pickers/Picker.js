@@ -176,7 +176,7 @@ define(["dojo/_base/declare",
                payload.picker.config = {};
             }
             payload.picker.config.pickerDepth = this.currentPickerDepth;
-            this.processWidgets([payload.picker], this.subPickersNode);
+            this.processWidgets(payload.picker, this.subPickersNode);
             this.currentPickerDepth++;
          }
          else
@@ -262,13 +262,15 @@ define(["dojo/_base/declare",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/SingleItemPicker",
-                              config: {
-                                 currentPickerDepth: 1,
-                                 requestItemsTopic: "ALF_GET_RECENT_SITES"
+                           picker: [
+                              {
+                                 name: "alfresco/pickers/SingleItemPicker",
+                                 config: {
+                                    currentPickerDepth: 1,
+                                    requestItemsTopic: "ALF_GET_RECENT_SITES"
+                                 }
                               }
-                           }
+                           ]
                         }
                      }
                   },
@@ -279,29 +281,34 @@ define(["dojo/_base/declare",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/SingleItemPicker",
-                              config: {
-                                 currentPickerDepth: 1,
-                                 requestItemsTopic: "ALF_GET_FAVOURITE_SITES"
+                           picker: [
+                              {
+                                 name: "alfresco/pickers/SingleItemPicker",
+                                 config: {
+                                    currentPickerDepth: 1,
+                                    requestItemsTopic: "ALF_GET_FAVOURITE_SITES"
+                                 }
                               }
-                           }
+                           ]
                         }
                      }
-                  },                  {
+                  },
+                  {
                      name: "alfresco/menus/AlfMenuBarItem",
                      config: {
                         label: "picker.allSites.label",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/SingleItemPicker",
-                              config: {
-                                 currentPickerDepth: 1,
-                                 requestItemsTopic: "ALF_GET_SITES"
+                           picker: [
+                              {
+                                 name: "alfresco/pickers/SingleItemPicker",
+                                 config: {
+                                    currentPickerDepth: 1,
+                                    requestItemsTopic: "ALF_GET_SITES"
+                                 }
                               }
-                           }
+                           ]
                         }
                      }
                   },
@@ -312,13 +319,15 @@ define(["dojo/_base/declare",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/DocumentListPicker",
-                              config: {
-                                 nodeRef: "alfresco://company/home",
-                                 path: "/"
+                           picker: [
+                              {
+                                 name: "alfresco/pickers/DocumentListPicker",
+                                 config: {
+                                    nodeRef: "alfresco://company/home",
+                                    path: "/"
+                                 }
                               }
-                           }
+                           ]
                         }
                      }
                   },
@@ -329,15 +338,17 @@ define(["dojo/_base/declare",
                         publishTopic: "ALF_ADD_PICKER",
                         publishPayload: {
                            currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/DocumentListPicker",
-                              config: {
-                                 nodeRef: "alfresco://company/shared",
-                                 filter: {
-                                    path: "/"
+                           picker: [
+                              {
+                                 name: "alfresco/pickers/DocumentListPicker",
+                                 config: {
+                                    nodeRef: "alfresco://company/shared",
+                                    filter: {
+                                       path: "/"
+                                    }
                                  }
                               }
-                           }
+                           ]
                         }
                      }
                   },
@@ -348,13 +359,15 @@ define(["dojo/_base/declare",
                         publishOnRender: true, // Topic will be published when the item is rendered.
                         publishPayload: {
                            currentPickerDepth: 0,
-                           picker: {
-                              name: "alfresco/pickers/DocumentListPicker",
-                              config: {
-                                 nodeRef: "alfresco://user/home",
-                                 path: "/"
+                           picker: [
+                              {
+                                 name: "alfresco/pickers/DocumentListPicker",
+                                 config: {
+                                    nodeRef: "alfresco://user/home",
+                                    path: "/"
+                                 }
                               }
-                           }
+                           ]
                         }
                      }
                   }

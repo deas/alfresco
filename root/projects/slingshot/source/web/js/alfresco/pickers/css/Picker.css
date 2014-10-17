@@ -14,7 +14,7 @@
         padding: @standard-column-spacing;
         height: 270px;
         overflow-y: auto;
-        min-width: 100px; /* avoid the box appearing very small. */
+        min-width: 180px; /* avoid the box appearing very small. */
     }
 
     .sub-pickers {
