@@ -260,7 +260,7 @@ define(["dojo/_base/declare",
        */
       filterFacetFilters: function alfresco_search_FacetFilters__filterFacetFilters(filter, index) {
          return ((this.hitThreshold == null || this.hitThreshold <= filter.hits) &&
-                 (this.minFilterValueLength == null || filter.value.length > this.minFilterValueLength));
+                 (this.minFilterValueLength == null || filter.value.length >= this.minFilterValueLength));
       },
 
       /**
