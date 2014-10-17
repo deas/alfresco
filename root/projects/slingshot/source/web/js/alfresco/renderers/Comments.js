@@ -31,15 +31,16 @@ define(["dojo/_base/declare",
         "dijit/_OnDijitClickMixin",
         "alfresco/renderers/_JsNodeMixin",
         "alfresco/navigation/_HtmlAnchorMixin",
+        "alfresco/renderers/_PublishPayloadMixin",
         "dojo/text!./templates/Comments.html",
         "alfresco/core/Core",
         "dojo/_base/lang",
         "alfresco/core/UrlUtils",
         "dojo/dom-class"], 
         function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, 
-                 _HtmlAnchorMixin, template, AlfCore, lang, UrlUtils, domClass) {
+                 _HtmlAnchorMixin, _PublishPayloadMixin, template, AlfCore, lang, UrlUtils, domClass) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, _HtmlAnchorMixin, AlfCore, UrlUtils], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, _HtmlAnchorMixin, AlfCore, UrlUtils, _PublishPayloadMixin], {
       
       /**
        * An array of the i18n files to use with this widget.
@@ -114,19 +115,24 @@ define(["dojo/_base/declare",
             this.commentTooltip = this.message("comments.document.tooltip");
          }
          
-         // Get the URL for making a comment...
-         // TODO: This should be replaced by publishing an action to allow greater control over how comments are made
-         // TODO: Need to add siteId and repositoryUrl from somewhere
-         // TODO: The actionUrls approach is neither performant nor configurable so should be replaced.
-         var actionUrls = this.getActionUrls(this.currentItem, null, null);
-         var urlType = (isContainer ? "folderDetailsUrl" : "documentDetailsUrl");
-         if (actionUrls[urlType])
+         // By default this will generate a link to details page for the current Node. However,
+         // if a publishTopic is provided then it will publish on topic is provided
+         if (this.publishTopic == null)
          {
-            this.targetUrl = actionUrls[urlType] + "#comment";
-         }
-         else
-         {
-            this.targetUrl = "";
+            // Get the URL for making a comment...
+            // TODO: This should be replaced by publishing an action to allow greater control over how comments are made
+            // TODO: Need to add siteId and repositoryUrl from somewhere
+            // TODO: The actionUrls approach is neither performant nor configurable so should be replaced.
+            var actionUrls = this.getActionUrls(this.currentItem, null, null);
+            var urlType = (isContainer ? "folderDetailsUrl" : "documentDetailsUrl");
+            if (actionUrls[urlType])
+            {
+               this.targetUrl = actionUrls[urlType] + "#comment";
+            }
+            else
+            {
+               this.targetUrl = "";
+            }
          }
          
          // Get the count of comments if there are any...
@@ -160,15 +166,27 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Handles clicking on the comments link click and issues a navigation request.
+       * Handles clicking on the comments link click and issues a navigation request unless
+       * a specific publishTopic has been provided (in which case that topic will be published
+       * on instead using the configured publishPayload).
        *
        * @instance
        * @param {object} evt The click event
        */
       onCommentClick: function alfresco_renderers_Comments__onCommentClick(evt) {
-         this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: this.targetUrl,
-                                                   type: this.targetUrlType,
-                                                   target: this.linkTarget});
+         if (this.publishTopic != null)
+         {
+            // Clone the configured payload to avoid collisions with other instances...
+            this.publishPayload = lang.clone(this.publishPayload);
+            var generatedPayload = this.getGeneratedPayload(true);
+            this.alfPublish(this.publishTopic, generatedPayload, this.publishGlobal);
+         }
+         else
+         {
+            this.alfPublish("ALF_NAVIGATE_TO_PAGE", { url: this.targetUrl,
+                                                      type: this.targetUrlType,
+                                                      target: this.linkTarget});
+         }
       }
    });
 });

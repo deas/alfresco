@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -69,6 +69,7 @@ define(["dojo/_base/declare",
          {
             name: "alfresco/documentlibrary/views/layouts/Row",
             config: {
+               generatePubSubScope: true,
                widgets: [
                   {
                      name: "alfresco/documentlibrary/views/layouts/Cell",
@@ -272,7 +273,12 @@ define(["dojo/_base/declare",
                                                 name: "alfresco/renderers/Separator"
                                              },
                                              {
-                                                name: "alfresco/renderers/Comments"
+                                                name: "alfresco/renderers/Comments",
+                                                config: {
+                                                   publishTopic: "ALF_REVEAL_COMMENTS",
+                                                   publishPayload: {
+                                                   }
+                                                }
                                              },
                                              {
                                                 name: "alfresco/renderers/Separator",
@@ -292,6 +298,24 @@ define(["dojo/_base/declare",
                                                       {
                                                          property: "node.isContainer",
                                                          values: [false]
+                                                      }
+                                                   ]
+                                                }
+                                             }
+                                          ]
+                                       }
+                                    },
+                                    {
+                                       name: "alfresco/documentlibrary/views/layouts/Cell",
+                                       config: {
+                                          widgets: [
+                                             {
+                                                name: "alfresco/layout/VerticalReveal",
+                                                config: {
+                                                   subscriptionTopic: "ALF_REVEAL_COMMENTS",
+                                                   widgets: [
+                                                      {
+                                                         name: "alfresco/renderers/CommentsList"
                                                       }
                                                    ]
                                                 }

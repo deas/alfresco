@@ -125,7 +125,19 @@ define(["dojo/_base/declare",
          }
          else
          {
-            url = AlfConstants.PROXY_URI + url;
+            var urlType = payload.urlType;
+            if (urlType == null || urlType === "PROXY")
+            {
+               url = AlfConstants.PROXY_URI + url;
+            }
+            else if (urlType === "SHARE")
+            {
+               url = AlfConstants.URL_SERVICECONTEXT + url;
+            }
+            else
+            {
+               this.alfLog("warn", "An unknown URL type was requested, using provided URL", payload, this);
+            }
          }
          return url;
       },
@@ -237,7 +249,7 @@ define(["dojo/_base/declare",
             }
             else
             {
-               this.performDelete(url, payload.responseTopic, payload.successMessage);
+               this.performDelete(url, payload);
             }
          }
       },
@@ -274,6 +286,7 @@ define(["dojo/_base/declare",
                      publishTopic: responseTopic,
                      publishPayload: {
                         url: url,
+                        pubSubScope: payload.pubSubScope,
                         responseTopic: payload.responseTopic,
                         successMessage: payload.successMessage
                      }
@@ -299,14 +312,14 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {string} url The URL to use to perform the delete
-       * @param {string} responseTopic The topic to publish on completion of deletion.
-       * @param {string} successMessage The message to display on successful deletion
+       * @param {object} payload The original payload
        */
-      performDelete: function alfresco_services_CrudService__performDelete(url, responseTopic, successMessage) {
+      performDelete: function alfresco_services_CrudService__performDelete(url, payload) {
          this.serviceXhr({url: url,
                           method: "DELETE",
-                          alfTopic: responseTopic,
-                          successMessage: successMessage,
+                          data: this.clonePayload(payload),
+                          alfTopic: payload.responseTopic,
+                          successMessage: payload.successMessage,
                           successCallback: this.refreshRequest,
                           callbackScope: this});
       },
@@ -319,7 +332,7 @@ define(["dojo/_base/declare",
        */
       onDeleteConfirmation: function alfresco_services_CrudService__onDeleteConfirmation(payload) {
          this.alfUnsubscribeSaveHandles([this._deleteHandle]);
-         this.performDelete(payload.url, payload.responseTopic, payload.successMessage);
+         this.performDelete(payload.url, payload);
       }
    });
 });

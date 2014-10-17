@@ -767,6 +767,17 @@ define(["dojo/_base/declare",
       itemsProperty: "items",
 
       /**
+       * The property in the data response that is a metadata attribute containing additional information
+       * about the overall context of the list. This defaults to "metadata". If not attribute with the
+       * defined name is provided then no data will be assigned.
+       *
+       * @instance
+       * @type {string}
+       * @default "metadata"
+       */
+      metadataProperty: "metadata",
+
+      /**
        * Handles successful calls to get data from the repository.
        *
        * @instance
@@ -802,7 +813,7 @@ define(["dojo/_base/declare",
                foundItems = true;
 
                // We lose metaData unless we store that as well.
-               var metadata = lang.getObject("metadata", false, payload.response);
+               var metadata = lang.getObject(this.metadataProperty, false, payload.response);
                if (metadata)
                {
                   this.currentData.metadata = metadata;

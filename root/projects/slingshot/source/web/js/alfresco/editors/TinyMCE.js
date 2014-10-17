@@ -188,7 +188,6 @@ define(["dojo/_base/declare",
          config.convert_urls = false;
          config.init_instance_callback = lang.hitch(this, this.editorInitialized);
     
-         // this.editorNode.id = "TEST";
          this.editor = new tinymce.Editor(this.editorNode, config, tinymce.EditorManager);
          
          // Allow back the 'embed' tag as TinyMCE now removes it - this is allowed by our this.editors
@@ -212,6 +211,26 @@ define(["dojo/_base/declare",
       _editorInitialized: false,
 
       /**
+       * A scope for calling the [contentChangeHandler]{@link module:alfresco/editors/TinyMCE#contentChangeHandler}
+       * against.
+       *
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      contentChangeScope: null,
+
+      /**
+       * A function that should be called whenever the content of the editor changes. The function will be bound to the
+       * supplied [contentChangeScope]{@link module:alfresco/editors/TinyMCE#contentChangeScope}.
+       *
+       * @instance
+       * @type {object}
+       * @default null
+       */
+      contentChangeHandler: null,
+
+      /**
        * This is bound to the TinyMCE editors "init_instance_callback" configuration option. This then sets up the
        * various events required to manage the editor.
        *
@@ -220,7 +239,10 @@ define(["dojo/_base/declare",
        */
       editorInitialized: function alfresco_editors_TinyMCE__editorInitialized(editor) {
          this.alfLog("log", "TinyMCE Editor intialized!", editor);
-         editor.on("change", lang.hitch(this, this.onContentChange));
+         if (this.contentChangeScope && this.contentChangeHandler)
+         {
+            editor.on("change", lang.hitch(this.contentChangeScope, this.contentChangeHandler));
+         }
          editor.setContent(this.initialContent);
          this._editorInitialized = true;
          this.setDisabled(this.initiallyDisabled);
@@ -236,18 +258,6 @@ define(["dojo/_base/declare",
          // tinymce.remove('textarea');
          // this.editor.destroy(true);
          this.inherited(arguments);
-      },
-
-      /**
-       * This function has been added to support the use of this widget within the [TinyMCE form control]
-       * {@link module:alfresco/forms/controls/TinyMCE} so that it can have an aspect applied to detect
-       * content changes. Note that this only fires on blur.
-       *
-       * @instance
-       * @param {boolean} isDisabled Indicates whether or not to move the editor into disabled mode
-       */
-      onContentChange: function alfresco_editors_TinyMCE__onContentChange() {
-         this.alfLog("log", "TinyMCE content changed");
       },
 
       /**

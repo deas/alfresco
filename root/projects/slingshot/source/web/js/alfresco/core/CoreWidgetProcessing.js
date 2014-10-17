@@ -407,6 +407,10 @@ define(["dojo/_base/declare",
             {
                initArgs.currentItem = this.currentItem;
             }
+            if (initArgs.currentMetadata === undefined)
+            {
+               initArgs.currentMetadata = this.currentMetadata;
+            }
             if (initArgs.groupMemberships === undefined)
             {
                initArgs.groupMemberships = this.groupMemberships;

@@ -45,7 +45,9 @@ define(["alfresco/forms/controls/BaseFormControl",
             name: this.name,
             initialContent: this.value,
             initiallyDisabled: (this.disablementConfig && this.disablementConfig.initialValue === true),
-            immediateInit: false
+            immediateInit: false,
+            contentChangeScope: this,
+            contentChangeHandler: this.onEditorValueChange
          };
       },
       
@@ -71,16 +73,13 @@ define(["alfresco/forms/controls/BaseFormControl",
       },
 
       /**
-       * Adds an aspect handler that is called after the "onContentChange" function of the
-       * [TinyMCE editor]{@link module:alfresco/editors/TinyMCE} is triggered.
+       * Overrides to prevent any action from occurring. Editor value change handlers are passed in
+       * the configuration of the TinyMCE editor creation.
        * 
        * @instance
        */
       setupChangeEvents: function alfresco_forms_controls_TinyMCE__setupChangeEvents() {
-         if (this.wrappedWidget)
-         {
-            aspect.after(this.wrappedWidget, "onContentChange", lang.hitch(this, this.onEditorValueChange), true);
-         }
+         // No action.
       },
 
       /**

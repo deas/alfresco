@@ -416,6 +416,12 @@ define(["dojo/_base/declare",
                this.currentItem.jsNode = new JsNode(this.currentItem.node);
             }
             config.config.currentItem = this.currentItem;
+
+            // Pass on any metadata...
+            if (this.currentData && this.currentData.metadata)
+            {
+               config.config.currentMetadata = this.currentData.metadata;
+            }
             this.inherited(arguments);
          }
       },
