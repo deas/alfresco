@@ -64,6 +64,15 @@ define(["dojo/_base/declare",
       showFolders: true,
 
       /**
+       * Indicates whether or not documents should be shown in the document library.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showDocuments: true,
+
+      /**
        * @instance
        * @type {object}
        * @default null
@@ -338,8 +347,7 @@ define(["dojo/_base/declare",
                nodeRef: parentNodeRef,
                originalResponseTopic: responseTopic, // not alfResponseTopic - as this needs passing through another response cycle.
                subscriptionHandles: subscriptionHandles
-            }, true)
-
+            }, true);
          }
          else
          {
@@ -368,7 +376,22 @@ define(["dojo/_base/declare",
       updateLoadDataPayload: function alfresco_lists_AlfSortablePaginatedList__updateLoadDataPayload(payload) {
          this.inherited(arguments);
 
-         payload.type = this.showFolders ? "all" : "documents";
+         var type = "all";
+         if (this.showFolders === false && this.showDocuments === false)
+         {
+            // Someone has been silly...
+            this.alfLog("warn", "An AlfDocumentList has been configured to neither show folders nor documents, so showing both", this);
+         }
+         else if (this.showFolders === false)
+         {
+            type = "documents";
+         }
+         else if (this.showDocuments === false)
+         {
+            type = "folders";
+         }
+
+         payload.type = type;
          payload.site = this.siteId;
          payload.container = this.containerId;
          payload.filter = this.currentFilter;
