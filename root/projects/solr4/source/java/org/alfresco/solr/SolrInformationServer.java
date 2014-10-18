@@ -2170,9 +2170,9 @@ public class SolrInformationServer implements InformationServer
             if (doc == null)
             {
                 log.warn("There is no cached doc in the Solr content store with tenant [" + tenant + "] and dbId ["
-                        + dbId + "].");
-                log.warn("This should only happen if the content has been removed from the Solr content store.");
-                log.warn("Attempting to recreate ... ");
+                        + dbId + "].\n"
+                        + "This should only happen if the content has been removed from the Solr content store.\n"
+                        + "Recreating cached doc ... ");
                 doc = recreateSolrDoc(dbId, tenant);
             }
 
@@ -2328,6 +2328,10 @@ public class SolrInformationServer implements InformationServer
                     .getContentContext();
         this.solrContentStore.delete(contentContext.getContentUrl());
         ContentWriter writer = this.solrContentStore.getWriter(contentContext);
+        if (log.isDebugEnabled())
+        {
+            log.debug("Writing doc to " + contentContext.getContentUrl());
+        }
         try (
                     OutputStream contentOutputStream = writer.getContentOutputStream();
                     // Compresses the document
@@ -2340,7 +2344,7 @@ public class SolrInformationServer implements InformationServer
         catch (Exception e)
         {
             // A failure to write to the store is acceptable as long as it's logged
-            log.error("Failed to write to to store using URL: " + contentContext.getContentUrl(), e);
+            log.error("Failed to write to store using URL: " + contentContext.getContentUrl(), e);
         }
     }
 
