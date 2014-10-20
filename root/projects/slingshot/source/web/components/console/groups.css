@@ -21,6 +21,11 @@
    padding-left: 16em;
 }
 
+.groups .people-finder .search-button
+{
+   padding: 0;
+}
+
 .groups .separator
 {
    margin-bottom: 0.8em;
