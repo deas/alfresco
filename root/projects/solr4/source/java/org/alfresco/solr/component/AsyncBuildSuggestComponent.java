@@ -40,9 +40,11 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.alfresco.util.cache.AbstractAsynchronouslyRefreshedCache;
 import org.alfresco.util.cache.DefaultAsynchronouslyRefreshedCacheRegistry;
@@ -574,13 +576,21 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
         this.buildOnOptimize = buildOnOptimize;
         setRegistry(new DefaultAsynchronouslyRefreshedCacheRegistry());
         BlockingQueue<Runnable> threadPool = new LinkedBlockingQueue<Runnable>();
-        setThreadPoolExecutor(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, threadPool));
+        setThreadPoolExecutor(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, threadPool, getThreadFactory(core)));
         
         // Create and configure the initial empty suggester
         initialSuggester = new SolrSuggester();
         initialSuggester.init(suggesterParams, core);
     }
     
+    /**
+     * @return
+     */
+    private ThreadFactory getThreadFactory(SolrCore core)
+    {
+       return new SuggestorThreadFactory("Suggestor-"+core.getName()+"-");
+    }
+
     /**
      * The abstract base class' get() method will block if a value for key has
      * not previously been calculated (e.g. there is no 'live' value).
@@ -693,5 +703,28 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
         LOG.error("Exception in building suggester index for: " + suggester.getName(), e);
       }
     }
+  }
+  
+  static class SuggestorThreadFactory implements ThreadFactory {
+      private final ThreadGroup group;
+      private final AtomicInteger threadNumber = new AtomicInteger(1);
+      private final String namePrefix;
+
+      SuggestorThreadFactory(String namePrefix) 
+      {
+          SecurityManager s = System.getSecurityManager();
+          group = (s != null) ? s.getThreadGroup() :
+                                Thread.currentThread().getThreadGroup();
+          
+         this.namePrefix = namePrefix;
+      }
+
+      public Thread newThread(Runnable r) {
+          Thread t = new Thread(group, r,
+                                namePrefix + threadNumber.getAndIncrement(),
+                                0);
+          t.setDaemon(true);
+          return t;
+      }
   }
 }
