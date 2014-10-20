@@ -547,6 +547,9 @@
 						<alfresco.target.dir>${project.build.directory}</alfresco.target.dir>
                         <!-- Allow FTP server unit test to run unprivileged -->
                         <ftp.port>50521</ftp.port>
+                        <!-- ACE-2704 turned off the ftp and transfer service receiver which must be enabled for integration test -->
+                        <ftp.enabled>true</ftp.enabled>
+                        <transferservice.receiver.enabled>true</transferservice.receiver.enabled>
                         <!-- Database related properties -->
                         <db.url>${db.url}</db.url>
                         <db.driver>${db.driver}</db.driver>
