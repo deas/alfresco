@@ -9,7 +9,7 @@
 
     <artifactId>share</artifactId>
     <packaging>war</packaging>
-    <name>Alfresco Share</name>
+    <name>Alfresco Share WAR Community</name>
     <description>Alfresco Share</description>
 
     <properties>
