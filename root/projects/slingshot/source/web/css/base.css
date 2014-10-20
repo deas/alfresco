@@ -428,18 +428,6 @@ span.navigation-separator-alt
    padding: 1em;
 }
 
-.rich-content ul > li
-{
-   list-style-type: disc;
-   list-style-position: inside;
-}
-
-.rich-content ol > li
-{
-   list-style-type: decimal;
-   list-style-position: inside;
-}
-
 .rich-content th,
 .rich-content td
 {
