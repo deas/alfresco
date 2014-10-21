@@ -63,10 +63,10 @@ public class MetadataTracker extends AbstractTracker implements Tracker
     private ConcurrentLinkedQueue<Long> nodesToPurge = new ConcurrentLinkedQueue<Long>();
 
 
-    public MetadataTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, String coreName,
+    public MetadataTracker(Properties p, SOLRAPIClient client, String coreName,
                 InformationServer informationServer)
     {
-        super(scheduler, p, client, coreName, informationServer);
+        super(p, client, coreName, informationServer);
 
         transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
         nodeBatchSize = Integer.parseInt(p.getProperty("alfresco.nodeBatchSize", "10"));

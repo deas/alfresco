@@ -40,10 +40,10 @@ public class ContentTracker extends AbstractTracker implements Tracker
     private int contentUpdateBatchSize;
     
 
-    public ContentTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, String coreName,
+    public ContentTracker(Properties p, SOLRAPIClient client, String coreName,
                 InformationServer informationServer)
     {
-        super(scheduler, p, client, coreName, informationServer);
+        super(p, client, coreName, informationServer);
         contentReadBatchSize = Integer.parseInt(p.getProperty("alfresco.contentReadBatchSize", "400"));
         contentUpdateBatchSize = Integer.parseInt(p.getProperty("alfresco.contentUpdateBatchSize", "100"));
         threadHandler = new ThreadHandler(p, coreName);

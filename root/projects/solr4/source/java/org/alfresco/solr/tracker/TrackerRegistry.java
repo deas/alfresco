@@ -38,7 +38,7 @@ public class TrackerRegistry
     /*
      * There is one ModelTracker per Alfresco data schema/repository, and it has no dependency on cores.
      */
-    private ModelTracker modelTracker;
+    private volatile ModelTracker modelTracker;
     
     public Set<String> getCoreNames()
     {

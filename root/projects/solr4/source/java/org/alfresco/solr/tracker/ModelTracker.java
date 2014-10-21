@@ -71,10 +71,10 @@ public class ModelTracker extends AbstractTracker implements Tracker
     private boolean hasModels = false;
     private File alfrescoModelDir;
 
-    public ModelTracker(SolrTrackerScheduler scheduler, String solrHome, Properties p, SOLRAPIClient client, String coreName,
+    public ModelTracker(String solrHome, Properties p, SOLRAPIClient client, String coreName,
                 InformationServer informationServer)
     {
-        super(scheduler, p, client, coreName, informationServer);
+        super(p, client, coreName, informationServer);
         alfrescoModelDir = locateModelHome(solrHome);
         log.info("Alfresco Model dir " + alfrescoModelDir);
         if (!alfrescoModelDir.exists())

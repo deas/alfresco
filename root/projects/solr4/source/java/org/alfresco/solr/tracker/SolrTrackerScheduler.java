@@ -99,6 +99,7 @@ public class SolrTrackerScheduler
         {
             String cron =  props.getProperty("alfresco.cron", "0/15 * * * * ? *");
             trigger = new CronTrigger(jobName, SOLR_JOB_GROUP, cron);
+            log.info("Scheduling job " + jobName);
             scheduler.scheduleJob(job, trigger);
         }
         catch (ParseException e)

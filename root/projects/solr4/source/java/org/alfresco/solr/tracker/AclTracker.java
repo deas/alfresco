@@ -76,10 +76,10 @@ public class AclTracker extends AbstractTracker
         super();
     }
     
-    public AclTracker(SolrTrackerScheduler scheduler, Properties p, SOLRAPIClient client, 
+    public AclTracker(Properties p, SOLRAPIClient client,
                 String coreName, InformationServer informationServer)
     {
-        super(scheduler, p, client, coreName, informationServer);
+        super(p, client, coreName, informationServer);
 
         changeSetAclsBatchSize = Integer.parseInt(p.getProperty("alfresco.changeSetAclsBatchSize", "100"));
         aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));

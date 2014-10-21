@@ -60,7 +60,6 @@ public class AclTrackerTest
     private static final Object CUSTOM_ALFRESCO_VERSION = "99.9.9";
     // The class under test
     private AclTracker tracker;
-    private @Mock SolrTrackerScheduler scheduler;
     private @Mock SOLRAPIClient client;
     private @Mock InformationServer informationServer;
     private TrackerState trackerState;
@@ -72,7 +71,7 @@ public class AclTrackerTest
         trackerState.setRunning(false); // Nothing would happen if it were already running.
         Properties props = createProperties();
         // Spy in order to stub some methods and verify others. Note: non-stubbed methods go to the real class.
-        tracker = spy(new AclTracker(scheduler, props, client, "core-name", informationServer));
+        tracker = spy(new AclTracker(props, client, "core-name", informationServer));
     }
 
     private Properties createProperties()

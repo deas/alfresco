@@ -54,8 +54,6 @@ public class ModelTrackerTest
     private ModelTracker modelTracker;
 
     @Mock
-    private SolrTrackerScheduler scheduler;
-    @Mock
     private SOLRAPIClient repositoryClient;
     private String coreName = "theCoreName";
     @Mock
@@ -96,7 +94,7 @@ public class ModelTrackerTest
         when(props.getProperty("enable.master", "true")).thenReturn("true");
 
         // TODO: create test folder for model sync?
-        this.modelTracker = new ModelTracker(scheduler, null, props, repositoryClient, coreName, srv);
+        this.modelTracker = new ModelTracker(null, props, repositoryClient, coreName, srv);
     }
 
     @After

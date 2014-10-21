@@ -19,7 +19,6 @@
 
 package org.alfresco.solr.tracker;
 
-import java.io.File;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -62,19 +61,31 @@ public class CoreWatcherJob implements Job
         CoreContainer coreContainer = adminHandler.getCoreContainer();
         for (SolrCore core : coreContainer.getCores())
         {
-            // Prevents other threads from creating trackers for this core before we are done registering
+            logIfDebugEnabled("About to enter synchronized block for core " + core.getName());
+            // Prevents other threads from creating trackers for this core before its trackers are done registering
             synchronized (core)
             {
+                logIfDebugEnabled("Entered synchronized block for core " + core.getName());
+
                 String coreName = core.getName();
                 TrackerRegistry trackerRegistry = adminHandler.getTrackerRegistry();
                 if (!trackerRegistry.hasTrackersForCore(coreName))
                 {
                     registerForCore(adminHandler, coreContainer, core, coreName, trackerRegistry);
                 }
+
+                logIfDebugEnabled("Exiting synchronized block for core " + core.getName());
             }
         }
     }
 
+    private void logIfDebugEnabled(String debugString)
+    {
+        if (log.isDebugEnabled())
+        {
+            log.info(debugString);
+        }
+    }
 
     /**
      * Registers with the admin handler the information server and the trackers.
@@ -102,19 +113,24 @@ public class CoreWatcherJob implements Job
             log.info("Starting to track " + coreName);
             if (trackerRegistry.getModelTracker() == null)
             {
-                ModelTracker mTracker = new ModelTracker(scheduler, coreContainer.getSolrHome(), props,
-                            repositoryClient, coreName, srv);
+                logIfDebugEnabled("Creating ModelTracker when registering trackers for core " + coreName);
+                ModelTracker mTracker = new ModelTracker(coreContainer.getSolrHome(), props, repositoryClient,
+                        coreName, srv);
                 trackerRegistry.setModelTracker(mTracker);
+                scheduler.schedule(mTracker, coreName, props);
             }
 
-            AclTracker aclTracker = new AclTracker(scheduler, props, repositoryClient, coreName, srv);
+            AclTracker aclTracker = new AclTracker(props, repositoryClient, coreName, srv);
             trackerRegistry.register(coreName, aclTracker);
+            scheduler.schedule(aclTracker, coreName, props);
 
-            ContentTracker contentTrkr = new ContentTracker(scheduler, props, repositoryClient, coreName, srv);
+            ContentTracker contentTrkr = new ContentTracker(props, repositoryClient, coreName, srv);
             trackerRegistry.register(coreName, contentTrkr);
+            scheduler.schedule(contentTrkr, coreName, props);
 
-            MetadataTracker metaTrkr = new MetadataTracker(scheduler, props, repositoryClient, coreName, srv);
+            MetadataTracker metaTrkr = new MetadataTracker(props, repositoryClient, coreName, srv);
             trackerRegistry.register(coreName, metaTrkr);
+            scheduler.schedule(metaTrkr, coreName, props);
         }
     }
 
@@ -124,40 +140,49 @@ public class CoreWatcherJob implements Job
         return new SolrContentStore(locateContentHome(coreContainer.getSolrHome()));
     }
     
-    public static String locateContentHome(String solrHome) {
-
+    public static String locateContentHome(String solrHome)
+    {
         String contentDir = null;
         // Try JNDI
-        try {
-          Context c = new InitialContext();
-          contentDir = (String)c.lookup("java:comp/env/solr/content/dir");
-          log.info("Using JNDI solr.content.dir: "+contentDir );
-        } catch (NoInitialContextException e) {
-          log.info("JNDI not configured for solr (NoInitialContextEx)");
-        } catch (NamingException e) {
-          log.info("No solr/content/dir in JNDI");
-        } catch( RuntimeException ex ) {
-          log.warn("Odd RuntimeException while testing for JNDI: " + ex.getMessage());
-        } 
-        
-        // Now try system property
-        if( contentDir == null ) {
-          String prop = "solr.solr.content.dir";
-          contentDir = System.getProperty(prop);
-          if( contentDir != null ) {
-            log.info("using system property "+prop+": " + contentDir );
-          }
+        try
+        {
+            Context c = new InitialContext();
+            contentDir = (String) c.lookup("java:comp/env/solr/content/dir");
+            log.info("Using JNDI solr.content.dir: " + contentDir);
         }
-        
-        // if all else fails, try 
-        if( contentDir == null ) {
-            return solrHome  + "ContentStore";
-          
+        catch (NoInitialContextException e)
+        {
+            log.info("JNDI not configured for solr (NoInitialContextEx)");
+        }
+        catch (NamingException e)
+        {
+            log.info("No solr/content/dir in JNDI");
+        }
+        catch (RuntimeException ex)
+        {
+            log.warn("Odd RuntimeException while testing for JNDI: " + ex.getMessage());
+        }
+
+        // Now try system property
+        if (contentDir == null)
+        {
+            String prop = "solr.solr.content.dir";
+            contentDir = System.getProperty(prop);
+            if (contentDir != null)
+            {
+                log.info("using system property " + prop + ": " + contentDir);
+            }
+        }
+
+        // if all else fails, try
+        if (contentDir == null)
+        {
+            return solrHome + "ContentStore";
+
         }
         else
         {
             return contentDir;
         }
-
-      }
+    }
 }

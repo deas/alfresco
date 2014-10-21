@@ -41,8 +41,6 @@ public class ContentTrackerTest
     private ContentTracker contentTracker;
     
     @Mock
-    private SolrTrackerScheduler scheduler;
-    @Mock
     private SOLRAPIClient repositoryClient;
     private String coreName = "theCoreName";
     @Mock
@@ -59,7 +57,7 @@ public class ContentTrackerTest
         doReturn("workspace://SpacesStore").when(props).getProperty(eq("alfresco.stores"), anyString());
         doReturn("" + UPDATE_BATCH).when(props).getProperty(eq("alfresco.contentUpdateBatchSize"), anyString());
         doReturn("" + READ_BATCH).when(props).getProperty(eq("alfresco.contentReadBatchSize"), anyString());
-        this.contentTracker = new ContentTracker(scheduler, props, repositoryClient, coreName, srv);
+        this.contentTracker = new ContentTracker(props, repositoryClient, coreName, srv);
     }
 
     @Test
