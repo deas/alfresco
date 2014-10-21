@@ -83,7 +83,7 @@ public class CoreWatcherJob implements Job
     {
         if (log.isDebugEnabled())
         {
-            log.info(debugString);
+            log.debug(debugString);
         }
     }
 
