@@ -10,12 +10,15 @@
     </parent>
     <packaging>war</packaging>
 
+    <build>
+        <finalName>customer</finalName>
+    </build>
+
     <dependencies>
         <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-web-editor</artifactId>
+            <groupId>org.springframework.extensions.surf</groupId>
+            <artifactId>spring-webeditor-client-jsp</artifactId>
             <version>${project.version}</version>
-            <classifier>classes</classifier>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
