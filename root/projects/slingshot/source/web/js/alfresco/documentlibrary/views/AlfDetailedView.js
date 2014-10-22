@@ -77,7 +77,11 @@ define(["dojo/_base/declare",
                         width: "16px",
                         widgets: [
                            {
-                              name: "alfresco/renderers/Selector"
+                              name: "alfresco/renderers/Selector",
+                              config: {
+                                 publishGlobal: false,
+                                 publishToParent: true
+                              }
                            }
                         ]
                      }
@@ -99,7 +103,12 @@ define(["dojo/_base/declare",
                         width: "100px",
                         widgets: [
                            {
-                              name: "alfresco/renderers/Thumbnail"
+                              name: "alfresco/renderers/Thumbnail",
+                              config: {
+                                 showDocumentPreview: true,
+                                 publishGlobal: false,
+                                 publishToParent: true
+                              }
                            }
                         ]
                      }
@@ -240,7 +249,8 @@ define(["dojo/_base/declare",
                                                    renderFilter: [
                                                       {
                                                          property: "node.properties.cm:categories",
-                                                         values: [null],
+                                                         renderOnAbsentProperty: true,
+                                                         values: [],
                                                          negate: true
                                                       }
                                                    ]
@@ -335,7 +345,11 @@ define(["dojo/_base/declare",
                         width: "100px",
                         widgets: [
                            {
-                              name: "alfresco/renderers/Actions"
+                              name: "alfresco/renderers/Actions",
+                              config: {
+                                 publishGlobal: false,
+                                 publishToParent: true
+                              }
                            }
                         ]
                      }

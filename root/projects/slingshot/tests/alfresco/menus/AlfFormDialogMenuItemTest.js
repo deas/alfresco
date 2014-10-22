@@ -39,97 +39,97 @@ define(["intern!object",
 
          // Test #1
          // Check the service subscription is setup
-         .findByCssSelector(TestCommon.nthTopicSelector(1))
-            .getVisibleText()
-            .then(function(text) {
-               assert(text == "ALF_CREATE_FORM_DIALOG_REQUEST", "Test #1a - A subscription from the alfresco/dialogs/AlfDialogService should have been setup");
+         .findAllByCssSelector(TestCommon.topicSelector("ALF_CREATE_FORM_DIALOG_REQUEST", "subscribe", "any"))
+            .then(function(elements) {
+               TestCommon.log(testName,"Check that a subscription has been setup");
+               assert(elements.length === 1, "Test #1a - A subscription from the alfresco/dialogs/AlfDialogService should have been setup");
             })
-            .end()
+         .end()
 
          // Test #2
          // Create the dialog...
          .findByCssSelector("#DROP_DOWN_MENU_text")
             .click()
-            .end()
+         .end()
 
          .findByCssSelector("#FDM1_text")
             .click()
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
             .then(null, function() {
                assert(false, "Test #2a - The dialog was not created");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-dialog-AlfDialog .dijitDialogTitle")
             .getVisibleText()
             .then(function(text) {
                assert(text == "New Dialog", "Test #2b - The dialog title was not set correctly");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-forms-controls-BaseFormControl")
             .then(null, function() {
                assert(false, "Test #2c - The form control was not displayed");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation")
             .then(null, function() {
                assert(false, "Test #2d - The confirmation button is missing");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation")
             .getVisibleText()
             .then(function(text) {
                assert(text == "Save", "Test #2e - The confirmation button text is wrong: " + text);
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation")
             .then(null, function() {
                assert(false, "Test #2f - The cancellation button is missing");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation")
             .getVisibleText()
             .then(function(text) {
                assert(text == "Close", "Test #2g - The cancellation button text is wrong: " + text);
             })
-            .end()
+         .end()
 
          // Test #3
          // Check publication occurs (don't check details - that's for another test)
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.confirmation span.dijitButtonText")
             .click()
             .sleep(250)
-            .end()
+         .end()
 
          .findByCssSelector(TestCommon.topicSelector("FORM_SUBMIT", "publish"))
             .then(null, function() {
                assert(false, "Test #3a - Form didn't publish");
             })
-            .end()
+         .end()
             
          // Test #4
          // Close the dialog...
          .findByCssSelector("#DROP_DOWN_MENU_text")
             .click()
-            .end()
+         .end()
 
          .findByCssSelector("#FDM1_text")
             .click()
             .sleep(250)
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-dialog-AlfDialog")
             .then(null, function() {
                assert(false, "Test #4a - The dialog was not created");
             })
-            .end()
+         .end()
 
          .findByCssSelector(".alfresco-buttons-AlfButton.alfresco-dialogs-_AlfCreateFormDialogMixin.cancellation span.dijitButtonText")
             .click()
@@ -141,7 +141,7 @@ define(["intern!object",
             .then(function(text) {
                assert(text.lastIndexOf("ALF_CLOSE_DIALOG") != -1, "Test #4b - A request to close the form was not published");
             })
-            .end()
+         .end()
 
          .alfPostCoverageResults(browser);
       }

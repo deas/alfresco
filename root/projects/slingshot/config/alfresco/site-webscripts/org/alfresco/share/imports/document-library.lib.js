@@ -493,15 +493,20 @@ getRepositoryUrl: function getRepositoryUrl()
  * Returns a JSON array of the configuration for all the services required by the document library
  */
 function getDocumentLibraryServices() {
-   return [
-      "alfresco/services/ContentService",
-      "alfresco/services/DocumentService",
+   var services = getHeaderServices();
+   services = services.concat([
       "alfresco/dialogs/AlfDialogService",
       "alfresco/services/ActionService",
-      "alfresco/services/TagService",
+      "alfresco/services/ContentService",
+      "alfresco/services/CrudService",
+      "alfresco/services/DocumentService",
+      "alfresco/services/LightboxService",
+      "alfresco/services/QuickShareService",
       "alfresco/services/RatingsService",
-      "alfresco/services/QuickShareService"
-   ];
+      "alfresco/services/SearchService",
+      "alfresco/services/TagService"
+   ]);
+   return services;
 }
 
 function getFilters() {
@@ -590,7 +595,7 @@ function getFilters() {
    return filters;
 }
 
-function getPathTree(siteId, containerId, rootNode) {
+function getPathTree(siteId, containerId, rootNode, rootLabel) {
    var tree = {
       name: "alfresco/layout/Twister",
       config: {
@@ -602,7 +607,8 @@ function getPathTree(siteId, containerId, rootNode) {
                config: {
                   siteId: siteId,
                   containerId: containerId,
-                  rootNode: rootNode
+                  rootNode: rootNode,
+                  rootLabel: rootLabel
                }
             }
          ]
@@ -873,7 +879,7 @@ function getDocumentLibraryList(siteId, containerId, rootNode) {
  * @param {string} rootNode The node that is the root of the DocumentLibrary to render
  * @returns {object} An object containing the JSON model for a DocumentLibrary
  */
-function getDocumentLibraryModel(siteId, containerId, rootNode) {
+function getDocumentLibraryModel(siteId, containerId, rootNode, rootLabel) {
    
    var docLibModel = {
       id: "DOCLIB_SIDEBAR",
@@ -890,7 +896,7 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                config: {
                   widgets: [
                      getFilters(),
-                     getPathTree(siteId, containerId, rootNode),
+                     getPathTree(siteId, containerId, rootNode, rootLabel),
                      getTags(siteId, containerId, rootNode),
                      getCategories()
                   ]
@@ -1009,7 +1015,8 @@ function getDocumentLibraryModel(siteId, containerId, rootNode) {
                         id: "DOCLIB_BREADCRUMB_TRAIL",
                         name: "alfresco/documentlibrary/AlfBreadcrumbTrail",
                         config: {
-                           hide: hideBreadcrumbTrail
+                           hide: hideBreadcrumbTrail,
+                           rootLabel: rootLabel
                         }
                      },
                      getDocumentLibraryList(siteId, containerId, rootNode),

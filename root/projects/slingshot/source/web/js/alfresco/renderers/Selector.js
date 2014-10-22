@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -66,7 +66,7 @@ define(["dojo/_base/declare",
          // Set up a subscription to handle file selection events, these will be along the lines of
          // select all, select none, invert, etc. Each individual selector will respond to these
          // events...
-         this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onFileSelection"));
+         this.alfSubscribe(this.documentSelectionTopic, lang.hitch(this, "onFileSelection"), this.publishGlobal, this.publishToParent);
       },
       
       /**
@@ -132,7 +132,7 @@ define(["dojo/_base/declare",
          domClass.remove(this.selectorNode, "unchecked");
          this.alfPublish(this.documentSelectedTopic, {
             value: this.currentItem
-         });
+         }, this.publishGlobal, this.publishToParent);
       },
       
       /**
@@ -145,7 +145,7 @@ define(["dojo/_base/declare",
          domClass.add(this.selectorNode, "unchecked");
          this.alfPublish(this.documentDeselectedTopic, {
             value: this.currentItem
-         });
+         }, this.publishGlobal, this.publishToParent);
       },
       
       /**

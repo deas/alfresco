@@ -84,7 +84,7 @@ define(["dojo/_base/declare",
          domClass.add(this.domNode, "alfresco-renderers-Actions");
 
          // Handle display on hover configuration...
-         if (this.onlyShowOnHover == true)
+         if (this.onlyShowOnHover === true)
          {
             domClass.add(this.domNode, "hover-only");
          }
@@ -94,11 +94,16 @@ define(["dojo/_base/declare",
          }
 
          // Create a group to hold all the actions...
-         this.actionsGroup = new AlfMenuGroup({});
+         this.actionsGroup = new AlfMenuGroup({
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope
+         });
          
          // Create a menu popup to hold the group...
          this.actionsMenu = new AlfMenuBarPopup({
-            label:  this.message("alf.renderers.Actions.menuLabel")
+            label:  this.message("alf.renderers.Actions.menuLabel"),
+            pubSubScope: this.pubSubScope,
+            parentPubSubScope: this.parentPubSubScope
          });
          this.actionsMenu.popup.addChild(this.actionsGroup);
          

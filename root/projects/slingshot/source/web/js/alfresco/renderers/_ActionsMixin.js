@@ -98,8 +98,11 @@ define(["dojo/_base/declare",
                iconImage: AlfConstants.URL_RESCONTEXT + "components/documentlibrary/actions/" + action.icon + "-16.png",
                type: action.type,
                pubSubScope: this.pubSubScope,
+               parentPubSubScope: this.parentPubSubScope,
                publishTopic: (action.publishTopic != null) ? action.publishTopic : this.singleDocumentActionTopic,
-               publishPayload: this.generatePayload(payload, this.currentItem, null, action.publishPayloadType, action.publishPayloadItemMixin, action.publishPayloadModifiers)
+               publishPayload: this.generatePayload(payload, this.currentItem, null, action.publishPayloadType, action.publishPayloadItemMixin, action.publishPayloadModifiers),
+               publishGlobal: this.publishGlobal,
+               publishToParent: this.publishToParent
             });
             this.actionsGroup.addChild(menuItem);
          }

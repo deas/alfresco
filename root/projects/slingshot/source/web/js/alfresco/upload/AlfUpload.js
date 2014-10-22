@@ -185,6 +185,17 @@ define(["dojo/_base/declare",
       onUploadRequest: function alfresco_upload_AlfUpload(payload) {
          this.alfLog("log", "Upload request received: ", payload);
          
+         // Check whether or not a files reference has been provided,
+         // this takes precedence over actual files in the payload...
+         if (lang.exists("filesRefs", payload))
+         {
+            var files = this.alfGetData(payload.filesRefs);
+            if (files != null)
+            {
+               payload.files = files;
+            }
+         }
+
          if (lang.exists("files", payload) && lang.exists("targetData", payload))
          {
             // Store a response topic to publish on when the upload is complete...
@@ -382,7 +393,7 @@ define(["dojo/_base/declare",
             siteId: targetData.siteId,
             containerId: targetData.containerId,
             uploaddirectory: targetData.uploadDirectory,
-            majorVersion: true,
+            majorVersion: (targetData.majorVersion != null ? targetData.majorVersion : "true"),
             updateNodeRef: targetData.updateNodeRef,
             description: targetData.description,
             overwrite: targetData.overwrite,
@@ -447,7 +458,7 @@ define(["dojo/_base/declare",
             formData.append("siteId", fileInfo.uploadData.siteId);
             formData.append("containerId", fileInfo.uploadData.containerId);
             formData.append("uploaddirectory", fileInfo.uploadData.uploaddirectory);
-            formData.append("majorVersion", fileInfo.uploadData.majorVersion ? "true" : "false");
+            formData.append("majorVersion", fileInfo.uploadData.majorVersion != null ? fileInfo.uploadData.majorVersion : "false");
             formData.append("username", fileInfo.uploadData.username);
             formData.append("overwrite", fileInfo.uploadData.overwrite);
             formData.append("thumbnails", fileInfo.uploadData.thumbnails);

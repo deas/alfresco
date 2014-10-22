@@ -110,6 +110,7 @@
                 <package name="alfresco" location="js/alfresco"/>
                 <package name="cm"       location="js/lib/code-mirror"/>
                 <package name="sinon"    location="js/lib/sinon-1.10.3/lib"/>
+                <package name="jquery"   location="js/lib/jquery-1.11.1" main="jquery-1.11.1.min"/>
             </packages>
          </dojo-pages>
 

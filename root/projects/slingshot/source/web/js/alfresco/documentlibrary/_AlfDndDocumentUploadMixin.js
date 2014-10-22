@@ -142,6 +142,18 @@ define(["dojo/_base/declare",
          {
             this.alfLog("log", "Updating current nodeRef to: ", payload.node);
             this._currentNode = payload.node;
+
+            // Check that the current user can create children on the current node to determine
+            // whether or not DND upload should be supported...
+            var canCreateChildren = lang.getObject("node.parent.permissions.user.CreateChildren", false, payload);
+            if (canCreateChildren === true)
+            {
+               this.addUploadDragAndDrop(this.dragAndDropNode);
+            }
+            else
+            {
+               this.removeUploadDragAndDrop(this.dragAndDropNode);
+            }
          }
          else
          {
@@ -165,6 +177,21 @@ define(["dojo/_base/declare",
          {
             this.addUploadDragAndDrop(this.dragAndDropNode);
          }
+      },
+
+      /**
+       * This function is used to check whether the currentItem supports upload for the permissions
+       * held by the current user. By default this assumes that the currentItem is a Node that defines
+       * all the relevant permissions. It looks to see whether the Node is a container that the user
+       * can create a children on or is not a container that the user can write to.
+       *
+       * @instance
+       */
+      hasUploadPermissions: function alfresco_documentlibrary___AlfDndDocumentUploadMixin__hasUploadPermissions() {
+         var isContainer = lang.getObject("currentItem.jsNode.isContainer", false, this);
+         var userPermissions = lang.getObject("currentItem.jsNode.permissions.user", false, this);
+         return ((isContainer === true && userPermissions.CreateChildren === true) ||
+                 (isContainer === false && userPermissions.Write === true));
       },
 
       /**
@@ -394,15 +421,26 @@ define(["dojo/_base/declare",
                };
                var updatedConfig = lang.mixin(defaultConfig, config);
 
-               // Set up a response topic for receiving notifications that the upload has completed...
-               var responseTopic = this.generateUuid();
-               this._uploadSubHandle = this.alfSubscribe(responseTopic, lang.hitch(this, "onFileUploadComplete"), true);
+               // Check to see whether or not the generated upload configuration indicates
+               // that an existing node will be created or not. If node is being updated then
+               // we need to generate an intermediary step to capture version and comments...
+               if (updatedConfig.overwrite === false)
+               {
+                  // Set up a response topic for receiving notifications that the upload has completed...
+                  var responseTopic = this.generateUuid();
+                  this._uploadSubHandle = this.alfSubscribe(responseTopic, lang.hitch(this, this.onFileUploadComplete), true);
 
-               this.alfPublish("ALF_UPLOAD_REQUEST", {
-                  alfResponseTopic: responseTopic,
-                  files: evt.dataTransfer.files,
-                  targetData: updatedConfig
-               });
+                  this.alfPublish("ALF_UPLOAD_REQUEST", {
+                     alfResponseTopic: responseTopic,
+                     files: evt.dataTransfer.files,
+                     targetData: updatedConfig
+                  }, true);
+               }
+               else
+               {
+                  // TODO: Check that only one file has been dropped and issue error...
+                  this.publishUpdateRequest(updatedConfig, evt.dataTransfer.files);
+               }
             }
             else
             {
@@ -418,6 +456,75 @@ define(["dojo/_base/declare",
          evt.stopPropagation();
          evt.preventDefault();
       },
+
+      /**
+       * This function publishes an update version request. It will request that a new dialog
+       * be displayed containing the form controls defined in
+       * [widgetsForUpdate]{@link module:alfresco/documentlibrary/_AlfDndDocumentUploadMixin#widgetsForUpdate}.
+       *
+       * @instance
+       * @param {object} uploadConfig
+       */
+      publishUpdateRequest: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__publishUpdateRequest(uploadConfig, files) {
+         // TODO: Work out the next minor and major increment versions...
+         // TODO: Localization required...
+
+         // Set up a response topic for receiving notifications that the upload has completed...
+         var responseTopic = this.generateUuid();
+         this._uploadSubHandle = this.alfSubscribe(responseTopic, lang.hitch(this, this.onFileUploadComplete), true);
+
+         // To avoid the issue with processing payloads containing files with native
+         // code in them, it is necessary to temporarily store the files in the data model...
+         var filesRef = this.generateUuid();
+         this.alfSetData(filesRef, files);
+
+         this.alfPublish("ALF_CREATE_FORM_DIALOG_REQUEST", {
+            dialogTitle: "Update",
+            dialogConfirmationButtonTitle: "Continue Update",
+            dialogCancellationButtonTitle: "Cancel",
+            formSubmissionTopic: "ALF_UPLOAD_REQUEST",
+            formSubmissionPayloadMixin: {
+               alfResponseTopic: responseTopic,
+               filesRefs: filesRef,
+               targetData: uploadConfig
+            },
+            fixedWidth: true,
+            widgets: lang.clone(this.widgetsForUpdate)
+         }, true);
+      },
+
+      /**
+       * This defines the form controls to include in an update version dialog that 
+       * is displayed whenever a user attempts to drag and drop a new version onto
+       * an existing node.
+       *
+       * @instance
+       * @type {array}
+       */
+      widgetsForUpdate: [
+         {
+            name: "alfresco/forms/controls/DojoRadioButtons",
+            config: {
+               label: "This version has",
+               name: "targetData.majorVersion",
+               value: "false",
+               optionsConfig: {
+                  fixed: [
+                     { label: "Minor changes", value: "false" },
+                     { label: "Major changes", value: "true" }
+                  ]
+               }
+            }
+         },
+         {
+            name: "alfresco/forms/controls/TinyMCE",
+            config: {
+               label: "Comments",
+               name: "targetData.description",
+               value: ""
+            }
+         }
+      ],
       
       /**
        * This function makes a best guess at constructing upload configuration, but it can be overridden if required or if the attempt
@@ -441,11 +548,30 @@ define(["dojo/_base/declare",
              this.currentItem.jsNode &&
              this.currentItem.jsNode.isContainer)
          {
-            // Best guess configuration for a node renderer...
+            // Best guess configuration for a container node...
             try
             {
                config = {
                   destination: this.currentItem.nodeRef
+               };
+            }
+            catch (e)
+            {
+               this.alfLog("warn", "Failed to generate upload configuration", e);
+            }
+         }
+         else if (this.currentItem &&
+                  this.currentItem.jsNode &&
+                  this.currentItem.jsNode.isContainer === false)
+         {
+            // Best guess configuration for a node...
+            try
+            {
+               config = {
+                  updateNodeRef: this.currentItem.nodeRef,
+                  overwrite: true,
+                  majorVersion: false,
+                  destination: null
                };
             }
             catch (e)
@@ -482,7 +608,12 @@ define(["dojo/_base/declare",
       onFileUploadComplete: function alfresco_documentlibrary__AlfDndDocumentUploadMixin__onFileUploadComplete() {
          this.alfLog("log", "Upload complete");
          this.alfUnsubscribeSaveHandles([this._uploadSubHandle]);
-         this.alfPublish(this.reloadDataTopic, {});
+
+         // Intentionally pass publishGlobal as false, global publication will still occur if publishToParent
+         // is true (and parentPubSubScope is global) or publishToParent is false and pubSubScope is global.
+         // This has been added as a work around specifically to address the issue of Thumbnail uploads that 
+         // need to generate payloads and set scopes *before* clicks occur to maintain "open in new tab" support
+         this.alfPublish(this.reloadDataTopic, {}, false, this.publishToParent);
       }
    });
 });

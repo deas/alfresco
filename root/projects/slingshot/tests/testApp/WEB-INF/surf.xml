@@ -113,6 +113,7 @@
                    <package name="alfresco"     location="js/alfresco"/>
                    <package name="aikauTesting" location="js/aikau/testing"/>
                    <package name="surf"         location="js/surf"/>
+                   <package name="jquery"       location="js/lib/jquery-1.11.1" main="jquery-1.11.1.min"/>
                </packages>
             </dojo-pages>
         </web-framework>

@@ -65,6 +65,7 @@ define(["dojo/_base/declare",
                      url: "api/node/{nodeRef}/comments",
                      pubSubScope: "{pubSubScope}"
                   },
+                  additionalCssClasses: "no-padding",
                   fixedWidth: true,
                   widgets: [
                      {

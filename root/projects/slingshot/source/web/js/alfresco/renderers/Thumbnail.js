@@ -46,10 +46,11 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/_base/event",
         "dojo/dom-style",
-        "alfresco/core/NodeUtils"], 
+        "alfresco/core/NodeUtils",
+        "dojo/window"], 
         function(declare, _WidgetBase, _TemplatedMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, 
                  _PublishPayloadMixin, _OnDijitClickMixin, template, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin, 
-                 AlfConstants, lang, event, domStyle, NodeUtils) {
+                 AlfConstants, lang, event, domStyle, NodeUtils, win) {
 
    return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _JsNodeMixin, DraggableNodeMixin, NodeDropTargetMixin, AlfCore, _ItemLinkMixin, _AlfDndDocumentUploadMixin, _PublishPayloadMixin], {
       
@@ -274,23 +275,87 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_renderers_Thumbnail__postCreate() {
          this.inherited(arguments);
-         var isContainer = lang.getObject("currentItem.jsNode.isContainer", false, this);
-         if (isContainer === true)
+         if (this.hasUploadPermissions() === true)
          {
             this.addUploadDragAndDrop(this.imgNode);
             this.addNodeDropTarget(this.imgNode);
          }
 
-         // If no topic has been provided then set up a default one (presumed to be for use
-         // in a document library)...
-         if (this.publishTopic == null)
+         // TODO: The following section could be somewhat refactored along with the code
+         // in the SearchThumbnailMixin... this should be a task for 5.1...
+         var type = lang.getObject("node.type", false, this.currentItem),
+             mimetype = lang.getObject("node.mimetype", false, this.currentItem);
+         if (this.showDocumentPreview && type === "cm:content")
          {
+            // Since we're going to be publishing to services we need to publish globally...
+            this.publishGlobal = true;
+
+            if (mimetype && mimetype.indexOf("image/") === 0)
+            {
+               // get last modified for image preview if present in the metadata
+               var lastModified = lang.getObject(this.lastThumbnailModificationProperty, false, this.currentItem) || 1;
+               this.publishTopic = "ALF_DISPLAY_LIGHTBOX";
+               this.publishPayload = {
+                  src: AlfConstants.PROXY_URI + "api/node/" + lang.getObject("nodeRef", false, this.currentItem).replace(":/", "") +
+                       "/content/thumbnails/imgpreview?c=force&lastModified=" + encodeURIComponent(lastModified),
+                  title: lang.getObject("displayName", false, this.currentItem)
+               };
+            }
+            else
+            {
+               // Because the content of the previewer will load asynchronously it's important that 
+               // we set some dimensions for the dialog body, otherwise it will appear off-center
+               var vs = win.getBox();
+               this.publishTopic = "ALF_CREATE_DIALOG_REQUEST";
+               this.publishPayload = {
+                  contentWidth: (vs.w*0.7) + "px",
+                  contentHeight: (vs.h-64) + "px",
+                  handleOverflow: false,
+                  dialogTitle: this.currentItem.displayName,
+                  additionalCssClasses: "no-padding",
+                  widgetsContent: [
+                     {
+                        name: "alfresco/documentlibrary/AlfDocument",
+                        config: {
+                           widgets: [
+                              {
+                                 name: "alfresco/preview/AlfDocumentPreview"
+                              }
+                           ]
+                        }
+                     }
+                  ],
+                  widgetsButtons: [
+                     {
+                        name: "alfresco/buttons/AlfButton",
+                        config: {
+                           label: this.message("searchThumbnail.preview.dialog.close"),
+                           publishTopic: "NO_OP"
+                        }
+                     }
+                  ],
+                  publishOnShow: [
+                     {
+                        publishTopic: "ALF_RETRIEVE_SINGLE_DOCUMENT_REQUEST",
+                        publishPayload: {
+                           nodeRef: this.currentItem.nodeRef
+                        }
+                     }
+                  ]
+               };
+            }
+         }
+         else if (this.publishTopic == null)
+         {
+            // If no topic has been provided then set up a default one (presumed to be for use
+            // in a document library)...
             this.publishPayload = {};
             this.publishTopic = this.generateFileFolderLink(this.publishPayload);
             this.publishGlobal = true;
          }
          else if (this.publishPayload != null)
          {
+            // If a payload has been provided then use it...
             this.publishPayload = this.getGeneratedPayload(false, null);
          }
       },

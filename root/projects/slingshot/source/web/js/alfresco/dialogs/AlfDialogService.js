@@ -32,8 +32,9 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "alfresco/dialogs/AlfDialog",
         "alfresco/forms/Form",
-        "dojo/_base/array"],
-        function(declare, AlfCore, lang, AlfDialog, AlfForm, array) {
+        "dojo/_base/array",
+        "jquery"],
+        function(declare, AlfCore, lang, AlfDialog, AlfForm, array, $) {
 
    return declare([AlfCore], {
 
@@ -190,8 +191,12 @@ define(["dojo/_base/declare",
                // Take a copy of the default configuration and mixin in the supplied config to override defaults
                // as appropriate...
                var config = lang.clone(this.defaultFormDialogConfig);
-               var clonedPayload = lang.clone(payload);
-               lang.mixin(config, clonedPayload);
+               // NOTE: It shouldn't be necessary to clone the payload here. It's been changed
+               //       to support the ability to pass files in payloads which would otherwise
+               //       cause errors on cloning due to native code...
+               // var clonedPayload = lang.clone(payload);
+               // lang.mixin(config, clonedPayload);
+               lang.mixin(config, payload);
                config.pubSubScope = pubSubScope;
                config.parentPubSubScope = this.parentPubSubScope;
                config.subcriptionTopic = subcriptionTopic; // Include the subscriptionTopic in the configuration the subscription can be cleaned up
@@ -295,7 +300,8 @@ define(["dojo/_base/declare",
              payload.dialogContent.length == 1 &&
              typeof payload.dialogContent[0].getValue === "function")
          {
-            var data = payload.dialogContent[0].getValue();
+            var data = {};
+            var formData = payload.dialogContent[0].getValue();
 
             if (payload.subcriptionTopic)
             {
@@ -313,6 +319,8 @@ define(["dojo/_base/declare",
             {
                lang.mixin(data, payload.formSubmissionPayloadMixin);
             }
+            // Using JQuery here in order to support deep merging of dot-notation properties...
+            $.extend(true, data, formData);
 
             // Publish the topic requested for complete...
             this.alfPublish(payload.formSubmissionTopic, data, true);

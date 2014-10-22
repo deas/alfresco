@@ -45,7 +45,9 @@ define(["dojo/_base/declare",
        * @instance
        * @type {String[]} 
        */
-      nonAmdDependencies: ["/modules/editors/tiny_mce.js"],
+      nonAmdDependencies: ["/js/yui-common.js",
+                           "/js/alfresco.js",
+                           "/modules/editors/tiny_mce.js"],
 
       /**
        * The HTML template to use for the widget.

@@ -1,38 +1,23 @@
 <import resource="classpath:/alfresco/site-webscripts/org/alfresco/share/imports/document-library.lib.js">
 
-// Ideally we'd build the array of widgets to go in the main vertical stack starting with the header widgets 
-// and then adding in the document library widgets. However, this won't be possible until either the full-page.get.html.ftl
-// template has been updated to include all of the "legacy" resources (e.g. YAHOO), or they have been explicitly requested
-// as non-AMD dependencies in the widgets referenced on the page. In the meantime this page will be rendered as a hybrid.
-// var widgets = getHeaderModel().concat([getDocumentLibraryModel("", "", user.properties['userHome'])]);
-
-var services = getDocumentLibraryServices(null, null, user.properties['userHome']);
-var widgets = [getDocumentLibraryModel(null, null, user.properties['userHome'])];
-
-// Change the root label of the tree to be "My Files" rather than "Documents"
-var tree = widgetUtils.findObject(widgets, "id", "DOCLIB_TREE");
-if (tree != null)
+var siteData = getSiteData();
+if (siteData != null)
 {
-   tree.config.rootLabel = "my-files.root.label";
-}
+   // Get the initial header widgets...
+   var widgets = getHeaderModel(siteData.profile.title);
 
-model.jsonModel = {
-   services: services,
-   widgets: [
-      {
-         id: "SET_PAGE_TITLE",
-         name: "alfresco/header/SetTitle",
-         config: {
-            title: "My Files"
-         }
-      },
-      {
-         id: "SHARE_VERTICAL_LAYOUT",
-         name: "alfresco/layout/VerticalWidgets",
-         config: 
-         {
-            widgets: widgets
-         }
-      }
-   ]
-};
+   // Get the DocLib specific services and widgets...
+   var docLibServices = getDocumentLibraryServices();
+   var docLibWidgets = getDocumentLibraryModel(siteData.profile.shortName, "documentlibrary", null, "documentlibrary.root.label");
+
+   // Add the DocLib services and widgets...
+   widgets.push(docLibWidgets);
+
+   // Push services and widgets into the getFooterModel to return with a sticky footer wrapper
+   model.jsonModel = getFooterModel(docLibServices, widgets);
+   model.jsonModel.groupMemberships = user.properties["alfUserGroups"];
+}
+else
+{
+   // Output a warning if there is no site data? Or just render repository?
+}
