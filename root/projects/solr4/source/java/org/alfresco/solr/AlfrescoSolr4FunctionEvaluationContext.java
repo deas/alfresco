@@ -19,6 +19,7 @@
 package org.alfresco.solr;
 
 import org.alfresco.repo.search.impl.parsers.AlfrescoFunctionEvaluationContext;
+import org.alfresco.repo.search.impl.parsers.FTSQueryException;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.apache.solr.schema.IndexSchema;
@@ -53,7 +54,15 @@ public class AlfrescoSolr4FunctionEvaluationContext extends AlfrescoFunctionEval
         }
         else
         {
-            return super.getLuceneFieldName(propertyName);
+            try
+            {
+                return super.getLuceneFieldName(propertyName);
+            }
+            catch(FTSQueryException e)
+            {
+                // unknown
+                return "_dummy_";
+            }
         }
     }
 }

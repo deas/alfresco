@@ -601,6 +601,9 @@
       <!-- Suggestion -->
       <field name="suggest"               type="text_shingle"    indexed="true"  omitNorms="true"  stored="false"  multiValued="true" />
 
+      <!-- Dummy field used to create no matches for unknonw properties -->
+      <field name="_dummy_"   type="identifier"  indexed="true"  omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+
 
       <!-- example pluggable field -->
       <field name="SITE"   type="identifier" indexed="true" omitNorms="true" stored="false" multiValued="true" docValues="true" />
