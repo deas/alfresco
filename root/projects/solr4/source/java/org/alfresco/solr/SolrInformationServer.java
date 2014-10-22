@@ -1287,7 +1287,10 @@ public class SolrInformationServer implements InformationServer
                     // else, the node has moved on to a later transaction, and it will be indexed later
                 }
 
-                log.debug(".. deleting");
+                if(log.isDebugEnabled())
+                {
+                    log.debug(".. deleting");
+                }
                 if (nodeMetaData != null)
                 {
                     this.removeDocFromContentStore(nodeMetaData);
@@ -1327,7 +1330,10 @@ public class SolrInformationServer implements InformationServer
                         Boolean isIndexed = Boolean.valueOf(pValue.getValue());
                         if (!isIndexed.booleanValue())
                         {
-                            log.debug(".. clearing unindexed");
+                            if(log.isDebugEnabled())
+                            {
+                                log.debug(".. clearing unindexed");
+                            }
                             deleteNode(processor, request, node);
 
                             SolrInputDocument doc = createNewDoc(nodeMetaData, DOC_TYPE_UNINDEXED_NODE);
@@ -1372,7 +1378,10 @@ public class SolrInformationServer implements InformationServer
 
             // TODO: retry failed
 
-            log.debug(".. deleting on exception");
+            if(log.isDebugEnabled())
+            {
+                log.debug(".. deleting on exception");
+            }
             deleteNode(processor, request, node);
 
             AddUpdateCommand addDocCmd = new AddUpdateCommand(request);
@@ -1545,7 +1554,10 @@ public class SolrInformationServer implements InformationServer
         boolean nodeHasSamePathAsBefore = cloud.exists(selectRequestHandler, request, query);
         if (nodeHasSamePathAsBefore)
         {
-            log.debug("... found match");
+            if(log.isDebugEnabled())
+            {
+                log.debug("... found match");
+            }
         }
         else
         {
@@ -1553,13 +1565,19 @@ public class SolrInformationServer implements InformationServer
             boolean nodeHasBeenIndexed = cloud.exists(selectRequestHandler, request, query);
             if (nodeHasBeenIndexed)
             {
-                log.debug("... cascade updating docs");
+                if(log.isDebugEnabled())
+                {
+                    log.debug("... cascade updating docs");
+                }
                 LinkedHashSet<Long> visited = new LinkedHashSet<Long>();
                 updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited);
             }
             else
             {
-                log.debug("... no doc to update");
+                if(log.isDebugEnabled())
+                {
+                    log.debug("... no doc to update");
+                }
             }
         }
     }
@@ -1640,7 +1658,10 @@ public class SolrInformationServer implements InformationServer
                     updateDescendantDocs(nodeMetaData, overwrite, request, processor, visited);
                 }
 
-                log.debug(".. deleting");
+                if(log.isDebugEnabled())
+                {
+                    log.debug(".. deleting");
+                }
                 DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(request);
                 String query = this.cloud.getQuery(FIELD_DBID, OR, deletedNodeIds, unknownNodeIds);
                 delDocCmd.setQuery(query);
@@ -1685,7 +1706,10 @@ public class SolrInformationServer implements InformationServer
                         Boolean isIndexed = Boolean.valueOf(pValue.getValue());
                         if (!isIndexed.booleanValue())
                         {
-                            log.debug(".. clearing unindexed");
+                            if(log.isDebugEnabled())
+                            {
+                                log.debug(".. clearing unindexed");
+                            }
                             deleteNode(processor, request, node);
 
                             SolrInputDocument doc = createNewDoc(nodeMetaData, DOC_TYPE_UNINDEXED_NODE);
@@ -1957,6 +1981,13 @@ public class SolrInformationServer implements InformationServer
         processor.processDelete(delNodeDocCmd);
     }
 
+    private void deleteNode(UpdateRequestProcessor processor, SolrQueryRequest request, long dbid) throws IOException
+    {
+        DeleteUpdateCommand delDocCmd = new DeleteUpdateCommand(request);
+        delDocCmd.setQuery(FIELD_DBID + ":" + dbid);
+        processor.processDelete(delDocCmd);
+    }
+    
     private boolean isContentIndexedForNode(Map<QName, PropertyValue> properties)
     {
         boolean isContentIndexed = true;
@@ -2174,6 +2205,14 @@ public class SolrInformationServer implements InformationServer
                         + "This should only happen if the content has been removed from the Solr content store.\n"
                         + "Recreating cached doc ... ");
                 doc = recreateSolrDoc(dbId, tenant);
+                
+                // if we did not build it again it has been deleted
+                // We do the delete here to avoid doing this again if it for some reason persists in teh index
+                // This is a work around for ACE-2228/ACE-3258 and the way stores are expunged when deleting a tenant
+                if(doc == null)
+                {
+                    deleteNode(processor, request, dbId);
+                }
             }
 
             if (doc != null)
@@ -2217,8 +2256,12 @@ public class SolrInformationServer implements InformationServer
         }
         else
         {
-            log.error("Failed to recreate Solr doc with tenant [" + tenant + "] and dbId [" + dbId + "], "
-                    + "because node not found in repository.");
+            // we get an empty list if a node is deleted
+            if(log.isDebugEnabled())
+            {
+                log.debug("Failed to recreate Solr doc with tenant [" + tenant + "] and dbId [" + dbId + "], "
+                        + "because node not found in repository.");
+            }
         }
         return newDoc;
     }
