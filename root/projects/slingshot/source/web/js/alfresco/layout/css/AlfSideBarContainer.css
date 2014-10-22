@@ -4,7 +4,7 @@
 
 .alfresco-layout-AlfSideBarContainer .yui-u {
    overflow: hidden;
-
+   float: none;
 }
 
 /* Convert the YUI resize handle to be transparent and slightly wider

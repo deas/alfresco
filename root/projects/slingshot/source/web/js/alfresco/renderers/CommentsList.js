@@ -95,6 +95,7 @@ define(["dojo/_base/declare",
                   url: "components/node/{nodeRef}/comments?reverse=true&startIndex=0&pageSize=10",
                   urlType: "SHARE"
                },
+               documentsLoadedTopic: "ALF_COMMENTS_LOADED",
                widgets: [
                   {
                      name: "alfresco/documentlibrary/views/AlfDocumentListView",

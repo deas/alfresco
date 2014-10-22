@@ -285,6 +285,7 @@ define(["dojo/_base/declare",
                                              {
                                                 name: "alfresco/renderers/Comments",
                                                 config: {
+                                                   subscriptionTopic: "ALF_COMMENTS_LOADED",
                                                    publishTopic: "ALF_REVEAL_COMMENTS",
                                                    publishPayload: {
                                                    }

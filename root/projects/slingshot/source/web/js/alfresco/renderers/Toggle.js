@@ -311,7 +311,7 @@ define(["dojo/_base/declare",
          this.alfPublish(this.toggleOffTopic, {
             alfResponseTopic: responseTopic,
             node: this.currentItem
-         });
+         }, true);
       },
       
       /**

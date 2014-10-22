@@ -97,6 +97,15 @@ define(["dojo/_base/declare",
       linkTarget: "CURRENT",
 
       /**
+       * The topic to subscribe to in order to get the latest count of comments.
+       *
+       * @instance
+       * @type {string}
+       * @default null
+       */
+      subscriptionTopic: null,
+
+      /**
        * Set up the attributes to be used when rendering the template.
        * 
        * @instance
@@ -163,6 +172,40 @@ define(["dojo/_base/declare",
             domClass.remove(this.countNode, "hidden");
          }
          this.makeAnchor(this.targetUrl, this.targetUrlType);
+
+         if (this.subscriptionTopic != null)
+         {
+            this.alfSubscribe(this.subscriptionTopic, lang.hitch(this, this.onCommentCountUpdate));
+         }
+      },
+
+      /**
+       * The dot-notation property to retrieve from the payload published on the 
+       * [subscriptionTopic]{@link module:alfresco/renderers/Comments#subscriptionTopic}
+       * to use to set the comment count with. By default this assumes it will be triggered
+       * from an [list]{@link module:alfresco/lists/AlfList} publishing on the same scope and
+       * therefore uses the total number of documents that this list contains.
+       *
+       * @instance
+       * @type {string}
+       * @default "totalDocuments"
+       */
+      publicationCountProperty: "totalDocuments",
+
+      /**
+       * Called whenever the [subscriptionTopic]{@link module:alfresco/renderers/Comments#subscriptionTopic}
+       * is published on and updates the rendered count of comments with the attribute defined by
+       * the [publicationCountProperty]{@link module:alfresco/renderers/Comments#publicationCountProperty}.
+       *
+       * @instance
+       * @param {object} payload
+       */
+      onCommentCountUpdate: function alfresco_renderers_Comments__onCommentCountUpdate(payload) {
+         var updatedCount = lang.getObject(this.publicationCountProperty, false, payload);
+         if (updatedCount != null)
+         {
+            this.countNode.innerHTML = updatedCount;
+         }
       },
 
       /**

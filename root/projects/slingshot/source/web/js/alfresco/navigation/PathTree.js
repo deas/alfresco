@@ -56,11 +56,10 @@ define(["dojo/_base/declare",
        */
       onFilterChange: function alfresco_navigation_PathTree__onFilterChange(payload) {
          if (payload != null && 
-             payload.filterId == "path" &&
-             payload.filterData != null)
+             payload.path != null)
          {
             this.alfLog("log", "Filter updated", payload);
-            var pathElements = payload.filterData.split("/");
+            var pathElements = payload.path.split("/");
             
             if (this.tree != null && pathElements.length > 0)
             {
