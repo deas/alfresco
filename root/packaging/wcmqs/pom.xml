@@ -12,7 +12,7 @@
     <name>Alfresco WCMQS Distribution Zip</name>
 
     <build>
-        <finalName>alfresco-enterprise-wcmqs-${project.version}</finalName>
+        <finalName>alfresco-wcmqs-${project.version}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
