@@ -140,9 +140,9 @@ getftsStatus();
 <div>
   
   <script type="text/javascript"> 
-    document.getElementById("errorLink").innerHTML = "<a href=\"" + window.location.pathname + "alfresco/query?q%3Did%3AERROR*&wt=xml\" target=\"_blank\">Solr Errors</a>"; 
-    document.getElementById("exceptionMessageLink").innerHTML = "<a href=\"" + window.location.pathname + "alfresco/query?q%3DEXCEPTIONMESSAGE&wt=xml\" target=\"_blank\">Solr Exception Messages</a>";     
-    document.getElementById("exceptionStackLink").innerHTML = "<a href=\"" + window.location.pathname + "alfresco/query?q%3DEXCEPTIONSTACK%3A*&wt=xml\" target=\"_blank\">Solr Exceptions Stack</a>";   
+    document.getElementById("errorLink").innerHTML = "<a href=\"" + window.location.pathname + "alfresco/query?q=ERROR*&wt=xml\" target=\"_blank\">Solr Errors</a>"; 
+    document.getElementById("exceptionMessageLink").innerHTML = "<a href=\"" + window.location.pathname + "alfresco/query?q=EXCEPTIONMESSAGE:*&wt=xml\" target=\"_blank\">Solr Exception Messages</a>";     
+    document.getElementById("exceptionStackLink").innerHTML = "<a href=\"" + window.location.pathname + "alfresco/query?q=EXCEPTIONSTACK:*\" target=\"_blank\">Solr Exceptions Stack</a>";   
   </script> 
   
   
