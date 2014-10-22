@@ -248,9 +248,6 @@ define(["dojo/_base/declare",
                this.siteId = scope;
             }
 
-            // Remove any resettable terms...
-            this._cleanResettableHashTerms(currHash);
-
             // Update the hash to trigger a search...
             this.alfPublish("ALF_NAVIGATE_TO_PAGE", {
                url: ioQuery.objectToQuery(currHash),
