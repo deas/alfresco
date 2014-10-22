@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * Document Library "Copy- and Move-To" module for Document Library.
- * 
+ *
  * @namespace Alfresco.module
  * @class Alfresco.module.DoclibCopyMoveTo
  */
@@ -79,8 +79,8 @@
             }
             myOptions.dataWebScript = dataWebScripts[obj.mode];
          }
-         
-         myOptions.viewMode = Alfresco.util.isValueSet(this.options.siteId) ? Alfresco.module.DoclibGlobalFolder.VIEW_MODE_RECENT_SITES : Alfresco.module.DoclibGlobalFolder.VIEW_MODE_REPOSITORY;
+
+         myOptions.viewMode = Alfresco.module.DoclibGlobalFolder.VIEW_MODE_RECENT_SITES; // Always default to recent sites view.
          // Actions module
          this.modules.actions = new Alfresco.module.DoclibActions();
 
@@ -162,7 +162,7 @@
          {
             multipleFiles.push(files[i].node.nodeRef);
          }
-         
+
          // Success callback function
          var fnSuccess = function DLCMT__onOK_success(p_data)
          {
@@ -180,7 +180,7 @@
                for (var i = 0, j = p_data.json.totalResults; i < j; i++)
                {
                   result = p_data.json.results[i];
-               
+
                   if (!result.success && result.fileExist)
                   {
                      if ("folder" == result.type)
@@ -193,12 +193,12 @@
                      }
                   }
                }
-				
+
                Alfresco.util.PopupManager.displayMessage(
                {
                   text: this.msg(message)
                });
-			   
+
                return;
             }
 
@@ -208,11 +208,11 @@
                successCount: successCount,
                failureCount: failureCount
             });
-            
+
             for (var i = 0, j = p_data.json.totalResults; i < j; i++)
             {
                result = p_data.json.results[i];
-               
+
                if (result.success)
                {
                   YAHOO.Bubbling.fire((result.type == "folder" ? "folder" : "file") + eventSuffix[this.options.mode],
@@ -256,7 +256,7 @@
          // Construct webscript URI based on current viewMode
          var webscriptName = this.options.dataWebScript + "/node/{nodeRef}",
             nodeRef = new Alfresco.util.NodeRef(this.selectedNode.data.nodeRef);
-         
+
          // Construct the data object for the genericAction call
          this.modules.actions.genericAction(
          {
@@ -299,7 +299,7 @@
                }
             }
          });
-         
+
          this.widgets.okButton.set("disabled", true);
          this.widgets.cancelButton.set("disabled", true);
       },
@@ -327,7 +327,7 @@
          return result;
       },
 
-      
+
       /**
        * PRIVATE FUNCTIONS
        */
