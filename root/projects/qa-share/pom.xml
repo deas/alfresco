@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>ldtp-client-apps</artifactId>
-            <version>${project.version}</version>
+            <version>AUTO1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
