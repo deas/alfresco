@@ -8,19 +8,6 @@
         <version>5.0.0-SNAPSHOT</version>
     </parent>
 
-    <!-- Switch artifactId to extract version.properties from -->
-    <properties>
-        <alfresco.war.artifactId>alfresco</alfresco.war.artifactId>
-    </properties>
-    <profiles>
-        <profile>
-            <id>enterprise</id>
-            <properties>
-                <alfresco.war.artifactId>alfresco-enterprise</alfresco.war.artifactId>
-            </properties>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -74,7 +61,7 @@
     </dependencies>
 
     <build>
-        <finalName>alfresco-file-transfer-receiver-${project.version}</finalName>
+        <finalName>alfresco-community-file-transfer-receiver-${project.version}</finalName>
         <plugins>
             <!-- Build Launcher jar -->
             <plugin>
@@ -106,7 +93,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>${alfresco.war.artifactId}</artifactId>
+                                    <artifactId>alfresco</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <includes>WEB-INF/classes/alfresco/version.properties</includes>
