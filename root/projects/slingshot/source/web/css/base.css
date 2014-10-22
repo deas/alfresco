@@ -428,6 +428,18 @@ span.navigation-separator-alt
    padding: 1em;
 }
 
+.rich-content ul > li
+{
+   list-style-type: inherit;
+   list-style-position: inside;
+}
+
+.rich-content ol > li
+{
+   list-style-type: inherit;
+   list-style-position: inside;
+}
+
 .rich-content th,
 .rich-content td
 {
