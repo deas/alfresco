@@ -58,7 +58,7 @@ public class SolrContentStore implements ContentStore
         }
         catch (Exception e)
         {
-            throw new RuntimeException("Failed to create directory for content store: " + this.root, e);
+            throw new RuntimeException("Failed to create directory for content store: " + rootFile, e);
         }
         this.root = rootFile.getAbsolutePath();
     }
