@@ -274,7 +274,6 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     @Test(groups = { "Enterprise-only" })
     public void searchSelectViewTest() throws Exception
     {       
-    	
     	SearchBox search = dashBoard.getSearch();
         FacetedSearchPage facetedSearchPage = search.search("ipsum").render();
         Assert.assertNotNull(facetedSearchPage); 

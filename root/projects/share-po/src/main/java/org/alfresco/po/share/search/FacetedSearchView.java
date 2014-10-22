@@ -1,6 +1,5 @@
 package org.alfresco.po.share.search;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.po.share.FactorySharePage;
@@ -25,24 +24,16 @@ import org.openqa.selenium.WebElement;
 public class FacetedSearchView  
 {
     /** Constants. */
-    private static final By FACETED_SEARCH_RESULTS_MENU_BAR = By.cssSelector("div#FCTSRCH_RESULTS_MENU_BAR");
-    private static final By RESULTS_STRING = By.cssSelector("span.alfresco-html-Label");
-    private static final By SORT_ORDER_BUTTON = By.cssSelector("div#FCTSRCH_SORT_ORDER_TOGGLE > img");
-    private static final By CONFIGURE_VIEW_BUTTON = By.cssSelector("img[class='alf-configure-icon']");
-    
-    private static final By CONFIGURE_VIEW_ITEMS = By.cssSelector("div#DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP td[class='dijitReset dijitMenuItemLabel']");    
+    private static final By VIEW_TYPES = By.cssSelector("#DOCLIB_CONFIG_MENU_VIEW_SELECT_GROUP [data-dojo-attach-point$='textDirNode']");
     private static final By DETAILED_VIEW_RESULTS = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell");
     private static final By GALLERY_VIEW_RESULTS = By.cssSelector("div[class='displayName']");
-    private static final String DISPLAY_NAMES = ".displayName";    
+    private static final String DISPLAY_NAMES = ".displayName";
     private static final By GALLERY_VIEW_ICON = By.cssSelector("div[class='selectBar share-hidden']>div>div>div>div>div");
     private static Log logger = LogFactory.getLog(FacetedSearchView.class);
     
     private WebDrone drone;
-    private WebElement resultsElement;
     private String results;
     private WebElement sortOrderButton;
-    private WebElement configureViewButton;
-    private List<WebElement> menuElements = new ArrayList<WebElement>();
     private WebElement detailedViewResults;
     private WebElement galleryViewResults;    
 
@@ -52,19 +43,6 @@ public class FacetedSearchView
     public FacetedSearchView(WebDrone drone)
     {
         this.drone = drone;
-        WebElement facetedSearchResultsMenuBar = drone.find(FACETED_SEARCH_RESULTS_MENU_BAR);
-        this.resultsElement = facetedSearchResultsMenuBar.findElement(RESULTS_STRING);
-        this.results = resultsElement.getText();
-
-        // The sort order button may be missing due to configuration so search for many and grab the first if found
-        List<WebElement> sortButtons = facetedSearchResultsMenuBar.findElements(SORT_ORDER_BUTTON);
-        if(sortButtons.size() > 0)
-        {
-            this.sortOrderButton = sortButtons.get(0);
-        }
-
-        this.configureViewButton = facetedSearchResultsMenuBar.findElement(CONFIGURE_VIEW_BUTTON); 
-        
     }
 
     /**
@@ -87,15 +65,7 @@ public class FacetedSearchView
         return sortOrderButton;
     }
 
-    /**
-     * Gets the menu button.
-     *
-     * @return the menu button
-     */
-    public WebElement getConfigureViewButton()
-    {
-        return configureViewButton;
-    }
+
        
     /**
      * select view by index by the indexed item in the view menu
@@ -107,12 +77,13 @@ public class FacetedSearchView
     {
         openMenu();
         boolean found = false;
-        if(i >= 0 && i < this.menuElements.size())
+        List<WebElement> menuElements = drone.findAll(VIEW_TYPES);
+        if(menuElements != null && !menuElements.isEmpty())
         {
-            this.menuElements.get(i).getText();
-            this.menuElements.get(i).click();
-            found = true;
+        	menuElements.get(i).click();
+        	found = true;
         }
+        
         if(!found)
         {
             cancelMenu();
@@ -130,9 +101,11 @@ public class FacetedSearchView
     {
         openMenu();
         boolean found = false;
-        for(WebElement option : this.menuElements)
+        List<WebElement> menuElements = drone.findAll(VIEW_TYPES);
+        for(WebElement option : menuElements)
         {
-            if(StringUtils.trim(option.getText()).equalsIgnoreCase(label))
+        	String value = StringUtils.trim(option.getText());
+            if(label.equalsIgnoreCase(value))
             {
                 StringUtils.trim(option.getText());
                 option.click();
@@ -154,7 +127,7 @@ public class FacetedSearchView
     {
         try
         {
-        	detailedViewResults = drone.findAndWait(DETAILED_VIEW_RESULTS);
+        	detailedViewResults = drone.find(DETAILED_VIEW_RESULTS);
         	if(detailedViewResults.isDisplayed())
         	{        		
         		return true;        		       		 
@@ -178,7 +151,7 @@ public class FacetedSearchView
     {
         try
         {
-        	galleryViewResults = drone.findAndWait(GALLERY_VIEW_RESULTS);
+        	galleryViewResults = drone.find(GALLERY_VIEW_RESULTS);
         	if(galleryViewResults.isDisplayed())
         	{        		
         		return true;        		       		 
@@ -202,8 +175,10 @@ public class FacetedSearchView
      */
     private void openMenu()
     {
-        this.configureViewButton.click();
-        this.menuElements = this.drone.findAll( CONFIGURE_VIEW_ITEMS);
+    	drone.find(By.tagName("body")).click();
+    	WebElement element = drone.find(By.id("FCTSRCH_VIEWS_MENU"));
+    	drone.mouseOver(element);
+    	element.click();
     }
 
     /**
@@ -211,8 +186,7 @@ public class FacetedSearchView
      */
     private void cancelMenu()
     {
-        this.resultsElement.click();
-        this.menuElements.clear();
+    	drone.find(By.cssSelector("div.horizontal-widget")).click();
     }
     
     /**
