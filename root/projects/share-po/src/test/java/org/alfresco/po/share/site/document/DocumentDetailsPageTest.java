@@ -9,6 +9,7 @@ package org.alfresco.po.share.site.document;
 
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -382,6 +383,7 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
 
         Assert.assertFalse(docDetailsPage.isCheckedOut());
         if (logger.isTraceEnabled()) logger.trace("---update with major version----");
+        docDetailsPage.getSiteNav().selectSiteDocumentLibrary().render();
     }
     
     /**
@@ -389,12 +391,18 @@ public class DocumentDetailsPageTest extends AbstractDocumentTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "uploadFile")
+    @Test(dependsOnMethods = "editOffline")
     public void getDocumentBody() throws Exception
     {
-        DocumentDetailsPage docDetailsPage = selectDocument(file).render();
-        if (logger.isTraceEnabled()) logger.trace("====getDocumentBody====");
-        DocumentDetailsPage docsPage = drone.getCurrentPage().render();
-        Assert.assertEquals(docsPage.getDocumentBody(), "this is a sample test upload file");
+        DocumentLibraryPage libraryPage = drone.getCurrentPage().render();
+        CreatePlainTextContentPage contentPage = libraryPage.getNavigation().selectCreateContent(ContentType.PLAINTEXT).render();
+        ContentDetails contentDetails = new ContentDetails();
+        contentDetails.setName("Test Doc");
+        contentDetails.setTitle("Test");
+        contentDetails.setDescription("Desc");
+        String content = "Content Test Doc";
+        contentDetails.setContent(content);
+        DocumentDetailsPage detailsPage = contentPage.create(contentDetails).render();
+        assertEquals(detailsPage.getDocumentBody(), content);
     }
 }

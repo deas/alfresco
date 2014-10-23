@@ -102,7 +102,7 @@ public class DocumentDetailsPage extends DetailsPage
     private static final By BUTTON_TAG_NAME = By.tagName("button");
     private static final By HISTORY_VERSIONS = By.cssSelector("div[class*='document-versions'] span[class='document-version']");
 
-    private static final String DOCUMENT_BODY = "div[id$='document-details_x0023_default-viewer-pageContainer-1']";
+    private static final By DOCUMENT_BODY = By.cssSelector("div[id$='default-viewer-pageContainer-1']");
 
     private static final String ERROR_EDITING_DOCUMENT = ".//*[@id='message']/div/span";
 
@@ -1707,32 +1707,15 @@ public class DocumentDetailsPage extends DetailsPage
      */
     public String getDocumentBody()
     {
-        int counter = 0;
-        int waitInMilliSeconds = 2000;
-        int retryRefreshCount = 5;
-
-        while (counter < retryRefreshCount)
+        try
         {
-        	WebElement element = drone.find(By.cssSelector(DOCUMENT_BODY));
-            if (!element.getText().isEmpty())
-            {
-                return element.getText();
-            }
-            counter++;
-            // double wait time to not over do slow search
-            waitInMilliSeconds = (waitInMilliSeconds * 2);
-            synchronized (ShareUtil.class)
-            {
-                try
-                {
-                    ShareUtil.class.wait(waitInMilliSeconds);
-                }
-                catch (InterruptedException e)
-                {
-                }
-            }
+            drone.waitForElement(DOCUMENT_BODY, 30);
+            return drone.find(DOCUMENT_BODY).getText();
         }
-        throw new PageException("Content search failed");
+        catch (TimeoutException e)
+        {
+            throw new PageOperationException("Not able to find the document body. " + e);
+        }
     }
 
     /**
