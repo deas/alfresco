@@ -18,11 +18,17 @@
  */
 package org.alfresco.po.share;
 
+import static org.testng.Assert.fail;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.alfresco.po.share.admin.AdminConsolePage;
 import org.alfresco.po.share.admin.ManageSitesPage;
-import org.alfresco.po.share.reports.AdhocAnalyzerPage;
 import org.alfresco.po.share.search.AdvanceSearchContentPage;
 import org.alfresco.po.share.site.CreateSitePage;
 import org.alfresco.po.share.site.SiteDashboardPage;
@@ -44,6 +50,7 @@ import org.testng.annotations.Test;
  * @since 1.0
  */
 @Listeners(FailedTestListener.class)
+@SuppressWarnings("unused")
 public class NavigationBarTest extends AbstractTest
 {
     private SharePage page;    
@@ -68,7 +75,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToMySites() throws Exception
     {
         UserSitesPage userSitesPage = page.getNav().selectMySites().render();
-        Assert.assertEquals(userSitesPage.getPageTitle(), "User Sites List");
+        assertEquals(userSitesPage.getPageTitle(), "User Sites List");
     }  
     
    
@@ -82,7 +89,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToPeopleFinder() throws Exception
     {
         PeopleFinderPage peoplePage = page.getNav().selectPeople().render();
-        Assert.assertEquals(peoplePage.getPageTitle(), "People Finder");
+        assertEquals(peoplePage.getPageTitle(), "People Finder");
     }
     
     /**
@@ -93,7 +100,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToSearchForSites() throws Exception
     {
         page = page.getNav().selectSearchForSites().render();
-        Assert.assertEquals(page.getPageTitle(), "Site Finder");
+        assertEquals(page.getPageTitle(), "Site Finder");
     }
     
     /**
@@ -103,9 +110,9 @@ public class NavigationBarTest extends AbstractTest
     @Test(dependsOnMethods = "navigateToSearchForSites",groups={"alfresco-one"}, priority=4)
     public void navigateToCreateSite() throws Exception
     {
-        Assert.assertTrue(page.getNav().isCreateSitePresent());
+        assertTrue(page.getNav().isCreateSitePresent());
         CreateSitePage createSitePage = page.getNav().selectCreateSite().render();
-        Assert.assertTrue(createSitePage.isCreateSiteDialogDisplayed());
+        assertTrue(createSitePage.isCreateSiteDialogDisplayed());
         createSitePage.cancel();
     }
     
@@ -117,7 +124,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToMyProfile() throws Exception
     {
         MyProfilePage myProfilePage = page.getNav().selectMyProfile().render();
-        Assert.assertTrue(myProfilePage.titlePresent());
+        assertTrue(myProfilePage.titlePresent());
     }
     
     /**
@@ -128,7 +135,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateChangePassword() throws Exception
     {
         ChangePasswordPage changePasswordPage = page.getNav().selectChangePassword().render();
-        Assert.assertTrue(changePasswordPage.formPresent());
+        assertTrue(changePasswordPage.formPresent());
     }
     
      /**
@@ -139,9 +146,9 @@ public class NavigationBarTest extends AbstractTest
     public void navigateDashBoard() throws Exception
     {
         DashBoardPage dash = page.getNav().selectMyDashBoard().render();
-        Assert.assertTrue(dash.titlePresent());
+        assertTrue(dash.titlePresent());
         dash.getTitle().contains("Dashboard");
-        Assert.assertTrue(dash.getTitle().contains("Dashboard"));
+        assertTrue(dash.getTitle().contains("Dashboard"));
     }
     
     /**
@@ -157,7 +164,7 @@ public class NavigationBarTest extends AbstractTest
             throw new SkipException("This feature is not supported in cloud so skip it");
         }
         RepositoryPage repoPage = page.getNav().selectRepository().render();
-        Assert.assertTrue(repoPage.isBrowserTitle("Repository"));
+        assertTrue(repoPage.isBrowserTitle("Repository"));
     }
     
     /**
@@ -174,7 +181,7 @@ public class NavigationBarTest extends AbstractTest
             throw new SkipException("This feature is not supported in cloud so skip it");
         }
         AdvanceSearchContentPage searchPage = page.getNav().selectAdvanceSearch().render();
-        Assert.assertEquals(searchPage.getPageTitle(), "Advanced Search");
+        assertEquals(searchPage.getPageTitle(), "Advanced Search");
     }
 
     @Test(dependsOnMethods = "advanceSearch", groups = {"Enterprise-only"}, expectedExceptions = UnsupportedOperationException.class, priority=10)
@@ -220,7 +227,7 @@ public class NavigationBarTest extends AbstractTest
     public void testgetNetworks()
     {
         List<String> userNetworks = page.getNav().getUserNetworks();
-        Assert.assertTrue(userNetworks.size() > 0);
+        assertTrue(userNetworks.size() > 0);
     }
     
     /**
@@ -231,7 +238,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateAccountSettings() throws Exception
     {
         AccountSettingsPage accountSettingsPage = page.getNav().selectAccountSettingsPage().render();
-        Assert.assertEquals(accountSettingsPage.getPageTitle(), "Account Settings");
+        assertEquals(accountSettingsPage.getPageTitle(), "Account Settings");
     }
     
     /**
@@ -243,7 +250,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToAdminTools() throws Exception
     {
         AdminConsolePage adminConsolePage = page.getNav().selectAdminTools().render();
-        Assert.assertEquals(adminConsolePage.getPageTitle(), "Admin Tools");
+        assertEquals(adminConsolePage.getPageTitle(), "Admin Tools");
     }
 
     /**
@@ -255,7 +262,7 @@ public class NavigationBarTest extends AbstractTest
     public void navigateToManageSites() throws Exception
     {
         ManageSitesPage manageSitesPage = page.getNav().selectManageSitesPage().render();
-        Assert.assertEquals(manageSitesPage.getPageTitle(), "Sites Manager");
+        assertEquals(manageSitesPage.getPageTitle(), "Sites Manager");
     }
 
     /**
@@ -274,8 +281,23 @@ public class NavigationBarTest extends AbstractTest
         ShareUtil.logout(drone);
         ShareUtil.loginAs(drone, shareUrl, userinfo, userinfo);
         ManageSitesPage manageSitesPage = page.getNav().selectManageSitesSiteAdmin().render();
-        Assert.assertEquals(manageSitesPage.getPageTitle(), "Sites Manager");
+        assertEquals(manageSitesPage.getPageTitle(), "Sites Manager");
 
+    }
+    
+    @Test(groups= "Enterprise-only", priority=21)
+    public void noRecentSites() throws Exception
+    {   
+        try
+        {
+            page.getNav().getRecentSitesPresent();
+            fail("PageOperationException Should been thrown by above line.");
+        }
+        catch (PageOperationException e)
+        {
+            String patternString = "No Recent Site(s) Available";
+            assertTrue(e.getMessage().startsWith(patternString), "Exception Message should Start with " + patternString);
+        }
     }
     
     /**
@@ -287,15 +309,15 @@ public class NavigationBarTest extends AbstractTest
     {        
         CreateSitePage createSitePage = page.getNav().selectCreateSite().render();
         SiteDashboardPage site = createSitePage.createNewSite(siteName).render();
-        Assert.assertTrue(site.getNav().getRecentSitesPresent().size() > 0 );   
-        Assert.assertTrue(site.getNav().doesAnyFavouriteSiteExist());
-        Assert.assertTrue(site.getNav().isSiteFavourtie());       
+        assertTrue(site.getNav().getRecentSitesPresent().size() > 0 );   
+        assertTrue(site.getNav().doesAnyFavouriteSiteExist());
+        assertTrue(site.getNav().isSiteFavourtie());       
         site.getNav().removeFavourite();
-        Assert.assertFalse(site.getNav().doesAnyFavouriteSiteExist());
-        Assert.assertFalse(site.getNav().isSiteFavourtie());
+        assertFalse(site.getNav().doesAnyFavouriteSiteExist());
+        assertFalse(site.getNav().isSiteFavourtie());
         site.getNav().setSiteAsFavourite();
-        Assert.assertTrue(site.getNav().isSiteFavourtie());  
-        Assert.assertTrue(site.getNav().getFavouriteSites().contains(siteName));
+        assertTrue(site.getNav().isSiteFavourtie());  
+        assertTrue(site.getNav().getFavouriteSites().contains(siteName));
         drone.refresh();
     }
     @Test(groups= "Enterprise-only", enabled=false, expectedExceptions={UnsupportedOperationException.class}, priority=23)
@@ -305,12 +327,6 @@ public class NavigationBarTest extends AbstractTest
         usereDashBoradPage.getNav().isSiteFavourtie();
     }
     
-    @Test(groups= "Enterprise-only", expectedExceptions=PageOperationException.class, expectedExceptionsMessageRegExp="No Recent Site(s) Available")
-    public void noRecentSites() throws Exception
-    {   
-    	page.getNav().getRecentSitesPresent();
-    }
-
     /**
      * Test for opening of Adhoc Analyze page under reporting menu by pentaho business analyst
      * 
