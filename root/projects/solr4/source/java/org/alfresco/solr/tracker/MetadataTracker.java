@@ -246,6 +246,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                     this.infoSrv.indexTransaction(info, false);
                     requiresCommit = true;
 
+                    trackerStats.addTxDocs(nodes.size());
                 }
             }
 

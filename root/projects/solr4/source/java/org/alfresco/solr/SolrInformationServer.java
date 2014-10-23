@@ -1715,6 +1715,9 @@ public class SolrInformationServer implements InformationServer
                             storeDocOnSolrContentStore(nodeMetaData, doc);
                             addDocCmd.solrDoc = doc;
                             processor.processAdd(addDocCmd);
+
+                            long end = System.nanoTime();
+                            this.trackerStats.addNodeTime(end - start);
                         }
                     }
                     
