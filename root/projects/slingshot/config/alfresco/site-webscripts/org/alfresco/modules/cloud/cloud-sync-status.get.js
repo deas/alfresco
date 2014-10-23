@@ -40,6 +40,13 @@ function main()
       // 410 returned if there is no permissions to get node details
       model.error.message = msg.get("sync.status.unknown-location.no-permissions");
    }
+   // there is no error here but we unable to build node path
+   else if (nodeDetails && !nodeDetails.error && !nodeDetails.item.location.site)
+   {
+      model.error = {
+         code: 410, 
+         message: msg.get("sync.status.unknown-location.no-permissions")};
+   }
    else if (nodeDetails && !nodeDetails.error)
    {
       model.nodeFound = true;

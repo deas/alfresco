@@ -78,8 +78,10 @@
             <#else>
                <#-- If we can't find the node, show the user a message to help them -->
                <p>${msg("sync.status.unknown-location")}</p>
-               <h4>${msg("sync.status.unknown-location.cause")}</h4>
-               <p>${error.message}</p>
+               <#if error??>
+                  <h4>${msg("sync.status.unknown-location.cause")}</h4>
+                  <p>${error.message}</p>
+               </#if>
             </#if>
          <#else>
             <p>${msg("sync.status.message.not-synced")}</p>
