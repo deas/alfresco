@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -2208,7 +2207,7 @@ public class SolrInformationServer implements InformationServer
                 
                 // if we did not build it again it has been deleted
                 // We do the delete here to avoid doing this again if it for some reason persists in teh index
-                // This is a work around for ACE-2228/ACE-3258 and the way stores are expunged when deleting a tenant
+                // This is a work around for ACE-3228/ACE-3258 and the way stores are expunged when deleting a tenant
                 if(doc == null)
                 {
                     deleteNode(processor, request, dbId);

@@ -1822,6 +1822,7 @@
     </lst>
     <arr name="components">
       <str>setLocale</str>
+      <str>ensureModels</str>
       <str>rewriteFacetParameters</str>
       <str>query</str>
       <str>facet</str>
@@ -1853,6 +1854,7 @@
     </lst>
     <arr name="components">
       <str>setLocale</str>
+      <str>ensureModels</str>
       <str>rewriteFacetParameters</str>
       <str>query</str>
       <str>facet</str>
@@ -1874,6 +1876,7 @@
     </lst>
     <arr name="components">
       <str>setLocale</str>
+      <str>ensureModels</str>
       <str>rewriteFacetParameters</str>
       <str>query</str>
       <str>facet</str>
@@ -1894,6 +1897,7 @@
   <queryParser name="cmis" class="org.alfresco.solr.query.CmisQParserPlugin"/>
 
   <searchComponent name="setLocale"     class="org.alfresco.solr.component.SetLocaleComponent" />
+  <searchComponent name="ensureModels" class="org.alfresco.solr.component.EnsureModelsComponent" />
   <searchComponent name="clearLocale"   class="org.alfresco.solr.component.ClearLocaleComponent" />
   <searchComponent name="rewriteFacetParameters"     class="org.alfresco.solr.component.RewriteFacetParametersComponent" />
   <searchComponent name="rewriteFacetCounts"     class="org.alfresco.solr.component.RewriteFacetCountsComponent" />

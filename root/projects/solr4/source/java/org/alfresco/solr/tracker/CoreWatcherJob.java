@@ -111,13 +111,18 @@ public class CoreWatcherJob implements Job
             adminHandler.getInformationServers().put(coreName, srv);
 
             log.info("Starting to track " + coreName);
-            if (trackerRegistry.getModelTracker() == null)
+
+            // Prevents other threads from registering the ModelTracker at the same time
+            synchronized (trackerRegistry)
             {
-                logIfDebugEnabled("Creating ModelTracker when registering trackers for core " + coreName);
-                ModelTracker mTracker = new ModelTracker(coreContainer.getSolrHome(), props, repositoryClient,
-                        coreName, srv);
-                trackerRegistry.setModelTracker(mTracker);
-                scheduler.schedule(mTracker, coreName, props);
+                if (trackerRegistry.getModelTracker() == null)
+                {
+                    logIfDebugEnabled("Creating ModelTracker when registering trackers for core " + coreName);
+                    ModelTracker mTracker = new ModelTracker(coreContainer.getSolrHome(), props, repositoryClient,
+                            coreName, srv);
+                    trackerRegistry.setModelTracker(mTracker);
+                    scheduler.schedule(mTracker, coreName, props);
+                }
             }
 
             AclTracker aclTracker = new AclTracker(props, repositoryClient, coreName, srv);
