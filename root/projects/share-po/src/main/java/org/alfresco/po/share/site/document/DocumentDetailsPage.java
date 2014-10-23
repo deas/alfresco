@@ -1710,10 +1710,10 @@ public class DocumentDetailsPage extends DetailsPage
         int counter = 0;
         int waitInMilliSeconds = 2000;
         int retryRefreshCount = 5;
-        WebElement element = drone.findAndWait(By.cssSelector(DOCUMENT_BODY));
 
         while (counter < retryRefreshCount)
         {
+        	WebElement element = drone.find(By.cssSelector(DOCUMENT_BODY));
             if (!element.getText().isEmpty())
             {
                 return element.getText();
