@@ -4414,6 +4414,7 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         }
                     }
                 }
+                break;
             case TRUE:
                 if(locale.toString().length() == 0)
                 {
@@ -4437,8 +4438,9 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                         }
                     }
                 }
+                break;
             }
-
+            return new FieldInstance("_dummy_", false, false);
             
         }
 

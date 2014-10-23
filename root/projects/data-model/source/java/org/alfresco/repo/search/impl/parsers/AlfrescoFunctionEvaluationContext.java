@@ -320,6 +320,10 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
             {
                 return QueryConstants.PROPERTY_FIELD_PREFIX + fullQName.toString();
             }
+            else if(dictionaryService.getDataType(fullQName) != null)
+            {
+                return fullQName.toString();
+            }
             else
             {
                 throw new FTSQueryException("Unknown property: " + fullQName.toString());
@@ -335,6 +339,10 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
             if (dictionaryService.getProperty(propertyQName) != null)
             {
                 return QueryConstants.PROPERTY_FIELD_PREFIX + fullQName.toString();
+            }
+            else if(dictionaryService.getDataType(fullQName) != null)
+            {
+                return fullQName.toString();
             }
             else
             {
@@ -371,6 +379,10 @@ public class AlfrescoFunctionEvaluationContext implements FunctionEvaluationCont
         if (dictionaryService.getProperty(propertyQName) != null)
         {
             return QueryConstants.PROPERTY_FIELD_PREFIX + fullQName.toString();
+        }
+        else if(dictionaryService.getDataType(fullQName) != null)
+        {
+            return fullQName.toString();
         }
         else
         {

@@ -5766,6 +5766,7 @@ public class AlfrescoCoreAdminTester
         testQueryByHandler(report, core, "/afts", "lazy -dog", 16, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "TEXT:\"lazy\"", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "cm_content:\"lazy\"", 1, null, null, null, null, null, (String) null);
+        testQueryByHandler(report, core, "/afts", "d:content:\"lazy\"", 1, null, null, null, null, null, (String) null);
         testQueryByHandler(report, core, "/afts", "=cm_content:\"lazy\"", 1, null, null, null, null, null,
                     (String) null);
         testQueryByHandler(report, core, "/afts", "~cm_content:\"lazy\"", 1, null, null, null, null, null,
@@ -6670,6 +6671,7 @@ public class AlfrescoCoreAdminTester
             testQuery(dataModel, report, solrIndexSearcher,
                         "TEXT:fox AND TYPE:\"" + ContentModel.PROP_CONTENT.toString() + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TEXT:fox @cm\\:name:fox", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "d\\:content:fox d\\:text:fox", 1);
             testQuery(dataModel, report, solrIndexSearcher,
                         "TEXT:fo AND TYPE:\"" + ContentModel.PROP_CONTENT.toString() + "\"", 0);
 

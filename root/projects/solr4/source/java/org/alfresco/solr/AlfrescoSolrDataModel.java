@@ -562,10 +562,12 @@ public class AlfrescoSolrDataModel implements QueryConstants
         PropertyDefinition propertyDefinition = getPropertyDefinition(propertyQName);
         if((propertyDefinition == null))
         { 
+            indexedField.addField("_dummy_", false, false);
             return indexedField;
         }
         if(!propertyDefinition.isIndexed() && !propertyDefinition.isStoredInIndex())
         {
+            indexedField.addField("_dummy_", false, false);
             return indexedField;
         }
         
