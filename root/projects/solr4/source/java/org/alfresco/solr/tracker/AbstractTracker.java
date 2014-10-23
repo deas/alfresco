@@ -84,7 +84,7 @@ public abstract class AbstractTracker implements Tracker
         isSlave =  Boolean.parseBoolean(p.getProperty("enable.slave", "false"));
         isMaster =  Boolean.parseBoolean(p.getProperty("enable.master", "true"));
 
-        this.trackerStats = new TrackerStats(this.infoSrv);
+        this.trackerStats = this.infoSrv.getTrackerStats();
 
         alfrescoVersion = p.getProperty("alfresco.version", "5.0.0");
         log.info("Solr built for Alfresco version: " + alfrescoVersion);

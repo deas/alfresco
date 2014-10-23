@@ -59,11 +59,14 @@ public class MetadataTrackerTest
     private InformationServer srv;
     @Spy
     private Properties props;
+    @Mock
+    private TrackerStats trackerStats;
 
     @Before
     public void setUp() throws Exception
     {
         doReturn("workspace://SpacesStore").when(props).getProperty("alfresco.stores");
+        when(srv.getTrackerStats()).thenReturn(trackerStats);
         this.metadataTracker = spy(new MetadataTracker(props, repositoryClient, coreName, srv));
     }
 

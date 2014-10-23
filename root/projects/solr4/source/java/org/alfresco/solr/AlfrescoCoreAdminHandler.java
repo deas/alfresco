@@ -987,17 +987,26 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             changeSetsToDo = 0;
         }
 
-        long remainingTxTimeMillis = (long) (transactionsToDo * srv.getTrackerStats().getMeanDocsPerTx()
-                    * srv.getTrackerStats().getMeanNodeIndexTime() / srv.getTrackerStats()
-                    .getNodeIndexingThreadCount());
+        long remainingTxTimeMillis = 0;
+        if (transactionsToDo > 0)
+        {
+            double meanDocsPerTx = srv.getTrackerStats().getMeanDocsPerTx();
+            double meanNodeIndexTime = srv.getTrackerStats().getMeanNodeIndexTime();
+            remainingTxTimeMillis = (long) (transactionsToDo * meanDocsPerTx * meanNodeIndexTime
+                    / srv.getTrackerStats().getNodeIndexingThreadCount());
+        }
         Date now = new Date();
         Date end = new Date(now.getTime() + remainingTxTimeMillis);
         Duration remainingTx = new Duration(now, end);
 
-        long remainingChangeSetTimeMillis = (long) (changeSetsToDo
-                    * srv.getTrackerStats().getMeanAclsPerChangeSet()
-                    * srv.getTrackerStats().getMeanAclIndexTime() / srv.getTrackerStats()
-                    .getNodeIndexingThreadCount());
+        long remainingChangeSetTimeMillis = 0;
+        if (changeSetsToDo > 0)
+        {
+            double meanAclsPerChangeSet = srv.getTrackerStats().getMeanAclsPerChangeSet();
+            double meanAclIndexTime = srv.getTrackerStats().getMeanAclIndexTime();
+            remainingChangeSetTimeMillis = (long) (changeSetsToDo * meanAclsPerChangeSet * meanAclIndexTime
+                    / srv.getTrackerStats().getNodeIndexingThreadCount());
+        }
         now = new Date();
         end = new Date(now.getTime() + remainingChangeSetTimeMillis);
         Duration remainingChangeSet = new Duration(now, end);

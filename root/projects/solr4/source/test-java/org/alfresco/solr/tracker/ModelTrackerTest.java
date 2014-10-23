@@ -60,6 +60,8 @@ public class ModelTrackerTest
     private InformationServer srv;
     @Mock
     private Properties props;
+    @Mock
+    private TrackerStats trackerStats;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
@@ -92,6 +94,7 @@ public class ModelTrackerTest
         when(props.getProperty("alfresco.maxLiveSearchers", "2")).thenReturn("2");
         when(props.getProperty("enable.slave", "false")).thenReturn("false");
         when(props.getProperty("enable.master", "true")).thenReturn("true");
+        when(this.srv.getTrackerStats()).thenReturn(trackerStats);
 
         // TODO: create test folder for model sync?
         this.modelTracker = new ModelTracker(null, props, repositoryClient, coreName, srv);
