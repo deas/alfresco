@@ -64,12 +64,6 @@ version: 2.9.0
     
 }
 
-.yui-skin-default .yui-menu-button button {
-
-    background-image: url(menu-button-arrow.png);
-
-}
-
 .yui-skin-default .yui-split-button button {
 
     background-image: url(split-button-arrow.png);
