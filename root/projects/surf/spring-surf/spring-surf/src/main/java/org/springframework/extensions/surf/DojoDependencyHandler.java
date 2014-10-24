@@ -579,7 +579,7 @@ public class DojoDependencyHandler
                if (in != null)
                {
                    String textContents = this.dependencyHandler.convertResourceToString(in);
-                   textContents = textContents.replace("'", "\"").replace("\"", "\\\"").replace("\n", "").replace("\r", "");
+                   textContents = textContents.replace('\'', '"').replace("\"", "\\\"").replace("\n", "").replace("\r", "");
                    currentDep.append(textContents);
                }
                else
@@ -678,8 +678,7 @@ public class DojoDependencyHandler
                {
                   // The first folder in the path is a module alias, we don't need to make any changes...
                   usesModuleAlias = true;
-                  String s = dependencyPath.replaceFirst(firstFolder, alias);
-                  sb.append(s);
+                  sb.append(alias).append(dependencyPath.substring(idx));
                }
            }
         }
