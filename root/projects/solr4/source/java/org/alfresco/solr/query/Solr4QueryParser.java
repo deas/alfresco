@@ -1165,6 +1165,12 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
     @SuppressWarnings("unchecked")
     protected Query getFieldQueryImpl(String field, String queryText, AnalysisMode analysisMode, LuceneFunction luceneFunction) throws ParseException, IOException
     {
+        // make sure the field exists or return a dummy query so we have no error ....ACE-3231
+        if(schema.getFieldOrNull(field) == null)
+        {
+            return new TermQuery(new Term("_dummy_", "_miss_"));
+        }
+        
         // Use the analyzer to get all the tokens, and then build a TermQuery,
         // PhraseQuery, or noth
 

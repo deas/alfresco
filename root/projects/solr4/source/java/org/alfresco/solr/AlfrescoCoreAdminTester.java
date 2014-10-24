@@ -6630,10 +6630,16 @@ public class AlfrescoCoreAdminTester
                         "TYPE:\"" + testSuperType.toPrefixString(dataModel.getNamespaceDAO()) + "\"", 13);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + ContentModel.TYPE_CONTENT.toString() + "\"", 1);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"cm:content\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"cm:content0\"", 0);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"cm:CONTENT\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"cm:CONTENT1\"", 0);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"CM:CONTENT\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"CM:CONTENT1\"", 0);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"CONTENT\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"CONTENT1\"", 0);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"content\"", 1);
+            testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"content0\"", 0);
+            testQuery(dataModel, report, solrIndexSearcher, "ASPECT:\"flubber\"", 0);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + ContentModel.TYPE_THUMBNAIL.toString() + "\"",
                         1);
             testQuery(dataModel, report, solrIndexSearcher, "TYPE:\"" + ContentModel.TYPE_THUMBNAIL.toString()
@@ -7785,6 +7791,9 @@ public class AlfrescoCoreAdminTester
             testQuery(dataModel, report, solrIndexSearcher,
                         "\\@" + SearchLanguageConversion.escapeLuceneQuery(qname.toString()) + ":{5.6 TO A}", 0);
 
+            testQuery(dataModel, report, solrIndexSearcher,
+                    "\\@" + SearchLanguageConversion.escapeLuceneQuery("My-funny&MissingProperty:woof"), 0);
+            
             Date date = new Date();
             for (SimpleDateFormatAndResolution df : CachingDateFormat.getLenientFormatters())
             {
