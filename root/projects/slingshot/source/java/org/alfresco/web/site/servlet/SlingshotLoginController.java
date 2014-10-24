@@ -27,6 +27,7 @@ import org.alfresco.web.site.SlingshotUserFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.extensions.surf.FrameworkUtil;
+import org.springframework.extensions.surf.UserFactory;
 import org.springframework.extensions.surf.exception.ConnectorServiceException;
 import org.springframework.extensions.surf.mvc.LoginController;
 import org.springframework.extensions.surf.support.AlfrescoUserFactory;
@@ -68,6 +69,13 @@ public class SlingshotLoginController extends LoginController
             // Get the authenticated user name and use it to retrieve all of the groups that the user is a 
             // member of...
             String username = (String) request.getParameter("username");
+            
+            // ACE-3257 case, request may not contains username parameter (e.g. for SSO login)
+            if (username == null)
+            {
+                username = (String)request.getSession(false).getAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID);
+            }
+            
             Connector conn = FrameworkUtil.getConnector(request.getSession(), username, AlfrescoUserFactory.ALFRESCO_ENDPOINT_ID);
             ConnectorContext c = new ConnectorContext(HttpMethod.GET);
             c.setContentType("application/json");

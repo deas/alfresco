@@ -122,6 +122,7 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
     private String endpoint;
     private ServletContext servletContext;
     private String userHeader;
+    private SlingshotLoginController loginController;
     
     // Kerberos settings
     //
@@ -168,6 +169,8 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         
         ApplicationContext context = getApplicationContext();
 
+        this.loginController = (SlingshotLoginController)context.getBean("loginController");
+        
         // retrieve the connector service
         this.connectorService = (ConnectorService)context.getBean("connector.service");
 
@@ -775,6 +778,8 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             }
             else
             {
+                onSuccess(req, res, session, userId);
+                
                 // we have local auth in the session and the repo session is also valid
                 // this means we do not need to perform any further auth handshake
                 if (logger.isDebugEnabled())
@@ -1086,11 +1091,10 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
                     if (logger.isDebugEnabled())
                         logger.debug("User logged on via NTLM, " + ntlmDetails);
                     
-                    // Create User ID in session so the web-framework dispatcher knows we have logged in
-                    session.setAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID, userName);
-                    
                     // Set the external auth flag so the UI knows we are using SSO etc.
                     session.setAttribute(UserFactory.SESSION_ATTRIBUTE_EXTERNAL_AUTH, Boolean.TRUE);
+                    
+                    onSuccess(req, res, session, userName);
                     
                     // Allow the user to access the requested page
                     chain.doFilter(req, res);
@@ -1307,12 +1311,11 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
             {
                 if (logger.isDebugEnabled())
                     logger.debug("Authentication succeded on the repo side.");
-                // Create User ID in session so the web-framework dispatcher knows we have logged in
-                session.setAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID, userName);
                 
                 // Set the external auth flag so the UI knows we are using SSO etc.
                 session.setAttribute(UserFactory.SESSION_ATTRIBUTE_EXTERNAL_AUTH, Boolean.TRUE);
 
+                onSuccess(req, res, session, userName);
             }
             else
             {
@@ -1343,6 +1346,34 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         if (req.getQueryString() != null)
         {
             session.setAttribute(REDIRECT_QUERY, req.getQueryString());
+        }
+    }
+    
+    /**
+     * Success login method handler, uses logic of {@link SlingshotLoginController} to retrieve all of the user's groups
+     * 
+     * @param req current http request
+     * @param res current http response
+     * @param session current session
+     * @param username logged in user name
+     * 
+     */
+    private void onSuccess(HttpServletRequest req, HttpServletResponse res, HttpSession session, String username)
+    {
+        try
+        {
+            if (session.getAttribute(SlingshotLoginController.SESSION_ATTRIBUTE_KEY_USER_GROUPS) == null)
+            {
+                // Create User ID in session so the web-framework dispatcher knows we have logged in
+                session.setAttribute(UserFactory.SESSION_ATTRIBUTE_KEY_USER_ID, username);
+    
+                // ACE-3257 fix, retrieve all of the groups that the user is a member of...
+                loginController.onSuccess(req, res);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoRuntimeException("Unable to retrieve groups for currently logged in user!", e);
         }
     }
 }
