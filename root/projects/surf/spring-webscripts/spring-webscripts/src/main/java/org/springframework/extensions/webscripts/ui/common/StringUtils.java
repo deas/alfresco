@@ -542,21 +542,27 @@ public class StringUtils
                         // close the tag after attribute output and before child output
                         buf.append('>');
                         
-                        // process children if they exist, else end tag will be processed in next iteration
+                        // process children if they exist
                         if (tag.getChildren() != null)
                         {
                             processNodes(buf, tag.getChildren().elements(), encode, false);
+                        }
+                        if (tag.getEndTag() != null)
+                        {
                             buf.append(tag.getEndTag().toHtml());
                         }
                     }
                     else
                     {
-                        // process children if they exist - or output end tag if not empty
+                        // process children if they exist
                         if (tag.getChildren() != null)
                         {
                             buf.append('<').append(tag.getRawTagName()).append('>');
                             processNodes(buf, tag.getChildren().elements(), encode, false);
-                            buf.append(tag.getEndTag().toHtml());
+                            if (tag.getEndTag() != null)
+                            {
+                                buf.append(tag.getEndTag().toHtml());
+                            }
                         }
                         else
                         {
