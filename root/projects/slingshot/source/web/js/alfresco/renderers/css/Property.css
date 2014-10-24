@@ -48,3 +48,9 @@
 .alfresco-renderers-Property.pointer {
    cursor: pointer;
 }
+
+.alfresco-renderers-Property span.value > a {
+    text-decoration: none;
+    color: @general-font-color;
+    cursor: pointer;
+}

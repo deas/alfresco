@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -220,13 +220,13 @@ define(["dojo/_base/declare",
 
          this.renderedValueClass = this.renderedValueClass + " " + this.renderSize;
          
-         if (this.renderOnNewLine == true)
+         if (this.renderOnNewLine === true)
          {
             this.renderedValueClass = this.renderedValueClass + " block";
          }
 
          // If the renderedValue is not set then display a warning message if requested...
-         if ((this.renderedValue == null || this.renderedValue == "") && this.warnIfNotAvailable)
+         if ((this.renderedValue == null || this.renderedValue === "") && this.warnIfNotAvailable)
          {
             // Get appropriate message
             // Check message based on propertyToRender otherwise default to sensible alternative
@@ -248,7 +248,7 @@ define(["dojo/_base/declare",
             this.renderedValue = warningMessage;
             this.renderedValueClass += " faded";
          }
-         else if ((this.renderedValue == null || this.renderedValue == "") && !this.warnIfNotAvailable)
+         else if ((this.renderedValue == null || this.renderedValue === "") && !this.warnIfNotAvailable)
          {
             // Reset the prefix and suffix if there's no data to display
             this.requestedValuePrefix = this.renderedValuePrefix;
@@ -264,7 +264,7 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_renderers_Property__postCreate() {
-         if (this.onlyShowOnHover == true)
+         if (this.onlyShowOnHover === true)
          {
             domClass.add(this.domNode, "hover-only");
          }

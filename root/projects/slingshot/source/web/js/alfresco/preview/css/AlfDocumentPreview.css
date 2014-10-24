@@ -16,3 +16,9 @@
    text-align: center;
    margin: 100px 0;
 }
+
+/* This should potentially be in a CSS file directly associated with the Image plugin */
+.alfresco-preview-AlfDocumentPreview .previewer.Image {
+   text-align: center;
+   background-color: transparent;
+}

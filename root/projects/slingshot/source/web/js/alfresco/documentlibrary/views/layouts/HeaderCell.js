@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -148,19 +148,19 @@ define(["dojo/_base/declare",
        */
       postCreate: function alfresco_documentlibrary_views_layouts_HeaderCell__postCreate() {
 
-         this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, "onExternalSortRequest"));
-         this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, "onExternalSortRequest"));
+         this.alfSubscribe("ALF_DOCLIST_SORT", lang.hitch(this, this.onExternalSortRequest));
+         this.alfSubscribe("ALF_DOCLIST_SORT_FIELD_SELECTION", lang.hitch(this, this.onExternalSortRequest));
 
          domAttr.set(this.ascendingSortNode, "alt", this.sortAscAlt ? this.sortAscAlt : "");
          domAttr.set(this.descendingSortNode, "alt", this.sortDescAlt ? this.sortDescAlt : "");
 
-         if (this.sortable == false || this.usedForSort == false)
+         if (this.sortable === false || this.usedForSort === false)
          {
             this.sortIcon("nil");
          }
          else
          {
-            this.sortIcon(this.sortedAscending == false ? "desc" : "asc");
+            this.sortIcon(this.sortedAscending === false ? "desc" : "asc");
          }
 
          if(this.additionalCssClasses)
@@ -198,12 +198,12 @@ define(["dojo/_base/declare",
        * @param {object} evt The click event
        */
       onSortClick: function alfresco_documentlibrary_views_layouts_HeaderCell__onSortClick(evt) {
-         if (this.sortable == true)
+         if (this.sortable === true)
          {
             this.alfLog("log", "Sort request received");
 
             // If currently NOT being used for sort then we start with ascending
-            if (this.usedForSort == false)
+            if (this.usedForSort === false)
             {
                this.usedForSort = true;
                this.sortedAscending = true;
@@ -211,7 +211,7 @@ define(["dojo/_base/declare",
             }
 
             // If we are already sorting on this column and direction is ascending then we want descending
-            else if (this.sortedAscending == true)
+            else if (this.sortedAscending === true)
             {
                this.sortIcon("desc");
                this.sortedAscending = false;
@@ -255,7 +255,7 @@ define(["dojo/_base/declare",
                if (value == this.sortValue)
                {
                   this.usedForSort = true;
-                  this.sortIcon(this.sortedAscending == true ? "asc" : "desc");
+                  this.sortIcon(this.sortedAscending === true ? "asc" : "desc");
                }
                else
                {
@@ -269,9 +269,9 @@ define(["dojo/_base/declare",
             if (direction != null)
             {
                this.sortedAscending = (direction == "ascending");
-               if (this.usedForSort == true)
+               if (this.usedForSort === true)
                {
-                  this.sortIcon(this.sortedAscending == true ? "asc" : "desc");
+                  this.sortIcon(this.sortedAscending === true ? "asc" : "desc");
                }
             }
          }

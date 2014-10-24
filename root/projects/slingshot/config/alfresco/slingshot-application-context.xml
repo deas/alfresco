@@ -232,6 +232,7 @@
       <property name="compressionExclusions">
           <list>
              <value>*-min.js"</value>
+             <value>*/lib/code-mirror/*.js</value>
           </list>
        </property>
    </bean>
