@@ -1476,7 +1476,6 @@ public class AdvanceSearchTest extends AbstractUtils
         Assert.assertTrue(facetedSearchPage.hasResults());
         facetedSearchPage.getSort().sortByLabel(sortBy);
         facetedSearchPage.render();
-        facetedSearchPage.loadElements();
 
         return  facetedSearchPage.getResults();
 
@@ -1527,7 +1526,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("NAME");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results1 = facetedSearchPage.getResults();
             Assert.assertNotNull(results1);
@@ -1561,7 +1559,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.NAME);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("NAME");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results = facetedSearchPage.getResults();
 
@@ -1718,7 +1715,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("TITLE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList = facetedSearchPage.getResults();
 
@@ -1749,7 +1745,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.TITLE);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("TITLE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList1 = facetedSearchPage.getResults();
             Assert.assertNotNull(resultsList1);
@@ -1906,7 +1901,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("DESCRIPTION");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList1 = facetedSearchPage.getResults();
 
@@ -1940,7 +1934,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.DESCRIPTION);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("DESCRIPTION");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList2 = facetedSearchPage.getResults();
 
@@ -2100,7 +2093,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATOR);
             Assert.assertTrue(facetedSearchPage.getResults().size() >= 2, "Expecting 2 results, retrieved:");
             facetedSearchPage.getSort().sortByLabel("CREATOR");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results = facetedSearchPage.getResults();
 
@@ -2239,13 +2231,12 @@ public class AdvanceSearchTest extends AbstractUtils
 
             // Searching with keyword
             contentSearchPage.inputKeyword(searchTerm);
-            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone);
+            FacetedSearchPage facetedSearchPage = ShareUserSearchPage.clickSearchOnAdvanceSearch(drone).render();
 
             // Sorting results by Creator
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.AUTHOR);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("AUTHOR");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results = facetedSearchPage.getResults();
 
@@ -2398,7 +2389,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIER);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("MODIFIER");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList1 = facetedSearchPage.getResults();
 
@@ -2524,7 +2514,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("CREATED DATE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList = facetedSearchPage.getResults();
 
@@ -2553,7 +2542,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.CREATED);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("CREATED DATE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList1 = facetedSearchPage.getResults();
 
@@ -2683,7 +2671,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("SIZE").render();
-            facetedSearchPage.loadElements();
 
             List<SearchResult> resultsList = facetedSearchPage.getResults();
 
@@ -2712,7 +2699,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.SIZE);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("SIZE").render();
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results = facetedSearchPage.getResults();
 
@@ -2851,7 +2837,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // Sorting results by Mime Type
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("MIME TYPE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results = facetedSearchPage.getResults();
 
@@ -2982,7 +2967,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // List<SearchResult> resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("MODIFIED DATE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results = facetedSearchPage.getResults();
 
@@ -3011,7 +2995,6 @@ public class AdvanceSearchTest extends AbstractUtils
             // resultsList = ShareUserSearchPage.sortSearchResults(drone, SortType.MODIFIED);
             Assert.assertTrue(facetedSearchPage.hasResults());
             facetedSearchPage.getSort().sortByLabel("MODIFIED DATE");
-            facetedSearchPage.loadElements();
 
             List<SearchResult> results1 = facetedSearchPage.getResults();
 
@@ -3144,7 +3127,6 @@ public class AdvanceSearchTest extends AbstractUtils
 
                 // Sorting results by Type
                 page.getSort().sortByLabel("TYPE").render();
-                page.loadElements();
 
                 List<SearchResult> resultsList = page.getResults();
 

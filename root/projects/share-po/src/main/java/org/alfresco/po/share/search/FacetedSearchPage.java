@@ -415,5 +415,21 @@ public class FacetedSearchPage extends SharePage implements SearchResultPage
         return drone.isElementDisplayed(By.cssSelector(goToAdvancedSearch));
     }
 
+	public List<FacetedSearchFacetGroup> getFacetGroups() 
+	{
+		List<WebElement> facetGroups = drone.findAll(By.cssSelector("div.alfresco-documentlibrary-AlfDocumentFilters:not(.hidden)"));
+		List<FacetedSearchFacetGroup>filters = new ArrayList<FacetedSearchFacetGroup>();
+		for (WebElement facetGroup : facetGroups)
+		{
+        	filters.add(new FacetedSearchFacetGroup(drone, facetGroup));
+        }
+		return filters;
+	}
+
+	public FacetedSearchScopeMenu getScopeMenu() 
+	{
+		return new FacetedSearchScopeMenu(drone);
+	}
+
 
 }
