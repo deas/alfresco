@@ -26,6 +26,7 @@ package org.alfresco.solr.component;
  *   http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +54,7 @@ import org.apache.lucene.search.suggest.Lookup.LookupResult;
 import org.apache.lucene.util.Accountable;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.CharsRef;
+import org.apache.lucene.util.OfflineSorter;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.ShardParams;
@@ -108,6 +110,27 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   private static final String ASYNC_CACHE_KEY = "suggester";
 
   private static final String MIN_SECS_BETWEEN_BUILDS = "solr.suggester.minSecsBetweenBuilds";
+  
+  private static File offlineSorterTempDir;
+  
+  static
+  {
+      try
+      {
+          offlineSorterTempDir = OfflineSorter.defaultTempDir();
+      }
+      catch (IOException e)
+      {
+          throw new RuntimeException("No OfflineSorter temp directory", e);
+      }
+  }
+  
+  protected static TempFileWarningLogger tempFileWarningLogger =
+              new TempFileWarningLogger(
+                          LOG,
+                          "WFSTInputIterator*",
+                          new String[] { "input", "sorted" },
+                          offlineSorterTempDir.toPath());
   
   @SuppressWarnings("unchecked")
   protected NamedList initParams;
@@ -639,6 +662,8 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
             return initialSuggester;
         }
         
+        tempFileWarningLogger.checkFiles();
+
         RefCounted<SolrIndexSearcher> refCountedSearcher = core.getSearcher();
         try
         {
