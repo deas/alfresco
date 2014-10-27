@@ -19,6 +19,7 @@ package org.springframework.extensions.directives;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
@@ -339,13 +340,25 @@ public class ProcessJsonModelDirective extends JavaScriptDependencyDirective
         // any "strangely" nested widget requirements and also to leverage the "widgets*" RegEx pattern that
         // the processControllerWidgets method will miss. Arguably this might also be a requirement for 
         // Services although they are not expected to fall into that pattern...
-        DojoDependencies dd = new DojoDependencies();
-        this.dojoDependencyHandler.processString(widgetsJSONStr, dd, dependenciesForCurrentRequest);
-        
-        // It doesn't actually matter what we declare the initial dependency as being, it will just get output in
-        // the built cache object as "null". What's important is that we have a starting point to build from...
-        // it's what goes into the DojoDependencies instance that is important...
-        dependenciesForCurrentRequest.put("alfresco/dummy/module.js", dd);
+        try
+        {
+            DojoDependencies dd = new DojoDependencies();
+            StringReader sr = new StringReader(widgetsJSONStr);
+            String compressedJsonStr = this.dependencyAggregator.compressJavaScript(sr);
+            this.dojoDependencyHandler.processString(compressedJsonStr, dd, dependenciesForCurrentRequest);
+            
+            // It doesn't actually matter what we declare the initial dependency as being, it will just get output in
+            // the built cache object as "null". What's important is that we have a starting point to build from...
+            // it's what goes into the DojoDependencies instance that is important...
+            dependenciesForCurrentRequest.put("alfresco/dummy/module.js", dd);
+        }
+        catch (IOException e)
+        {
+            if (logger.isErrorEnabled())
+            {
+                logger.error("An error occurred processing page dependencies", e);
+            }
+        }
         
         // Build the checksum for the generated output that includes all the files
         // This will construct and cache the output for a given set of dependencies if it has not done so.
