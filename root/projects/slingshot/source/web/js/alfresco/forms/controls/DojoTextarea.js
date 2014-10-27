@@ -24,7 +24,7 @@
  */
 define(["alfresco/forms/controls/BaseFormControl",
         "dojo/_base/declare",
-        "dijit/form/Textarea"], 
+        "dijit/form/SimpleTextarea"], 
         function(BaseFormControl, declare, Textarea) {
    
    return declare([BaseFormControl], {
@@ -37,9 +37,29 @@ define(["alfresco/forms/controls/BaseFormControl",
          return {
             id : this.generateUuid(),
             name: this.name,
-            value: this.value
+            value: this.value,
+            rows: this.rows,
+            cols: this.cols
          };
       },
+
+      /**
+       * The number of rows to initially display.
+       * 
+       * @instance
+       * @type {string}
+       * @default "5"
+       */
+      rows: "5",
+
+      /**
+       * The number of columns to initially display.
+       * 
+       * @instance
+       * @type {string}
+       * @default "50"
+       */
+      cols: "50",
       
       /**
        * @instance

@@ -78,6 +78,9 @@ define(["dojo/_base/declare",
 
             this.alfSubscribe("ALF_ITEM_SELECTED", lang.hitch(this, "addPickedItem"));
             this.alfSubscribe("ALF_ITEM_REMOVED", lang.hitch(this, "removePickedItem"));
+            this.alfSubscribe("ALF_SET_PICKED_ITEMS", lang.hitch(this, this.onSetPickedItems));
+            this.alfSubscribe("ALF_ITEM_MOVED_DOWN", lang.hitch(this, this.onReorder, 1));
+            this.alfSubscribe("ALF_ITEM_MOVED_UP", lang.hitch(this, this.onReorder, -1));
 
             // Initialise the data...
             this.currentData = {
@@ -131,6 +134,10 @@ define(["dojo/_base/declare",
                      this.currentData.items.push(payload);
                      this.renderView(false);
                   }
+                  // Publish the data about the items currently selected...
+                  this.alfPublish("ALF_ITEMS_SELECTED", {
+                     pickedItems: this.currentData.items
+                  });
                }
                else
                {
@@ -190,6 +197,21 @@ define(["dojo/_base/declare",
             return target;
          },
 
+
+         /**
+          * Handles requests to set the picked items via a publication.
+          *
+          * @instance
+          * @param {object} payload
+          */
+         onSetPickedItems: function alfresco_pickers_PickedItems_setPickedItems(payload) {
+            var items = lang.getObject("pickedItems", false, payload);
+            if (items != null)
+            {
+               this.setPickedItems(items);
+            }
+         },
+
          /**
           * Sets and renders the supplied items
           *
@@ -206,6 +228,47 @@ define(["dojo/_base/declare",
                this.alfLog("warn", "No items supplied to 'setPickedItems' function", items, this);
             }
             this.renderView();
+         },
+
+         /**
+          * Re-orders the item in the current data.
+          *
+          * @instance
+          * @param {number} adjustment How to adjust the position, e.g. -1 to move up, 1 to move down
+          * @param {object} item The item to move.
+          */
+         onReorder: function alfresco_pickers_PickedItems__onReorder(adjustment, item) {
+            var targetKey = lang.getObject(this.itemKey, false, item);
+            if (targetKey != null)
+            {
+               var targetIndex = null;
+               // Use "some" rather than "forEach" to exit loop immediately on match...
+               var found = array.some(this.currentData.items, function(currItem, index) {
+                  var currKey = lang.getObject(this.itemKey, false, currItem);
+                  if (currKey === targetKey)
+                  {
+                     targetIndex = index; 
+                  }
+                  return currKey === targetKey;
+               }, this);
+               if (found === true)
+               {
+                  var updatedIndex = targetIndex + adjustment;
+                  if (updatedIndex >= 0 && updatedIndex <= this.currentData.items.length)
+                  {
+                     this.currentData.items[updatedIndex].index = targetIndex;
+                     this.currentData.items[targetIndex].index = updatedIndex;
+                     var tmp1 = this.currentData.items[updatedIndex];
+                     var tmp2 = this.currentData.items[targetIndex];
+                     this.currentData.items[targetIndex] = tmp1;
+                     this.currentData.items[updatedIndex] = tmp2;
+                     this.renderView(false);
+                     this.alfPublish("ALF_ITEMS_SELECTED", {
+                        pickedItems: this.currentData.items
+                     });
+                  }
+               }
+            }
          },
 
          /**

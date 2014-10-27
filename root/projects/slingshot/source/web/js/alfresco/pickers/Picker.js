@@ -111,12 +111,21 @@ define(["dojo/_base/declare",
       _processsingPickedItems: false,
 
       /**
+       * Override the default widget behaviour to generate a pubSubScope.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      generatePubSubScope: true,
+
+      /**
        *
        *
        * @instance
        */
       postCreate: function alfresco_pickers_Picker__postCreate() {
-         this.pubSubScope = this.generateUuid() + "_";
+         // this.pubSubScope = this.generateUuid() + "_";
          this.currentPickers = [];
          this.alfSubscribe("ALF_ADD_PICKER", lang.hitch(this, this.addPicker));
 

@@ -65,6 +65,10 @@ define(["dojo/_base/declare",
       postCreate: function alfresco_documentlibrary_views_layouts_Row__postCreate() {
          if (this.widgets)
          {
+            if (this.widgetModelModifiers != null)
+            {
+               this.processObject(this.widgetModelModifiers, this.widgets);
+            }
             this.processWidgets(this.widgets, this.containerNode);
          }
       },

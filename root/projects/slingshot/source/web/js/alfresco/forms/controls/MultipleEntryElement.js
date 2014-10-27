@@ -118,12 +118,22 @@ define(["dojo/_base/declare",
       },
       
       /**
+       * The attribute to use from the value as the read only display. Defaults to "value".
+       *
+       * @instance
+       * @type {string}
+       * @default "value"
+       */
+      readDisplayAttribute: "value",
+
+      /**
        * The default read display simply shows the value of the element.
        * 
        * @instance
        */
       createReadDisplay: function alfresco_forms_controls_MultipleEntryElement__createReadDisplay() {
-         var readDisplay = this.encodeHTML(this.elementValue.value);
+         var attribute = this.readDisplayAttribute != null ? this.readDisplayAttribute : "value";
+         var readDisplay = this.encodeHTML(this.elementValue[attribute]);
          readDisplay = this.mapValueToDisplayValue(readDisplay);
          this.readDisplay.innerHTML = readDisplay;
       },

@@ -828,7 +828,14 @@ define(["dojo/_base/declare",
 
          if (foundItems)
          {
-            this.processLoadedData(payload.response);
+            if (payload.response) 
+            {
+               this.processLoadedData(payload.response);
+            }
+            else
+            {
+               this.processLoadedData(this.currentData);
+            }
             this.renderView();
          }
 
