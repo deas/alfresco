@@ -1615,7 +1615,6 @@ public class SolrInformationServer implements InformationServer
         {
             request = getLocalSolrQueryRequest();
             processor = this.core.getUpdateProcessingChain(null).createProcessor(request, new SolrQueryResponse());
-            long start = System.nanoTime();
             
             Map<Long, Node> nodeIdsToNodes = new HashMap<>();
             EnumMap<SolrApiNodeStatus, List<Long>> nodeStatusToNodeIds = new EnumMap<SolrApiNodeStatus, List<Long>>(SolrApiNodeStatus.class);
@@ -1681,6 +1680,8 @@ public class SolrInformationServer implements InformationServer
 
                 for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
+                    long start = System.nanoTime();
+                
                     AddUpdateCommand addDocCmd = new AddUpdateCommand(request);
                     addDocCmd.overwrite = overwrite;
                     
@@ -1732,10 +1733,12 @@ public class SolrInformationServer implements InformationServer
                     addToNewDocAndCache(nodeMetaData, doc);
                     addDocCmd.solrDoc = doc;
                     processor.processAdd(addDocCmd);
+                    
+                    long end = System.nanoTime();
+                    this.trackerStats.addNodeTime(end - start);
                 } // Ends iteration over nodeMetadatas
             } // Ends checking for the existence of updated or unknown node ids 
-            long end = System.nanoTime();
-            this.trackerStats.addNodeTime(end - start);
+           
         }
         catch (Exception e)
         {
