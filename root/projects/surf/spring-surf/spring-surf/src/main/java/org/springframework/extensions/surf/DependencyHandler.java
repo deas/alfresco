@@ -377,7 +377,7 @@ public class DependencyHandler implements ApplicationContextAware
      * @param path The path to check the cache for.
      * @return A previously generated {@link ResourceInfo} object or <code>null</code> if one could not be found.
      */
-    public ResourceInfo getCachedResourceInfo(String path)
+    protected ResourceInfo getCachedResourceInfo(String path)
     {
         ResourceInfo resource = null;
         this.resourceInfoLock.readLock().lock();
@@ -390,6 +390,18 @@ public class DependencyHandler implements ApplicationContextAware
             this.resourceInfoLock.readLock().unlock();
         }
         return resource;
+    }
+    
+    /**
+     * Return the state of a given path in the resource cache.
+     * 
+     * @param path  to test for existence in the cache
+     * @return true if a resource exists in the cache for the given path.
+     */
+    public boolean resourceInCache(final String path)
+    {
+        final ResourceInfo resource = getCachedResourceInfo(path);
+        return !(resource == null || resource == getResourceInfoSentinel());
     }
     
     /**

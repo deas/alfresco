@@ -267,16 +267,23 @@ public class DojoDependencyRule
     {
         try
         {
-            InputStream in = this.dependencyHandler.getResourceInputStream(path);
-            if (in != null)
+            if (this.dependencyHandler.resourceInCache(path))
             {
-                try
+                dependencies.addJavaScriptDep(path);
+            }
+            else
+            {
+                InputStream in = this.dependencyHandler.getResourceInputStream(path);
+                if (in != null)
                 {
-                    dependencies.addJavaScriptDep(path);
-                }
-                finally
-                {
-                    in.close();
+                    try
+                    {
+                        dependencies.addJavaScriptDep(path);
+                    }
+                    finally
+                    {
+                        in.close();
+                    }
                 }
             }
         }

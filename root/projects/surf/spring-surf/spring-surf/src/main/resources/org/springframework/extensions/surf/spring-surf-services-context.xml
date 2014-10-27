@@ -528,8 +528,8 @@
    <bean id="define.dojo.widgets.dependency.rule.abstract" abstract="true">
       <property name="dependencyHandler"     ref="dependency.handler" />
       <property name="dojoDependencyHandler" ref="dojo.dependency.handler" />
-      <property name="declarationRegex"      value="widgets[^:]*?:\[(\{(.*)\})\]"/>
-      <property name="dependencyRegex"       value="name:&quot;(.*?)&quot;"/>
+      <property name="declarationRegex"      value="&quot;?widgets&quot;?[^:]*?:[\r\s\t\n]*\[(\{(.*)\})\]"/>
+      <property name="dependencyRegex"       value="&quot;?name&quot;?:[\r\s\t\n]*&quot;(.*?)&quot;"/>
       <property name="targetGroup"           value="1"/>
    </bean>
    

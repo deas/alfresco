@@ -19,6 +19,8 @@ package org.springframework.extensions.surf;
 
 import java.util.regex.Matcher;
 
+import org.springframework.util.StringUtils;
+
 /**
  * <p>This {@link DojoDependencyRule} is used to detect Dojo dependencies that are defined within JavaScript source files
  * as JSON arrays of JSON objects. This rule will detect dependencies that are not explicitly declared through a "define"
@@ -56,7 +58,8 @@ public class DojoWidgetsDependencyRule extends DojoDependencyRule
                         String dep = m2.group(1);
                         if (dep != null)
                         {
-                            String depPath = getDojoDependencyHandler().getPath(filePath, dep) + ".js";
+                            // convert dep found in JSON to valid file path - as JSON may encode "/" as "\/"
+                            String depPath = getDojoDependencyHandler().getPath(filePath, StringUtils.replace(dep, "\\/", "/")) + ".js";
                             addJavaScriptDependency(dependencies, depPath);
                         }
                     }
