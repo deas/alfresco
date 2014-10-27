@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -53,7 +53,7 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
 
     public AbstractHttpClient(HttpClient httpClient)
     {
-    	this.httpClient = httpClient;
+        this.httpClient = httpClient;
     }
     
     protected HttpClient getHttpClient()
@@ -79,19 +79,19 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
 
     private boolean isRedirect(HttpMethod method)
     {
-    	switch (method.getStatusCode()) {
-    	case HttpStatus.SC_MOVED_TEMPORARILY:
-    	case HttpStatus.SC_MOVED_PERMANENTLY:
-    	case HttpStatus.SC_SEE_OTHER:
-    	case HttpStatus.SC_TEMPORARY_REDIRECT:
-    		if (method.getFollowRedirects()) {
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	default:
-    		return false;
-    	}
+        switch (method.getStatusCode()) {
+        case HttpStatus.SC_MOVED_TEMPORARILY:
+        case HttpStatus.SC_MOVED_PERMANENTLY:
+        case HttpStatus.SC_SEE_OTHER:
+        case HttpStatus.SC_TEMPORARY_REDIRECT:
+            if (method.getFollowRedirects()) {
+                return true;
+            } else {
+                return false;
+            }
+        default:
+            return false;
+        }
     }
     
     /**
@@ -105,7 +105,7 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
             logger.debug("* Request: " + req.getMethod() + " " + req.getFullUri() + (req.getBody() == null ? "" : "\n" + new String(req.getBody(), "UTF-8")));
         }
 
-    	HttpMethod method = createMethod(req);
+        HttpMethod method = createMethod(req);
 
         // execute method
         executeMethod(method);
@@ -113,13 +113,13 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
         // Deal with redirect
         if(isRedirect(method))
         {
-	        Header locationHeader = method.getResponseHeader("location");
-	        if (locationHeader != null)
-	        {
-	            String redirectLocation = locationHeader.getValue();
-	            method.setURI(new URI(redirectLocation, true));
-	            httpClient.executeMethod(method);
-	        }
+            Header locationHeader = method.getResponseHeader("location");
+            if (locationHeader != null)
+            {
+                String redirectLocation = locationHeader.getValue();
+                method.setURI(new URI(redirectLocation, true));
+                httpClient.executeMethod(method);
+            }
         }
 
         return method;
@@ -139,10 +139,10 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
 
     protected HttpMethod createMethod(Request req) throws IOException
     {
-    	StringBuilder url = new StringBuilder();
-    	url.append(baseUrl);
-    	url.append("/service/");
-    	url.append(req.getFullUri());
+        StringBuilder url = new StringBuilder(128);
+        url.append(baseUrl);
+        url.append("/service/");
+        url.append(req.getFullUri());
 
         // construct method
         HttpMethod httpMethod = null;
@@ -157,12 +157,12 @@ public abstract class AbstractHttpClient implements AlfrescoHttpClient
         {
             PostMethod post = new PostMethod(url.toString());
             httpMethod = post;
-    		ByteArrayRequestEntity requestEntity = new ByteArrayRequestEntity(req.getBody(), req.getType());
+            ByteArrayRequestEntity requestEntity = new ByteArrayRequestEntity(req.getBody(), req.getType());
             if (req.getBody().length > DEFAULT_SAVEPOST_BUFFER)
             {
                 post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
             }
-	        post.setRequestEntity(requestEntity);
+            post.setRequestEntity(requestEntity);
             // Note: not able to automatically follow redirects for POST, this is handled by sendRemoteRequest
         }
         else if(method.equalsIgnoreCase("HEAD"))
