@@ -67,7 +67,7 @@ public class DefaultTrackerPoolFactory implements TrackerPoolFactory
     private RejectedExecutionHandler rejectedExecutionHandler = DEFAULT_REJECTED_EXECUTION_HANDLER;
     
     
-    public DefaultTrackerPoolFactory(Properties p, String coreName)
+    public DefaultTrackerPoolFactory(Properties p, String coreName, String trackerName)
     {
         corePoolSize = Integer.parseInt(p.getProperty("alfresco.corePoolSize", "3"));
         maximumPoolSize = Integer.parseInt(p.getProperty("alfresco.maximumPoolSize", "-1"));
@@ -76,7 +76,7 @@ public class DefaultTrackerPoolFactory implements TrackerPoolFactory
         threadDaemon = Boolean.parseBoolean(p.getProperty("alfresco.threadDaemon", "true"));
         workQueueSize = Integer.parseInt(p.getProperty("alfresco.workQueueSize", "-1"));
         
-        poolName = "SolrTrackingPool-" + coreName;
+        poolName = "SolrTrackingPool-" + coreName + "-" + trackerName + "-";
 
         // if the maximum pool size has not been set, change it to match the core pool size
         if (maximumPoolSize == DEFAULT_MAXIMUM_POOL_SIZE)

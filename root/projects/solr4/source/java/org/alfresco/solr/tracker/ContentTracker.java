@@ -46,7 +46,7 @@ public class ContentTracker extends AbstractTracker implements Tracker
         super(p, client, coreName, informationServer);
         contentReadBatchSize = Integer.parseInt(p.getProperty("alfresco.contentReadBatchSize", "400"));
         contentUpdateBatchSize = Integer.parseInt(p.getProperty("alfresco.contentUpdateBatchSize", "100"));
-        threadHandler = new ThreadHandler(p, coreName);
+        threadHandler = new ThreadHandler(p, coreName, "ContentTracker");
     }
     
     ContentTracker()

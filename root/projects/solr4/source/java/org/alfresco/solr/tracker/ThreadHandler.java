@@ -38,10 +38,10 @@ public class ThreadHandler implements QueueHandler
     private LinkedBlockingQueue<AbstractWorkerRunnable> threadQueue = new LinkedBlockingQueue<>();
     private ReentrantReadWriteLock threadLock = new ReentrantReadWriteLock(true);
 
-    public ThreadHandler(Properties p, String coreName)
+    public ThreadHandler(Properties p, String coreName, String trackerName)
     {
         // construct the instance
-        TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(p, coreName);
+        TrackerPoolFactory trackerPoolFactory = new DefaultTrackerPoolFactory(p, coreName, trackerName);
         threadPool = trackerPoolFactory.create();
     }
     

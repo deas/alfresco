@@ -84,7 +84,7 @@ public class AclTracker extends AbstractTracker
         changeSetAclsBatchSize = Integer.parseInt(p.getProperty("alfresco.changeSetAclsBatchSize", "100"));
         aclBatchSize = Integer.parseInt(p.getProperty("alfresco.aclBatchSize", "10"));
         
-        threadHandler = new ThreadHandler(p, coreName);
+        threadHandler = new ThreadHandler(p, coreName, "AclTracker");
     }
 
 

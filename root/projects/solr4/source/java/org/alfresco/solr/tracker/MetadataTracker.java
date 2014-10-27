@@ -70,7 +70,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 
         transactionDocsBatchSize = Integer.parseInt(p.getProperty("alfresco.transactionDocsBatchSize", "100"));
         nodeBatchSize = Integer.parseInt(p.getProperty("alfresco.nodeBatchSize", "10"));
-        threadHandler = new ThreadHandler(p, coreName);
+        threadHandler = new ThreadHandler(p, coreName, "MetadataTracker");
     }
     
     MetadataTracker()

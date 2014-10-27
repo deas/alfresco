@@ -47,7 +47,7 @@ public class DefaultTrackerPoolFactoryTest
     @Test
     public void testDefaults()
     {
-        poolFactory = new DefaultTrackerPoolFactory(properties, "TheCore");
+        poolFactory = new DefaultTrackerPoolFactory(properties, "TheCore", "TrackerName");
         
         ThreadPoolExecutor tpe = poolFactory.create();
         
@@ -63,7 +63,7 @@ public class DefaultTrackerPoolFactoryTest
         properties.put("alfresco.maximumPoolSize", "40");
         properties.put("alfresco.keepAliveTime", "200");
         
-        poolFactory = new DefaultTrackerPoolFactory(properties, "TheCore");
+        poolFactory = new DefaultTrackerPoolFactory(properties, "TheCore", "TrackerName");
         
         ThreadPoolExecutor tpe = poolFactory.create();
         
