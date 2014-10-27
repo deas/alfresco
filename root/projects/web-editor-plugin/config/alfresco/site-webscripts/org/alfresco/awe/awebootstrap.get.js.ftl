@@ -16,3 +16,4 @@ Alfresco.constants.URL_PAGECONTEXT = "${url.context}/page/";
 Alfresco.constants.URL_SERVICECONTEXT = "${url.context}/service/";
 Alfresco.constants.USERNAME = "${user.name!""}";
 Alfresco.constants.HTML_EDITOR = "tinyMCE";
+Alfresco.constants.TINY_MCE_SUPPORTED_LOCALES = "${config.global["I18N"].getChildValue("tiny-mce-supported-locales")}";
