@@ -26,6 +26,7 @@ import org.alfresco.windows.application.MicorsoftOffice2010;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
@@ -76,7 +77,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     {
         super.setup();
 
-        testName = this.getClass().getSimpleName();
+        testName = this.getClass().getSimpleName() + 20;
         testUser = getUserNameFreeDomain(testName);
 
         // word files
@@ -106,12 +107,12 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         CreateUserAPI.CreateActivateUser(drone, ADMIN_USERNAME, testUser1);
 
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-        
-//        Runtime.getRuntime().exec("net use * /d /y");;
-//        logger.info("Unmapping succesfull " + testUser);
-        
+
+        // Runtime.getRuntime().exec("net use * /d /y");;
+        // logger.info("Unmapping succesfull " + testUser);
+
         Runtime.getRuntime().exec(mapConnect);
-        logger.info("Mapping succesfull " + testUser);
+        logger.info("----------Mapping succesfull " + testUser);
 
     }
 
@@ -124,18 +125,18 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         Runtime.getRuntime().exec("taskkill /F /IM CobraWinLDTP.EXE");
     }
 
-//    @AfterClass(alwaysRun = true)
-//    public void unmapDrive() throws Exception
-//    {
-//        Runtime.getRuntime().exec("net use * /d /y");;
-//        logger.info("Unmapping succesfull " + testUser);
-//    }
-    
+    @AfterClass(alwaysRun = true)
+    public void unmapDrive() throws Exception
+    {
+        Runtime.getRuntime().exec("net use * /d /y");
+        ;
+        logger.info("--------Unmapping succesfull " + testUser);
+    }
 
     @Test(groups = { "DataPrepWord" })
     public void dataPrep_6271() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName);
 
         // Login
@@ -163,7 +164,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
     public void AONE_6271() throws IOException
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName).toLowerCase();
         String first_modification = testName + "1";
         String second_modification = testName + "2";
@@ -315,7 +316,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     @Test(groups = { "DataPrepWord" })
     public void dataPrep_6272() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName);
 
         // Login
@@ -339,11 +340,12 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         detailsPage.render();
     }
 
-    /** AONE-6272:MS Excel 2010 - uploaded to Share (big) */
+    /** AONE-6272:MS Excel 2010 - uploaded to Share (big) 
+     * @throws AWTException */
     @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
-    public void AONE_6272() throws IOException
+    public void AONE_6272() throws IOException, AWTException
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName).toLowerCase();
         String first_modification = testName + "1";
         String second_modification = testName + "2";
@@ -351,162 +353,155 @@ public class CifsMSExcel2010Tests extends AbstractUtils
 
         String fullPath = networkDrive + cifsPath + siteName.toLowerCase() + SLASH + "documentLibrary" + SLASH;
 
-        try
-        {
-            // ---- Step 1 ----
-            // ---- Step Action -----
-            // Open .xlsx document for editing.
-            // The document is opened in write mode.
-            Ldtp ldtp = excel.openFileFromCMD(fullPath, fileName_6272 + xlsxFileType, testUser, DEFAULT_PASSWORD, true);
+        // ---- Step 1 ----
+        // ---- Step Action -----
+        // Open .xlsx document for editing.
+        // The document is opened in write mode.
+        Ldtp ldtp = excel.openFileFromCMD(fullPath, fileName_6272 + xlsxFileType, testUser, DEFAULT_PASSWORD, true);
 
-            // ---- Step 2 ----
-            // ---- Step Action -----
-            // Add any data.
-            // Expected Result
-            // The data is entered.
-            uploadImageInOffice(image_1);
-            excel.editOffice(ldtp, " " + first_modification + " ");
+        // ---- Step 2 ----
+        // ---- Step Action -----
+        // Add any data.
+        // Expected Result
+        // The data is entered.
+        uploadImageInOffice(image_1);
+        excel.editOffice(ldtp, " " + first_modification + " ");
 
-            // ---- Step 3 ----
-            // ---- Step Action -----
-            // Save the document (Ctrl+S, for example) and close it
-            // Expected Result
-            // The document is saved. No errors occur in UI and in the log. No tmp files are left.
-            excel.saveOffice(ldtp);
-            ldtp.waitTime(3);
-            excel.exitOfficeApplication(ldtp);
-            ldtp.waitTime(3);
+        // ---- Step 3 ----
+        // ---- Step Action -----
+        // Save the document (Ctrl+S, for example) and close it
+        // Expected Result
+        // The document is saved. No errors occur in UI and in the log. No tmp files are left.
+        excel.saveOffice(ldtp);
+        ldtp.waitTime(3);
+        excel.exitOfficeApplication(ldtp);
+        ldtp.waitTime(3);
 
-            int nrFiles = getNumberOfFilesFromPath(fullPath);
-            Assert.assertEquals(nrFiles, 1);
+        int nrFiles = getNumberOfFilesFromPath(fullPath);
+        Assert.assertEquals(nrFiles, 1);
 
-            // ---- Step 4 ----
-            // ---- Step Action -----
-            // Verify the document's metadata and version history in the Share.
-            // Expected Result
-            // The document's metadata and version history are not broken. They are displayed correctly.
-            ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
-            documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
-            DocumentDetailsPage detailsPage = documentLibPage.selectFile(fileName_6272 + xlsxFileType);
+        // ---- Step 4 ----
+        // ---- Step Action -----
+        // Verify the document's metadata and version history in the Share.
+        // Expected Result
+        // The document's metadata and version history are not broken. They are displayed correctly.
+        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
+        DocumentDetailsPage detailsPage = documentLibPage.selectFile(fileName_6272 + xlsxFileType);
 
-            EditDocumentPropertiesPage editPropertiesPage = detailsPage.selectEditProperties().render();
-            Assert.assertTrue(editPropertiesPage.getDocumentTitle().equals(testName));
-            editPropertiesPage.clickCancel();
+        EditDocumentPropertiesPage editPropertiesPage = detailsPage.selectEditProperties().render();
+        Assert.assertTrue(editPropertiesPage.getDocumentTitle().equals(testName));
+        editPropertiesPage.clickCancel();
 
-            // ---- Step 5 ----
-            // ---- Step Action -----
-            // Verify the document's content.
-            // Expected Result
-            // All changes are present and displayed correctly.
-            String body = detailsPage.getDocumentBody();
-            Assert.assertTrue(body.contains(first_modification));
+        // ---- Step 5 ----
+        // ---- Step Action -----
+        // Verify the document's content.
+        // Expected Result
+        // All changes are present and displayed correctly.
+        String body = detailsPage.getDocumentBody();
+        Assert.assertTrue(body.contains(first_modification));
 
-            // ---- Step 6 ----
-            // ---- Step Action -----
-            // 6. Open the document for editing again.
-            // Expected Result
-            // 6. The document is opened in write mode.
-            ldtp = excel.openFileFromCMD(fullPath, fileName_6272 + xlsxFileType, testUser, DEFAULT_PASSWORD, true);
+        // ---- Step 6 ----
+        // ---- Step Action -----
+        // 6. Open the document for editing again.
+        // Expected Result
+        // 6. The document is opened in write mode.
+        ldtp = excel.openFileFromCMD(fullPath, fileName_6272 + xlsxFileType, testUser, DEFAULT_PASSWORD, true);
 
-            // ---- Step 7 ----
-            // ---- Step Action -----
-            // Add any data.
-            // Expected Result
-            // The data is entered.
-            uploadImageInOffice(image_2);
-            excel.editOffice(ldtp, " " + second_modification + " ");
+        // ---- Step 7 ----
+        // ---- Step Action -----
+        // Add any data.
+        // Expected Result
+        // The data is entered.
+        uploadImageInOffice(image_2);
+        excel.editOffice(ldtp, " " + second_modification + " ");
 
-            // ---- Step 8 ----
-            // ---- Step Action -----
-            // Verify the document's content.
-            // Expected Result
-            // All changes are present and displayed correctly
-            excel.saveOffice(ldtp);
-            ldtp.waitTime(2);
-            excel.exitOfficeApplication(ldtp);
-            ldtp.waitTime(3);
-            nrFiles = getNumberOfFilesFromPath(fullPath);
-            Assert.assertEquals(nrFiles, 1);
+        // ---- Step 8 ----
+        // ---- Step Action -----
+        // Verify the document's content.
+        // Expected Result
+        // All changes are present and displayed correctly
+        excel.saveOffice(ldtp);
+        ldtp.waitTime(2);
+        excel.exitOfficeApplication(ldtp);
+        ldtp.waitTime(3);
+        nrFiles = getNumberOfFilesFromPath(fullPath);
+        Assert.assertEquals(nrFiles, 1);
 
-            // ---- Step 9 ----
-            // ---- Step Action -----
-            // Verify the document's metadata and version history in the Share.
-            // Expected Result
-            // The document's metadata and version history are not broken. They are displayed correctly.
-            documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
-            detailsPage = documentLibPage.selectFile(fileName_6272 + xlsxFileType);
+        // ---- Step 9 ----
+        // ---- Step Action -----
+        // Verify the document's metadata and version history in the Share.
+        // Expected Result
+        // The document's metadata and version history are not broken. They are displayed correctly.
+        documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
+        detailsPage = documentLibPage.selectFile(fileName_6272 + xlsxFileType);
 
-            editPropertiesPage = detailsPage.selectEditProperties().render();
-            Assert.assertTrue(editPropertiesPage.getDocumentTitle().equals(testName));
-            editPropertiesPage.clickCancel();
+        editPropertiesPage = detailsPage.selectEditProperties().render();
+        Assert.assertTrue(editPropertiesPage.getDocumentTitle().equals(testName));
+        editPropertiesPage.clickCancel();
 
-            // ---- Step 10 ----
-            // ---- Step Action -----
-            // Verify the document's content.
-            // Expected Result
-            // All changes are present and displayed correctly.
-            body = detailsPage.getDocumentBody();
-            Assert.assertTrue(body.contains(second_modification));
+        // ---- Step 10 ----
+        // ---- Step Action -----
+        // Verify the document's content.
+        // Expected Result
+        // All changes are present and displayed correctly.
+        body = detailsPage.getDocumentBody();
+        Assert.assertTrue(body.contains(second_modification));
 
-            // ---- Step 11 ----
-            // ---- Step Action -----
-            // 6. Open the document for editing again.
-            // Expected Result
-            // 6. The document is opened in write mode.
-            ldtp = excel.openFileFromCMD(fullPath, fileName_6272 + xlsxFileType, testUser, DEFAULT_PASSWORD, true);
+        // ---- Step 11 ----
+        // ---- Step Action -----
+        // 6. Open the document for editing again.
+        // Expected Result
+        // 6. The document is opened in write mode.
+        ldtp = excel.openFileFromCMD(fullPath, fileName_6272 + xlsxFileType, testUser, DEFAULT_PASSWORD, true);
 
-            // ---- Step 12 ----
-            // ---- Step Action -----
-            // Add any data.
-            // Expected Result
-            // The data is entered.
-            uploadImageInOffice(image_3);
-            excel.editOffice(ldtp, " " + last_modification + " ");
+        // ---- Step 12 ----
+        // ---- Step Action -----
+        // Add any data.
+        // Expected Result
+        // The data is entered.
+        uploadImageInOffice(image_3);
+        excel.editOffice(ldtp, " " + last_modification + " ");
 
-            // ---- Step 13 ----
-            // ---- Step Action -----
-            // Verify the document's content.
-            // Expected Result
-            // All changes are present and displayed correctly
-            excel.saveOffice(ldtp);
-            ldtp.waitTime(2);
-            excel.exitOfficeApplication(ldtp);
-            ldtp.waitTime(3);
-            nrFiles = getNumberOfFilesFromPath(fullPath);
-            Assert.assertEquals(nrFiles, 1);
+        // ---- Step 13 ----
+        // ---- Step Action -----
+        // Verify the document's content.
+        // Expected Result
+        // All changes are present and displayed correctly
+        excel.saveOffice(ldtp);
+        ldtp.waitTime(2);
+        excel.exitOfficeApplication(ldtp);
+        ldtp.waitTime(3);
+        nrFiles = getNumberOfFilesFromPath(fullPath);
+        Assert.assertEquals(nrFiles, 1);
 
-            // ---- Step 14 ----
-            // ---- Step Action -----
-            // Verify the document's metadata and version history in the Share.
-            // Expected Result
-            // The document's metadata and version history are not broken. They are displayed correctly.
-            documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
-            detailsPage = documentLibPage.selectFile(fileName_6272 + xlsxFileType);
+        // ---- Step 14 ----
+        // ---- Step Action -----
+        // Verify the document's metadata and version history in the Share.
+        // Expected Result
+        // The document's metadata and version history are not broken. They are displayed correctly.
+        documentLibPage = ShareUser.openSitesDocumentLibrary(drone, siteName).render();
+        detailsPage = documentLibPage.selectFile(fileName_6272 + xlsxFileType);
 
-            editPropertiesPage = detailsPage.selectEditProperties().render();
-            Assert.assertTrue(editPropertiesPage.getDocumentTitle().equals(testName));
-            editPropertiesPage.clickCancel();
+        editPropertiesPage = detailsPage.selectEditProperties().render();
+        Assert.assertTrue(editPropertiesPage.getDocumentTitle().equals(testName));
+        editPropertiesPage.clickCancel();
 
-            // ---- Step 15 ----
-            // ---- Step Action -----
-            // Verify the document's content.
-            // Expected Result
-            // All changes are present and displayed correctly.
-            body = detailsPage.getDocumentBody();
-            Assert.assertTrue(body.contains(last_modification));
+        // ---- Step 15 ----
+        // ---- Step Action -----
+        // Verify the document's content.
+        // Expected Result
+        // All changes are present and displayed correctly.
+        body = detailsPage.getDocumentBody();
+        Assert.assertTrue(body.contains(last_modification));
 
-        }
-        catch (Exception e)
-        {
-            throw new LdtpExecutionError("Not working");
-        }
     }
 
     @Test(groups = { "DataPrepExcel" })
     public void dataPrep_6273() throws Exception
     {
 
-        testName = getTestName();
+        testName = getTestName() + 21;
         siteName = getSiteName(testName);
 
         ShareUser.login(drone, testUser);
@@ -528,7 +523,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     public void dataPrep_6274() throws Exception
     {
 
-        testName = getTestName();
+        testName = getTestName() + 21;
         siteName = getSiteName(testName);
 
         ShareUser.login(drone, testUser);
@@ -549,7 +544,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     @Test(groups = { "DataPrepExcel" })
     public void dataPrep_6275() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName);
 
         ShareUser.login(drone, testUser);
@@ -570,7 +565,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     @Test(groups = { "DataPrepExcel" })
     public void dataPrep_6276() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName);
 
         ShareUser.login(drone, testUser);
@@ -588,12 +583,11 @@ public class CifsMSExcel2010Tests extends AbstractUtils
 
     }
 
-
     /** AONE-6273:MS Excel 2010 - created via context menu */
     @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
     public void AONE_6273() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName).toLowerCase();
         String addText = "First text";
         String edit1 = "New text1";
@@ -799,7 +793,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
     public void AONE_6274() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName).toLowerCase();
         String addText = "First text";
         String edit1 = "New text1";
@@ -849,6 +843,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         excel.saveOffice(l1);
         l1.waitTime(2);
         excel.exitOfficeApplication(l1);
+        l1.waitTime(3);
         int noOfFilesAfterSave = getNumberOfFilesFromPath(fullPath);
         Assert.assertEquals(noOfFilesAfterSave, 1, "Number of file after save: " + noOfFilesAfterSave + ". Expected: " + 1);
 
@@ -1004,12 +999,11 @@ public class CifsMSExcel2010Tests extends AbstractUtils
 
     }
 
-
     /** AONE-6275:MS Excel 2010 - saved into CIFS */
     @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
     public void AONE_6275() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName).toLowerCase();
         String edit2 = "new text2";
         String edit3 = "new text3";
@@ -1194,7 +1188,7 @@ public class CifsMSExcel2010Tests extends AbstractUtils
     @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
     public void AONE_6276() throws Exception
     {
-        String testName = getTestName();
+        String testName = getTestName() + 21;
         String siteName = getSiteName(testName).toLowerCase();
         String edit2 = "New text2";
         String edit3 = "New text3";
@@ -1293,8 +1287,9 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         // The document is saved. No errors occur in UI and in the log. No tmp
         // files are left.
         excel.saveOffice(l1);
-        l1.waitTime(5);
+        l1.waitTime(2);
         excel.exitOfficeApplication(l1);
+        l1.waitTime(3);
         noOfFilesAfterSave = getNumberOfFilesFromPath(fullPath);
         Assert.assertEquals(noOfFilesAfterSave, noOfFilesBeforeSave, "Number of file after save: " + noOfFilesAfterSave + ". Expected: " + noOfFilesBeforeSave);
 
@@ -1348,8 +1343,9 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         // files are left.
         l1 = excel.getAbstractUtil().setOnWindow(fileName_6276);
         excel.saveOffice(l1);
-        l1.waitTime(5);
+        l1.waitTime(2);
         excel.exitOfficeApplication(l1);
+        l1.waitTime(3);
         noOfFilesAfterSave = getNumberOfFilesFromPath(fullPath);
         Assert.assertEquals(noOfFilesAfterSave, noOfFilesBeforeSave, "Number of file after save: " + noOfFilesAfterSave + ". Expected: " + noOfFilesBeforeSave);
 
@@ -1400,5 +1396,14 @@ public class CifsMSExcel2010Tests extends AbstractUtils
         r.keyRelease(KeyEvent.VK_CONTROL);
         r.keyRelease(KeyEvent.VK_V);
     }
+    
+    @Test(groups = { "CIFSWindowsClient", "EnterpriseOnly" })
+    public void AONE_62761111() throws Exception
+    {
+        String siteName ="SitemyasShare-627620";
+        String fullPath = networkDrive + cifsPath + siteName.toLowerCase() + SLASH + "documentLibrary" + SLASH;
+        int noOfFilesAfterSave = getNumberOfFilesFromPath(fullPath);
+        Assert.assertEquals(noOfFilesAfterSave, 1, "Number of file after save: " + noOfFilesAfterSave + ". Expected: " + 1);
 
+    }
 }
