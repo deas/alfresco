@@ -177,9 +177,6 @@ public class DocumentLibraryNavigation extends SharePage
             WebElement element;
             switch (alfrescoVersion)
             {
-                case Cloud:
-                    element = drone.findAndWaitById("upload.file.dialog.id");
-                    break;
                 case Enterprise41:
                     element = drone.findAndWait(By.cssSelector("form[id$='_default-htmlupload-form']"));
                     break;

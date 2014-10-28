@@ -63,7 +63,6 @@ public class Navigation extends SharePage
     private static final String SITE_FINDER_LINK = "div[id$='app_sites-sites-menu']>div>ul[class^='site-finder-menuitem']>li>a";
     private static final String DEFAULT_NETWORK_MENU_BUTTON = "default.network.dropdown";
     private static final String NETWORK_NAMES = "network.names";
-    private final String userNameDropDown;
     private static final String MY_SITES = "td[id^='HEADER_SITES_MENU_MY_SITES'] a";
     public static final String REPO_ADMIN_MANAGE_SITE_LINK_SELECTOR = "div#HEADER_ADMIN_CONSOLE";
     public static final String SITE_ADMIN_MANAGE_SITE_LINK_SELECTOR = "span[id='HEADER_SITES_CONSOLE_text']>a";
@@ -88,8 +87,6 @@ public class Navigation extends SharePage
     public Navigation(WebDrone drone)
     {
         super(drone);
-        userNameDropDown = drone.getElement("user.dropdown");       
-
     }
 
     @SuppressWarnings("unchecked")
@@ -283,7 +280,7 @@ public class Navigation extends SharePage
     {
         try
         {
-            WebElement userButton = drone.find(By.cssSelector(userNameDropDown));
+            WebElement userButton = drone.find(By.id("HEADER_USER_MENU_POPUP"));
             userButton.click();
             return new UserPage(drone);
         }
