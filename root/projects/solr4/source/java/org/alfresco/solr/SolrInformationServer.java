@@ -185,18 +185,26 @@ public class SolrInformationServer implements InformationServer
     private ConcurrentLRUCache<String, Boolean> isIdIndexCache = new ConcurrentLRUCache<String, Boolean>(60*60*100, 60*60*50);
     
     // write a BytesRef as a byte array
-    JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver() {
-      @Override
-      public Object resolve(Object o, JavaBinCodec codec) throws IOException {
-        if (o instanceof BytesRef) {
-          BytesRef br = (BytesRef)o;
-          codec.writeByteArray(br.bytes, br.offset, br.length);
-          return null;
+    JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver()
+    {
+        @Override
+        public Object resolve(Object o, JavaBinCodec codec) throws IOException
+        {
+            if (o instanceof BytesRef)
+            {
+                BytesRef br = (BytesRef) o;
+                codec.writeByteArray(br.bytes, br.offset, br.length);
+                return null;
+            }
+            return o;
         }
-        return o;
-      }
     };
     
+    @Override
+    public AlfrescoCoreAdminHandler getAdminHandler()
+    {
+        return this.adminHandler;
+    }
 
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core, SOLRAPIClient repositoryClient,
                 SolrContentStore solrContentStore)

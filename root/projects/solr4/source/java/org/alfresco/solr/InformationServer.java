@@ -125,4 +125,6 @@ public interface InformationServer
     AclChangeSet getMaxAclChangeSetIdAndCommitTimeInIndex();
     
     Transaction getMaxTransactionIdAndCommitTimeInIndex();
+
+    AlfrescoCoreAdminHandler getAdminHandler();
 }
