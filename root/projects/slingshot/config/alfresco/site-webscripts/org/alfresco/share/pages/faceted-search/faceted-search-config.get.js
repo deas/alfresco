@@ -257,6 +257,10 @@ function getFormDefinition(canEditFilterId) {
                               value: "ALPHABETICALLY"
                            },
                            {
+                              label: "faceted-search-config.sortBy.ZtoA.label",
+                              value: "REVERSE_ALPHABETICALLY"
+                           },
+                           {
                               label: "faceted-search-config.sortBy.highToLow.label",
                               value: "ASCENDING"
                            },

@@ -283,6 +283,10 @@ define(["dojo/_base/declare",
          {
             return filters.sort(this._alphaSort);
          }
+         else if (lang.trim(this.sortBy) === "REVERSE_ALPHABETICALLY")
+         {
+            return filters.sort(this._reverseAlphaSort);
+         }
          else if (lang.trim(this.sortBy) === "ASCENDING")
          {
             return filters.sort(this._ascSort);
@@ -314,6 +318,22 @@ define(["dojo/_base/declare",
          var blc = b.label.toLowerCase();
          if(alc < blc) return -1;
          if(alc > blc) return 1;
+         return 0;
+      },
+
+      /**
+       * A function for sorting the facet filter values into reverse alphabetical order (from z-a)
+       * 
+       * @instance
+       * @param {object} a The first filter value object
+       * @param {object} b The second filter value object
+       * @returns {number} -1, 0 or 1 according to standard array sorting conventions
+       */
+      _reverseAlphaSort: function alfresco_search_FacetFilters___reverseAlphaSort(a, b) {
+         var alc = a.label.toLowerCase();
+         var blc = b.label.toLowerCase();
+         if(alc > blc) return -1;
+         if(alc < blc) return 1;
          return 0;
       },
 
