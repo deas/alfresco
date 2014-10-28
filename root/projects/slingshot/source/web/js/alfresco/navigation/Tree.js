@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -128,6 +128,15 @@ define(["dojo/_base/declare",
        * @default "docListTreePref"
        */
       filterPrefsName: "docListTreePref",
+
+      /**
+       * Indicates whether or not the root node of the tree should be displayed or not.
+       *
+       * @instance
+       * @type {boolean}
+       * @default true
+       */
+      showRoot: true,
       
       /**
        * @instance
@@ -183,6 +192,10 @@ define(["dojo/_base/declare",
        * @instance
        */
       postCreate: function alfresco_navigation_Tree__postCreate() {
+
+         // Ensure that showRoot is set (default to true)...
+         this.showRoot = this.showRoot != null ? this.showRoot : true;
+
          // Create a new tree store using the the siteId as part of the URL
          this.treeStore = new TreeStore({
             target: this.getTargetUrl(),
@@ -206,7 +219,7 @@ define(["dojo/_base/declare",
          // Create the tree and add it to our widget...
          this.tree = new Tree({
             model: this.treeModel,
-            showRoot: true,
+            showRoot: this.showRoot,
             onClick: lang.hitch(this, "onClick"),
             onOpen: lang.hitch(this, "onNodeExpand"),
             onClose: lang.hitch(this, "onNodeCollapse")
