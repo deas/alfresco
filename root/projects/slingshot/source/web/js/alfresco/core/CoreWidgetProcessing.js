@@ -150,7 +150,9 @@ define(["dojo/_base/declare",
                this._processedWidgets[index] = widget;
             }
 
-            this.setupVisibilityConfigProcessing(widget);
+            // Handle any dynamic visibility and invisibility rules...
+            this.setupVisibilityConfigProcessing(widget, false);
+            this.setupVisibilityConfigProcessing(widget, true);
          }
          else
          {
@@ -173,31 +175,43 @@ define(["dojo/_base/declare",
        * Sets up the dynamic visibility handling for the supplied widget.
        * 
        * @instance
-       * @param {object} widget
+       * @param {object} widget The widget to process the config of
+       * @param {string} configAttribute The attribute to use in the widget config for rules
+       * @param {boolean} negate Whether or not to negate the evaluated rule
        */
-      setupVisibilityConfigProcessing: function alfresco_core_CoreWidgetProcessing__setupVisibilityConfigProcessing(widget) {
+      setupVisibilityConfigProcessing: function alfresco_core_CoreWidgetProcessing__setupVisibilityConfigProcessing(widget, negate) {
+
+         // Set a default for negation if not provided...
+         negate = (negate != null) ? negate : false;
+
+         // Based on the negate value we'll determine which configuration attribute to look at...
+         var configAttribute = negate ? "invisibilityConfig" : "visibilityConfig";
+
          // If the widget has dynamic visibility behaviour configured then we need to set up the necessary
          // subscriptions to handle the rules that have been defined. We will set the initial visibility
          // as requested and then set up the subcriptions...
-         if (widget.visibilityConfig !== undefined)
+         if (widget[configAttribute] !== undefined)
          {
-            var initialValue = lang.getObject("visibilityConfig.initialValue", false, widget);
+            var initialValue = lang.getObject(configAttribute + ".initialValue", false, widget);
+            initialValue = negate ? !initialValue : initialValue;
             if (initialValue != null && initialValue === false)
             {
                // Hide the widget if requested to initially...
                domStyle.set(widget.domNode, "display", "none");
             }
-            var rules = lang.getObject("visibilityConfig.rules", false, widget);
+            var rules = lang.getObject(configAttribute + ".rules", false, widget);
             if (rules != null)
             {
                array.forEach(rules, function(rule, index) {
                   var topic = rule.topic,
                       attribute = rule.attribute,
                       is = rule.is,
-                      isNot = rule.isNot;
+                      isNot = rule.isNot,
+                      strict = rule.strict != null ? rule.strict : true,
+                      useCurrentItem = rule.useCurrentItem != null ? rule.useCurrentItem : false;
                   if (topic != null && attribute != null && (is != null || isNot != null))
                   {
-                     widget.alfSubscribe(topic, lang.hitch(this, "processVisibility", widget, is, isNot, attribute));
+                     widget.alfSubscribe(topic, lang.hitch(this, "processVisibility", widget, is, isNot, attribute, negate, strict, useCurrentItem));
                   }
                }, this);
             }
@@ -214,9 +228,10 @@ define(["dojo/_base/declare",
        * @param {array} is The values that the payload value can be for the widget to be visible
        * @param {array} isNot The values that the payload value must not be for the widget to be visible
        * @param {string} attribute The dot-notation attribute to retrieve from the payload
+       * @param {boolean} negate Whether or not the to negate the evaluated rule (e.g evaluated visible become invisible)
        * @param {object} payload The publication payload triggering the visibility processing
        */
-      processVisibility: function alfresco_core_CoreWidgetProcessing__processVisibility(widget, is, isNot, attribute, payload) {
+      processVisibility: function alfresco_core_CoreWidgetProcessing__processVisibility(widget, is, isNot, attribute, negate, strict, useCurrentItem, payload) {
          var target = lang.getObject(attribute, false, payload);
 
          // Assume that its NOT valid value (we'll only do the actual test if its not set to an INVALID value)...
@@ -228,26 +243,48 @@ define(["dojo/_base/declare",
          if (isInvalidValue)
          {
             // Check to see if the current value is set to an invalid value (i.e. a value that negates the rule)
-            isInvalidValue = array.some(isNot, lang.hitch(this, "visibilityRuleComparator", target));
+            isInvalidValue = array.some(isNot, lang.hitch(this, "visibilityRuleComparator", target, widget, useCurrentItem));
          }
 
          // Check to see if the current value is set to a valid value...
          if (!isInvalidValue && typeof is != "undefined" && is.length > 0)
          {
-            isValidValue = array.some(is, lang.hitch(this, "visibilityRuleComparator", target));
+            isValidValue = array.some(is, lang.hitch(this, "visibilityRuleComparator", target, widget, useCurrentItem));
          }
 
-         var visible = isValidValue && !isInvalidValue;
-         if (visible === false)
+         var evaluationPassed = isValidValue && !isInvalidValue;
+         if (evaluationPassed)
          {
-            domStyle.set(widget.domNode, "display", "none");
-         }
-         else
-         {
-            domStyle.set(widget.domNode, "display", "");
-            if (typeof widget.alfPublishResizeEvent === "function")
+            // Handle successful evaluation, the widget will be displayed or hidden depending on the 
+            // negate value (e.g. if negated the evaluated position is hidden, not displayed)...
+            if (negate)
             {
-               widget.alfPublishResizeEvent(widget.domNode);
+               domStyle.set(widget.domNode, "display", "none");
+            }
+            else
+            {
+               domStyle.set(widget.domNode, "display", "");
+               if (typeof widget.alfPublishResizeEvent === "function")
+               {
+                  widget.alfPublishResizeEvent(widget.domNode);
+               }
+            }
+         }
+         else if (strict)
+         {
+            // If evaluation has failed and we're running in "strict" mode then we need to show
+            // or hide the widget as dictated by the "negate" variable...
+            if (negate)
+            {
+               domStyle.set(widget.domNode, "display", "");
+               if (typeof widget.alfPublishResizeEvent === "function")
+               {
+                  widget.alfPublishResizeEvent(widget.domNode);
+               }
+            }
+            else
+            {
+               domStyle.set(widget.domNode, "display", "none");
             }
          }
       },
@@ -260,10 +297,11 @@ define(["dojo/_base/declare",
        *
        * @instance
        * @param {string} targetValue The target value supplied
+       * @param {boolean} useCurrentItem Indicates whether or not the values to check are attributes of the "currentItem"
        * @param {string} currValue The value from the current rule being processed
        * @returns {boolean} true if the values match and false otherwise
        */
-      visibilityRuleComparator: function alfresco_core_CoreWidgetProcessing__visibilityRuleComparator(targetValue, currValue) {
+      visibilityRuleComparator: function alfresco_core_CoreWidgetProcessing__visibilityRuleComparator(targetValue, widget, useCurrentItem, currValue) {
          if (targetValue == null && currValue == null)
          {
             return true;
@@ -273,7 +311,15 @@ define(["dojo/_base/declare",
                   currValue != null &&
                   typeof currValue.toString == "function")
          {
-            return currValue.toString() == targetValue.toString();
+            if (useCurrentItem === true && widget.currentItem != null)
+            {
+               var c = lang.getObject(currValue.toString(), false, widget.currentItem);
+               return c == targetValue.toString();
+            }
+            else
+            {
+               return currValue.toString() == targetValue.toString();
+            }
          }
          else
          {

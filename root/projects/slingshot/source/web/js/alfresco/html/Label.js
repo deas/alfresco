@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -96,7 +96,7 @@ define(["dojo/_base/declare",
       postMixInProperties: function alfresco_html_Label__postMixInProperties() {
          this.label = this.message(this.label);
 
-         if (this.subscriptionTopic != null && lang.trim(this.subscriptionTopic) != "")
+         if (this.subscriptionTopic != null && lang.trim(this.subscriptionTopic) !== "")
          {
             this.alfSubscribe(this.subscriptionTopic, lang.hitch(this, "onLabelUpdate"));
          }
