@@ -19,10 +19,10 @@
 
 /**
  * This extends the default Dojo button to provide Alfresco specific styling. It also overrides
- * the [onClick]{@link module:alfresco/buttons/AlfButton#onClick} function to publish the 
- * [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} on the 
+ * the [onClick]{@link module:alfresco/buttons/AlfButton#onClick} function to publish the
+ * [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} on the
  * [publishTopic]{@link module:alfresco/buttons/AlfButton#publishTopic}
- * 
+ *
  * @module alfresco/buttons/AlfButton
  * @extends module:dijit/form/Button
  * @mixes module:alfresco/core/Core
@@ -34,50 +34,50 @@ define(["dojo/_base/declare",
         "dojo/dom-class",
         "dojo/_base/array",
         "dojo/_base/lang",
-        "dojo/_base/event"], 
+        "dojo/_base/event"],
         function(declare, Button, AlfCore, domClass, array, lang, event) {
-   
+
    return declare([Button, AlfCore], {
-      
+
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{cssFile:"./css/AlfButton.css"}]
        */
       cssRequirements: [{cssFile:"./css/AlfButton.css"}],
-      
+
       /**
        * An array of the i18n files to use with this widget.
-       * 
-       * @instance 
+       *
+       * @instance
        * @type {object[]}
        * @default [{i18nFile: "./i18n/AlfButton.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/AlfButton.properties"}],
-      
+
       /**
        * The topic to publish when the button is clicked
        *
-       * @instance 
+       * @instance
        * @type {string}
        * @default ""
        */
       publishTopic: "",
-      
+
       /**
        * The payload to publish when the button is clicked
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       publishPayload: null,
-      
+
       /**
        * Additional classes to be applied to the root DOM element.
-       * 
+       *
        * @instance
        * @type {string}
        * @default ""
@@ -85,9 +85,27 @@ define(["dojo/_base/declare",
       additionalCssClasses: "",
 
       /**
+       * The topic to listen to to determine when the button should be enabled
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_VALID_CONTROL"
+       */
+      validTopic: "ALF_VALID_CONTROL",
+
+      /**
+       * The topic to listen to to determine when the button should be disabled
+       *
+       * @instance
+       * @type {string}
+       * @default "ALF_INVALID_CONTROL"
+       */
+      invalidTopic: "ALF_INVALID_CONTROL",
+
+      /**
        * Extends the default implementation to check that the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} attribute has been set
        * to something other null and if it hasn't initialises it to a new (empty) object.
-       * 
+       *
        * @instance
        */
       postMixInProperties: function alfresco_buttons_AlfButton__postMixInProperties() {
@@ -98,11 +116,11 @@ define(["dojo/_base/declare",
             this.publishPayload = {};
          }
       },
-      
+
       /**
-       * Extends the default Dojo button implementation to add a widget DOM node CSS class to ensure that the 
+       * Extends the default Dojo button implementation to add a widget DOM node CSS class to ensure that the
        * CSS selectors are matched.
-       * 
+       *
        * @instance
        */
       postCreate: function alfresco_buttons_AlfButton__postCreate() {
@@ -112,11 +130,11 @@ define(["dojo/_base/declare",
          if (this.disableOnInvalidControls === true)
          {
             this.invalidControls = [];
-            this.alfSubscribe("ALF_INVALID_CONTROL", lang.hitch(this, "onInvalidControl"));
-            this.alfSubscribe("ALF_VALID_CONTROL", lang.hitch(this, "onValidControl"));
+            this.alfSubscribe(this.invalidTopic, lang.hitch(this, "onInvalidControl"));
+            this.alfSubscribe(this.validTopic, lang.hitch(this, "onValidControl"));
          }
       },
-      
+
       /**
        * Indicates whether or not the button should disable itself if any controls publish information indicating that
        * they are in an invalid state.
@@ -130,7 +148,7 @@ define(["dojo/_base/declare",
       /**
        * This will be instantiated as an array and used to keep track of any controls that report themselves as being
        * in an invalid state. The button should only be enabled when this list is empty.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default null
@@ -139,7 +157,7 @@ define(["dojo/_base/declare",
 
       /**
        * Handles the reporting of an invalid field. This will disable the button to prevent users from clicking it.
-       * 
+       *
        * @instance
        * @param {object} payload The published details of the invalid field.
        */
@@ -153,13 +171,13 @@ define(["dojo/_base/declare",
          }
          this.set("disabled", "true");
       },
-      
+
       /**
        * Handles the reporting of a valid field. If the field was previously recorded as being
        * invalid then it is removed from the [invalidControls]{@link module:alfresco/forms/Form#invalidControls}
-       * attribute and it was the field was the only field in error then the "OK" button is 
-       * enabled. 
-       * 
+       * attribute and it was the field was the only field in error then the "OK" button is
+       * enabled.
+       *
        * @instance
        * @param {object} payload The published details of the field that has become valid
        */
@@ -171,10 +189,10 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Handles click events to publish the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload} 
+       * Handles click events to publish the [publishPayload]{@link module:alfresco/buttons/AlfButton#publishPayload}
        * on the [publishTopic]{@link module:alfresco/buttons/AlfButton#publishTopic}
-       * 
-       * @instance 
+       *
+       * @instance
        * @param {object} evt The click event
        */
       onClick: function alfresco_buttons_AlfButton__onClick(evt) {

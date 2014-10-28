@@ -971,7 +971,10 @@ define(["dojo/_base/declare",
                   config: {
                      label: confirmButtonLabel,
                      publishTopic: responseTopic,
-                     publishPayload: publishPayload
+                     publishPayload: publishPayload,
+                     disableOnInvalidControls: true,
+                     validTopic: "ALF_PICKER_VALID",
+                     invalidTopic: "ALF_PICKER_INVALID"
                   }
                },
                {
