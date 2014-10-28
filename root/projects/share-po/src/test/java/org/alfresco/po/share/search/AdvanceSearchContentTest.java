@@ -117,7 +117,7 @@ public class AdvanceSearchContentTest extends AbstractTest
         contentSearchPage.inputFromDate(dateFormat.format(todayDate));
         contentSearchPage.inputToDate(dateFormat.format(todayDate));
         contentSearchPage.inputModifier(username);        
-        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
+        SearchResultPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
         //goBackToAdvanceSearch does not exist now and will be included later
         //searchResults.goBackToAdvanceSearch().render();
@@ -180,7 +180,7 @@ public class AdvanceSearchContentTest extends AbstractTest
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         contentSearchPage.inputName("my.txt");
         contentSearchPage.selectMimeType("XHTML");        
-        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();        
+        SearchResultPage searchResults = contentSearchPage.clickSearch().render();        
         Assert.assertTrue(searchResults.hasResults());  
         //searchResults.goBackToAdvanceSearch().render();
         // Assert.assertEquals("XHTML",contentSearchPage.getMimeType());
@@ -295,7 +295,7 @@ public class AdvanceSearchContentTest extends AbstractTest
     {
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         contentSearchPage.inputName("my.txt");
-        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
+        SearchResultPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
         Assert.assertFalse(searchResults.getResults().get(0).isFolder());
         
@@ -312,7 +312,7 @@ public class AdvanceSearchContentTest extends AbstractTest
     {
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         contentSearchPage.inputName("my.txt");
-        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
+        SearchResultPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
         SearchResultItem searchResultItem = (SearchResultItem) searchResults.getResults().get(0);
         searchResultItem.clickOnDownloadIcon();
@@ -355,7 +355,7 @@ public class AdvanceSearchContentTest extends AbstractTest
         Thread.sleep(20000); //solr wait.
         contentSearchPage = dashBoard.getNav().selectAdvanceSearch().render();
         contentSearchPage.inputName(fileName);
-        FacetedSearchPage searchResults = contentSearchPage.clickSearch().render();
+        SearchResultPage searchResults = contentSearchPage.clickSearch().render();
         Assert.assertTrue(searchResults.hasResults());
         SearchResult searchResultItem = searchResults.getResults().get(0);
         
