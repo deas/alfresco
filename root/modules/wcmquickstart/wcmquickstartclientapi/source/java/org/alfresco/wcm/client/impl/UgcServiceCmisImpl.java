@@ -130,7 +130,7 @@ public class UgcServiceCmisImpl implements UgcService
         }
 
         ObjectId id = CmisSessionHelper.getSession().createDocument(props, feedbackFolderId, null,
-                VersioningState.NONE, null, null, null);
+                VersioningState.MINOR, null, null, null);
         return id.getId();
     }
     
