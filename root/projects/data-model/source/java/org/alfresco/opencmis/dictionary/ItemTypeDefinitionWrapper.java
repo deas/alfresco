@@ -22,7 +22,6 @@ import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
-import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
@@ -63,8 +62,8 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName(null);
-        typeDef.setDescription(null);
+        typeDef.setDisplayName(typeId);
+        typeDef.setDescription(typeDef.getDisplayName());
 
         if (BaseTypeId.CMIS_ITEM.value().equals(typeId) )
         {
@@ -89,21 +88,5 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
 
         createOwningPropertyDefinitions(cmisMapping, accessorMapping, luceneBuilderMapping, dictionaryService, cmisClassDef);
         createActionEvaluators(accessorMapping, BaseTypeId.CMIS_ITEM);
-    }
-    
-    @Override
-    public void updateDefinition(DictionaryService dictionaryService)
-    {
-        TypeDefinition typeDef = dictionaryService.getType(alfrescoName);
-
-        if (typeDef != null)
-        {
-            setTypeDefDisplayName(typeDef.getTitle(dictionaryService));
-            setTypeDefDescription(typeDef.getDescription(dictionaryService));
-        }
-        else
-        {
-            super.updateDefinition(dictionaryService);
-        }
     }
 }

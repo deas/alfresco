@@ -294,12 +294,7 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     @Override
     public TypeDefinitionWrapper findType(String typeId)
     {
-        TypeDefinitionWrapper typeDef = getRegistry().getTypeDefByTypeId(typeId);
-        if (typeDef != null && typeDef.getTypeDefinition(false).getDisplayName() == null)
-        {
-            typeDef.updateDefinition(dictionaryService);
-        }
-        return typeDef;
+        return getRegistry().getTypeDefByTypeId(typeId);
     }
 
     @Override
