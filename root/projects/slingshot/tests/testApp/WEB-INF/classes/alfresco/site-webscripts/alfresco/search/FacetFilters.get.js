@@ -131,7 +131,7 @@ model.jsonModel = {
                   config: {
                      label: "Facet 1",
                      facetQName: "FACET1QNAME",
-                     sortBy: "DESCENDING",
+                     sortBy: "ASCENDING",
                      maxFilters: 5
                   }
                },
@@ -169,7 +169,7 @@ model.jsonModel = {
                   config: {
                      label: "Facet 2 (useHash=true)",
                      facetQName: "FACET2QNAME",
-                     sortBy: "DESCENDING",
+                     sortBy: "ASCENDING",
                      maxFilters: 5,
                      useHash: true
                   }
