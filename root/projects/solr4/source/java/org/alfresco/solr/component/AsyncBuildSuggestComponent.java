@@ -546,15 +546,22 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
         {
             // only queue a build if the designated time has passed.
             long now = System.currentTimeMillis();
-            long elapsedTimeMillis = now - suggesterCache.getLastBuild();
-            long elapsedTimeSecs = (elapsedTimeMillis / 1000);
+            long lastBuild = suggesterCache.getLastBuild();
+            long elapsedTimeMillis = (lastBuild == 0) ? 0 : (now - lastBuild);
+            long elapsedTimeSecs = (lastBuild == 0) ? 0 : (elapsedTimeMillis / 1000);
             if (elapsedTimeSecs > minSecsBetweenBuilds)
             {
                 if (LOG.isDebugEnabled())
                 {
-                    LOG.debug("Scheduling async suggester build, time since last build " +
-                              elapsedTimeSecs + "s (" + elapsedTimeMillis + "ms), core: " +
-                              newSearcher.getCore().getName());
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Scheduling async suggester build");
+                    if (lastBuild > 0)
+                    {
+                        sb.append(", time since last build: ").
+                            append(elapsedTimeSecs).append("s (").append(elapsedTimeMillis).append("ms)");
+                    }
+                    sb.append(", core: ").append(newSearcher.getCore().getName());
+                    LOG.debug(sb.toString());
                 }
                 suggesterCache.refresh(ASYNC_CACHE_KEY);
             }
@@ -562,9 +569,15 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
             {
                 if (LOG.isDebugEnabled())
                 {
-                    LOG.debug("Skipping async suggester build, time since last build " +
-                              elapsedTimeSecs + "s (" + elapsedTimeMillis + "ms), core: " + 
-                              newSearcher.getCore().getName());
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Skipping async suggester build");
+                    if (lastBuild > 0)
+                    {
+                        sb.append(", time since last build: ").
+                            append(elapsedTimeSecs).append("s (").append(elapsedTimeMillis).append("ms)");
+                    }
+                    sb.append(", core: ").append(newSearcher.getCore().getName());
+                    LOG.debug(sb.toString());
                 }
             }
         }
