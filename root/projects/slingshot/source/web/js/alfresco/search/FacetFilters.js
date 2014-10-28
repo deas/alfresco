@@ -326,7 +326,7 @@ define(["dojo/_base/declare",
        * @returns {number} -1, 0 or 1 according to standard array sorting conventions
        */
       _ascSort: function alfresco_search_FacetFilters___ascSort(a, b) {
-         return a.hits - b.hits;
+         return b.hits - a.hits;
       },
 
       /**
@@ -338,7 +338,7 @@ define(["dojo/_base/declare",
        * @returns {number} -1, 0 or 1 according to standard array sorting conventions
        */
       _descSort: function alfresco_search_FacetFilter___descSort(a, b) {
-         return b.hits - a.hits;
+         return a.hits - b.hits;
       },
 
       /**
