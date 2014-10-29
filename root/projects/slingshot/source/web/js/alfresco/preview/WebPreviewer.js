@@ -39,21 +39,6 @@ define(["dojo/_base/declare",
         "dojo/sniff"], 
         function(declare, _Widget, Core, AlfConstants, lang, on, dom, domConstruct, domGeom, win, domStyle, sniff) {
    
-   // TODO: Not sure what to do about these...
-   Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerLogging = function Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerLogging(msg, level, objectId)
-   {
-      var webPreviewComponentId = objectId.substring("WebPreviewer_".length);
-      var webPreviewPlugin = Alfresco.util.ComponentManager.get(webPreviewComponentId).plugin;
-      return webPreviewPlugin.onWebPreviewerLogging.apply(webPreviewPlugin, arguments);
-   };
-
-   Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent = function Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent(event, objectId)
-   {
-      var webPreviewComponentId = objectId.substring("WebPreviewer_".length);
-      var webPreviewPlugin = Alfresco.util.ComponentManager.get(webPreviewComponentId).plugin;
-      return webPreviewPlugin.onWebPreviewerEvent.apply(webPreviewPlugin, arguments);
-   };
-
    return declare([_Widget, Core], {
 
       /**
@@ -136,8 +121,7 @@ define(["dojo/_base/declare",
          so.addVariable("fileName", this.previewManager.name);
          so.addVariable("paging", this.attributes.paging);
          so.addVariable("url", ctx.url);
-         so.addVariable("jsCallback", "Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent");
-         so.addVariable("jsLogger", "Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerLogging");
+         // so.addVariable("jsCallback", "Alfresco_WebPreview_WebPreviewerPlugin_onWebPreviewerEvent");
          so.addVariable("i18n_actualSize", this.previewManager.message("preview.actualSize"));
          so.addVariable("i18n_fitPage", this.previewManager.message("preview.fitPage"));
          so.addVariable("i18n_fitWidth", this.previewManager.message("preview.fitWidth"));
@@ -168,21 +152,9 @@ define(["dojo/_base/declare",
           */
          on(this.swfDiv, "mouseover", lang.hitch(this, "onMouseOver", swfId));
          on(this.swfDiv, "mouseout", lang.hitch(this, "onMouseOut", swfId));
-         
-         // Page unload / unsaved changes behaviour
-         YAHOO.util.Event.addListener(window, "resize", function ()
-         {
-            // Only if not in maximize view
-            if (this.swfDiv.getStyle("height") !== "100%")
-            {
-               this.synchronizeSwfDivPosition();
-            }
-         }, this, true);
 
          // Place the real flash preview div on top of the shadow div
          this.synchronizeSwfDivPosition();
-
-         YAHOO.lang.later(500, this, this.synchronizeSwfDivPosition , [] , true);
       },
 
       /**
@@ -256,14 +228,9 @@ define(["dojo/_base/declare",
                   left: vs.x + "px",
                   top: vs.y + "px",
                   width: vs.w + "px",
-                  height: vs.h + "px"
+                  height: vs.h + "px",
+                  zIndex: 1000
                });
-               
-               // var clientRegion = YAHOO.util.Dom.getClientRegion();
-               // this.swfDiv.setStyle("left", clientRegion.left + "px");
-               // this.swfDiv.setStyle("top", clientRegion.top + "px");
-               // this.swfDiv.setStyle("width", "100%");
-               // this.swfDiv.setStyle("height", "100%");
             }
             else if (event.event.type == "onFullWindowEscape")
             {
@@ -312,13 +279,15 @@ define(["dojo/_base/declare",
       {
          if (!this.swfDiv)
          {
+            var element = this.previewManager.getPreviewerElement();
+            domConstruct.empty(element);
             var realSwfDivEl = domConstruct.create("div", {
                id: this.previewManager.id + "-full-window-div",
                style: {
-                  position: "absolute"
+                  height: "100%"
                },
                className: "web-preview real"
-            }, document.body);
+            }, element);
             this.swfDiv = realSwfDivEl;
          }
       },
@@ -332,13 +301,18 @@ define(["dojo/_base/declare",
       {
          if (!this.fullWindowMode)
          {
-            var posOutput = domGeom.position(this.previewManager.getPreviewerElement());
-            domStyle.set(this.swfDiv, {
-               left: posOutput.x + "px",
-               top: posOutput.y + "px",
-               width: posOutput.w + "px",
-               height: posOutput.h + "px"
-            });
+            var element = this.previewManager.getPreviewerElement();
+            if (element != null)
+            {
+               var posOutput = domGeom.position(element);
+               domStyle.set(this.swfDiv, {
+                  left: posOutput.x + "px",
+                  top: posOutput.y + "px",
+                  width: posOutput.w + "px",
+                  height: posOutput.h + "px",
+                  zIndex: 1000
+               });
+            }
          }
       }
    });
