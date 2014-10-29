@@ -111,6 +111,7 @@
                 <package name="cm"       location="js/lib/code-mirror"/>
                 <package name="sinon"    location="js/lib/sinon-1.10.3/lib"/>
                 <package name="jquery"   location="js/lib/jquery-1.11.1" main="jquery-1.11.1.min"/>
+                <package name="jqueryui" location="js/lib/jquery-ui-1.11.1" main="jquery-ui.min"/>
             </packages>
          </dojo-pages>
 
