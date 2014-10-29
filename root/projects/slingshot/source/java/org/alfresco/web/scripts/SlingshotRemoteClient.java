@@ -134,16 +134,10 @@ public class SlingshotRemoteClient extends RemoteClient
                             }
                             else if (mimetype.contains("text/xml"))
                             {
+                                // we cannot be sure what we are processing here - it could be html embedded in XML
                                 // If docType is set to xml browsers (at least IE & Chrome) will treat it like it
                                 // does for a svg+xml document
-                                if (hasDocType(content, "svg", false))
-                                {
-                                    res.setContentType("text/plain");
-                                }
-                                else if (hasDocType(content, "html", false))
-                                {
-                                    content = StringUtils.stripUnsafeHTMLDocument(content, false);
-                                }
+                                res.setContentType("text/plain");
                             }
                             else if (mimetype.contains("text/x-component"))
                             {
