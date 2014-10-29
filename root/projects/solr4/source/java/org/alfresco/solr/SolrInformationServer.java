@@ -2401,7 +2401,7 @@ public class SolrInformationServer implements InformationServer
         catch (Exception e)
         {
             // A failure to write to the store is acceptable as long as it's logged
-            log.error("Failed to write to store using URL: " + contentContext.getContentUrl(), e);
+            log.warn("Failed to write to store using URL: " + contentContext.getContentUrl(), e);
         }
     }
 
@@ -2428,7 +2428,7 @@ public class SolrInformationServer implements InformationServer
             catch (Exception e)
             {
                 // Don't fail for this
-                log.error("Failed to get doc from store using URL: " + contentUrl, e);
+                log.warn("Failed to get doc from store using URL: " + contentUrl, e);
                 return null;
             }
         }
