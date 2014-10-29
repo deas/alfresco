@@ -155,7 +155,7 @@
     <maven.license.name>GNU Lesser General Public License v3.0 or later</maven.license.name>
     <maven.license.url>http://www.gnu.org/licenses/lgpl-3.0-standalone.html</maven.license.url>
 
-    <alfresco.googledocs.version>2.0.7</alfresco.googledocs.version>
+    <alfresco.googledocs.version>2.0.8</alfresco.googledocs.version>
     <!-- Default location of the root of the checkout. To be overrided if project is deeper than 2 levels -->
     <highest.basedir>${basedir}/../..</highest.basedir>
 
