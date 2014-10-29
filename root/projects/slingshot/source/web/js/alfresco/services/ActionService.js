@@ -961,7 +961,8 @@ define(["dojo/_base/declare",
                {
                   name: "alfresco/pickers/ContainerPicker",
                   config: {
-                     singleItemMode: singleItemMode
+                     singleItemMode: singleItemMode,
+                     generatePubSubScope: true
                   }
                }
             ],
