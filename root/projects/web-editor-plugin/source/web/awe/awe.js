@@ -177,7 +177,7 @@
 
          Alfresco.util.Ajax.request(
          {
-            url: Alfresco.constants.PROXY_URI + 'api/node/' + storeType + '/' + storeId + '/' + uuid,
+            url: Alfresco.constants.PROXY_URI + 'slingshot/doclib/action/file/node/' + storeType + '/' + storeId + '/' + uuid,
             method: Alfresco.util.Ajax.DELETE,
             noReloadOnAuthFailure: true,
             dataObj:
