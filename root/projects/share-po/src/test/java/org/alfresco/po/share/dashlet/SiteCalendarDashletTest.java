@@ -39,7 +39,7 @@ public class SiteCalendarDashletTest extends AbstractSiteDashletTest
     @BeforeClass
     public void setUp() throws Exception
     {
-        siteName = "siteCalendarDashletTest" + System.currentTimeMillis();
+        siteName = "siteCalendarDashletTestShan1" + System.currentTimeMillis();
         loginAs("admin", "admin");
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
@@ -132,19 +132,13 @@ public class SiteCalendarDashletTest extends AbstractSiteDashletTest
 
         navigateToSiteDashboard();
 
-        // verify details of the event on dashlet
-        String[] parts = endDate.split(", ");
-        String part1 = parts[0];
-        String part2 = parts[1];
-
         String part3 = endDate.substring(endDate.lastIndexOf(", ") + 2).trim();
         String[] parts_last = part3.split(" ");
-        String year = parts_last[0];
         String hour = parts_last[2];
         String time = parts_last[3];
 
-        String comparing_date = "7:00 AM " + event_dashlet + " (until: " + part1 + ", " + part2 + ", " + year + " " + hour + " " + time + ")";
-
+        String comparing_date = "7:00 AM - " + hour + " " + time + " " + event_dashlet;
+        
         // compare results
         siteCalendarDashlet = siteDashBoard.getDashlet(SITE_CALENDAR_DASHLET).render();
         boolean result = siteCalendarDashlet.isEventsWithDetailDisplayed(comparing_date);
