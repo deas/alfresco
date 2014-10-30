@@ -312,7 +312,7 @@ define(["dojo/_base/declare",
                {
                   domConstruct.destroy(this.messageNode);
                }
-               
+
                // If we don't want to preserve the current data (e.g. if infinite scroll isn't being used)
                // then we should destroy the previous renderer...
                if (preserveCurrentData === false && this.docListRenderer != null)
@@ -451,9 +451,14 @@ define(["dojo/_base/declare",
        */
       renderNoDataDisplay: function alfresco_documentlibrary_views_AlfDocumentListView__renderNoDataDisplay() {
          this.clearOldView();
-         this.messageNode = domConstruct.create("div", {
-            innerHTML: this.noItemsMessage
-         }, this.domNode);
+
+         // Only generate message node if there's a label or widgets to go in it.
+         if (this.noItemsMessage || this.widgetsForNoDataDisplay)
+         {
+            this.messageNode = domConstruct.create("div", {
+               innerHTML: this.noItemsMessage
+            }, this.domNode);
+         }
 
          // If specific widgets have been defined to display when there are no results then replace
          // the default message with them...
