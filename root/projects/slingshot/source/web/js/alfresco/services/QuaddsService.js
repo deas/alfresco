@@ -132,7 +132,7 @@ define(["dojo/_base/declare",
          {
             var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds);
             this.serviceXhr({url : url,
-                             alfTopic: payload.responseTopic,
+                             alfTopic: payload.alfResponseTopic != null ? payload.alfResponseTopic : payload.alfTopic,
                              method: "GET",
                              successCallback: this.processQuaddItemData,
                              callbackScope: this});
@@ -160,7 +160,7 @@ define(["dojo/_base/declare",
          {
             var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds) + "/item/" + lang.trim(name);
             this.serviceXhr({url : url,
-                             alfTopic: payload.responseTopic,
+                             alfTopic: payload.alfResponseTopic != null ? payload.alfResponseTopic : payload.alfTopic,
                              method: "GET",
                              successCallback: this.processQuaddItemData,
                              callbackScope: this});
@@ -199,7 +199,7 @@ define(["dojo/_base/declare",
             this.serviceXhr({url : url,
                              data: config,
                              method: "POST",
-                             alfTopic: payload.responseTopic,
+                             alfTopic: payload.alfResponseTopic != null ? payload.alfResponseTopic : payload.alfTopic,
                              successCallback: this.refreshRequest,
                              callbackScope: this});
          }
@@ -236,7 +236,7 @@ define(["dojo/_base/declare",
             this.serviceXhr({url : url,
                              data: config,
                              method: "PUT",
-                             alfTopic: payload.responseTopic,
+                             alfTopic: payload.alfResponseTopic != null ? payload.alfResponseTopic : payload.alfTopic,
                              successCallback: this.refreshRequest,
                              callbackScope: this});
          }
@@ -263,7 +263,7 @@ define(["dojo/_base/declare",
             var url = AlfConstants.PROXY_URI + "aikau/quadds/" + lang.trim(quadds) + "/item/" + lang.trim(name);
             this.serviceXhr({url : url,
                              method: "DELETE",
-                             alfTopic: payload.responseTopic,
+                             alfTopic: payload.alfResponseTopic != null ? payload.alfResponseTopic : payload.alfTopic,
                              successCallback: this.refreshRequest,
                              callbackScope: this});
          }

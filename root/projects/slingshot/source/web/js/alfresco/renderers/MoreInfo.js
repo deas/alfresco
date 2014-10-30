@@ -98,6 +98,71 @@ define(["dojo/_base/declare",
       xhrRequired: false,
 
       /**
+       * Indicates whether or not the More Info icon should be dark (for displaying on a light background).
+       * For historical reasons this defaults to false.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      darkIcon: false,
+
+      /**
+       * 
+       * @instance
+       * @type {string}
+       * @default "moreinfo.altText.label"
+       */
+      altText: "moreinfo.altTextWithContext.label",
+
+      /**
+       * This is required for ensure that the alt text is meaningful. It is the value to include in the alt text
+       * and title attributes that identifies the item to the user.
+       *
+       * @instance
+       * @type {string}
+       * @default "displayName"
+       */
+      propertyToRender: "displayName",
+
+      /**
+       * Gets the correct localized alt and title text.
+       *
+       * @instance
+       */
+      postMixInProperties: function alfresco_renderers_MoreInfo__postMixInProperties() {
+         if (this.altText == null)
+         {
+            this.altText = "";
+         }
+         else if (this.propertyToRender != null && 
+                  this.currentItem != null &&
+                  this.currentItem[this.propertyToRender])
+         {
+
+            this.altText = this.message(this.altText, {
+               0: (this.currentItem != null ? this.currentItem[this.propertyToRender] : "")
+            });
+         }
+         else
+         {
+            this.altText = this.message(this.altText);
+         }
+      },
+
+      /**
+       * Updates the CSS if required to 
+       *
+       * @instance
+       */
+      postCreate: function alfresco_renderers_MoreInfo__postCreate() {
+         if (this.darkIcon === true)
+         {
+            domClass.add(this.domNode, "darkIcon");
+         }
+      },
+
+      /**
        * This is called when the user clicks on the "info" symbol and creates a new
        * [popup]{@link module:alfresco/documentlibrary/views/layouts/Popup} containing the info
        * to be displayed.
@@ -215,6 +280,7 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/Actions",
                                        config: {
+                                          filterActions: true,
                                           allowedActions: [
                                              "document-download",
                                              "document-view-content",

@@ -40,9 +40,10 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-class",
         "alfresco/renderers/XhrContextActions",
-        "alfresco/renderers/Size"],
+        "alfresco/renderers/Size",
+        "alfresco/renderers/MoreInfo"],
         function(declare, Row, template, SearchThumbnail, SearchResultPropertyLink, PropertyLink, Property,
-                 DateLink, XhrActions, lang, domClass, XhrContextActions, Size) {
+                 DateLink, XhrActions, lang, domClass, XhrContextActions, Size, MoreInfo) {
 
    return declare([Row], {
 
@@ -164,6 +165,13 @@ define(["dojo/_base/declare",
                renderedValueSuffix: ")"
             }, this.titleNode);
          }
+
+         new MoreInfo({
+            currentItem: this.currentItem,
+            pubSubScope: this.pubSubScope,
+            xhrRequired: true,
+            darkIcon: true
+         }, this.moreInfoNode);
 
          new DateLink({
             renderedValueClass: "alfresco-renderers-Property pointer",

@@ -166,8 +166,12 @@ define(["dojo/_base/declare",
                   }
                   else {
                      this.currentData.items.push(payload);
+                     array.forEach(this.currentData.items, function(item, index) {
+                        item.index = index;
+                     });
                      this.renderView(false);
                   }
+
                   // Publish the data about the items currently selected...
                   this.alfPublish("ALF_ITEMS_SELECTED", {
                      pickedItems: this.currentData.items
@@ -201,6 +205,9 @@ define(["dojo/_base/declare",
                   var key = lang.getObject(this.itemKey, false, item);
                   return key != keyToRemove;
                }, this);
+               array.forEach(this.currentData.items, function(item, index) {
+                  item.index = index;
+               });
                this.renderView(false);
                this.alfPublish("ALF_ITEMS_SELECTED", {
                   pickedItems: this.currentData.items
@@ -257,6 +264,9 @@ define(["dojo/_base/declare",
             if (items != null)
             {
                this.currentData.items = items;
+               array.forEach(this.currentData.items, function(item, index) {
+                  item.index = index;
+               });
             }
             else
             {

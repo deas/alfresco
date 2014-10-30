@@ -400,7 +400,22 @@ define(["dojo/_base/declare",
          }
       ],
 
+      /**
+       * This is the label to display above the picker.
+       *
+       * @instance
+       * @type {string}
+       * @default "picker.subPickers.label"
+       */
       subPickersLabel: "picker.subPickers.label",
+
+      /**
+       * This is the label to display above the picked items.
+       *
+       * @instance
+       * @type {string}
+       * @default "picker.pickedItems.label"
+       */
       pickedItemsLabel: "picker.pickedItems.label"
    });
 });
