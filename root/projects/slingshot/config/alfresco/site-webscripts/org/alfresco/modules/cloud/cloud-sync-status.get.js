@@ -1,5 +1,5 @@
-//<import resource="classpath:alfresco/site-webscripts/org/alfresco/config.lib.js">
-//<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
+<import resource="classpath:alfresco/site-webscripts/org/alfresco/config.lib.js">
+<import resource="classpath:/alfresco/templates/org/alfresco/import/alfresco-util.js">
 
 function main()
 {
