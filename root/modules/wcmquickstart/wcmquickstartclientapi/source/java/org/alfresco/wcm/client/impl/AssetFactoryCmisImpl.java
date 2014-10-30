@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2010 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of the Alfresco Web Quick Start module.
  *
@@ -52,6 +52,7 @@ import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.data.PropertyData;
 import org.apache.chemistry.opencmis.commons.enums.RelationshipDirection;
+import org.apache.chemistry.opencmis.commons.spi.ObjectService;
 import org.apache.chemistry.opencmis.commons.spi.RelationshipService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -229,8 +230,13 @@ public class AssetFactoryCmisImpl implements AssetFactory
         final RelationshipService relationshipService = session.getBinding().getRelationshipService();
         final OperationContext ctxt = session.getDefaultContext();
 
+        // ACE-3265: get actual "cmis:objectId"
+        ObjectService objectService = session.getBinding().getObjectService();
+        Map<String, PropertyData<?>> cmisProperties = objectService.getProperties(session.getRepositoryInfo().getId(), assetId, null, null).getProperties();
+        String objectId = (String) cmisProperties.get(PropertyIds.OBJECT_ID).getFirstValue();
+
         // fetch the relationships
-        ObjectList relList = relationshipService.getObjectRelationships(session.getRepositoryInfo().getId(), assetId,
+        ObjectList relList = relationshipService.getObjectRelationships(session.getRepositoryInfo().getId(), objectId,
                 true, RelationshipDirection.SOURCE, null, ctxt.getFilterString(), ctxt.isIncludeAllowableActions(),
                 null, null, null);
 
