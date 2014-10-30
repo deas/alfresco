@@ -17,6 +17,7 @@
  */
 package org.alfresco.wcm.client.util.impl;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -35,10 +36,14 @@ public class CmisSessionPoolImpl implements CmisSessionPool
     private ObjectPool guestSessionPool;
     private Session session;
     private ReadWriteLock sessionLock = new ReentrantReadWriteLock(true);
+    
+    private long ticketDuration = 60*60*1000;
+    private AtomicLong sessionLastTouched = new AtomicLong(System.currentTimeMillis());
 
-    public CmisSessionPoolImpl(ObjectPool guestSessionPool)
+    public CmisSessionPoolImpl(ObjectPool guestSessionPool, long ticketDuration)
     {
         this.guestSessionPool = guestSessionPool;
+        this.ticketDuration = ticketDuration;
     }
 
     /**
@@ -59,16 +64,25 @@ public class CmisSessionPoolImpl implements CmisSessionPool
     public Session getGuestSession() throws Exception
     {
         sessionLock.readLock().lock();
+        
+        boolean refreshSession = System.currentTimeMillis() >= sessionLastTouched.get() + ticketDuration;
+        
         try
         {
-            if (session == null)
+            if (refreshSession || session == null)
             {
                 sessionLock.readLock().unlock();
                 sessionLock.writeLock().lock();
                 try
                 {
-                    if (session == null)
+                    refreshSession = System.currentTimeMillis() >= sessionLastTouched.get() + ticketDuration;
+                    if (refreshSession || session == null)
                     {
+                        if (session != null)
+                        {
+                            guestSessionPool.invalidateObject(session);
+                        }
+                        
                         session = (Session) guestSessionPool.borrowObject();
                     }
                 }
@@ -78,6 +92,7 @@ public class CmisSessionPoolImpl implements CmisSessionPool
                     sessionLock.writeLock().unlock();
                 }
             }
+            sessionLastTouched.set(System.currentTimeMillis());
             return session;
         }
         finally

@@ -49,6 +49,7 @@
    <!-- Session pool facade which wraps the two types of session pool -->
    <bean id="sessionPool" class="org.alfresco.wcm.client.util.impl.CmisSessionPoolImpl">
       <constructor-arg ref="guestSessionPool" />
+      <constructor-arg value="%{wcmqs.api.alfresco.ticketTtl}" />
    </bean>
 
    <!--  Section factory -->
