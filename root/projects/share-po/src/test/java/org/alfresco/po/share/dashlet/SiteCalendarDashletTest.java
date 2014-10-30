@@ -39,7 +39,7 @@ public class SiteCalendarDashletTest extends AbstractSiteDashletTest
     @BeforeClass
     public void setUp() throws Exception
     {
-        siteName = "siteCalendarDashletTestShan1" + System.currentTimeMillis();
+        siteName = "siteCalendarDashletTest" + System.currentTimeMillis();
         loginAs("admin", "admin");
         SiteUtil.createSite(drone, siteName, "description", "Public");
         navigateToSiteDashboard();
