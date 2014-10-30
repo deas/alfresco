@@ -797,7 +797,11 @@
                         fn: function (response, obj)
                         {
                            var treeNode = this.params.treeNode;
-                           this.params.component._sortNodeChildren(treeNode);
+                           // Only sort children if it has any already loaded
+                           if(treeNode.hasChildren())
+                           {
+                              this.params.component._sortNodeChildren(treeNode);
+                           }
                            treeNode.toggle();
                            treeNode.refresh();
                            treeNode.toggle();
@@ -816,7 +820,7 @@
                            Alfresco.util.PopupManager.displayMessage(
                            {
                               text: Alfresco.util.message("tool.category-manager.add-category.failure")
-                          });
+                           });
                         },
                         scope: this
                      },
