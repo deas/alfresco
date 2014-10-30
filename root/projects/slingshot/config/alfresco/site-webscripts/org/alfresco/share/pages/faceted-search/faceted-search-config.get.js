@@ -267,6 +267,10 @@ function getFormDefinition(canEditFilterId) {
                            {
                               label: "faceted-search-config.sortBy.lowToHigh.label",
                               value: "DESCENDING"
+                           },
+                           {
+                              label: "faceted-search-config.sortBy.index.label",
+                              value: "INDEX"
                            }
                         ]
                      }

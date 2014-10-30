@@ -271,15 +271,7 @@ define(["dojo/_base/declare",
        * @returns {array} The sorted filters
        */
       sortFacetFilters: function alfresco_search_FacetFilters__sortFacetFilters(filters) {
-         // Hard-coded to take facet queries into account. Should we stop using facet queries
-         // then this first if block will need to be removed...
-         if (this.facetQName === "{http://www.alfresco.org/model/content/1.0}content.size" || 
-             this.facetQName === "{http://www.alfresco.org/model/content/1.0}modified" ||
-             this.facetQName === "{http://www.alfresco.org/model/content/1.0}created")
-         {
-            return filters.sort(this._indexSort);
-         }
-         else if (this.sortBy == null || lang.trim(this.sortBy) === "ALPHABETICALLY")
+         if (this.sortBy == null || lang.trim(this.sortBy) === "ALPHABETICALLY")
          {
             return filters.sort(this._alphaSort);
          }
@@ -372,7 +364,14 @@ define(["dojo/_base/declare",
        * @returns {number} -1, 0 or 1 according to standard array sorting conventions
        */
       _indexSort: function alfresco_search_FacetFilter___indexSort(a, b) {
-         return a.index - b.index;
+         if (a.index != null && b.index != null)
+         {
+            return a.index - b.index;
+         }
+         else
+         {
+            return 0;
+         }
       }
    });
 });
