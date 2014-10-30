@@ -26,6 +26,7 @@ import java.util.List;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
@@ -44,10 +45,12 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
 
     private PolicyTypeDefinitionImpl typeDef;
     private PolicyTypeDefinitionImpl typeDefInclProperties;
+    private DictionaryService dictionaryService;
 
     public PolicyTypeDefintionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping propertyAccessorMapping, 
             PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {
+        this.dictionaryService = dictionaryService;
         alfrescoName = cmisClassDef.getName();
         alfrescoClass = cmisMapping.getAlfrescoClass(alfrescoName);
 
@@ -78,8 +81,8 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(null);
+        typeDef.setDescription(null);
 
         typeDef.setIsCreatable(false);
         typeDef.setIsQueryable(true);
@@ -218,5 +221,35 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
                         dictionaryService);
             }
         }
+    }
+
+    @Override
+    public void updateDefinition(DictionaryService dictionaryService)
+    {
+        AspectDefinition aspectDef = dictionaryService.getAspect(alfrescoName);
+
+        if (aspectDef != null)
+        {
+            setTypeDefDisplayName(aspectDef.getTitle(dictionaryService));
+            setTypeDefDescription(aspectDef.getDescription(dictionaryService));
+        }
+        else
+        {
+            super.updateDefinition(dictionaryService);
+        }
+    }
+    
+    @Override
+    public PropertyDefinitionWrapper getPropertyById(String propertyId)
+    {
+        updateProperty(dictionaryService, propertiesById.get(propertyId));
+        return propertiesById.get(propertyId);
+    }
+
+    @Override
+    public Collection<PropertyDefinitionWrapper> getProperties()
+    {
+        updateProperties(dictionaryService);
+        return propertiesById.values();
     }
 }

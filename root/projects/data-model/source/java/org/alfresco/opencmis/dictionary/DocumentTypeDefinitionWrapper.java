@@ -18,10 +18,13 @@
  */
 package org.alfresco.opencmis.dictionary;
 
+import java.util.Collection;
+
 import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
+import org.alfresco.service.cmr.dictionary.TypeDefinition;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.ISO9075;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
@@ -34,10 +37,12 @@ public class DocumentTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
 
     private DocumentTypeDefinitionImpl typeDef;
     private DocumentTypeDefinitionImpl typeDefInclProperties;
+    private DictionaryService dictionaryService;
 
     public DocumentTypeDefinitionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping accessorMapping, 
             PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {
+        this.dictionaryService = dictionaryService;
         alfrescoName = cmisClassDef.getName();
         alfrescoClass = cmisMapping.getAlfrescoClass(alfrescoName);
 
@@ -62,8 +67,8 @@ public class DocumentTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
             }
         }
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(null);
+        typeDef.setDescription(null);
 
         typeDef.setIsCreatable(true);
         typeDef.setIsQueryable(true);
@@ -80,5 +85,35 @@ public class DocumentTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
 
         createOwningPropertyDefinitions(cmisMapping, accessorMapping, luceneBuilderMapping, dictionaryService, cmisClassDef);
         createActionEvaluators(accessorMapping, BaseTypeId.CMIS_DOCUMENT);
+    }
+    
+    @Override
+    public void updateDefinition(DictionaryService dictionaryService)
+    {
+        TypeDefinition typeDef = dictionaryService.getType(alfrescoName);
+
+        if (typeDef != null)
+        {
+            setTypeDefDisplayName(typeDef.getTitle(dictionaryService));
+            setTypeDefDescription(typeDef.getDescription(dictionaryService));
+        }
+        else
+        {
+            super.updateDefinition(dictionaryService);
+        }
+    }
+    
+    @Override
+    public PropertyDefinitionWrapper getPropertyById(String propertyId)
+    {
+        updateProperty(dictionaryService, propertiesById.get(propertyId));
+        return propertiesById.get(propertyId);
+    }
+
+    @Override
+    public Collection<PropertyDefinitionWrapper> getProperties()
+    {
+        updateProperties(dictionaryService);
+        return propertiesById.values();
     }
 }

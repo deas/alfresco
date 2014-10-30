@@ -294,7 +294,12 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     @Override
     public TypeDefinitionWrapper findType(String typeId)
     {
-        return getRegistry().getTypeDefByTypeId(typeId);
+        TypeDefinitionWrapper typeDef = getRegistry().getTypeDefByTypeId(typeId);
+        if (typeDef != null && typeDef.getTypeDefinition(false).getDisplayName() == null)
+        {
+            typeDef.updateDefinition(dictionaryService);
+        }
+        return typeDef;
     }
 
     @Override
@@ -470,6 +475,16 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     @Override
     public List<TypeDefinitionWrapper> getChildren(String typeId)
     {
-    	return getRegistry().getChildren(typeId);
+        List<TypeDefinitionWrapper> children = getRegistry().getChildren(typeId);
+        
+        for (TypeDefinitionWrapper child : children)
+        {
+            if (child != null && child.getTypeDefinition(false).getDisplayName() == null)
+            {
+                child.updateDefinition(dictionaryService);
+            }
+        }
+        
+    	return children;
     }
 }
