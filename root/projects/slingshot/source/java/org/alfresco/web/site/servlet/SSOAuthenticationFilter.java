@@ -635,7 +635,10 @@ public class SSOAuthenticationFilter implements Filter, CallbackHandler
         {
             if (debug)
                 logger.debug("Processing Basic Authentication.");
-            if (AuthenticationUtil.isAuthenticated(req))
+            // ACE-3257 fix, it looks like basic auth header was sent.
+            // However lets check for presence of remote_user CGI variable in AJP.
+            // If remote user is not null then it most likely that apache proxy with mod_auth_basic module is used
+            if (AuthenticationUtil.isAuthenticated(req) || req.getRemoteUser() != null)
             {
                 if (debug)
                     logger.debug("Ensuring the session is still valid.");
