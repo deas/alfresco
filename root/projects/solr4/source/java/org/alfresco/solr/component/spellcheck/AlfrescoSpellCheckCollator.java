@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.alfresco.solr.query.AbstractQParser;
 import org.apache.lucene.analysis.Token;
@@ -154,7 +156,7 @@ public class AlfrescoSpellCheckCollator
                     try
                     {
                         aftsQuery = alfrescoJSON.getString("query");
-                        aftsQuery = aftsQuery.replaceAll(originalQuery, collationQueryStr);
+                        aftsQuery = aftsQuery.replaceAll(Pattern.quote(originalQuery), Matcher.quoteReplacement(collationQueryStr));
                         alfrescoJSON.put("query", aftsQuery);
 
                         req.getContext().put(AbstractQParser.ALFRESCO_JSON, alfrescoJSON);
