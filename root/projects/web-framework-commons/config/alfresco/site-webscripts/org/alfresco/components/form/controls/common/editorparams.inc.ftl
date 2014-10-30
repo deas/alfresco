@@ -15,9 +15,9 @@
    <#elseif appearance == "explorer">
       height: 400,
       width: '',
-      forced_root_block : false,
-      force_p_newlines : false,
-      valid_children : "+body[style]",
+      forced_root_block: "p",
+      force_p_newlines: true,
+      valid_children: "+body[style]",
       extended_valid_elements: "a[href|target|name|style],font[face|size|color|style],span[id|class|align|style],meta[*],style[type]"
    <#elseif appearance == "webeditor">
       width:'',
