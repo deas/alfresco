@@ -41,12 +41,12 @@
 	background-color: #fafafa;
 	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
-	padding: 5px 0 3px 0;
+	padding: 2px 0 0 0;
 	height: 26px;
 	width: 100%;
 	white-space: nowrap;
 	overflow: hidden;
-	font-size: 0.9em;
+	font-size: 12px;
 }
 
 /* Hide top border in the dashlet, since this has a border of its own already */
@@ -80,6 +80,7 @@
 	border-width: 1px;
 	background-color: transparent;
 	padding: 0 2px;
+	min-height: 1.75em;
 }
 
 .yui-skin-lightTheme .previewer.PdfJs .controls .yui-button,
