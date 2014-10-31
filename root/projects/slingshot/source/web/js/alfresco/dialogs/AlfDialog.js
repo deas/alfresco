@@ -117,6 +117,8 @@ define(["dojo/_base/declare",
        */
       postMixInProperties: function alfresco_dialogs_AlfDialog__postMixInProperties() {
          this.inherited(arguments);
+         // TODO: Had to use an existing NLS message for point of fix during dev-cycle - needs own widget NLS prop
+         this.buttonCancel = this.message("button.close");
       },
 
       /**
