@@ -18,7 +18,7 @@
  */
 
 /**
- * 
+ *
  * @module alfresco/renderers/MoreInfo
  * @extends dijit/_WidgetBase
  * @mixes dijit/_TemplatedMixin
@@ -28,7 +28,7 @@
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "dijit/_WidgetBase", 
+        "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
         "alfresco/renderers/_XhrActionsMixin",
@@ -38,14 +38,14 @@ define(["dojo/_base/declare",
         "alfresco/documentlibrary/views/layouts/Popup",
         "dojo/_base/lang",
         "dojo/dom-class",
-        "dojo/_base/event"], 
+        "dojo/_base/event"],
         function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, ObjectTypeUtils, template, AlfCore, Popup, lang, domClass, event) {
 
    return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, AlfCore], {
-      
+
       /**
        * An array of the CSS files to use with this widget.
-       * 
+       *
        * @instance
        * @type {object[]}
        * @default [{cssFile:"./css/MoreInfo"}]
@@ -60,37 +60,37 @@ define(["dojo/_base/declare",
        * @default [{i18nFile: "./i18n/MoreInfo.properties"}]
        */
       i18nRequirements: [{i18nFile: "./i18n/MoreInfo.properties"}],
-      
+
       /**
        * The HTML template to use for the widget.
        * @instance
        * @type {string}
        */
       templateString: template,
-      
+
       /**
        * This is the object that the property to be rendered will be retrieved from.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       currentItem: null,
-      
+
       /**
        * This is used to hold a reference to the information dialog that is popped up when the widget is clicked.
        * The dialog is not instantiated until the first time that a user requests additional information.
-       * 
+       *
        * @instance
        * @type {object}
        * @default null
        */
       moreInfoDialog: null,
-      
+
       /**
        * Used to indicate whether or not the info to display needs to be asynchronously retrieved. Defaults
        * to false assuming that all the data required is currently available in "currentItem".
-       * 
+       *
        * @instance
        * @type {boolean}
        * @default false
@@ -108,7 +108,7 @@ define(["dojo/_base/declare",
       darkIcon: false,
 
       /**
-       * 
+       *
        * @instance
        * @type {string}
        * @default "moreinfo.altText.label"
@@ -135,7 +135,7 @@ define(["dojo/_base/declare",
          {
             this.altText = "";
          }
-         else if (this.propertyToRender != null && 
+         else if (this.propertyToRender != null &&
                   this.currentItem != null &&
                   this.currentItem[this.propertyToRender])
          {
@@ -151,7 +151,7 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Updates the CSS if required to 
+       * Updates the CSS if required to
        *
        * @instance
        */
@@ -200,7 +200,7 @@ define(["dojo/_base/declare",
          {
             title = lang.getObject("displayName", false, this.currentItem);
          }
-         
+
          this.moreInfoDialog = new Popup({
             title: title,
             currentItem: this.currentItem,
@@ -212,7 +212,7 @@ define(["dojo/_base/declare",
       /**
        * Overrides the [inherited function]{@link module:alfresco/renderers/_XhrActionsMixin#clearLoadingItem}
        * to intentionally perform no action.
-       * 
+       *
        * @instance
        */
       clearLoadingItem: function alfresco_renderers_MoreInfo__clearLoadingItem() {
@@ -221,7 +221,7 @@ define(["dojo/_base/declare",
 
       /**
        * Overrides the [inherited function]{@link module:alfresco/renderers/_XhrActionsMixin#addXhrItems}
-       * to create the dialog with the requested data by calling the 
+       * to create the dialog with the requested data by calling the
        * [createMoreInfoDialog function]{@link module:alfresco/renderers/MoreInfo#createMoreInfoDialog}.
        *
        * @instance
@@ -229,7 +229,7 @@ define(["dojo/_base/declare",
       addXhrItems: function alfresco_renderers_MoreInfo__addXhrItems() {
          this.createMoreInfoDialog();
       },
-      
+
       /**
        * The default JSON model for the widgets to add to the dialog.
        * @instance
@@ -265,6 +265,7 @@ define(["dojo/_base/declare",
                                     {
                                        name: "alfresco/renderers/Actions",
                                        config: {
+                                          filterActions: true,
                                           allowedActions: [
                                              "document-delete"
                                           ],
