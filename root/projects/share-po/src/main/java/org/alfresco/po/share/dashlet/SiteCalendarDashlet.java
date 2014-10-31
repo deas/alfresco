@@ -2,6 +2,7 @@ package org.alfresco.po.share.dashlet;
 
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.exception.PageRenderTimeException;
 import org.openqa.selenium.*;
 
@@ -159,6 +160,27 @@ public class SiteCalendarDashlet extends AbstractDashlet implements Dashlet
         {
             String linkText = eventLink.getText();
             if (linkText.contains(eventDetail))
+            {
+                return eventLink.isDisplayed();
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * @param eventDetail
+     * @return boolean
+     */
+    public boolean isEventsWithDetailDisplayed(String eventName, String startTime, String endTime)
+    {
+        WebDroneUtil.checkMandotaryParam("Event Name", eventName);
+        WebDroneUtil.checkMandotaryParam("Start Time", startTime);;
+        WebDroneUtil.checkMandotaryParam("End Time", endTime);;
+        List<WebElement> eventLinks = dashlet.findElements(EVENTS_DETAILS);
+        for (WebElement eventLink : eventLinks)
+        {
+            String linkText = eventLink.getText();
+            if (linkText.contains(eventName) && linkText.contains(startTime) && linkText.contains(endTime))
             {
                 return eventLink.isDisplayed();
             }

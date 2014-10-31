@@ -136,12 +136,13 @@ public class SiteCalendarDashletTest extends AbstractSiteDashletTest
         String[] parts_last = part3.split(" ");
         String hour = parts_last[2];
         String time = parts_last[3];
+        String startTime = "7:00 AM";
+        String endTime = hour + " " + time;
 
-        String comparing_date = "7:00 AM - " + hour + " " + time + " " + event_dashlet;
         
         // compare results
         siteCalendarDashlet = siteDashBoard.getDashlet(SITE_CALENDAR_DASHLET).render();
-        boolean result = siteCalendarDashlet.isEventsWithDetailDisplayed(comparing_date);
+        boolean result = siteCalendarDashlet.isEventsWithDetailDisplayed(event_dashlet, startTime, endTime);
         Assert.assertTrue(result);
 
     }
