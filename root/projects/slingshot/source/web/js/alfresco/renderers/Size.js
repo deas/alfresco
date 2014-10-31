@@ -65,6 +65,10 @@ define(["dojo/_base/declare",
             this.renderedValue = Alfresco.util.formatFileSize(size);
          }
          this.renderedValueClass = this.renderedValueClass + " " + this.renderSize;
+         if (this.deemphasized === true)
+         {
+            this.renderedValueClass = this.renderedValueClass + " deemphasized";
+         }
       }
    });
 });

@@ -176,6 +176,7 @@ define(["dojo/_base/declare",
          new DateLink({
             renderedValueClass: "alfresco-renderers-Property pointer",
             renderSize: "small",
+            deemphasized: true,
             pubSubScope: this.pubSubScope,
             currentItem: this.currentItem,
             modifiedDateProperty: "modifiedOn",

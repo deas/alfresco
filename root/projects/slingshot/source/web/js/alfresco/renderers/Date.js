@@ -105,6 +105,10 @@ define(["dojo/_base/declare",
          });
          
          this.renderedValueClass = this.renderedValueClass + " " + this.renderSize;
+         if (this.deemphasized === true)
+         {
+            this.renderedValueClass = this.renderedValueClass + " deemphasized";
+         }
       }
    });
 });

@@ -7,9 +7,12 @@
    display: block;
 }
 
-.alfresco-renderers-Property > span.label {
+.alfresco-renderers-Property.alfresco-renderers-Property.deemphasized > span {
+   color: @de-emphasized-font-color;
+}
+
+.alfresco-renderers-Property > span {
    color: @general-font-color;
-   margin-right: 5px;
 }
 
 .alfresco-renderers-Property.faded {

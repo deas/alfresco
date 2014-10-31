@@ -191,6 +191,16 @@ define(["dojo/_base/declare",
       renderOnNewLine: false,
 
       /**
+       * Indicates whether or not the property should be de-emphasized. This will result in a lighter colour
+       * being used.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      deemphasized: false,
+
+      /**
        * Set up the attributes to be used when rendering the template.
        * 
        * @instance
@@ -223,6 +233,11 @@ define(["dojo/_base/declare",
          if (this.renderOnNewLine === true)
          {
             this.renderedValueClass = this.renderedValueClass + " block";
+         }
+
+         if (this.deemphasized === true)
+         {
+            this.renderedValueClass = this.renderedValueClass + " deemphasized";
          }
 
          // If the renderedValue is not set then display a warning message if requested...

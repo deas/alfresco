@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco
  *
@@ -117,11 +117,11 @@ define(["dojo/_base/declare",
          var isContainer = lang.getObject("node.isContainer", false, this.currentItem);
          if (isContainer)
          {
-            this.commentTooltip = this.message("comments.folder.tooltip");
+            this.label = this.message("comments.folder.tooltip");
          }
          else
          {
-            this.commentTooltip = this.message("comments.document.tooltip");
+            this.label = this.message("comments.document.tooltip");
          }
          
          // By default this will generate a link to details page for the current Node. However,
