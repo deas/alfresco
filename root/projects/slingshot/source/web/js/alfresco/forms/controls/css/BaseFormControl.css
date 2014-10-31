@@ -9,9 +9,10 @@
    display: inline-block;
 }
 
-.alfresco-forms-controls-BaseFormControl.hiddenlabel > .title-row > label {
+.alfresco-forms-controls-BaseFormControl.hiddenlabel > .title-row {
    position: absolute;
    left: -999em;
+   height: 0;
 }
 
 .alfresco-forms-controls-BaseFormControl > .description-row > .description {
