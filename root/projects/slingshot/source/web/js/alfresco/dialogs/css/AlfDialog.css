@@ -60,7 +60,7 @@
    font-family: @standard-font;
    font-size: @title-font-size;
    line-height: 1.5em;
-   padding: 0.25em;
+   padding: 0 .25em 0 .25em;
    color: @general-font-color;
    overflow: hidden;
    text-overflow: ellipsis;
