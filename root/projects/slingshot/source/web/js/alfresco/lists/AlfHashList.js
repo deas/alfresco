@@ -142,7 +142,7 @@ define(["dojo/_base/declare",
             this.alfSubscribe(this.linkClickTopic, lang.hitch(this, this.onItemLinkClick));
             if (this.currentData != null)
             {
-               this.processLoadedData();
+               this.processLoadedData(this.currentData);
                this.renderView();
             }
             else

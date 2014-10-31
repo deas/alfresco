@@ -318,7 +318,7 @@ define(["dojo/_base/declare",
          this._readyToLoad = true;
          if (this.currentData != null)
          {
-            this.processLoadedData();
+            this.processLoadedData(this.currentData);
             this.renderView();
          }
          else

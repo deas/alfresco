@@ -70,6 +70,11 @@ define(["alfresco/forms/controls/BaseFormControl",
             var widgetsForPickedItemsView = lang.clone(this.widgetsForPickedItemsView);
             this.processObject(["processInstanceTokens"], widgetsForPickedItemsView);
 
+            if (this.reorderable === false || this.singleItemMode === true)
+            {
+               widgetsForPickedItemsView[0].config.widgets.shift();
+            }
+
             widgetsForControl = [
                {
                   name: "alfresco/pickers/Picker",
@@ -87,6 +92,7 @@ define(["alfresco/forms/controls/BaseFormControl",
                               loadDataPublishTopic: this.loadDataPublishTopic,
                               loadDataPublishPayload: this.loadDataPublishPayload,
                               publishPickedItemsToParent: false,
+                              noDataMessage: this.noItemsMessage != null ? this.noItemsMessage : "alflist.no.data.message",
                               widgets: widgetsForAvailableItemsView
                            }
                         }
@@ -174,9 +180,9 @@ define(["alfresco/forms/controls/BaseFormControl",
        *
        * @instance
        * @type {string}
-       * @default "nodeRef"
+       * @default "name"
        */
-      itemKey: "nodeRef",
+      itemKey: "name",
 
       /**
        * This is the dot-notation attribute within each available item to be used as a label. It is assigned as the value of
@@ -230,6 +236,15 @@ define(["alfresco/forms/controls/BaseFormControl",
       currentData: null,
 
       /**
+       * Indicates whether or not to show the re-ordering controls in the list of picked items.
+       *
+       * @instance
+       * @type {boolean}
+       * @default false
+       */
+      reorderable: false,
+
+      /**
        * This is the model to use for rendering the items that are available for selection.
        *
        * @instance
@@ -239,7 +254,6 @@ define(["alfresco/forms/controls/BaseFormControl",
          {
             name: "alfresco/documentlibrary/views/AlfDocumentListView",
             config: {
-               noItemsMessage: "{noItemsMessage}",
                widgets: [
                   {
                      name: "alfresco/documentlibrary/views/layouts/Row",

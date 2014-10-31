@@ -97,18 +97,69 @@ define(["dojo/_base/declare",
       },
 
       /**
-       * Sets some relevant messages to display
+       * This is the message to display when no view is selected. Message keys will be localized
+       * where possible.
        *
        * @instance
+       * @type {string}
+       * @default
        */
-      setDisplayMessages: function alfresco_pickers_PropertyPicker__setDisplayMessages() {
-         this.noViewSelectedMessage = this.message("propPicker.no.view.message");
-         this.noDataMessage = this.message("propPicker.no.data.message");
-         this.fetchingDataMessage = this.message("propPicker.loading.data.message");
-         this.renderingViewMessage = this.message("propPicker.rendering.data.message");
-         this.fetchingMoreDataMessage = this.message("propPicker.loading.data.message");
-         this.dataFailureMessage = this.message("propPicker.data.failure.message");
-      },
+      noViewSelectedMessage: "propPicker.no.view.message",
+
+      /**
+       * This is the message to display when no view is selected. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+
+      noDataMessage: "propPicker.no.data.message",
+
+      /**
+       * This is the message to display when no data is available. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+
+      fetchingDataMessage: "propPicker.loading.data.message",
+
+      /**
+       * This is the message to display whilst data is being loaded. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+
+      renderingViewMessage: "propPicker.rendering.data.message",
+
+      /**
+       * This is the message to display when an error occurs rendering data. Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+
+      fetchingMoreDataMessage: "propPicker.loading.data.message",
+
+      /**
+       * This is the message to display when data cannot be loaded Message keys will be localized
+       * where possible.
+       *
+       * @instance
+       * @type {string}
+       * @default
+       */
+
+      dataFailureMessage: "propPicker.data.failure.message",
 
       /**
        * Overrides the [inherited function]{@link module:alfresco/lists/AlfList#postCreate} to update the publishToParent

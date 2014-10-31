@@ -161,6 +161,9 @@ define(["dojo/_base/declare",
                   if (this.singleItemMode)
                   {
                      this.alfLog("info", "Removing all other selected items", payload, this);
+                     array.forEach(this.currentData.items, function(item, index) {
+                        this.alfPublish("ALF_ITEM_REMOVED", item);
+                     }, this);
                      this.setPickedItems([payload]);
                      this.renderView(false);
                   }
