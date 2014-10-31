@@ -266,7 +266,7 @@ public class CalendarPageTest extends AbstractSiteDashletTest
 
         // Create any event
         int anotherDate;
-        if (lastDate == todayDate)
+        if (lastDate <= todayDate+3)
         {
             anotherDate = todayDate - 1;
             calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.MONTH_TAB, event_month, event_month, event_month, String.valueOf(currentYear),
