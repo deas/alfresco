@@ -4610,6 +4610,10 @@ public class FTPSrvSession extends SrvSession implements Runnable {
         // Get the SSL engine status
         
         SSLEngineResult sslRes = m_sslEngine.unwrap( m_sslIn, m_sslOut);
+        while(m_sslIn.position() < len)
+        {
+            sslRes = m_sslEngine.unwrap( m_sslIn, m_sslOut);
+        }
         
         // DEBUG
         
