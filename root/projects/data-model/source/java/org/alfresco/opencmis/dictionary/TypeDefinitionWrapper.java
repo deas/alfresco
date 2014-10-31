@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinition;
 import org.apache.chemistry.opencmis.commons.enums.Action;
@@ -55,6 +54,4 @@ public interface TypeDefinitionWrapper
     PropertyDefinitionWrapper getPropertyByQName(QName name);
 
     Map<Action, CMISActionEvaluator> getActionEvaluators();
-
-    void updateDefinition(DictionaryService dictionaryService);
 }

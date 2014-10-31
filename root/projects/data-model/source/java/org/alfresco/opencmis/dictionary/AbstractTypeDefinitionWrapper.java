@@ -28,8 +28,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.mapping.CMISMapping;
@@ -83,8 +81,7 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 //    protected List<TypeDefinitionWrapper> children;
 
     private String tenantId;
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
-    
+
     @Override
     public String getTenantId()
     {
@@ -103,21 +100,12 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
 
     public TypeDefinition getTypeDefinition(boolean includePropertyDefinitions)
     {
-        lock.readLock().lock();
-        try
+        if (includePropertyDefinitions)
         {
-            if (includePropertyDefinitions)
-            {
-                return typeDefInclProperties;
-            }
-            else
-            {
-                return typeDef;
-            }
-        }
-        finally
+            return typeDefInclProperties;
+        } else
         {
-            lock.readLock().unlock();
+            return typeDef;
         }
     }
 
@@ -199,75 +187,6 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         return propertiesByQName.get(name);
     }
 
-    @Override
-    public void updateDefinition(DictionaryService dictionaryService)
-    {
-        String name = null;
-        String description = null;
-        ClassDefinition definition = dictionaryService.getClass(alfrescoName);
-
-        if (definition != null)
-        {
-            name = definition.getTitle(dictionaryService);
-            description = definition.getDescription(dictionaryService);
-        }
-        setTypeDefDisplayName(name);
-        setTypeDefDescription(description);
-    }
-
-    public void updateProperties(DictionaryService dictionaryService)
-    {
-        for (PropertyDefinitionWrapper propertyDefWrap : propertiesById.values())
-        {
-            updateProperty(dictionaryService, propertyDefWrap);
-        }
-    }
-    
-    public void updateProperty(DictionaryService dictionaryService, PropertyDefinitionWrapper propertyDefWrap)
-    {
-        AbstractPropertyDefinition<?> property = (AbstractPropertyDefinition<?>) propertyDefWrap.getPropertyDefinition();
-        if (property != null && property.getDisplayName() == null)
-        {
-            org.alfresco.service.cmr.dictionary.PropertyDefinition propDef = dictionaryService
-                    .getProperty(QName.createQName(property.getLocalNamespace(), property.getLocalName()));
-            if (propDef != null)
-            {
-                String displayName = propDef.getTitle(dictionaryService);
-                String description = propDef.getDescription(dictionaryService);
-                property.setDisplayName(displayName == null ? property.getId() : displayName);
-                property.setDescription(description == null ? property.getDisplayName() : description);
-            }
-        }
-    }
-
-    public void setTypeDefDisplayName(String name)
-    {
-        lock.writeLock().lock();
-        try
-        {
-            typeDef.setDisplayName(name != null ? name : typeDef.getId());
-            typeDefInclProperties.setDisplayName(name != null ? name : typeDef.getId());
-        }
-        finally
-        {
-            lock.writeLock().unlock();
-        }
-    }
-
-    public void setTypeDefDescription(String desc)
-    {
-        lock.writeLock().lock();
-        try
-        {
-            typeDef.setDescription(desc != null ? desc : typeDef.getId());
-            typeDefInclProperties.setDescription(desc != null ? desc : typeDef.getId());
-        }
-        finally
-        {
-            lock.writeLock().unlock();
-        }
-    }
-    
     // create
 
     public abstract List<TypeDefinitionWrapper> connectParentAndSubTypes(CMISMapping cmisMapping, CMISDictionaryRegistry registry,
@@ -443,8 +362,8 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
         result.setId(id);
         result.setLocalName(alfrescoPropName.getLocalName());
         result.setLocalNamespace(alfrescoPropName.getNamespaceURI());
-        result.setDisplayName(null);
-        result.setDescription(null);
+        result.setDisplayName(id);
+        result.setDescription(result.getDisplayName());
         result.setPropertyType(datatype);
         result.setCardinality(propDef.isMultiValued() ? Cardinality.MULTI : Cardinality.SINGLE);
         result.setIsInherited(inherited);
