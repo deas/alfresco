@@ -987,13 +987,15 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
             changeSetsToDo = 0;
         }
 
+        long nodesToDo = 0;
         long remainingTxTimeMillis = 0;
         if (transactionsToDo > 0)
         {
+            // We now use the elapsed time as seen by the single thread farming out metadata indexing
             double meanDocsPerTx = srv.getTrackerStats().getMeanDocsPerTx();
-            double meanNodeIndexTime = srv.getTrackerStats().getMeanNodeIndexTime();
-            remainingTxTimeMillis = (long) (transactionsToDo * meanDocsPerTx * meanNodeIndexTime
-                    / srv.getTrackerStats().getNodeIndexingThreadCount());
+            double meanNodeElaspedIndexTime = srv.getTrackerStats().getMeanNodeElapsedIndexTime();
+            nodesToDo = (long)(transactionsToDo * meanDocsPerTx);
+            remainingTxTimeMillis = (long) (nodesToDo * meanNodeElaspedIndexTime);
         }
         Date now = new Date();
         Date end = new Date(now.getTime() + remainingTxTimeMillis);
@@ -1002,14 +1004,33 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         long remainingChangeSetTimeMillis = 0;
         if (changeSetsToDo > 0)
         {
+         // We now use the elapsed time as seen by the single thread farming out alc indexing
             double meanAclsPerChangeSet = srv.getTrackerStats().getMeanAclsPerChangeSet();
-            double meanAclIndexTime = srv.getTrackerStats().getMeanAclIndexTime();
-            remainingChangeSetTimeMillis = (long) (changeSetsToDo * meanAclsPerChangeSet * meanAclIndexTime
-                    / srv.getTrackerStats().getNodeIndexingThreadCount());
+            double meanAclElapsedIndexTime = srv.getTrackerStats().getMeanAclElapsedIndexTime();
+            remainingChangeSetTimeMillis = (long) (changeSetsToDo * meanAclsPerChangeSet * meanAclElapsedIndexTime);
         }
         now = new Date();
         end = new Date(now.getTime() + remainingChangeSetTimeMillis);
         Duration remainingChangeSet = new Duration(now, end);
+        
+        NamedList<Object> ftsSummary = new SimpleOrderedMap<Object>();
+        long remainingContentTimeMillis = 0;
+        srv.addFTSStatusCounts(ftsSummary);
+        long cleanCount = ((Long)ftsSummary.get("Node count with FTSStatus Clean")).longValue();
+        long dirtyCount = ((Long)ftsSummary.get("Node count with FTSStatus Dirty")).longValue();
+        long newCount = ((Long)ftsSummary.get("Node count with FTSStatus New")).longValue();
+        long nodesInIndex = ((Long)coreSummary.get("Alfresco Nodes in Index"));
+        long contentYetToSee = nodesInIndex > 0 ? nodesToDo * (cleanCount + dirtyCount + newCount)/nodesInIndex  : 0;;
+        if (dirtyCount + newCount + contentYetToSee > 0)
+        {
+            // We now use the elapsed time as seen by the single thread farming out alc indexing
+            double meanContentElapsedIndexTime = srv.getTrackerStats().getMeanContentElapsedIndexTime();
+            remainingContentTimeMillis = (long) ((dirtyCount + newCount + contentYetToSee) * meanContentElapsedIndexTime);
+        }
+        now = new Date();
+        end = new Date(now.getTime() + remainingContentTimeMillis);
+        Duration remainingContent = new Duration(now, end);
+        coreSummary.add("FTS",ftsSummary);
 
         Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
         if (lastIndexTxCommitDate.compareTo(lastTxOnServerDate) > 0)
@@ -1073,6 +1094,9 @@ public class AlfrescoCoreAdminHandler extends CoreAdminHandler
         coreSummary.add("Approx change sets remaining", changeSetsToDo);
         coreSummary.add("Approx change set indexing time remaining",
                     remainingChangeSet.largestComponentformattedString());
+        
+        coreSummary.add("Approx content indexing time remaining",
+                remainingContent.largestComponentformattedString());
 
         // Stats
 

@@ -57,6 +57,8 @@ public class ContentTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack() throws Exception
     {
+        long startElapsed = System.nanoTime();
+        
         checkShutdown();
         int registeredSearcherCount = this.infoSrv.getRegisteredSearcherCount();
         if(registeredSearcherCount >= getMaxLiveSearchers())
@@ -87,6 +89,9 @@ public class ContentTracker extends AbstractTracker implements Tracker
                         super.waitForAsynchronous();
                         checkShutdown();
                         this.infoSrv.commit();
+                        long endElapsed = System.nanoTime();
+                        trackerStats.addElapsedContentTime(docsUpdatedSinceLastCommit, endElapsed-startElapsed);
+                        startElapsed = endElapsed;
                         docsUpdatedSinceLastCommit = 0;
                     }
                 }
@@ -97,6 +102,8 @@ public class ContentTracker extends AbstractTracker implements Tracker
                 super.waitForAsynchronous();
                 checkShutdown();
                 this.infoSrv.commit();
+                long endElapsed = System.nanoTime();
+                trackerStats.addElapsedContentTime(docsUpdatedSinceLastCommit, endElapsed-startElapsed);
             }
             totalDocs += docs.size();
             start += ROWS;

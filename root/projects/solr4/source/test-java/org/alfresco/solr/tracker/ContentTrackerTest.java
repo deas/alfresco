@@ -47,6 +47,8 @@ public class ContentTrackerTest
     private SolrInformationServer srv;
     @Spy
     private Properties props;
+    @Mock
+    private TrackerStats trackerStats;
 
     private int UPDATE_BATCH = 2;
     private int READ_BATCH = 400;
@@ -57,7 +59,9 @@ public class ContentTrackerTest
         doReturn("workspace://SpacesStore").when(props).getProperty(eq("alfresco.stores"), anyString());
         doReturn("" + UPDATE_BATCH).when(props).getProperty(eq("alfresco.contentUpdateBatchSize"), anyString());
         doReturn("" + READ_BATCH).when(props).getProperty(eq("alfresco.contentReadBatchSize"), anyString());
+        when(srv.getTrackerStats()).thenReturn(trackerStats);
         this.contentTracker = new ContentTracker(props, repositoryClient, coreName, srv);
+       
     }
 
     @Test

@@ -637,6 +637,8 @@ public class AclTracker extends AbstractTracker
      */
     protected void trackAclChangeSets() throws AuthenticationException, IOException, JSONException
     {
+        long startElapsed = System.nanoTime();
+        
         boolean indexed = false;
         boolean upToDate = false;
         AclChangeSets aclChangeSets;
@@ -644,11 +646,10 @@ public class AclTracker extends AbstractTracker
         HashSet<AclChangeSet> changeSetsIndexed = new LinkedHashSet<AclChangeSet>();
         TrackerState state = super.getTrackerState();
         long totalAclCount = 0;
+        int aclCount = 0;
         
         do
         {
-            int aclCount = 0;
-
             Long fromCommitTime = getChangeSetFromCommitTime(changeSetsFound, state.getLastGoodChangeSetCommitTimeInIndex());
             aclChangeSets = getSomeAclChangeSets(changeSetsFound, fromCommitTime, TIME_STEP_1_HR_IN_MS, 2000, 
                         state.getTimeToStopIndexing());
@@ -702,6 +703,9 @@ public class AclTracker extends AbstractTracker
                     if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         indexAclChangeSetAfterAsynchronous(changeSetsIndexed, state);
+                        long endElapsed = System.nanoTime();
+                        trackerStats.addElapsedAclTime(aclCount, endElapsed-startElapsed);
+                        startElapsed = endElapsed;
                         aclCount = 0;
                     }
                 }
@@ -731,6 +735,9 @@ public class AclTracker extends AbstractTracker
         if (indexed)
         {
             indexAclChangeSetAfterAsynchronous(changeSetsIndexed, state);
+            long endElapsed = System.nanoTime();
+            trackerStats.addElapsedAclTime(aclCount, endElapsed-startElapsed);
+            startElapsed = endElapsed;
         }
     }
 

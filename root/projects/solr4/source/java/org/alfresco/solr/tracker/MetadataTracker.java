@@ -217,6 +217,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
     
     private void indexTransactions() throws IOException, AuthenticationException, JSONException
     {
+        long startElapsed = System.nanoTime();
+        
         int docCount = 0;
         boolean requiresCommit = false;
         while (transactionsToIndex.peek() != null)
@@ -261,6 +263,9 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 {
                     checkShutdown();
                     this.infoSrv.commit();
+                    long endElapsed = System.nanoTime();
+                    trackerStats.addElapsedNodeTime(docCount, endElapsed-startElapsed);
+                    startElapsed = endElapsed;
                     docCount = 0;
                     requiresCommit = false;
                 }
@@ -270,6 +275,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         {
             checkShutdown();
             this.infoSrv.commit();
+            long endElapsed = System.nanoTime();
+            trackerStats.addElapsedNodeTime(docCount, endElapsed-startElapsed);
         }
     }
 
@@ -301,6 +308,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 
     private void reindexTransactions() throws IOException, AuthenticationException, JSONException
     {
+        long startElapsed = System.nanoTime();
         int docCount = 0;
         boolean requiresCommit = false;
         while (transactionsToReindex.peek() != null)
@@ -346,6 +354,9 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 {
                     checkShutdown();
                     this.infoSrv.commit();
+                    long endElapsed = System.nanoTime();
+                    trackerStats.addElapsedNodeTime(docCount, endElapsed-startElapsed);
+                    startElapsed = endElapsed;
                     docCount = 0;
                     requiresCommit = false;
                 }
@@ -355,6 +366,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         {
             checkShutdown();
             this.infoSrv.commit();
+            long endElapsed = System.nanoTime();
+            trackerStats.addElapsedNodeTime(docCount, endElapsed-startElapsed);
         }
     }
 
@@ -490,6 +503,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
 
     protected void trackTransactions() throws AuthenticationException, IOException, JSONException
     {
+        long startElapsed = System.nanoTime();
+        
         boolean indexed = false;
         boolean upToDate = false;
         Transactions transactions;
@@ -497,10 +512,11 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         HashSet<Transaction> txsIndexed = new LinkedHashSet<>(); 
         TrackerState state = this.getTrackerState();
         long totalUpdatedDocs = 0;
+        int docCount = 0;
         
         do
         {
-            int docCount = 0;
+           
 
             Long fromCommitTime = getTxFromCommitTime(txnsFound, state.getLastGoodTxCommitTimeInIndex());
             transactions = getSomeTransactions(txnsFound, fromCommitTime, TIME_STEP_1_HR_IN_MS, 2000,
@@ -559,6 +575,9 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                     if (super.infoSrv.getRegisteredSearcherCount() < getMaxLiveSearchers())
                     {
                         indexTransactionsAfterAsynchronous(txsIndexed, state);
+                        long endElapsed = System.nanoTime();
+                        trackerStats.addElapsedNodeTime(docCount, endElapsed-startElapsed);
+                        startElapsed = endElapsed;
                         docCount = 0;
                     }
                 }
@@ -590,6 +609,8 @@ public class MetadataTracker extends AbstractTracker implements Tracker
         if (indexed)
         {
             indexTransactionsAfterAsynchronous(txsIndexed, state);
+            long endElapsed = System.nanoTime();
+            trackerStats.addElapsedNodeTime(docCount, endElapsed-startElapsed);
         }
     }
 
