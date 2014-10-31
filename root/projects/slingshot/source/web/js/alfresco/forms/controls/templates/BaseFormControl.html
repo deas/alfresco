@@ -1,5 +1,5 @@
 <div class="alfresco-forms-controls-BaseFormControl wipe" data-dojo-attach-point="containerNode">
-   <div class="title-row">
+   <div data-dojo-attach-point="_titleRowNode" class="title-row">
       <label class="label" data-dojo-attach-point="_labelNode"></label>
       <span class="requirementIndicator" data-dojo-attach-point="_requirementIndicator">*</span>
       <img class="validationInProgress hidden" src="${validationInProgressImgSrc}" alt="${validationInProgressAltText}" title="${validationInProgressAltText}"data-dojo-attach-point="_validationInProgressIndicator">&nbsp;</img>
@@ -10,7 +10,7 @@
       <div class="control" data-dojo-attach-point="_controlNode"></div>
       <span class="units" data-dojo-attach-point="_unitsNode"></span>
    </div>
-   <div class="description-row">
+   <div data-dojo-attach-point="_descriptionRowNode" class="description-row">
       <div class="description" data-dojo-attach-point="_descriptionNode"></div>
    </div>
    <div class="clear-both">&nbsp;</div>

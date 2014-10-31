@@ -1221,7 +1221,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            domStyle.set(this._labelNode, {display: "none"});
+            domStyle.set(this._titleRowNode, {display: "none"});
          }
 
          // Set the description...
@@ -1231,7 +1231,7 @@ define(["dojo/_base/declare",
          }
          else
          {
-            domStyle.set(this._descriptionNode, {display: "none"});
+            domStyle.set(this._descriptionRowNode, {display: "none"});
          }
          
          // Set the units label...
