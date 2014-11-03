@@ -1686,7 +1686,7 @@ public class SolrInformationServer implements InformationServer
                 // Fetches bulk metadata
                 List<NodeMetaData> nodeMetaDatas =  repositoryClient.getNodesMetaData(nmdp, Integer.MAX_VALUE);
 
-                for (NodeMetaData nodeMetaData : nodeMetaDatas)
+                NEXT_NODE: for (NodeMetaData nodeMetaData : nodeMetaDatas)
                 {
                     long start = System.nanoTime();
                 
@@ -1727,6 +1727,7 @@ public class SolrInformationServer implements InformationServer
 
                             long end = System.nanoTime();
                             this.trackerStats.addNodeTime(end - start);
+                            continue NEXT_NODE;
                         }
                     }
                     
@@ -1777,11 +1778,10 @@ public class SolrInformationServer implements InformationServer
         }
         Map<QName, PropertyValue> properties = nodeMetaData.getProperties();
         addPropertiesToDoc(properties, isContentIndexedForNode, newDoc, cachedDoc, transformContent);
-        if (isContentIndexedForNode)
-        {
-            // Now that the new doc is fully updated and ready to go to the Solr index, cache it.
-            storeDocOnSolrContentStore(fixedTenantDomain, nodeMetaData.getId(), newDoc);
-        }
+        
+        // Now that the new doc is fully updated and ready to go to the Solr index, cache it.
+        storeDocOnSolrContentStore(fixedTenantDomain, nodeMetaData.getId(), newDoc);
+        
     }
 
     private void addFieldsToDoc(NodeMetaData nodeMetaData, SolrInputDocument doc)
