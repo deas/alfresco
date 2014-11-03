@@ -166,12 +166,23 @@ define(["dojo/_base/declare",
             }, this.titleNode);
          }
 
-         new MoreInfo({
+         var moreInfoConfig = {
             currentItem: this.currentItem,
             pubSubScope: this.pubSubScope,
             xhrRequired: true,
+            filterActions: true,
             darkIcon: true
-         }, this.moreInfoNode);
+         };
+         if (this.currentItem.type === "document" || this.currentItem.type === "folder")
+         {
+            // Leave default actions...
+         }
+         else
+         {
+            // Replace with just the delete action...
+            moreInfoConfig.allowedActionsString = "[\"document-delete\"]";
+         }
+         new MoreInfo(moreInfoConfig, this.moreInfoNode);
 
          new DateLink({
             renderedValueClass: "alfresco-renderers-Property pointer",

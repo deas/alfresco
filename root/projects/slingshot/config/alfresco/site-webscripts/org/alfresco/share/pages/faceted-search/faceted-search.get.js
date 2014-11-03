@@ -503,35 +503,43 @@ var searchDocLib = {
                               align: "right",
                               config: {
                                  filterActions: true,
-                                 allowedActions: [
-                                    "document-download",
-                                    "document-view-content",
-                                    "document-view-details",
-                                    "folder-view-details",
-                                    "document-edit-metadata",
-                                    "document-inline-edit",
-                                    "document-manage-granular-permissions",
-                                    "document-manage-repo-permissions",
-                                    "document-view-original",
-                                    "document-view-working-copy",
-                                    "folder-manage-rules",
-                                    "document-view-googlemaps",
-                                    "document-view-in-source-repository",
-                                    "document-view-in-cloud",
-                                    "document-delete",
-                                    "document-edit-offline",
-                                    "folder-download",
-                                    "document-copy-to",
-                                    "document-move-to",
-                                    "document-locate",
-                                    "document-assign-workflow",
-                                    "document-cancel-editing"
-                                 ],
+                                 xhrRequired: true,
+                                 
+                              }
+                           }
+                        ],
+                        publishTopic: "ALF_NAVIGATE_TO_PAGE",
+                        renderFilter: [
+                           {
+                              property: "type",
+                              values: ["document","folder"],
+                              negate: false
+                           }
+                        ]
+                     }
+                  },
+                  {
+                     name: "alfresco/search/SearchGalleryThumbnail",
+                     config: {
+                        widgetsForSelectBar: [
+                           {
+                              name: "alfresco/renderers/MoreInfo",
+                              align: "right",
+                              config: {
+                                 filterActions: true,
+                                 allowedActionsString: "[\"document-delete\"]",
                                  xhrRequired: true
                               }
                            }
                         ],
-                        publishTopic: "ALF_NAVIGATE_TO_PAGE"
+                        publishTopic: "ALF_NAVIGATE_TO_PAGE",
+                        renderFilter: [
+                           {
+                              property: "type",
+                              values: ["document","folder"],
+                              negate: true
+                           }
+                        ]
                      }
                   }
                ]

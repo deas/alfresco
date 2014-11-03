@@ -65,6 +65,40 @@ define(["dojo/_base/declare",
       allowedActions: null,
 
       /**
+       * A stringified array containing a list of allowed actions. This has been added to support token replacement
+       * within JSON models. It will override any [allowedActions]{@link module:alfresco/renderers/_ActionsMixin#allowedActions}
+       * configuration.
+       *
+       * @instance
+       * @type {array}
+       * @default null
+       */
+      allowedActionsString: null,
+
+      /**
+       * Handles parsing of [allowedActionsString]{@link module:alfresco/renderers/_ActionsMixin#allowedActionsString} if configured
+       * to override [allowedActions]{@link module:alfresco/renderers/_ActionsMixin#allowedActions}.
+       * 
+       * @instance
+       */
+      postCreate: function alfresco_renderers__ActionsMixin__postCreate() {
+         this.inherited(arguments);
+         if (this.allowedActionsString != null)
+         {
+            try
+            {
+               this.allowedActions = JSON.parse(this.allowedActionsString);
+            }
+            catch(e)
+            {
+               // Ignore bad configuration
+               this.alfLog("warn", "A non-parsable 'allowedActionsString' was configured", this, this.allowedActionsString);
+            }
+         }
+      },
+
+
+      /**
        * Add the actions provided by the current item.
        *
        * @instance

@@ -32,6 +32,7 @@ define(["dojo/_base/declare",
         "dijit/_TemplatedMixin",
         "dijit/_OnDijitClickMixin",
         "alfresco/renderers/_XhrActionsMixin",
+        "alfresco/core/ObjectProcessingMixin",
         "alfresco/core/ObjectTypeUtils",
         "dojo/text!./templates/MoreInfo.html",
         "alfresco/core/Core",
@@ -39,9 +40,9 @@ define(["dojo/_base/declare",
         "dojo/_base/lang",
         "dojo/dom-class",
         "dojo/_base/event"],
-        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, ObjectTypeUtils, template, AlfCore, Popup, lang, domClass, event) {
+        function(declare, _WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, ObjectProcessingMixin, ObjectTypeUtils, template, AlfCore, Popup, lang, domClass, event) {
 
-   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, AlfCore], {
+   return declare([_WidgetBase, _TemplatedMixin, _OnDijitClickMixin, _XhrActionsMixin, ObjectProcessingMixin, AlfCore], {
 
       /**
        * An array of the CSS files to use with this widget.
@@ -201,10 +202,12 @@ define(["dojo/_base/declare",
             title = lang.getObject("displayName", false, this.currentItem);
          }
 
+         var widgetsContent = lang.clone(this.widgets);
+         this.processObject(["processInstanceTokens"], widgetsContent);
          this.moreInfoDialog = new Popup({
             title: title,
             currentItem: this.currentItem,
-            widgetsContent: lang.clone(this.widgets)
+            widgetsContent: widgetsContent
          });
          this.moreInfoDialog.show();
       },
@@ -229,6 +232,38 @@ define(["dojo/_base/declare",
       addXhrItems: function alfresco_renderers_MoreInfo__addXhrItems() {
          this.createMoreInfoDialog();
       },
+
+      /**
+       * The default set of allowed actions defined as a stringified array. This will be token switched into the
+       * [Actions]{@link module:alfresco/renderers/Actions} widget. The reality is that unless an alternative value
+       * is specified this will always be the action white-list for the [Actions]{@link module:alfresco/renderers/Actions}
+       * when viewed in the More Info dialog.
+       *
+       * @instance
+       */
+      allowedActionsString: "["+
+         "\"document-download\","+
+         "\"document-view-content\","+
+         "\"document-view-details\","+
+         "\"folder-view-details\","+
+         "\"document-edit-metadata\","+
+         "\"document-inline-edit\","+
+         "\"document-manage-granular-permissions\","+
+         "\"document-manage-repo-permissions\","+
+         "\"document-view-original\","+
+         "\"document-view-working-copy\","+
+         "\"folder-manage-rules\","+
+         "\"document-view-googlemaps\","+
+         "\"document-view-in-source-repository\","+
+         "\"document-view-in-cloud\","+
+         "\"document-delete\","+
+         "\"document-edit-offline\","+
+         "\"folder-download\","+
+         "\"document-copy-to\","+
+         "\"document-move-to\","+
+         "\"document-locate\","+
+         "\"document-assign-workflow\","+
+         "\"document-cancel-editing\"]",
 
       /**
        * The default JSON model for the widgets to add to the dialog.
@@ -266,53 +301,7 @@ define(["dojo/_base/declare",
                                        name: "alfresco/renderers/Actions",
                                        config: {
                                           filterActions: true,
-                                          allowedActions: [
-                                             "document-delete"
-                                          ],
-                                          renderFilter: [
-                                             {
-                                                property: "node.type",
-                                                values: ["cm:folder","cm:content"],
-                                                negate: true
-                                             }
-                                          ]
-                                       }
-                                    },
-                                    {
-                                       name: "alfresco/renderers/Actions",
-                                       config: {
-                                          filterActions: true,
-                                          allowedActions: [
-                                             "document-download",
-                                             "document-view-content",
-                                             "document-view-details",
-                                             "folder-view-details",
-                                             "document-edit-metadata",
-                                             "document-inline-edit",
-                                             "document-manage-granular-permissions",
-                                             "document-manage-repo-permissions",
-                                             "document-view-original",
-                                             "document-view-working-copy",
-                                             "folder-manage-rules",
-                                             "document-view-googlemaps",
-                                             "document-view-in-source-repository",
-                                             "document-view-in-cloud",
-                                             "document-delete",
-                                             "document-edit-offline",
-                                             "folder-download",
-                                             "document-copy-to",
-                                             "document-move-to",
-                                             "document-locate",
-                                             "document-assign-workflow",
-                                             "document-cancel-editing"
-                                          ],
-                                          renderFilter: [
-                                             {
-                                                property: "node.type",
-                                                values: ["cm:folder","cm:content"],
-                                                negate: false
-                                             }
-                                          ]
+                                          allowedActionsString: "{allowedActionsString}"
                                        }
                                     }
                                  ]
