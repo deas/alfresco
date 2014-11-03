@@ -28,7 +28,7 @@ public class FacetedSearchView
     private static final By DETAILED_VIEW_RESULTS = By.cssSelector("tbody[id=FCTSRCH_SEARCH_ADVICE_NO_RESULTS_ITEMS] td.thumbnailCell");
     private static final By GALLERY_VIEW_RESULTS = By.cssSelector("div[class='displayName']");
     private static final String DISPLAY_NAMES = ".displayName";
-    private static final By GALLERY_VIEW_ICON = By.cssSelector("div[class='selectBar share-hidden']>div>div>div>div>div");
+    private static final By GALLERY_VIEW_ICON = By.cssSelector(".alfresco-renderers-MoreInfo");
     private static Log logger = LogFactory.getLog(FacetedSearchView.class);
     
     private WebDrone drone;

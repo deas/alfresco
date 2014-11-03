@@ -277,7 +277,8 @@ public class FacetedSearchResultsPageTest extends AbstractTest
     	SearchBox search = dashBoard.getSearch();
         FacetedSearchPage facetedSearchPage = search.search("ipsum").render();
         Assert.assertNotNull(facetedSearchPage); 
-        Assert.assertTrue(facetedSearchPage.getView().isDetailedViewResultsDisplayed(),"Detailed view option is matching");        
+        facetedSearchPage.getView().selectViewByLabel("Detailed View");
+        Assert.assertTrue(facetedSearchPage.getView().isDetailedViewResultsDisplayed(),"Detailed view option is matching");
         facetedSearchPage.getView().selectViewByLabel("Gallery View");
         Assert.assertNotNull(facetedSearchPage);
         Assert.assertTrue(facetedSearchPage.getView().isGalleryViewResultsDisplayed(),"Gallery view option is matching");

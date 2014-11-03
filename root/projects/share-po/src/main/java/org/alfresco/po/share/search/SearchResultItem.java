@@ -41,6 +41,7 @@ public class SearchResultItem implements SearchResult
 {
     private WebDrone drone;    
     private static final String ITEM_NAME_CSS_HOLDER = "div.nameAndTitleCell span.alfresco-renderers-Property:first-of-type span.inner a";
+    private static final String TITLE = "span.value";
     private static final String DOWNLOAD_LINK = "div>a>img[title='Download']";
     private static final String THUMBNAIL_LINK = "div.thumbnail-cell";    
     private static final String THUMBNAIL_IMG = " span a img";
@@ -79,7 +80,7 @@ public class SearchResultItem implements SearchResult
         {
             try
             {
-                title = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER)).getText();
+                title = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER+TITLE)).getText();
             }
             catch (NoSuchElementException e)
             {
