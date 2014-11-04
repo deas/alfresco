@@ -483,7 +483,7 @@ public class CMISDictionaryRegistryImpl implements CMISDictionaryRegistry
      */
     public void registerPropertyDefinitions(AbstractTypeDefinitionWrapper typeDef)
     {
-        for (PropertyDefinitionWrapper propDef : typeDef.getProperties())
+        for (PropertyDefinitionWrapper propDef : typeDef.getProperties(false))
         {
             if (propDef.getPropertyDefinition().isInherited())
             {

@@ -26,6 +26,7 @@ import java.util.List;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.opencmis.CMISUtils;
 import org.alfresco.opencmis.mapping.CMISMapping;
+import org.alfresco.service.cmr.dictionary.AspectDefinition;
 import org.alfresco.service.cmr.dictionary.ClassDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.namespace.QName;
@@ -44,10 +45,12 @@ public class SecondaryTypeDefinitionWrapper extends AbstractTypeDefinitionWrappe
 
     private SecondaryTypeDefinitionImpl typeDef;
     private SecondaryTypeDefinitionImpl typeDefInclProperties;
+    private DictionaryService dictionaryService;
 
     public SecondaryTypeDefinitionWrapper(CMISMapping cmisMapping, PropertyAccessorMapping propertyAccessorMapping, 
             PropertyLuceneBuilderMapping luceneBuilderMapping, String typeId, DictionaryService dictionaryService, ClassDefinition cmisClassDef)
     {
+        this.dictionaryService = dictionaryService;
         alfrescoName = cmisClassDef.getName();
         alfrescoClass = cmisMapping.getAlfrescoClass(alfrescoName);
 
@@ -79,8 +82,8 @@ public class SecondaryTypeDefinitionWrapper extends AbstractTypeDefinitionWrappe
             }
         }
 
-        typeDef.setDisplayName(typeId);
-        typeDef.setDescription(typeDef.getDisplayName());
+        typeDef.setDisplayName(null);
+        typeDef.setDescription(null);
 
         typeDef.setIsCreatable(false);
         typeDef.setIsQueryable(true);
@@ -183,7 +186,7 @@ public class SecondaryTypeDefinitionWrapper extends AbstractTypeDefinitionWrappe
 
         if (parent != null)
         {
-            for (PropertyDefinitionWrapper propDef : parent.getProperties())
+            for (PropertyDefinitionWrapper propDef : parent.getProperties(false))
             {
                 if (propertiesById.containsKey(propDef.getPropertyId()))
                 {
@@ -212,6 +215,49 @@ public class SecondaryTypeDefinitionWrapper extends AbstractTypeDefinitionWrappe
                 ((AbstractTypeDefinitionWrapper) child).resolveInheritance(cmisMapping, registry,
                         dictionaryService);
             }
+        }
+    }
+    
+    @Override
+    public void updateDefinition(DictionaryService dictionaryService)
+    {
+        AspectDefinition aspectDef = dictionaryService.getAspect(alfrescoName);
+
+        if (aspectDef != null)
+        {
+            setTypeDefDisplayName(aspectDef.getTitle(dictionaryService));
+            setTypeDefDescription(aspectDef.getDescription(dictionaryService));
+        }
+        else
+        {
+            super.updateDefinition(dictionaryService);
+        }
+    }
+    
+    @Override
+    public PropertyDefinitionWrapper getPropertyById(String propertyId)
+    {
+        updateProperty(dictionaryService, propertiesById.get(propertyId));
+        return propertiesById.get(propertyId);
+    }
+
+    @Override
+    public Collection<PropertyDefinitionWrapper> getProperties()
+    {
+        updateProperties(dictionaryService);
+        return propertiesById.values();
+    }
+    
+    @Override
+    public Collection<PropertyDefinitionWrapper> getProperties(boolean update)
+    {
+        if (update)
+        {
+            return getProperties();
+        }
+        else
+        {
+            return propertiesById.values();
         }
     }
 }
