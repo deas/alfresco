@@ -644,8 +644,7 @@ public class MetadataTracker extends AbstractTracker implements Tracker
                 state.setLastIndexedTxCommitTime(tx.getCommitTimeMs());
                 state.setLastIndexedTxId(tx.getId());
             }
-            trackerStats.addTxDocs((int) tx.getDeletes());
-            trackerStats.addTxDocs((int) tx.getUpdates());
+            trackerStats.addTxDocs((int) (tx.getDeletes() + tx.getUpdates()));
         }
         txsIndexed.clear();
         super.infoSrv.commit();
