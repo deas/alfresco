@@ -135,7 +135,7 @@ public class AbstractCalendarContainer extends AbstractEventForm
                 else
                     buttonToClickXpath = PREVIOUS_MONTH_BUTTON;
 
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < Math.abs(count); i++)
                 {
                     WebElement buttonToClick = drone.findAndWait(By.xpath(buttonToClickXpath));
                     buttonToClick.click();
@@ -179,7 +179,7 @@ public class AbstractCalendarContainer extends AbstractEventForm
                 else
                     buttonToClickXpath = PREVIOUS_MONTH_BUTTON;
 
-                for (int i = 0; i < count * 12; i++)
+                for (int i = 0; i < Math.abs(count) * 12; i++)
                 {
                     WebElement buttonToClick = drone.findAndWait(By.xpath(buttonToClickXpath));
                     buttonToClick.click();
