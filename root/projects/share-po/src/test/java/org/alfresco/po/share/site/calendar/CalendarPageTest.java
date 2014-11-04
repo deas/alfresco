@@ -255,8 +255,10 @@ public class CalendarPageTest extends AbstractSiteDashletTest
 
         Calendar calendar = Calendar.getInstance();
         int currentMonth = calendar.get(Calendar.MONTH);
-        int nextMonth = currentMonth + 2;
         int currentYear = calendar.get(Calendar.YEAR);
+        calendar.add(Calendar.MONTH, 2);
+        int nextMonth = calendar.get(Calendar.MONTH);
+        int nextMonthsYear = calendar.get(Calendar.YEAR);
 
         String startMonth = monthValues.get(currentMonth);
         String endMonth = monthValues.get(nextMonth);
@@ -270,14 +272,14 @@ public class CalendarPageTest extends AbstractSiteDashletTest
         {
             anotherDate = todayDate - 1;
             calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.MONTH_TAB, event_month, event_month, event_month, String.valueOf(currentYear),
-                    String.valueOf(startMonth), String.valueOf(anotherDate), "7:00 AM", String.valueOf(currentYear), String.valueOf(endMonth),
+                    String.valueOf(startMonth), String.valueOf(anotherDate), "7:00 AM", String.valueOf(nextMonthsYear), String.valueOf(endMonth),
                     String.valueOf(todayDate), "9:00 AM", null, false);
         }
         else
         {
             anotherDate = todayDate + 3;
             calendarPage = calendarPage.createEvent(CalendarPage.ActionEventVia.MONTH_TAB, event_month, event_month, event_month, String.valueOf(currentYear),
-                    String.valueOf(startMonth), String.valueOf(todayDate), "7:00 AM", String.valueOf(currentYear), String.valueOf(endMonth),
+                    String.valueOf(startMonth), String.valueOf(todayDate), "7:00 AM", String.valueOf(nextMonthsYear), String.valueOf(endMonth),
                     String.valueOf(anotherDate), "9:00 AM", null, false);
         }
 
