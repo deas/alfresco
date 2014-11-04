@@ -2594,8 +2594,8 @@ public class Solr4QueryParser extends QueryParser implements QueryConstants
                     IndexedField indexedField = AlfrescoSolrDataModel.getInstance().getQueryableFields(propertyDef.getName(), null, FieldUse.ID);
                     for(FieldInstance instance : indexedField.getFields())
                     {
-                        String start = dateAndResolution1 == null ? null : (includeLower ? getDateStart(dateAndResolution1) : getDateEnd(dateAndResolution1) );
-                        String end = dateAndResolution2 == null ? null : (includeUpper ? getDateEnd(dateAndResolution2) : getDateStart(dateAndResolution2) );
+                        String start = dateAndResolution1 == null ? part1 : (includeLower ? getDateStart(dateAndResolution1) : getDateEnd(dateAndResolution1) );
+                        String end = dateAndResolution2 == null ? part2 : (includeUpper ? getDateEnd(dateAndResolution2) : getDateStart(dateAndResolution2) );
 
                         SchemaField sf = schema.getField(instance.getField());
                         
