@@ -234,7 +234,14 @@ public class JSPProcessor extends AbstractProcessor implements ServletContextAwa
         // if we're dispatching a template, we'll do a forward
         if (object != null && object instanceof TemplateInstance)
         {
-            dispatcher.forward(request, response);
+            if (!response.isCommitted())
+            {
+                dispatcher.forward(request, response);
+            }
+            else
+            {
+                logger.warn("Unable to forward to '" + jspPath + "' as response already committed.");
+            }
         }
         else
         {
