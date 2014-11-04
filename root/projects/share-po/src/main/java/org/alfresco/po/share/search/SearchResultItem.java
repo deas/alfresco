@@ -80,7 +80,7 @@ public class SearchResultItem implements SearchResult
         {
             try
             {
-                title = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER+TITLE)).getText();
+                title = webElement.findElement(By.cssSelector(ITEM_NAME_CSS_HOLDER+ ">" +TITLE)).getText();
             }
             catch (NoSuchElementException e)
             {
