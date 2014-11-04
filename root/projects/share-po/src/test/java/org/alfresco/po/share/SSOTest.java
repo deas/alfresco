@@ -48,12 +48,42 @@ public class SSOTest extends AbstractTest
     
     
     /**
+     * Checks that user can log in Pentaho and that Analyser works
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void logInPentaho() throws Exception 
+    {
+        //log into pentaho user console
+        drone.navigateTo(pentahoUserConsoleUrl);
+        LoginPage page = drone.getCurrentPage().render();
+        Assert.assertTrue(page.isBrowserTitle("login"));
+        Assert.assertFalse(page.hasErrorMessage());
+        PentahoUserConsolePage pentahoUserConsolePage = (PentahoUserConsolePage) ShareUtil.logInAs(drone, username, password).render();
+        pentahoUserConsolePage.renderHomeTitle(new RenderTime(PENTAHO_PAGE_LOADING_TIME));
+        Assert.assertTrue(pentahoUserConsolePage.isHomeTitleVisible());
+        Assert.assertEquals(pentahoUserConsolePage.getLoggedInUser(), "admin");
+        
+        pentahoUserConsolePage.clickOnFileMenu();
+        pentahoUserConsolePage.clickOnNewOption();
+        
+      
+        Assert.assertTrue(pentahoUserConsolePage.isAnalysisReportDisplayed());
+
+        //log out of share 
+        drone.navigateTo(shareUrl);
+        ShareUtil.logout(drone);
+
+    }
+    
+    
+    /**
      * Checks that admin user logged into share is logged into pentaho user console 
      * 
      * @throws Exception
      */
-
-    @Test
+    @Test(dependsOnMethods = "logInPentaho")
     public void logInShare() throws Exception 
     {
         drone.navigateTo(shareUrl);
@@ -80,6 +110,7 @@ public class SSOTest extends AbstractTest
         //log out of share 
         drone.navigateTo(shareUrl);
         ShareUtil.logout(drone);
+        
      
     }
     
@@ -113,8 +144,10 @@ public class SSOTest extends AbstractTest
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertEquals(ADMINISTRATOR_DASHBOARD, dashboardPage.getPageTitle());
         
+        //log out of share 
+        drone.navigateTo(shareUrl);
         ShareUtil.logout(drone);
-        
+       
     }
     
     /**
@@ -283,7 +316,7 @@ public class SSOTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "loginAsAlfrescoUser")
+    @Test(dependsOnMethods = "loginAsNonexistingUser")
     public void logInShareAfterSessionExpired() throws Exception 
     {
         drone.navigateTo(shareUrl);
@@ -336,7 +369,7 @@ public class SSOTest extends AbstractTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "logInShareAfterSessionExpired")
+    @Test(dependsOnMethods = "loginAsAlfrescoUser")
     public void loginAsNonexistingUser() throws Exception 
     {
         drone.navigateTo(shareUrl);

@@ -39,12 +39,17 @@ public class AdhocAnalyzerPage extends SharePage
 {
     private static Log logger = LogFactory.getLog(AdhocAnalyzerPage.class);
 
-    protected final static String ANALYZE_BUTTON = "span[id^='alfresco_menus_AlfMenuBarPopup']";
-    protected final static String CONTENT_USER_ACITVITIES_BUTTON = "td[id^='alfresco_menus_AlfMenuItem']";
-    protected final static String OPEN_BUTTON = "span[id^='alfresco_pentaho_menus_AnalysesMenuBarPopup']";
+    //protected final static String ANALYZE_BUTTON = "span[id^='alfresco_menus_AlfMenuBarPopup']";
+    //protected final static String ANALYZE_BUTTON = "span[id='ALF_ANALYZE_CUBES_text']";
+    protected final static String ANALYZE_BUTTON = "//span[text()='Create Custom Report']";
+    //protected final static String CONTENT_USER_ACITVITIES_BUTTON = "td[id^='alfresco_menus_AlfMenuItem']";
+    protected final static String CONTENT_USER_ACITVITIES_BUTTON = "//td[text()='Content, Users, and Activities']";
+    //protected final static String OPEN_BUTTON = "span[id^='alfresco_pentaho_menus_AnalysesMenuBarPopup']";
+    protected final static String OPEN_BUTTON = "//span[text()='Open Existing Report']";
     protected final static String REPORT_TITLE = "div[id='RPT001ReportName']";
     protected final static String ALFRESCO_PENTAHO_IFRAME_ID = "iframe[id='alfrescoPentahoXAnalyzer']";
-    protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(There are no analyses)']"; 
+    //protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(There are no analyses)']"; 
+    protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(No reports have been created yet)']";
     private final static String EXISTING_REPORTS = "td[id^='uniqName'][id$='text']";
 
     public AdhocAnalyzerPage(WebDrone drone)
@@ -82,7 +87,7 @@ public class AdhocAnalyzerPage extends SharePage
     {
         try
         {
-            WebElement openButton = drone.find(By.cssSelector(OPEN_BUTTON));
+            WebElement openButton = drone.find(By.xpath(OPEN_BUTTON));
             return openButton.isDisplayed();
         }
         catch (NoSuchElementException nse)
@@ -119,7 +124,7 @@ public class AdhocAnalyzerPage extends SharePage
     {
         try
         {
-            WebElement analyzeButton = drone.findAndWait(By.cssSelector(ANALYZE_BUTTON));
+            WebElement analyzeButton = drone.findAndWait(By.xpath(ANALYZE_BUTTON));
             analyzeButton.click();
         }
         catch (TimeoutException te)
@@ -137,7 +142,7 @@ public class AdhocAnalyzerPage extends SharePage
     {
         try
         {
-            WebElement createContentUsersActivities = drone.find(By.cssSelector(CONTENT_USER_ACITVITIES_BUTTON));
+            WebElement createContentUsersActivities = drone.find(By.xpath(CONTENT_USER_ACITVITIES_BUTTON));
             return createContentUsersActivities.isDisplayed();
         }
         catch (NoSuchElementException nse)
@@ -154,7 +159,8 @@ public class AdhocAnalyzerPage extends SharePage
     {
         try
         {
-            WebElement createButton = drone.findAndWait(By.cssSelector(CONTENT_USER_ACITVITIES_BUTTON));
+            //WebElement createButton = drone.findAndWait(By.cssSelector(CONTENT_USER_ACITVITIES_BUTTON));
+            WebElement createButton = drone.findAndWait(By.xpath(CONTENT_USER_ACITVITIES_BUTTON));
             createButton.click();
             return new CreateEditAdhocReportPage(drone);
 
@@ -173,7 +179,8 @@ public class AdhocAnalyzerPage extends SharePage
     {
         try
         {
-            WebElement openButton = drone.findAndWait(By.cssSelector(OPEN_BUTTON));
+            //WebElement openButton = drone.findAndWait(By.cssSelector(OPEN_BUTTON));
+            WebElement openButton = drone.findAndWait(By.xpath(OPEN_BUTTON));
             openButton.click();
             return new CreateEditAdhocReportPage(drone);
 

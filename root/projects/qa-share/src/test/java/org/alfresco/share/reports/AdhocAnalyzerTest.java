@@ -72,9 +72,10 @@ public class AdhocAnalyzerTest extends AbstractUtils
     private static final String AREA_CHART_TYPE = "area";
     
     private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
-    private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
+    //private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
     private static final String PENTAHO_BUSINESS_ANALYSTS_GROUP = "ANALYTICS_BUSINESS_ANALYSTS";
     
+    /**
     private static final String COMMENT_CREATED = "activity.org.alfresco.comments.comment-created";
     private static final String FILE_ADDED = "activity.org.alfresco.documentlibrary.file-added";
     private static final String FILE_CREATED = "activity.org.alfresco.documentlibrary.file-created";
@@ -91,8 +92,26 @@ public class AdhocAnalyzerTest extends AbstractUtils
     private static final String SITE_CREATE = "site.create";
     private static final String USER_LOGIN = "login";
     private static final String USER_CREATED = "user.create";
+    **/
 
+    private static final String COMMENT_CREATED = "Created Comment";
+    private static final String FILE_ADDED = "File Added";
+    private static final String FILE_CREATED = "File created";
+    private static final String FILE_DELETED = "File deleted";
+    private static final String FILE_LIKED = "File Liked";
+    private static final String FILE_PREVIEWED = "Previewed file";
+    private static final String FOLDER_ADDED = "Folder added";
+    private static final String FOLDER_DELETED = "Folder deleted";
+    private static final String INLINE_EDIT = "Edited File";
+    private static final String USER_JOINED = "User joined site";
+    private static final String USER_LEFT = "User left site";
+    private static final String USER_ROLE_CHANGED = "User changed role";
+    private static final String ACTIVITY_QUICKSHARE = "File Shared";
+    private static final String SITE_CREATE = "Site Created";
+    private static final String USER_LOGIN = "Login";
+    private static final String USER_CREATED = "User Created";
   
+       
     @Override
     @BeforeClass(alwaysRun = true)
     public void setup() throws Exception
@@ -100,6 +119,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         super.setup();
         testName = this.getClass().getSimpleName();
         testUser = testName + "@" + DOMAIN_FREE;
+        CreateUserAPI.createActivateUserWithGroup(drone, ADMIN_USERNAME, PENTAHO_BUSINESS_ANALYSTS_GROUP, PENTAHO_BUSINESS_ANALYST_USERNAME);
+        ShareUser.logout(drone);
         logger.info("Starting Tests: " + testName);
     }
     
@@ -227,7 +248,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         ShareUser.logout(drone);
 
         // pentaho business analyst logs into share
-        dashboardPage = (DashBoardPage) ShareUser.login(drone, PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD).render();
+        dashboardPage = (DashBoardPage) ShareUser.login(drone, PENTAHO_BUSINESS_ANALYST_USERNAME, DEFAULT_PASSWORD).render();
         Assert.assertTrue(dashboardPage.isLoggedIn());
         Assert.assertTrue(dashboardPage.isBrowserTitle(PAGE_TITLE_MY_DASHBOARD));
 
@@ -424,7 +445,8 @@ public class AdhocAnalyzerTest extends AbstractUtils
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
 
-        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();  
+        CreateEditAdhocReportPage createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton(); 
+ 
         Assert.assertTrue(createEditAdhocReportPage.isThereAreNoAnalysesDisplayed());
     
         ShareUser.navigateToPage(drone, shareUrl).render();
@@ -498,6 +520,14 @@ public class AdhocAnalyzerTest extends AbstractUtils
         ShareUserReports.userShareInteractions(drone, testUser);
         
         factTableGeneration();
+        
+        try
+        {
+            Thread.sleep(20000);
+        } catch (InterruptedException ie)
+        {
+            
+        }
                
         ShareUser.logout(drone);
         dashboardPage = (DashBoardPage) ShareUser.login(drone, testUser, testPassword).render();
@@ -570,6 +600,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         Assert.assertTrue(createEditAdhocReportPage.isOpenButtonDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isSaveButtonDisplayed());
                 
+        createEditAdhocReportPage.clickOnSaveReportButton();
         
         //change chart type
         createEditAdhocReportPage.clickOnChangeChartType();
@@ -801,6 +832,10 @@ public class AdhocAnalyzerTest extends AbstractUtils
         //List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, PIE_CHART_TYPE );
         List<String> tooltipData = createEditAdhocReportPage.getTooltipData(false, AREA_CHART_TYPE );
         
+        for (String td : tooltipData)
+        {
+            System.out.println("TTTT DDDD **** " + td);
+        }
 
         //expected data
         String commentCreated = COMMENT_CREATED + ":2";
@@ -1416,9 +1451,9 @@ public class AdhocAnalyzerTest extends AbstractUtils
     }    
     
     /**
-     * 1) Test user (that is not business analyst) logs in
-     * 2) Verify test user cannot have Hot Content Report dashlet on the site dashboard
-     * 3) Verify test user cannot have User Activity Report dashlet on the site dashboard
+     * 1) Test user (that is not business analyst but is site manager) logs in
+     * 2) Verify test user can have Hot Content Report dashlet on the site dashboard
+     * 3) Verify test user can have User Activity Report dashlet on the site dashboard
      * 
      * @throws Exception
      */
@@ -1431,30 +1466,20 @@ public class AdhocAnalyzerTest extends AbstractUtils
         
         ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
         
-        try
-        {        
-            ShareUserDashboard.addDashlet(drone, siteName, Dashlets.HOT_CONTENT_REPORT);
-            Assert.assertTrue(false, "Above line should have thrown page exception");
-        } catch (PageOperationException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith( "Error in adding dashlet using drag and drop"));
-            ShareUser.logout(drone);
+        SiteDashboardPage siteDashboardPage = ShareUserDashboard.addDashlet(drone, siteName, Dashlets.HOT_CONTENT_REPORT);
+        AdhocAnalyzerDashlet adhocAnalyzerDashlet = siteDashboardPage.getDashlet("adhoc-analyzer").render();
 
-        } 
+        Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
+        Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), "Hot Content Report");
         
-        ShareUser.login(drone, testUser, DEFAULT_PASSWORD);
+        ShareUserDashboard.removeDashlet(drone, Dashlets.HOT_CONTENT_REPORT, siteName);
         
-        try
-        {        
-            ShareUserDashboard.addDashlet(drone, siteName, Dashlets.USER_ACTIVITY_REPORT);
-            Assert.assertTrue(false, "Above line should have thrown page exception");
-        } catch (PageOperationException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith( "Error in adding dashlet using drag and drop"));
-            ShareUser.logout(drone);
+        siteDashboardPage = ShareUserDashboard.addDashlet(drone, siteName, Dashlets.USER_ACTIVITY_REPORT);
+        adhocAnalyzerDashlet = siteDashboardPage.getDashlet("adhoc-analyzer").render();
 
-        } 
- 
+        Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
+        Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), "User Activity Report");
+        
     }
     
     /**
@@ -1518,7 +1543,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
     
     /**
      * 1) Business analyst logs in
-     * 2) Verifies business analyst cannot customise the site dashboard for the site he is not site manager of
+     * 2) Verifies business analyst cannot customise the site dashboard for the site if he is not site manager
      * 
      * @throws Exception
      */
@@ -1633,7 +1658,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
 
         Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
         Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
-        Assert.assertTrue(adhocAnalyzerDashlet.isSiteDashletMessageDisplayed());
+        Assert.assertTrue(adhocAnalyzerDashlet.isDashletMessageDisplayed());
 
         // pentaho business analyst clicks on the Open drop down menu on the dashlet
         adhocAnalyzerDashlet.clickOnOpenDropdown();
@@ -1753,6 +1778,16 @@ public class AdhocAnalyzerTest extends AbstractUtils
         createEditAdhocReportPage.doubleClickOnEventTypeField();
         createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
         
+        
+        //add siteId filter
+        createEditAdhocReportPage.rightClickOnSiteIdField();
+        createEditAdhocReportPage.clickOnFilterOption();
+        createEditAdhocReportPage.moveSiteToRightBox(siteName.toLowerCase());
+        createEditAdhocReportPage.enableParameterName();
+        createEditAdhocReportPage.enterParameterName("site");
+        createEditAdhocReportPage.clickOnOKButton();       
+        
+        
         // click on Save button to save created report
         createEditAdhocReportPage.clickOnSaveReportButton();
         
@@ -1764,7 +1799,15 @@ public class AdhocAnalyzerTest extends AbstractUtils
         String siteName = getSiteName(testName);
         String reportName = "Report-" + testName;
         createEditAdhocReportPage.enterAnalisysName(reportName);
-
+       
+        //add siteId filter
+        createEditAdhocReportPage.rightClickOnSiteIdField();
+        createEditAdhocReportPage.clickOnFilterOption();
+        createEditAdhocReportPage.moveSiteToRightBox(siteName.toLowerCase());
+        createEditAdhocReportPage.enableParameterName();
+        createEditAdhocReportPage.enterParameterName("site");
+        createEditAdhocReportPage.clickOnOKButton();
+                
         // Click on Ok button to save report
         createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
 
@@ -1780,7 +1823,7 @@ public class AdhocAnalyzerTest extends AbstractUtils
         createEditAdhocReportPage.getReportTitle();
         
         String [] tableStatusBarElements = createEditAdhocReportPage.getTableStatusBar();
-        
+         
         Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
@@ -1816,9 +1859,11 @@ public class AdhocAnalyzerTest extends AbstractUtils
         siteDashboardPage = ShareUserDashboard.addDashlet(drone, siteName, Dashlets.CUSTOM_SITE_REPORTS);
         AdhocAnalyzerDashlet adhocAnalyzerDashlet = siteDashboardPage.getDashlet("adhoc-analyzer").render();
 
+        //this needs to be revisited - ACE-3379
+        
         Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
         Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
-        Assert.assertTrue(adhocAnalyzerDashlet.isSiteDashletMessageDisplayed());
+        Assert.assertTrue(adhocAnalyzerDashlet.isDashletMessageDisplayed());
         adhocAnalyzerDashlet.clickOnOpenDropdown();
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), reportName);
@@ -2224,13 +2269,21 @@ public class AdhocAnalyzerTest extends AbstractUtils
         String reportName = "Report-" + testName;
         createEditAdhocReportPage.enterAnalisysName(reportName);
 
+        //add siteId filter
+        createEditAdhocReportPage.rightClickOnSiteIdField();
+        createEditAdhocReportPage.clickOnFilterOption();
+        createEditAdhocReportPage.moveSiteToRightBox(siteName.toLowerCase());
+        createEditAdhocReportPage.enableParameterName();
+        createEditAdhocReportPage.enterParameterName("site");
+        createEditAdhocReportPage.clickOnOKButton(); 
+        
         // Click on Ok button to save report
         createEditAdhocReportPage.clickOnSaveAnalisysOkButton();
 
         Assert.assertTrue(createEditAdhocReportPage.isSiteNameDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
-
+        
         //click on open button to open saved report
         createEditAdhocReportPage = adhocAnalyzePage.clickOnOpenReportButton();
         Assert.assertEquals(reportName, createEditAdhocReportPage.getExistingReportName(reportName));

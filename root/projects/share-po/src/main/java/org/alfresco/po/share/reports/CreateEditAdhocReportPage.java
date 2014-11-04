@@ -46,14 +46,17 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     // Site name
     private final static String SITE_NAME = "div[formula='[Sites].[Site Name]']";
 
+    // Site name
+    private final static String SITE_ID = "div[formula='[Sites].[Site Id]']";
+    
     // Activity - Event Type
-    private final static String EVENT_TYPE = "div[formula='[Activity].[Event Type]']";
+    private final static String EVENT_TYPE = "div[formula='[ActivityType].[Event Type]']";
 
     // Number of events
     private final static String EVENTS_NUMBER = "div[formula='[Measures].[Number of Events]']";
 
     //Day
-    private final static String DAY = "div[formula='[Date].[Day]']";
+    private final static String DAY = "div[formula='[Activity_Date].[Day]']";
     
     //View as table
     private final static String SHOW_TABLE = "div[id='cmdShowPivot']";
@@ -71,13 +74,13 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     private final static String SITE_NAME_TABLE = "td[formula='[Sites].[Site Name]']";
 
     // Activity - Event Type - table header
-    private final static String EVENT_TYPE_TABLE = "td[formula='[Activity].[Event Type]']";
+    private final static String EVENT_TYPE_TABLE = "td[formula='[ActivityType].[Event Type]']";
 
     // Number of events - table header
     private final static String EVENTS_NUMBER_TABLE = "td[formula='[Measures].[Number of Events]']";
 
     //Day - table header
-    private final static String DAY_TABLE = "td[formula='[Date].[Day]']";
+    private final static String DAY_TABLE = "td[formula='[Activity_Date].[Day]']";
     
     // Save Analysis title Save Analysis
     private final static String SAVE_ANALYSIS = "//span[text()='Save Report']";
@@ -121,7 +124,20 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     //private final static String AREA_CHART_TEXT = "//text[text()='Name and Event Type']";
     
     private final static String AREA_CHART = "rect[pointer-events=all]";
+    
+    //private final static String  NO_FILTERS = "span[id='RPT001FilterCountLabel']";
 
+    private final static String  SITEID_FILTER = "td[id='cmdFieldFilter_text']";
+    
+    //private static final String SITE_NAME_LEFT = "//div[text()='%s']";
+    private static final String SITE_NAME_LEFT = "//div[starts-with(@id, 'FT_AVA_')]";
+    
+    private static final String ENABLE_SITE_NAME_PARAMETER = "input[id='FT_PARAMETER_ENABLE']";
+    
+    private static final String ENTER_SITE_NAME_PARAMETER = "input[id='FT_PARAMETER_NAME']";
+    
+    //private final static String OK_BUTTON = "//button[id='dlgBtnSave']";
+    private final static String OK_BUTTON = "//button[text()='OK']";
     
     /**
      * Constructor
@@ -237,6 +253,147 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         }
         throw new PageException("Unable to find Site Name field.");
     }
+    
+    
+    /**
+     * Rightclicks on Site Id field
+     */
+    public CreateEditAdhocReportPage rightClickOnSiteIdField()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement siteId = drone.findAndWait(By.cssSelector(SITE_ID));
+            drone.rightClickOnElement(siteId);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Site Id field. " + te);
+        }
+        throw new PageException("Unable to find Site Id field.");
+    }
+
+    
+    /**
+     * Clicks on Filter... context menu option
+     */
+    public CreateEditAdhocReportPage clickOnFilterOption()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement filter = drone.findAndWait(By.cssSelector(SITEID_FILTER));
+            filter.click();
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Filter... option from context menu. " + te);
+        }
+        throw new PageException("Unable to find Filter... option from context menu.");
+    }
+    
+   
+    
+    /**
+     * Clicks on site name in left handside box to move it to the right
+     */
+    public CreateEditAdhocReportPage moveSiteToRightBox(String name)
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement siteName = drone.findAndWait(By.xpath(SITE_NAME_LEFT));
+            //WebElement siteName = drone.findAndWait(By.xpath(String.format(SITE_NAME_LEFT, name)));
+            drone.doubleClickOnElement(siteName);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to doubleclick on site name in left handside box to move it to the right. " + te);
+        }
+        throw new PageException("Unable to doubleclick on site name in left handside box to move it to the right.");
+    }    
+    
+    
+    
+    
+    /**
+     * Clicks on parameter name checkbox
+     */
+    public CreateEditAdhocReportPage enableParameterName()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement parameterNameCheckbox = drone.findAndWait(By.cssSelector(ENABLE_SITE_NAME_PARAMETER));
+            parameterNameCheckbox.click();
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find site parameter checkbox. " + te);
+        }
+        throw new PageException("Unable to find site parameter checkbox.");
+    }  
+    
+    
+
+    /**
+     * Enter parameter name in the input field
+     */
+    public CreateEditAdhocReportPage enterParameterName(String name)
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement input = drone.findAndWait(By.cssSelector(ENTER_SITE_NAME_PARAMETER));
+            input.clear();
+            //input.sendKeys(name + "\n");
+            input.sendKeys(name);
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (NoSuchElementException te)
+        {
+            logger.error("Unable to find parameter name input field. " + te);
+        }
+        throw new PageException("Unable to find parameter name input field.");
+    }  
+    
+    
+    /**
+     * Clicks on OK button
+     */
+    public CreateEditAdhocReportPage clickOnOKButton()
+    {
+        try
+        {
+            drone.switchToFrame(getAnalyzerIframeId());
+            WebElement okButton = drone.findAndWait(By.xpath(OK_BUTTON));
+            okButton.click();
+            drone.switchToDefaultContent();
+            return new CreateEditAdhocReportPage(drone);
+
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find OK button. " + te);
+        }
+        throw new PageException("Unable to find OK element.");
+    }
+    
+    
 
     /**
      * Doubleclicks on Event Type field
@@ -565,9 +722,12 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
         try
         {
             drone.switchToFrame(getAnalyzerIframeId());
+            System.out.println("HERE 0 *** ");
             WebElement selectChartType = drone.findAndWait(By.cssSelector(SELECT_ANOTHER_CHART_TYPE));
+            System.out.println("HERE 1 *** ");
             selectChartType.click();
             drone.switchToDefaultContent();
+            
             return new CreateEditAdhocReportPage(drone);
         }
         catch (TimeoutException te)
@@ -587,10 +747,12 @@ public class CreateEditAdhocReportPage extends AdhocAnalyzerPage
     {
         try
         {
+            System.out.println("HERE 2 *** ");
             drone.switchToFrame(getAnalyzerIframeId());
             WebElement selectPieChartType = drone.findAndWait(By.xpath(PIE_CHART_TYPE));
             selectPieChartType.click();
             drone.switchToDefaultContent();
+            System.out.println("HERE 3 *** ");
             return new CreateEditAdhocReportPage(drone);
         }
         catch (TimeoutException te)

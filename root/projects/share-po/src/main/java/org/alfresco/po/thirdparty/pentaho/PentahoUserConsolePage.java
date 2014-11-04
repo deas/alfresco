@@ -47,6 +47,7 @@ public class PentahoUserConsolePage extends SharePage
     
     private final static String FILE_MENU = "td[id='filemenu']";
     private final static String NEW_MENU = "td[id='newmenu']";
+    private final static String ANALYSIS_REPORT = "td[id='new-analyzer']";
     private final static String HOME = "div[id='mantle-perspective-switcher'] table tbody tr td div[class='custom-dropdown-label']";
     private final static String USERNAME = "div[id='pucUserDropDown'] table tbody tr td div[class='custom-dropdown-label']";
     private final static String LOGOUT = "div[id='customDropdownPopupMinor'] td[id='gwt-uid-4']";
@@ -56,7 +57,7 @@ public class PentahoUserConsolePage extends SharePage
     private final static String READ_CONTENT = "//label[text()='Read Content']";
     private final static String PUBLISH_CONTENT = "//label[text()='Publish Content']";
     private final static String CREATE_CONTENT = "//label[text()='Create Content']";
- 
+    
     
     public PentahoUserConsolePage(WebDrone drone)
     {
@@ -198,6 +199,64 @@ public class PentahoUserConsolePage extends SharePage
         }
     }
 
+    
+    /**
+     * Clicks on New
+     */
+    public void clickOnNewOption()
+    {
+        try
+        {
+            WebElement newOption = drone.findAndWait(By.cssSelector(NEW_MENU));
+            //newOption.click();
+            drone.mouseOver(newOption);
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find New Option. " + te);
+        }
+    }
+    
+    
+    
+    /**
+     * Checks if New menu option is displayed
+     * 
+     * @return
+     */
+    public boolean isAnalysisReportDisplayed()
+    {
+        try
+        {
+            WebElement analysisReport = drone.find(By.cssSelector(ANALYSIS_REPORT));
+            return analysisReport.isDisplayed();
+        }
+        catch (NoSuchElementException nse)
+        {
+            logger.error("No Analysis Report " + nse);
+            throw new PageException("Unable to find Analysis Report.", nse);
+        }
+    }
+    
+    
+    /**
+     * Clicks on Analysis Report
+     */
+    public void clickOnAnalysisReport()
+    {
+        try
+        {
+            WebElement analysisReport = drone.findAndWait(By.cssSelector(ANALYSIS_REPORT));
+            analysisReport.click();
+         
+        }
+        catch (TimeoutException te)
+        {
+            logger.error("Unable to find Analysis Report. " + te);
+        }
+    }   
+    
     /**
      * Clicks on Home link
      */

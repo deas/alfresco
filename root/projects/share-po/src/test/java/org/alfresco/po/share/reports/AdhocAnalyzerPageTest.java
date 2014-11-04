@@ -71,15 +71,13 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     private static final String CUSTOM_REPORTS = "My Reports";
     private static final String CUSTOM_SITE_REPORTS = "Site Reports";
     private static final String UNSAVED_REPORT = "Unsaved Report";
-    //private static final String PENTAHO_BUSINESS_ANALYST_USERNAME = "pentahoBusinessAnalyst";
-    //private static final String PENTAHO_BUSINESS_ANALYST_PASSWORD = "pentahoBusinessAnalyst";
     private static final String pentahoBusinessAnalystGroup = "ANALYTICS_BUSINESS_ANALYSTS";
     
     private static String reportName = null;
     private static String siteReportName = null;
     
     private String userName = "User_" + System.currentTimeMillis();
-    private String siteName = "Site_" + System.currentTimeMillis();
+    private String siteName = "Site" + System.currentTimeMillis();
     private String folderName = "Folder_" + System.currentTimeMillis();
     private String fileName = "File_" + System.currentTimeMillis();
     private String siteName1 = "Site1_" + System.currentTimeMillis();
@@ -94,6 +92,8 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         NewUserPage newPage = page.selectNewUser().render();
         newPage.createEnterpriseUserWithGroup(businessAnalystsUserName, businessAnalystsUserName, businessAnalystsUserName, businessAnalystsUserName + "@test.com", UNAME_PASSWORD, pentahoBusinessAnalystGroup);
         
+        logger.info("Business Analyst User created : " + businessAnalystsUserName);
+        
         logout(drone);
     
     }
@@ -107,24 +107,27 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         schemasSetup();
         
         //create some users, sites and content first
-        userShareInteractions();
+        userShareInteractions(businessAnalystsUserName);
         
         //run fact generation
         factTableGeneration();
          
     }
     
-    private void userShareInteractions() throws Exception
+    private void userShareInteractions(String businessAnalystsUserName) throws Exception
     {
  
         //create user
-        createEnterpriseUser(userName);
+        //createEnterpriseUser(userName);
 
         //login as created user
-        loginAs(userName, UNAME_PASSWORD);
+        //loginAs(userName, UNAME_PASSWORD);
+        loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         
         //user creates site
         SiteUtil.createSite(drone, siteName, "description", "public");
+        
+        logger.info("Site created : " + siteName);
         
         //and a folder in sites document library
         SitePage site = drone.getCurrentPage().render();
@@ -204,9 +207,6 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         
         SiteFinderPage siteFinder = dashBoard.getNav().selectSearchForSites().render();
         siteFinder =  SiteUtil.siteSearchRetry(drone, siteFinder, siteName);
- 
-        siteFinder = dashBoard.getNav().selectSearchForSites().render();
-        siteFinder =  SiteUtil.siteSearchRetry(drone, siteFinder, siteName);
         siteFinder.leaveSite(siteName).render();
               
         logout(drone);
@@ -277,7 +277,6 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     public void testOpenReportInUserboardDashlet() throws Exception
     {
         
-        //DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
         DashBoardPage dashboardPage = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyze().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_REPORTS);
@@ -351,8 +350,12 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         
         //change chart type
         createEditAdhocReportPage.clickOnChangeChartType();
+        createEditAdhocReportPage.clickOnPieChartType();
+        logger.info("Report "+ reportName + " successfully changed chart type");
         
         Assert.assertTrue(createEditAdhocReportPage.isPieChartEventsDisplayed());
+        
+        logger.info("Report "+ reportName + " successfully displayed chart type");
         
         dashboardPage = createEditAdhocReportPage.getNav().selectMyDashBoard().render();
         CustomiseUserDashboardPage customiseUserDashboardPage = dashboardPage.getNav().selectCustomizeUserDashboard().render();
@@ -361,6 +364,7 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         AdhocAnalyzerDashlet adhocAnalyzerDashlet = dashboardPage.getDashlet("adhoc-analyzer").render();
         Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
         Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
+ 
         Assert.assertTrue(adhocAnalyzerDashlet.isDashletMessageDisplayed());
         adhocAnalyzerDashlet.clickOnOpenDropdown();
         adhocAnalyzerDashlet.clickOnExistingReport(reportName);
@@ -411,7 +415,6 @@ public class AdhocAnalyzerPageTest extends AbstractTest
     @Test(dependsOnMethods = "testOpenReportInUserboardDashlet")
     public void testOpenReportInSiteboardDashlet() throws Exception
     {
-        //DashBoardPage dashboardPage = loginAs(PENTAHO_BUSINESS_ANALYST_USERNAME, PENTAHO_BUSINESS_ANALYST_PASSWORD);
         DashBoardPage dashboardPage = loginAs(businessAnalystsUserName, UNAME_PASSWORD);
         AdhocAnalyzerPage adhocAnalyzePage = dashboardPage.getNav().selectAnalyzeSite().render();
         Assert.assertEquals(adhocAnalyzePage.getPageTitle(), CUSTOM_SITE_REPORTS); 
@@ -428,6 +431,17 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         createEditAdhocReportPage.doubleClickOnEventTypeField();
         createEditAdhocReportPage.doubleClickOnNumberOfEventsField();
          
+        //add siteId filter
+        
+        createEditAdhocReportPage.rightClickOnSiteIdField();
+        createEditAdhocReportPage.clickOnFilterOption();
+        createEditAdhocReportPage.moveSiteToRightBox(siteName.toLowerCase());
+        createEditAdhocReportPage.enableParameterName();
+
+        createEditAdhocReportPage.enterParameterName("site");
+        
+        createEditAdhocReportPage.clickOnOKButton();
+        
         // click on Save button
         createEditAdhocReportPage.clickOnSaveReportButton();
         
@@ -447,13 +461,18 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         Assert.assertTrue(createEditAdhocReportPage.isEventTypeDisplayed());
         Assert.assertTrue(createEditAdhocReportPage.isEventsNumberDisplayed());
         
-        logger.info("Report "+ reportName + " successfully saved.");
+        logger.info("Report "+ siteReportName + " successfully saved.");
            
         //user creates site
-        SiteUtil.createSite(drone, siteName1, "description", "public");
+        //SiteUtil.createSite(drone, siteName1, "description", "public");
+        //SitePage site = drone.getCurrentPage().render();
         
-        SitePage site = drone.getCurrentPage().render();
-        CustomiseSiteDashboardPage customiseSiteDashBoard = site.getSiteNav().selectCustomizeDashboard().render();
+        SiteFinderPage siteFinder = createEditAdhocReportPage.getNav().selectSearchForSites().render();
+        siteFinder =  SiteUtil.siteSearchRetry(drone, siteFinder, siteName);
+        SiteDashboardPage siteDashboardPage = siteFinder.selectSite(siteName).render();
+        
+        
+        CustomiseSiteDashboardPage customiseSiteDashBoard = siteDashboardPage.getSiteNav().selectCustomizeDashboard().render();
         SiteDashboardPage siteDashBoard = customiseSiteDashBoard.addDashlet(Dashlets.CUSTOM_SITE_REPORTS, 1).render();
         
         //DocumentLibraryPage docPage = site.getSiteNav().selectSiteDocumentLibrary().render();
@@ -461,7 +480,9 @@ public class AdhocAnalyzerPageTest extends AbstractTest
         AdhocAnalyzerDashlet adhocAnalyzerDashlet = siteDashBoard.getDashlet("adhoc-analyzer").render();
         Assert.assertTrue(adhocAnalyzerDashlet.isTitleDisplayed());
         Assert.assertTrue(adhocAnalyzerDashlet.isOpenDisplayed());
-        Assert.assertTrue(adhocAnalyzerDashlet.isSiteDashletMessageDisplayed());
+        
+               
+        Assert.assertTrue(adhocAnalyzerDashlet.isDashletMessageDisplayed());
         adhocAnalyzerDashlet.clickOnOpenDropdown();
         adhocAnalyzerDashlet.clickOnExistingReport(siteReportName);
         Assert.assertEquals(adhocAnalyzerDashlet.getDashletTitle(), siteReportName);

@@ -42,9 +42,8 @@ public class AdhocAnalyzerDashlet extends AbstractDashlet implements Dashlet
     private static final String DASHLET = "div[id*='DASHLET']";
     private static final String DASHLET_TITLE = "div[class='alfresco-dashlets-Dashlet--title title']";
     private static final String DASHLET_OPEN_DROPDOWN = "//span[text()='Open...']";
-    private static final String DASHLET_MESSAGE = "//div[text()='Click the menu to display a report you have previously created.']";
-    private static final String SITE_DASHLET_MESSAGE = "//div[text()='Click the menu to display an site report you have previously created.']";
-    protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(There are no analyses)']";
+    private static final String DASHLET_MESSAGE = "//div[text()='Click Open and select the report you want to see.']";
+    protected final static String THERE_ARE_NO_ANALYSES = "//td[text()='(No reports have been created yet)']";
     
     protected AdhocAnalyzerDashlet(WebDrone drone)
     {
@@ -126,32 +125,10 @@ public class AdhocAnalyzerDashlet extends AbstractDashlet implements Dashlet
         }
         catch (NoSuchElementException nse)
         {
-            logger.error("No 'Click the menu to display an analysis you have previously created.' message in Adhoc Analyzer dashlet " + nse);
-            throw new PageException("Unable to find 'Click the menu to display an analysis you have previously created.' in Adhoc Analyzer dashlet.", nse);
+            logger.error("No 'Click Open and select the report you want to see.' message in dashlet " + nse);
+            throw new PageException("Unable to find 'Click Open and select the report you want to see.' in dashlet.", nse);
         }
     } 
-    
-    
-    /**
-     * Checks if "Click the menu to display an analysis you have previously created."
-     * is displayed in Adhoc Analyzer dashlet
-     * 
-     * @return
-     */
-    public boolean isSiteDashletMessageDisplayed()
-    {
-        try
-        {
-            WebElement siteDashletMessage = drone.find(By.xpath(SITE_DASHLET_MESSAGE));
-            return siteDashletMessage.isDisplayed();
-        }
-        catch (NoSuchElementException nse)
-        {
-            logger.error("No 'Click the menu to display an site report you have previously created.' message in Adhoc Analyzer site dashboard dashlet " + nse);
-            throw new PageException("Unable to find 'Click the menu to display an site report you have previously created.' in Adhoc Analyzer site dashboard dashlet.", nse);
-        }
-    } 
-    
     
     /**
      * Checks if (There are no analyses) message is displayed
