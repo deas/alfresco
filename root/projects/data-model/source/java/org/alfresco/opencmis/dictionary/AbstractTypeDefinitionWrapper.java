@@ -239,6 +239,17 @@ public abstract class AbstractTypeDefinitionWrapper implements TypeDefinitionWra
             }
         }
     }
+    
+    public void updateTypeDefInclProperties()
+    {
+        for (PropertyDefinition<?> property : typeDefInclProperties.getPropertyDefinitions().values())
+        {
+            if (property.getDisplayName() == null)
+            {
+                typeDefInclProperties.addPropertyDefinition(getPropertyById(property.getId()).getPropertyDefinition());
+            }
+        }
+    }
 
     public void setTypeDefDisplayName(String name)
     {

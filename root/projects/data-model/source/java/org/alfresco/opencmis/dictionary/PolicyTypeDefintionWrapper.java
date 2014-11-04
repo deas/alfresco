@@ -237,6 +237,8 @@ public class PolicyTypeDefintionWrapper extends AbstractTypeDefinitionWrapper
         {
             super.updateDefinition(dictionaryService);
         }
+        
+        updateTypeDefInclProperties();
     }
     
     @Override

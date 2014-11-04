@@ -101,6 +101,8 @@ public class DocumentTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
         {
             super.updateDefinition(dictionaryService);
         }
+        
+        updateTypeDefInclProperties();
     }
     
     @Override

@@ -107,6 +107,8 @@ public class FolderTypeDefintionWrapper extends ShadowTypeDefinitionWrapper
         {
             super.updateDefinition(dictionaryService);
         }
+        
+        updateTypeDefInclProperties();
     }
     
     @Override

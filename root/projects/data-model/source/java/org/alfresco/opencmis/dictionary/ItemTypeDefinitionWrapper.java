@@ -109,6 +109,8 @@ public class ItemTypeDefinitionWrapper extends ShadowTypeDefinitionWrapper
         {
             super.updateDefinition(dictionaryService);
         }
+        
+        updateTypeDefInclProperties();
     }
     
     @Override

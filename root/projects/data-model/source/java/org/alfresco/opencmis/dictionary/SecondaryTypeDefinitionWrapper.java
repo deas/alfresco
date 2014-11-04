@@ -232,6 +232,8 @@ public class SecondaryTypeDefinitionWrapper extends AbstractTypeDefinitionWrappe
         {
             super.updateDefinition(dictionaryService);
         }
+        
+        updateTypeDefInclProperties();
     }
     
     @Override

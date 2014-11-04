@@ -232,6 +232,8 @@ public class RelationshipTypeDefintionWrapper extends AbstractTypeDefinitionWrap
         {
             super.updateDefinition(dictionaryService);
         }
+        
+        updateTypeDefInclProperties();
     }
     
     @Override
