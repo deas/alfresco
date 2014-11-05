@@ -127,6 +127,8 @@
     <db.master.url>jdbc:postgresql:template1</db.master.url>
     <db.username>alfresco</db.username>
     <db.password>alfresco</db.password>
+    <db.master.username>alfresco</db.master.username>
+    <db.master.password>alfresco</db.master.password>
     <db.drop.command>drop database if exists ${db.name}</db.drop.command>
     <db.create.command>create database ${db.name}</db.create.command>
     <test.working.dir>${project.build.directory}</test.working.dir>
@@ -704,8 +706,8 @@
                     <autocommit>true</autocommit>
                     <driver>${db.driver}</driver>
                     <url>${db.master.url}</url>
-                    <username>${db.username}</username>
-                    <password>${db.password}</password>
+                    <username>${db.master.username}</username>
+                    <password>${db.master.password}</password>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -1013,6 +1015,94 @@
 			</dependency>
 		</dependencies>
 	</profile>
+
+    <profile>
+        <id>oracle</id>
+        <properties>
+            <db.driver>oracle.jdbc.OracleDriver</db.driver>
+            <db.url>jdbc:oracle:thin:@${db.host}:1521/${db.host}</db.url>
+            <db.master.url>${db.url}</db.master.url>
+            <db.drop.command>drop user ${db.username} cascade;</db.drop.command>
+            <db.create.command>grant connect,resource to ${db.username} identified by ${db.password};</db.create.command>
+        </properties>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <configuration>
+                        <systemProperties>
+                            <db.driver>${db.driver}</db.driver>
+                            <db.url>${db.url}</db.url>
+                        </systemProperties>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.oracle.ojdbc6</groupId>
+                            <artifactId>ojdbc6</artifactId>
+                            <version>11.2.0.1.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sql-maven-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.oracle.ojdbc6</groupId>
+                            <artifactId>ojdbc6</artifactId>
+                            <version>11.2.0.1.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </build>
+        <dependencies>
+            <dependency>
+                <groupId>com.oracle.ojdbc6</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>11.2.0.1.0</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </profile>
+
+    <profile>
+        <id>sqlserver</id>
+        <properties>
+            <db.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</db.driver>
+            <db.url>jdbc:sqlserver://${db.host};databaseName=${db.name};</db.url>
+            <db.master.url>jdbc:sqlserver://${db.host};databaseName=master</db.master.url>
+            <db.master.username>${db.username}</db.master.username>
+            <db.master.password>${db.password}</db.master.password>
+            <db.drop.command>drop database ${db.name};</db.drop.command>
+            <db.create.command>CREATE DATABASE ${db.name}; ALTER DATABASE ${db.name} SET ALLOW_SNAPSHOT_ISOLATION ON;</db.create.command>
+        </properties>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sql-maven-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.microsoft.sqlserver</groupId>
+                            <artifactId>sqljdbc</artifactId>
+                            <version>4.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </build>
+        <dependencies>
+            <dependency>
+                <groupId>com.microsoft.sqlserver</groupId>
+                <artifactId>sqljdbc</artifactId>
+                <version>4.0</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </profile>
+
     <profile>
         <id>h2</id>
         <properties>
