@@ -667,11 +667,17 @@ var main = {
          {
             name: "alfresco/html/Spacer",
             config: {
-               height: "14px"
+               height: "12px"
             }
          },
          headingForSearchForm,
          searchForm,
+         {
+            name: "alfresco/html/Spacer",
+            config: {
+               height: "8px"
+            }
+         },
          {
             name: "alfresco/layout/HorizontalWidgets",
             config: {

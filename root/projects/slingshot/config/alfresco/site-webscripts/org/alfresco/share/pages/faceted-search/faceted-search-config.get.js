@@ -477,7 +477,7 @@ var main = {
             id: "SEARCH_CONFIG_VSPACER",
             name: "alfresco/html/Spacer",
             config: {
-               height: "14px"
+               height: "18px"
             }
          },
          {

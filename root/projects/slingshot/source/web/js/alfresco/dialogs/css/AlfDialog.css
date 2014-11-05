@@ -1,16 +1,22 @@
+.dijitDialogUnderlay {
+   background-color: #fff !important;
+   opacity: 0.5;
+}
+
 .alfresco-dialog-AlfDialog.dijitDialog {
    border: @standard-border;
-   border-radius: 6px 6px 6px 6px;
-   box-shadow: @standard-box-shadow;
+   border-radius: 4px 4px 4px 4px;
+   box-shadow: 0 3px 8px rgba(0,0,0,.1);
    font-family: @standard-font;
    font-size: @normal-font-size;
+   min-width: 320px;
 }
 
 .alfresco-dialog-AlfDialog.dijitDialog .dijitDialogCloseIcon {
    right: 8px;
    height: 15px;
    width: 21px;
-   margin-top: 8px;
+   margin-top: 12px;
 }
 
 /*
@@ -31,7 +37,7 @@
 }
 
 .alfresco-dialog-AlfDialog .dialog-body {
-   padding: 10px;
+   padding: 12px;
    overflow: hidden;
 }
 
@@ -54,13 +60,14 @@
    background-image: none;
    border: none;
    text-align: center;
+   white-space: nowrap;
 }
 
 .alfresco-dialog-AlfDialog .dijitDialogTitleBar .dijitDialogTitle {
-   font-family: @standard-font;
-   font-size: @title-font-size;
+   font-family: Open Sans Condensed, Arial, Helvetica, sans-serif;
+   font-size: 24px;
    line-height: 1.5em;
-   padding: 0 .25em 0 .25em;
+   padding: 0 1em 0 1em;
    color: @general-font-color;
    overflow: hidden;
    text-overflow: ellipsis;
@@ -75,7 +82,7 @@
    border: none;
    border-top: @standard-border;
    text-align: center;
-   padding: 5px 0;
+   padding: 8px 0;
    width: 100%;
 }
 

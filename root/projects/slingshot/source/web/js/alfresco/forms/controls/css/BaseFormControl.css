@@ -15,11 +15,19 @@
    height: 0;
 }
 
+.alfresco-forms-controls-BaseFormControl > .description-row {
+   max-width: 480px;
+}
+
 .alfresco-forms-controls-BaseFormControl > .description-row > .description {
    font-size: @small-font-size;
    line-height: ceil(@small-font-size/@standard-line-height) * @standard-line-height;
    margin-bottom: @standard-line-height;
    color: @de-emphasized-font-color;
+}
+
+.alfresco-forms-controls-BaseFormControl > .control-row {
+   max-width: 480px;
 }
 
 .alfresco-forms-controls-BaseFormControl > .control-row > .control {
@@ -77,7 +85,6 @@
 
 .alfresco-forms-controls-BaseFormControl > .clear-both {
    clear: both;
-   height: 5px;
 }
 
 .unmargined .alfresco-forms-controls-BaseFormControl{
