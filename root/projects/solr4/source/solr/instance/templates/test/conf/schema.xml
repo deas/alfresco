@@ -41,6 +41,15 @@
       <!-- All anlysis is defined in dummy field types which this field type uses -->
 
       <!-- TODO: truncated text field for sorting?? -->
+
+      <fieldType name="oldStandardAnalysis" class="solr.TextField" positionIncrementGap="100">
+         <analyzer>
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.ASCIIFoldingFilterFactory"/>
+         </analyzer>
+      </fieldType>
+
       
       <fieldType name="alfrescoFieldType" class="org.alfresco.solr.AlfrescoFieldType" />
 
@@ -613,23 +622,23 @@
 
 
       <!-- Single value indexed  -->
-      <dynamicField name="any@s_@*"           type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="encrypted@s_@*"     type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="any@s_@*"           type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="encrypted@s_@*"     type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="int@s_@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="long@s_@*"          type="long"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="float@s_@*"         type="float"             indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="double@s_@*"        type="double"            indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="date@s_@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
       <dynamicField name="datetime@s_@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="boolean@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="qname@s_@*"         type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="category@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="noderef@s_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="childassocref@s_@*" type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="assocref@s_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="path@s_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="locale@s_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
-      <dynamicField name="period@s_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="boolean@s_@*"       type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="qname@s_@*"         type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="category@s_@*"      type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="noderef@s_@*"       type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="childassocref@s_@*" type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="assocref@s_@*"      type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="path@s_@*"          type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="locale@s_@*"        type="lowercase_id" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
+      <dynamicField name="period@s_@*"        type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="false" sortMissingLast="true" />
 
       <!-- Single + doc values value wildcard matches -->
       <dynamicField name="int@sd@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="false"  docValues="true" sortMissingLast="true" />
@@ -641,7 +650,7 @@
 
 
       <!-- Multi - value indexed  -->
-      <dynamicField name="any@m_@*"           type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="any@m_@*"           type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="encrypted@m_@*"     type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="int@m_@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="long@m_@*"          type="long"              indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
@@ -649,15 +658,15 @@
       <dynamicField name="double@m_@*"        type="double"            indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="date@m_@*"          type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
       <dynamicField name="datetime@m_@*"      type="date"              indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="boolean@m_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="qname@m_@*"         type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="category@m_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="noderef@m_@*"       type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="childassocref@m_@*" type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="assocref@m_@*"      type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="path@m_@*"          type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="locale@m_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
-      <dynamicField name="period@m_@*"        type="alfrescoFieldType" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="boolean@m_@*"       type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="qname@m_@*"         type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="category@m_@*"      type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="noderef@m_@*"       type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="childassocref@m_@*" type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="assocref@m_@*"      type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="path@m_@*"          type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="locale@m_@*"        type="lowercase_id" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
+      <dynamicField name="period@m_@*"        type="oldStandardAnalysis" indexed="true" omitNorms="true"  stored="false"  multiValued="true" />
 
       <!-- Multi + doc values value wildcard matches -->
       <dynamicField name="int@md@*"           type="int"               indexed="true" omitNorms="true"  stored="false"  multiValued="true"  docValues="true" />
