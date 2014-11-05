@@ -49,7 +49,7 @@ model.jsonModel = {
       {
          id: "SHARE_VERTICAL_LAYOUT",
          name: "alfresco/layout/VerticalWidgets",
-         config: 
+         config:
          {
             pubSubScope: siteServiceScope,
             currentItem: {
@@ -229,7 +229,7 @@ model.jsonModel = {
                                                             {
                                                                name: "alfresco/menus/AlfMenuBarPopup",
                                                                config: {
-                                                                  label: "Actions",
+                                                                  label: msg.get("message.actions-header-label"),
                                                                   widgets: [
                                                                      {
                                                                         name: "alfresco/menus/AlfMenuGroup",
