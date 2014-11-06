@@ -205,7 +205,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
           // Register event listeners for this Suggester
           core.registerFirstSearcherListener(new SuggesterListener(suggesterCache, minSecsBetweenBuilds));
           if (buildOnCommit || buildOnOptimize) {
-            LOG.info("Registering newSearcher listener for suggester: " + suggester.getName());
+            LOG.debug("Registering newSearcher listener for suggester: " + suggester.getName());
             core.registerNewSearcherListener(new SuggesterListener(suggesterCache, minSecsBetweenBuilds));
           }
         }
@@ -217,7 +217,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   @Override
   public void prepare(ResponseBuilder rb) throws IOException {
     SolrParams params = rb.req.getParams();
-    LOG.info("SuggestComponent prepare with : " + params);
+    LOG.debug("SuggestComponent prepare with : " + params);
     if (!params.getBool(COMPONENT_NAME, false)) {
       return;
     }
@@ -321,7 +321,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   @Override
   public void finishStage(ResponseBuilder rb) {
     SolrParams params = rb.req.getParams();
-    LOG.info("SuggestComponent finishStage with : " + params);
+    LOG.debug("SuggestComponent finishStage with : " + params);
     if (!params.getBool(COMPONENT_NAME, false) || rb.stage != ResponseBuilder.STAGE_GET_FIELDS)
       return;
     int count = params.getInt(SUGGEST_COUNT, 1);
@@ -336,7 +336,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
           @SuppressWarnings("unchecked")
           Map<String, SimpleOrderedMap<NamedList<Object>>> namedList = 
               (Map<String, SimpleOrderedMap<NamedList<Object>>>) resp.get(SuggesterResultLabels.SUGGEST);
-          LOG.info(srsp.getShard() + " : " + namedList);
+          LOG.debug(srsp.getShard() + " : " + namedList);
           suggesterResults.add(toSuggesterResult(namedList));
         }
       }
