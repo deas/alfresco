@@ -20,26 +20,26 @@
 /**
  * This extends the [hash list]{@link module:alfresco/lists/AlfHashList} to provide support
  * for common pagination and sorting behaviour.
- * 
+ *
  * @module alfresco/lists/AlfSortablePaginatedList
  * @extends module:alfresco/lists/AlfHashList
  * @mixes module:alfresco/services/_PreferenceServiceTopicMixin
  * @author Dave Draper
  */
 define(["dojo/_base/declare",
-        "alfresco/lists/AlfHashList", 
+        "alfresco/lists/AlfHashList",
         "alfresco/services/_PreferenceServiceTopicMixin",
         "dojo/_base/lang",
         "dojo/hash",
-        "dojo/io-query"], 
+        "dojo/io-query"],
         function(declare, AlfHashList, _PreferenceServiceTopicMixin, lang, hash, ioQuery) {
-   
+
    return declare([AlfHashList, _PreferenceServiceTopicMixin], {
-      
+
       /**
        * Indicates whether pagination should be used when requesting documents (e.g. include the page number and the number of
        * results per page)
-       * 
+       *
        * @instance
        * @type {boolean}
        * @default true
@@ -48,25 +48,25 @@ define(["dojo/_base/declare",
 
       /**
        * The current page number being shown.
-       * 
+       *
        * @instance
-       * @type {number} 
+       * @type {number}
        * @default 1
        */
       currentPage: 1,
 
       /**
        * The size (or number of items) to be shown on each page.
-       * 
+       *
        * @instance
-       * @type {number} 
+       * @type {number}
        * @default 25
        */
       currentPageSize: 25,
-      
+
       /**
        * The inital sort order.
-       * 
+       *
        * @instance
        * @type {boolean}
        * @default true
@@ -74,7 +74,7 @@ define(["dojo/_base/declare",
       sortAscending: true,
 
       /**
-       * The initial field to sort results on. For historical reasons the default is the "cm:name" 
+       * The initial field to sort results on. For historical reasons the default is the "cm:name"
        * property (because the DocumentLibrary was the first implementation of this capability.
        *
        * @instance
@@ -86,7 +86,7 @@ define(["dojo/_base/declare",
       /**
        * Extends the [inherited function]{@link module:alfresco/lists/AlfList#postMixInProperties}
        * to request the users documents per page preference.
-       * 
+       *
        * @instance
        */
       postMixInProperties: function alfresco_lists_AlfSortablePaginatedList__postMixInProperties() {
@@ -100,7 +100,7 @@ define(["dojo/_base/declare",
 
       /**
        * Sets the number of documents per page
-       * 
+       *
        * @instance
        * @param {number} value The number of documents per page.
        */
@@ -167,7 +167,7 @@ define(["dojo/_base/declare",
             }
          }
       },
-      
+
       /**
        * @instance
        * @param {object} payload The details of the request
@@ -218,7 +218,7 @@ define(["dojo/_base/declare",
             if (this._readyToLoad) this.loadData();
          }
       },
-      
+
       /**
        * @instance
        * @param {object} payload The details of the new page size
@@ -241,7 +241,7 @@ define(["dojo/_base/declare",
             {
                // No need to worry. The current page is fine for the new page size...
             }
-            
+
             this.currentPageSize = payload.value;
             if (this._readyToLoad) this.loadData();
          }
@@ -280,6 +280,19 @@ define(["dojo/_base/declare",
             payload.page = this.currentPage;
             payload.pageSize = this.currentPageSize;
          }
+      },
+
+      /**
+       * Reset the pagination data.
+       *
+       * This method is useful, e.g., when navigation between different list views.
+       *
+       */
+      resetPaginationData: function alfresco_lists_AlfSortablePaginatedList__resetPaginationData()
+      {
+         // This intentionally doesn't trigger an onPageChange event (we don't want to cause a data reload event).
+         this.alfLog("info", "Resetting currentPage to 1");
+         this.currentPage = 1;
       }
    });
 });

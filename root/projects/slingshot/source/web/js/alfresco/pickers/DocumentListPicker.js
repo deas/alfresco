@@ -108,7 +108,7 @@ define(["dojo/_base/declare",
       /**
        * This indicates whether the current item should be mixed into the published payload. By
        * default this is false (because the default type is to just publish the current item)
-       * 
+       *
        * @instance
        * @type {boolean}
        * @default false
@@ -239,6 +239,10 @@ define(["dojo/_base/declare",
          if (targetNode != null)
          {
             this.nodeRef = targetNode;
+
+            // Make sure we go back to page one when the new list is requested.
+            this.resetPaginationData();
+
             this.loadData();
          }
          else
