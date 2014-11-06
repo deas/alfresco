@@ -254,7 +254,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   @Override
   public int distributedProcess(ResponseBuilder rb) {
     SolrParams params = rb.req.getParams();
-    LOG.info("SuggestComponent distributedProcess with : " + params);
+    LOG.debug("SuggestComponent distributedProcess with : " + params);
     if (rb.stage < ResponseBuilder.STAGE_EXECUTE_QUERY) 
       return ResponseBuilder.STAGE_EXECUTE_QUERY;
     if (rb.stage == ResponseBuilder.STAGE_EXECUTE_QUERY) {
@@ -276,7 +276,7 @@ public class AsyncBuildSuggestComponent extends SearchComponent implements SolrC
   @Override
   public void process(ResponseBuilder rb) throws IOException {
     SolrParams params = rb.req.getParams();
-    LOG.info("SuggestComponent process with : " + params);
+    LOG.debug("SuggestComponent process with : " + params);
     if (!params.getBool(COMPONENT_NAME, false) || suggesters.isEmpty()) {
       return;
     }
