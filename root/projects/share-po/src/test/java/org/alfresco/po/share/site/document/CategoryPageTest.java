@@ -18,22 +18,23 @@
  */
 package org.alfresco.po.share.site.document;
 
-import org.alfresco.po.share.DashBoardPage;
-import org.alfresco.po.share.enums.ViewType;
-import org.alfresco.po.share.site.SiteDashboardPage;
-import org.alfresco.po.share.util.FailedTestListener;
-import org.alfresco.po.share.util.SiteUtil;
-import org.openqa.selenium.TimeoutException;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import org.alfresco.po.share.DashBoardPage;
+import org.alfresco.po.share.enums.ViewType;
+import org.alfresco.po.share.site.SiteDashboardPage;
+import org.alfresco.po.share.util.FailedTestListener;
+import org.alfresco.po.share.util.SiteUtil;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 
 @Listeners(FailedTestListener.class)
 public class CategoryPageTest extends AbstractDocumentTest
@@ -95,13 +96,7 @@ public class CategoryPageTest extends AbstractDocumentTest
         EditDocumentPropertiesPage propertiesPage = detailsPage.selectEditProperties().render();
         CategoryPage categoryPage = propertiesPage.getCategory().render();
         List<String> addAbleCategories = null;
-        try
-        {
-            addAbleCategories = categoryPage.getAddAbleCatgoryList();
-        } catch (TimeoutException e){
-            fail("ACE-3037");             //MOVE OUT THIS TRY-CATCH BLOCK WHEN ACE-3037 WILL FIX.
-        }
-        fail("Please fix this testCase!");
+        addAbleCategories = categoryPage.getAddAbleCatgoryList();
         assertTrue(addAbleCategories.size() > 0);
         assertTrue(addAbleCategories.contains(Categories.TAGS.getValue()));
         categoryPage.addCategories(Arrays.asList(Categories.TAGS.getValue())).render();
