@@ -20,6 +20,7 @@ import java.util.List;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.webdrone.RenderTime;
 import org.alfresco.webdrone.WebDrone;
+import org.alfresco.webdrone.WebDroneUtil;
 import org.alfresco.webdrone.exception.PageOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +30,7 @@ import org.openqa.selenium.WebElement;
 
 /**
  * The Class FacetedSearchConfigPage.
- * 
- * @author Charu
+ *   
  * @author Richard Smith
  */
 @SuppressWarnings("unchecked")
@@ -101,8 +101,27 @@ public class FacetedSearchConfigPage extends SharePage
     public List<FacetedSearchConfigFilter> getFilters()
     {
         return filters;
-    }
-
+    }    
+    
+    /**
+     * Gets the filter
+     *
+     * @return the filter
+     */
+    public FacetedSearchConfigFilter getFilter(String filterName)
+    {
+    	WebDroneUtil.checkMandotaryParam("Filter Name", filterName);
+    	for (FacetedSearchConfigFilter facetedSearchConfigFilter : filters) 
+    	{
+			if(filterName.equalsIgnoreCase(facetedSearchConfigFilter.getFilterId_text()))
+			{
+				return facetedSearchConfigFilter;
+			}
+				
+		}
+    	throw new PageOperationException("Not able to find the filter named : " + filterName);
+    }   
+    
     /**
      * Click add new filter.
      * 
@@ -131,12 +150,12 @@ public class FacetedSearchConfigPage extends SharePage
         this.title = drone.find(PAGE_TITLE).getText();
 
         // Initialise the filters
-        List<WebElement> filters = drone.findAll(FILTER);
+        List<WebElement> filters = drone.findAndWaitForElements(FILTER);
         this.filters = new ArrayList<FacetedSearchConfigFilter>();
         for (WebElement filter : filters)
         {
             this.filters.add(new FacetedSearchConfigFilter(drone, filter));
         }
     }
-
+    
 }

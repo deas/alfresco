@@ -79,15 +79,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FactorySharePage implements PageFactory
 {
-    private static Log logger = LogFactory.getLog(FactorySharePage.class);
+    private static final By COPY_MOVE_DIALOGUE_SELECTOR = By.cssSelector(".dijitDialogTitleBar");
+	private static Log logger = LogFactory.getLog(FactorySharePage.class);
     private static final String CREATE_PAGE_ERROR_MSG = "Unabel to instantiate the page";
     protected static final String NODE_REF_IDENTIFIER = "?nodeRef";
     public static final String DOCUMENTLIBRARY = "documentlibrary";
     public static final String NODE_REFRESH_META_DATA_IDENTIFIER = "?refreshMetadata";
     protected static final String FAILURE_PROMPT = "div[id='prompt']";
-    protected static final String SHARE_DIALOGUE = "div.hd";
+    protected static final String SHARE_DIALOGUE = "div.hd, .dijitDialogTitleBar";
     protected static ConcurrentHashMap<String, Class<? extends SharePage>> pages;
-    private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
+    //private static final By SHARE_DIALOGUE_HEADER = By.cssSelector("div.hd");
     private static final String cloudSignInDialogueHeader = "Sign in to Alfresco in the cloud";
 
     static
@@ -227,7 +228,7 @@ public class FactorySharePage implements PageFactory
             try
             {
                 WebElement shareDialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
-                if (shareDialogue.isDisplayed())
+                if (shareDialogue.isDisplayed() || drone.findFirstDisplayedElement(COPY_MOVE_DIALOGUE_SELECTOR).isDisplayed())
                 {
                     return resolveShareDialoguePage(drone);
                 }
@@ -450,7 +451,8 @@ public class FactorySharePage implements PageFactory
         SharePage sharePage = null;
         try
         {
-            WebElement dialogue = drone.findFirstDisplayedElement(SHARE_DIALOGUE_HEADER);
+            WebElement dialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
+            WebElement copyMoveDialogue = drone.findFirstDisplayedElement(COPY_MOVE_DIALOGUE_SELECTOR); 
             if (dialogue != null && dialogue.isDisplayed())
             {
                 String dialogueID = dialogue.getAttribute("id");
@@ -503,6 +505,14 @@ public class FactorySharePage implements PageFactory
                 else if (dialogueID.contains("newList"))
                 {
                     sharePage = new NewListForm(drone);
+                }
+                else if(copyMoveDialogue.getText().startsWith("Copy") || copyMoveDialogue.getText().startsWith("Move"))
+                {
+                	sharePage = new CopyAndMoveContentFromSearchPage(drone);
+                }
+                else if(dialogueID.contains("Create New Filter"))
+                {
+                        sharePage = new CreateNewFilterPopUpPage(drone);
                 }
             }
         }

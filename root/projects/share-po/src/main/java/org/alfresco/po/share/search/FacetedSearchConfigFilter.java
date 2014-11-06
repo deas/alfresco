@@ -3,7 +3,10 @@ package org.alfresco.po.share.search;
 import java.util.List;
 
 import org.alfresco.webdrone.WebDrone;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -21,6 +24,8 @@ public class FacetedSearchConfigFilter
     private static final By FILTER_SHOW = By.cssSelector("td:nth-of-type(6)");
     private static final By FILTER_DEFAULT = By.cssSelector("td:nth-of-type(7)");
     private static final By FILTER_AVAILABILITY = By.cssSelector("td:nth-of-type(8)");
+    private static final By FILTER_DELETE = By.cssSelector("td:nth-of-type(9)");
+    private static final By CLICK_DELETE_IMAGE = By.cssSelector("td:nth-of-type(9)>span>img");
 
     private static final By I_EDIT_CTRL = By.cssSelector("img.editIcon");
     private static final By I_EDIT_INPUT = By.cssSelector("input.dijitInputInner");
@@ -28,7 +33,9 @@ public class FacetedSearchConfigFilter
     private static final String I_EDIT_DD_CTRL_MENU_MOD = "_dropdown";
     private static final By I_EDIT_DD_POPUPMENU_ITEM = By.cssSelector("tr.dijitMenuItem");
     private static final By I_EDIT_SAVE = By.cssSelector("span.action.save");
-//    private static final By I_EDIT_CANCEL = By.cssSelector("span.action.cancel");
+    private static final By CONFIRM_DELETE = By.cssSelector("div[style*='opacity: 1']>div>div>span>span>span[class='dijitReset dijitStretch dijitButtonContents']");
+    private static Log logger = LogFactory.getLog(FacetedSearchConfigFilter.class);
+    //private static final By I_EDIT_CANCEL = By.cssSelector("span.action.cancel");
 
     private WebDrone drone;
 
@@ -50,6 +57,10 @@ public class FacetedSearchConfigFilter
     private String filterDefault_text;
     
     private String filterAvailability_text;
+    
+    private WebElement filterdelete;
+    private String filterdelete_text;
+    
 
     /**
      * Instantiates a new faceted search result - some items may be null.
@@ -94,6 +105,11 @@ public class FacetedSearchConfigFilter
         if(filter.findElements(FILTER_AVAILABILITY).size() > 0)
         {
             filterAvailability_text = filter.findElement(FILTER_AVAILABILITY).getText();
+        }
+        if(filter.findElements(FILTER_DELETE).size() > 0)
+        {
+        	filterdelete= filter.findElement(FILTER_DELETE);
+        	filterdelete_text = filterdelete.getText();
         }
     }
 
@@ -176,7 +192,7 @@ public class FacetedSearchConfigFilter
     {
         iEditDD(this.filterType, type);
     }
-
+    
     /**
      * Gets the filter show_text.
      *
@@ -216,7 +232,17 @@ public class FacetedSearchConfigFilter
     {
         return filterAvailability_text;
     }
-
+    
+    /**
+     * Gets the filter availability_text.
+     *
+     * @return the filter availability_text
+     */
+    public String getFilterDelete_text()
+    {
+        return filterdelete_text;
+    }
+    
     /**
      * In line edit.
      *
@@ -282,4 +308,48 @@ public class FacetedSearchConfigFilter
         // Click the save button
         control.findElement(I_EDIT_SAVE).click();
     }
+    
+    /**
+     * Gets the clickDelete_Filter.
+     *      
+     */
+    public void deleteFilter(boolean selectYes)
+    {
+		try 
+		{
+			WebElement filterdelete = this.filterdelete.findElement(CLICK_DELETE_IMAGE);
+			if (filterdelete.isDisplayed()) 
+			{
+				filterdelete.click();
+				List<WebElement> buttonNames = drone.findAndWaitForElements(CONFIRM_DELETE);
+
+				String buttonName = "Yes";
+				if(!selectYes)
+				{
+					buttonName = "No";
+				}
+				// Iterate list of buttons
+				for (WebElement button : buttonNames) 
+				{
+					if (button.getText().equalsIgnoreCase(buttonName) && (button.isDisplayed())) 
+					{
+						button.click();
+						drone.waitUntilVisible(By.cssSelector("div.bd"), "Successfully deleted", 10);
+						drone.waitUntilNotVisibleWithParitalText(By.cssSelector("div.bd"), "Successfully deleted", 10);
+						break;	
+					}				
+				}
+				
+			}
+		} catch (NoSuchElementException e) 
+		{
+			if (logger.isTraceEnabled()) 
+			{
+				logger.trace("Unable to select the button");
+			}
+		}
+		
+	}
+    
+    
 }
