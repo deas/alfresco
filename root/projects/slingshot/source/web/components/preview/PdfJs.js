@@ -702,7 +702,7 @@
             else if (dialogPane = Dom.getAncestorByClassName(this.wp.getPreviewerElement(), "dijitDialogPaneContent"))
             {
                var h = Dom.getStyle(dialogPane, "height");
-               var previewHeight = (parseInt(h)-34) + "px";
+               var previewHeight = (parseInt(h)-42) + "px";
                Dom.setStyle(this.wp.getPreviewerElement(), "height", previewHeight);
             }
             else
@@ -748,7 +748,7 @@
                if (dialogPane = Dom.getAncestorByClassName(this.wp.getPreviewerElement(), "dijitDialogPaneContent"))
                {
                   var h = Dom.getStyle(dialogPane, "height");
-                  var previewHeight = (parseInt(h) -34 -10 -controlHeight -1) + "px";
+                  var previewHeight = (parseInt(h) -42 -10 -controlHeight -1) + "px";
                   Dom.setStyle(this.wp.getPreviewerElement(), "height", previewHeight);
                }
                else
