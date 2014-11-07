@@ -389,13 +389,23 @@ public abstract class CMISAbstractDictionaryService extends AbstractLifecycleBea
     @Override
     public List<TypeDefinitionWrapper> getBaseTypes()
     {
-        return Collections.unmodifiableList(getRegistry().getBaseTypes());
+        return getBaseTypes(true);
     }
 
     @Override
     public List<TypeDefinitionWrapper> getBaseTypes(boolean includeParent)
     {
-        return Collections.unmodifiableList(getRegistry().getBaseTypes(includeParent));
+        List<TypeDefinitionWrapper> types = getRegistry().getBaseTypes(includeParent);
+
+        for (TypeDefinitionWrapper typeDef : types)
+        {
+            if (typeDef != null && typeDef.getTypeDefinition(false).getDisplayName() == null)
+            {
+                typeDef.updateDefinition(dictionaryService);
+            }
+        }
+
+        return Collections.unmodifiableList(types);
     }
 
     @Override
