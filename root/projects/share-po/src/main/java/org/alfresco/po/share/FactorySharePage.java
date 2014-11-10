@@ -452,7 +452,14 @@ public class FactorySharePage implements PageFactory
         try
         {
             WebElement dialogue = drone.findFirstDisplayedElement(By.cssSelector(SHARE_DIALOGUE));
-            WebElement copyMoveDialogue = drone.findFirstDisplayedElement(COPY_MOVE_DIALOGUE_SELECTOR); 
+            WebElement copyMoveDialogue = null;
+            try
+            {
+                copyMoveDialogue = drone.findFirstDisplayedElement(COPY_MOVE_DIALOGUE_SELECTOR);
+            }
+            catch (NoSuchElementException e)
+            {
+            } 
             if (dialogue != null && dialogue.isDisplayed())
             {
                 String dialogueID = dialogue.getAttribute("id");
@@ -506,7 +513,7 @@ public class FactorySharePage implements PageFactory
                 {
                     sharePage = new NewListForm(drone);
                 }
-                else if(copyMoveDialogue.getText().startsWith("Copy") || copyMoveDialogue.getText().startsWith("Move"))
+                else if(copyMoveDialogue != null && (copyMoveDialogue.getText().startsWith("Copy") || copyMoveDialogue.getText().startsWith("Move")))
                 {
                 	sharePage = new CopyAndMoveContentFromSearchPage(drone);
                 }
