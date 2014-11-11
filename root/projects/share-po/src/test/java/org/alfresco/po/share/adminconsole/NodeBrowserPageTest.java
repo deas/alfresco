@@ -18,6 +18,13 @@
  */
 package org.alfresco.po.share.adminconsole;
 
+import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.LUCENE;
+import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.STORE_ROOT;
+import static org.alfresco.po.share.adminconsole.NodeBrowserPage.Store.WORKSPACE_SPACE_STORE;
+import static org.testng.Assert.assertTrue;
+
+import java.util.List;
+
 import org.alfresco.po.share.AbstractTest;
 import org.alfresco.po.share.SharePage;
 import org.alfresco.po.share.util.FailedTestListener;
@@ -25,14 +32,6 @@ import org.alfresco.webdrone.exception.PageOperationException;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import java.util.List;
-
-import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.LUCENE;
-import static org.alfresco.po.share.adminconsole.NodeBrowserPage.QueryType.STORE_ROOT;
-import static org.alfresco.po.share.adminconsole.NodeBrowserPage.Store.WORKSPACE_SPACE_STORE;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 /**
  * @author Aliaksei Boole
@@ -64,26 +63,20 @@ public class NodeBrowserPageTest extends AbstractTest
     @Test(dependsOnMethods = "executeCustomNodeSearch", groups = "Enterprise-only")
     public void getSearchResults() throws Exception
     {
-        try
-        {
-            nodeBrowserPage.selectQueryType(LUCENE);
-            nodeBrowserPage.fillQueryField("TYPE:\"cm:category\"");
-            nodeBrowserPage.clickSearchButton();
-            List<NodeBrowserSearchResult> nodeBrowserSearchResults = nodeBrowserPage.getSearchResults();
-            Assert.assertTrue(nodeBrowserSearchResults.size() > 0);
+        nodeBrowserPage = nodeBrowserPage.getNav().getNodeBrowserPage().render();
+        nodeBrowserPage.fillQueryField("TYPE:\"cm:category\"");
+        nodeBrowserPage.clickSearchButton();
+        List<NodeBrowserSearchResult> nodeBrowserSearchResults = nodeBrowserPage.getSearchResults();
+        Assert.assertTrue(nodeBrowserSearchResults.size() > 0);
 
-            NodeBrowserSearchResult language = nodeBrowserPage.getSearchResults("cm:Languages");
-            Assert.assertNotNull(language);
-        } catch (Exception e){
-            fail("ACE-3037"); ////If Ok, then move out this try-catch block.
-        }
-        fail("Please, fix me! Now I am ok!");
-
+        NodeBrowserSearchResult language = nodeBrowserPage.getSearchResults("cm:Languages");
+        Assert.assertNotNull(language);
     }
 
     @Test(dependsOnMethods = "getSearchResults", groups = "Enterprise-only")
     public void getSearchResultsNoResults() throws Exception
     {
+        nodeBrowserPage = nodeBrowserPage.getNav().getNodeBrowserPage().render();
         nodeBrowserPage.selectQueryType(LUCENE);
         nodeBrowserPage.fillQueryField(String.valueOf(System.currentTimeMillis()));
         nodeBrowserPage.clickSearchButton();
