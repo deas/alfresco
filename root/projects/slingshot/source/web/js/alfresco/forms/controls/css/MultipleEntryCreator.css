@@ -29,6 +29,10 @@
    margin: 5px 2px 2px;
 }
 
+.alfresco-forms-controls-MultipleEntryCreator .button.add {
+   float: none;
+} 
+
 .alfresco-forms-controls-MultipleEntryCreator .clear-both {
    clear: both;
 }

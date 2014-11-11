@@ -1,3 +1,7 @@
+.claro .dijitMenu {
+   border-color: @standard-border-color;
+}
+
 .alfresco-forms-controls-BaseFormControl {
    margin-bottom: @standard-line-height;
 }
@@ -32,7 +36,6 @@
 
 .alfresco-forms-controls-BaseFormControl > .control-row > .control {
    margin-right: 5px;
-   font-size: @large-font-size;
    display: inline-block;
 }
 
@@ -97,4 +100,32 @@
 
 .alfresco-forms-controls-BaseFormControl.long > .control-row > div.control > div {
    width: 472px;
+}
+
+.alfresco-forms-controls-BaseFormControl div.control div.dijitComboBox.dijitTextBoxHover,
+.alfresco-forms-controls-BaseFormControl div.control .dijitTextBoxHover,
+.alfresco-forms-controls-BaseFormControl div.control .dijitTextAreaHover,
+.alfresco-forms-controls-BaseFormControl div.control .dijitTextBoxFocused,
+.alfresco-forms-controls-BaseFormControl div.control .dijitTextAreaFocused,
+.alfresco-forms-controls-BaseFormControl div.control .dijitTextBoxActive,
+.alfresco-forms-controls-BaseFormControl div.control .dijitTextAreaActive {
+   border-color: @hover-border-color;
+   background-image: none;
+   background-color: inherit;
+}
+
+.alfresco-forms-controls-BaseFormControl div.control .dijitPlaceHolder {
+   font-style: normal;
+   color: @de-emphasized-font-color;
+}
+
+.alfresco-forms-controls-BaseFormControl div.control div.dijitComboBox {
+   border-color: @standard-border-color;
+   font-size: @large-font-size;
+}
+
+.alfresco-forms-controls-BaseFormControl div.control div.dijitComboBox.dijitTextBoxFocused,
+.alfresco-forms-controls-BaseFormControl div.control .dijitActive,
+.alfresco-forms-controls-BaseFormControl div.control .dijitFocused {
+   border-color: @focused-border-color;
 }
