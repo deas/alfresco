@@ -27,10 +27,10 @@
 define(["alfresco/core/Core"], function(AlfCore){
 
    function msg(i18nScope, key){
-      var msgArgs = [key, i18nScope];
-      if (arguments.length > 2)
+      var msgArgs = [];
+      if (arguments.length > 1)
       {
-         msgArgs = msgArgs.concat(Array.prototype.slice.call(arguments).slice(2));
+         msgArgs = msgArgs.concat(Array.prototype.slice.call(arguments).slice(1));
       }
       return AlfCore.prototype.message.apply({ i18nScope: i18nScope }, msgArgs);
    }
