@@ -105,41 +105,51 @@
          @standard-box-shadow: 0.33px 2px 8px rgba(0, 0, 0, 0.3);
          @inset-box-shadow: 1px 1px 3px @standard-button-border-color inset;
 
-         // Generic colours for displaying collections of items
-         @collectionColour1: #66ccff;
-         @collectionColour2: #fff24d;
-         @collectionColour3: #f44e4e;
-         @collectionColour4: #66ff99;
-         @collectionColour5: #ff99ff;
-         @collectionColour6: #6699ff;
-         @collectionColour7: #f9ac3d;
-         @collectionColour8: #d80707;
-         @collectionColour9: #33cc99;
-         @collectionColour10: #ff3399;
-         @collectionColour11: #006699;
-         @collectionColour12: #f27606;
-         @collectionColour13: #990e0e;
-         @collectionColour14: #0ea56f;
-         @collectionColour15: #7246b2;
-         @collectionColour16: #50545b;
+          // Generic colours for displaying collections of items
+          @collectionColour1: #f1e695;
+          @collectionColour2: #f4af72;
+          @collectionColour3: #db645a;
+          @collectionColour4: #8d4747;
+          @collectionColour5: #ebb646;
+          @collectionColour6: #90c654;
+          @collectionColour7: #999999;
+          @collectionColour8: #cdcccc;
+          @collectionColour9: #48aa9f;
+          @collectionColour10: #3860ad;
+          @collectionColour11: #cc872a;
+          @collectionColour12: #784423;
+          @collectionColour13: #8fa9d8;
+          @collectionColour14: #da533d;
+          @collectionColour15: #8c624c;
+          @collectionColour16: #1c8849;
+          @collectionColour17: #c15f30;
+          @collectionColour18: #847b47;
+          @collectionColour19: #945270;
+          @collectionColour20: #ada835;
+          @collectionColour21: #598e75;
 
-         // Charting item colours
-         @chartItemColour1: @collectionColour1;
-         @chartItemColour2: @collectionColour2;
-         @chartItemColour3: @collectionColour3;
-         @chartItemColour4: @collectionColour4;
-         @chartItemColour5: @collectionColour5;
-         @chartItemColour6: @collectionColour6;
-         @chartItemColour7: @collectionColour7;
-         @chartItemColour8: @collectionColour8;
-         @chartItemColour9: @collectionColour9;
-         @chartItemColour10: @collectionColour10;
-         @chartItemColour11: @collectionColour11;
-         @chartItemColour12: @collectionColour12;
-         @chartItemColour13: @collectionColour13;
-         @chartItemColour14: @collectionColour14;
-         @chartItemColour15: @collectionColour15;
-         @chartItemColour16: @collectionColour16;
+          // Charting item colours
+          @chartItemColour1: @collectionColour1;
+          @chartItemColour2: @collectionColour2;
+          @chartItemColour3: @collectionColour3;
+          @chartItemColour4: @collectionColour4;
+          @chartItemColour5: @collectionColour5;
+          @chartItemColour6: @collectionColour6;
+          @chartItemColour7: @collectionColour7;
+          @chartItemColour8: @collectionColour8;
+          @chartItemColour9: @collectionColour9;
+          @chartItemColour10: @collectionColour10;
+          @chartItemColour11: @collectionColour11;
+          @chartItemColour12: @collectionColour12;
+          @chartItemColour13: @collectionColour13;
+          @chartItemColour14: @collectionColour14;
+          @chartItemColour15: @collectionColour15;
+          @chartItemColour16: @collectionColour16;
+          @chartItemColour17: @collectionColour17;
+          @chartItemColour18: @collectionColour18;
+          @chartItemColour19: @collectionColour19;
+          @chartItemColour20: @collectionColour20;
+          @chartItemColour21: @collectionColour21;
       </less-variables>
 
    </css-tokens>
