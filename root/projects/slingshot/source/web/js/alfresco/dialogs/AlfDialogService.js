@@ -191,12 +191,11 @@ define(["dojo/_base/declare",
                // Take a copy of the default configuration and mixin in the supplied config to override defaults
                // as appropriate...
                var config = lang.clone(this.defaultFormDialogConfig);
-               // NOTE: It shouldn't be necessary to clone the payload here. It's been changed
-               //       to support the ability to pass files in payloads which would otherwise
-               //       cause errors on cloning due to native code...
-               // var clonedPayload = lang.clone(payload);
-               // lang.mixin(config, clonedPayload);
-               lang.mixin(config, payload);
+               // NOTE: Ideally we'd like to avoid cloning the payload here in case it contains native code, however
+               //       we need to ensure that pubSubScopes do not get baked into the payload object that will be re-used
+               //       the next time the dialog is opened. We will need to explore alternative solutions in the 5.1 timeframe
+               var clonedPayload = lang.clone(payload);
+               lang.mixin(config, clonedPayload);
                config.pubSubScope = pubSubScope;
                config.parentPubSubScope = this.parentPubSubScope;
                config.subcriptionTopic = subcriptionTopic; // Include the subscriptionTopic in the configuration the subscription can be cleaned up
