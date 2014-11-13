@@ -26,7 +26,6 @@ import org.alfresco.po.share.dashlet.SavedSearchDashlet;
 import org.alfresco.po.share.dashlet.SearchLimit;
 import org.alfresco.po.share.dashlet.SiteSearchItem;
 import org.alfresco.po.share.enums.Dashlets;
-import org.alfresco.po.share.site.SiteDashboardPage;
 import org.alfresco.po.share.site.document.ContentDetails;
 import org.alfresco.po.share.site.document.ContentType;
 import org.alfresco.po.share.site.document.DocumentAspect;
@@ -875,7 +874,7 @@ public class SavedSearchMyDashboardAdvancedTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = { "EnterpriseOnly" })
+    @Test(groups = { "EnterpriseOnly",  "IntermittentBugs" })
     public void AONE_14679() throws Exception
     {
         String testName = getTestName();

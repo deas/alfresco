@@ -1124,7 +1124,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = {"EnterpriseOnly"})
+    @Test(groups = {"EnterpriseOnly", "IntermittentBugs"})
     public void AONE_14797() throws Exception
     {
         String testName = getTestName();
@@ -1372,7 +1372,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = {"EnterpriseOnly"})
+    @Test(groups = {"EnterpriseOnly", "IntermittentBugs"})
     public void AONE_14801() throws Exception
     {
 
@@ -1973,7 +1973,7 @@ public class SiteSearchDashletTest extends AbstractUtils
         ShareUser.logout(drone);
     }
 
-    @Test(groups = {"EnterpriseOnly"})
+    @Test(groups = {"EnterpriseOnly", "IntermittentBugs"})
     public void AONE_14814() throws Exception
     {
         String testName = getTestName();
