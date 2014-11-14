@@ -20,15 +20,6 @@
          <!-- dashboard components -->
          <component>
             <scope>page</scope>
-            <region-id>full-width-dashlet</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/dynamic-welcome</url>
-            <properties>
-               <dashboardType>site</dashboardType>
-            </properties>
-         </component>
-         <component>
-            <scope>page</scope>
             <region-id>component-1-1</region-id>
             <source-id>site/${siteid}/dashboard</source-id>
             <url>/components/dashlets/colleagues</url>
@@ -144,15 +135,6 @@
          <!-- dashboard components -->
          <component>
             <scope>page</scope>
-            <region-id>full-width-dashlet</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/dynamic-welcome</url>
-            <properties>
-               <dashboardType>site</dashboardType>
-            </properties>
-         </component>
-         <component>
-            <scope>page</scope>
             <region-id>component-1-1</region-id>
             <source-id>site/${siteid}/dashboard</source-id>
             <url>/components/dashlets/colleagues</url>
@@ -206,15 +188,6 @@
          <!-- dashboard components -->
          <component>
             <scope>page</scope>
-            <region-id>full-width-dashlet</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/dynamic-welcome</url>
-            <properties>
-               <dashboardType>site</dashboardType>
-            </properties>
-         </component>
-         <component>
-            <scope>page</scope>
             <region-id>component-1-1</region-id>
             <source-id>site/${siteid}/dashboard</source-id>
             <url>/components/dashlets/colleagues</url>
@@ -265,15 +238,6 @@
             <url>/components/navigation/collaboration-navigation</url>
          </component>
          <!-- dashboard components -->
-         <component>
-            <scope>page</scope>
-            <region-id>full-width-dashlet</region-id>
-            <source-id>site/${siteid}/dashboard</source-id>
-            <url>/components/dashlets/dynamic-welcome</url>
-            <properties>
-               <dashboardType>site</dashboardType>
-            </properties>
-         </component>
          <component>
             <scope>page</scope>
             <region-id>component-1-1</region-id>

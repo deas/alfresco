@@ -57,7 +57,7 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
         SiteUtil.deleteSite(drone, siteName);
     }
 
-    @Test(groups = "Enterprise-only")
+    // TEST REMOVED - SEE ACE-3485
     public void instantiateDashlet()
     {
         SiteWelcomeDashlet dashlet = new SiteWelcomeDashlet(drone);
@@ -69,7 +69,7 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "instantiateDashlet", groups = "Enterprise-only")
+    // TEST REMOVED - SEE ACE-3485
     public void selectSiteWelcometDashlet() throws Exception
     {
         SiteWelcomeDashlet dashlet = siteDashBoard.getDashlet(SITE_WELCOME).render();
@@ -90,8 +90,7 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
      * 
      * @throws Exception
      */
-    @Test(dependsOnMethods = "selectSiteWelcometDashlet", groups = "Enterprise-only", 
-            expectedExceptions = NoSuchDashletExpection.class)
+    // TEST REMOVED - SEE ACE-3485
     public void removeAndFindDashlet() throws Exception 
     {
         SiteWelcomeDashlet dashlet;
@@ -105,8 +104,8 @@ public class SiteWelcomeDashletTest extends AbstractSiteDashletTest
      * 
      * @throws Exception
      */
-    @Test(groups = "Cloud-only", expectedExceptions = NoSuchDashletExpection.class)
-    public void findCloudDashlet() throws Exception 
+    @Test(expectedExceptions = NoSuchDashletExpection.class)
+    public void findDashlet() throws Exception 
     {
         siteDashBoard.getDashlet(SITE_WELCOME).render();
     }

@@ -119,7 +119,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
      * 
      * @throws Exception
      */
-    @Test(groups = { "EnterpriseOnly" })
+    // TEST REMOVED - SEE ACE-3485
     public void AONE_3288() throws Exception
     {
         String testName = getTestName();
@@ -187,7 +187,7 @@ public class WelcomeDashletCreateDelete extends AbstractUtils
     }
     
     
-    @Test(groups = "AlfrescoOne")
+    // TEST REMOVED - SEE ACE-3485
     public void AONE_15837()
     {
         // test user (site creator) logs in
