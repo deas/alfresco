@@ -10141,12 +10141,21 @@ Alfresco.util.RichEditor = function(editorName,id,config)
          if (config.language)
          {
             var langs = Alfresco.constants.TINY_MCE_SUPPORTED_LOCALES.split(","),
-                  lang = "en";
+               lang = "en",
+               configLangOnly = config.language.substring(0,2).toLowerCase();
+
             for (var i = 0, j = langs.length; i < j; i++)
             {
-               if (langs[i] == config.language)
+               // This checks the full local string (e.g. "en_US")
+               if (langs[i] === config.language)
                {
                   lang = config.language;
+                  break;
+               }
+               // If the above doesn't match, then perform less strict match (e.g. "en") for ACE-3502.
+               else if (langs[i] === configLangOnly)
+               {
+                  lang = configLangOnly;
                   break;
                }
             }
