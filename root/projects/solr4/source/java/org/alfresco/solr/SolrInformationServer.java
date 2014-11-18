@@ -181,18 +181,26 @@ public class SolrInformationServer implements InformationServer
     protected enum FTSStatus {New, Dirty, Clean};
     
     // write a BytesRef as a byte array
-    JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver() {
-      @Override
-      public Object resolve(Object o, JavaBinCodec codec) throws IOException {
-        if (o instanceof BytesRef) {
-          BytesRef br = (BytesRef)o;
-          codec.writeByteArray(br.bytes, br.offset, br.length);
-          return null;
+    JavaBinCodec.ObjectResolver resolver = new JavaBinCodec.ObjectResolver()
+    {
+        @Override
+        public Object resolve(Object o, JavaBinCodec codec) throws IOException
+        {
+            if (o instanceof BytesRef)
+            {
+                BytesRef br = (BytesRef) o;
+                codec.writeByteArray(br.bytes, br.offset, br.length);
+                return null;
+            }
+            return o;
         }
-        return o;
-      }
     };
     
+    @Override
+    public AlfrescoCoreAdminHandler getAdminHandler()
+    {
+        return this.adminHandler;
+    }
 
     public SolrInformationServer(AlfrescoCoreAdminHandler adminHandler, SolrCore core, SOLRAPIClient repositoryClient,
                 SolrContentStore solrContentStore)
@@ -986,34 +994,40 @@ public class SolrInformationServer implements InformationServer
             @SuppressWarnings("rawtypes")
             NamedList values = rsp.getValues();
             SolrDocumentList response = (SolrDocumentList)values.get(RESPONSE_DEFAULT_IDS);
-            SolrDocument acl = null;
-            SolrDocument tx = null;
-            if(response.getNumFound() > 0)
-            {
-                acl = response.get(0);
-                if (state.getLastIndexedChangeSetCommitTime() == 0)
-                {
-                    state.setLastIndexedChangeSetCommitTime(getFieldValueLong(acl, FIELD_S_ACLTXCOMMITTIME));
-                }
-
-                if (state.getLastIndexedChangeSetId() == 0)
-                {
-                    state.setLastIndexedChangeSetId(getFieldValueLong(acl, FIELD_S_ACLTXID));
-                }
-            }
-            if(response.getNumFound() > 1)
-            {
-                tx = response.get(1);
-                if (state.getLastIndexedTxCommitTime() == 0)
-                {
-                    state.setLastIndexedTxCommitTime(getFieldValueLong(tx, FIELD_S_TXCOMMITTIME));
-                }
-                if (state.getLastIndexedTxId() == 0)
-                {
-                    state.setLastIndexedTxId(getFieldValueLong(tx, FIELD_S_TXID));
-                }
-            }
             
+            // We can find either or both docs here.
+            for(int i = 0; i < response.getNumFound(); i++)
+            {
+                SolrDocument current = response.get(i);
+                // ACLTX
+                if(current.getFieldValue(FIELD_S_ACLTXCOMMITTIME) != null)
+                {
+                    if (state.getLastIndexedChangeSetCommitTime() == 0)
+                    {
+                        state.setLastIndexedChangeSetCommitTime(getFieldValueLong(current, FIELD_S_ACLTXCOMMITTIME));
+                    }
+
+                    if (state.getLastIndexedChangeSetId() == 0)
+                    {
+                        state.setLastIndexedChangeSetId(getFieldValueLong(current, FIELD_S_ACLTXID));
+                    }
+                }
+                
+                // TX
+                if(current.getFieldValue(FIELD_S_TXCOMMITTIME) != null)
+                {
+                    if (state.getLastIndexedTxCommitTime() == 0)
+                    {
+                        state.setLastIndexedTxCommitTime(getFieldValueLong(current, FIELD_S_TXCOMMITTIME));
+                    }
+                    if (state.getLastIndexedTxId() == 0)
+                    {
+                        state.setLastIndexedTxId(getFieldValueLong(current, FIELD_S_TXID));
+                    }
+                }
+                
+            }
+     
             long startTime = System.currentTimeMillis();
             state.setTimeToStopIndexing(startTime - lag);
             state.setTimeBeforeWhichThereCanBeNoHoles(startTime - holeRetention);

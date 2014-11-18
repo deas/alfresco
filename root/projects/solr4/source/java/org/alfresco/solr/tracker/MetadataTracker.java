@@ -81,16 +81,21 @@ public class MetadataTracker extends AbstractTracker implements Tracker
     @Override
     protected void doTrack() throws AuthenticationException, IOException, JSONException
     {
-        purgeTransactions();
-        purgeNodes();
+        // MetadataTracker must wait until ModelTracker has run
+        ModelTracker modelTracker = this.infoSrv.getAdminHandler().getTrackerRegistry().getModelTracker();
+        if (modelTracker != null && modelTracker.hasModels())
+        {
+            purgeTransactions();
+            purgeNodes();
 
-        reindexTransactions();
-        reindexNodes();
+            reindexTransactions();
+            reindexNodes();
 
-        indexTransactions();
-        indexNodes();
-        
-        trackRepository();
+            indexTransactions();
+            indexNodes();
+
+            trackRepository();
+        }
     }
 
 

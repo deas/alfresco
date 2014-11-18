@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.alfresco.httpclient.AuthenticationException;
+import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.InformationServer;
 import org.alfresco.solr.NodeReport;
 import org.alfresco.solr.TrackerState;
@@ -66,7 +67,18 @@ public class MetadataTrackerTest
     public void setUp() throws Exception
     {
         doReturn("workspace://SpacesStore").when(props).getProperty("alfresco.stores");
+        // when(srv.getTrackerStats()).thenReturn(trackerStats);
+
         this.metadataTracker = spy(new MetadataTracker(scheduler, props, repositoryClient, coreName, srv));
+
+        ModelTracker modelTracker = mock(ModelTracker.class);
+        when(modelTracker.hasModels()).thenReturn(true);
+        AlfrescoCoreAdminHandler adminHandler = mock(AlfrescoCoreAdminHandler.class);
+        TrackerRegistry registry = new TrackerRegistry();
+        registry.setModelTracker(modelTracker);
+        when(adminHandler.getTrackerRegistry()).thenReturn(registry);
+        when(srv.getAdminHandler()).thenReturn(adminHandler);
+
     }
 
     @Test
