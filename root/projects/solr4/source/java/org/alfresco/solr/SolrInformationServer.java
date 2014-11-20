@@ -91,6 +91,7 @@ import org.alfresco.solr.tracker.IndexHealthReport;
 import org.alfresco.solr.tracker.TrackerStats;
 import org.alfresco.util.ISO9075;
 import org.alfresco.util.Pair;
+import org.apache.commons.io.input.BoundedInputStream;
 import org.apache.lucene.index.IndexCommit;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.util.BytesRef;
@@ -172,6 +173,7 @@ public class SolrInformationServer implements InformationServer
     private boolean transformContent = true;
     private long lag;
     private long holeRetention;
+    private int contentStreamLimit;
     
     // Metadata pulling control
     private boolean skipDescendantDocsForSpecificTypes;
@@ -199,6 +201,7 @@ public class SolrInformationServer implements InformationServer
             return o;
         }
     };
+   
     
     @Override
     public AlfrescoCoreAdminHandler getAdminHandler()
@@ -246,6 +249,8 @@ public class SolrInformationServer implements InformationServer
             
             skippingDocsQueryString = this.cloud.getQuery(FIELD_TYPE, OR, typesForSkippingDescendantDocs);
         }
+        
+        contentStreamLimit = Integer.parseInt(p.getProperty("alfresco.contentStreamLimit", "10000000"));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -2325,7 +2330,7 @@ public class SolrInformationServer implements InformationServer
             if (ris != null)
             {
                 // Get and copy content
-                byte[] bytes = FileCopyUtils.copyToByteArray(ris);
+                byte[] bytes = FileCopyUtils.copyToByteArray(new BoundedInputStream(ris, contentStreamLimit));
                 textContent = new String(bytes, "UTF8");
             }
         }
