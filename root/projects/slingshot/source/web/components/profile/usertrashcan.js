@@ -791,6 +791,9 @@
        */
       performSearch: function UT_performSearch()
       {
+         // MNT-12799: resetting 'skipCount' to show search results from the first page
+         this.skipCount = 0;
+
          var searchText = YAHOO.lang.trim(Dom.get(this.id + "-search-text").value);
          if (searchText.length !== 0)
          {
