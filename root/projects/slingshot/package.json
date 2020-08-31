@@ -13,7 +13,7 @@
       "grunt-sync": "latest",
       "jsdoc": "~3.3.0",
       "uglify-js": "~1.2.5",
-      "connect": "1.x",
+      "connect": "3.x",
       "connect-restreamer": "~1.0.0",
       "express": "2.x",
       "http-proxy": "~0.8.0",
