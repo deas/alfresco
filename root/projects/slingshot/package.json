@@ -16,7 +16,7 @@
       "connect": "1.x",
       "connect-restreamer": "~1.0.0",
       "express": "2.x",
-      "http-proxy": "~0.8.0",
+      "http-proxy": "~1.18.1",
       "jade": "~0.20",
       "mkdirp": "~0.3.0",
       "glob": "~3.2.7",
